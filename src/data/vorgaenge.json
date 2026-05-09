@@ -1,0 +1,105 @@
+[
+  {
+    "id": "vorgang-anna-anmeldung-2024",
+    "typ": "anmeldung",
+    "titel": "Erstanmeldung in Berlin (2024)",
+    "status": "abgeschlossen",
+    "beteiligte_behoerden_ids": [
+      "buergeramt-berlin-friedrichshain-kreuzberg",
+      "bundesdruckerei",
+      "abh-berlin-lea",
+      "finanzamt-koerperschaften-i-berlin"
+    ],
+    "schritte": [
+      {
+        "id": "step-anmeldung-2024-buergeramt",
+        "behoerde_id": "buergeramt-berlin-friedrichshain-kreuzberg",
+        "block": "A",
+        "aktion": "Anmeldung neuer Wohnort nach § 17 BMG",
+        "rechtsgrundlage": "§ 17 BMG",
+        "status": "confirmed",
+        "started_at": "2024-09-18T08:30:00.000Z",
+        "completed_at": "2024-09-18T08:42:00.000Z",
+        "letter_id": "letter-buergeramt-meldebestaetigung-anmeldung"
+      },
+      {
+        "id": "step-anmeldung-2024-bundesdruckerei",
+        "behoerde_id": "bundesdruckerei",
+        "block": "A",
+        "aktion": "Adressaufkleber Personalausweis nach § 28 PAuswG",
+        "rechtsgrundlage": "§ 28 PAuswG",
+        "status": "confirmed",
+        "started_at": "2024-09-18T08:42:00.000Z",
+        "completed_at": "2024-09-22T09:00:00.000Z",
+        "letter_id": "letter-bundesdruckerei-pa-aufkleber"
+      },
+      {
+        "id": "step-anmeldung-2024-abh",
+        "behoerde_id": "abh-berlin-lea",
+        "block": "D",
+        "aktion": "Adresseintrag auf eAT-Karte",
+        "rechtsgrundlage": "§ 87 AufenthG",
+        "status": "confirmed",
+        "started_at": "2024-09-25T09:00:00.000Z",
+        "completed_at": "2024-10-08T14:30:00.000Z",
+        "eid_confirmed_at": "2024-10-08T14:25:00.000Z"
+      },
+      {
+        "id": "step-anmeldung-2024-finanzamt",
+        "behoerde_id": "finanzamt-koerperschaften-i-berlin",
+        "block": "A",
+        "aktion": "Erstzuordnung Steuernummer",
+        "rechtsgrundlage": "§ 39 AO + § 36 BMG",
+        "status": "confirmed",
+        "started_at": "2024-09-19T10:00:00.000Z",
+        "completed_at": "2024-10-30T11:15:00.000Z"
+      }
+    ],
+    "fristen": [
+      { "typ": "bmg_17", "datum": "2024-09-29" }
+    ],
+    "angelegt_am": "2024-09-15T19:00:00.000Z",
+    "abgeschlossen_am": "2024-10-30T11:15:00.000Z",
+    "persona_id": "anna-petrov",
+    "context": {
+      "alte_adresse": {
+        "strasse": "Newski-Prospekt",
+        "hausnummer": "44",
+        "plz": "00000",
+        "ort": "St Petersburg",
+        "land": "RU"
+      },
+      "neue_adresse": {
+        "strasse": "Friedrichstraße",
+        "hausnummer": "100",
+        "plz": "10117",
+        "ort": "Berlin",
+        "land": "DE"
+      }
+    }
+  },
+  {
+    "id": "vorgang-anna-aufenthaltstitel-2027-stub",
+    "typ": "aufenthaltstitel-verlaengerung",
+    "titel": "Verlängerung Aufenthaltstitel § 18g AufenthG",
+    "status": "angelegt",
+    "beteiligte_behoerden_ids": ["abh-berlin-lea"],
+    "schritte": [
+      {
+        "id": "step-aufenthalt-vorbereitung",
+        "behoerde_id": "abh-berlin-lea",
+        "block": "C",
+        "aktion": "Unterlagen zusammenstellen (Arbeitsvertrag, Gehaltsnachweise, Meldebestätigung)",
+        "rechtsgrundlage": "§ 18g AufenthG",
+        "status": "self_assigned",
+        "started_at": "2026-04-29T09:20:00.000Z"
+      }
+    ],
+    "fristen": [
+      { "typ": "abh_termin_empfehlung", "datum": "2027-05-14" },
+      { "typ": "ablauf_aufenthaltstitel", "datum": "2027-09-14" }
+    ],
+    "angelegt_am": "2026-04-29T09:20:00.000Z",
+    "persona_id": "anna-petrov"
+  }
+]

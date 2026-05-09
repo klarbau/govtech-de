@@ -1,0 +1,529 @@
+[
+  {
+    "id": "letter-fa-steuerbescheid-2025",
+    "absender_behoerde_id": "finanzamt-koerperschaften-i-berlin",
+    "empfaenger_persona_id": "anna-petrov",
+    "aktenzeichen": "[MOCK] 11/123/45678",
+    "aktenzeichen_weitere": ["[MOCK] 47 113 815 421"],
+    "betreff": "Bescheid für 2024 über Einkommensteuer, Solidaritätszuschlag und Kirchensteuer — Steuernummer [MOCK] 11/123/45678",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nFinanzamt für Körperschaften I Berlin\nBredtschneiderstraße 5, 14057 Berlin\n\nSehr geehrte Frau Petrov,\n\nin oben genannter Angelegenheit übersenden wir Ihnen den Einkommensteuerbescheid für das Kalenderjahr 2024.\n\nFestgesetzte Einkommensteuer: 6.842,00 €\nAnzurechnende Lohnsteuer: 7.213,00 €\nErstattung: 371,00 €\n\nDer Erstattungsbetrag wird in den nächsten 14 Tagen auf das uns vorliegende Konto überwiesen.\n\nDieser Bescheid ist maschinell erstellt und auch ohne Unterschrift gültig.\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Einspruch eingelegt werden. Der Einspruch ist bei dem oben bezeichneten Finanzamt schriftlich einzureichen, zur Niederschrift zu erklären oder elektronisch zu übermitteln. [MOCK]\n\nMit freundlichen Grüßen\nIm Auftrag\nM. Hartwig, Sachbearbeiterin\nAz. [MOCK] 11/123/45678",
+    "ai_summary": {
+      "de": "Ihr Steuerbescheid 2024: Sie erhalten 371 € Erstattung — automatisch in 14 Tagen auf Ihr hinterlegtes Konto. Keine Aktion erforderlich."
+    },
+    "archetype": "steuerbescheid",
+    "auth_channel": "briefpost",
+    "fristen": [
+      {
+        "typ": "einspruch",
+        "datum": "2026-04-12",
+        "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Einspruch eingelegt werden.",
+        "citation_match": false,
+        "rechtsgrundlage": "§ 355 AO"
+      }
+    ],
+    "was_kann_ich_tun_options": [
+      "steuerbescheid.einspruch",
+      "steuerbescheid.aussetzung",
+      "steuerbescheid.saeumniszuschlag_info"
+    ],
+    "status": "gelesen",
+    "empfangen_am": "2026-03-12T08:14:00.000Z"
+  },
+  {
+    "id": "letter-aok-rechnung-zuzahlung",
+    "absender_behoerde_id": "aok-nordost",
+    "empfaenger_persona_id": "anna-petrov",
+    "aktenzeichen": "[MOCK] AOK-NO-2026-00224189",
+    "betreff": "Zuzahlungsabrechnung Quartal 4/2025",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nAOK Nordost — Die Gesundheitskasse\nWilhelmstraße 1, 10963 Berlin\n\nSehr geehrte Frau Petrov,\n\nin oben genannter Angelegenheit erhalten Sie die Zuzahlungsabrechnung für das vierte Quartal 2025. Die Belastungsgrenze nach § 62 SGB V ist in Ihrem Fall noch nicht erreicht.\n\nGesamte Zuzahlungen Q4/2025: 38,40 €\nBelastungsgrenze (2 % Bruttoeinkommen): 873,12 €\n\nMit freundlichen Grüßen\nKundenservice AOK Nordost\nAz. [MOCK] AOK-NO-2026-00224189",
+    "ai_summary": {
+      "de": "Zuzahlungs-Übersicht Q4/2025 (38,40 €). Belastungsgrenze noch nicht erreicht — keine Aktion nötig."
+    },
+    "archetype": "krankenkasse-beitrag",
+    "auth_channel": "briefpost",
+    "fristen": [],
+    "was_kann_ich_tun_options": [
+      "krankenkasse-beitrag.befreiung_pruefen"
+    ],
+    "status": "ungelesen",
+    "empfangen_am": "2026-04-22T11:02:00.000Z"
+  },
+  {
+    "id": "letter-beitragsservice-festsetzung",
+    "absender_behoerde_id": "beitragsservice-koeln",
+    "empfaenger_persona_id": "anna-petrov",
+    "aktenzeichen": "[MOCK] 731 042 088",
+    "betreff": "Festsetzungsbescheid Rundfunkbeitrag — Beitragsnummer [MOCK] 731 042 088",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nARD ZDF Deutschlandradio Beitragsservice, 50656 Köln\n\nSehr geehrte Frau Petrov,\n\nin oben genannter Angelegenheit setzen wir den Rundfunkbeitrag für den Zeitraum 01.01.2026–31.12.2026 wie folgt fest:\n\nMonatlicher Beitrag: 18,36 €\nFälligkeit: vierteljährlich zum 15.\n\nDie Übermittlung Ihrer Meldedaten erfolgte gemäß § 11 Abs. 4 RBStV i.V.m. § 36 BMG.\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch eingelegt werden. Der Widerspruch ist schriftlich oder elektronisch beim ARD ZDF Deutschlandradio Beitragsservice einzureichen oder zur Niederschrift zu erklären.\n\nMit freundlichen Grüßen\nBeitragsservice\nAz. [MOCK] 731 042 088",
+    "ai_summary": {
+      "de": "Rundfunkbeitrag 2026: 18,36 €/Monat, Abbuchung vierteljährlich. Keine Aktion nötig."
+    },
+    "archetype": "beitragsservice-mahnung",
+    "auth_channel": "briefpost",
+    "fristen": [
+      {
+        "typ": "widerspruch",
+        "datum": "2026-02-08",
+        "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch eingelegt werden.",
+        "citation_match": false,
+        "rechtsgrundlage": "§ 70 VwGO"
+      }
+    ],
+    "was_kann_ich_tun_options": [
+      "beitragsservice-mahnung.zahlung",
+      "beitragsservice-mahnung.befreiung_pruefen"
+    ],
+    "status": "gelesen",
+    "empfangen_am": "2026-01-08T07:30:00.000Z"
+  },
+  {
+    "id": "letter-abh-erinnerung-verlaengerung",
+    "absender_behoerde_id": "abh-berlin-lea",
+    "empfaenger_persona_id": "anna-petrov",
+    "aktenzeichen": "[MOCK] ABH-B-2024/IV-A-1782",
+    "aktenzeichen_weitere": ["[MOCK] T0123456X"],
+    "betreff": "Ihr Aufenthaltstitel nach § 18g AufenthG — Erinnerung Verlängerungsfrist",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nLandesamt für Einwanderung Berlin (LEA)\nFriedrich-Krause-Ufer 24, 13353 Berlin\n\nSehr geehrte Frau Petrov,\n\nin oben genannter Angelegenheit weisen wir Sie darauf hin, dass Ihr Aufenthaltstitel nach § 18g AufenthG (Blue Card EU) am 14.09.2027 abläuft. Wir empfehlen, mindestens vier Monate vorher einen Termin zur Verlängerung über unser Online-Terminbuchungssystem zu vereinbaren.\n\nWir bitten Sie, folgende Unterlagen bis zum Termin bereitzuhalten: aktueller Reisepass, Arbeitsvertrag, Gehaltsnachweise der letzten sechs Monate, aktuelle Meldebestätigung, Krankenversicherungsnachweis.\n\nBeachten Sie Ihre Mitwirkungspflichten nach § 82 AufenthG.\n\nMit freundlichen Grüßen\nIm Auftrag\nS. Wegener, Sachbearbeiter:in\nAz. [MOCK] ABH-B-2024/IV-A-1782",
+    "ai_summary": {
+      "de": "Ihr Aufenthaltstitel läuft am 14.09.2027 ab. Termin zur Verlängerung sollten Sie vier Monate vorher buchen — also spätestens Mai 2027."
+    },
+    "required_action": {
+      "typ": "termin_buchen",
+      "frist": "2027-05-14",
+      "cta": "Termin zur Verlängerung buchen"
+    },
+    "archetype": "abh-verlaengerung",
+    "auth_channel": "briefpost",
+    "fristen": [
+      {
+        "typ": "antragstellung",
+        "datum": "2027-05-14",
+        "original_zitat": "Wir empfehlen, mindestens vier Monate vorher einen Termin zur Verlängerung über unser Online-Terminbuchungssystem zu vereinbaren.",
+        "citation_match": false,
+        "rechtsgrundlage": "§ 81 Abs. 4 AufenthG"
+      }
+    ],
+    "was_kann_ich_tun_options": [
+      "abh-verlaengerung.termin_buchen",
+      "abh-verlaengerung.nachweise_sammeln",
+      "abh-verlaengerung.fiktionsbescheinigung_info"
+    ],
+    "status": "ungelesen",
+    "empfangen_am": "2026-04-29T09:15:00.000Z",
+    "vorgang_id": "vorgang-anna-aufenthaltstitel-2027-stub"
+  },
+  {
+    "id": "letter-familienkasse-bewilligung",
+    "absender_behoerde_id": "familienkasse-berlin-brandenburg",
+    "empfaenger_persona_id": "anna-petrov",
+    "aktenzeichen": "[MOCK] 115FK668412",
+    "betreff": "Ihr Kindergeld — Kindergeldnummer [MOCK] 115FK668412",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nFamilienkasse Berlin-Brandenburg, 14460 Potsdam\n\nSehr geehrte Frau Petrov,\n\nin oben genannter Angelegenheit teilen wir Ihnen mit, dass Ihr Antrag auf Kindergeld für Ihren Sohn Lev (geb. 03.11.2024) bewilligt wurde.\n\nMonatlicher Anspruch: 250,00 €\nLaufzeit: ab 01.12.2024\n\nDie Auszahlung erfolgt monatlich auf das uns vorliegende Konto.\n\nMit freundlichen Grüßen\nFamilienkasse Berlin-Brandenburg\nAz. [MOCK] 115FK668412",
+    "ai_summary": {
+      "de": "Kindergeld für Ihren Sohn Lev bewilligt: 250 €/Monat ab Dezember 2024."
+    },
+    "archetype": "familienkasse-nachweis",
+    "auth_channel": "briefpost",
+    "fristen": [],
+    "was_kann_ich_tun_options": [
+      "familienkasse-nachweis.fristverlaengerung_pruefen"
+    ],
+    "status": "gelesen",
+    "empfangen_am": "2025-01-14T10:22:00.000Z"
+  },
+  {
+    "id": "letter-buergeramt-meldebestaetigung-anmeldung",
+    "absender_behoerde_id": "buergeramt-berlin-friedrichshain-kreuzberg",
+    "empfaenger_persona_id": "anna-petrov",
+    "aktenzeichen": "[MOCK] BA-FRIKR/EWA-2024-09-0188432",
+    "betreff": "Ihre Anmeldung nach § 17 BMG vom 18.09.2024 — Aktenzeichen [MOCK] BA-FRIKR/EWA-2024-09-0188432",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nBezirksamt Friedrichshain-Kreuzberg von Berlin — Bürgeramt Schlesische Straße\nSchlesische Straße 27a, 10997 Berlin\n\nSehr geehrte Frau Petrov,\n\nin oben genannter Angelegenheit bestätigen wir Ihre Anmeldung nach § 17 BMG zum 15.09.2024 unter folgender Anschrift:\n\nFriedrichstraße 100, 10117 Berlin\n\nDie Datenübermittlung an die zuständigen öffentlichen Stellen erfolgt gemäß §§ 33, 34 und 36 BMG. Die im Personalausweis hinterlegte Anschrift wird durch die Bundesdruckerei aktualisiert.\n\nDiese Meldebestätigung ersetzt nicht die Wohnungsgeberbestätigung nach § 19 BMG.\n\nMit freundlichen Grüßen\nIm Auftrag\nT. Klose, Sachbearbeiter:in\nAz. [MOCK] BA-FRIKR/EWA-2024-09-0188432",
+    "ai_summary": {
+      "de": "Bestätigung Ihrer damaligen Anmeldung in Friedrichstraße 100. Wegzugsmeldung an St Petersburg sowie PA-Adressaktualisierung wurden automatisch ausgelöst."
+    },
+    "archetype": "buergeramt-meldung",
+    "auth_channel": "briefpost",
+    "fristen": [],
+    "was_kann_ich_tun_options": [
+      "buergeramt-meldung.keine_aktion",
+      "buergeramt-meldung.folgeprozesse_pruefen"
+    ],
+    "status": "gelesen",
+    "empfangen_am": "2024-09-19T13:44:00.000Z",
+    "vorgang_id": "vorgang-anna-anmeldung-2024"
+  },
+  {
+    "id": "letter-bundesdruckerei-pa-aufkleber",
+    "absender_behoerde_id": "bundesdruckerei",
+    "empfaenger_persona_id": "anna-petrov",
+    "aktenzeichen": "[MOCK] BD-PA/2024-09-114277",
+    "betreff": "Versandbestätigung Adressaufkleber Personalausweis",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nBundesdruckerei GmbH, Kommandantenstraße 18, 10969 Berlin\n\nSehr geehrte Frau Petrov,\n\nin oben genannter Angelegenheit bestätigen wir, dass der Adressaufkleber für Ihren Personalausweis nach § 28 PAuswG hergestellt und versendet wurde. Sie erhalten den Aufkleber innerhalb der nächsten 5–10 Werktage.\n\nMit freundlichen Grüßen\nBundesdruckerei GmbH\nAz. [MOCK] BD-PA/2024-09-114277",
+    "ai_summary": {
+      "de": "Adressaufkleber für Ihren Personalausweis ist auf dem Postweg — voraussichtlich 5–10 Werktage."
+    },
+    "archetype": "sonstiges",
+    "auth_channel": "briefpost",
+    "fristen": [],
+    "was_kann_ich_tun_options": [],
+    "status": "erledigt",
+    "empfangen_am": "2024-09-22T10:00:00.000Z",
+    "vorgang_id": "vorgang-anna-anmeldung-2024"
+  },
+  {
+    "id": "letter-aok-mitgliedsbescheinigung",
+    "absender_behoerde_id": "aok-nordost",
+    "empfaenger_persona_id": "anna-petrov",
+    "aktenzeichen": "[MOCK] A772418264",
+    "betreff": "Mitgliedsbescheinigung — Versichertennummer [MOCK] A772418264",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nAOK Nordost — Die Gesundheitskasse\nWilhelmstraße 1, 10963 Berlin\n\nSehr geehrte Frau Petrov,\n\nin oben genannter Angelegenheit bestätigen wir, dass Sie seit dem 01.04.2023 bei der AOK Nordost als pflichtversichertes Mitglied geführt werden.\n\nDie Bescheinigung dient zur Vorlage bei Ihrem Arbeitgeber bzw. der Ausländerbehörde.\n\nMit freundlichen Grüßen\nKundenservice AOK Nordost\nAz. [MOCK] A772418264",
+    "ai_summary": {
+      "de": "Bestätigt Ihre AOK-Mitgliedschaft seit April 2023 — zur Vorlage bei Arbeitgeber oder ABH."
+    },
+    "archetype": "krankenkasse-beitrag",
+    "auth_channel": "briefpost",
+    "fristen": [],
+    "was_kann_ich_tun_options": [],
+    "status": "ungelesen",
+    "empfangen_am": "2026-02-04T12:18:00.000Z"
+  },
+  {
+    "id": "letter-schmidt-standesamt-geburt",
+    "absender_behoerde_id": "standesamt-hamburg-eimsbuettel",
+    "empfaenger_persona_id": "markus-schmidt",
+    "aktenzeichen": "[MOCK] HH-G-04711/2026",
+    "betreff": "Geburtsurkunde Ihrer Tochter [MOCK] Mia Schmidt — Az [MOCK] HH-G-04711/2026",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nStandesamt Hamburg-Eimsbüttel\nGrindelberg 66, 20144 Hamburg\n\nSehr geehrte Familie Schmidt,\n\nin oben genannter Angelegenheit übersenden wir Ihnen die Geburtsurkunde Ihrer Tochter Mia Schmidt, geboren am 02.05.2026 in Hamburg.\n\nDie Urkunde gilt als Nachweis für die Krankenkasse, die Familienkasse sowie die Steuer-IdNr.-Vergabe nach § 139b AO. Die Steuer-IdNr. wird Ihnen vom Bundeszentralamt für Steuern (BZSt) automatisch zugeschickt.\n\nMit freundlichen Grüßen\nStandesamt Hamburg-Eimsbüttel\nAz. [MOCK] HH-G-04711/2026",
+    "ai_summary": {
+      "de": "Geburtsurkunde Ihrer Tochter Mia (geb. 02.05.2026) — Nachweis für Krankenkasse, Familienkasse, Steuer-IdNr."
+    },
+    "archetype": "standesamt-urkunde",
+    "auth_channel": "briefpost",
+    "fristen": [],
+    "was_kann_ich_tun_options": [
+      "standesamt-urkunde.keine_aktion",
+      "standesamt-urkunde.folge_familienkasse",
+      "standesamt-urkunde.folge_krankenkasse",
+      "standesamt-urkunde.folge_steueridnr"
+    ],
+    "status": "ungelesen",
+    "empfangen_am": "2026-05-04T09:30:00.000Z"
+  },
+  {
+    "id": "letter-schmidt-familienkasse-nachweis",
+    "absender_behoerde_id": "familienkasse-berlin-brandenburg",
+    "empfaenger_persona_id": "markus-schmidt",
+    "aktenzeichen": "[MOCK] 234FK892017",
+    "betreff": "Ihr Kindergeld — Kindergeldnummer [MOCK] 234FK892017",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nFamilienkasse Berlin-Brandenburg, 14460 Potsdam\n\nSehr geehrter Herr Schmidt,\n\nin oben genannter Angelegenheit bitten wir um Mitwirkung. Zur weiteren Prüfung Ihres Kindergeldanspruchs für Felix Schmidt bitten wir um Vorlage einer aktuellen Schulbescheinigung für das Schuljahr 2026/27.\n\nBitte reichen Sie die Unterlagen bis zum 15.06.2026 ein.\n\nSollten Sie nicht innerhalb der Frist antworten, können wir Ihren Anspruch nach § 67 Abs. 1 EStG i.V.m. § 68 Abs. 1 EStG ggf. ab dem 01.07.2026 vorläufig einstellen.\n\nMit freundlichen Grüßen\nFamilienkasse Berlin-Brandenburg\nAz. [MOCK] 234FK892017",
+    "ai_summary": {
+      "de": "Familienkasse fordert eine Schulbescheinigung für Felix bis 15.06.2026 — sonst droht vorläufige Einstellung des Kindergelds."
+    },
+    "archetype": "familienkasse-nachweis",
+    "auth_channel": "briefpost",
+    "fristen": [
+      {
+        "typ": "nachweis",
+        "datum": "2026-06-15",
+        "original_zitat": "Bitte reichen Sie die Unterlagen bis zum 15.06.2026 ein.",
+        "citation_match": true,
+        "rechtsgrundlage": "§ 68 EStG",
+        "cta_label": "Nachweis einreichen"
+      }
+    ],
+    "was_kann_ich_tun_options": [
+      "familienkasse-nachweis.nachweis_einreichen",
+      "familienkasse-nachweis.fristverlaengerung_pruefen"
+    ],
+    "status": "ungelesen",
+    "empfangen_am": "2026-05-02T08:00:00.000Z"
+  },
+  {
+    "id": "letter-schmidt-krankenkasse-beitrag",
+    "absender_behoerde_id": "tk-hamburg",
+    "empfaenger_persona_id": "markus-schmidt",
+    "aktenzeichen": "[MOCK] M845192036",
+    "betreff": "Festsetzung des Beitrags zur Kranken- und Pflegeversicherung — Versicherungsnummer [MOCK] M845192036",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nTechniker Krankenkasse — Hauptverwaltung\nBramfelder Straße 140, 22305 Hamburg\n\nSehr geehrter Herr Schmidt,\n\nin oben genannter Angelegenheit setzen wir Ihren Beitrag zur Kranken- und Pflegeversicherung ab dem 01.06.2026 wie folgt fest:\n\nKV-Beitrag: 421,17 €/Monat\nPV-Beitrag: 76,12 €/Monat\nGesamt: 497,29 €/Monat\n\nBitte beachten Sie, dass die Beiträge auch dann zu zahlen sind, wenn Sie Widerspruch eingelegt haben (aufschiebende Wirkung gemäß § 86a SGG entfällt insoweit).\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden. Der Widerspruch ist schriftlich oder zur Niederschrift bei der Techniker Krankenkasse, Bramfelder Straße 140, 22305 Hamburg einzulegen.\n\nMit freundlichen Grüßen\nTechniker Krankenkasse\nAz. [MOCK] M845192036",
+    "ai_summary": {
+      "de": "TK setzt Ihren Beitrag ab 01.06.2026 auf 497,29 €/Monat fest. Widerspruchsfrist 1 Monat — Beiträge bleiben trotzdem fällig."
+    },
+    "archetype": "krankenkasse-beitrag",
+    "auth_channel": "krankenkassen-portal",
+    "fristen": [
+      {
+        "typ": "widerspruch",
+        "datum": "2026-06-15",
+        "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden.",
+        "citation_match": false,
+        "rechtsgrundlage": "§ 84 SGG"
+      }
+    ],
+    "was_kann_ich_tun_options": [
+      "krankenkasse-beitrag.zahlung",
+      "krankenkasse-beitrag.widerspruch",
+      "krankenkasse-beitrag.befreiung_pruefen"
+    ],
+    "status": "ungelesen",
+    "empfangen_am": "2026-05-15T10:00:00.000Z"
+  },
+  {
+    "id": "letter-schmidt-fa-steuerbescheid-2024",
+    "absender_behoerde_id": "finanzamt-hamburg-eimsbuettel",
+    "empfaenger_persona_id": "markus-schmidt",
+    "aktenzeichen": "[MOCK] 22/345/12345",
+    "aktenzeichen_weitere": ["[MOCK] 86 295 102 749"],
+    "betreff": "Bescheid für 2024 über Einkommensteuer, Solidaritätszuschlag und Kirchensteuer — Steuernummer [MOCK] 22/345/12345",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nFinanzamt Hamburg-Eimsbüttel\nBei der Apostelkirche 1, 20257 Hamburg\n\nSehr geehrter Herr Schmidt,\n\nin oben genannter Angelegenheit übersenden wir Ihnen den Einkommensteuerbescheid für das Kalenderjahr 2024.\n\nFestgesetzte Einkommensteuer: 8.471,00 €\nAnzurechnende Lohnsteuer: 7.224,00 €\nSie haben noch 1.247,00 € zu zahlen.\n\nBitte zahlen Sie bis zum 12.06.2026 auf das untenstehende Konto.\n\nDieser Bescheid ist maschinell erstellt und auch ohne Unterschrift gültig.\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Einspruch eingelegt werden. Der Einspruch ist bei dem oben bezeichneten Finanzamt schriftlich einzureichen, zur Niederschrift zu erklären oder elektronisch zu übermitteln.\n\nMit freundlichen Grüßen\nIm Auftrag\nM. Hartwig, Sachbearbeiterin\nAz. [MOCK] 22/345/12345",
+    "ai_summary": {
+      "de": "Steuerbescheid 2024: Sie haben noch 1.247,00 € zu zahlen, Frist 12.06.2026. Einspruchsfrist 1 Monat ab Bekanntgabe."
+    },
+    "archetype": "steuerbescheid",
+    "auth_channel": "briefpost",
+    "fristen": [
+      {
+        "typ": "zahlung",
+        "datum": "2026-06-12",
+        "original_zitat": "Bitte zahlen Sie bis zum 12.06.2026 auf das untenstehende Konto.",
+        "citation_match": true,
+        "rechtsgrundlage": "§ 240 AO",
+        "cta_label": "Zahlung leisten"
+      },
+      {
+        "typ": "einspruch",
+        "datum": "2026-06-12",
+        "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Einspruch eingelegt werden.",
+        "citation_match": false,
+        "rechtsgrundlage": "§ 355 AO"
+      }
+    ],
+    "was_kann_ich_tun_options": [
+      "steuerbescheid.zahlung",
+      "steuerbescheid.einspruch",
+      "steuerbescheid.aussetzung",
+      "steuerbescheid.saeumniszuschlag_info"
+    ],
+    "status": "ungelesen",
+    "empfangen_am": "2026-05-13T07:45:00.000Z"
+  },
+  {
+    "id": "letter-schmidt-beitragsservice-festsetzung",
+    "absender_behoerde_id": "beitragsservice-koeln",
+    "empfaenger_persona_id": "markus-schmidt",
+    "aktenzeichen": "[MOCK] 624 188 905",
+    "betreff": "Festsetzungsbescheid Rundfunkbeitrag — Beitragsnummer [MOCK] 624 188 905",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nARD ZDF Deutschlandradio Beitragsservice, 50656 Köln\n\nSehr geehrter Herr Schmidt,\n\nin oben genannter Angelegenheit setzen wir den Rundfunkbeitrag für den Zeitraum 01.04.2026–30.06.2026 wie folgt fest:\n\nRückständiger Beitrag: 55,08 €\nSäumniszuschlag (§ 9 RBStV): 8,00 €\nGesamt: 63,08 €\n\nTrotz mehrfacher Aufforderung haben Sie den Rundfunkbeitrag in Höhe von 55,08 € bislang nicht entrichtet. Wir setzen den rückständigen Beitrag hiermit förmlich fest.\n\nDieser Bescheid ist ein vollstreckbarer Titel iSv § 9 RBStV i.V.m. dem jeweiligen Landesvollstreckungsgesetz.\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch eingelegt werden. Der Widerspruch ist schriftlich oder elektronisch beim ARD ZDF Deutschlandradio Beitragsservice einzureichen.\n\nMit freundlichen Grüßen\nBeitragsservice\nAz. [MOCK] 624 188 905",
+    "ai_summary": {
+      "de": "Beitragsservice fordert 63,08 € Rückstand inkl. Säumniszuschlag. Widerspruchsfrist 1 Monat — Bescheid ist vollstreckbar."
+    },
+    "archetype": "beitragsservice-mahnung",
+    "auth_channel": "briefpost",
+    "fristen": [
+      {
+        "typ": "widerspruch",
+        "datum": "2026-06-12",
+        "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch eingelegt werden.",
+        "citation_match": false,
+        "rechtsgrundlage": "§ 70 VwGO"
+      }
+    ],
+    "was_kann_ich_tun_options": [
+      "beitragsservice-mahnung.zahlung",
+      "beitragsservice-mahnung.widerspruch",
+      "beitragsservice-mahnung.befreiung_pruefen"
+    ],
+    "status": "ungelesen",
+    "empfangen_am": "2026-05-12T09:20:00.000Z"
+  },
+  {
+    "id": "letter-mehmet-fa-steuerbescheid-2024",
+    "absender_behoerde_id": "finanzamt-koeln-mitte",
+    "empfaenger_persona_id": "mehmet-yildiz",
+    "aktenzeichen": "[MOCK] 217/5732/00088",
+    "aktenzeichen_weitere": ["[MOCK] 47 982 113 660"],
+    "betreff": "Bescheid für 2024 über Einkommensteuer und Solidaritätszuschlag — Steuernummer [MOCK] 217/5732/00088",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nFinanzamt Köln-Mitte\nHohenzollernring 85, 50672 Köln\n\nSehr geehrter Herr Yıldız,\n\nin oben genannter Angelegenheit übersenden wir Ihnen den Einkommensteuerbescheid für das Kalenderjahr 2024 (Einkünfte aus selbstständiger Tätigkeit § 18 EStG).\n\nFestgesetzte Einkommensteuer: 12.518,00 €\nVorauszahlungen: 7.706,00 €\nSie haben noch 4.812,00 € zu zahlen.\n\nBitte zahlen Sie bis zum 12.06.2026 auf das untenstehende Konto.\n\nDieser Bescheid wird Ihnen zum Datenabruf in Mein ELSTER bereitgestellt. Er gilt am vierten Tag nach Bereitstellung als bekannt gegeben (§ 122a Abs. 4 AO).\n\nDieser Bescheid ist maschinell erstellt und auch ohne Unterschrift gültig.\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Einspruch eingelegt werden.\n\nMit freundlichen Grüßen\nIm Auftrag\nB. Schneider, Sachbearbeiter:in\nAz. [MOCK] 217/5732/00088",
+    "ai_summary": {
+      "de": "Steuerbescheid 2024 (selbstständig): Nachzahlung 4.812 €, Frist 12.06.2026. Bekanntgabe über Mein ELSTER."
+    },
+    "archetype": "steuerbescheid",
+    "auth_channel": "mein-elster",
+    "fristen": [
+      {
+        "typ": "zahlung",
+        "datum": "2026-06-12",
+        "original_zitat": "Bitte zahlen Sie bis zum 12.06.2026 auf das untenstehende Konto.",
+        "citation_match": true,
+        "rechtsgrundlage": "§ 240 AO",
+        "cta_label": "Zahlung leisten"
+      },
+      {
+        "typ": "einspruch",
+        "datum": "2026-06-12",
+        "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Einspruch eingelegt werden.",
+        "citation_match": false,
+        "rechtsgrundlage": "§ 355 AO"
+      }
+    ],
+    "was_kann_ich_tun_options": [
+      "steuerbescheid.zahlung",
+      "steuerbescheid.einspruch",
+      "steuerbescheid.aussetzung",
+      "steuerbescheid.saeumniszuschlag_info"
+    ],
+    "status": "ungelesen",
+    "empfangen_am": "2026-05-08T06:30:00.000Z"
+  },
+  {
+    "id": "letter-mehmet-ihk-beitrag",
+    "absender_behoerde_id": "ihk-koeln",
+    "empfaenger_persona_id": "mehmet-yildiz",
+    "aktenzeichen": "[MOCK] IHK-K-2026/MITGLIED-77418",
+    "betreff": "IHK-Beitragsbescheid 2026 — Mitgliedsnummer [MOCK] IHK-K-2026/MITGLIED-77418",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nIndustrie- und Handelskammer zu Köln\nUnter Sachsenhausen 10-26, 50667 Köln\n\nSehr geehrter Herr Yıldız,\n\nin oben genannter Angelegenheit setzen wir Ihren IHK-Beitrag für das Beitragsjahr 2026 wie folgt fest:\n\nGrundbeitrag: 195,00 €\nUmlage 0,21 % vom Gewerbeertrag (Bemessungsjahr 2024): 312,40 €\nGesamt: 507,40 €\n\nFälligkeit: 30 Tage nach Bekanntgabe.\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden. Der Widerspruch ist schriftlich bei der IHK Köln, Unter Sachsenhausen 10-26, 50667 Köln einzulegen.\n\nMit freundlichen Grüßen\nIHK Köln — Beitragsabteilung\nAz. [MOCK] IHK-K-2026/MITGLIED-77418",
+    "ai_summary": {
+      "de": "IHK-Beitrag 2026: 507,40 € (Grundbeitrag 195 € + Umlage 312,40 €). Widerspruchsfrist 1 Monat."
+    },
+    "archetype": "ihk-beitrag",
+    "auth_channel": "briefpost",
+    "fristen": [
+      {
+        "typ": "widerspruch",
+        "datum": "2026-06-12",
+        "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden.",
+        "citation_match": false,
+        "rechtsgrundlage": "§ 70 VwGO"
+      }
+    ],
+    "was_kann_ich_tun_options": [
+      "ihk-beitrag.zahlung",
+      "ihk-beitrag.widerspruch",
+      "ihk-beitrag.abweichende_festsetzung_pruefen"
+    ],
+    "status": "ungelesen",
+    "empfangen_am": "2026-05-13T08:45:00.000Z"
+  },
+  {
+    "id": "letter-mehmet-bgw-beitrag",
+    "absender_behoerde_id": "vbg-hamburg",
+    "empfaenger_persona_id": "mehmet-yildiz",
+    "aktenzeichen": "[MOCK] BG-VBG-2026-MITGLIED-04711",
+    "betreff": "Beitragsbescheid VBG 2025 — Mitgliedsnummer [MOCK] BG-VBG-2026-MITGLIED-04711",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nVerwaltungs-Berufsgenossenschaft (VBG)\nDeelbögenkamp 4, 22297 Hamburg\n\nSehr geehrter Herr Yıldız,\n\nin oben genannter Angelegenheit setzen wir Ihren Beitrag zur gesetzlichen Unfallversicherung für das Umlagejahr 2025 wie folgt fest:\n\nLohnsumme 2025: 0,00 € (Selbstständig ohne Beschäftigte)\nMindestbeitrag (§ 153 Abs. 1 SGB VII): 142,00 €\n\nFälligkeit: 15.06.2026.\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden. Der Widerspruch ist schriftlich oder zur Niederschrift bei der VBG, Deelbögenkamp 4, 22297 Hamburg einzulegen.\n\nMit freundlichen Grüßen\nVerwaltungs-Berufsgenossenschaft\nAz. [MOCK] BG-VBG-2026-MITGLIED-04711",
+    "ai_summary": {
+      "de": "VBG setzt Mindestbeitrag 142 € für 2025 fest. Fälligkeit 15.06.2026, Widerspruchsfrist 1 Monat."
+    },
+    "archetype": "berufsgenossenschaft-beitrag",
+    "auth_channel": "briefpost",
+    "fristen": [
+      {
+        "typ": "zahlung",
+        "datum": "2026-06-15",
+        "original_zitat": "Fälligkeit: 15.06.2026.",
+        "citation_match": true,
+        "cta_label": "Beitrag zahlen"
+      },
+      {
+        "typ": "widerspruch",
+        "datum": "2026-06-13",
+        "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden.",
+        "citation_match": false,
+        "rechtsgrundlage": "§ 84 SGG"
+      }
+    ],
+    "was_kann_ich_tun_options": [
+      "berufsgenossenschaft-beitrag.zahlung",
+      "berufsgenossenschaft-beitrag.widerspruch"
+    ],
+    "status": "ungelesen",
+    "empfangen_am": "2026-05-13T11:10:00.000Z"
+  },
+  {
+    "id": "letter-mehmet-krankenkasse-freiwillig",
+    "absender_behoerde_id": "aok-rheinland-hamburg",
+    "empfaenger_persona_id": "mehmet-yildiz",
+    "aktenzeichen": "[MOCK] Q672013485",
+    "betreff": "Festsetzung des freiwilligen Beitrags zur Kranken- und Pflegeversicherung — Versicherungsnummer [MOCK] Q672013485",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nAOK Rheinland/Hamburg — Die Gesundheitskasse\nKasernenstraße 61, 40213 Düsseldorf\n\nSehr geehrter Herr Yıldız,\n\nin oben genannter Angelegenheit setzen wir Ihren freiwilligen Beitrag zur Kranken- und Pflegeversicherung ab dem 01.06.2026 wie folgt fest:\n\nKV-Beitrag: 421,17 €/Monat\nPV-Beitrag: 76,12 €/Monat\nGesamt: 497,29 €/Monat\n\nBitte beachten Sie, dass die Beiträge auch dann zu zahlen sind, wenn Sie Widerspruch eingelegt haben (aufschiebende Wirkung gemäß § 86a SGG entfällt insoweit).\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden. Der Widerspruch ist schriftlich oder zur Niederschrift bei der AOK Rheinland/Hamburg, Kasernenstraße 61, 40213 Düsseldorf einzulegen.\n\nMit freundlichen Grüßen\nAOK Rheinland/Hamburg\nAz. [MOCK] Q672013485",
+    "ai_summary": {
+      "de": "AOK setzt Ihren freiwilligen Beitrag ab 01.06.2026 auf 497,29 €/Monat fest. Widerspruch möglich, aber Beiträge bleiben fällig."
+    },
+    "archetype": "krankenkasse-beitrag",
+    "auth_channel": "briefpost",
+    "fristen": [
+      {
+        "typ": "widerspruch",
+        "datum": "2026-06-13",
+        "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden.",
+        "citation_match": false,
+        "rechtsgrundlage": "§ 84 SGG"
+      }
+    ],
+    "was_kann_ich_tun_options": [
+      "krankenkasse-beitrag.zahlung",
+      "krankenkasse-beitrag.widerspruch",
+      "krankenkasse-beitrag.befreiung_pruefen"
+    ],
+    "status": "ungelesen",
+    "empfangen_am": "2026-05-13T13:00:00.000Z"
+  },
+  {
+    "id": "letter-mehmet-beitragsservice-mahnung",
+    "absender_behoerde_id": "beitragsservice-koeln",
+    "empfaenger_persona_id": "mehmet-yildiz",
+    "aktenzeichen": "[MOCK] 088 314 502",
+    "betreff": "Festsetzungsbescheid Rundfunkbeitrag — Beitragsnummer [MOCK] 088 314 502",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nARD ZDF Deutschlandradio Beitragsservice, 50656 Köln\n\nSehr geehrter Herr Yıldız,\n\nin oben genannter Angelegenheit setzen wir den Rundfunkbeitrag für den Zeitraum 01.01.2026–31.03.2026 förmlich fest:\n\nRückständiger Beitrag: 55,08 €\nSäumniszuschlag (§ 9 RBStV): 8,00 €\nGesamt: 63,08 €\n\nTrotz mehrfacher Aufforderung haben Sie den Rundfunkbeitrag in Höhe von 55,08 € bislang nicht entrichtet. Wir setzen den rückständigen Beitrag hiermit förmlich fest.\n\nDieser Bescheid ist ein vollstreckbarer Titel iSv § 9 RBStV i.V.m. dem jeweiligen Landesvollstreckungsgesetz.\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch eingelegt werden. Der Widerspruch ist schriftlich oder elektronisch beim ARD ZDF Deutschlandradio Beitragsservice einzureichen.\n\nMit freundlichen Grüßen\nBeitragsservice\nAz. [MOCK] 088 314 502",
+    "ai_summary": {
+      "de": "Beitragsservice fordert 63,08 € (inkl. Säumniszuschlag) — Widerspruchsfrist 1 Monat, Bescheid ist vollstreckbar."
+    },
+    "archetype": "beitragsservice-mahnung",
+    "auth_channel": "briefpost",
+    "fristen": [
+      {
+        "typ": "widerspruch",
+        "datum": "2026-06-12",
+        "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch eingelegt werden.",
+        "citation_match": false,
+        "rechtsgrundlage": "§ 70 VwGO"
+      }
+    ],
+    "was_kann_ich_tun_options": [
+      "beitragsservice-mahnung.zahlung",
+      "beitragsservice-mahnung.widerspruch",
+      "beitragsservice-mahnung.befreiung_pruefen"
+    ],
+    "status": "ungelesen",
+    "empfangen_am": "2026-05-12T07:00:00.000Z"
+  },
+  {
+    "id": "letter-anna-standesamt-eheschliessung-termin",
+    "absender_behoerde_id": "standesamt-berlin-mitte",
+    "empfaenger_persona_id": "anna-petrov",
+    "aktenzeichen": "[MOCK] B-E-04711/2026",
+    "betreff": "Termin-Vorschlag Eheschließung — Az [MOCK] B-E-04711/2026",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nStandesamt Mitte von Berlin\nKarl-Marx-Allee 31, 10178 Berlin\n\nSehr geehrte Frau Petrov,\nsehr geehrter Herr Becker,\n\nin oben genannter Angelegenheit haben wir Ihre Anmeldung der Eheschließung vom 28.04.2026 erhalten und geprüft. Die Voraussetzungen nach §§ 1310 ff. BGB liegen nach Aktenlage vor.\n\nWir schlagen Ihnen folgenden Trauungstermin vor:\n\nMontag, 22.06.2026, 14:00 Uhr\nTrauzimmer 2, Standesamt Mitte (Karl-Marx-Allee 31, 10178 Berlin)\n\nBitte teilen Sie uns bis zum 30.05.2026 mit, ob Sie den vorgeschlagenen Termin annehmen oder einen anderen Wunschtermin vorschlagen möchten. Sollten Sie nicht innerhalb der Frist antworten, müssen wir den reservierten Termin für andere Trauwillige freigeben.\n\nMit freundlichen Grüßen\nStandesamt Mitte von Berlin\nIm Auftrag\nC. Hartwig, Standesbeamtin\nAz. [MOCK] B-E-04711/2026",
+    "ai_summary": {
+      "de": "Standesamt Mitte schlägt Trauungstermin am 22.06.2026 14:00 Uhr vor — Rückmeldung bis 30.05.2026 erforderlich."
+    },
+    "archetype": "standesamt-urkunde",
+    "auth_channel": "briefpost",
+    "fristen": [
+      {
+        "typ": "antragstellung",
+        "datum": "2026-05-30",
+        "original_zitat": "Bitte teilen Sie uns bis zum 30.05.2026 mit, ob Sie den vorgeschlagenen Termin annehmen oder einen anderen Wunschtermin vorschlagen möchten.",
+        "citation_match": true,
+        "rechtsgrundlage": "§ 1310 BGB",
+        "cta_label": "Termin beantworten"
+      }
+    ],
+    "was_kann_ich_tun_options": [
+      "standesamt-urkunde.termin_bestaetigen",
+      "standesamt-urkunde.termin_verschieben",
+      "standesamt-urkunde.termin_absagen"
+    ],
+    "status": "ungelesen",
+    "empfangen_am": "2026-05-08T09:15:00.000Z"
+  }
+]

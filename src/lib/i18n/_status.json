@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "source_locale": "de",
+  "last_synced": "2026-05-09",
+  "languages": {
+    "en": { "completion": 1.0, "review_needed": [] },
+    "ru": { "completion": 1.0, "review_needed": [] },
+    "uk": { "completion": 1.0, "review_needed": [] },
+    "ar": { "completion": 1.0, "review_needed": [] },
+    "tr": { "completion": 1.0, "review_needed": [] }
+  }
+}

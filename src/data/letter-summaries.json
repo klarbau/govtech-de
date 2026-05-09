@@ -1,0 +1,532 @@
+{
+  "letter-fa-steuerbescheid-2025": {
+    "pre_open": {
+      "text": "Finanzamt Berlin · Steuerbescheid 2024 · Erstattung",
+      "generated_at": "2026-05-08T08:00:00.000Z"
+    },
+    "post_open": {
+      "bullets": [
+        { "text": "Sie erhalten **371,00 €** Erstattung." },
+        { "text": "Auszahlung in 14 Tagen auf das hinterlegte Konto." },
+        { "text": "Festgesetzte Einkommensteuer: 6.842,00 €." },
+        { "text": "Anzurechnende Lohnsteuer: 7.213,00 €." },
+        { "text": "Einspruch innerhalb von 1 Monat möglich (§ 355 AO)." },
+        { "text": "Bescheid ist maschinell erstellt und ohne Unterschrift gültig." }
+      ],
+      "citations": [
+        { "bullet_index": 0, "original_zitat": "Erstattung: 371,00 €" },
+        { "bullet_index": 1, "original_zitat": "Der Erstattungsbetrag wird in den nächsten 14 Tagen auf das uns vorliegende Konto überwiesen." },
+        { "bullet_index": 2, "original_zitat": "Festgesetzte Einkommensteuer: 6.842,00 €" },
+        { "bullet_index": 3, "original_zitat": "Anzurechnende Lohnsteuer: 7.213,00 €" },
+        { "bullet_index": 4, "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Einspruch eingelegt werden." },
+        { "bullet_index": 5, "original_zitat": "Dieser Bescheid ist maschinell erstellt und auch ohne Unterschrift gültig." }
+      ],
+      "generated_at": "2026-05-08T08:00:00.000Z",
+      "model": "claude-haiku-4-5-20251001"
+    },
+    "vorschlaege": [
+      { "label": "Auszahlungs-Eingang im Kalender vermerken", "type": "info" },
+      { "label": "Säumniszuschlags-Hinweis (§ 240 AO) ansehen", "type": "norm", "i18n_key": "posteingang.was_kann_ich_tun.steuerbescheid.saeumniszuschlag_info" }
+    ]
+  },
+  "letter-aok-rechnung-zuzahlung": {
+    "pre_open": {
+      "text": "AOK Nordost · Zuzahlungsabrechnung Q4/2025 · Keine Frist",
+      "generated_at": "2026-05-08T08:00:00.000Z"
+    },
+    "post_open": {
+      "bullets": [
+        { "text": "Zuzahlungen Q4/2025: **38,40 €**." },
+        { "text": "Belastungsgrenze (§ 62 SGB V): 873,12 € — noch nicht erreicht." },
+        { "text": "Keine Aktion erforderlich." },
+        { "text": "Belastungsgrenze gilt jährlich; Beleg-Sammeln lohnt sich (§ 62 SGB V allgemein)." },
+        { "text": "Befreiungs- oder Härtefall-Prüfung möglich, falls 2 % Bruttoeinkommen überschritten." }
+      ],
+      "citations": [
+        { "bullet_index": 0, "original_zitat": "Gesamte Zuzahlungen Q4/2025: 38,40 €" },
+        { "bullet_index": 1, "original_zitat": "Belastungsgrenze (2 % Bruttoeinkommen): 873,12 €" },
+        { "bullet_index": 2, "original_zitat": "Die Belastungsgrenze nach § 62 SGB V ist in Ihrem Fall noch nicht erreicht." },
+        { "bullet_index": 3, "original_zitat": "" },
+        { "bullet_index": 4, "original_zitat": "" }
+      ],
+      "generated_at": "2026-05-08T08:00:00.000Z",
+      "model": "claude-haiku-4-5-20251001"
+    },
+    "vorschlaege": [
+      { "label": "Belege für die Belastungsgrenze sammeln", "type": "info" }
+    ]
+  },
+  "letter-beitragsservice-festsetzung": {
+    "pre_open": {
+      "text": "Beitragsservice · Festsetzung Rundfunk 2026 · Frist abgelaufen",
+      "generated_at": "2026-05-08T08:00:00.000Z"
+    },
+    "post_open": {
+      "bullets": [
+        { "text": "Rundfunkbeitrag **18,36 €/Monat** für 2026." },
+        { "text": "Abbuchung vierteljährlich zum 15." },
+        { "text": "Meldedaten-Übermittlung gemäß § 11 Abs. 4 RBStV i.V.m. § 36 BMG." },
+        { "text": "Widerspruchsfrist 1 Monat ab Bekanntgabe (Frist verstrichen)." },
+        { "text": "Befreiungsantrag z. B. bei SGB-II-Bezug möglich." }
+      ],
+      "citations": [
+        { "bullet_index": 0, "original_zitat": "Monatlicher Beitrag: 18,36 €" },
+        { "bullet_index": 1, "original_zitat": "Fälligkeit: vierteljährlich zum 15." },
+        { "bullet_index": 2, "original_zitat": "Die Übermittlung Ihrer Meldedaten erfolgte gemäß § 11 Abs. 4 RBStV i.V.m. § 36 BMG." },
+        { "bullet_index": 3, "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch eingelegt werden." },
+        { "bullet_index": 4, "original_zitat": "" }
+      ],
+      "generated_at": "2026-05-08T08:00:00.000Z",
+      "model": "claude-haiku-4-5-20251001"
+    },
+    "vorschlaege": [
+      { "label": "Befreiungsantrag prüfen", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.beitragsservice-mahnung.befreiung_pruefen" }
+    ]
+  },
+  "letter-abh-erinnerung-verlaengerung": {
+    "pre_open": {
+      "text": "ABH Berlin LEA · Erinnerung Verlängerung · Frist Mai 2027",
+      "generated_at": "2026-05-08T08:00:00.000Z"
+    },
+    "post_open": {
+      "bullets": [
+        { "text": "Aufenthaltstitel § 18g AufenthG läuft am **14.09.2027** ab." },
+        { "text": "Termin zur Verlängerung mind. 4 Monate vorher buchen — also bis Mai 2027." },
+        { "text": "Mitzubringen: Pass, Arbeitsvertrag, Gehaltsnachweise, Meldebestätigung, KV-Nachweis." },
+        { "text": "Mitwirkungspflicht nach § 82 AufenthG zu beachten." },
+        { "text": "Bei rechtzeitigem Antrag gilt Fortbestands-Fiktion (§ 81 Abs. 4 AufenthG)." }
+      ],
+      "citations": [
+        { "bullet_index": 0, "original_zitat": "Ihr Aufenthaltstitel nach § 18g AufenthG (Blue Card EU) am 14.09.2027 abläuft." },
+        { "bullet_index": 1, "original_zitat": "Wir empfehlen, mindestens vier Monate vorher einen Termin zur Verlängerung über unser Online-Terminbuchungssystem zu vereinbaren." },
+        { "bullet_index": 2, "original_zitat": "aktueller Reisepass, Arbeitsvertrag, Gehaltsnachweise der letzten sechs Monate, aktuelle Meldebestätigung, Krankenversicherungsnachweis." },
+        { "bullet_index": 3, "original_zitat": "Beachten Sie Ihre Mitwirkungspflichten nach § 82 AufenthG." },
+        { "bullet_index": 4, "original_zitat": "" }
+      ],
+      "generated_at": "2026-05-08T08:00:00.000Z",
+      "model": "claude-haiku-4-5-20251001"
+    },
+    "vorschlaege": [
+      { "label": "Termin zur Verlängerung buchen", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.abh-verlaengerung.termin_buchen" },
+      { "label": "Nachweise zusammenstellen", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.abh-verlaengerung.nachweise_sammeln" }
+    ]
+  },
+  "letter-familienkasse-bewilligung": {
+    "pre_open": {
+      "text": "Familienkasse · Kindergeld bewilligt · Keine Frist",
+      "generated_at": "2026-05-08T08:00:00.000Z"
+    },
+    "post_open": {
+      "bullets": [
+        { "text": "Kindergeld für Lev (geb. 03.11.2024) **bewilligt**." },
+        { "text": "Monatlicher Anspruch: **250,00 €**." },
+        { "text": "Laufzeit ab 01.12.2024." },
+        { "text": "Auszahlung monatlich auf das hinterlegte Konto." },
+        { "text": "Keine Aktion erforderlich." }
+      ],
+      "citations": [
+        { "bullet_index": 0, "original_zitat": "Ihr Antrag auf Kindergeld für Ihren Sohn Lev (geb. 03.11.2024) bewilligt wurde." },
+        { "bullet_index": 1, "original_zitat": "Monatlicher Anspruch: 250,00 €" },
+        { "bullet_index": 2, "original_zitat": "Laufzeit: ab 01.12.2024" },
+        { "bullet_index": 3, "original_zitat": "Die Auszahlung erfolgt monatlich auf das uns vorliegende Konto." },
+        { "bullet_index": 4, "original_zitat": "" }
+      ],
+      "generated_at": "2026-05-08T08:00:00.000Z",
+      "model": "claude-haiku-4-5-20251001"
+    },
+    "vorschlaege": [
+      { "label": "Bei Schul-/Studienbeginn Bescheinigung nachreichen (§ 68 EStG)", "type": "info" }
+    ]
+  },
+  "letter-buergeramt-meldebestaetigung-anmeldung": {
+    "pre_open": {
+      "text": "Bürgeramt FrieKr · Meldebestätigung 09/2024 · Keine Frist",
+      "generated_at": "2026-05-08T08:00:00.000Z"
+    },
+    "post_open": {
+      "bullets": [
+        { "text": "Anmeldung nach § 17 BMG zum **15.09.2024** bestätigt." },
+        { "text": "Anschrift: Friedrichstraße 100, 10117 Berlin." },
+        { "text": "Datenübermittlung an öffentliche Stellen gemäß §§ 33, 34, 36 BMG." },
+        { "text": "PA-Anschrift wird durch Bundesdruckerei aktualisiert." },
+        { "text": "Wohnungsgeberbestätigung (§ 19 BMG) wird hierdurch nicht ersetzt." }
+      ],
+      "citations": [
+        { "bullet_index": 0, "original_zitat": "bestätigen wir Ihre Anmeldung nach § 17 BMG zum 15.09.2024" },
+        { "bullet_index": 1, "original_zitat": "Friedrichstraße 100, 10117 Berlin" },
+        { "bullet_index": 2, "original_zitat": "Die Datenübermittlung an die zuständigen öffentlichen Stellen erfolgt gemäß §§ 33, 34 und 36 BMG." },
+        { "bullet_index": 3, "original_zitat": "Die im Personalausweis hinterlegte Anschrift wird durch die Bundesdruckerei aktualisiert." },
+        { "bullet_index": 4, "original_zitat": "Diese Meldebestätigung ersetzt nicht die Wohnungsgeberbestätigung nach § 19 BMG." }
+      ],
+      "generated_at": "2026-05-08T08:00:00.000Z",
+      "model": "claude-haiku-4-5-20251001"
+    },
+    "vorschlaege": [
+      { "label": "Folgeprozesse prüfen (KFZ, Krankenkasse, Bank)", "type": "info", "i18n_key": "posteingang.was_kann_ich_tun.buergeramt-meldung.folgeprozesse_pruefen" }
+    ]
+  },
+  "letter-bundesdruckerei-pa-aufkleber": {
+    "pre_open": {
+      "text": "Bundesdruckerei · PA-Aufkleber Versand · Keine Frist",
+      "generated_at": "2026-05-08T08:00:00.000Z"
+    },
+    "post_open": {
+      "bullets": [
+        { "text": "Adressaufkleber für Ihren Personalausweis nach § 28 PAuswG **versandt**." },
+        { "text": "Voraussichtliche Lieferzeit: 5–10 Werktage." },
+        { "text": "Keine Aktion erforderlich." }
+      ],
+      "citations": [
+        { "bullet_index": 0, "original_zitat": "Adressaufkleber für Ihren Personalausweis nach § 28 PAuswG hergestellt und versendet wurde." },
+        { "bullet_index": 1, "original_zitat": "Sie erhalten den Aufkleber innerhalb der nächsten 5–10 Werktage." },
+        { "bullet_index": 2, "original_zitat": "" }
+      ],
+      "generated_at": "2026-05-08T08:00:00.000Z",
+      "model": "claude-haiku-4-5-20251001"
+    },
+    "vorschlaege": []
+  },
+  "letter-aok-mitgliedsbescheinigung": {
+    "pre_open": {
+      "text": "AOK Nordost · Mitgliedsbescheinigung · Keine Frist",
+      "generated_at": "2026-05-08T08:00:00.000Z"
+    },
+    "post_open": {
+      "bullets": [
+        { "text": "Pflichtmitgliedschaft bei AOK Nordost seit **01.04.2023** bestätigt." },
+        { "text": "Bescheinigung dient Vorlage bei Arbeitgeber bzw. Ausländerbehörde." },
+        { "text": "Keine Aktion erforderlich." }
+      ],
+      "citations": [
+        { "bullet_index": 0, "original_zitat": "Sie seit dem 01.04.2023 bei der AOK Nordost als pflichtversichertes Mitglied geführt werden." },
+        { "bullet_index": 1, "original_zitat": "Die Bescheinigung dient zur Vorlage bei Ihrem Arbeitgeber bzw. der Ausländerbehörde." },
+        { "bullet_index": 2, "original_zitat": "" }
+      ],
+      "generated_at": "2026-05-08T08:00:00.000Z",
+      "model": "claude-haiku-4-5-20251001"
+    },
+    "vorschlaege": []
+  },
+  "letter-schmidt-standesamt-geburt": {
+    "pre_open": {
+      "text": "Standesamt HH-Eimsbüttel · Geburtsurkunde · Keine Frist",
+      "generated_at": "2026-05-08T08:00:00.000Z"
+    },
+    "post_open": {
+      "bullets": [
+        { "text": "Geburtsurkunde Ihrer Tochter Mia (geb. **02.05.2026**) liegt vor." },
+        { "text": "Urkunde gilt als Nachweis für Krankenkasse, Familienkasse, Steuer-IdNr.-Vergabe." },
+        { "text": "Steuer-IdNr. wird automatisch vom BZSt zugeschickt (§ 139b AO)." },
+        { "text": "Keine Aktion an das Standesamt erforderlich." },
+        { "text": "Folge-Vorgänge: Kindergeld-Antrag, Familienversicherung, Elterngeld." }
+      ],
+      "citations": [
+        { "bullet_index": 0, "original_zitat": "Geburtsurkunde Ihrer Tochter Mia Schmidt, geboren am 02.05.2026 in Hamburg." },
+        { "bullet_index": 1, "original_zitat": "Die Urkunde gilt als Nachweis für die Krankenkasse, die Familienkasse sowie die Steuer-IdNr.-Vergabe nach § 139b AO." },
+        { "bullet_index": 2, "original_zitat": "Die Steuer-IdNr. wird Ihnen vom Bundeszentralamt für Steuern (BZSt) automatisch zugeschickt." },
+        { "bullet_index": 3, "original_zitat": "" },
+        { "bullet_index": 4, "original_zitat": "" }
+      ],
+      "generated_at": "2026-05-08T08:00:00.000Z",
+      "model": "claude-haiku-4-5-20251001"
+    },
+    "vorschlaege": [
+      { "label": "Kindergeld bei der Familienkasse beantragen", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.standesamt-urkunde.folge_familienkasse" },
+      { "label": "Kind bei der Krankenkasse anmelden", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.standesamt-urkunde.folge_krankenkasse" }
+    ]
+  },
+  "letter-schmidt-familienkasse-nachweis": {
+    "pre_open": {
+      "text": "Familienkasse · Nachweis Schulbescheinigung · Frist 15.06.",
+      "generated_at": "2026-05-08T08:00:00.000Z"
+    },
+    "post_open": {
+      "bullets": [
+        { "text": "Schulbescheinigung 2026/27 für Felix bis **15.06.2026** einreichen." },
+        { "text": "Bei verspäteter Einreichung: Anspruch ggf. ab 01.07.2026 vorläufig eingestellt." },
+        { "text": "Rechtsgrundlage: § 67 Abs. 1 EStG i.V.m. § 68 Abs. 1 EStG." },
+        { "text": "Schriftliche Fristverlängerung beantragbar." },
+        { "text": "Keine Bewertung des Anspruchs in dieser App — nur Fristen-Hinweis." }
+      ],
+      "citations": [
+        { "bullet_index": 0, "original_zitat": "Bitte reichen Sie die Unterlagen bis zum 15.06.2026 ein." },
+        { "bullet_index": 1, "original_zitat": "können wir Ihren Anspruch nach § 67 Abs. 1 EStG i.V.m. § 68 Abs. 1 EStG ggf. ab dem 01.07.2026 vorläufig einstellen." },
+        { "bullet_index": 2, "original_zitat": "nach § 67 Abs. 1 EStG i.V.m. § 68 Abs. 1 EStG" },
+        { "bullet_index": 3, "original_zitat": "" },
+        { "bullet_index": 4, "original_zitat": "" }
+      ],
+      "generated_at": "2026-05-08T08:00:00.000Z",
+      "model": "claude-haiku-4-5-20251001"
+    },
+    "vorschlaege": [
+      { "label": "Schulbescheinigung einreichen", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.familienkasse-nachweis.nachweis_einreichen" },
+      { "label": "Fristverlängerung schriftlich beantragen", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.familienkasse-nachweis.fristverlaengerung_pruefen" }
+    ]
+  },
+  "letter-schmidt-krankenkasse-beitrag": {
+    "pre_open": {
+      "text": "TK · Beitragsfestsetzung 06/2026 · Widerspruch 15.06.",
+      "generated_at": "2026-05-08T08:00:00.000Z"
+    },
+    "post_open": {
+      "bullets": [
+        { "text": "Neuer Gesamtbeitrag ab 01.06.2026: **497,29 €/Monat** (KV 421,17 € + PV 76,12 €)." },
+        { "text": "Widerspruch innerhalb 1 Monat möglich (§ 84 SGG)." },
+        { "text": "Beiträge bleiben auch bei Widerspruch fällig (§ 86a SGG)." },
+        { "text": "Widerspruch schriftlich oder zur Niederschrift bei der TK." },
+        { "text": "Befreiungs- oder Härtefall-Prüfung möglich." }
+      ],
+      "citations": [
+        { "bullet_index": 0, "original_zitat": "KV-Beitrag: 421,17 €/Monat" },
+        { "bullet_index": 1, "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden." },
+        { "bullet_index": 2, "original_zitat": "Bitte beachten Sie, dass die Beiträge auch dann zu zahlen sind, wenn Sie Widerspruch eingelegt haben (aufschiebende Wirkung gemäß § 86a SGG entfällt insoweit)." },
+        { "bullet_index": 3, "original_zitat": "Der Widerspruch ist schriftlich oder zur Niederschrift bei der Techniker Krankenkasse" },
+        { "bullet_index": 4, "original_zitat": "" }
+      ],
+      "generated_at": "2026-05-08T08:00:00.000Z",
+      "model": "claude-haiku-4-5-20251001"
+    },
+    "vorschlaege": [
+      { "label": "Beitrag zahlen", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.krankenkasse-beitrag.zahlung" },
+      { "label": "Widerspruch erheben", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.krankenkasse-beitrag.widerspruch" }
+    ]
+  },
+  "letter-schmidt-fa-steuerbescheid-2024": {
+    "pre_open": {
+      "text": "Finanzamt HH-Eimsbüttel · Steuerbescheid 2024 · Frist 12.06.",
+      "generated_at": "2026-05-08T08:00:00.000Z"
+    },
+    "post_open": {
+      "bullets": [
+        { "text": "Sie haben noch **1.247,00 €** zu zahlen." },
+        { "text": "Zahlungsfrist: **12.06.2026**." },
+        { "text": "Einspruchsfrist: 1 Monat ab Bekanntgabe (spätestens 12.06.2026)." },
+        { "text": "Säumniszuschlag bei Verspätung: 1 % pro Monat (§ 240 AO)." },
+        { "text": "Aussetzung der Vollziehung kann nach § 361 AO beantragt werden." },
+        { "text": "Bescheid ist maschinell erstellt und ohne Unterschrift gültig." }
+      ],
+      "citations": [
+        { "bullet_index": 0, "original_zitat": "Sie haben noch 1.247,00 € zu zahlen." },
+        { "bullet_index": 1, "original_zitat": "Bitte zahlen Sie bis zum 12.06.2026 auf das untenstehende Konto." },
+        { "bullet_index": 2, "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Einspruch eingelegt werden." },
+        { "bullet_index": 3, "original_zitat": "" },
+        { "bullet_index": 4, "original_zitat": "" },
+        { "bullet_index": 5, "original_zitat": "Dieser Bescheid ist maschinell erstellt und auch ohne Unterschrift gültig." }
+      ],
+      "generated_at": "2026-05-08T08:00:00.000Z",
+      "model": "claude-haiku-4-5-20251001"
+    },
+    "vorschlaege": [
+      { "label": "Zahlung leisten", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.steuerbescheid.zahlung" },
+      { "label": "Einspruch einlegen (innerhalb 1 Monat)", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.steuerbescheid.einspruch" },
+      { "label": "Aussetzung der Vollziehung beantragen", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.steuerbescheid.aussetzung" }
+    ]
+  },
+  "letter-schmidt-beitragsservice-festsetzung": {
+    "pre_open": {
+      "text": "Beitragsservice · Festsetzung Mahnung · Widerspruch 12.06.",
+      "generated_at": "2026-05-08T08:00:00.000Z"
+    },
+    "post_open": {
+      "bullets": [
+        { "text": "Rückständiger Beitrag: **55,08 €**." },
+        { "text": "Säumniszuschlag (§ 9 RBStV): 8,00 €." },
+        { "text": "Gesamt zu zahlen: **63,08 €**." },
+        { "text": "Bescheid ist vollstreckbar (§ 9 RBStV)." },
+        { "text": "Widerspruchsfrist 1 Monat ab Bekanntgabe." },
+        { "text": "Befreiungsantrag z. B. bei SGB-II-Bezug möglich." }
+      ],
+      "citations": [
+        { "bullet_index": 0, "original_zitat": "Rückständiger Beitrag: 55,08 €" },
+        { "bullet_index": 1, "original_zitat": "Säumniszuschlag (§ 9 RBStV): 8,00 €" },
+        { "bullet_index": 2, "original_zitat": "Gesamt: 63,08 €" },
+        { "bullet_index": 3, "original_zitat": "Dieser Bescheid ist ein vollstreckbarer Titel iSv § 9 RBStV i.V.m. dem jeweiligen Landesvollstreckungsgesetz." },
+        { "bullet_index": 4, "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch eingelegt werden." },
+        { "bullet_index": 5, "original_zitat": "" }
+      ],
+      "generated_at": "2026-05-08T08:00:00.000Z",
+      "model": "claude-haiku-4-5-20251001"
+    },
+    "vorschlaege": [
+      { "label": "Rückstand zahlen", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.beitragsservice-mahnung.zahlung" },
+      { "label": "Widerspruch einlegen", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.beitragsservice-mahnung.widerspruch" }
+    ]
+  },
+  "letter-mehmet-fa-steuerbescheid-2024": {
+    "pre_open": {
+      "text": "Finanzamt Köln-Mitte · Steuerbescheid 2024 · Frist 12.06.",
+      "generated_at": "2026-05-08T08:00:00.000Z"
+    },
+    "post_open": {
+      "bullets": [
+        { "text": "Sie haben noch **4.812,00 €** zu zahlen." },
+        { "text": "Zahlungsfrist: **12.06.2026**." },
+        { "text": "Einkünfte aus selbstständiger Tätigkeit (§ 18 EStG) berücksichtigt." },
+        { "text": "Bekanntgabe über Mein ELSTER, gilt am vierten Tag (§ 122a Abs. 4 AO)." },
+        { "text": "Einspruchsfrist: 1 Monat ab Bekanntgabe." },
+        { "text": "Säumniszuschlag bei Verspätung: 1 % pro Monat (§ 240 AO)." }
+      ],
+      "citations": [
+        { "bullet_index": 0, "original_zitat": "Sie haben noch 4.812,00 € zu zahlen." },
+        { "bullet_index": 1, "original_zitat": "Bitte zahlen Sie bis zum 12.06.2026 auf das untenstehende Konto." },
+        { "bullet_index": 2, "original_zitat": "Einkünfte aus selbstständiger Tätigkeit § 18 EStG" },
+        { "bullet_index": 3, "original_zitat": "Dieser Bescheid wird Ihnen zum Datenabruf in Mein ELSTER bereitgestellt. Er gilt am vierten Tag nach Bereitstellung als bekannt gegeben (§ 122a Abs. 4 AO)." },
+        { "bullet_index": 4, "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Einspruch eingelegt werden." },
+        { "bullet_index": 5, "original_zitat": "" }
+      ],
+      "generated_at": "2026-05-08T08:00:00.000Z",
+      "model": "claude-haiku-4-5-20251001"
+    },
+    "vorschlaege": [
+      { "label": "Zahlung leisten", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.steuerbescheid.zahlung" },
+      { "label": "Einspruch einlegen", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.steuerbescheid.einspruch" },
+      { "label": "Aussetzung der Vollziehung beantragen", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.steuerbescheid.aussetzung" }
+    ]
+  },
+  "letter-mehmet-ihk-beitrag": {
+    "pre_open": {
+      "text": "IHK Köln · Beitragsbescheid 2026 · Widerspruch 12.06.",
+      "generated_at": "2026-05-08T08:00:00.000Z"
+    },
+    "post_open": {
+      "bullets": [
+        { "text": "Grundbeitrag: **195,00 €**." },
+        { "text": "Umlage 0,21 % vom Gewerbeertrag (Bemessungsjahr 2024): **312,40 €**." },
+        { "text": "Gesamt: **507,40 €**." },
+        { "text": "Fälligkeit: 30 Tage nach Bekanntgabe." },
+        { "text": "Widerspruchsfrist 1 Monat ab Bekanntgabe." },
+        { "text": "Antrag auf abweichende Festsetzung möglich (Härtefall)." }
+      ],
+      "citations": [
+        { "bullet_index": 0, "original_zitat": "Grundbeitrag: 195,00 €" },
+        { "bullet_index": 1, "original_zitat": "Umlage 0,21 % vom Gewerbeertrag (Bemessungsjahr 2024): 312,40 €" },
+        { "bullet_index": 2, "original_zitat": "Gesamt: 507,40 €" },
+        { "bullet_index": 3, "original_zitat": "Fälligkeit: 30 Tage nach Bekanntgabe." },
+        { "bullet_index": 4, "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden." },
+        { "bullet_index": 5, "original_zitat": "" }
+      ],
+      "generated_at": "2026-05-08T08:00:00.000Z",
+      "model": "claude-haiku-4-5-20251001"
+    },
+    "vorschlaege": [
+      { "label": "Beitrag zahlen", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.ihk-beitrag.zahlung" },
+      { "label": "Widerspruch erheben", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.ihk-beitrag.widerspruch" },
+      { "label": "Antrag auf abweichende Festsetzung", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.ihk-beitrag.abweichende_festsetzung_pruefen" }
+    ]
+  },
+  "letter-mehmet-bgw-beitrag": {
+    "pre_open": {
+      "text": "VBG · Beitrag 2025 · Fälligkeit 15.06.2026",
+      "generated_at": "2026-05-08T08:00:00.000Z"
+    },
+    "post_open": {
+      "bullets": [
+        { "text": "Mindestbeitrag (§ 153 Abs. 1 SGB VII): **142,00 €**." },
+        { "text": "Lohnsumme 2025: 0,00 € (Selbstständig ohne Beschäftigte)." },
+        { "text": "Fälligkeit: **15.06.2026**." },
+        { "text": "Widerspruchsfrist 1 Monat ab Bekanntgabe (§ 84 SGG)." },
+        { "text": "Widerspruch schriftlich oder zur Niederschrift bei der VBG einzulegen." }
+      ],
+      "citations": [
+        { "bullet_index": 0, "original_zitat": "Mindestbeitrag (§ 153 Abs. 1 SGB VII): 142,00 €" },
+        { "bullet_index": 1, "original_zitat": "Lohnsumme 2025: 0,00 € (Selbstständig ohne Beschäftigte)" },
+        { "bullet_index": 2, "original_zitat": "Fälligkeit: 15.06.2026." },
+        { "bullet_index": 3, "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden." },
+        { "bullet_index": 4, "original_zitat": "Der Widerspruch ist schriftlich oder zur Niederschrift bei der VBG, Deelbögenkamp 4, 22297 Hamburg einzulegen." }
+      ],
+      "generated_at": "2026-05-08T08:00:00.000Z",
+      "model": "claude-haiku-4-5-20251001"
+    },
+    "vorschlaege": [
+      { "label": "Beitrag zahlen", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.berufsgenossenschaft-beitrag.zahlung" },
+      { "label": "Widerspruch erheben", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.berufsgenossenschaft-beitrag.widerspruch" }
+    ]
+  },
+  "letter-mehmet-krankenkasse-freiwillig": {
+    "pre_open": {
+      "text": "AOK Rheinland · Freiwilliger Beitrag · Widerspruch 13.06.",
+      "generated_at": "2026-05-08T08:00:00.000Z"
+    },
+    "post_open": {
+      "bullets": [
+        { "text": "Freiwilliger Beitrag ab 01.06.2026: **497,29 €/Monat**." },
+        { "text": "KV-Beitrag: 421,17 €/Monat." },
+        { "text": "PV-Beitrag: 76,12 €/Monat." },
+        { "text": "Beiträge bleiben auch bei Widerspruch fällig (§ 86a SGG)." },
+        { "text": "Widerspruchsfrist 1 Monat ab Bekanntgabe." },
+        { "text": "Befreiungs- oder Härtefall-Prüfung möglich." }
+      ],
+      "citations": [
+        { "bullet_index": 0, "original_zitat": "Gesamt: 497,29 €/Monat" },
+        { "bullet_index": 1, "original_zitat": "KV-Beitrag: 421,17 €/Monat" },
+        { "bullet_index": 2, "original_zitat": "PV-Beitrag: 76,12 €/Monat" },
+        { "bullet_index": 3, "original_zitat": "Bitte beachten Sie, dass die Beiträge auch dann zu zahlen sind, wenn Sie Widerspruch eingelegt haben (aufschiebende Wirkung gemäß § 86a SGG entfällt insoweit)." },
+        { "bullet_index": 4, "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden." },
+        { "bullet_index": 5, "original_zitat": "" }
+      ],
+      "generated_at": "2026-05-08T08:00:00.000Z",
+      "model": "claude-haiku-4-5-20251001"
+    },
+    "vorschlaege": [
+      { "label": "Beitrag zahlen", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.krankenkasse-beitrag.zahlung" },
+      { "label": "Widerspruch erheben", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.krankenkasse-beitrag.widerspruch" }
+    ]
+  },
+  "letter-mehmet-beitragsservice-mahnung": {
+    "pre_open": {
+      "text": "Beitragsservice · Festsetzung Mahnung · Widerspruch 12.06.",
+      "generated_at": "2026-05-08T08:00:00.000Z"
+    },
+    "post_open": {
+      "bullets": [
+        { "text": "Rückständiger Beitrag: **55,08 €**." },
+        { "text": "Säumniszuschlag (§ 9 RBStV): 8,00 €." },
+        { "text": "Gesamt: **63,08 €**." },
+        { "text": "Bescheid ist vollstreckbar (§ 9 RBStV)." },
+        { "text": "Widerspruchsfrist 1 Monat ab Bekanntgabe." }
+      ],
+      "citations": [
+        { "bullet_index": 0, "original_zitat": "Rückständiger Beitrag: 55,08 €" },
+        { "bullet_index": 1, "original_zitat": "Säumniszuschlag (§ 9 RBStV): 8,00 €" },
+        { "bullet_index": 2, "original_zitat": "Gesamt: 63,08 €" },
+        { "bullet_index": 3, "original_zitat": "Dieser Bescheid ist ein vollstreckbarer Titel iSv § 9 RBStV i.V.m. dem jeweiligen Landesvollstreckungsgesetz." },
+        { "bullet_index": 4, "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch eingelegt werden." }
+      ],
+      "generated_at": "2026-05-08T08:00:00.000Z",
+      "model": "claude-haiku-4-5-20251001"
+    },
+    "vorschlaege": [
+      { "label": "Rückstand zahlen", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.beitragsservice-mahnung.zahlung" },
+      { "label": "Widerspruch einlegen", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.beitragsservice-mahnung.widerspruch" }
+    ]
+  },
+  "letter-anna-standesamt-eheschliessung-termin": {
+    "pre_open": {
+      "text": "Standesamt Berlin-Mitte · Termin-Vorschlag · Frist 30.05.",
+      "generated_at": "2026-05-08T09:30:00.000Z"
+    },
+    "post_open": {
+      "bullets": [
+        { "text": "Trauungstermin-Vorschlag: **22.06.2026, 14:00 Uhr**, Trauzimmer 2." },
+        { "text": "Voraussetzungen nach §§ 1310 ff. BGB liegen nach Aktenlage vor." },
+        { "text": "Rückmeldung bis **30.05.2026** erforderlich." },
+        { "text": "Bei ausbleibender Antwort wird der Termin freigegeben." },
+        { "text": "Sie können bestätigen, einen anderen Termin vorschlagen oder absagen." }
+      ],
+      "citations": [
+        { "bullet_index": 0, "original_zitat": "Montag, 22.06.2026, 14:00 Uhr" },
+        { "bullet_index": 1, "original_zitat": "Die Voraussetzungen nach §§ 1310 ff. BGB liegen nach Aktenlage vor." },
+        { "bullet_index": 2, "original_zitat": "Bitte teilen Sie uns bis zum 30.05.2026 mit, ob Sie den vorgeschlagenen Termin annehmen oder einen anderen Wunschtermin vorschlagen möchten." },
+        { "bullet_index": 3, "original_zitat": "Sollten Sie nicht innerhalb der Frist antworten, müssen wir den reservierten Termin für andere Trauwillige freigeben." },
+        { "bullet_index": 4, "original_zitat": "" }
+      ],
+      "generated_at": "2026-05-08T09:30:00.000Z",
+      "model": "claude-haiku-4-5-20251001"
+    },
+    "vorschlaege": [
+      { "label": "Termin bestätigen", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.standesamt-urkunde.termin_bestaetigen" },
+      { "label": "Termin verschieben", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.standesamt-urkunde.termin_verschieben" },
+      { "label": "Termin absagen", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.standesamt-urkunde.termin_absagen" }
+    ]
+  }
+}

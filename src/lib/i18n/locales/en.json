@@ -1,0 +1,654 @@
+{
+  "app": {
+    "name": "GovTech DE",
+    "tagline": "Public administration, rethought.",
+    "skip_to_content": "Skip to main content"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "posteingang": "Inbox",
+    "stammdaten": "Personal data",
+    "vorgaenge": "Cases",
+    "dokumente": "Documents",
+    "termine": "Appointments",
+    "steuer": "Tax",
+    "familie": "Family",
+    "assistent": "Assistant",
+    "datenschutz": "Privacy"
+  },
+  "topbar": {
+    "language_label": "Language",
+    "theme_toggle_light": "Light theme",
+    "theme_toggle_dark": "Dark theme",
+    "theme_toggle_system": "System setting",
+    "user_menu": "User menu"
+  },
+  "footer": {
+    "imprint": "Imprint",
+    "privacy": "Privacy",
+    "accessibility": "Accessibility"
+  },
+  "landing": {
+    "eyebrow": "GovTech DE — concept demo",
+    "title": "Public administration, rethought",
+    "subtitle": "A concept prototype of a citizen-centred layer on top of DeutschlandID, EUDI Wallet and the Deutschland-Stack. All data is synthetic.",
+    "personas_title": "Choose a persona",
+    "personas_helper": "The demo loads a prepared dataset. You can switch at any time.",
+    "persona_anna": "Anna Petrov, 28 — Blue Card EU, Berlin",
+    "persona_schmidt": "The Schmidt family — Hamburg, baby on the way",
+    "persona_mehmet": "Mehmet Yıldız, 34 — Cologne, planning to register a business",
+    "cta_continue": "Open the demo"
+  },
+  "common": {
+    "cta": {
+      "zurueck": "Back",
+      "weiter": "Continue",
+      "bestaetigen": "Confirm",
+      "abbrechen": "Cancel",
+      "erneut_versuchen": "Try again"
+    },
+    "frist": {
+      "gesetzlich": "statutory deadline",
+      "unverzueglich": "without undue delay",
+      "vertraglich": "contractual deadline"
+    },
+    "disclaimer": {
+      "prototype_title": "Prototype notice",
+      "prototype": "Prototype notice. This demo shows how a change of address could look in 2027 with the Deutschland-Stack and EUDI Wallet. Data and authority responses are synthetic (marked [MOCK]).\n\nToday (as of May 2026) the registration office (Meldeamt) automatically handles only some of the steps shown: the move-out notification to the previous registration authority (§ 33 BMG), the address update on the national ID card (§ 28 PAuswG), and the regular transmissions to the tax office (Finanzamt), the broadcasting fee service (Beitragsservice) and the military administration (Wehrverwaltung) (§ 36 BMG together with § 11 (4) RBStV / § 39 AO / § 58c SG). Health insurance, banks, insurers, employers and energy providers require the consent of the person concerned (Art. 6 (1) (a) GDPR). Vehicle owners, the family benefits office (Familienkasse) and the immigration authority (Ausländerbehörde) each need a separate active notification — this demo simulates eID-confirmed fast-track processing that is not yet available in production nationwide.",
+      "bussgeld_frist_modal": "§ 17 BMG requires you to register within two weeks of moving in. § 54 (2) no. 1 BMG sets a fine framework of up to 1,000 € for this. In municipal practice, citizens' offices (Bürgerämter) typically impose 10–50 € for late registration; the exact amount is decided by the office on a case-by-case basis. Fines of up to 50,000 € under § 54 (1) BMG apply only to false statements or non-disclosure, not to late filings."
+    },
+    "frist_detail": {
+      "title": "Deadline under § 17 BMG — details",
+      "open_cta": "Why 14 days?",
+      "close_cta": "Close"
+    }
+  },
+  "umzug": {
+    "start": {
+      "title": "Change of address",
+      "subtitle": "Inform all relevant authorities in just a few steps.",
+      "adresse": {
+        "label": "Your new address",
+        "strasse": "Street",
+        "hausnummer": "House number",
+        "zusatz": "Additional info (optional)",
+        "plz": "Postcode",
+        "ort": "City"
+      },
+      "stichtag": {
+        "label": "Move-in date",
+        "helper": "The date on which you move into the new home."
+      },
+      "wohnungsgeber": {
+        "title": "Landlord confirmation (Wohnungsgeberbestätigung, § 19 BMG, mandatory)",
+        "cta_upload": "Choose file",
+        "cta_demo": "Use sample",
+        "helper_de": "Under § 19 BMG, landlords are required to issue this confirmation within two weeks of move-in.",
+        "selected_template": "{filename} selected",
+        "demo_filename": "[MOCK] Wohnungsgeberbestaetigung_Vogel.pdf"
+      },
+      "cta_weiter": "Continue to preview",
+      "error": {
+        "plz_invalid": "Please enter a valid five-digit postcode.",
+        "wohnungsgeber_missing": "Without the landlord confirmation (Wohnungsgeberbestätigung), registration is not possible (§ 19 BMG).",
+        "auslandsadresse": "Moving abroad requires a separate de-registration (§ 17 (2) BMG). This case type is in preparation.",
+        "felder_unvollstaendig": "Please complete all required fields."
+      }
+    },
+    "preview": {
+      "title": "Preview: what happens when you confirm",
+      "subtitle_template": "New address: {adresse} · from {stichtag}",
+      "block_a": {
+        "title": "We handle this automatically",
+        "subhead": "§ 33 BMG · § 34 BMG · § 36 BMG"
+      },
+      "block_b": {
+        "title": "With your consent",
+        "subhead": "Art. 6 (1) (a) GDPR",
+        "consent_helper": "You can withdraw your consent at any time — see the privacy cockpit (Datenschutz-Cockpit)."
+      },
+      "block_c": {
+        "title": "You take care of these yourself",
+        "helper": "We cannot reach these recipients directly — we generate templates for you."
+      },
+      "block_d": {
+        "title": "We prepare it — you confirm with eID",
+        "subhead": "§ 18 PAuswG · the relevant sectoral law",
+        "eid_helper": "We pre-fill the application with your personal data. You confirm with one tap of your online ID function."
+      },
+      "cta_start_autopilot": "Start autopilot",
+      "empty_block_d_hidden": "",
+      "loading": "Loading preview …",
+      "error": "The preview could not be loaded."
+    },
+    "run": {
+      "title": "Autopilot is running …",
+      "subtitle_template": "{adresse} · move-in {stichtag}",
+      "vorgang_label": "Case #{id}",
+      "status": {
+        "pending": "waiting",
+        "in_progress": "in progress",
+        "confirmed": "confirmed",
+        "failed": "Error — try again",
+        "needs_eid": "eID tap required"
+      },
+      "eid_dialog": {
+        "title": "Confirm with your eID",
+        "body_template": "We are forwarding your new address to {behoerde}. Please hold your national ID card to the reader and confirm with your PIN.",
+        "cta_confirm": "Confirm with eID",
+        "cta_cancel": "Cancel"
+      },
+      "cta_pause": "Pause",
+      "cta_cancel": "Cancel",
+      "cta_to_vorgang": "Go to case",
+      "frist_tooltip": {
+        "bmg_17": "Deadline under § 17 BMG: two weeks from move-in.",
+        "bmg_33_3wt": "Deadline under § 33 BMG: no later than three working days.",
+        "fzv_15_unverzueglich": "Deadline under § 15 FZV: without undue delay after change of residence."
+      },
+      "aktenzeichen_label": "File reference",
+      "cancel_dialog": {
+        "title": "Cancel autopilot?",
+        "body": "Registrations that have already been confirmed cannot be undone — a correction is made by submitting a new change of address.",
+        "cta_keep_running": "Keep running",
+        "cta_confirm_cancel": "Cancel anyway"
+      }
+    },
+    "detail": {
+      "title": "Case: change of address",
+      "angelegt_template": "Created {datum}",
+      "stichtag_template": "Move-in {datum}",
+      "status": {
+        "laeuft": "running",
+        "abgeschlossen": "completed",
+        "fehlerhaft": "completed with errors"
+      },
+      "adresse_alt": "Previous address",
+      "adresse_neu": "New address",
+      "beteiligte_behoerden_count": "Authorities involved ({count})",
+      "posteingang_count": "Inbox items for this case ({count})",
+      "cta_datenschutz": "Open privacy cockpit",
+      "brief_label": "Letter",
+      "aktz_label": "File reference",
+      "termin_label_template": "Appointment: {datum}, {ort}",
+      "not_found_title": "Case not found",
+      "not_found_body": "This case does not exist or has been deleted.",
+      "back_to_dashboard": "Back to dashboard"
+    },
+    "rechtsgrundlage": {
+      "bmg_17": "§ 17 BMG: duty to register within two weeks of moving in.",
+      "bmg_33": "§ 33 BMG: data transfer between registration authorities — the move-out notification is sent automatically, no later than three working days after registration.",
+      "bmg_34": "§ 34 BMG: data transfer to other public bodies without consent, where necessary for the performance of public tasks.",
+      "bmg_36": "§ 36 BMG: regular data transfers — recipients and data are defined by special legislation.",
+      "fzv_15": "§ 15 FZV: vehicle owners must report a change of residence — registration certificate part I (Zulassungsbescheinigung Teil I) must be updated without undue delay.",
+      "aufenthg_18g": "§ 18g AufenthG: Blue Card EU for skilled foreign workers (since the 2023 reform of the Residence Act, AufenthG).",
+      "aufenthg_87": "§ 87 AufenthG: data transfer to immigration authorities (Ausländerbehörden) on request, no automatic push.",
+      "pauswg_18": "§ 18 PAuswG: online ID function — eID as a legally binding declaration of intent.",
+      "pauswg_28": "§ 28 PAuswG: address update on the national ID card (address sticker issued by the Bundesdruckerei).",
+      "dsgvo_6_1_a": "Art. 6 (1) (a) GDPR: consent of the data subject — revocable at any time.",
+      "estg_67_68": "§§ 67–68 EStG: child benefit application and the duty to report changes.",
+      "rbstv_11_4": "§ 11 (4) RBStV: regular transfer of registration data to the broadcasting fee service (Beitragsservice).",
+      "sgb_iv_28a": "§ 28a SGB IV: DEÜV reports from the employer to the social insurance bodies.",
+      "detail_title": "Legal basis",
+      "open_cta": "Show legal basis"
+    }
+  },
+  "placeholder": {
+    "section_title": "{section}",
+    "wip": "This section is being prepared.",
+    "wip_helper": "This concept demo focuses first on the change-of-address autopilot. Further cases will follow."
+  },
+  "posteingang": {
+    "skip_link": {
+      "zur_brief_liste": "Skip to letter list"
+    },
+    "hero": {
+      "title": "Inbox (Posteingang)",
+      "subtitle": "All letters from public authorities in one place. Understand instead of feeling overwhelmed.",
+      "speculative_footer": "This demo shows how a unified inbox (Posteingang) for letters from public authorities *could* look in 2027. As of May 2026: the central citizen mailbox (ZBP/BundID) is in production (~3.8 million mailboxes migrated), with two-way communication planned from July 2026; Mein ELSTER has its own inbox with electronic notification (elektronische Bekanntgabe) as the default plan from 01.01.2027. A *unified* inbox does not yet exist in Germany in 2026 — the demo shows what it could look like. Data and letters are synthetic (`[MOCK]`)."
+    },
+    "watermark": {
+      "banner": "[MOCK – administrative demo, no real data]",
+      "inline": "[MOCK]"
+    },
+    "list": {
+      "tab_chronologisch": "Chronological",
+      "tab_nach_vorgang": "Group by case (Vorgang)",
+      "group": {
+        "neu": "New",
+        "frist_unter_7d": "Deadline open ≤ 7 days",
+        "frist_ueber_7d": "Deadline open > 7 days",
+        "erledigt": "Done",
+        "archiv": "Archive",
+        "andere": "Other"
+      },
+      "empty_inbox": "No letters in your inbox.",
+      "empty_filter": "No letters match the selected filters. Refresh inbox?",
+      "cta_refresh": "Refresh inbox",
+      "error_load": "Letters could not be loaded — please try again?",
+      "region_label": "Letter list"
+    },
+    "search": {
+      "placeholder": "Search file reference (Aktenzeichen) or authority …",
+      "aria_label": "Search file reference (Aktenzeichen) or authority",
+      "hits_count_template": "{count, plural, =0 {No matches} =1 {1 match} other {# matches}}"
+    },
+    "filter": {
+      "title": "Filters",
+      "aria_label": "Filter letters",
+      "drawer_title": "Choose filters",
+      "popover_title": "Filter letters",
+      "popover_apply": "Apply filters",
+      "popover_clear": "Reset filters",
+      "close": "Close filters",
+      "cta_open_mobile": "Filters",
+      "cta_reset": "Reset all filters",
+      "kategorie": {
+        "title": "Authority category",
+        "bund": "Federal (Bund)",
+        "land": "State (Land)",
+        "kommunal": "Municipal (Kommunal)",
+        "sonstige": "Other (self-administration, private-law)",
+        "selbstverwaltung": "Self-administration (Selbstverwaltung)",
+        "privatrechtl-behoerdenartig": "Private-law (authority-like)"
+      },
+      "status": {
+        "title": "Status",
+        "neu": "New",
+        "frist_unter_7d": "Deadline ≤ 7 days",
+        "frist_ueber_7d": "Deadline > 7 days",
+        "erledigt": "Done",
+        "archiv": "Archive"
+      }
+    },
+    "inbox": {
+      "active_filters_label": "Active filters:",
+      "filter_chip_remove_aria": "Remove filter ‚{filter}'",
+      "filter_button_label": "Filters",
+      "filter_button_count_template": "Filters ({count})",
+      "vorgang_gruppe_filtered_template": "({gefiltert} filtered out of {gesamt})",
+      "active_filters_clear_all": "Clear all"
+    },
+    "actions": {
+      "kebab_menu_aria": "More actions",
+      "open_kebab": "Open more actions"
+    },
+    "card": {
+      "aktenzeichen_label": "File reference (Aktenzeichen)",
+      "frist_label": "Deadline (Frist)",
+      "frist_keine": "No deadline",
+      "frist_pre_open_template": "Deadline {datum}",
+      "frist_abgelaufen_template": "Deadline expired on {datum}",
+      "brieftyp_label": "Letter type",
+      "vorgang_tag_template": "Belongs to case ‚{title}'",
+      "vorgang_anlegen_template": "New case (Vorgang)? Create {brieftyp} {jahr}?",
+      "markiere_gelesen": "Mark this letter as read",
+      "cta_open": "Open letter",
+      "status": {
+        "ungelesen": "Unread",
+        "gelesen": "Read",
+        "erledigt": "Done"
+      },
+      "authentizitaet": {
+        "empfangen_template": "Received via {kanal}",
+        "eingabe_buerger": "Entered by citizen",
+        "eudi_versiegelt": "EUDI Wallet sealed",
+        "channels": {
+          "briefpost": "Postal mail (Briefpost)",
+          "mein_elster": "Mein ELSTER",
+          "zbp_bundid": "ZBP/BundID",
+          "krankenkassen_portal": "Health insurance portal",
+          "eingabe_buerger": "Citizen entry",
+          "eudi_versiegelt": "EUDI Wallet"
+        },
+        "icon_label": "Letter",
+        "icon_aria_template": "Received via {kanal}"
+      },
+      "datenschutz_link": "Which data from this letter was processed where?",
+      "datenschutz_link_aria": "Open privacy cockpit for this letter",
+      "utility_row_aria": "Letter utility actions"
+    },
+    "gruppe": {
+      "titel_template": "Case (Vorgang): {titel} ({count})",
+      "sonstige_titel_template": "Other ({count})",
+      "aufklappen": "Expand",
+      "zuklappen": "Collapse",
+      "earliest_frist_template": "Earliest deadline: {datum}"
+    },
+    "archetype": {
+      "label": {
+        "steuerbescheid": "Tax assessment (Steuerbescheid)",
+        "krankenkasse-beitrag": "Health insurance contribution",
+        "beitragsservice-mahnung": "Broadcasting fee (Beitragsservice)",
+        "abh-verlaengerung": "Residence permit (Aufenthaltstitel)",
+        "familienkasse-nachweis": "Family benefits (Familienkasse)",
+        "buergeramt-meldung": "Citizens' office (Bürgeramt)",
+        "ihk-beitrag": "Chamber of commerce (IHK) fee",
+        "berufsgenossenschaft-beitrag": "Employers' liability insurance fee",
+        "standesamt-urkunde": "Registry office (Standesamt)",
+        "sonstiges": "Letter"
+      }
+    },
+    "reader": {
+      "zurueck": "Back to inbox",
+      "not_found_title": "Letter not found",
+      "not_found_body": "This letter does not exist or has been deleted.",
+      "originaltext_heading": "Original text",
+      "originaltext_authoritative_label": "legally binding",
+      "summary_heading": "Summary (AI)",
+      "summary_skeleton_hint": "Summary is being generated by AI — please check important details against the original text.",
+      "summary_authoritative_banner": "The original text is legally binding. Please verify important details.",
+      "summary_error": "Summary temporarily unavailable — the original text alongside is authoritative.",
+      "summary_error_retry": "Try again",
+      "tab_originaltext": "Original text",
+      "tab_zusammenfassung": "Summary",
+      "vorgang_link_template": "Case ‚{title}'",
+      "archetype_short": "Letter",
+      "empfangen_label": "Received on",
+      "aktenzeichen_primaer_label": "File reference (Aktenzeichen)",
+      "aktenzeichen_weitere_label": "Further file references",
+      "frist_chip_zahlung_template": "Payment {tage}",
+      "frist_chip_einspruch_template": "Appeal (Einspruch) {tage}",
+      "frist_chip_sonstige_template": "{label} {tage}",
+      "frist_chip_keine": "No deadline",
+      "frist_chip_today": "due today",
+      "frist_chip_days_template": "in {tage, plural, =1 {1 day} other {# days}}",
+      "frist_chip_abgelaufen_template": "expired on {datum}",
+      "frist_sr_open_template": "{typ}: {tage, plural, =0 {0 days} =1 {1 day} other {# days}} left until {datum}",
+      "frist_sr_overdue_template": "{typ}: deadline expired on {datum}",
+      "frist_added_toast": "Deadline made available as a .ics file for download.",
+      "actions_heading": "Actions for this letter",
+      "actions": {
+        "kalender": "Add deadline to calendar (.ics)",
+        "kalender_per_frist_template": "Add {typ} to calendar (.ics)",
+        "originalbrief": "Show original text",
+        "speichern": "Save letter (.txt)",
+        "markiere_gelesen": "Mark this letter as read",
+        "citation_mismatch_disabled_hint": "A deadline could not be unambiguously verified in the original. Calendar export is disabled — please check the date in the original text."
+      },
+      "skip_link": {
+        "aria": "Skip navigation",
+        "zur_zusammenfassung": "Skip to summary",
+        "zum_original": "Skip to original text"
+      },
+      "citation": {
+        "popover_title": "Original wording",
+        "scroll_to_original": "Show in original text",
+        "marker_aria_template": "Original wording for bullet {n}",
+        "mismatch_warning": "This deadline could not be unambiguously verified in the original text — please check it yourself.",
+        "mismatch_warning_sr": "Citation mismatch — verify the deadline in the original."
+      },
+      "frist_modal": {
+        "title": "Deadline details",
+        "zitat_label": "Original wording in the letter:",
+        "kalender_cta": "Add to calendar",
+        "disclaimer": "This deadline was detected automatically from the letter. Original wording: ‚{zitat}'. Please verify the date."
+      },
+      "neuer_vorgang": {
+        "title": "Create a new case (Vorgang) from this letter?",
+        "body_template": "We suggest the case type ‚{typ}'. You can change the type below.",
+        "typ_legend": "Case type",
+        "vorgangs_typ": {
+          "steuer-jahr": "Tax (year)",
+          "familienkasse": "Family benefits (Familienkasse)",
+          "aufenthaltstitel-verlaengerung": "Residence permit renewal",
+          "sonstige": "Other"
+        },
+        "cta_anlegen": "Create case",
+        "cta_abbrechen": "Cancel",
+        "submitting": "Creating …",
+        "toast_success": "Case created. You will be redirected.",
+        "toast_error": "The case could not be created — please try again."
+      },
+      "was_kann_ich_tun": {
+        "heading": "What can I do?",
+        "helper": "Possible actions (informational — not legal advice):"
+      }
+    },
+    "was_kann_ich_tun": {
+      "steuerbescheid": {
+        "zahlung": "Make payment",
+        "einspruch": "File an appeal (Einspruch, within 1 month, § 355 AO)",
+        "aussetzung": "Apply for suspension of enforcement (Aussetzung der Vollziehung, § 361 AO)",
+        "saeumniszuschlag_info": "Note: late-payment surcharges (Säumniszuschläge) accrue from the due date (§ 240 AO, 1 % per month)"
+      },
+      "krankenkasse-beitrag": {
+        "zahlung": "Pay the contribution",
+        "widerspruch": "File an objection (Widerspruch, within 1 month, § 84 SGG)",
+        "befreiung_pruefen": "Check exemption / hardship case"
+      },
+      "beitragsservice-mahnung": {
+        "zahlung": "Pay the outstanding amount",
+        "widerspruch": "File an objection (Widerspruch, within 1 month)",
+        "befreiung_pruefen": "Check exemption application (e.g. SGB-II benefits)"
+      },
+      "abh-verlaengerung": {
+        "termin_buchen": "Book an appointment for the renewal",
+        "nachweise_sammeln": "Gather documents (passport, health insurance, employment proof, landlord confirmation / Wohnungsgeberbestätigung)",
+        "fiktionsbescheinigung_info": "Note: if you apply on time, the residence permit is deemed to continue (Fortbestands-Fiktion, § 81 (4) AufenthG)"
+      },
+      "familienkasse-nachweis": {
+        "nachweis_einreichen": "Submit the requested evidence",
+        "fristverlaengerung_pruefen": "Apply for an extension of the deadline in writing"
+      },
+      "buergeramt-meldung": {
+        "keine_aktion": "No action required (informational confirmation)",
+        "folgeprozesse_pruefen": "Check follow-up processes (vehicle, health insurance, bank)"
+      },
+      "ihk-beitrag": {
+        "zahlung": "Pay the contribution",
+        "widerspruch": "File an objection (Widerspruch)",
+        "abweichende_festsetzung_pruefen": "Check application for a deviating assessment (hardship)"
+      },
+      "berufsgenossenschaft-beitrag": {
+        "zahlung": "Pay the contribution",
+        "widerspruch": "File an objection (Widerspruch, within 1 month)"
+      },
+      "standesamt-urkunde": {
+        "keine_aktion": "No action required (keep the certificate)",
+        "folge_familienkasse": "Apply for child benefit at the family benefits office (Familienkasse)",
+        "folge_krankenkasse": "Register the child with the health insurance fund (family insurance)",
+        "folge_steueridnr": "The tax ID (Steuer-IdNr.) is assigned automatically by the Federal Central Tax Office (BZSt)"
+      }
+    },
+    "normtooltip": {
+      "aria_open": "Open legal-norm tooltip",
+      "vwvfg_41_2": "§ 41 (2) VwVfG: an administrative act (Verwaltungsakt) is deemed served on the 4th day after being posted (post-law modernisation, in force from 01.01.2025).",
+      "vwvfg_41_2a": "§ 41 (2a) VwVfG: when the act is provided via portal with consent, it is deemed served on the day after retrieval.",
+      "ao_122": "§ 122 AO: notification (Bekanntgabe) of the administrative act; for postal mail the 4-day fiction applies (§ 122 (2) AO).",
+      "ao_122a": "§ 122a AO: electronic notification of tax assessments (Steuerbescheide) via Mein ELSTER — deemed served on the 4th day after being made available (para. 4).",
+      "vwzg_5": "§ 5 VwZG: formal electronic delivery; deemed delivered on the 4th day after dispatch (rebuttable).",
+      "ao_240": "§ 240 AO: late-payment surcharge (Säumniszuschlag) — 1 % per month started, on unpaid tax debts, from the due date.",
+      "ao_361": "§ 361 AO: suspension of enforcement (Aussetzung der Vollziehung) may be applied for if there are serious doubts about lawfulness or if enforcement would constitute undue hardship.",
+      "ao_355": "§ 355 AO: appeal deadline (Einspruchsfrist) — 1 month after notification of the tax assessment.",
+      "ao_357": "§ 357 AO: an appeal (Einspruch) must be filed in writing or electronically with the tax office (Finanzamt).",
+      "vwgo_70": "§ 70 VwGO: objection deadline (Widerspruchsfrist) — 1 month after notification of the administrative act.",
+      "sgg_84": "§ 84 SGG: objection in social-court proceedings — 1 month after notification (Bekanntgabe).",
+      "owig_67": "§ 67 OWiG: appeal against a fine notice (Bußgeldbescheid) — 2 weeks after delivery.",
+      "rdg_2": "§ 2 RDG: legal services (Rechtsdienstleistung) are activities in the affairs of others that require legal examination of the individual case.",
+      "ao_30": "§ 30 AO: tax secrecy (Steuergeheimnis) — protection of personal tax data.",
+      "ao_87a": "§ 87a AO: electronic communication with the tax authorities (Finanzbehörden).",
+      "bdsg_22": "§ 22 BDSG: processing of special categories of personal data.",
+      "estg_68": "§ 68 EStG: cooperation duties for child benefit — evidence must be submitted on request.",
+      "aufenthg_81_4": "§ 81 (4) AufenthG: continuance fiction (Fortbestands-Fiktion) — if the renewal is applied for in time, the residence permit (Aufenthaltstitel) is deemed to continue.",
+      "ao_110": "§ 110 AO: reinstatement to the previous status (Wiedereinsetzung) where a deadline is missed without fault.",
+      "dsgvo_6": "Art. 6 GDPR: legal bases for the processing of personal data.",
+      "dsgvo_9": "Art. 9 GDPR: special categories of personal data (health, ethnic origin, …).",
+      "dsgvo_22": "Art. 22 GDPR: right not to be subject to a decision based solely on automated processing.",
+      "dsgvo_28": "Art. 28 GDPR: processor — contract with the processor.",
+      "bgh_smartlaw": "BGH I ZR 113/20 (Smartlaw, 2021): a contract generator is not an unlawful legal service — tool character, no client relationship."
+    },
+    "disclaimer": {
+      "opening_title": "Notice on opening",
+      "opening": "Notice on opening. This app is a reading and explanation layer for letters from public authorities. Opening or marking-as-read a letter card here is **only an in-app reading status** — it is **not** a retrieval within the meaning of § 41 (2a) VwVfG or § 122a AO and triggers **no** legal notification (rechtliche Bekanntgabe).\n\nLegal notification depends on the delivery channel of the **official** authority:\n- **Postal mail (Briefpost)** (most common case — health insurance, broadcasting fee service / Beitragsservice, family benefits office / Familienkasse, immigration authority / Ausländerbehörde, citizens' office / Bürgeramt, fines authority / Bußgeldstelle): deemed served on the **fourth day after being posted** (§ 41 (2) VwVfG or § 122 (2) AO since the post-law modernisation act of 01.01.2025).\n- **Mein ELSTER** (tax assessments where the tax return was filed electronically): deemed served on the **fourth day after being made available for retrieval** (§ 122a (4) AO). From 01.01.2027 electronic notification will be the default (opt-out); until then a transitional phase with active opt-in applies.\n- **Central citizen mailbox (ZBP/BundID) with consent**: deemed served on the **day after retrieval** (§ 41 (2a) VwVfG). If not retrieved within 10 days, no notification takes place.\n- **Formal electronic delivery** (e.g. administrative procedures, social court): deemed delivered on the **fourth day after dispatch**, rebuttable on proof of later access (§ 5 (7) VwZG).\n\nPlease check your **official mailboxes** and your physical letterbox **regularly**. This app does not replace that.\n\nNote on translation: the German original of this notice is the authoritative version; translations are reading aids only.",
+      "no_legal_advice_title": "No legal advice",
+      "no_legal_advice": "This AI explanation is **general information** and a reading aid — **not a legal service** within the meaning of the German Legal Services Act (§ 2 RDG). It does **not** assess your individual case (BGH I ZR 113/20 ‚Smartlaw' line: tool character, no client relationship, no promise of success).\n\nA concrete legal assessment — for example whether an objection has prospects of success, which reasoning would be persuasive, or whether a notice (Bescheid) is lawful — can **only** be given by a person authorised to provide legal services: a lawyer (Rechtsanwält:in, BRAO), a consumer-advice centre (Verbraucherzentrale, UKlaG/§ 8 RDG), a social welfare association (e.g. SoVD, VdK), or the competent chamber of tax advisers. The AI gives **no guarantees of success** and does **not** represent you before public authorities. Suggested replies or deadlines are non-binding; responsibility for every entry and every dispatch is yours.\n\nNote on translation: the German original of this notice is the authoritative version.",
+      "mock_data_title": "Demo letters are synthetic",
+      "mock_data": "All letters, file references (Aktenzeichen), amounts and personal data shown here are **synthetic** and marked with `[MOCK]`. This demo processes **no real letters from authorities** and has **no connection** to Mein ELSTER, the central citizen mailbox (ZBP/BundID), health insurance portals or other official mailboxes. Letter upload is **disabled** in this demo. Please do not paste real letters or personal data into input fields — the demo is not approved for processing sensitive information.\n\nNote on translation: the German original of this notice is the authoritative version.",
+      "original_authoritative": "**Only the German original text** of the notice (Bescheid) is legally binding. The AI summary and any translations are reading aids only and may — like all AI-generated text — contain errors or omissions. If in doubt, the wording of the authority prevails. Click ‚Show original text' to read the full wording, and check important details (deadline, amount, file reference) against the original.\n\nNote on translation: the German original is the authoritative version; this English text is a reading aid only.",
+      "frist_modal_inline": "This deadline was detected automatically from the letter. Please verify the date in the original text.",
+      "summary_footer_hint": "The summary supplements the original text, it does not replace it. Click the marker symbol [⌖] next to a bullet to see the original wording in the letter.",
+      "rechtliche_hinweise_summary": "Legal notices"
+    },
+    "toast": {
+      "refresh_after_vorgang_created": "Inbox updated."
+    },
+    "sticky_action": {
+      "frist_label_template": "Deadline {datum} ({tage_template})",
+      "frist_label_no_frist": "No deadline",
+      "cta_kalender": "Add deadline to calendar (.ics)",
+      "cta_reply": "Compose reply",
+      "cta_reply_resume_draft": "Continue draft",
+      "cta_reply_again": "Reply again",
+      "cta_reply_view_sent": "View sent reply",
+      "already_replied_template": "Already replied on {datum}",
+      "overflow_label": "More actions",
+      "overflow": {
+        "speichern": "Save letter (.txt)",
+        "original_pdf": "Show original text",
+        "markiere_gelesen": "Mark this letter as read"
+      }
+    },
+    "compose": {
+      "cta_open_sheet": "Compose reply",
+      "sheet_title": "Reply to {behoerde}",
+      "sheet_close_aria": "Close reply sheet",
+      "recipient_label_template": "To: {behoerde}",
+      "bezug_label_template": "Re: {aktenzeichen}",
+      "outbound_speculative": "As of 2027 — speculative design. In this demo we simulate request-thread-bound bidirectional communication on the ZBP/BundID model: replies always live in the thread of a specific letter (anchored by file reference / Aktenzeichen), never as an open mailbox. Today (May 2026) the reply channel would differ by authority: Mein ELSTER for the tax office (Finanzamt), the health insurance portal for health insurance funds, a state service portal (Landes-Service-Portal) for citizens' offices and immigration authorities, often still postal mail. Nothing is sent to {behoerde}.",
+      "behoerde_kanal": {
+        "bundid_postfach_2027": "BundID mailbox (BundID-Postfach, speculative 2027)",
+        "service_portal_land": "State service portal (Landes-Service-Portal)",
+        "elster": "Mein ELSTER",
+        "familienkasse_online": "Familienkasse Online",
+        "beitragsservice": "Beitragsservice portal",
+        "aok_portal": "Mein-AOK portal",
+        "briefpost": "Postal mail (Briefpost, paper)"
+      },
+      "template_picker": {
+        "legend": "Choose a template",
+        "frist_verlaengerung": {
+          "label": "Request a deadline extension",
+          "description": "Request to extend the deadline (purely administrative).",
+          "icon": "🕐"
+        },
+        "nachweis_einreichen": {
+          "label": "Submit evidence",
+          "description": "Cover letter for an attached document.",
+          "icon": "📎"
+        },
+        "informative_rueckmeldung": {
+          "label": "Informational reply",
+          "description": "Reply to a query from the authority.",
+          "icon": "ℹ️"
+        },
+        "termin_antwort": {
+          "label": "Reply to appointment proposal",
+          "description": "Confirm, reschedule or cancel a proposed appointment.",
+          "icon": "📅"
+        },
+        "freitext": {
+          "label": "Write your own text",
+          "description": "Start without a template.",
+          "icon": "📝"
+        }
+      },
+      "templates": {
+        "frist_verlaengerung": {
+          "disclaimer_pre_insertion": "This template formulates a plain request for a deadline extension. It contains no legal assessment of your individual case. Whether an extension is granted is decided by the authority under the applicable procedural rules (for example the Fiscal Code, Abgabenordnung, or the Administrative Procedure Act, Verwaltungsverfahrensgesetz). You write the reasoning yourself — the app does not suggest arguments.",
+          "disclaimer_inline": "Note: the authority decides on its own whether the deadline is extended."
+        },
+        "nachweis_einreichen": {
+          "disclaimer_pre_insertion": "With this template you submit documents to fulfil your duty to cooperate — for example under the Social Code (Sozialgesetzbuch), the Fiscal Code (Abgabenordnung) or the Residence Act (Aufenthaltsgesetz), depending on the authority. The template contains no waiver of further document requests: please attach only the requested evidence.",
+          "disclaimer_inline": "Note: only attach the explicitly requested evidence — no additional documents."
+        },
+        "informative_rueckmeldung": {
+          "disclaimer_pre_insertion": "This template is a plain factual statement. It is **not** an objection (Einspruch), **not** a formal protest (Widerspruch), **not** an application. If you wish to formally challenge a notice (Bescheid), choose a different template — and deadlines may be running (typically one month after notification; governed by the Fiscal Code, Abgabenordnung, or the Social Court Act, Sozialgerichtsgesetz, among others).",
+          "disclaimer_inline": "Note: this statement is not a legal remedy — it does not pause any deadline."
+        },
+        "termin_antwort": {
+          "disclaimer_pre_insertion": "This template replies to an appointment proposal from the authority. If you reschedule or cancel, suggesting an alternative date (mode „verschieben“) is generally helpful. Please note that missing your duty to cooperate in an ongoing procedure can have adverse consequences — for example under the cooperation provisions of the Social Code (Sozialgesetzbuch) or the Residence Act (Aufenthaltsgesetz), depending on the authority.",
+          "disclaimer_inline": "Note: cancelling without proposing an alternative can delay the procedure.",
+          "mode_legend": "Mode",
+          "mode": {
+            "bestaetigen": "Confirm",
+            "verschieben": "Reschedule",
+            "absagen": "Cancel"
+          }
+        },
+        "freitext": {
+          "disclaimer_inline": "You are writing without a template. Date, file reference (Aktenzeichen) and recipient are pre-filled from the letter."
+        }
+      },
+      "body_textarea_label": "Reply text (German)",
+      "body_textarea_de_hint": "Authorities parse German — please write in German.",
+      "body_textarea_placeholder": {
+        "frist_verlaengerung": "Reasoning for the deadline extension …",
+        "nachweis_einreichen": "Cover note for the document …",
+        "informative_rueckmeldung": "Your reply to the authority …",
+        "termin_antwort": "Your response to the appointment proposal …",
+        "freitext": "Compose your reply …"
+      },
+      "template_switch_confirm_title": "Switch template?",
+      "template_switch_confirm_body": "You have already written some text. Choosing a different template will overwrite it.",
+      "template_switch_confirm_cta_yes": "Apply template",
+      "template_switch_confirm_cta_no": "Cancel",
+      "attachments": {
+        "label": "Attachments",
+        "constraints_template": "max. {maxFiles} files · max. {maxFileMb} MB per file · max. {maxTotalMb} MB total · {allowedTypes}",
+        "add_button": "Add file",
+        "remove_template": "Remove attachment ‚{name}'",
+        "size_template": "{size_kb} KB",
+        "error_too_large_file": "File ‚{name}' exceeds the maximum size ({maxFileMb} MB).",
+        "error_too_many": "Maximum number of files ({maxFiles}) reached.",
+        "error_total_too_large": "Total size of all attachments exceeds {maxTotalMb} MB.",
+        "error_mime_not_allowed": "File type ‚{name}' not allowed. Allowed: {allowedTypes}.",
+        "errors_heading": "These attachments were rejected:"
+      },
+      "draft_saved_template": "Draft saved {n}s ago",
+      "draft_saving": "Saving draft …",
+      "draft_save_error": "Save failed. Try again?",
+      "draft_save_error_retry": "Try again",
+      "draft_just_now": "Draft saved (just now)",
+      "draft_discard_button": "Discard draft",
+      "draft_discard_confirm_title": "Discard draft?",
+      "draft_discard_confirm_body": "The saved reply draft will be deleted. This cannot be undone.",
+      "draft_discard_confirm_cta": "Discard",
+      "draft_discard_confirm_cta_cancel": "Cancel",
+      "save_and_close_button": "Save and close",
+      "versand_button": "Send reply (simulated)",
+      "versand_modal": {
+        "title": "Simulate sending the reply?",
+        "body": "This demo simulates sending. Nothing goes to {empfaenger_behoerde}. Please write your reply as you would actually send it to the authority — insults or threats can be punishable under §§ 185, 241 of the German Criminal Code (StGB), even though this is only an exercise.",
+        "cta_send": "Simulate sending",
+        "cta_cancel": "Cancel"
+      },
+      "send_error_toast": "Sending failed, please try again.",
+      "send_in_progress": "Sending is being simulated …",
+      "confirmation": {
+        "headline": "Reply sent (simulated)",
+        "mock_disclaimer": "[MOCK – sending simulated. Nothing was sent to the authority.]",
+        "metadata_label_sent_at": "Sent on",
+        "metadata_label_kanal": "Send channel",
+        "metadata_label_files": "Attachments ({count})",
+        "no_attachments": "No attachments",
+        "cta_view_in_cockpit": "Show this reply in the privacy cockpit",
+        "cta_close": "Close",
+        "view_sent_link": "View sent reply",
+        "kanal_realitaetscheck_template": "Today (May 2026): the actual reply channel would be {kanal_heute}. This demo simulates the dispatch.",
+        "body_heading": "Your reply",
+        "kanal_speculative_2027_text": "case-thread-bound two-way communication based on the ZBP/BundID model",
+        "full_receipt_template": "[MOCK] Your reply has been sent in simulation. In a real 2027 scenario it would be transmitted to {empfaenger_behoerde} as {kanal_speculative_2027_text} — case-thread-bound, based on the ZBP/BundID model.",
+        "sent_at_template": "on {datum} at {uhrzeit}"
+      },
+      "speculative_banner_title": "As of 2027 — speculative design"
+    },
+    "draft": {
+      "group_title_template": "Drafts ({count})",
+      "row_label_template": "Draft: reply to {behoerde}",
+      "row_meta_template": "File ref. {aktenzeichen} · last edited {relTime} ago",
+      "row_cta": "Continue writing",
+      "empty_state_hint": "No open drafts."
+    }
+  }
+}

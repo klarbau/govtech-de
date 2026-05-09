@@ -1,0 +1,654 @@
+{
+  "app": {
+    "name": "GovTech DE",
+    "tagline": "إدارة عامة بفكر جديد.",
+    "skip_to_content": "تخطَّ إلى المحتوى الرئيسي"
+  },
+  "nav": {
+    "dashboard": "لوحة المعلومات",
+    "posteingang": "الوارد",
+    "stammdaten": "البيانات الشخصية",
+    "vorgaenge": "المعاملات",
+    "dokumente": "المستندات",
+    "termine": "المواعيد",
+    "steuer": "الضرائب",
+    "familie": "الأسرة",
+    "assistent": "المساعد",
+    "datenschutz": "الخصوصية"
+  },
+  "topbar": {
+    "language_label": "اللغة",
+    "theme_toggle_light": "السمة الفاتحة",
+    "theme_toggle_dark": "السمة الداكنة",
+    "theme_toggle_system": "إعداد النظام",
+    "user_menu": "قائمة المستخدم"
+  },
+  "footer": {
+    "imprint": "بيانات الناشر (Impressum)",
+    "privacy": "الخصوصية",
+    "accessibility": "إمكانية الوصول"
+  },
+  "landing": {
+    "eyebrow": "GovTech DE — عرض توضيحي للمفهوم",
+    "title": "إدارة عامة بفكر جديد",
+    "subtitle": "نموذج أوّلي لطبقة موجَّهة للمواطن فوق DeutschlandID و EUDI Wallet و Deutschland-Stack. جميع البيانات اصطناعية.",
+    "personas_title": "اختر شخصية",
+    "personas_helper": "يحمِّل العرض مجموعة بيانات جاهزة. يمكنك التبديل في أي وقت.",
+    "persona_anna": "آنا بيتروف، 28 سنة — Blue Card EU، برلين",
+    "persona_schmidt": "عائلة شميت — هامبورغ، تنتظر مولوداً",
+    "persona_mehmet": "محمد يلدز، 34 سنة — كولونيا، يخطط لتسجيل نشاط تجاري",
+    "cta_continue": "افتح العرض"
+  },
+  "common": {
+    "cta": {
+      "zurueck": "رجوع",
+      "weiter": "متابعة",
+      "bestaetigen": "تأكيد",
+      "abbrechen": "إلغاء",
+      "erneut_versuchen": "إعادة المحاولة"
+    },
+    "frist": {
+      "gesetzlich": "مهلة قانونية",
+      "unverzueglich": "دون تأخير",
+      "vertraglich": "مهلة تعاقدية"
+    },
+    "disclaimer": {
+      "prototype_title": "ملاحظة حول النموذج الأوّلي",
+      "prototype": "ملاحظة حول النموذج الأوّلي. يوضّح هذا العرض كيف قد يبدو تغيير العنوان عام 2027 باستخدام Deutschland-Stack و EUDI Wallet. البيانات وردود الجهات اصطناعية (مُعلَّمة بـ [MOCK]).\n\nاليوم (حتى مايو 2026) لا يقوم مكتب التسجيل (Meldeamt) تلقائياً إلا بجزء من الخطوات المعروضة: إخطار الانتقال إلى مكتب التسجيل السابق (§ 33 BMG)، وتحديث العنوان على بطاقة الهوية (§ 28 PAuswG)، إضافة إلى الإحالات الدورية إلى مصلحة الضرائب (Finanzamt) ودائرة رسوم البث (Beitragsservice) والإدارة العسكرية (Wehrverwaltung) (§ 36 BMG بالتلازم مع § 11 الفقرة 4 RBStV / § 39 AO / § 58c SG). أما صندوق التأمين الصحي (Krankenkasse) والبنك وشركة التأمين وصاحب العمل ومزوّد الطاقة فتستلزم موافقة الشخص المعني (المادة 6 الفقرة 1 البند أ من اللائحة العامة لحماية البيانات GDPR). كما يحتاج مالكو السيارات وصندوق إعانات الأسرة (Familienkasse) ومكتب شؤون الأجانب (Ausländerbehörde) إلى إخطار فعلي مستقل لكل منها — ويحاكي هذا العرض معالجة سريعة مؤكَّدة عبر eID لا تتوفر بعد على المستوى الاتحادي.",
+      "bussgeld_frist_modal": "تُلزم § 17 BMG بالتسجيل خلال أسبوعين من الانتقال. وتنصّ § 54 الفقرة 2 البند 1 BMG على غرامة قد تصل إلى 1٬000 € في هذه الحالة. وفي الممارسة البلدية تفرض مكاتب المواطنين (Bürgerämter) عادةً 10–50 € عند تأخر التسجيل؛ وتحدّد كل بلدية المبلغ على حدة. أما الغرامات حتى 50٬000 € بموجب § 54 الفقرة 1 BMG فتسري حصراً على البيانات الكاذبة أو الممتنع عن تقديمها، وليس على التأخير."
+    },
+    "frist_detail": {
+      "title": "المهلة وفق § 17 BMG — التفاصيل",
+      "open_cta": "لماذا 14 يوماً؟",
+      "close_cta": "إغلاق"
+    }
+  },
+  "umzug": {
+    "start": {
+      "title": "تغيير العنوان",
+      "subtitle": "إخطار جميع الجهات المعنية في خطوات قليلة.",
+      "adresse": {
+        "label": "عنوانك الجديد",
+        "strasse": "الشارع",
+        "hausnummer": "رقم المبنى",
+        "zusatz": "إضافة (اختياري)",
+        "plz": "الرمز البريدي (PLZ)",
+        "ort": "المدينة"
+      },
+      "stichtag": {
+        "label": "تاريخ الانتقال",
+        "helper": "اليوم الذي تنتقل فيه إلى السكن الجديد."
+      },
+      "wohnungsgeber": {
+        "title": "إفادة المؤجِّر (Wohnungsgeberbestätigung، § 19 BMG، إلزامية)",
+        "cta_upload": "اختيار ملف",
+        "cta_demo": "استخدام نموذج",
+        "helper_de": "بموجب § 19 BMG، يلتزم المؤجِّرون بإصدار هذه الإفادة خلال أسبوعين من تاريخ الانتقال.",
+        "selected_template": "تم اختيار الملف: {filename}",
+        "demo_filename": "[MOCK] Wohnungsgeberbestaetigung_Vogel.pdf"
+      },
+      "cta_weiter": "المتابعة إلى المعاينة",
+      "error": {
+        "plz_invalid": "أدخل رمزاً بريدياً صالحاً مكوَّناً من خمسة أرقام.",
+        "wohnungsgeber_missing": "لا يمكن التسجيل من دون إفادة المؤجِّر (Wohnungsgeberbestätigung) (§ 19 BMG).",
+        "auslandsadresse": "يتطلّب الانتقال إلى الخارج إلغاء تسجيل منفصلاً (§ 17 الفقرة 2 BMG). هذه المعاملة قيد الإعداد.",
+        "felder_unvollstaendig": "يُرجى استكمال جميع الحقول الإلزامية."
+      }
+    },
+    "preview": {
+      "title": "المعاينة: ما الذي يحدث عند التأكيد",
+      "subtitle_template": "العنوان الجديد: {adresse} · من {stichtag}",
+      "block_a": {
+        "title": "نتولّاه نحن تلقائياً",
+        "subhead": "§ 33 BMG · § 34 BMG · § 36 BMG"
+      },
+      "block_b": {
+        "title": "بموافقتك",
+        "subhead": "المادة 6 الفقرة 1 البند أ GDPR",
+        "consent_helper": "يمكنك سحب موافقتك في أي وقت — راجع لوحة الخصوصية (Datenschutz-Cockpit)."
+      },
+      "block_c": {
+        "title": "تتولّاها بنفسك",
+        "helper": "لا يمكننا الوصول إلى هذه الجهات مباشرةً — نُجهِّز لك نماذج جاهزة."
+      },
+      "block_d": {
+        "title": "نُعدّ الطلب — وأنت تؤكِّد عبر eID",
+        "subhead": "§ 18 PAuswG · النصّ القانوني المختص",
+        "eid_helper": "نملأ الطلب ببياناتك الشخصية. تؤكِّد بلمسة واحدة عبر وظيفة الهوية الإلكترونية."
+      },
+      "cta_start_autopilot": "بدء الطيار الآلي",
+      "empty_block_d_hidden": "",
+      "loading": "جارٍ تحميل المعاينة …",
+      "error": "تعذّر تحميل المعاينة."
+    },
+    "run": {
+      "title": "الطيار الآلي قيد التشغيل …",
+      "subtitle_template": "{adresse} · تاريخ الانتقال {stichtag}",
+      "vorgang_label": "المعاملة رقم {id}",
+      "status": {
+        "pending": "قيد الانتظار",
+        "in_progress": "قيد المعالجة",
+        "confirmed": "مؤكَّد",
+        "failed": "خطأ — أعد المحاولة",
+        "needs_eid": "يلزم لمس eID"
+      },
+      "eid_dialog": {
+        "title": "أكِّد عبر بطاقة الهوية الإلكترونية eID",
+        "body_template": "نُحيل عنوانك الجديد إلى {behoerde}. يُرجى تقريب بطاقة الهوية إلى القارئ والتأكيد بالرمز السرّي.",
+        "cta_confirm": "التأكيد عبر eID",
+        "cta_cancel": "إلغاء"
+      },
+      "cta_pause": "إيقاف مؤقت",
+      "cta_cancel": "إلغاء",
+      "cta_to_vorgang": "إلى المعاملة",
+      "frist_tooltip": {
+        "bmg_17": "المهلة وفق § 17 BMG: أسبوعان من تاريخ الانتقال.",
+        "bmg_33_3wt": "المهلة وفق § 33 BMG: ثلاثة أيام عمل كحدّ أقصى.",
+        "fzv_15_unverzueglich": "المهلة وفق § 15 FZV: دون تأخير بعد تغيير محل الإقامة."
+      },
+      "aktenzeichen_label": "رقم الملف (Aktenzeichen)",
+      "cancel_dialog": {
+        "title": "إلغاء الطيار الآلي؟",
+        "body": "لا يمكن التراجع عن التسجيلات المؤكَّدة بالفعل — يجري التصحيح عبر تقديم طلب تغيير عنوان جديد.",
+        "cta_keep_running": "متابعة التشغيل",
+        "cta_confirm_cancel": "إلغاء على أي حال"
+      }
+    },
+    "detail": {
+      "title": "المعاملة: تغيير العنوان",
+      "angelegt_template": "أُنشئت في {datum}",
+      "stichtag_template": "تاريخ الانتقال {datum}",
+      "status": {
+        "laeuft": "قيد التنفيذ",
+        "abgeschlossen": "مكتملة",
+        "fehlerhaft": "مكتملة مع أخطاء"
+      },
+      "adresse_alt": "العنوان السابق",
+      "adresse_neu": "العنوان الجديد",
+      "beteiligte_behoerden_count": "الجهات المعنية ({count})",
+      "posteingang_count": "الوارد المتعلِّق بهذه المعاملة ({count})",
+      "cta_datenschutz": "فتح لوحة الخصوصية",
+      "brief_label": "رسالة",
+      "aktz_label": "رقم الملف",
+      "termin_label_template": "موعد: {datum}، {ort}",
+      "not_found_title": "المعاملة غير موجودة",
+      "not_found_body": "هذه المعاملة غير موجودة أو تم حذفها.",
+      "back_to_dashboard": "العودة إلى لوحة المعلومات"
+    },
+    "rechtsgrundlage": {
+      "bmg_17": "§ 17 BMG: واجب التسجيل خلال أسبوعين من تاريخ الانتقال.",
+      "bmg_33": "§ 33 BMG: تبادل البيانات بين مكاتب التسجيل — يُرسَل إخطار الانتقال تلقائياً، خلال ثلاثة أيام عمل كحدّ أقصى بعد التسجيل.",
+      "bmg_34": "§ 34 BMG: نقل البيانات إلى جهات حكومية أخرى بدون موافقة، إذا كان ذلك ضرورياً لأداء مهامها العامة.",
+      "bmg_36": "§ 36 BMG: عمليات نقل بيانات منتظمة — تُحدِّد التشريعات الخاصة المستلمين والبيانات.",
+      "fzv_15": "§ 15 FZV: التزام مالك السيارة بالإبلاغ عن تغيير محلّ الإقامة — يجب تحديث شهادة التسجيل الجزء الأول (Zulassungsbescheinigung Teil I) دون تأخير.",
+      "aufenthg_18g": "§ 18g AufenthG: البطاقة الزرقاء الأوروبية للكفاءات الأجنبية (منذ تعديل قانون الإقامة AufenthG عام 2023).",
+      "aufenthg_87": "§ 87 AufenthG: نقل البيانات إلى مكاتب شؤون الأجانب (Ausländerbehörden) عند الطلب فقط، دون نقل تلقائي.",
+      "pauswg_18": "§ 18 PAuswG: وظيفة الهوية الإلكترونية — eID بمثابة إعلان إرادة ملزم قانونياً.",
+      "pauswg_28": "§ 28 PAuswG: تحديث العنوان على بطاقة الهوية (ملصق عنوان من Bundesdruckerei).",
+      "dsgvo_6_1_a": "المادة 6 الفقرة 1 البند أ GDPR: موافقة الشخص المعني — يمكن سحبها في أي وقت.",
+      "estg_67_68": "§§ 67–68 EStG: طلب علاوة الأبناء وواجب الإبلاغ عن التغييرات.",
+      "rbstv_11_4": "§ 11 الفقرة 4 RBStV: نقل بيانات التسجيل بشكل دوري إلى دائرة رسوم البث (Beitragsservice).",
+      "sgb_iv_28a": "§ 28a SGB IV: إخطارات صاحب العمل وفق DEÜV إلى هيئات التأمين الاجتماعي.",
+      "detail_title": "الأساس القانوني",
+      "open_cta": "إظهار الأساس القانوني"
+    }
+  },
+  "placeholder": {
+    "section_title": "{section}",
+    "wip": "هذا القسم قيد الإعداد.",
+    "wip_helper": "يركّز هذا العرض في البداية على طيار آلي لتغيير العنوان. ستتبع معاملات أخرى."
+  },
+  "posteingang": {
+    "skip_link": {
+      "zur_brief_liste": "تخطَّ إلى قائمة الرسائل"
+    },
+    "hero": {
+      "title": "صندوق الوارد (Posteingang)",
+      "subtitle": "كل رسائل الجهات الرسمية في مكان واحد. لتفهم بدلاً من أن تحتار.",
+      "speculative_footer": "يوضّح هذا العرض كيف *قد* يبدو صندوق وارد موحَّد للجهات الرسمية (Posteingang) عام 2027. حتى مايو 2026 (سيناريو افتراضي): صندوق المواطن المركزي (ZBP/BundID) في الإنتاج (نُقل نحو 3.8 مليون صندوق)، ويُعتزم إطلاق التواصل ثنائي الاتجاه اعتباراً من يوليو 2026؛ ولـ Mein ELSTER صندوق وارد خاص به مع التبليغ الإلكتروني (elektronische Bekanntgabe) مقرَّراً افتراضياً اعتباراً من 01.01.2027. لا يوجد بعد صندوق وارد *موحَّد* في ألمانيا عام 2026 — العرض يُظهر كيف يمكن أن يبدو. البيانات والرسائل اصطناعية (`[MOCK]`)."
+    },
+    "watermark": {
+      "banner": "[MOCK – عرض إداري، لا توجد بيانات حقيقية]",
+      "inline": "[MOCK]"
+    },
+    "list": {
+      "tab_chronologisch": "ترتيب زمني",
+      "tab_nach_vorgang": "تجميع حسب المعاملة (Vorgang)",
+      "group": {
+        "neu": "جديد",
+        "frist_unter_7d": "المهلة ≤ 7 أيام",
+        "frist_ueber_7d": "المهلة > 7 أيام",
+        "erledigt": "منجز",
+        "archiv": "أرشيف",
+        "andere": "أخرى"
+      },
+      "empty_inbox": "لا توجد رسائل في صندوق الوارد.",
+      "empty_filter": "لا توجد رسائل تطابق المرشّحات المختارة. هل تريد تحديث الوارد؟",
+      "cta_refresh": "تحديث صندوق الوارد",
+      "error_load": "تعذّر تحميل الرسائل — هل تريد إعادة المحاولة؟",
+      "region_label": "قائمة الرسائل"
+    },
+    "search": {
+      "placeholder": "ابحث برقم الملف (Aktenzeichen) أو الجهة …",
+      "aria_label": "البحث برقم الملف (Aktenzeichen) أو الجهة",
+      "hits_count_template": "{count, plural, =0 {لا توجد نتائج} =1 {نتيجة واحدة} =2 {نتيجتان} few {# نتائج} many {# نتيجة} other {# نتيجة}}"
+    },
+    "filter": {
+      "title": "المرشّحات",
+      "aria_label": "تصفية الرسائل",
+      "drawer_title": "اختيار المرشّحات",
+      "popover_title": "تصفية الرسائل",
+      "popover_apply": "تطبيق المرشّحات",
+      "popover_clear": "إعادة تعيين المرشّحات",
+      "close": "إغلاق المرشّحات",
+      "cta_open_mobile": "المرشّحات",
+      "cta_reset": "إعادة تعيين كل المرشّحات",
+      "kategorie": {
+        "title": "فئة الجهة",
+        "bund": "اتحادي (Bund)",
+        "land": "ولاية (Land)",
+        "kommunal": "بلدي (Kommunal)",
+        "sonstige": "أخرى (إدارة ذاتية، قانون خاص)",
+        "selbstverwaltung": "إدارة ذاتية (Selbstverwaltung)",
+        "privatrechtl-behoerdenartig": "خاص (شبيه بالجهات الرسمية)"
+      },
+      "status": {
+        "title": "الحالة",
+        "neu": "جديد",
+        "frist_unter_7d": "المهلة ≤ 7 أيام",
+        "frist_ueber_7d": "المهلة > 7 أيام",
+        "erledigt": "منجز",
+        "archiv": "أرشيف"
+      }
+    },
+    "inbox": {
+      "active_filters_label": "المرشّحات النشطة:",
+      "filter_chip_remove_aria": "إزالة المرشّح ‚{filter}'",
+      "filter_button_label": "المرشّحات",
+      "filter_button_count_template": "المرشّحات ({count})",
+      "vorgang_gruppe_filtered_template": "(تمت تصفية {gefiltert} من {gesamt})",
+      "active_filters_clear_all": "إعادة تعيين الكل"
+    },
+    "actions": {
+      "kebab_menu_aria": "إجراءات أخرى",
+      "open_kebab": "فتح إجراءات أخرى"
+    },
+    "card": {
+      "aktenzeichen_label": "رقم الملف (Aktenzeichen)",
+      "frist_label": "المهلة (Frist)",
+      "frist_keine": "بلا مهلة",
+      "frist_pre_open_template": "المهلة {datum}",
+      "frist_abgelaufen_template": "انتهت المهلة في {datum}",
+      "brieftyp_label": "نوع الرسالة",
+      "vorgang_tag_template": "تابعة للمعاملة ‚{title}'",
+      "vorgang_anlegen_template": "معاملة جديدة (Vorgang)؟ إنشاء {brieftyp} {jahr}؟",
+      "markiere_gelesen": "وسم هذه الرسالة بأنها مقروءة",
+      "cta_open": "فتح الرسالة",
+      "status": {
+        "ungelesen": "غير مقروءة",
+        "gelesen": "مقروءة",
+        "erledigt": "منجزة"
+      },
+      "authentizitaet": {
+        "empfangen_template": "وردت عبر {kanal}",
+        "eingabe_buerger": "إدخال من المواطن",
+        "eudi_versiegelt": "مختومة عبر EUDI Wallet",
+        "channels": {
+          "briefpost": "بريد ورقي (Briefpost)",
+          "mein_elster": "Mein ELSTER",
+          "zbp_bundid": "ZBP/BundID",
+          "krankenkassen_portal": "بوابة التأمين الصحي",
+          "eingabe_buerger": "إدخال المواطن",
+          "eudi_versiegelt": "EUDI Wallet"
+        },
+        "icon_label": "رسالة",
+        "icon_aria_template": "وردت عبر {kanal}"
+      },
+      "datenschutz_link": "ما البيانات من هذه الرسالة وأين جرت معالجتها؟",
+      "datenschutz_link_aria": "فتح كابينة حماية البيانات لهذه الرسالة",
+      "utility_row_aria": "إجراءات مساعدة بشأن الرسالة"
+    },
+    "gruppe": {
+      "titel_template": "المعاملة (Vorgang): {titel} ({count})",
+      "sonstige_titel_template": "أخرى ({count})",
+      "aufklappen": "توسيع",
+      "zuklappen": "طيّ",
+      "earliest_frist_template": "أقرب مهلة: {datum}"
+    },
+    "archetype": {
+      "label": {
+        "steuerbescheid": "ربط ضريبي (Steuerbescheid)",
+        "krankenkasse-beitrag": "اشتراك التأمين الصحي",
+        "beitragsservice-mahnung": "رسوم البث (Beitragsservice)",
+        "abh-verlaengerung": "تصريح الإقامة (Aufenthaltstitel)",
+        "familienkasse-nachweis": "صندوق إعانات الأسرة (Familienkasse)",
+        "buergeramt-meldung": "مكتب المواطن (Bürgeramt)",
+        "ihk-beitrag": "اشتراك غرفة الصناعة والتجارة (IHK)",
+        "berufsgenossenschaft-beitrag": "اشتراك الجمعية المهنية للتأمين",
+        "standesamt-urkunde": "دائرة الأحوال المدنية (Standesamt)",
+        "sonstiges": "رسالة"
+      }
+    },
+    "reader": {
+      "zurueck": "العودة إلى صندوق الوارد",
+      "not_found_title": "الرسالة غير موجودة",
+      "not_found_body": "هذه الرسالة غير موجودة أو تم حذفها.",
+      "originaltext_heading": "النص الأصلي",
+      "originaltext_authoritative_label": "ملزِم قانونياً",
+      "summary_heading": "ملخّص (ذكاء اصطناعي)",
+      "summary_skeleton_hint": "يجري إعداد الملخّص بالذكاء الاصطناعي — يُرجى مطابقة المعلومات المهمة مع النص الأصلي.",
+      "summary_authoritative_banner": "النص الأصلي هو الملزِم قانونياً. يُرجى التحقّق من المعلومات المهمة.",
+      "summary_error": "الملخّص غير متاح مؤقتاً — النص الأصلي بجانبه هو المرجع.",
+      "summary_error_retry": "إعادة المحاولة",
+      "tab_originaltext": "النص الأصلي",
+      "tab_zusammenfassung": "الملخّص",
+      "vorgang_link_template": "المعاملة ‚{title}'",
+      "archetype_short": "رسالة",
+      "empfangen_label": "وردت في",
+      "aktenzeichen_primaer_label": "رقم الملف (Aktenzeichen)",
+      "aktenzeichen_weitere_label": "أرقام ملفات أخرى",
+      "frist_chip_zahlung_template": "السداد {tage}",
+      "frist_chip_einspruch_template": "اعتراض (Einspruch) {tage}",
+      "frist_chip_sonstige_template": "{label} {tage}",
+      "frist_chip_keine": "بلا مهلة",
+      "frist_chip_today": "اليوم آخر موعد",
+      "frist_chip_days_template": "خلال {tage, plural, =1 {يوم واحد} =2 {يومين} few {# أيام} many {# يوماً} other {# يوم}}",
+      "frist_chip_abgelaufen_template": "انتهت في {datum}",
+      "frist_sr_open_template": "{typ}: تبقّى {tage, plural, =0 {0 يوم} =1 {يوم واحد} =2 {يومان} few {# أيام} many {# يوماً} other {# يوم}} حتى {datum}",
+      "frist_sr_overdue_template": "{typ}: انتهت المهلة في {datum}",
+      "frist_added_toast": "تم تجهيز المهلة كملف .ics للتنزيل.",
+      "actions_heading": "إجراءات بشأن هذه الرسالة",
+      "actions": {
+        "kalender": "إضافة المهلة إلى التقويم (.ics)",
+        "kalender_per_frist_template": "إضافة {typ} إلى التقويم (.ics)",
+        "originalbrief": "إظهار النص الأصلي",
+        "speichern": "حفظ الرسالة (.txt)",
+        "markiere_gelesen": "وسم هذه الرسالة بأنها مقروءة",
+        "citation_mismatch_disabled_hint": "تعذّر التحقّق من المهلة بشكل قاطع في النص الأصلي. تصدير التقويم معطَّل — يُرجى التحقّق من التاريخ من النص الأصلي."
+      },
+      "skip_link": {
+        "aria": "تنقّل سريع",
+        "zur_zusammenfassung": "الانتقال إلى الملخّص",
+        "zum_original": "الانتقال إلى النص الأصلي"
+      },
+      "citation": {
+        "popover_title": "الصياغة الأصلية",
+        "scroll_to_original": "إظهار في النص الأصلي",
+        "marker_aria_template": "الصياغة الأصلية للنقطة {n}",
+        "mismatch_warning": "تعذّر التحقّق من هذه المهلة بشكل قاطع في النص الأصلي — يُرجى التحقّق بنفسك.",
+        "mismatch_warning_sr": "عدم تطابق الاقتباس — تحقّق من المهلة في النص الأصلي."
+      },
+      "frist_modal": {
+        "title": "تفاصيل المهلة",
+        "zitat_label": "الصياغة الأصلية في الرسالة:",
+        "kalender_cta": "إضافة إلى التقويم",
+        "disclaimer": "اكتُشفت هذه المهلة تلقائياً من الرسالة. الصياغة الأصلية: ‚{zitat}'. يُرجى التحقّق من التاريخ."
+      },
+      "neuer_vorgang": {
+        "title": "إنشاء معاملة جديدة (Vorgang) من هذه الرسالة؟",
+        "body_template": "نقترح نوع المعاملة ‚{typ}'. يمكنك تغيير النوع بالأسفل.",
+        "typ_legend": "نوع المعاملة",
+        "vorgangs_typ": {
+          "steuer-jahr": "ضريبة (سنة)",
+          "familienkasse": "صندوق إعانات الأسرة (Familienkasse)",
+          "aufenthaltstitel-verlaengerung": "تجديد تصريح الإقامة",
+          "sonstige": "أخرى"
+        },
+        "cta_anlegen": "إنشاء المعاملة",
+        "cta_abbrechen": "إلغاء",
+        "submitting": "جارٍ الإنشاء …",
+        "toast_success": "تم إنشاء المعاملة. ستتم إعادة توجيهك.",
+        "toast_error": "تعذّر إنشاء المعاملة — يُرجى إعادة المحاولة."
+      },
+      "was_kann_ich_tun": {
+        "heading": "ماذا يمكنني أن أفعل؟",
+        "helper": "الإجراءات الممكنة (للعلم فقط — وليست استشارة قانونية):"
+      }
+    },
+    "was_kann_ich_tun": {
+      "steuerbescheid": {
+        "zahlung": "سداد المبلغ",
+        "einspruch": "تقديم اعتراض (Einspruch، خلال شهر واحد، § 355 AO)",
+        "aussetzung": "تقديم طلب وقف التنفيذ (Aussetzung der Vollziehung، § 361 AO)",
+        "saeumniszuschlag_info": "ملاحظة: تُحتسب غرامات التأخير (Säumniszuschläge) من تاريخ الاستحقاق (§ 240 AO، 1 ٪ شهرياً)"
+      },
+      "krankenkasse-beitrag": {
+        "zahlung": "سداد الاشتراك",
+        "widerspruch": "تقديم اعتراض (Widerspruch، خلال شهر واحد، § 84 SGG)",
+        "befreiung_pruefen": "النظر في الإعفاء من الاشتراك / حالة الضرورة"
+      },
+      "beitragsservice-mahnung": {
+        "zahlung": "سداد المتأخّر",
+        "widerspruch": "تقديم اعتراض (Widerspruch، خلال شهر واحد)",
+        "befreiung_pruefen": "النظر في طلب الإعفاء (مثلاً عند تلقّي إعانة SGB-II)"
+      },
+      "abh-verlaengerung": {
+        "termin_buchen": "حجز موعد للتجديد",
+        "nachweise_sammeln": "تجميع المستندات (جواز السفر، التأمين الصحي، إثبات العمل، إفادة المؤجِّر / Wohnungsgeberbestätigung)",
+        "fiktionsbescheinigung_info": "ملاحظة: عند تقديم الطلب في الموعد، يسري افتراض الاستمرار (Fortbestands-Fiktion، § 81 الفقرة 4 AufenthG)"
+      },
+      "familienkasse-nachweis": {
+        "nachweis_einreichen": "تقديم المستندات المطلوبة",
+        "fristverlaengerung_pruefen": "تقديم طلب تمديد المهلة كتابياً"
+      },
+      "buergeramt-meldung": {
+        "keine_aktion": "لا يلزم إجراء (تأكيد إعلامي)",
+        "folgeprozesse_pruefen": "النظر في الإجراءات اللاحقة (السيارة، التأمين الصحي، البنك)"
+      },
+      "ihk-beitrag": {
+        "zahlung": "سداد الاشتراك",
+        "widerspruch": "تقديم اعتراض (Widerspruch)",
+        "abweichende_festsetzung_pruefen": "النظر في طلب تقدير مختلف (حالة ضرورة)"
+      },
+      "berufsgenossenschaft-beitrag": {
+        "zahlung": "سداد الاشتراك",
+        "widerspruch": "تقديم اعتراض (Widerspruch، خلال شهر واحد)"
+      },
+      "standesamt-urkunde": {
+        "keine_aktion": "لا يلزم إجراء (احتفظ بالشهادة)",
+        "folge_familienkasse": "تقديم طلب علاوة الأبناء لدى صندوق الأسرة (Familienkasse)",
+        "folge_krankenkasse": "تسجيل الطفل لدى التأمين الصحي (تأمين الأسرة)",
+        "folge_steueridnr": "يُمنح الرقم الضريبي (Steuer-IdNr.) تلقائياً من المكتب الاتحادي المركزي للضرائب (BZSt)"
+      }
+    },
+    "normtooltip": {
+      "aria_open": "فتح شرح المادة القانونية",
+      "vwvfg_41_2": "§ 41 الفقرة 2 VwVfG: يُعدّ القرار الإداري (Verwaltungsakt) مُبلَّغاً في اليوم الرابع من إيداعه بالبريد (وفق تعديل قانون البريد اعتباراً من 01.01.2025).",
+      "vwvfg_41_2a": "§ 41 الفقرة 2a VwVfG: عند التوفير عبر بوابة بموافقة المستخدم، يُعدّ القرار الإداري مُبلَّغاً في اليوم التالي للاطّلاع عليه.",
+      "ao_122": "§ 122 AO: تبليغ القرار الإداري (Bekanntgabe)؛ في حالة البريد الورقي يسري افتراض الأيام الأربعة (§ 122 الفقرة 2 AO).",
+      "ao_122a": "§ 122a AO: التبليغ الإلكتروني للربط الضريبي (Steuerbescheide) عبر Mein ELSTER — يُعدّ مُبلَّغاً في اليوم الرابع بعد إتاحته (الفقرة 4).",
+      "vwzg_5": "§ 5 VwZG: التبليغ الإلكتروني الرسمي؛ يُعدّ مُبلَّغاً في اليوم الرابع من الإرسال (افتراض قابل للدحض).",
+      "ao_240": "§ 240 AO: غرامة التأخير (Säumniszuschlag) — 1 ٪ عن كل شهر مبدوء على الديون الضريبية غير المسدَّدة، اعتباراً من تاريخ الاستحقاق.",
+      "ao_361": "§ 361 AO: يمكن طلب وقف التنفيذ (Aussetzung der Vollziehung) إذا وُجدت شكوك جدية في المشروعية أو إذا كان التنفيذ يشكّل ضرراً غير مبرَّر.",
+      "ao_355": "§ 355 AO: مهلة الاعتراض (Einspruchsfrist) — شهر واحد بعد تبليغ الربط الضريبي.",
+      "ao_357": "§ 357 AO: يُقدَّم الاعتراض (Einspruch) إلى مصلحة الضرائب (Finanzamt) كتابياً أو إلكترونياً.",
+      "vwgo_70": "§ 70 VwGO: مهلة الاعتراض (Widerspruchsfrist) — شهر واحد بعد تبليغ القرار الإداري.",
+      "sgg_84": "§ 84 SGG: الاعتراض في إجراءات المحكمة الاجتماعية — شهر واحد بعد التبليغ.",
+      "owig_67": "§ 67 OWiG: الاعتراض على قرار غرامة (Bußgeldbescheid) — أسبوعان بعد التبليغ.",
+      "rdg_2": "§ 2 RDG: الخدمة القانونية (Rechtsdienstleistung) نشاط في شؤون الغير يستلزم فحصاً قانونياً للحالة الفردية.",
+      "ao_30": "§ 30 AO: السرّ الضريبي (Steuergeheimnis) — حماية البيانات الضريبية الشخصية.",
+      "ao_87a": "§ 87a AO: التواصل الإلكتروني مع السلطات الضريبية (Finanzbehörden).",
+      "bdsg_22": "§ 22 BDSG: معالجة الفئات الخاصة من البيانات الشخصية.",
+      "estg_68": "§ 68 EStG: واجبات التعاون في علاوة الأبناء — تُقدَّم المستندات عند الطلب.",
+      "aufenthg_81_4": "§ 81 الفقرة 4 AufenthG: افتراض استمرار الإقامة (Fortbestands-Fiktion) — عند تقديم طلب التجديد في الموعد، يُعدّ تصريح الإقامة (Aufenthaltstitel) قائماً.",
+      "ao_110": "§ 110 AO: إعادة الحال إلى ما كان عليه (Wiedereinsetzung) عند تجاوز المهلة بدون تقصير.",
+      "dsgvo_6": "المادة 6 GDPR: الأسس القانونية لمعالجة البيانات الشخصية.",
+      "dsgvo_9": "المادة 9 GDPR: الفئات الخاصة من البيانات الشخصية (الصحة، الأصل العرقي، …).",
+      "dsgvo_22": "المادة 22 GDPR: الحق في عدم الخضوع لقرار قائم حصراً على المعالجة الآلية.",
+      "dsgvo_28": "المادة 28 GDPR: المعالج بالنيابة — العقد مع المعالج.",
+      "bgh_smartlaw": "BGH I ZR 113/20 (Smartlaw, 2021): مولِّد العقود ليس خدمة قانونية غير مشروعة — له طابع الأداة، ولا توجد علاقة توكيل."
+    },
+    "disclaimer": {
+      "opening_title": "ملاحظة بشأن الفتح",
+      "opening": "ملاحظة بشأن الفتح. هذا التطبيق طبقة قراءة وشرح لرسائل الجهات الرسمية. فتح بطاقة رسالة هنا أو وسمها بأنها مقروءة هو **مجرّد حالة قراءة داخل التطبيق** — وليس استلاماً بمفهوم § 41 الفقرة 2a VwVfG أو § 122a AO، ولا يُحدث أي تبليغ قانوني (rechtliche Bekanntgabe).\n\nيتحدّد التبليغ القانوني وفق وسيلة الإرسال في القناة **الرسمية**:\n- **البريد الورقي (Briefpost)** (الحالة الأكثر شيوعاً — التأمين الصحي، دائرة رسوم البث (Beitragsservice)، صندوق إعانات الأسرة (Familienkasse)، مكتب شؤون الأجانب (Ausländerbehörde)، مكتب المواطن (Bürgeramt)، دائرة الغرامات (Bußgeldstelle)): يُعدّ مُبلَّغاً في **اليوم الرابع بعد إيداعه بالبريد** (§ 41 الفقرة 2 VwVfG أو § 122 الفقرة 2 AO منذ تعديل قانون البريد اعتباراً من 01.01.2025).\n- **Mein ELSTER** (الربط الضريبي عند تقديم إقرار ضريبي إلكتروني): يُعدّ مُبلَّغاً في **اليوم الرابع بعد إتاحته للاطّلاع** (§ 122a الفقرة 4 AO). اعتباراً من 01.01.2027 يصبح التبليغ الإلكتروني هو الافتراض (مع إمكانية الاعتراض)؛ وحتى ذلك التاريخ تسري مرحلة انتقالية بموافقة فعلية.\n- **صندوق المواطن المركزي (ZBP/BundID) بموافقتك**: يُعدّ مُبلَّغاً في **اليوم التالي للاطّلاع** (§ 41 الفقرة 2a VwVfG). إذا لم يُطَّلَع عليه خلال 10 أيام، فلا يقع التبليغ.\n- **التبليغ الإلكتروني الرسمي** (مثل الإجراءات الإدارية، المحكمة الاجتماعية): يُعدّ مُبلَّغاً في **اليوم الرابع بعد الإرسال**، مع إمكانية إثبات وصول لاحق (§ 5 الفقرة 7 VwZG).\n\nيُرجى الاطّلاع بانتظام على **صناديق البريد الرسمية** وصندوق البريد المادي. هذا التطبيق لا يحلّ محلّ ذلك.\n\nملاحظة بشأن الترجمة: النص الألماني الأصلي لهذه الملاحظة هو الملزِم قانونياً؛ والترجمة وسيلة للفهم لا غير.",
+      "no_legal_advice_title": "ليست استشارة قانونية",
+      "no_legal_advice": "هذا الشرح المُعَدّ بالذكاء الاصطناعي **معلومات عامة** ووسيلة للفهم — وليس **خدمة قانونية** بمفهوم قانون الخدمات القانونية (§ 2 RDG). ولا يُجري **أي** تقييم لحالتك الفردية (خط BGH I ZR 113/20 ‚Smartlaw': طابع أداة، لا علاقة توكيل، لا وعد بالنجاح).\n\nالتقييم القانوني الملموس — مثل ما إذا كان للاعتراض حظوظ نجاح، أو أيّ تسبيب يكون مقنعاً، أو ما إذا كان القرار (Bescheid) مشروعاً — لا يمكن تقديمه إلا من شخص مرخّص له بتقديم الخدمة القانونية: محامٍ (Rechtsanwält:in، BRAO)، أو مركز حماية المستهلك (Verbraucherzentrale، UKlaG/§ 8 RDG)، أو رابطة اجتماعية (مثل SoVD أو VdK)، أو غرفة المستشارين الضريبيين المختصة. الذكاء الاصطناعي **لا يقدّم وعوداً بالنجاح** و**لا يمثّلك** أمام الجهات الرسمية. الاقتراحات بشأن الردود أو المهل غير مُلزِمة؛ وتقع مسؤولية كلّ إدخال وكلّ إرسال عليك.\n\nملاحظة بشأن الترجمة: النص الألماني الأصلي لهذه الملاحظة هو الملزِم قانونياً.",
+      "mock_data_title": "رسائل العرض اصطناعية",
+      "mock_data": "جميع الرسائل وأرقام الملفات (Aktenzeichen) والمبالغ والبيانات الشخصية المعروضة هنا **اصطناعية** ومُعلَّمة بـ `[MOCK]`. لا يعالج هذا العرض **أي رسائل رسمية حقيقية** ولا يرتبط بـ Mein ELSTER ولا بصندوق المواطن المركزي (ZBP/BundID) ولا ببوابات صناديق التأمين الصحي ولا بأي صناديق رسمية أخرى. تحميل الرسائل **معطَّل** في هذا العرض. يُرجى عدم لصق رسائل حقيقية أو بيانات شخصية في حقول الإدخال — العرض غير مُعتمَد لمعالجة معلومات حسّاسة.\n\nملاحظة بشأن الترجمة: النص الألماني الأصلي لهذه الملاحظة هو الملزِم قانونياً.",
+      "original_authoritative": "**الملزِم قانونياً هو حصراً النص الألماني الأصلي** للقرار (Bescheid). أمّا ملخّص الذكاء الاصطناعي وأي ترجمات فهي مجرّد وسائل للفهم، وقد تتضمّن — كأي نص يُولِّده الذكاء الاصطناعي — أخطاء أو إغفالات. عند الشك، تكون عبرة الجهة الرسمية بصياغتها الأصلية. اضغط على ‚إظهار النص الأصلي' لقراءة النص كاملاً، وقارن المعلومات المهمة (المهلة، المبلغ، رقم الملف) بالأصل.\n\nملاحظة بشأن الترجمة: النص الألماني الأصلي هو الملزِم قانونياً؛ وهذا النص العربي وسيلة للفهم لا غير.",
+      "frist_modal_inline": "اكتُشفت هذه المهلة تلقائياً من الرسالة. يُرجى التحقّق من التاريخ من النص الأصلي.",
+      "summary_footer_hint": "الملخّص يُكمّل النص الأصلي ولا يحلّ محلّه. اضغط على رمز العلامة [⌖] بجوار نقطة لرؤية الصياغة الأصلية في الرسالة.",
+      "rechtliche_hinweise_summary": "ملاحظات قانونية"
+    },
+    "toast": {
+      "refresh_after_vorgang_created": "تم تحديث صندوق الوارد."
+    },
+    "sticky_action": {
+      "frist_label_template": "المهلة {datum} ({tage_template})",
+      "frist_label_no_frist": "بلا مهلة",
+      "cta_kalender": "إضافة المهلة إلى التقويم (.ics)",
+      "cta_reply": "كتابة رد",
+      "cta_reply_resume_draft": "متابعة المسودة",
+      "cta_reply_again": "الرد مجدداً",
+      "cta_reply_view_sent": "عرض الرد المُرسل",
+      "already_replied_template": "تم الرد في {datum}",
+      "overflow_label": "إجراءات أخرى",
+      "overflow": {
+        "speichern": "حفظ الرسالة (.txt)",
+        "original_pdf": "إظهار النص الأصلي",
+        "markiere_gelesen": "وسم هذه الرسالة بأنها مقروءة"
+      }
+    },
+    "compose": {
+      "cta_open_sheet": "كتابة رد",
+      "sheet_title": "رد إلى {behoerde}",
+      "sheet_close_aria": "إغلاق لوحة الرد",
+      "recipient_label_template": "إلى: {behoerde}",
+      "bezug_label_template": "بشأن: {aktenzeichen}",
+      "outbound_speculative": "حتى عام 2027 — تصميم افتراضي. في هذا العرض نُحاكي تواصلاً ثنائي الاتجاه مرتبطاً بخيط الطلب (antrags-thread-gebunden) قائماً على نموذج ZBP/BundID: تعيش الردود دائماً في خيط رسالة بعينها (مع تثبيت برقم الملف Aktenzeichen)، لا كصندوق بريد مفتوح. اليوم (مايو 2026) يختلف قناة الرد بحسب الجهة: Mein ELSTER لمصلحة الضرائب (Finanzamt)، بوابة التأمين الصحي لصناديق التأمين، بوابة خدمة الولاية (Landes-Service-Portal) لمكاتب المواطن وشؤون الأجانب، وغالباً ما تزال البريد الورقي. لا يُرسل شيء إلى {behoerde}.",
+      "behoerde_kanal": {
+        "bundid_postfach_2027": "صندوق BundID (BundID-Postfach، افتراضياً 2027)",
+        "service_portal_land": "بوابة خدمة الولاية (Landes-Service-Portal)",
+        "elster": "Mein ELSTER",
+        "familienkasse_online": "Familienkasse Online",
+        "beitragsservice": "بوابة Beitragsservice",
+        "aok_portal": "بوابة Mein-AOK",
+        "briefpost": "بريد ورقي (Briefpost)"
+      },
+      "template_picker": {
+        "legend": "اختر قالباً",
+        "frist_verlaengerung": {
+          "label": "طلب تمديد المهلة",
+          "description": "طلب تمديد المهلة (إداري بحت).",
+          "icon": "🕐"
+        },
+        "nachweis_einreichen": {
+          "label": "تقديم مستند",
+          "description": "نص مرافق لمستند مُرفَق.",
+          "icon": "📎"
+        },
+        "informative_rueckmeldung": {
+          "label": "رد إعلامي",
+          "description": "رد على استفسار من الجهة.",
+          "icon": "ℹ️"
+        },
+        "termin_antwort": {
+          "label": "رد على موعد",
+          "description": "تأكيد الموعد المقترح أو إعادة جدولته أو إلغاؤه.",
+          "icon": "📅"
+        },
+        "freitext": {
+          "label": "كتابة نص خاص",
+          "description": "البدء دون قالب.",
+          "icon": "📝"
+        }
+      },
+      "templates": {
+        "frist_verlaengerung": {
+          "disclaimer_pre_insertion": "يصوغ هذا القالب طلباً صرفاً لتمديد المهلة. لا يتضمن أي تقييم قانوني لحالتك الفردية. تَبُتّ الجهة في منح التمديد وفق قواعد قانون الإجراءات المعنية (مثل القانون الضريبي Abgabenordnung أو قانون الإجراءات الإدارية Verwaltungsverfahrensgesetz). أنت من يكتب التسبيب — والتطبيق لا يقترح حججاً.",
+          "disclaimer_inline": "ملاحظة: تَبُتّ الجهة باستقلالية فيما إذا كانت ستُمدِّد المهلة."
+        },
+        "nachweis_einreichen": {
+          "disclaimer_pre_insertion": "بهذا القالب تُرسل المستندات للوفاء بواجب التعاون — مثلاً وفق أحكام قانون الضمان الاجتماعي (Sozialgesetzbuch) أو القانون الضريبي (Abgabenordnung) أو قانون الإقامة (Aufenthaltsgesetz)، بحسب الجهة. لا يتضمن القالب تنازلاً عن طلبات مستندات أخرى: يُرجى إرفاق المستند المطلوب فقط.",
+          "disclaimer_inline": "ملاحظة: أرفق فقط المستند المطلوب صراحةً — لا تُرفق مستندات إضافية."
+        },
+        "informative_rueckmeldung": {
+          "disclaimer_pre_insertion": "هذا القالب مجرد إفادة موضوعية. وهو **ليس** اعتراضاً (Einspruch)، **وليس** تظلماً (Widerspruch)، **وليس** طلباً. إذا كنت ترغب في الطعن رسمياً على قرار (Bescheid)، اختر قالباً آخر — وانتبه إلى أن المهل قد تكون سارية (عادةً شهر واحد بعد التبليغ؛ منظَّم مثلاً في القانون الضريبي (Abgabenordnung) أو قانون المحكمة الاجتماعية (Sozialgerichtsgesetz)).",
+          "disclaimer_inline": "ملاحظة: هذه الإفادة ليست وسيلة طعن — ولا تُوقف أي مهلة."
+        },
+        "termin_antwort": {
+          "disclaimer_pre_insertion": "يردّ هذا القالب على اقتراح موعد من الجهة. عند الإرجاء أو الإلغاء، يكون اقتراح موعد بديل (وضع „verschieben“) مفيداً عادةً. انتبه إلى أن الإخلال بواجب التعاون في إجراء جارٍ قد تترتب عليه آثار سلبية — وفق أحكام التعاون في قانون الضمان الاجتماعي (Sozialgesetzbuch) أو قانون الإقامة (Aufenthaltsgesetz)، بحسب الجهة.",
+          "disclaimer_inline": "ملاحظة: الإلغاء دون اقتراح موعد بديل قد يؤخّر الإجراء.",
+          "mode_legend": "الإجراء",
+          "mode": {
+            "bestaetigen": "تأكيد",
+            "verschieben": "إعادة جدولة",
+            "absagen": "إلغاء"
+          }
+        },
+        "freitext": {
+          "disclaimer_inline": "أنت تكتب دون قالب. التاريخ ورقم الملف (Aktenzeichen) والمستلِم مُعَبَّأة مسبقاً من الرسالة."
+        }
+      },
+      "body_textarea_label": "نص الرد (بالألمانية)",
+      "body_textarea_de_hint": "الجهات تقرأ بالألمانية — يُرجى الكتابة بالألمانية.",
+      "body_textarea_placeholder": {
+        "frist_verlaengerung": "تسبيب تمديد المهلة …",
+        "nachweis_einreichen": "نص مرافق للمستند …",
+        "informative_rueckmeldung": "ردك إلى الجهة …",
+        "termin_antwort": "ردك على اقتراح الموعد …",
+        "freitext": "اكتب ردك …"
+      },
+      "template_switch_confirm_title": "تغيير القالب؟",
+      "template_switch_confirm_body": "لقد كتبت نصاً بالفعل. اختيار قالب آخر سيستبدل النص.",
+      "template_switch_confirm_cta_yes": "تطبيق القالب",
+      "template_switch_confirm_cta_no": "إلغاء",
+      "attachments": {
+        "label": "المرفقات",
+        "constraints_template": "بحدّ أقصى {maxFiles} ملفات · أقصى {maxFileMb} م.ب لكل ملف · أقصى {maxTotalMb} م.ب إجمالاً · {allowedTypes}",
+        "add_button": "إضافة ملف",
+        "remove_template": "إزالة المرفق ‚{name}'",
+        "size_template": "{size_kb} ك.ب",
+        "error_too_large_file": "الملف ‚{name}' يتجاوز الحجم الأقصى ({maxFileMb} م.ب).",
+        "error_too_many": "تم بلوغ الحد الأقصى لعدد الملفات ({maxFiles}).",
+        "error_total_too_large": "إجمالي حجم المرفقات يتجاوز {maxTotalMb} م.ب.",
+        "error_mime_not_allowed": "نوع الملف ‚{name}' غير مسموح. المسموح: {allowedTypes}.",
+        "errors_heading": "تم رفض هذه المرفقات:"
+      },
+      "draft_saved_template": "تم حفظ المسودة قبل {n} ث",
+      "draft_saving": "جارٍ حفظ المسودة …",
+      "draft_save_error": "فشل الحفظ. هل تريد إعادة المحاولة؟",
+      "draft_save_error_retry": "إعادة المحاولة",
+      "draft_just_now": "تم حفظ المسودة (للتوّ)",
+      "draft_discard_button": "حذف المسودة",
+      "draft_discard_confirm_title": "حذف المسودة؟",
+      "draft_discard_confirm_body": "ستُحذف مسودة الرد المحفوظة. لا يمكن التراجع عن هذا الإجراء.",
+      "draft_discard_confirm_cta": "حذف",
+      "draft_discard_confirm_cta_cancel": "إلغاء",
+      "save_and_close_button": "حفظ وإغلاق",
+      "versand_button": "إرسال الرد (محاكاة)",
+      "versand_modal": {
+        "title": "هل تريد محاكاة إرسال الرد؟",
+        "body": "يُحاكي هذا العرض الإرسال. لا يصل شيء إلى {empfaenger_behoerde}. يُرجى صياغة ردك كما لو كنت سترسله فعلياً إلى الجهة — فالإهانات أو التهديدات قد تكون معاقَباً عليها بموجب §§ 185, 241 StGB (الإهانة، التهديد)، حتى وإن كان ذلك هنا مجرد تمرين.",
+        "cta_send": "محاكاة الإرسال",
+        "cta_cancel": "إلغاء"
+      },
+      "send_error_toast": "فشل الإرسال، يُرجى إعادة المحاولة.",
+      "send_in_progress": "جارٍ محاكاة الإرسال …",
+      "confirmation": {
+        "headline": "تم إرسال الرد (محاكاة)",
+        "mock_disclaimer": "[MOCK – جرت محاكاة الإرسال. لم يصل شيء إلى الجهة.]",
+        "metadata_label_sent_at": "أُرسل في",
+        "metadata_label_kanal": "قناة الإرسال",
+        "metadata_label_files": "المرفقات ({count})",
+        "no_attachments": "بلا مرفقات",
+        "cta_view_in_cockpit": "عرض هذا الرد في كابينة حماية البيانات",
+        "cta_close": "إغلاق",
+        "view_sent_link": "عرض الرد المُرسل",
+        "kanal_realitaetscheck_template": "اليوم (مايو 2026): قناة الرد الفعلية ستكون {kanal_heute}. هذا العرض يُحاكي الإرسال.",
+        "body_heading": "ردك",
+        "kanal_speculative_2027_text": "تواصل ثنائي الاتجاه مرتبط بمسار الطلب استناداً إلى نموذج ZBP/BundID",
+        "full_receipt_template": "[MOCK] تمت محاكاة إرسال ردك. في سيناريو حقيقي عام 2027، سيُرسَل إلى {empfaenger_behoerde} عبر {kanal_speculative_2027_text} — مرتبطاً بمسار الطلب، استناداً إلى نموذج ZBP/BundID.",
+        "sent_at_template": "في {datum} الساعة {uhrzeit}"
+      },
+      "speculative_banner_title": "حتى عام 2027 — تصميم افتراضي"
+    },
+    "draft": {
+      "group_title_template": "المسودات ({count})",
+      "row_label_template": "مسودة: رد إلى {behoerde}",
+      "row_meta_template": "رقم الملف {aktenzeichen} · آخر تعديل قبل {relTime}",
+      "row_cta": "متابعة الكتابة",
+      "empty_state_hint": "لا توجد مسودات مفتوحة."
+    }
+  }
+}

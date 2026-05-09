@@ -1,0 +1,359 @@
+[
+  {
+    "id": "buergeramt-berlin-mitte",
+    "name_de": "Bezirksamt Mitte von Berlin — Bürgeramt Müllerstraße",
+    "kategorie": "kommune",
+    "zustaendige_themen": ["meldewesen", "personalausweis", "fuehrungszeugnis"],
+    "adresse": {
+      "strasse": "Müllerstraße",
+      "hausnummer": "146",
+      "plz": "13353",
+      "ort": "Berlin",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://service.berlin.de/dienstleistung/120335/",
+      "supports_eudi": true
+    }
+  },
+  {
+    "id": "finanzamt-koerperschaften-i-berlin",
+    "name_de": "Finanzamt für Körperschaften I Berlin",
+    "kategorie": "land",
+    "zustaendige_themen": ["einkommensteuer", "lohnsteuer", "steuerliche_zustaendigkeit"],
+    "adresse": {
+      "strasse": "Bredtschneiderstraße",
+      "hausnummer": "5",
+      "plz": "14057",
+      "ort": "Berlin",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.elster.de",
+      "supports_eudi": false
+    }
+  },
+  {
+    "id": "kfz-berlin-labo",
+    "name_de": "Landesamt für Bürger- und Ordnungsangelegenheiten — KFZ-Zulassung Berlin",
+    "kategorie": "land",
+    "zustaendige_themen": ["kfz_zulassung", "halteranschrift"],
+    "adresse": {
+      "strasse": "Jüterboger Straße",
+      "hausnummer": "3",
+      "plz": "10965",
+      "ort": "Berlin",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.berlin.de/labo/mobilitaet/kfz-zulassung/",
+      "supports_eudi": false
+    }
+  },
+  {
+    "id": "aok-nordost",
+    "name_de": "AOK Nordost — Die Gesundheitskasse",
+    "kategorie": "sozialversicherung",
+    "zustaendige_themen": ["krankenversicherung", "pflegeversicherung"],
+    "adresse": {
+      "strasse": "Wilhelmstraße",
+      "hausnummer": "1",
+      "plz": "10963",
+      "ort": "Berlin",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.aok.de/pk/nordost/",
+      "supports_eudi": false
+    }
+  },
+  {
+    "id": "beitragsservice-koeln",
+    "name_de": "ARD ZDF Deutschlandradio Beitragsservice",
+    "kategorie": "land",
+    "zustaendige_themen": ["rundfunkbeitrag"],
+    "adresse": {
+      "strasse": "Freimersdorfer Weg",
+      "hausnummer": "6",
+      "plz": "50656",
+      "ort": "Köln",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.rundfunkbeitrag.de",
+      "supports_eudi": false
+    }
+  },
+  {
+    "id": "familienkasse-berlin-brandenburg",
+    "name_de": "Familienkasse Berlin-Brandenburg der Bundesagentur für Arbeit",
+    "kategorie": "bund",
+    "zustaendige_themen": ["kindergeld", "kinderzuschlag"],
+    "adresse": {
+      "strasse": "Friedrich-Ebert-Straße",
+      "hausnummer": "31",
+      "plz": "14469",
+      "ort": "Potsdam",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.arbeitsagentur.de/familie-und-kinder/kindergeld-online-beantragen",
+      "supports_eudi": false
+    }
+  },
+  {
+    "id": "abh-berlin-lea",
+    "name_de": "Landesamt für Einwanderung Berlin (LEA)",
+    "kategorie": "land",
+    "zustaendige_themen": ["aufenthaltstitel", "blue_card_eu", "niederlassungserlaubnis"],
+    "adresse": {
+      "strasse": "Friedrich-Krause-Ufer",
+      "hausnummer": "24",
+      "plz": "13353",
+      "ort": "Berlin",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.berlin.de/einwanderung/",
+      "supports_eudi": true
+    }
+  },
+  {
+    "id": "bundesdruckerei",
+    "name_de": "Bundesdruckerei GmbH",
+    "kategorie": "bund",
+    "zustaendige_themen": ["personalausweis_produktion", "reisepass_produktion", "eat_karte"],
+    "adresse": {
+      "strasse": "Kommandantenstraße",
+      "hausnummer": "18",
+      "plz": "10969",
+      "ort": "Berlin",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.bundesdruckerei.de",
+      "supports_eudi": true
+    }
+  },
+  {
+    "id": "buergeramt-berlin-friedrichshain-kreuzberg",
+    "name_de": "Bezirksamt Friedrichshain-Kreuzberg von Berlin — Bürgeramt Schlesische Straße",
+    "kategorie": "kommune",
+    "zustaendige_themen": ["meldewesen", "personalausweis"],
+    "adresse": {
+      "strasse": "Schlesische Straße",
+      "hausnummer": "27a",
+      "plz": "10997",
+      "ort": "Berlin",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://service.berlin.de",
+      "supports_eudi": true
+    }
+  },
+  {
+    "id": "berliner-sparkasse",
+    "name_de": "Berliner Sparkasse",
+    "kategorie": "privat",
+    "zustaendige_themen": ["bankverbindung"],
+    "adresse": {
+      "strasse": "Alexanderplatz",
+      "hausnummer": "2",
+      "plz": "10178",
+      "ort": "Berlin",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.berliner-sparkasse.de",
+      "supports_eudi": false
+    }
+  },
+  {
+    "id": "allianz-hausrat",
+    "name_de": "Allianz Versicherungs-AG — Hausratversicherung",
+    "kategorie": "privat",
+    "zustaendige_themen": ["hausratversicherung", "haftpflicht"],
+    "adresse": {
+      "strasse": "Königinstraße",
+      "hausnummer": "28",
+      "plz": "80802",
+      "ort": "München",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.allianz.de",
+      "supports_eudi": false
+    }
+  },
+  {
+    "id": "vattenfall-strom",
+    "name_de": "Vattenfall Europe Sales GmbH",
+    "kategorie": "privat",
+    "zustaendige_themen": ["stromvertrag"],
+    "adresse": {
+      "strasse": "Überseering",
+      "hausnummer": "12",
+      "plz": "22297",
+      "ort": "Hamburg",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.vattenfall.de",
+      "supports_eudi": false
+    }
+  },
+  {
+    "id": "telekom",
+    "name_de": "Telekom Deutschland GmbH",
+    "kategorie": "privat",
+    "zustaendige_themen": ["mobilfunkvertrag", "festnetz", "internetanschluss"],
+    "adresse": {
+      "strasse": "Landgrabenweg",
+      "hausnummer": "151",
+      "plz": "53227",
+      "ort": "Bonn",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.telekom.de",
+      "supports_eudi": false
+    }
+  },
+  {
+    "id": "standesamt-hamburg-eimsbuettel",
+    "name_de": "Standesamt Hamburg-Eimsbüttel",
+    "kategorie": "kommune",
+    "zustaendige_themen": ["geburtsurkunde", "eheurkunde", "sterbeurkunde", "vaterschaftsanerkennung"],
+    "adresse": {
+      "strasse": "Grindelberg",
+      "hausnummer": "66",
+      "plz": "20144",
+      "ort": "Hamburg",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.hamburg.de/eimsbuettel/standesamt/",
+      "supports_eudi": false
+    }
+  },
+  {
+    "id": "standesamt-berlin-mitte",
+    "name_de": "Standesamt Mitte von Berlin",
+    "kategorie": "kommune",
+    "zustaendige_themen": ["geburtsurkunde", "eheurkunde", "sterbeurkunde", "eheschliessung"],
+    "adresse": {
+      "strasse": "Karl-Marx-Allee",
+      "hausnummer": "31",
+      "plz": "10178",
+      "ort": "Berlin",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://service.berlin.de/standesamt-mitte/",
+      "supports_eudi": false
+    }
+  },
+  {
+    "id": "finanzamt-hamburg-eimsbuettel",
+    "name_de": "Finanzamt Hamburg-Eimsbüttel",
+    "kategorie": "land",
+    "zustaendige_themen": ["einkommensteuer", "lohnsteuer", "steuerliche_zustaendigkeit"],
+    "adresse": {
+      "strasse": "Bei der Apostelkirche",
+      "hausnummer": "1",
+      "plz": "20257",
+      "ort": "Hamburg",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.elster.de",
+      "supports_eudi": false
+    }
+  },
+  {
+    "id": "tk-hamburg",
+    "name_de": "Techniker Krankenkasse — Hauptverwaltung",
+    "kategorie": "sozialversicherung",
+    "zustaendige_themen": ["krankenversicherung", "pflegeversicherung"],
+    "adresse": {
+      "strasse": "Bramfelder Straße",
+      "hausnummer": "140",
+      "plz": "22305",
+      "ort": "Hamburg",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.tk.de",
+      "supports_eudi": false
+    }
+  },
+  {
+    "id": "finanzamt-koeln-mitte",
+    "name_de": "Finanzamt Köln-Mitte",
+    "kategorie": "land",
+    "zustaendige_themen": ["einkommensteuer", "lohnsteuer", "selbstaendige_einkuenfte"],
+    "adresse": {
+      "strasse": "Hohenzollernring",
+      "hausnummer": "85",
+      "plz": "50672",
+      "ort": "Köln",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.elster.de",
+      "supports_eudi": false
+    }
+  },
+  {
+    "id": "ihk-koeln",
+    "name_de": "Industrie- und Handelskammer zu Köln",
+    "kategorie": "sozialversicherung",
+    "zustaendige_themen": ["ihk_beitrag", "gewerbeauskunft", "ausbildung"],
+    "adresse": {
+      "strasse": "Unter Sachsenhausen",
+      "hausnummer": "10-26",
+      "plz": "50667",
+      "ort": "Köln",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.ihk.de/koeln",
+      "supports_eudi": false
+    }
+  },
+  {
+    "id": "vbg-hamburg",
+    "name_de": "Verwaltungs-Berufsgenossenschaft (VBG)",
+    "kategorie": "sozialversicherung",
+    "zustaendige_themen": ["unfallversicherung", "berufsgenossenschaft_beitrag", "praevention"],
+    "adresse": {
+      "strasse": "Deelbögenkamp",
+      "hausnummer": "4",
+      "plz": "22297",
+      "ort": "Hamburg",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.vbg.de",
+      "supports_eudi": false
+    }
+  },
+  {
+    "id": "aok-rheinland-hamburg",
+    "name_de": "AOK Rheinland/Hamburg — Die Gesundheitskasse",
+    "kategorie": "sozialversicherung",
+    "zustaendige_themen": ["krankenversicherung", "pflegeversicherung"],
+    "adresse": {
+      "strasse": "Kasernenstraße",
+      "hausnummer": "61",
+      "plz": "40213",
+      "ort": "Düsseldorf",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.aok.de/pk/rh/",
+      "supports_eudi": false
+    }
+  }
+]

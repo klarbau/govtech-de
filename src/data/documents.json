@@ -1,0 +1,115 @@
+[
+  {
+    "id": "doc-anna-aufenthaltstitel",
+    "typ": "aufenthaltstitel",
+    "titel": "Aufenthaltstitel — Blue Card EU (§ 18g AufenthG)",
+    "ausstellende_behoerde_id": "abh-berlin-lea",
+    "ausgestellt_am": "2024-10-08",
+    "gueltig_bis": "2027-09-14",
+    "qr_payload": "[MOCK-QR] eat://abh-berlin-lea/2024-10-08/anna-petrov?ref=ABH-B-2024-IV-A-1782",
+    "eudi_compatible": true,
+    "watermark": "[MOCK]"
+  },
+  {
+    "id": "doc-anna-meldebestaetigung-2024",
+    "typ": "meldebestaetigung",
+    "titel": "Meldebestätigung Berlin Friedrichshain-Kreuzberg",
+    "ausstellende_behoerde_id": "buergeramt-berlin-friedrichshain-kreuzberg",
+    "ausgestellt_am": "2024-09-18",
+    "qr_payload": "[MOCK-QR] meldung://berlin-frikr/2024-09-18/anna-petrov?az=BA-FRIKR-EWA-2024-09-0188432",
+    "eudi_compatible": true,
+    "watermark": "[MOCK]",
+    "vorgang_id": "vorgang-anna-anmeldung-2024"
+  },
+  {
+    "id": "doc-anna-steuerbescheid-2024",
+    "typ": "steuerbescheid",
+    "titel": "Einkommensteuerbescheid 2024",
+    "ausstellende_behoerde_id": "finanzamt-koerperschaften-i-berlin",
+    "ausgestellt_am": "2026-03-12",
+    "qr_payload": "[MOCK-QR] steuerbescheid://fa-berlin-koe-i/2026-03-12/anna-petrov?stnr=11-123-45678",
+    "eudi_compatible": false,
+    "watermark": "[MOCK]"
+  },
+  {
+    "id": "doc-anna-lohnsteuerbescheinigung-2025",
+    "typ": "lohnsteuerbescheinigung",
+    "titel": "Lohnsteuerbescheinigung 2025",
+    "ausstellende_behoerde_id": "finanzamt-koerperschaften-i-berlin",
+    "ausgestellt_am": "2026-02-10",
+    "qr_payload": "[MOCK-QR] lstb://mittelstand-software-gmbh/2025/anna-petrov",
+    "eudi_compatible": false,
+    "watermark": "[MOCK]"
+  },
+  {
+    "id": "doc-lev-geburtsurkunde",
+    "typ": "geburtsurkunde",
+    "titel": "Geburtsurkunde Lev Petrov-Becker",
+    "ausstellende_behoerde_id": "buergeramt-berlin-friedrichshain-kreuzberg",
+    "ausgestellt_am": "2024-11-08",
+    "qr_payload": "[MOCK-QR] geburtsurkunde://standesamt-frikr-berlin/2024-G-01183/lev-petrov-becker",
+    "eudi_compatible": true,
+    "watermark": "[MOCK]"
+  },
+  {
+    "id": "doc-anna-svausweis",
+    "typ": "sozialversicherungsausweis",
+    "titel": "Sozialversicherungsausweis",
+    "ausstellende_behoerde_id": "aok-nordost",
+    "ausgestellt_am": "2023-04-15",
+    "qr_payload": "[MOCK-QR] svausweis://drv-bund/65-170395-P-042/anna-petrov",
+    "eudi_compatible": false,
+    "watermark": "[MOCK]"
+  },
+  {
+    "id": "doc-anna-egk",
+    "typ": "krankenversicherungskarte",
+    "titel": "Elektronische Gesundheitskarte AOK Nordost",
+    "ausstellende_behoerde_id": "aok-nordost",
+    "ausgestellt_am": "2023-04-20",
+    "gueltig_bis": "2028-04-30",
+    "qr_payload": "[MOCK-QR] egk://aok-nordost/77418264/anna-petrov",
+    "eudi_compatible": false,
+    "watermark": "[MOCK]"
+  },
+  {
+    "id": "doc-anna-kindergeldbescheid-lev",
+    "typ": "kindergeldbescheid",
+    "titel": "Kindergeldbescheid Lev Petrov-Becker",
+    "ausstellende_behoerde_id": "familienkasse-berlin-brandenburg",
+    "ausgestellt_am": "2025-01-14",
+    "qr_payload": "[MOCK-QR] kindergeld://fk-berlin-bbg/FK-668412-0024/lev-petrov-becker",
+    "eudi_compatible": true,
+    "watermark": "[MOCK]"
+  },
+  {
+    "id": "doc-anna-rentenauskunft",
+    "typ": "rentenauskunft",
+    "titel": "Rentenauskunft DRV Bund 2025",
+    "ausstellende_behoerde_id": "aok-nordost",
+    "ausgestellt_am": "2025-12-02",
+    "qr_payload": "[MOCK-QR] rentenauskunft://drv-bund/65-170395-P-042/anna-petrov",
+    "eudi_compatible": false,
+    "watermark": "[MOCK]"
+  },
+  {
+    "id": "doc-anna-arbeitsvertrag",
+    "typ": "arbeitsvertrag",
+    "titel": "Arbeitsvertrag Mittelstand Software GmbH",
+    "ausstellende_behoerde_id": "abh-berlin-lea",
+    "ausgestellt_am": "2023-03-20",
+    "qr_payload": "[MOCK-QR] arbeitsvertrag://mittelstand-software-gmbh/2023-03-20/anna-petrov",
+    "eudi_compatible": false,
+    "watermark": "[MOCK]"
+  },
+  {
+    "id": "doc-wohnungsgeber-default",
+    "typ": "wohnungsgeberbestaetigung",
+    "titel": "Wohnungsgeberbestätigung (§ 19 BMG) — Beispiel",
+    "ausstellende_behoerde_id": "buergeramt-berlin-mitte",
+    "ausgestellt_am": "2026-04-15",
+    "qr_payload": "[MOCK-QR] wohnungsgeber://lena-vogel/muellerstrasse-142a/2026-04-15",
+    "eudi_compatible": true,
+    "watermark": "[MOCK]"
+  }
+]

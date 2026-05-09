@@ -1,0 +1,217 @@
+# GovTech DE — Concept Demo
+
+Speculative-design prototype: how a citizen-first interaction layer for German public administration could look in 2027, on top of DeutschlandID + EUDI Wallet + Deutschland-Stack. **Not a real integration. All data is mocked.**
+
+The artefact is a portfolio-grade demo intended to:
+1. Demonstrate UX/automation potential to GovTech stakeholders (DigitalService, BMDS, Tech4Germany, GovTech Deutschland, GovStart)
+2. Communicate the idea via live demo, GitHub repo, and Loom video
+3. Open doors to roles or programs in the German GovTech ecosystem
+
+## Mission constraints
+
+- **Visual + linguistic register**: serious, citizen-respectful, gov.uk / DigitalService DE-style minimalism. Never cloning Russian Gosuslugi aesthetics.
+- **Primary language**: Deutsch (Sie-Form). Secondary: EN, RU, UK, AR, TR.
+- **Accessibility**: WCAG 2.1 AA + BITV 2.0 mandatory.
+- **Privacy-by-design**: every screen with personal data shows what is processed, by whom, on what legal basis. Datenminimierung visible.
+- **Realism**: mock data uses real Behörden-Bezeichnungen, real PLZ, real Aktenzeichen-Formate. Marked `[MOCK]` where helpful.
+- **Autopilot is the hero**: the demo's central wow-moment is what the system does *for* the user, not faster forms.
+
+## Tech stack
+
+| Layer | Choice |
+|---|---|
+| Framework | Next.js 15 (App Router) |
+| Language | TypeScript (strict) |
+| UI | Tailwind v4 + shadcn/ui + lucide-react |
+| Animation | framer-motion (sparingly) |
+| State | React Server Components + useState/useReducer; Zustand only if cross-page state required |
+| Mock backend | TypeScript module simulating REST, persisting to `localStorage` |
+| AI assistant | `@anthropic-ai/sdk` + Claude Haiku 4.5 (`claude-haiku-4-5-20251001`), prompt caching enabled, tool use for autopilot actions |
+| i18n | `next-intl` |
+| Testing | Playwright (e2e + a11y via `@axe-core/playwright`) |
+| Deployment | Vercel |
+
+## Folder structure
+
+```
+govtech/
+├── CLAUDE.md                     # This file. Project context for all agents.
+├── README.md                     # Public-facing: pitch + screenshots + run instructions (DE/EN)
+├── package.json
+├── next.config.js
+├── tsconfig.json
+├── tailwind.config.ts
+├── .env.example                  # ANTHROPIC_API_KEY placeholder only
+│
+├── .claude/
+│   ├── settings.json             # Permissions, model defaults
+│   └── agents/                   # Specialized subagents (see WORKFLOW)
+│       ├── research-scout.md
+│       ├── domain-expert.md
+│       ├── concept-verifier.md
+│       ├── product-architect.md
+│       ├── frontend-coder.md
+│       ├── mock-backend-coder.md
+│       ├── assistant-engineer.md
+│       ├── i18n-localizer.md
+│       ├── a11y-tester.md
+│       └── code-reviewer.md
+│
+├── docs/
+│   ├── PRD.md                    # Living product requirements doc
+│   ├── architecture.md           # Tech architecture, data flow, mock-backend contract
+│   ├── personas.md               # Anna, Familie Schmidt, Selbstständige(r) Mehmet
+│   ├── WORKFLOW.md               # Autonomous research→verify→build pipeline
+│   ├── research/                 # Output of research-scout (one MD per topic)
+│   ├── specs/                    # Output of product-architect (one MD per feature)
+│   ├── domain/                   # Output of domain-expert (Behörden processes, legal notes)
+│   ├── reviews/                  # Output of code-reviewer (one MD per review pass)
+│   └── a11y-reports/             # Output of a11y-tester (one MD per audit)
+│
+├── src/
+│   ├── app/                      # Next.js App Router
+│   │   ├── (auth)/onboarding/    # Fake DeutschlandID + EUDI Wallet login
+│   │   ├── (app)/
+│   │   │   ├── dashboard/        # Übersicht: open Vorgänge, Fristen, "heute zu tun"
+│   │   │   ├── posteingang/      # Unified inbox of Behörden-Briefe with AI summaries
+│   │   │   ├── stammdaten/       # Single source-of-truth profile
+│   │   │   ├── vorgaenge/        # Wizards: Umzug, Heirat, Geburt, Aufenthalt-Verlängerung
+│   │   │   ├── dokumente/        # QR-verifiable document vault, EUDI export
+│   │   │   ├── termine/          # All Behörden-Termine, calendar integration
+│   │   │   ├── steuer/           # Pre-filled Steuererklärung from known data
+│   │   │   ├── familie/          # Joint dependents, shared Vorgänge
+│   │   │   ├── assistent/        # Conversational AI with tool use
+│   │   │   └── datenschutz/      # Granular consent: who sees what
+│   │   ├── api/
+│   │   │   └── assistant/route.ts  # SSE endpoint for AI assistant
+│   │   ├── layout.tsx
+│   │   └── page.tsx              # Landing / login switch
+│   │
+│   ├── components/
+│   │   ├── ui/                   # shadcn/ui primitives (Button, Card, Dialog, …)
+│   │   ├── layout/               # Sidebar, Topbar, Footer, LanguageSwitcher
+│   │   ├── autopilot/            # AutopilotTimeline, AutopilotConfirmDialog, …
+│   │   ├── assistant/            # ChatPanel, MessageBubble, ToolCallCard
+│   │   ├── posteingang/          # LetterCard, LetterReader, AISummaryCard
+│   │   ├── vorgaenge/            # VorgangWizard, ProgressTracker, …
+│   │   └── shared/               # BehoerdenBadge, FristCountdown, ConsentBanner
+│   │
+│   ├── lib/
+│   │   ├── mock-backend/
+│   │   │   ├── api.ts            # Function-style API mimicking REST (getLetters, postUmzug, …)
+│   │   │   ├── persistence.ts    # localStorage wrapper with versioning
+│   │   │   ├── seed.ts           # Initial state for each persona
+│   │   │   ├── latency.ts        # Simulated 300–800ms delays + 5% error rate
+│   │   │   └── autopilot/        # Autopilot orchestration (umzug, geburt, aufenthalt, …)
+│   │   ├── ai/
+│   │   │   ├── client.ts         # Anthropic SDK client
+│   │   │   ├── system-prompt.ts  # Cached system prompt
+│   │   │   ├── tools.ts          # Tool/function definitions matching mock-backend ops
+│   │   │   └── stream.ts         # SSE streaming helpers
+│   │   ├── i18n/
+│   │   │   ├── config.ts
+│   │   │   └── locales/          # de.json (source), en.json, ru.json, uk.json, ar.json, tr.json
+│   │   └── utils/                # cn(), formatDate(), formatPLZ(), …
+│   │
+│   ├── data/                     # Static fixtures consumed by mock-backend/seed.ts
+│   │   ├── personas.json
+│   │   ├── behoerden.json        # Real Behörden names + addresses + zuständigkeit
+│   │   ├── letters.json          # Mock Behörden-Briefe with realistic Aktenzeichen
+│   │   ├── vorgaenge.json
+│   │   └── documents.json
+│   │
+│   └── types/                    # Shared TypeScript types
+│       ├── behoerde.ts
+│       ├── vorgang.ts
+│       ├── letter.ts
+│       ├── document.ts
+│       └── persona.ts
+│
+├── tests/
+│   ├── e2e/                      # Playwright user-flow tests
+│   └── a11y/                     # axe-core a11y tests
+│
+└── public/
+    ├── behoerden-logos/          # Mock or generic Behörden-Logos
+    └── og.png                    # Social preview
+```
+
+## Naming & coding conventions
+
+- Files: `kebab-case.tsx`. Components: `PascalCase`. Functions/vars: `camelCase`. Types: `PascalCase`.
+- Imports: `@/` alias → `./src/`.
+- Strings: **never hardcoded**. Always via `t('key.path')` from `next-intl`. Source-of-truth = `de.json`.
+- Components: Server Components by default. Add `'use client'` only when interactive state/effects required.
+- Mock-backend access: components MUST go through `lib/mock-backend/api.ts`. Never touch `localStorage` directly from components.
+- Personally identifiable data in mocks: must look real but be obviously synthetic. Use `[MOCK]` watermark on document previews.
+
+## Data model — quick reference
+
+- `Persona` — user profile (Stammdaten, family, employment, residency status)
+- `Behoerde` — authority (id, name DE, kategorie: bundesweit/land/kommune, zuständige Themen)
+- `Vorgang` — process/case (status: angelegt/in_pruefung/genehmigt/abgelehnt, beteiligte Behörden, Fristen)
+- `Letter` — Behörden-Brief (Absender, Aktenzeichen, betreff, body_de, ai_summary, required_action, frist, status)
+- `Document` — vault entry (typ, ausstellende_behörde, ausgestellt_am, gültig_bis, qr_payload, eudi_compatible)
+- `Termin` — appointment (Behörde, datum, ort_oder_video, vorgang_id)
+
+Full schemas live in `src/types/`. Any agent extending the model must update both the type file and `docs/architecture.md`.
+
+## Autonomous workflow (READ docs/WORKFLOW.md)
+
+Every new feature passes through this pipeline. The main thread does NOT write code directly — it orchestrates agents.
+
+```
+                      ┌──────────────────┐
+  user idea / gap ──▶ │  research-scout  │  (web research, prior art, references)
+                      └────────┬─────────┘
+                               ▼
+                      ┌──────────────────┐
+                      │  domain-expert   │  (legal/process realism check)
+                      └────────┬─────────┘
+                               ▼
+                      ┌──────────────────┐
+                      │ concept-verifier │  (adversarial second opinion — DIFFERENT agent)
+                      └────────┬─────────┘
+                               │  PROCEED / REVISE / REJECT
+                               ▼
+                      ┌──────────────────┐
+                      │ product-architect│  (PRD/spec, screen flow, mock data shape)
+                      └────────┬─────────┘
+                               ▼
+              ┌────────────────┼────────────────┐
+              ▼                ▼                ▼
+     ┌──────────────┐ ┌──────────────┐ ┌──────────────────┐
+     │ frontend-    │ │ mock-backend-│ │ assistant-       │
+     │ coder        │ │ coder        │ │ engineer         │
+     └──────┬───────┘ └──────┬───────┘ └──────┬───────────┘
+            └────────┬───────┴────────┬───────┘
+                     ▼                ▼
+            ┌──────────────┐  ┌──────────────┐
+            │ i18n-        │  │ a11y-tester  │
+            │ localizer    │  │              │
+            └──────┬───────┘  └──────┬───────┘
+                   └─────────┬───────┘
+                             ▼
+                    ┌──────────────────┐
+                    │  code-reviewer   │  (final gate before merge)
+                    └──────────────────┘
+```
+
+Two-agent consensus rule: an idea proceeds to coding only if **both research-scout and concept-verifier sign off** (or domain-expert overrides on a legal-realism basis). Disagreement is escalated to the user.
+
+## Status
+
+- [x] Project context + agent roster defined
+- [x] Personas, PRD baseline
+- [x] Project scaffold (Next.js 15 + Tailwind v4 + shadcn/ui + Playwright + Vitest)
+- [x] First Vorgang implemented end-to-end (Umzug autopilot — shipped 2026-05-08)
+- [x] Strategy pivot 2026-05-08: build horizontal capabilities (Posteingang, Stammdaten, Dokumente, Termine, Datenschutz-Cockpit, Assistent-UI) before more verticals
+- [x] Posteingang Brief-Erklärer (shipped 2026-05-09: a11y PASS axe 0/0, code review APPROVE, vitest 92/92, Lighthouse a11y 95/100)
+- [x] Posteingang V1.5 — Antwort verfassen (4 templates + freitext) + UX-Restructure (filter popover, sticky CTA, sr-only h2, controlled `<Select>` for nachweis_bezeichnung) — shipped 2026-05-09: a11y PASS Lighthouse 100/100 axe 0/0 after Issue A token fix, code review APPROVE, vitest 126/126. Followup: hard-remove `Reply.receipt_text` (currently optional+@deprecated)
+- [ ] Stammdaten (research+verify ✓ 2026-05-08; product-architect kicked off 2026-05-09)
+- [ ] Dashboard (research+verify ✓ 2026-05-08; awaiting product-architect)
+- [ ] Dokumente vault (research+verify ✓ 2026-05-08; awaiting product-architect)
+- [ ] Termine, Datenschutz-Cockpit, Assistent-UI (not yet researched)
+- [ ] Vertical autopilots beyond Umzug (Kindergeburt, Aufenthaltstitel-Verlängerung, Steuererklärung) — wait until horizontal layer is solid
+- [ ] AI assistant with tool use
+- [ ] Loom video, README, deploy

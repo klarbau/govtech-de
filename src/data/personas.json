@@ -1,0 +1,215 @@
+[
+  {
+    "id": "anna-petrov",
+    "vorname": "Anna",
+    "nachname": "Petrov",
+    "geburtsdatum": "1997-03-22",
+    "staatsangehoerigkeit": "russisch",
+    "adresse": {
+      "strasse": "Friedrichstraße",
+      "hausnummer": "100",
+      "plz": "10117",
+      "ort": "Berlin",
+      "land": "DE"
+    },
+    "steuer_id": "[MOCK] 47 113 815 421",
+    "rentenversicherungsnummer": "[MOCK] 65 170395 P 042",
+    "aufenthaltstitel": {
+      "norm": "§ 18g AufenthG",
+      "valid_until": "2027-09-14",
+      "az": "[MOCK] ABH-B-2024/IV-A-1782",
+      "abh_behoerde_id": "abh-berlin-lea"
+    },
+    "familie": {
+      "partner": {
+        "id": "tobias-becker",
+        "vorname": "Tobias",
+        "nachname": "Becker",
+        "geburtsdatum": "1995-08-11",
+        "staatsangehoerigkeit": "deutsch",
+        "adresse": {
+          "strasse": "Friedrichstraße",
+          "hausnummer": "100",
+          "plz": "10117",
+          "ort": "Berlin",
+          "land": "DE"
+        },
+        "steuer_id": "[MOCK] 12 884 215 663",
+        "familie": { "kinder": [] },
+        "kfz_halter": false,
+        "kindergeld_bezug": false,
+        "wehrerfasst": false,
+        "sprachen": ["de", "en"]
+      },
+      "kinder": [
+        {
+          "id": "lev-petrov-becker",
+          "vorname": "Lev",
+          "nachname": "Petrov-Becker",
+          "geburtsdatum": "2024-11-03",
+          "staatsangehoerigkeit": "deutsch",
+          "adresse": {
+            "strasse": "Friedrichstraße",
+            "hausnummer": "100",
+            "plz": "10117",
+            "ort": "Berlin",
+            "land": "DE"
+          },
+          "steuer_id": "[MOCK] 39 220 117 084",
+          "familie": { "kinder": [] },
+          "kfz_halter": false,
+          "kindergeld_bezug": false,
+          "wehrerfasst": false,
+          "sprachen": []
+        }
+      ]
+    },
+    "beschaeftigung": {
+      "typ": "angestellt",
+      "arbeitgeber": "Mittelstand Software GmbH",
+      "rolle": "Senior Software Engineer",
+      "beginn": "2023-04-01"
+    },
+    "krankenversicherung": {
+      "typ": "gkv",
+      "traeger": "AOK Nordost",
+      "versichertennummer": "[MOCK] AOK-NO-2023-77418264"
+    },
+    "kfz_halter": false,
+    "kindergeld_bezug": true,
+    "wehrerfasst": false,
+    "sprachen": ["ru", "de", "en"]
+  },
+  {
+    "id": "markus-schmidt",
+    "vorname": "Markus",
+    "nachname": "Schmidt",
+    "geburtsdatum": "1988-02-14",
+    "staatsangehoerigkeit": "deutsch",
+    "adresse": {
+      "strasse": "Eppendorfer Weg",
+      "hausnummer": "212",
+      "plz": "20251",
+      "ort": "Hamburg",
+      "land": "DE"
+    },
+    "steuer_id": "[MOCK] 22 998 110 663",
+    "rentenversicherungsnummer": "[MOCK] 14 220288 M 113",
+    "familie": {
+      "partner": {
+        "id": "lena-schmidt",
+        "vorname": "Lena",
+        "nachname": "Schmidt",
+        "geburtsdatum": "1991-06-30",
+        "staatsangehoerigkeit": "deutsch",
+        "adresse": {
+          "strasse": "Eppendorfer Weg",
+          "hausnummer": "212",
+          "plz": "20251",
+          "ort": "Hamburg",
+          "land": "DE"
+        },
+        "steuer_id": "[MOCK] 33 110 884 552",
+        "familie": { "kinder": [] },
+        "beschaeftigung": {
+          "typ": "selbstaendig",
+          "rolle": "Architektin"
+        },
+        "kfz_halter": true,
+        "kindergeld_bezug": false,
+        "wehrerfasst": false,
+        "sprachen": ["de", "en"]
+      },
+      "kinder": [
+        {
+          "id": "felix-schmidt",
+          "vorname": "Felix",
+          "nachname": "Schmidt",
+          "geburtsdatum": "2022-01-15",
+          "staatsangehoerigkeit": "deutsch",
+          "adresse": {
+            "strasse": "Eppendorfer Weg",
+            "hausnummer": "212",
+            "plz": "20251",
+            "ort": "Hamburg",
+            "land": "DE"
+          },
+          "familie": { "kinder": [] },
+          "kfz_halter": false,
+          "kindergeld_bezug": false,
+          "wehrerfasst": false,
+          "sprachen": []
+        }
+      ]
+    },
+    "beschaeftigung": {
+      "typ": "angestellt",
+      "arbeitgeber": "Hamburg Port Authority",
+      "rolle": "Logistik-Analyst",
+      "beginn": "2015-09-01"
+    },
+    "krankenversicherung": {
+      "typ": "gkv",
+      "traeger": "Techniker Krankenkasse",
+      "versichertennummer": "[MOCK] TK-2015-44113008"
+    },
+    "kfz_halter": true,
+    "kindergeld_bezug": true,
+    "wehrerfasst": false,
+    "sprachen": ["de", "en"]
+  },
+  {
+    "id": "mehmet-yildiz",
+    "vorname": "Mehmet",
+    "nachname": "Yıldız",
+    "geburtsdatum": "1990-09-04",
+    "staatsangehoerigkeit": "deutsch",
+    "adresse": {
+      "strasse": "Venloer Straße",
+      "hausnummer": "388",
+      "plz": "50825",
+      "ort": "Köln",
+      "land": "DE"
+    },
+    "steuer_id": "[MOCK] 81 003 552 991",
+    "rentenversicherungsnummer": "[MOCK] 38 040990 Y 224",
+    "familie": {
+      "kinder": [
+        {
+          "id": "yildiz-kind-1",
+          "vorname": "Eren",
+          "nachname": "Yıldız",
+          "geburtsdatum": "2017-06-12",
+          "staatsangehoerigkeit": "deutsch",
+          "adresse": {
+            "strasse": "Venloer Straße",
+            "hausnummer": "388",
+            "plz": "50825",
+            "ort": "Köln",
+            "land": "DE"
+          },
+          "familie": { "kinder": [] },
+          "kfz_halter": false,
+          "kindergeld_bezug": false,
+          "wehrerfasst": false,
+          "sprachen": []
+        }
+      ]
+    },
+    "beschaeftigung": {
+      "typ": "angestellt",
+      "arbeitgeber": "Energiewende Consulting Köln GmbH",
+      "rolle": "Senior Berater Erneuerbare Energien",
+      "beginn": "2014-01-15"
+    },
+    "krankenversicherung": {
+      "typ": "gkv",
+      "traeger": "Barmer",
+      "versichertennummer": "[MOCK] BARMER-2014-99880142"
+    },
+    "kfz_halter": true,
+    "kindergeld_bezug": true,
+    "wehrerfasst": false,
+    "sprachen": ["de", "tr", "en"]
+  }
+]
