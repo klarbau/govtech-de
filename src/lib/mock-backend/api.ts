@@ -1,0 +1,1477 @@
+/**
+ * Public Mock-Backend-API für die GovTech-DE-Demo.
+ *
+ * ============================================================================
+ * Hand-off note für assistant-engineer
+ * ============================================================================
+ * Diese Methoden müssen 1:1 in `src/lib/ai/tools.ts` als Tool-Definitionen
+ * gespiegelt werden. Signaturen:
+ *
+ *   getProfile(): Promise<Persona>
+ *   getLetters(filter?: LetterFilter): Promise<Letter[]>
+ *   getLetter(id: string): Promise<Letter>
+ *   getVorgang(id: string): Promise<Vorgang>
+ *   getVorgaenge(filter?: VorgangFilter): Promise<Vorgang[]>
+ *   getDocuments(): Promise<Document[]>
+ *   getTermine(): Promise<Termin[]>
+ *   getBehoerden(): Promise<Behoerde[]>
+ *   getBehoerde(id: string): Promise<Behoerde>
+ *
+ *   startUmzug(input: UmzugInput): Promise<{ vorgangId: string }>
+ *   previewUmzug(input: Pick<UmzugInput, 'neue_adresse' | 'stichtag'>): Promise<UmzugPreview>
+ *   cancelUmzug(vorgangId: string): Promise<void>
+ *   markiereLetterGelesen(id: string): Promise<void>
+ *   bestaetigeAutopilotSchritt(vorgangId: string, schrittId: string): Promise<void>
+ *
+ *   subscribe(listener: (e: MockBackendEvent) => void): () => void
+ *
+ * Side-effects: jede Write-Methode emittiert mindestens ein `MockBackendEvent`
+ * (siehe `src/types/mock-event.ts`).
+ *
+ * Latenz: alle Methoden laufen durch `withLatency()` (300–800 ms + 5 % Fehler);
+ * der Umzug-Autopilot-Generator hat eigene Latenz-Choreografie pro Block.
+ *
+ * Note: `bestaetigeAutopilotSchritt` ist die ASCII-sichere Alias-Variante zu
+ * `bestätigeAutopilotSchritt` (architecture.md). Beide zeigen auf dieselbe
+ * Implementierung; Frontend-Code verwendet die ASCII-Form.
+ * ============================================================================
+ */
+import type {
+  BehoerdeKategorie,
+  Behoerde,
+  Document as VaultDocument,
+  Letter,
+  LetterActivityEvent,
+  LetterActivityLog,
+  LetterActivityLogEntry,
+  LetterAiSummaryPostOpen,
+  LetterArchetype,
+  LetterArchetypeAction,
+  LetterAuthChannel,
+  LetterFilter,
+  LetterFrist,
+  LetterReplyMap,
+  MockBackendEvent,
+  MockBackendEventListener,
+  Persona,
+  Reply,
+  ReplyDraft,
+  Termin,
+  UmzugInput,
+  UmzugPreview,
+  Vorgang,
+  VorgangFilter,
+} from '@/types';
+import { LETTER_ATTACHMENT_LIMITS } from '@/types';
+import letterSummariesFixture from '@/data/letter-summaries.json';
+import { z } from 'zod';
+import {
+  buildBlockDConfirmation,
+  buildUmzugPreview,
+  umzugAutopilot,
+} from './autopilot/umzug';
+import { MockBackendError } from './errors';
+import { emit, subscribe } from './events';
+import { uuid } from './id';
+import { withLatency } from './latency';
+import {
+  resolveReplyBody as resolveReplyBodyImpl,
+  type ResolveReplyBodyInput,
+} from './reply-templates';
+import {
+  read,
+  readOrInit,
+  write,
+  type CollectionKey,
+} from './persistence';
+import {
+  behoerdenArraySchema,
+  consentSchema,
+  documentsArraySchema,
+  letterActivityAktionSchema,
+  letterActivityLogSchema,
+  letterRepliesMapSchema,
+  letterSummariesMapSchema,
+  lettersArraySchema,
+  personasArraySchema,
+  personaSchema,
+  replySchema,
+  termineArraySchema,
+  vorgaengeArraySchema,
+} from './schemas';
+import { getActivePersonaId, seedIfEmpty } from './seed';
+import type { AutopilotStep, VorgangStatus } from '@/types/vorgang';
+
+// ----------------------------------------------------------------------------
+// Boot-Hook
+// ----------------------------------------------------------------------------
+
+let booted = false;
+function ensureBooted(): void {
+  if (booted) return;
+  booted = true;
+  try {
+    seedIfEmpty();
+  } catch (err) {
+    if (typeof console !== 'undefined') {
+      console.error('[mock-backend] seed failed', err);
+    }
+  }
+}
+
+// ----------------------------------------------------------------------------
+// Helpers (intern)
+// ----------------------------------------------------------------------------
+
+function loadProfile(): Persona {
+  ensureBooted();
+  const profile = read('profile' as CollectionKey, personaSchema);
+  if (profile) return profile as Persona;
+  // Fallback: Aktive Persona aus personas-Bucket finden.
+  const personas = readOrInit(
+    'personas' as CollectionKey,
+    personasArraySchema,
+    [],
+  ) as Persona[];
+  const id = getActivePersonaId();
+  const persona = personas.find((p) => p.id === id);
+  if (!persona) {
+    throw new MockBackendError(
+      'Aktive Persona nicht gefunden — bitte erneut anmelden.',
+      { code: 'PERSONA_MISSING', retryable: false },
+    );
+  }
+  write('profile' as CollectionKey, persona);
+  return persona;
+}
+
+function loadLetters(): Letter[] {
+  ensureBooted();
+  return readOrInit('letters' as CollectionKey, lettersArraySchema, []) as Letter[];
+}
+
+function saveLetters(letters: Letter[]): void {
+  write('letters' as CollectionKey, letters);
+}
+
+function loadVorgaenge(): Vorgang[] {
+  ensureBooted();
+  return readOrInit('vorgaenge' as CollectionKey, vorgaengeArraySchema, []) as Vorgang[];
+}
+
+function saveVorgaenge(vorgaenge: Vorgang[]): void {
+  write('vorgaenge' as CollectionKey, vorgaenge);
+}
+
+function loadDocuments(): VaultDocument[] {
+  ensureBooted();
+  return readOrInit(
+    'documents' as CollectionKey,
+    documentsArraySchema,
+    [],
+  ) as VaultDocument[];
+}
+
+function saveDocuments(docs: VaultDocument[]): void {
+  write('documents' as CollectionKey, docs);
+}
+
+function loadTermine(): Termin[] {
+  ensureBooted();
+  return readOrInit('termine' as CollectionKey, termineArraySchema, []) as Termin[];
+}
+
+function loadBehoerden(): Behoerde[] {
+  ensureBooted();
+  return readOrInit(
+    'behoerden' as CollectionKey,
+    behoerdenArraySchema,
+    [],
+  ) as Behoerde[];
+}
+
+function loadConsent(): Record<string, string[]> {
+  ensureBooted();
+  return readOrInit('consent' as CollectionKey, consentSchema, {});
+}
+
+function saveConsent(consent: Record<string, string[]>): void {
+  write('consent' as CollectionKey, consent);
+}
+
+function loadActivityLog(): LetterActivityLog {
+  ensureBooted();
+  return readOrInit(
+    'letter-activity-log' as CollectionKey,
+    letterActivityLogSchema,
+    {} as LetterActivityLog,
+  ) as LetterActivityLog;
+}
+
+function saveActivityLog(log: LetterActivityLog): void {
+  write('letter-activity-log' as CollectionKey, log);
+}
+
+function loadReplies(): LetterReplyMap {
+  ensureBooted();
+  return readOrInit(
+    'letter-replies' as CollectionKey,
+    letterRepliesMapSchema as unknown as import('zod').ZodType<LetterReplyMap>,
+    {} as LetterReplyMap,
+  );
+}
+
+function saveReplies(map: LetterReplyMap): void {
+  write('letter-replies' as CollectionKey, map);
+}
+
+// ----------------------------------------------------------------------------
+// V1.5 — Mock-Kanal-Lookup (Domain §3 B1, Verifier MUST-Cover binding)
+// ----------------------------------------------------------------------------
+
+/**
+ * Liefert die Mock-Kanal-Bezeichnung für eine Behörde anhand der Behörden-
+ * Kategorie + (für Spezialfälle) der Behörden-ID.
+ *
+ * Anker: `docs/domain/posteingang-antwort-verfassen.md` §3 B1 (Behörden-
+ * Kanal-Matrix). Die Werte sind die Strings, die das UI im Versand-
+ * Bestätigungs-Modal und im Datenschutz-Cockpit zeigt.
+ */
+export function getMockKanalForBehoerde(behoerdeId: string): string {
+  const behoerde = loadBehoerden().find((b) => b.id === behoerdeId);
+  if (!behoerde) return 'Briefpost (papierhaft)';
+
+  // Spezialfälle, die per ID statt per Kategorie gemapt sind (Domain §3 B1).
+  if (behoerde.id === 'beitragsservice-koeln') return 'Beitragsservice-Portal';
+  if (behoerde.id.startsWith('familienkasse-')) return 'Familienkasse-Online';
+  if (behoerde.id.startsWith('finanzamt-')) return 'ELSTER-Postfach';
+  if (behoerde.id === 'aok-nordost' || behoerde.id === 'aok-rheinland-hamburg') {
+    return 'Mein-AOK-Portal';
+  }
+  if (behoerde.id === 'tk-hamburg') return 'Mein-AOK-Portal'; // GKV-Sammel-Bezeichnung im Mock
+  if (behoerde.id === 'bundesdruckerei') return 'Briefpost (papierhaft)';
+
+  switch (behoerde.kategorie) {
+    case 'bund':
+      return 'BundID-Postfach (speculative 2027)';
+    case 'land':
+    case 'kommune':
+      return 'Service-Portal des Bundeslandes';
+    case 'sozialversicherung':
+      // GKV via Kassen-Portal; IHK / BG / sonstige SV → Service-Portal des Landes.
+      if (
+        behoerde.zustaendige_themen.includes('krankenversicherung') ||
+        behoerde.zustaendige_themen.includes('pflegeversicherung')
+      ) {
+        return 'Mein-AOK-Portal';
+      }
+      return 'Service-Portal des Bundeslandes';
+    case 'privat':
+    default:
+      return 'Briefpost (papierhaft)';
+  }
+}
+
+// ----------------------------------------------------------------------------
+// Pre-baked AI-Summaries (deterministisch für Demo) — `src/data/letter-summaries.json`
+// ----------------------------------------------------------------------------
+
+type LetterSummaryEntry = z.infer<typeof letterSummariesMapSchema>[string];
+
+let _summariesCache: Record<string, LetterSummaryEntry> | undefined;
+
+/**
+ * Lädt die pre-baked Summaries (validiert via zod) und cacht sie im Process-Speicher.
+ * Citation-Mismatch zwischen `original_zitat` und `letter.body_de` wird geloggt,
+ * aber nicht hart geworfen — `extrahiereAktion` liefert ein `citation_match`-Flag,
+ * das die UI nutzt um „Frist im Kalender"-CTAs zu deaktivieren (Spec §4.4).
+ */
+function loadSummariesMap(): Record<string, LetterSummaryEntry> {
+  if (_summariesCache) return _summariesCache;
+  const parsed = letterSummariesMapSchema.safeParse(letterSummariesFixture);
+  if (!parsed.success) {
+    throw new MockBackendError(
+      'letter-summaries.json schema invalid — ' +
+        parsed.error.issues
+          .slice(0, 3)
+          .map((i) => `${i.path.join('.')}:${i.message}`)
+          .join('; '),
+      { code: 'SUMMARY_SCHEMA_INVALID', retryable: false },
+    );
+  }
+  _summariesCache = parsed.data;
+  return _summariesCache;
+}
+
+/**
+ * Prüft, ob alle Bullet-Citations Substrings des `body_de` sind.
+ * Liefert `false` bei mindestens einem Mismatch (Norm-Kontext-Bullets mit
+ * `original_zitat: ""` zählen NICHT als Mismatch).
+ */
+function citationsMatchBody(
+  summary: LetterAiSummaryPostOpen,
+  body: string,
+): boolean {
+  for (const cit of summary.citations) {
+    if (cit.original_zitat === '') continue;
+    if (!body.includes(cit.original_zitat)) return false;
+  }
+  return true;
+}
+
+function appendActivityLogInternal(
+  letterId: string,
+  entry: LetterActivityLogEntry,
+): void {
+  const log = loadActivityLog();
+  const list = log[letterId] ?? [];
+  list.push(entry);
+  log[letterId] = list;
+  saveActivityLog(log);
+}
+
+function vorgangTitelFromArchetype(
+  archetype: LetterArchetype,
+  vorgangsTyp: string,
+): string {
+  const year = new Date().getUTCFullYear();
+  switch (archetype) {
+    case 'steuerbescheid':
+      return `Steuer ${year - 1}`;
+    case 'familienkasse-nachweis':
+      return `Kindergeld-Nachweis ${year}`;
+    case 'abh-verlaengerung':
+      return `Aufenthaltstitel-Verlängerung ${year}`;
+    case 'krankenkasse-beitrag':
+      return `Krankenkassen-Beitrag ${year}`;
+    case 'beitragsservice-mahnung':
+      return `Rundfunkbeitrag ${year}`;
+    case 'ihk-beitrag':
+      return `IHK-Beitrag ${year}`;
+    case 'berufsgenossenschaft-beitrag':
+      return `BG-Beitrag ${year}`;
+    case 'standesamt-urkunde':
+      return `Standesamtliche Urkunde ${year}`;
+    case 'buergeramt-meldung':
+      return `Bürgeramt-Meldung ${year}`;
+    default:
+      return `Vorgang aus Brief (${vorgangsTyp})`;
+  }
+}
+
+function appendLetter(letter: Letter): void {
+  const letters = loadLetters();
+  letters.unshift(letter);
+  saveLetters(letters);
+  emit({ type: 'letter_received', letter });
+}
+
+function updateVorgang(
+  vorgangId: string,
+  mutator: (v: Vorgang) => Vorgang,
+): Vorgang | undefined {
+  const vorgaenge = loadVorgaenge();
+  const idx = vorgaenge.findIndex((v) => v.id === vorgangId);
+  if (idx === -1) return undefined;
+  const updated = mutator(vorgaenge[idx]);
+  vorgaenge[idx] = updated;
+  saveVorgaenge(vorgaenge);
+  return updated;
+}
+
+function changeVorgangStatus(vorgangId: string, status: VorgangStatus): void {
+  updateVorgang(vorgangId, (v) => ({
+    ...v,
+    status,
+    abgeschlossen_am:
+      status === 'abgeschlossen' ? new Date().toISOString() : v.abgeschlossen_am,
+  }));
+  emit({ type: 'vorgang_status_changed', vorgangId, status });
+}
+
+function upsertStep(vorgangId: string, step: AutopilotStep): void {
+  updateVorgang(vorgangId, (v) => {
+    const idx = v.schritte.findIndex((s) => s.id === step.id);
+    const schritte =
+      idx >= 0
+        ? v.schritte.map((s, i) => (i === idx ? step : s))
+        : [...v.schritte, step];
+    const beteiligte = Array.from(
+      new Set([...v.beteiligte_behoerden_ids, step.behoerde_id]),
+    );
+    return { ...v, schritte, beteiligte_behoerden_ids: beteiligte };
+  });
+  emit({ type: 'autopilot_step', vorgangId, step });
+}
+
+function recordConsent(behoerdeIds: string[], scope: string): void {
+  if (behoerdeIds.length === 0) return;
+  const consent = loadConsent();
+  for (const id of behoerdeIds) {
+    const existing = consent[id] ?? [];
+    if (!existing.includes(scope)) existing.push(scope);
+    consent[id] = existing;
+  }
+  saveConsent(consent);
+}
+
+function isVorgangFullyResolved(vorgang: Vorgang): boolean {
+  return vorgang.schritte.every(
+    (s) =>
+      s.status === 'confirmed' ||
+      s.status === 'failed' ||
+      s.status === 'self_assigned',
+  );
+}
+
+function createWohnungsgeberDoc(
+  input: UmzugInput,
+  vorgangId: string,
+): VaultDocument | undefined {
+  if (!input.wohnungsgeber_bestaetigung_dataurl) return undefined;
+  // Wir speichern die Data-URL nicht (PII-Hygiene), sondern legen einen
+  // Vault-Eintrag mit synthetischem QR-Payload an.
+  return {
+    id: `doc-${uuid()}`,
+    typ: 'wohnungsgeberbestaetigung',
+    titel: 'Wohnungsgeberbestätigung (§ 19 BMG) — hochgeladen',
+    ausstellende_behoerde_id: 'buergeramt-berlin-mitte',
+    ausgestellt_am: new Date().toISOString().slice(0, 10),
+    qr_payload: `[MOCK-QR] wohnungsgeber://upload/${vorgangId}/${new Date()
+      .toISOString()
+      .slice(0, 10)}`,
+    eudi_compatible: false,
+    watermark: '[MOCK]',
+    vorgang_id: vorgangId,
+  };
+}
+
+// ----------------------------------------------------------------------------
+// Public API surface
+// ----------------------------------------------------------------------------
+
+/**
+ * Ergebnis von `extrahiereAktion` — siehe spec §6.2 / §7. Liefert Post-Open-
+ * Summary, Fristen und Was-kann-ich-tun-Optionen aus dem deterministischen
+ * Demo-Seed (`letter-summaries.json`). `citation_match` ist `false`, wenn
+ * mindestens ein Bullet ein `original_zitat` enthält, das NICHT Substring von
+ * `letter.body_de` ist — die UI deaktiviert dann „Frist im Kalender"-CTAs bis
+ * zur manuellen Verifikation (Edge case #10).
+ */
+export interface ExtrahiereAktionResult {
+  archetype: LetterArchetype;
+  auth_channel: LetterAuthChannel;
+  ai_summary_post_open: LetterAiSummaryPostOpen;
+  fristen: LetterFrist[];
+  was_kann_ich_tun_options: LetterArchetypeAction[];
+  vorschlaege: Array<{ label: string; type?: string; i18n_key?: string }>;
+  citation_match: boolean;
+}
+
+export type ErstelleVorgangAusBriefTyp =
+  | 'steuer-jahr'
+  | 'familienkasse'
+  | 'aufenthaltstitel-verlaengerung'
+  | 'kindergeburt'
+  | 'sonstige';
+
+export interface MockBackendApi {
+  // Read
+  getProfile(): Promise<Persona>;
+  getBehoerden(): Promise<Behoerde[]>;
+  getBehoerde(id: string): Promise<Behoerde>;
+  getLetters(filter?: LetterFilter): Promise<Letter[]>;
+  /** Wirft `MockBackendError` bei Nicht-Treffer. Für „lookup or 404" semantisch. */
+  getLetter(id: string): Promise<Letter>;
+  /** Liefert `null` statt zu werfen — für UI-Pfade, die keinen Treffer als Default behandeln. */
+  getLetterById(id: string): Promise<Letter | null>;
+  getVorgang(id: string): Promise<Vorgang>;
+  getVorgaenge(filter?: VorgangFilter): Promise<Vorgang[]>;
+  getDocuments(): Promise<VaultDocument[]>;
+  getTermine(): Promise<Termin[]>;
+
+  // Posteingang-Capability (NEW — spec §6.2)
+  /**
+   * Liefert die pre-baked Post-Open-Summary für einen Brief.
+   * V1: liest aus `letter-summaries.json`-Seed (kein echter LLM-Call vom
+   * Mock-Backend; die echte Tool-Use-Pipeline läuft über `/api/assistant`).
+   * Latenz simuliert LLM-Feel (1.500–3.500 ms) bei kaltem Cache; ~200 ms wenn
+   * `letter.ai_summary?.post_open` bereits gesetzt ist.
+   */
+  extrahiereAktion(letterId: string): Promise<ExtrahiereAktionResult>;
+  /** Alle Briefe eines Vorgangs, chronologisch. */
+  getLetterThread(vorgangId: string): Promise<Letter[]>;
+  /** Substring-Suche auf `aktenzeichen` + `aktenzeichen_weitere`, ≥ 3 Zeichen, limit 20. */
+  searchLettersByAktenzeichen(query: string): Promise<Letter[]>;
+  /** Briefe aller Behörden einer Kategorie (Bund / Land / Kommune / Selbstverwaltung / Privat). */
+  getLettersByBehoerdenKategorie(
+    kategorie: BehoerdeKategorie,
+  ): Promise<Letter[]>;
+  /** Activity-Log eines Briefs (Datenschutz-Cockpit; reine App-Aktivität). */
+  getLetterAktivitaet(letterId: string): Promise<LetterActivityLogEntry[]>;
+
+  // Write
+  startUmzug(input: UmzugInput): Promise<{ vorgangId: string }>;
+  previewUmzug(
+    input: Pick<UmzugInput, 'neue_adresse' | 'stichtag'>,
+  ): Promise<UmzugPreview>;
+  cancelUmzug(vorgangId: string): Promise<void>;
+  /** Setzt `status: 'gelesen'` und schreibt einen `marked_read`-Activity-Log-Eintrag. */
+  markiereLetterGelesen(id: string): Promise<void>;
+  /** Englisch-Alias für `markiereLetterGelesen`. */
+  markLetterAsRead(letterId: string): Promise<void>;
+  bestaetigeAutopilotSchritt(
+    vorgangId: string,
+    schrittId: string,
+  ): Promise<void>;
+
+  // Posteingang-Capability — Write (NEW)
+  /**
+   * Legt einen neuen Vorgang aus einem Brief an, setzt `letter.vorgang_id` auf
+   * die neue ID und gibt sie zurück. Vorgangstyp aus Mapping (steuerbescheid →
+   * `steuer-jahr`, familienkasse-nachweis → `familienkasse`, …).
+   */
+  erstelleVorgangAusBrief(
+    letterId: string,
+    vorgangsTyp: ErstelleVorgangAusBriefTyp,
+  ): Promise<{ vorgangId: string }>;
+  /**
+   * Schreibt einen Activity-Log-Eintrag pro Brief. App-interne Aktivität
+   * — niemals „Lesebestätigung" oder Read-Receipt zur Behörde.
+   */
+  protokolliereLetterAktivitaet(
+    letterId: string,
+    event: LetterActivityEvent,
+    options?: { rechtsgrundlage?: string; note?: string },
+  ): Promise<void>;
+
+  // V1.5 — Antwort verfassen
+  /** Liefert den (einzigen) Draft für einen Brief oder `null`, wenn keiner existiert. */
+  getReplyDraft(letterId: string): Promise<ReplyDraft | null>;
+  /**
+   * Upsert-Operation auf dem Draft eines Briefs. Ruft mehrfach hintereinander
+   * sind idempotent — der Aufrufer (Frontend) ist für 2-s-Debounce zuständig.
+   * Seteilt einen `reply_draft_saved`-Activity-Log-Eintrag pro Aufruf.
+   */
+  saveReplyDraft(
+    letterId: string,
+    partial: Partial<ReplyDraft>,
+  ): Promise<ReplyDraft>;
+  /** Löscht den Draft eines Briefs + schreibt `reply_draft_deleted`-Eintrag. */
+  deleteReplyDraft(letterId: string): Promise<void>;
+  /**
+   * Mock-Versand: setzt `status === 'sent_simulated'`, `sent_at`, `kanal`.
+   * Schreibt `reply_sent_simulated`-Activity-Log-Eintrag. Validiert
+   * ELSTER-Realismus-Limits (Anzahl/Größe Anhänge, MIME) und wirft
+   * `MockBackendError(REPLY_*)` bei Verletzung.
+   *
+   * V1.5.1: `receipt_text` wird nicht mehr persistiert (Code-Review BLOCKER #3,
+   * 2026-05-09). Frontend rendert die Bestätigungs-Prosa aus `kanal + sent_at`
+   * via i18n-Template `posteingang.compose.confirmation.full_receipt_template`.
+   */
+  sendReplySimulated(letterId: string, draft: ReplyDraft): Promise<Reply>;
+  /** Liefert die zuletzt versandte Reply für einen Brief (oder `null`). */
+  getReplyByLetterId(letterId: string): Promise<Reply | null>;
+  /**
+   * Resolves a Reply-Body-Template to a fully-substituted DE-citizen-letter
+   * body. Reads the template from `de.json`, substitutes Persona /
+   * Letter / Behörden tokens, ICU `{mode, select, …}` for `termin_antwort`,
+   * and bracketed `[…]` placeholders for missing user input.
+   *
+   * `templateId === 'freitext'` → returns empty string.
+   *
+   * Latency: 100–200 ms; throws `MockBackendError` with code
+   *   `PERSONA_NOT_FOUND` / `LETTER_NOT_FOUND` / `TEMPLATE_NOT_FOUND`.
+   */
+  resolveReplyBody(input: ResolveReplyBodyInput): Promise<string>;
+
+  // Subscribe
+  subscribe(listener: MockBackendEventListener): () => void;
+}
+
+async function bestaetigeImpl(
+  vorgangId: string,
+  schrittId: string,
+): Promise<void> {
+  const persona = loadProfile();
+  const vorgang = loadVorgaenge().find((v) => v.id === vorgangId);
+  if (!vorgang) {
+    throw new MockBackendError(`Vorgang "${vorgangId}" nicht gefunden.`, {
+      code: 'VORGANG_NOT_FOUND',
+      retryable: false,
+    });
+  }
+  const step = vorgang.schritte.find((s) => s.id === schrittId);
+  if (!step) {
+    throw new MockBackendError(`Schritt "${schrittId}" nicht gefunden.`, {
+      code: 'STEP_NOT_FOUND',
+      retryable: false,
+    });
+  }
+  if (step.block !== 'D') {
+    throw new MockBackendError(
+      'Dieser Schritt erfordert keine eID-Bestätigung.',
+      { code: 'STEP_NOT_BLOCK_D', retryable: false },
+    );
+  }
+
+  const eidConfirmedAt = new Date().toISOString();
+  upsertStep(vorgangId, {
+    ...step,
+    status: 'in_progress',
+    eid_confirmed_at: eidConfirmedAt,
+  });
+
+  const ms = 800 + Math.random() * 700;
+  await new Promise((r) => setTimeout(r, ms));
+
+  const ctxNeueAdresse = vorgang.context?.neue_adresse as
+    | UmzugInput['neue_adresse']
+    | undefined;
+  const stichtag =
+    (vorgang.context?.stichtag as string | undefined) ??
+    vorgang.fristen.find((f) => f.typ === 'stichtag')?.datum ??
+    new Date().toISOString().slice(0, 10);
+  let letterId: string | undefined;
+  if (ctxNeueAdresse) {
+    const synthInput: UmzugInput = {
+      neue_adresse: ctxNeueAdresse,
+      stichtag,
+      betroffene_personen: [persona.id],
+    };
+    const letter = buildBlockDConfirmation(step, synthInput, persona);
+    if (letter) {
+      const finalLetter: Letter = { ...letter, vorgang_id: vorgangId };
+      appendLetter(finalLetter);
+      letterId = finalLetter.id;
+    }
+  }
+
+  upsertStep(vorgangId, {
+    ...step,
+    status: 'confirmed',
+    eid_confirmed_at: eidConfirmedAt,
+    completed_at: new Date().toISOString(),
+    letter_id: letterId,
+  });
+
+  const after = loadVorgaenge().find((v) => v.id === vorgangId);
+  if (after && isVorgangFullyResolved(after) && after.status !== 'abgeschlossen') {
+    changeVorgangStatus(vorgangId, 'abgeschlossen');
+  }
+}
+
+async function runAutopilotInBackground(ctx: {
+  vorgangId: string;
+  input: UmzugInput;
+  persona: Persona;
+}): Promise<void> {
+  try {
+    for await (const yieldVal of umzugAutopilot(ctx)) {
+      const { step, letter } = yieldVal;
+      if (letter) {
+        // Bezug zum Vorgang sicherstellen.
+        const finalLetter: Letter = { ...letter, vorgang_id: ctx.vorgangId };
+        appendLetter(finalLetter);
+        upsertStep(ctx.vorgangId, { ...step, letter_id: finalLetter.id });
+        continue;
+      }
+      upsertStep(ctx.vorgangId, step);
+    }
+    const v = loadVorgaenge().find((x) => x.id === ctx.vorgangId);
+    if (v && isVorgangFullyResolved(v) && v.status !== 'abgeschlossen') {
+      changeVorgangStatus(ctx.vorgangId, 'abgeschlossen');
+    }
+  } catch (err) {
+    if (typeof console !== 'undefined') {
+      console.error('[mock-backend] umzug autopilot crashed', err);
+    }
+  }
+}
+
+export const api: MockBackendApi & {
+  /** Architecture.md-konformer Alias mit Umlaut. */
+  bestätigeAutopilotSchritt(
+    vorgangId: string,
+    schrittId: string,
+  ): Promise<void>;
+} = {
+  // ---------- Read ----------
+  getProfile: () => withLatency(() => loadProfile()),
+
+  getBehoerden: () => withLatency(() => loadBehoerden()),
+
+  getBehoerde: (id: string) =>
+    withLatency(() => {
+      const found = loadBehoerden().find((b) => b.id === id);
+      if (!found) {
+        throw new MockBackendError(`Behörde "${id}" nicht gefunden.`, {
+          code: 'BEHOERDE_NOT_FOUND',
+          retryable: false,
+        });
+      }
+      return found;
+    }),
+
+  getLetters: (filter?: LetterFilter) =>
+    withLatency(() => {
+      let letters = loadLetters();
+      if (filter?.unread) letters = letters.filter((l) => l.status === 'ungelesen');
+      if (filter?.vorgang_id)
+        letters = letters.filter((l) => l.vorgang_id === filter.vorgang_id);
+      if (filter?.archetype)
+        letters = letters.filter((l) => l.archetype === filter.archetype);
+      if (filter?.aktenzeichen_query) {
+        const q = filter.aktenzeichen_query.toLowerCase();
+        letters = letters.filter((l) => {
+          if (l.aktenzeichen.toLowerCase().includes(q)) return true;
+          return (l.aktenzeichen_weitere ?? []).some((a) =>
+            a.toLowerCase().includes(q),
+          );
+        });
+      }
+      if (filter?.behoerden_kategorie) {
+        const target = filter.behoerden_kategorie;
+        const behoerden = loadBehoerden();
+        const kategorieById = new Map(behoerden.map((b) => [b.id, b.kategorie]));
+        letters = letters.filter(
+          (l) => kategorieById.get(l.absender_behoerde_id) === target,
+        );
+      }
+      if (filter?.frist_innerhalb_tage !== undefined) {
+        const horizon = filter.frist_innerhalb_tage;
+        const now = Date.now();
+        const horizonMs = horizon * 24 * 60 * 60 * 1000;
+        letters = letters.filter((l) =>
+          (l.fristen ?? []).some((f) => {
+            const d = new Date(f.datum).getTime();
+            return !Number.isNaN(d) && d - now <= horizonMs && d - now >= 0;
+          }),
+        );
+      }
+      if (filter?.status && filter.status.length > 0) {
+        const wanted = filter.status;
+        const now = Date.now();
+        const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
+        letters = letters.filter((l) => {
+          for (const w of wanted) {
+            if (w === 'ungelesen' || w === 'gelesen' || w === 'erledigt') {
+              if (l.status === w) return true;
+            } else if (w === 'frist_abgelaufen') {
+              if (
+                (l.fristen ?? []).some(
+                  (f) => new Date(f.datum).getTime() < now,
+                )
+              ) {
+                return true;
+              }
+            } else if (w === 'frist_unter_7d') {
+              if (
+                (l.fristen ?? []).some((f) => {
+                  const d = new Date(f.datum).getTime();
+                  return d - now > 0 && d - now <= sevenDaysMs;
+                })
+              ) {
+                return true;
+              }
+            } else if (w === 'frist_ueber_7d') {
+              if (
+                (l.fristen ?? []).some(
+                  (f) => new Date(f.datum).getTime() - now > sevenDaysMs,
+                )
+              ) {
+                return true;
+              }
+            }
+          }
+          return false;
+        });
+      }
+      if (filter?.vorgang_status && filter.vorgang_status.length > 0) {
+        const vorgaenge = loadVorgaenge();
+        const statusById = new Map(vorgaenge.map((v) => [v.id, v.status]));
+        const wanted = new Set(filter.vorgang_status);
+        letters = letters.filter((l) => {
+          if (!l.vorgang_id) return false;
+          const status = statusById.get(l.vorgang_id);
+          return status !== undefined && wanted.has(status);
+        });
+      }
+      return [...letters].sort((a, b) =>
+        b.empfangen_am.localeCompare(a.empfangen_am),
+      );
+    }),
+
+  getLetter: (id: string) =>
+    withLatency(() => {
+      const letter = loadLetters().find((l) => l.id === id);
+      if (!letter) {
+        throw new MockBackendError(`Brief "${id}" nicht gefunden.`, {
+          code: 'LETTER_NOT_FOUND',
+          retryable: false,
+        });
+      }
+      return letter;
+    }),
+
+  getLetterById: (id: string) =>
+    withLatency<Letter | null>(
+      () => loadLetters().find((l) => l.id === id) ?? null,
+    ),
+
+  getVorgang: (id: string) =>
+    withLatency(() => {
+      const v = loadVorgaenge().find((x) => x.id === id);
+      if (!v) {
+        throw new MockBackendError(`Vorgang "${id}" nicht gefunden.`, {
+          code: 'VORGANG_NOT_FOUND',
+          retryable: false,
+        });
+      }
+      return v;
+    }),
+
+  getVorgaenge: (filter?: VorgangFilter) =>
+    withLatency(() => {
+      let vorgaenge = loadVorgaenge();
+      if (filter?.typ) vorgaenge = vorgaenge.filter((v) => v.typ === filter.typ);
+      if (filter?.status) {
+        const allowed = Array.isArray(filter.status) ? filter.status : [filter.status];
+        vorgaenge = vorgaenge.filter((v) => allowed.includes(v.status));
+      }
+      return [...vorgaenge].sort((a, b) =>
+        b.angelegt_am.localeCompare(a.angelegt_am),
+      );
+    }),
+
+  getDocuments: () => withLatency(() => loadDocuments()),
+
+  getTermine: () =>
+    withLatency(() =>
+      [...loadTermine()].sort((a, b) => a.datum.localeCompare(b.datum)),
+    ),
+
+  // ---------- Write ----------
+  previewUmzug: (input) =>
+    withLatency(() => {
+      const persona = loadProfile();
+      return buildUmzugPreview(persona, input);
+    }),
+
+  startUmzug: (input: UmzugInput) =>
+    withLatency(() => {
+      ensureBooted();
+      const persona = loadProfile();
+      const vorgangId = `vorgang-${uuid()}`;
+      const angelegtAm = new Date().toISOString();
+
+      const wohnungsgeberDoc = createWohnungsgeberDoc(input, vorgangId);
+      if (wohnungsgeberDoc) {
+        const docs = loadDocuments();
+        docs.push(wohnungsgeberDoc);
+        saveDocuments(docs);
+        emit({ type: 'document_added', document: wohnungsgeberDoc });
+      }
+
+      const stichtagDate = new Date(input.stichtag);
+      const bmg17Frist = Number.isNaN(stichtagDate.getTime())
+        ? new Date()
+        : new Date(stichtagDate);
+      bmg17Frist.setUTCDate(bmg17Frist.getUTCDate() + 14);
+
+      const vorgang: Vorgang = {
+        id: vorgangId,
+        typ: 'umzug',
+        titel: `Umzug nach ${input.neue_adresse.ort}`,
+        status: 'angelegt',
+        beteiligte_behoerden_ids: [],
+        schritte: [],
+        fristen: [
+          { typ: 'bmg_17', datum: bmg17Frist.toISOString().slice(0, 10) },
+          { typ: 'stichtag', datum: input.stichtag },
+        ],
+        angelegt_am: angelegtAm,
+        persona_id: persona.id,
+        context: {
+          alte_adresse: input.alte_adresse ?? persona.adresse,
+          neue_adresse: input.neue_adresse,
+          stichtag: input.stichtag,
+          consents: input.consents ?? [],
+          source: input.source ?? 'ui',
+        },
+      };
+      const vorgaenge = loadVorgaenge();
+      vorgaenge.push(vorgang);
+      saveVorgaenge(vorgaenge);
+      emit({ type: 'vorgang_created', vorgangId });
+
+      // Block C-Schritte direkt schreiben.
+      for (const c of buildUmzugPreview(persona).block_c) {
+        const cStep: AutopilotStep = {
+          id: `step-${uuid()}`,
+          behoerde_id: `self:${c.id}`,
+          block: 'C',
+          aktion: c.titel,
+          rechtsgrundlage: '—',
+          status: 'self_assigned',
+          started_at: angelegtAm,
+        };
+        upsertStep(vorgangId, cStep);
+      }
+
+      recordConsent(input.consents ?? [], 'umzug:adressaenderung');
+
+      void runAutopilotInBackground({ vorgangId, input, persona });
+
+      return { vorgangId };
+    }),
+
+  cancelUmzug: (vorgangId: string) =>
+    withLatency(() => {
+      const v = updateVorgang(vorgangId, (vor) => ({
+        ...vor,
+        schritte: vor.schritte.map((s) =>
+          s.status === 'confirmed' || s.status === 'self_assigned'
+            ? s
+            : {
+                ...s,
+                status: 'failed' as const,
+                completed_at: new Date().toISOString(),
+                failure_reason: 'Vom Nutzer abgebrochen',
+              },
+        ),
+      }));
+      if (!v) {
+        throw new MockBackendError(`Vorgang "${vorgangId}" nicht gefunden.`, {
+          code: 'VORGANG_NOT_FOUND',
+          retryable: false,
+        });
+      }
+      changeVorgangStatus(vorgangId, 'abgelehnt');
+    }),
+
+  markiereLetterGelesen: (id: string) =>
+    withLatency(() => {
+      const letters = loadLetters();
+      const idx = letters.findIndex((l) => l.id === id);
+      if (idx === -1) {
+        throw new MockBackendError(`Brief "${id}" nicht gefunden.`, {
+          code: 'LETTER_NOT_FOUND',
+          retryable: false,
+        });
+      }
+      if (letters[idx].status !== 'ungelesen') return;
+      letters[idx] = { ...letters[idx], status: 'gelesen' };
+      saveLetters(letters);
+      emit({ type: 'letter_status_changed', letterId: id, status: 'gelesen' });
+      // Activity-Log: rein App-interne Markierung — niemals „Lesebestätigung".
+      appendActivityLogInternal(id, {
+        letter_id: id,
+        event: 'marked_read',
+        at: new Date().toISOString(),
+        by: 'app_internal',
+        rechtsgrundlage: 'DSGVO Art. 6 lit. b — Vertrag App-Nutzung',
+        note: 'App-interner Lesefortschritt — keine Bekanntgabe-Wirkung iSv § 41 Abs. 2a VwVfG.',
+      });
+    }),
+
+  // Englisch-Alias — identische Semantik, derselbe Activity-Log-Eintrag.
+  // Wir delegieren an die deutsche Methode statt Code zu duplizieren — beim
+  // Aufruf ist `api` bereits initialisiert (lazy via Funktions-Body).
+  markLetterAsRead(letterId: string) {
+    return this.markiereLetterGelesen(letterId);
+  },
+
+  bestaetigeAutopilotSchritt: (vorgangId: string, schrittId: string) =>
+    withLatency(() => bestaetigeImpl(vorgangId, schrittId)),
+
+  bestätigeAutopilotSchritt: (vorgangId: string, schrittId: string) =>
+    withLatency(() => bestaetigeImpl(vorgangId, schrittId)),
+
+  // ---------- Posteingang-Capability — Read ----------
+  extrahiereAktion: (letterId: string) => {
+    // Cache-Hit-Pfad: kurz, ~200 ms (Spec §6.2 Note).
+    const cached = loadLetters().find((l) => l.id === letterId);
+    if (cached?.ai_summary?.post_open) {
+      return withLatency<ExtrahiereAktionResult>(
+        () => {
+          const post = cached.ai_summary!.post_open!;
+          return {
+            archetype: cached.archetype ?? 'sonstiges',
+            auth_channel: cached.auth_channel ?? 'briefpost',
+            ai_summary_post_open: post,
+            fristen: cached.fristen ?? [],
+            was_kann_ich_tun_options: cached.was_kann_ich_tun_options ?? [],
+            vorschlaege: [],
+            citation_match: citationsMatchBody(post, cached.body_de),
+          };
+        },
+        { min: 150, max: 250 },
+      );
+    }
+    // Cold-Pfad: simulierte LLM-Latenz 1.500–3.500 ms.
+    return withLatency<ExtrahiereAktionResult>(
+      () => {
+        const letter = loadLetters().find((l) => l.id === letterId);
+        if (!letter) {
+          throw new MockBackendError(`Brief "${letterId}" nicht gefunden.`, {
+            code: 'LETTER_NOT_FOUND',
+            retryable: false,
+          });
+        }
+        const summaries = loadSummariesMap();
+        const seed = summaries[letterId];
+        if (!seed) {
+          throw new MockBackendError(
+            `Keine pre-baked Summary für "${letterId}" — Demo-Seed unvollständig.`,
+            { code: 'SUMMARY_NOT_FOUND', retryable: false },
+          );
+        }
+        const post: LetterAiSummaryPostOpen = seed.post_open;
+        // Persistiere ai_summary.post_open + ai_summary.pre_open auf dem Brief.
+        const letters = loadLetters();
+        const idx = letters.findIndex((l) => l.id === letterId);
+        if (idx >= 0) {
+          const existing = letters[idx].ai_summary ?? { de: '' };
+          letters[idx] = {
+            ...letters[idx],
+            ai_summary: {
+              ...existing,
+              de: existing.de || post.bullets.map((b) => b.text).join(' '),
+              pre_open: seed.pre_open,
+              post_open: post,
+            },
+          };
+          saveLetters(letters);
+        }
+        // Activity-Log-Eintrag (Spec §6.3.5).
+        appendActivityLogInternal(letterId, {
+          letter_id: letterId,
+          event: 'summary_generated',
+          at: new Date().toISOString(),
+          by: 'app_internal',
+          rechtsgrundlage:
+            'DSGVO Art. 6 lit. a Einwilligung + Art. 28 AVV mit Anthropic',
+          note: `Zusammenfassung erstellt mit Anthropic Claude (${post.model})`,
+        });
+        return {
+          archetype: letter.archetype ?? 'sonstiges',
+          auth_channel: letter.auth_channel ?? 'briefpost',
+          ai_summary_post_open: post,
+          fristen: letter.fristen ?? [],
+          was_kann_ich_tun_options: letter.was_kann_ich_tun_options ?? [],
+          vorschlaege: seed.vorschlaege ?? [],
+          citation_match: citationsMatchBody(post, letter.body_de),
+        };
+      },
+      { min: 1500, max: 3500 },
+    );
+  },
+
+  getLetterThread: (vorgangId: string) =>
+    withLatency(
+      () =>
+        loadLetters()
+          .filter((l) => l.vorgang_id === vorgangId)
+          .sort((a, b) => a.empfangen_am.localeCompare(b.empfangen_am)),
+      { min: 200, max: 500 },
+    ),
+
+  searchLettersByAktenzeichen: (query: string) =>
+    withLatency(
+      () => {
+        const q = query.trim();
+        if (q.length < 3) return [] as Letter[];
+        const lower = q.toLowerCase();
+        return loadLetters()
+          .filter((l) => {
+            if (l.aktenzeichen.toLowerCase().includes(lower)) return true;
+            return (l.aktenzeichen_weitere ?? []).some((a) =>
+              a.toLowerCase().includes(lower),
+            );
+          })
+          .sort((a, b) => b.empfangen_am.localeCompare(a.empfangen_am))
+          .slice(0, 20);
+      },
+      { min: 200, max: 400 },
+    ),
+
+  getLettersByBehoerdenKategorie: (kategorie: BehoerdeKategorie) =>
+    withLatency(() => {
+      const behoerden = loadBehoerden();
+      const matchingIds = new Set(
+        behoerden.filter((b) => b.kategorie === kategorie).map((b) => b.id),
+      );
+      return loadLetters()
+        .filter((l) => matchingIds.has(l.absender_behoerde_id))
+        .sort((a, b) => b.empfangen_am.localeCompare(a.empfangen_am));
+    }),
+
+  getLetterAktivitaet: (letterId: string) =>
+    withLatency(
+      () => {
+        const log = loadActivityLog();
+        return [...(log[letterId] ?? [])].sort((a, b) =>
+          a.at.localeCompare(b.at),
+        );
+      },
+      { min: 150, max: 350 },
+    ),
+
+  // ---------- Posteingang-Capability — Write ----------
+  erstelleVorgangAusBrief: (
+    letterId: string,
+    vorgangsTyp: ErstelleVorgangAusBriefTyp,
+  ) =>
+    withLatency<{ vorgangId: string }>(
+      () => {
+        const persona = loadProfile();
+        const letters = loadLetters();
+        const idx = letters.findIndex((l) => l.id === letterId);
+        if (idx === -1) {
+          throw new MockBackendError(`Brief "${letterId}" nicht gefunden.`, {
+            code: 'LETTER_NOT_FOUND',
+            retryable: false,
+          });
+        }
+        const letter = letters[idx];
+        const vorgangId = `vorgang-${uuid()}`;
+        const angelegtAm = new Date().toISOString();
+        const titel = vorgangTitelFromArchetype(
+          letter.archetype ?? 'sonstiges',
+          vorgangsTyp,
+        );
+
+        const fristenForVorgang = (letter.fristen ?? []).map((f) => ({
+          typ: f.typ,
+          datum: f.datum,
+        }));
+
+        const vorgang: Vorgang = {
+          id: vorgangId,
+          typ: vorgangsTyp,
+          titel,
+          status: 'angelegt',
+          beteiligte_behoerden_ids: [letter.absender_behoerde_id],
+          schritte: [],
+          fristen: fristenForVorgang,
+          angelegt_am: angelegtAm,
+          persona_id: persona.id,
+          context: {
+            source: 'posteingang.erstelleVorgangAusBrief',
+            seed_letter_id: letterId,
+            archetype: letter.archetype,
+          },
+        };
+        const vorgaenge = loadVorgaenge();
+        vorgaenge.push(vorgang);
+        saveVorgaenge(vorgaenge);
+        emit({ type: 'vorgang_created', vorgangId });
+
+        // Letter mit Vorgang verknüpfen.
+        letters[idx] = { ...letter, vorgang_id: vorgangId };
+        saveLetters(letters);
+
+        return { vorgangId };
+      },
+      { min: 500, max: 1000 },
+    ),
+
+  protokolliereLetterAktivitaet: (
+    letterId: string,
+    event: LetterActivityEvent,
+    options?: { rechtsgrundlage?: string; note?: string },
+  ) =>
+    withLatency<void>(
+      () => {
+        // Hard-Boundary: Drift im Aufrufer (z. B. Legacy-Wert „opened" statt
+        // „opened_in_app") wird hier sofort sichtbar statt stillschweigend in
+        // den Log zu wandern und beim nächsten Re-Read den ganzen Bucket
+        // zu invalidieren.
+        const parsed = letterActivityAktionSchema.safeParse(event);
+        if (!parsed.success) {
+          throw new MockBackendError(
+            `Ungültiger Activity-Log-Event "${String(event)}" — erlaubt sind: ${letterActivityAktionSchema.options.join(', ')}.`,
+            { code: 'INVALID_ACTIVITY_EVENT', retryable: false },
+          );
+        }
+        appendActivityLogInternal(letterId, {
+          letter_id: letterId,
+          event: parsed.data,
+          at: new Date().toISOString(),
+          by: 'app_internal',
+          rechtsgrundlage: options?.rechtsgrundlage,
+          note: options?.note,
+        });
+      },
+      { min: 100, max: 250 },
+    ),
+
+  // ---------- V1.5 — Antwort verfassen (Reply / ReplyDraft) ----------
+  getReplyDraft: (letterId: string) =>
+    withLatency<ReplyDraft | null>(
+      () => {
+        const map = loadReplies();
+        const reply = map[letterId];
+        if (!reply) return null;
+        if (reply.status !== 'draft') return null;
+        // Schema-Re-Validierung (V1-Pattern: niemals ungeprüft aus Storage zurückgeben).
+        const parsed = replySchema.safeParse(reply);
+        if (!parsed.success) return null;
+        return parsed.data as ReplyDraft;
+      },
+      { min: 150, max: 350 },
+    ),
+
+  saveReplyDraft: (letterId: string, partial: Partial<ReplyDraft>) =>
+    withLatency<ReplyDraft>(
+      () => {
+        // Brief muss existieren (Aktenzeichen-Anker; Verifier #2 — keine free-form).
+        const letter = loadLetters().find((l) => l.id === letterId);
+        if (!letter) {
+          throw new MockBackendError(
+            `Brief "${letterId}" nicht gefunden — Reply muss in-thread zu einem Brief sein.`,
+            { code: 'LETTER_NOT_FOUND', retryable: false },
+          );
+        }
+
+        const map = loadReplies();
+        const existing = map[letterId];
+        const now = new Date().toISOString();
+        const isFirstSave = !existing;
+
+        // Bei sent_simulated: nicht überschreiben (Reply ist bereits versandt).
+        if (existing && existing.status === 'sent_simulated') {
+          throw new MockBackendError(
+            `Reply für Brief "${letterId}" wurde bereits simuliert versandt — Draft-Save nicht mehr möglich.`,
+            { code: 'REPLY_ALREADY_SENT', retryable: false },
+          );
+        }
+
+        const merged: Reply = {
+          id: existing?.id ?? `reply-${uuid()}`,
+          letter_id: letterId,
+          status: 'draft',
+          template_id: partial.template_id ?? existing?.template_id ?? null,
+          mode: partial.mode ?? existing?.mode,
+          body_de: partial.body_de ?? existing?.body_de ?? '',
+          attachments: partial.attachments ?? existing?.attachments ?? [],
+          created_at: existing?.created_at ?? now,
+          updated_at: now,
+          sent_at: null,
+          kanal: null,
+          // V1.5.1: receipt_text nicht mehr persistiert (Code-Review BLOCKER #3,
+          // 2026-05-09). Frontend rendert Prosa aus i18n-Template.
+        };
+
+        // Bei freitext / nicht-termin_antwort: mode entfernen.
+        if (merged.template_id !== 'termin_antwort') {
+          delete merged.mode;
+        }
+
+        const validation = replySchema.safeParse(merged);
+        if (!validation.success) {
+          throw new MockBackendError(
+            `Reply-Schema-Verletzung: ${validation.error.issues
+              .slice(0, 3)
+              .map((i) => `${i.path.join('.')}:${i.message}`)
+              .join('; ')}`,
+            { code: 'REPLY_SCHEMA_INVALID', retryable: false },
+          );
+        }
+
+        map[letterId] = validation.data as Reply;
+        saveReplies(map);
+
+        // Activity-Log-Einträge:
+        //  - bei erstem Save: zusätzlich `reply_compose_started` (vorher unmöglich
+        //    zu protokollieren, weil keine Brief-Reply-Beziehung existierte).
+        if (isFirstSave) {
+          appendActivityLogInternal(letterId, {
+            letter_id: letterId,
+            event: 'reply_compose_started',
+            at: now,
+            by: 'app_internal',
+            rechtsgrundlage: 'Art. 6 Abs. 1 lit. a DSGVO Einwilligung',
+          });
+        }
+        // Wenn ein Template-ID übergeben wurde und es ein Wechsel ist → reply_template_inserted.
+        if (
+          partial.template_id !== undefined &&
+          partial.template_id !== null &&
+          partial.template_id !== existing?.template_id
+        ) {
+          appendActivityLogInternal(letterId, {
+            letter_id: letterId,
+            event: 'reply_template_inserted',
+            at: now,
+            by: 'app_internal',
+            rechtsgrundlage: 'Art. 6 Abs. 1 lit. a DSGVO Einwilligung',
+            note: `template:${partial.template_id}`,
+          });
+        }
+        appendActivityLogInternal(letterId, {
+          letter_id: letterId,
+          event: 'reply_draft_saved',
+          at: now,
+          by: 'app_internal',
+          rechtsgrundlage: 'Art. 6 Abs. 1 lit. a DSGVO Einwilligung',
+        });
+
+        return validation.data as ReplyDraft;
+      },
+      { min: 200, max: 500 },
+    ),
+
+  deleteReplyDraft: (letterId: string) =>
+    withLatency<void>(
+      () => {
+        const map = loadReplies();
+        const existing = map[letterId];
+        if (!existing) return;
+        if (existing.status === 'sent_simulated') {
+          throw new MockBackendError(
+            `Reply für Brief "${letterId}" wurde bereits simuliert versandt — Löschen nicht mehr möglich.`,
+            { code: 'REPLY_ALREADY_SENT', retryable: false },
+          );
+        }
+        delete map[letterId];
+        saveReplies(map);
+        appendActivityLogInternal(letterId, {
+          letter_id: letterId,
+          event: 'reply_draft_deleted',
+          at: new Date().toISOString(),
+          by: 'app_internal',
+          rechtsgrundlage: 'Art. 6 Abs. 1 lit. a DSGVO Einwilligung',
+        });
+      },
+      { min: 150, max: 350 },
+    ),
+
+  sendReplySimulated: (letterId: string, draft: ReplyDraft) =>
+    withLatency<Reply>(
+      () => {
+        // Brief muss existieren.
+        const letter = loadLetters().find((l) => l.id === letterId);
+        if (!letter) {
+          throw new MockBackendError(
+            `Brief "${letterId}" nicht gefunden — Versand abgebrochen.`,
+            { code: 'LETTER_NOT_FOUND', retryable: false },
+          );
+        }
+
+        // ELSTER-Realismus-Limits prüfen (Verifier-locked + spec §3).
+        const attachments = draft.attachments ?? [];
+        if (attachments.length > LETTER_ATTACHMENT_LIMITS.MAX_FILES) {
+          throw new MockBackendError(
+            `Zu viele Anhänge: ${attachments.length} (max. ${LETTER_ATTACHMENT_LIMITS.MAX_FILES}).`,
+            { code: 'REPLY_ATTACHMENT_TOO_MANY', retryable: false },
+          );
+        }
+        let total = 0;
+        for (const att of attachments) {
+          if (
+            !(LETTER_ATTACHMENT_LIMITS.ALLOWED_MIME as readonly string[]).includes(
+              att.mime,
+            )
+          ) {
+            throw new MockBackendError(
+              `Anhang "${att.name}" hat unzulässigen MIME-Type "${att.mime}". Erlaubt: ${LETTER_ATTACHMENT_LIMITS.ALLOWED_MIME.join(', ')}.`,
+              { code: 'REPLY_ATTACHMENT_MIME_INVALID', retryable: false },
+            );
+          }
+          if (att.size_bytes > LETTER_ATTACHMENT_LIMITS.MAX_BYTES_PER_FILE) {
+            throw new MockBackendError(
+              `Anhang "${att.name}" ist zu groß: ${att.size_bytes} Bytes (max. ${LETTER_ATTACHMENT_LIMITS.MAX_BYTES_PER_FILE} Bytes pro Datei).`,
+              { code: 'REPLY_ATTACHMENT_TOO_LARGE', retryable: false },
+            );
+          }
+          total += att.size_bytes;
+        }
+        if (total > LETTER_ATTACHMENT_LIMITS.MAX_BYTES_TOTAL) {
+          throw new MockBackendError(
+            `Anhänge in Summe zu groß: ${total} Bytes (max. ${LETTER_ATTACHMENT_LIMITS.MAX_BYTES_TOTAL} Bytes gesamt).`,
+            { code: 'REPLY_ATTACHMENT_TOO_LARGE', retryable: false },
+          );
+        }
+
+        const now = new Date().toISOString();
+        const kanal = getMockKanalForBehoerde(letter.absender_behoerde_id);
+        // V1.5.1 (Code-Review BLOCKER #3, 2026-05-09): receipt_text wird NICHT
+        // mehr als hardcoded DE-String persistiert. Die Prosa rendert das
+        // Frontend aus `kanal` + `sent_at` + i18n-Template (Domain §7,
+        // posteingang.compose.confirmation.full_receipt_template). Storage
+        // hält nur die strukturierten Felder; das `[MOCK]`-Watermark sitzt im
+        // i18n-Template-Body, nicht in den Daten.
+
+        const sent: Reply = {
+          id: draft.id,
+          letter_id: letterId,
+          status: 'sent_simulated',
+          template_id: draft.template_id,
+          ...(draft.template_id === 'termin_antwort' && draft.mode
+            ? { mode: draft.mode }
+            : {}),
+          body_de: draft.body_de,
+          attachments,
+          created_at: draft.created_at,
+          updated_at: now,
+          sent_at: now,
+          kanal,
+        };
+
+        const validation = replySchema.safeParse(sent);
+        if (!validation.success) {
+          throw new MockBackendError(
+            `Reply-Schema-Verletzung beim Versand: ${validation.error.issues
+              .slice(0, 3)
+              .map((i) => `${i.path.join('.')}:${i.message}`)
+              .join('; ')}`,
+            { code: 'REPLY_SCHEMA_INVALID', retryable: false },
+          );
+        }
+
+        const map = loadReplies();
+        map[letterId] = validation.data as Reply;
+        saveReplies(map);
+
+        appendActivityLogInternal(letterId, {
+          letter_id: letterId,
+          event: 'reply_sent_simulated',
+          at: now,
+          by: 'app_internal',
+          rechtsgrundlage: 'Art. 6 Abs. 1 lit. a DSGVO Einwilligung',
+          note: draft.template_id
+            ? `template:${draft.template_id};kanal:${kanal}`
+            : `template:freitext;kanal:${kanal}`,
+        });
+
+        return validation.data as Reply;
+      },
+      { min: 600, max: 1200 },
+    ),
+
+  getReplyByLetterId: (letterId: string) =>
+    withLatency<Reply | null>(
+      () => {
+        const map = loadReplies();
+        const reply = map[letterId];
+        if (!reply) return null;
+        const parsed = replySchema.safeParse(reply);
+        if (!parsed.success) return null;
+        return parsed.data as Reply;
+      },
+      { min: 150, max: 350 },
+    ),
+
+  // ---------- V1.5 — Reply-Body-Resolver ----------
+  resolveReplyBody: (input: ResolveReplyBodyInput) =>
+    resolveReplyBodyImpl(input),
+
+  // ---------- Subscribe ----------
+  subscribe: (listener: MockBackendEventListener) => subscribe(listener),
+};
+
+// Re-exports.
+export { MockBackendError } from './errors';
+export type { MockBackendEvent };

@@ -1,0 +1,24 @@
+[
+  {
+    "id": "termin-anna-aok-beratung",
+    "behoerde_id": "aok-nordost",
+    "datum": "2026-05-21T10:30:00.000Z",
+    "ort": {
+      "typ": "video",
+      "details": "AOK Nordost Video-Sprechstunde — Link wird 24 h vorher per E-Mail zugestellt"
+    },
+    "status": "gebucht",
+    "betreff": "Beratung Vorsorge-Untersuchungen"
+  },
+  {
+    "id": "termin-anna-fa-elster",
+    "behoerde_id": "finanzamt-koerperschaften-i-berlin",
+    "datum": "2026-06-04T09:00:00.000Z",
+    "ort": {
+      "typ": "praesenz",
+      "details": "Finanzamt für Körperschaften I Berlin, Bredtschneiderstraße 5, 14057 Berlin, Raum 214"
+    },
+    "status": "bestaetigt",
+    "betreff": "ELSTER-Unterstützung Steuererklärung 2025"
+  }
+]

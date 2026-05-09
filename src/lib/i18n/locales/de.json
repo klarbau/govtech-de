@@ -1,0 +1,670 @@
+{
+  "app": {
+    "name": "GovTech DE",
+    "tagline": "Verwaltung neu gedacht.",
+    "skip_to_content": "Zum Hauptinhalt springen"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "posteingang": "Posteingang",
+    "stammdaten": "Stammdaten",
+    "vorgaenge": "Vorgänge",
+    "dokumente": "Dokumente",
+    "termine": "Termine",
+    "steuer": "Steuer",
+    "familie": "Familie",
+    "assistent": "Assistent",
+    "datenschutz": "Datenschutz"
+  },
+  "topbar": {
+    "language_label": "Sprache",
+    "theme_toggle_light": "Helles Theme",
+    "theme_toggle_dark": "Dunkles Theme",
+    "theme_toggle_system": "Systemeinstellung",
+    "user_menu": "Benutzermenü"
+  },
+  "footer": {
+    "imprint": "Impressum",
+    "privacy": "Datenschutz",
+    "accessibility": "Barrierefreiheit"
+  },
+  "landing": {
+    "eyebrow": "GovTech DE — Konzept-Demo",
+    "title": "Verwaltung neu gedacht",
+    "subtitle": "Ein Konzept-Prototyp einer bürgerzentrierten Schicht über DeutschlandID, EUDI Wallet und Deutschland-Stack. Alle Daten sind synthetisch.",
+    "personas_title": "Wählen Sie eine Persona",
+    "personas_helper": "Die Demo lädt eine vorbereitete Datenlage. Sie können jederzeit wechseln.",
+    "persona_anna": "Anna Petrov, 28 — Blue Card EU, Berlin",
+    "persona_schmidt": "Familie Schmidt — Hamburg, Geburt erwartet",
+    "persona_mehmet": "Mehmet Yıldız, 34 — Köln, Gewerbe geplant",
+    "cta_continue": "Demo öffnen"
+  },
+  "common": {
+    "cta": {
+      "zurueck": "Zurück",
+      "weiter": "Weiter",
+      "bestaetigen": "Bestätigen",
+      "abbrechen": "Abbrechen",
+      "erneut_versuchen": "Erneut versuchen"
+    },
+    "frist": {
+      "gesetzlich": "gesetzliche Frist",
+      "unverzueglich": "unverzüglich",
+      "vertraglich": "vertragliche Frist",
+      "zahlung": "Zahlungsfrist",
+      "einspruch": "Einspruchsfrist",
+      "widerspruch": "Widerspruchsfrist",
+      "klage": "Klagefrist",
+      "nachweis": "Nachweisfrist",
+      "antragstellung": "Antrags-Frist",
+      "sonstige": "Frist"
+    },
+    "posteingang": {
+      "label": "Posteingang"
+    },
+    "disclaimer": {
+      "prototype_title": "Hinweis zum Prototyp",
+      "prototype": "Hinweis zum Prototyp. Diese Demo zeigt, wie ein Umzug 2027 mit Deutschland-Stack und EUDI Wallet aussehen könnte. Daten und Behörden-Antworten sind synthetisch (markiert mit [MOCK]).\n\nHeute (Stand Mai 2026) erledigt das Meldeamt automatisch nur einen Teil der gezeigten Schritte: die Wegzugsmitteilung an die alte Meldebehörde (§ 33 BMG), die Adress-Aktualisierung im Personalausweis (§ 28 PAuswG) sowie die regelmäßigen Übermittlungen an Finanzamt, Beitragsservice und Wehrverwaltung (§ 36 BMG i.V.m. § 11 Abs. 4 RBStV / § 39 AO / § 58c SG). Krankenkasse, Bank, Versicherer, Arbeitgeber und Energieversorger erfordern die Einwilligung der betroffenen Person (Art. 6 Abs. 1 lit. a DSGVO). KFZ-Halter:innen, Familienkasse und Ausländerbehörde benötigen jeweils eine eigene aktive Mitteilung — diese Demo simuliert eine eID-bestätigte Schnellbearbeitung, die bundesweit produktiv noch nicht verfügbar ist.",
+      "bussgeld_frist_modal": "§ 17 BMG verpflichtet zur Anmeldung innerhalb von zwei Wochen nach dem Einzug. § 54 Abs. 2 Nr. 1 BMG sieht hierfür einen Bußgeldrahmen bis 1.000 € vor. In der kommunalen Praxis verhängen Bürgerämter typischerweise 10–50 € bei verspäteter Anmeldung; die Höhe entscheidet das jeweilige Amt im Einzelfall. Bußgelder bis 50.000 € nach § 54 Abs. 1 BMG gelten ausschließlich für Falsch- oder Nichtangaben, nicht für Verspätungen."
+    },
+    "frist_detail": {
+      "title": "Frist nach § 17 BMG — Details",
+      "open_cta": "Warum 14 Tage?",
+      "close_cta": "Schließen"
+    }
+  },
+  "umzug": {
+    "start": {
+      "title": "Umzug",
+      "subtitle": "In wenigen Schritten alle relevanten Stellen informieren.",
+      "adresse": {
+        "label": "Ihre neue Adresse",
+        "strasse": "Straße",
+        "hausnummer": "Hausnummer",
+        "zusatz": "Zusatz (optional)",
+        "plz": "PLZ",
+        "ort": "Ort"
+      },
+      "stichtag": {
+        "label": "Einzugsdatum",
+        "helper": "Datum, an dem Sie die neue Wohnung beziehen."
+      },
+      "wohnungsgeber": {
+        "title": "Wohnungsgeberbestätigung (§ 19 BMG, Pflicht)",
+        "cta_upload": "Datei wählen",
+        "cta_demo": "Beispiel verwenden",
+        "helper_de": "Vermieter:innen sind nach § 19 BMG verpflichtet, diese Bestätigung innerhalb von zwei Wochen ab Einzug auszustellen.",
+        "selected_template": "{filename} ausgewählt",
+        "demo_filename": "[MOCK] Wohnungsgeberbestaetigung_Vogel.pdf"
+      },
+      "cta_weiter": "Weiter zur Vorschau",
+      "error": {
+        "plz_invalid": "Bitte geben Sie eine gültige fünfstellige Postleitzahl ein.",
+        "wohnungsgeber_missing": "Ohne Wohnungsgeberbestätigung ist eine Anmeldung nicht möglich (§ 19 BMG).",
+        "auslandsadresse": "Auslandsumzug erfordert eine separate Abmeldung (§ 17 Abs. 2 BMG). Dieser Vorgang ist in Vorbereitung.",
+        "felder_unvollstaendig": "Bitte vervollständigen Sie alle Pflichtfelder."
+      }
+    },
+    "preview": {
+      "title": "Vorschau: Was passiert, wenn Sie bestätigen",
+      "subtitle_template": "Neue Adresse: {adresse} · ab {stichtag}",
+      "block_a": {
+        "title": "Erledigen wir automatisch",
+        "subhead": "§ 33 BMG · § 34 BMG · § 36 BMG"
+      },
+      "block_b": {
+        "title": "Mit Ihrer Einwilligung",
+        "subhead": "Art. 6 Abs. 1 lit. a DSGVO",
+        "consent_helper": "Sie können Ihre Einwilligung jederzeit widerrufen — siehe Datenschutz-Cockpit."
+      },
+      "block_c": {
+        "title": "Erledigen Sie selbst",
+        "helper": "Diese Stellen können wir nicht direkt erreichen — wir generieren Ihnen Vorlagen."
+      },
+      "block_d": {
+        "title": "Wir bereiten vor — Sie bestätigen mit eID",
+        "subhead": "§ 18 PAuswG · jeweilige Fachnorm",
+        "eid_helper": "Wir füllen den Antrag mit Ihren Stammdaten aus. Sie bestätigen mit einem Tipp Ihrer Online-Ausweisfunktion."
+      },
+      "cta_start_autopilot": "Autopilot starten",
+      "empty_block_d_hidden": "",
+      "loading": "Vorschau wird geladen …",
+      "error": "Vorschau konnte nicht geladen werden."
+    },
+    "run": {
+      "title": "Autopilot läuft …",
+      "subtitle_template": "{adresse} · Stichtag {stichtag}",
+      "vorgang_label": "Vorgang #{id}",
+      "status": {
+        "pending": "wartet",
+        "in_progress": "in Arbeit",
+        "confirmed": "bestätigt",
+        "failed": "Fehler — erneut versuchen",
+        "needs_eid": "eID-Tap erforderlich"
+      },
+      "eid_dialog": {
+        "title": "Mit Ihrer eID bestätigen",
+        "body_template": "Wir leiten Ihre neue Adresse an {behoerde} weiter. Bitte halten Sie Ihren Personalausweis an das Lesegerät und bestätigen Sie mit Ihrer PIN.",
+        "cta_confirm": "Mit eID bestätigen",
+        "cta_cancel": "Abbrechen"
+      },
+      "cta_pause": "Pause",
+      "cta_cancel": "Abbrechen",
+      "cta_to_vorgang": "Zum Vorgang",
+      "frist_tooltip": {
+        "bmg_17": "Frist nach § 17 BMG: zwei Wochen ab Einzug.",
+        "bmg_33_3wt": "Frist nach § 33 BMG: spätestens drei Werktage.",
+        "fzv_15_unverzueglich": "Frist nach § 15 FZV: unverzüglich nach Wohnsitzwechsel."
+      },
+      "aktenzeichen_label": "Aktenzeichen",
+      "cancel_dialog": {
+        "title": "Autopilot abbrechen?",
+        "body": "Bereits bestätigte Anmeldungen können nicht zurückgenommen werden — eine Korrektur erfolgt durch eine erneute Adressänderung.",
+        "cta_keep_running": "Weiterlaufen lassen",
+        "cta_confirm_cancel": "Trotzdem abbrechen"
+      }
+    },
+    "detail": {
+      "title": "Vorgang: Umzug",
+      "angelegt_template": "Angelegt {datum}",
+      "stichtag_template": "Stichtag {datum}",
+      "status": {
+        "laeuft": "läuft",
+        "abgeschlossen": "abgeschlossen",
+        "fehlerhaft": "mit Fehlern abgeschlossen"
+      },
+      "adresse_alt": "Adresse alt",
+      "adresse_neu": "Adresse neu",
+      "beteiligte_behoerden_count": "Beteiligte Stellen ({count})",
+      "posteingang_count": "Posteingang zu diesem Vorgang ({count})",
+      "cta_datenschutz": "Datenschutz-Cockpit öffnen",
+      "brief_label": "Brief",
+      "aktz_label": "Aktenzeichen",
+      "termin_label_template": "Termin: {datum}, {ort}",
+      "not_found_title": "Vorgang nicht gefunden",
+      "not_found_body": "Dieser Vorgang existiert nicht oder wurde gelöscht.",
+      "back_to_dashboard": "Zurück zum Dashboard"
+    },
+    "rechtsgrundlage": {
+      "bmg_17": "§ 17 BMG: Anmeldepflicht innerhalb von zwei Wochen nach Einzug.",
+      "bmg_33": "§ 33 BMG: Datenübermittlung zwischen Meldebehörden — Wegzugsmitteilung erfolgt automatisch, spätestens drei Werktage nach Anmeldung.",
+      "bmg_34": "§ 34 BMG: Datenübermittlung an andere öffentliche Stellen ohne Einwilligung, soweit zur Erfüllung öffentlicher Aufgaben erforderlich.",
+      "bmg_36": "§ 36 BMG: regelmäßige Datenübermittlungen — Empfänger und Daten durch Spezialgesetz festgelegt.",
+      "fzv_15": "§ 15 FZV: Halter-Mitteilungspflicht bei Wohnsitzwechsel — Zulassungsbescheinigung Teil I unverzüglich aktualisieren.",
+      "aufenthg_18g": "§ 18g AufenthG: Blue Card EU für ausländische Fachkräfte (seit AufenthG-Reform 2023).",
+      "aufenthg_87": "§ 87 AufenthG: Datenübermittlung an Ausländerbehörden auf Ersuchen, kein automatischer Push.",
+      "pauswg_18": "§ 18 PAuswG: Online-Ausweisfunktion — eID als rechtswirksame Willenserklärung.",
+      "pauswg_28": "§ 28 PAuswG: Adressaktualisierung im Personalausweis (Adressaufkleber durch Bundesdruckerei).",
+      "dsgvo_6_1_a": "Art. 6 Abs. 1 lit. a DSGVO: Einwilligung der betroffenen Person — jederzeit widerruflich.",
+      "estg_67_68": "§§ 67–68 EStG: Kindergeldantrag und Mitwirkungspflicht bei Veränderungen.",
+      "rbstv_11_4": "§ 11 Abs. 4 RBStV: regelmäßige Meldedaten-Übermittlung an den Beitragsservice.",
+      "sgb_iv_28a": "§ 28a SGB IV: DEÜV-Meldungen des Arbeitgebers an die Sozialversicherungsträger.",
+      "detail_title": "Rechtsgrundlage",
+      "open_cta": "Rechtsgrundlage anzeigen"
+    }
+  },
+  "placeholder": {
+    "section_title": "{section}",
+    "wip": "Diese Sektion ist in Vorbereitung.",
+    "wip_helper": "Diese Konzept-Demo fokussiert sich zunächst auf den Umzug-Autopilot. Weitere Vorgänge folgen."
+  },
+  "posteingang": {
+    "skip_link": {
+      "zur_brief_liste": "Zum Brief-Listen-Bereich springen"
+    },
+    "hero": {
+      "title": "Posteingang",
+      "subtitle": "Alle Behörden-Briefe an einem Ort. Verstehen statt verzweifeln.",
+      "speculative_footer": "Diese Demo zeigt, wie ein einheitlicher Behörden-Posteingang 2027 aussehen *könnte*. Stand Mai 2026: ZBP/BundID ist produktiv (~3,8 Mio Postfächer migriert), bidirektionale Kommunikation ab Juli 2026 geplant; Mein ELSTER hat eigenen Posteingang mit elektronischer Bekanntgabe ab 01.01.2027 als Default-Plan. Eine *einheitliche* Inbox-Realität existiert in DE 2026 noch nicht — die Demo zeigt, wie sie aussehen könnte. Daten und Briefe sind synthetisch (`[MOCK]`)."
+    },
+    "watermark": {
+      "banner": "[MOCK – Verwaltungsdemo, keine echten Daten]",
+      "inline": "[MOCK]"
+    },
+    "list": {
+      "tab_chronologisch": "Chronologisch",
+      "tab_nach_vorgang": "Nach Vorgang gruppieren",
+      "group": {
+        "neu": "Neu",
+        "frist_unter_7d": "Frist offen ≤ 7 Tagen",
+        "frist_ueber_7d": "Frist offen > 7 Tagen",
+        "erledigt": "Erledigt",
+        "archiv": "Archiv",
+        "andere": "Sonstige"
+      },
+      "empty_inbox": "Keine Briefe im Posteingang.",
+      "empty_filter": "Keine Briefe für die gewählten Filter. Posteingang aktualisieren?",
+      "cta_refresh": "Posteingang aktualisieren",
+      "error_load": "Briefe konnten nicht geladen werden — bitte erneut versuchen?",
+      "region_label": "Brief-Liste"
+    },
+    "search": {
+      "placeholder": "Aktenzeichen oder Behörde suchen …",
+      "aria_label": "Aktenzeichen oder Behörde durchsuchen",
+      "hits_count_template": "{count, plural, =0 {Keine Treffer} =1 {1 Treffer} other {# Treffer}}"
+    },
+    "filter": {
+      "title": "Filter",
+      "aria_label": "Briefe filtern",
+      "drawer_title": "Filter wählen",
+      "popover_title": "Briefe filtern",
+      "popover_apply": "Filter anwenden",
+      "popover_clear": "Filter zurücksetzen",
+      "close": "Filter schließen",
+      "cta_open_mobile": "Filter",
+      "cta_reset": "Alle Filter zurücksetzen",
+      "kategorie": {
+        "title": "Behörden-Kategorie",
+        "bund": "Bund",
+        "land": "Land",
+        "kommunal": "Kommunal",
+        "sonstige": "Sonstige (Selbstverwaltung, privatrechtlich)",
+        "selbstverwaltung": "Selbstverwaltung",
+        "privatrechtl-behoerdenartig": "Privatrechtl. (behörden­artig)"
+      },
+      "status": {
+        "title": "Status",
+        "neu": "Neu",
+        "frist_unter_7d": "Frist ≤ 7 Tage",
+        "frist_ueber_7d": "Frist > 7 Tage",
+        "erledigt": "Erledigt",
+        "archiv": "Archiv"
+      }
+    },
+    "inbox": {
+      "active_filters_label": "Aktive Filter:",
+      "filter_chip_remove_aria": "Filter ‚{filter}' entfernen",
+      "filter_button_label": "Filter",
+      "filter_button_count_template": "Filter ({count})",
+      "vorgang_gruppe_filtered_template": "({gefiltert} gefiltert von {gesamt})",
+      "active_filters_clear_all": "Alle zurücksetzen"
+    },
+    "actions": {
+      "kebab_menu_aria": "Weitere Aktionen",
+      "open_kebab": "Weitere Aktionen öffnen"
+    },
+    "card": {
+      "aktenzeichen_label": "Aktenzeichen",
+      "frist_label": "Frist",
+      "frist_keine": "Keine Frist",
+      "frist_pre_open_template": "Frist {datum}",
+      "frist_abgelaufen_template": "Frist abgelaufen am {datum}",
+      "brieftyp_label": "Brieftyp",
+      "vorgang_tag_template": "Gehört zu Vorgang ‚{title}'",
+      "vorgang_anlegen_template": "Neuer Vorgang? {brieftyp} {jahr} anlegen?",
+      "markiere_gelesen": "Diesen Brief als gelesen markieren",
+      "cta_open": "Brief öffnen",
+      "status": {
+        "ungelesen": "Ungelesen",
+        "gelesen": "Gelesen",
+        "erledigt": "Erledigt"
+      },
+      "authentizitaet": {
+        "empfangen_template": "Empfangen über {kanal}",
+        "eingabe_buerger": "Eingabe durch Bürger:in",
+        "eudi_versiegelt": "EUDI-Wallet-versiegelt",
+        "channels": {
+          "briefpost": "Briefpost",
+          "mein_elster": "Mein ELSTER",
+          "zbp_bundid": "ZBP/BundID",
+          "krankenkassen_portal": "Krankenkassen-Portal",
+          "eingabe_buerger": "Eingabe Bürger:in",
+          "eudi_versiegelt": "EUDI-Wallet"
+        },
+        "icon_label": "Brief",
+        "icon_aria_template": "Empfangen über {kanal}"
+      },
+      "datenschutz_link": "Welche Daten dieses Briefs wurden wo verarbeitet?",
+      "datenschutz_link_aria": "Datenschutz-Cockpit für diesen Brief öffnen",
+      "utility_row_aria": "Brief-Hilfsaktionen"
+    },
+    "gruppe": {
+      "titel_template": "Vorgang: {titel} ({count})",
+      "sonstige_titel_template": "Sonstige ({count})",
+      "aufklappen": "Aufklappen",
+      "zuklappen": "Zuklappen",
+      "earliest_frist_template": "Frühste Frist: {datum}"
+    },
+    "archetype": {
+      "label": {
+        "steuerbescheid": "Steuerbescheid",
+        "krankenkasse-beitrag": "Krankenkassen-Beitrag",
+        "beitragsservice-mahnung": "Beitragsservice",
+        "abh-verlaengerung": "Aufenthaltstitel",
+        "familienkasse-nachweis": "Familienkasse",
+        "buergeramt-meldung": "Bürgeramt",
+        "ihk-beitrag": "IHK-Beitrag",
+        "berufsgenossenschaft-beitrag": "BG-Beitrag",
+        "standesamt-urkunde": "Standesamt",
+        "sonstiges": "Brief"
+      }
+    },
+    "reader": {
+      "zurueck": "Zurück zum Posteingang",
+      "not_found_title": "Brief nicht gefunden",
+      "not_found_body": "Dieser Brief existiert nicht oder wurde gelöscht.",
+      "originaltext_heading": "Originaltext",
+      "originaltext_authoritative_label": "rechtsverbindlich",
+      "summary_heading": "Zusammenfassung (KI)",
+      "summary_skeleton_hint": "Zusammenfassung wird mit KI erstellt — bitte gleichen Sie wichtige Angaben mit dem Originaltext ab.",
+      "summary_authoritative_banner": "Rechtsverbindlich ist der Originaltext. Bitte prüfen Sie wichtige Angaben.",
+      "summary_error": "Zusammenfassung temporär nicht verfügbar — der Originaltext rechts ist maßgeblich.",
+      "summary_error_retry": "Erneut versuchen",
+      "tab_originaltext": "Originaltext",
+      "tab_zusammenfassung": "Zusammenfassung",
+      "vorgang_link_template": "Vorgang ‚{title}'",
+      "archetype_short": "Brief",
+      "empfangen_label": "Empfangen am",
+      "aktenzeichen_primaer_label": "Aktenzeichen",
+      "aktenzeichen_weitere_label": "Weitere Aktenzeichen",
+      "frist_chip_zahlung_template": "Zahlung {tage}",
+      "frist_chip_einspruch_template": "Einspruch {tage}",
+      "frist_chip_sonstige_template": "{label} {tage}",
+      "frist_chip_keine": "Keine Frist",
+      "frist_chip_today": "heute fällig",
+      "frist_chip_days_template": "in {tage, plural, =1 {1 Tag} other {# Tagen}}",
+      "frist_chip_abgelaufen_template": "abgelaufen am {datum}",
+      "frist_sr_open_template": "{typ}: noch {tage, plural, =0 {0 Tage} =1 {1 Tag} other {# Tage}} bis {datum}",
+      "frist_sr_overdue_template": "{typ}: Frist abgelaufen am {datum}",
+      "frist_added_toast": "Frist als .ics-Datei zum Download bereitgestellt.",
+      "actions_heading": "Aktionen zu diesem Brief",
+      "actions": {
+        "kalender": "Frist in Kalender (.ics)",
+        "kalender_per_frist_template": "{typ} in Kalender (.ics)",
+        "originalbrief": "Originaltext anzeigen",
+        "speichern": "Brief speichern (.txt)",
+        "markiere_gelesen": "Diesen Brief als gelesen markieren",
+        "citation_mismatch_disabled_hint": "Eine Frist ist nicht eindeutig im Original belegt. Der Kalender-Export ist deaktiviert — bitte prüfen Sie das Datum am Originaltext."
+      },
+      "skip_link": {
+        "aria": "Sprung-Navigation",
+        "zur_zusammenfassung": "Zur Zusammenfassung springen",
+        "zum_original": "Zum Originaltext springen"
+      },
+      "citation": {
+        "popover_title": "Originalformulierung",
+        "scroll_to_original": "Im Originaltext anzeigen",
+        "marker_aria_template": "Originalformulierung zu Bullet {n}",
+        "mismatch_warning": "Diese Frist konnte nicht eindeutig im Originaltext belegt werden — bitte selbst prüfen.",
+        "mismatch_warning_sr": "Citation-Mismatch — Frist im Original prüfen."
+      },
+      "frist_modal": {
+        "title": "Frist-Detail",
+        "zitat_label": "Originalformulierung im Brief:",
+        "kalender_cta": "In Kalender eintragen",
+        "disclaimer": "Diese Frist ist aus dem Brief automatisch erkannt worden. Originalformulierung: ‚{zitat}'. Bitte verifizieren Sie das Datum."
+      },
+      "neuer_vorgang": {
+        "title": "Neuen Vorgang aus diesem Brief anlegen?",
+        "body_template": "Wir schlagen den Vorgangstyp ‚{typ}' vor. Sie können den Typ unten anpassen.",
+        "typ_legend": "Vorgangs-Typ",
+        "vorgangs_typ": {
+          "steuer-jahr": "Steuer (Jahr)",
+          "familienkasse": "Familienkasse",
+          "aufenthaltstitel-verlaengerung": "Aufenthaltstitel-Verlängerung",
+          "sonstige": "Sonstige"
+        },
+        "cta_anlegen": "Vorgang anlegen",
+        "cta_abbrechen": "Abbrechen",
+        "submitting": "Wird angelegt …",
+        "toast_success": "Vorgang angelegt. Sie werden weitergeleitet.",
+        "toast_error": "Vorgang konnte nicht angelegt werden — bitte erneut versuchen."
+      },
+      "was_kann_ich_tun": {
+        "heading": "Was kann ich tun?",
+        "helper": "Mögliche Handlungen (informativ, keine Rechtsberatung):"
+      }
+    },
+    "was_kann_ich_tun": {
+      "steuerbescheid": {
+        "zahlung": "Zahlung leisten",
+        "einspruch": "Einspruch einlegen (innerhalb 1 Monat, § 355 AO)",
+        "aussetzung": "Aussetzung der Vollziehung beantragen (§ 361 AO)",
+        "saeumniszuschlag_info": "Hinweis: ab Fälligkeit fallen Säumniszuschläge an (§ 240 AO, 1 % pro Monat)"
+      },
+      "krankenkasse-beitrag": {
+        "zahlung": "Beitrag zahlen",
+        "widerspruch": "Widerspruch erheben (innerhalb 1 Monat, § 84 SGG)",
+        "befreiung_pruefen": "Beitragsbefreiung / Härtefall prüfen"
+      },
+      "beitragsservice-mahnung": {
+        "zahlung": "Rückstand zahlen",
+        "widerspruch": "Widerspruch einlegen (innerhalb 1 Monat)",
+        "befreiung_pruefen": "Befreiungsantrag prüfen (z. B. SGB-II-Bezug)"
+      },
+      "abh-verlaengerung": {
+        "termin_buchen": "Termin zur Verlängerung buchen",
+        "nachweise_sammeln": "Nachweise zusammenstellen (Pass, Krankenversicherung, Beschäftigungsnachweis, Wohnungsgeberbestätigung)",
+        "fiktionsbescheinigung_info": "Hinweis: bei rechtzeitigem Antrag gilt Fortbestands-Fiktion (§ 81 Abs. 4 AufenthG)"
+      },
+      "familienkasse-nachweis": {
+        "nachweis_einreichen": "Geforderte Nachweise einreichen",
+        "fristverlaengerung_pruefen": "Fristverlängerung schriftlich beantragen"
+      },
+      "buergeramt-meldung": {
+        "keine_aktion": "Keine Aktion erforderlich (informative Bestätigung)",
+        "folgeprozesse_pruefen": "Folgeprozesse prüfen (KFZ, Krankenkasse, Bank)"
+      },
+      "ihk-beitrag": {
+        "zahlung": "Beitrag zahlen",
+        "widerspruch": "Widerspruch erheben",
+        "abweichende_festsetzung_pruefen": "Antrag auf abweichende Festsetzung prüfen (Härtefall)"
+      },
+      "berufsgenossenschaft-beitrag": {
+        "zahlung": "Beitrag zahlen",
+        "widerspruch": "Widerspruch erheben (innerhalb 1 Monat)"
+      },
+      "standesamt-urkunde": {
+        "keine_aktion": "Keine Aktion erforderlich (Urkunde aufbewahren)",
+        "folge_familienkasse": "Kindergeld-Antrag bei der Familienkasse stellen",
+        "folge_krankenkasse": "Kind bei der Krankenkasse anmelden (Familienversicherung)",
+        "folge_steueridnr": "Steuer-IdNr. wird automatisch vom BZSt vergeben"
+      }
+    },
+    "normtooltip": {
+      "aria_open": "Norm-Tooltip öffnen",
+      "vwvfg_41_2": "§ 41 Abs. 2 VwVfG: Verwaltungsakt gilt am 4. Tag nach Aufgabe zur Post als bekannt gegeben (PostModG-Anpassung 01.01.2025).",
+      "vwvfg_41_2a": "§ 41 Abs. 2a VwVfG: Bei Portal-Bereitstellung mit Einwilligung gilt der Verwaltungsakt am Tag nach dem Abruf als bekannt gegeben.",
+      "ao_122": "§ 122 AO: Bekanntgabe des Verwaltungsakts; bei Briefpost gilt 4-Tage-Fiktion (§ 122 Abs. 2 AO).",
+      "ao_122a": "§ 122a AO: elektronische Bekanntgabe von Steuerbescheiden über Mein ELSTER — am 4. Tag nach Bereitstellung bekannt gegeben (Abs. 4).",
+      "vwzg_5": "§ 5 VwZG: förmliche elektronische Zustellung; gilt am 4. Tag nach Absendung als zugestellt (widerlegbar).",
+      "ao_240": "§ 240 AO: Säumniszuschlag — 1 % pro angefangenem Monat auf nicht entrichtete Steuerschulden, ab Fälligkeit.",
+      "ao_361": "§ 361 AO: Aussetzung der Vollziehung kann beantragt werden, wenn ernstliche Zweifel an der Rechtmäßigkeit bestehen oder Vollziehung unbillige Härte wäre.",
+      "ao_355": "§ 355 AO: Einspruchsfrist — 1 Monat nach Bekanntgabe des Steuerbescheids.",
+      "ao_357": "§ 357 AO: Einspruch ist schriftlich oder elektronisch beim Finanzamt einzulegen.",
+      "vwgo_70": "§ 70 VwGO: Widerspruchsfrist — 1 Monat nach Bekanntgabe des Verwaltungsakts.",
+      "sgg_84": "§ 84 SGG: Widerspruch im Sozialgerichtsverfahren — 1 Monat nach Bekanntgabe.",
+      "owig_67": "§ 67 OWiG: Einspruch gegen Bußgeldbescheid — 2 Wochen nach Zustellung.",
+      "rdg_2": "§ 2 RDG: Rechtsdienstleistung ist eine Tätigkeit in fremden Angelegenheiten, die eine rechtliche Prüfung des Einzelfalls erfordert.",
+      "ao_30": "§ 30 AO: Steuergeheimnis — Schutz personenbezogener Steuerdaten.",
+      "ao_87a": "§ 87a AO: elektronische Kommunikation mit Finanzbehörden.",
+      "bdsg_22": "§ 22 BDSG: Verarbeitung besonderer Kategorien personenbezogener Daten.",
+      "estg_68": "§ 68 EStG: Mitwirkungspflichten beim Kindergeld — Nachweise sind auf Anforderung vorzulegen.",
+      "aufenthg_81_4": "§ 81 Abs. 4 AufenthG: Fortbestands-Fiktion — bei rechtzeitigem Verlängerungs-Antrag gilt der Aufenthaltstitel als fortbestehend.",
+      "ao_110": "§ 110 AO: Wiedereinsetzung in den vorigen Stand bei unverschuldeter Frist­versäumnis.",
+      "dsgvo_6": "Art. 6 DSGVO: Rechtsgrundlagen für die Verarbeitung personenbezogener Daten.",
+      "dsgvo_9": "Art. 9 DSGVO: besondere Kategorien personenbezogener Daten (Gesundheit, ethnische Herkunft, …).",
+      "dsgvo_22": "Art. 22 DSGVO: Recht, nicht ausschließlich automatisierten Entscheidungen unterworfen zu werden.",
+      "dsgvo_28": "Art. 28 DSGVO: Auftragsverarbeitung — Vertrag mit dem Auftragsverarbeiter.",
+      "bgh_smartlaw": "BGH I ZR 113/20 (Smartlaw, 2021): Vertragsgenerator ist keine unzulässige Rechtsdienstleistung — Werkzeug-Charakter, kein Mandatsverhältnis."
+    },
+    "disclaimer": {
+      "opening_title": "Hinweis zum Öffnen",
+      "opening": "Hinweis zum Öffnen. Diese App ist eine Lese- und Erklär-Schicht für Behördenbriefe. Das Öffnen oder Markieren-als-gelesen einer Brief-Karte hier ist **nur App-interner Lesefortschritt** — es ist **kein** Abruf iSv § 41 Abs. 2a VwVfG oder § 122a AO und löst **keine** rechtliche Bekanntgabe aus.\n\nDie Bekanntgabe richtet sich nach dem Übermittlungsweg im **amtlichen** Kanal:\n- **Briefpost** (häufigster Fall — Krankenkasse, Beitragsservice, Familienkasse, Ausländerbehörde, Bürgeramt, Bußgeldstelle): gilt am **vierten Tag nach Aufgabe zur Post** als bekannt gegeben (§ 41 Abs. 2 VwVfG bzw. § 122 Abs. 2 AO seit Postrechtsmodernisierungsgesetz 01.01.2025).\n- **Mein ELSTER** (Steuerbescheide bei elektronischer Steuererklärung): gilt am **vierten Tag nach Bereitstellung zum Abruf** als bekannt gegeben (§ 122a Abs. 4 AO). Ab 01.01.2027 ist die elektronische Bekanntgabe Default (Widerspruchslösung); bis dahin Übergangsphase mit aktiver Zustimmung.\n- **Zentrales Bürgerpostfach (ZBP/BundID) mit Einwilligung**: gilt am **Tag nach dem Abruf** als bekannt gegeben (§ 41 Abs. 2a VwVfG). Bei Nicht-Abruf binnen 10 Tagen ohne Bekanntgabe.\n- **Förmliche elektronische Zustellung** (z. B. Verwaltungsverfahren, Sozialgericht): gilt am **vierten Tag nach Absendung** als zugestellt, widerlegbar bei Nachweis späteren Zugangs (§ 5 Abs. 7 VwZG).\n\nBitte rufen Sie Ihre **amtlichen Postfächer** und Ihren physischen Briefkasten **regelmäßig** ab. Diese App ersetzt das nicht.",
+      "no_legal_advice_title": "Keine Rechtsberatung",
+      "no_legal_advice": "Diese KI-Erklärung ist eine **allgemeine Information** und Verständnis-Hilfe — **keine Rechtsdienstleistung** im Sinne des Rechtsdienstleistungsgesetzes (§ 2 RDG). Sie nimmt **keine** Bewertung Ihres Einzelfalls vor (BGH I ZR 113/20 ‚Smartlaw'-Linie: Werkzeug-Charakter, kein Mandatsverhältnis, kein Erfolgsversprechen).\n\nEine konkrete rechtliche Bewertung — etwa ob ein Widerspruch erfolgversprechend ist, welche Begründung tragend wäre, oder ob ein Bescheid rechtmäßig ist — kann **nur** durch eine zur Rechtsdienstleistung befugte Person erfolgen: Rechtsanwält:in (BRAO), Verbraucherzentrale (UKlaG/§ 8 RDG), Sozialverband (z. B. SoVD, VdK), oder zuständige Steuerberatungskammer. Die KI gibt **keine Erfolgsversprechen** ab und vertritt Sie **nicht** gegenüber Behörden. Vorschläge zu Antworten oder Fristen sind unverbindlich; die Verantwortung für jede Eingabe und jeden Versand liegt bei Ihnen.",
+      "mock_data_title": "Demo-Briefe sind synthetisch",
+      "mock_data": "Alle hier angezeigten Briefe, Aktenzeichen, Beträge und Personen-Daten sind **synthetisch** und mit `[MOCK]` gekennzeichnet. Diese Demo verarbeitet **keine echten Behördenbriefe** und hat **keine Anbindung** an Mein ELSTER, das Zentrale Bürgerpostfach (ZBP/BundID), Krankenkassen-Portale oder andere amtliche Postfächer. Der Brief-Upload ist in dieser Demo **deaktiviert**. Bitte fügen Sie keine echten Briefe oder personenbezogenen Daten in Eingabefelder ein — die Demo ist für die Verarbeitung sensibler Informationen nicht freigegeben.",
+      "original_authoritative": "**Rechtsverbindlich ist ausschließlich der deutsche Originaltext** des Bescheids. Die KI-Zusammenfassung und etwaige Übersetzungen sind reine Verständnis-Hilfen und können — wie alle KI-generierten Texte — Fehler oder Auslassungen enthalten. Im Zweifel zählt der Wortlaut der Behörde. Klicken Sie ‚Originalbrief anzeigen', um den vollständigen Wortlaut zu lesen, und gleichen Sie wichtige Angaben (Frist, Betrag, Aktenzeichen) am Original ab.",
+      "frist_modal_inline": "Diese Frist ist aus dem Brief automatisch erkannt worden. Bitte verifizieren Sie das Datum am Originaltext.",
+      "summary_footer_hint": "Die Zusammenfassung ergänzt den Originaltext, sie ersetzt ihn nicht. Klicken Sie das Marker-Symbol [⌖] neben einem Punkt, um die Originalformulierung im Brief zu sehen.",
+      "rechtliche_hinweise_summary": "Rechtliche Hinweise"
+    },
+    "toast": {
+      "refresh_after_vorgang_created": "Posteingang aktualisiert."
+    },
+    "sticky_action": {
+      "frist_label_template": "Frist {datum} ({tage_template})",
+      "frist_label_no_frist": "Keine Frist",
+      "cta_kalender": "Frist in Kalender (.ics)",
+      "cta_reply": "Antwort verfassen",
+      "cta_reply_resume_draft": "Entwurf weiter schreiben",
+      "cta_reply_again": "Erneut antworten",
+      "cta_reply_view_sent": "Versendete Antwort anzeigen",
+      "already_replied_template": "Bereits beantwortet am {datum}",
+      "overflow_label": "Weitere Aktionen",
+      "overflow": {
+        "speichern": "Brief speichern (.txt)",
+        "original_pdf": "Originaltext anzeigen",
+        "markiere_gelesen": "Diesen Brief als gelesen markieren"
+      }
+    },
+    "compose": {
+      "cta_open_sheet": "Antwort verfassen",
+      "sheet_title": "Antwort an {behoerde}",
+      "sheet_close_aria": "Antwort-Sheet schließen",
+      "recipient_label_template": "An: {behoerde}",
+      "bezug_label_template": "Bezug: {aktenzeichen}",
+      "outbound_speculative": "Stand 2027 — Speculative Design. In dieser Demo simulieren wir antrags-thread-gebundene bidirektionale Kommunikation auf Basis des ZBP/BundID-Modells: Antworten leben immer im Thread eines konkreten Briefs (Aktenzeichen-Anker), nie als freies Postfach. Heute (Mai 2026) wäre der Antwort-Kanal je nach Behörde unterschiedlich: Mein ELSTER für das Finanzamt, das Kassen-Portal für Krankenkassen, ein Landes-Service-Portal für Bürger- und Ausländerbehörden, häufig noch der Briefweg. Es wird nichts an {behoerde} gesendet.",
+      "behoerde_kanal": {
+        "bundid_postfach_2027": "BundID-Postfach (Speculative 2027)",
+        "service_portal_land": "Service-Portal des Bundeslandes",
+        "elster": "Mein ELSTER",
+        "familienkasse_online": "Familienkasse-Online",
+        "beitragsservice": "Beitragsservice-Portal",
+        "aok_portal": "Mein-AOK-Portal",
+        "briefpost": "Briefpost (papierhaft)"
+      },
+      "template_picker": {
+        "legend": "Vorlage wählen",
+        "frist_verlaengerung": {
+          "label": "Fristverlängerung beantragen",
+          "description": "Bitte um Verlängerung der Frist (rein administrativ).",
+          "icon": "🕐"
+        },
+        "nachweis_einreichen": {
+          "label": "Nachweis einreichen",
+          "description": "Begleittext zu einer angehängten Bescheinigung.",
+          "icon": "📎"
+        },
+        "informative_rueckmeldung": {
+          "label": "Informative Rückmeldung",
+          "description": "Antwort auf eine Rückfrage der Behörde.",
+          "icon": "ℹ️"
+        },
+        "termin_antwort": {
+          "label": "Termin-Antwort",
+          "description": "Vorgeschlagenen Termin bestätigen, verschieben oder absagen.",
+          "icon": "📅"
+        },
+        "freitext": {
+          "label": "Eigenen Text verfassen",
+          "description": "Ohne Vorlage starten.",
+          "icon": "📝"
+        }
+      },
+      "templates": {
+        "frist_verlaengerung": {
+          "body_template_de": "{absender_name}\n{absender_strasse}\n{absender_plz} {absender_ort}\n\n{empfaenger_behoerde}\n{empfaenger_strasse}\n{empfaenger_plz} {empfaenger_ort}\n\n{ort}, {datum}\n\nAktenzeichen: {aktenzeichen}\nBetreff: Antrag auf Fristverlängerung\n\nSehr geehrte Damen und Herren,\n\nich bitte um Verlängerung der Frist vom {frist_alt} auf den {frist_neu_gewuenscht}. Begründung: {begruendung_kurz}\n\nMit freundlichen Grüßen,\n\n{absender_name}",
+          "disclaimer_pre_insertion": "Diese Vorlage formuliert eine reine Bitte um Fristverlängerung. Sie enthält keine rechtliche Bewertung Ihres Einzelfalls. Ob eine Verlängerung gewährt wird, entscheidet die Behörde nach den Regeln der jeweiligen Verfahrensordnung (zum Beispiel Abgabenordnung oder Verwaltungsverfahrensgesetz). Verfassen Sie die Begründung selbst — die App schlägt keine Argumente vor.",
+          "disclaimer_inline": "Hinweis: Die Behörde entscheidet eigenständig, ob die Frist verlängert wird."
+        },
+        "nachweis_einreichen": {
+          "body_template_de": "{absender_name}\n{absender_strasse}\n{absender_plz} {absender_ort}\n\n{empfaenger_behoerde}\n{empfaenger_strasse}\n{empfaenger_plz} {empfaenger_ort}\n\n{ort}, {datum}\n\nAktenzeichen: {aktenzeichen}\nBetreff: Einreichung von Unterlagen\n\nSehr geehrte Damen und Herren,\n\nanbei finden Sie den von Ihnen angeforderten Nachweis {nachweis_bezeichnung}. Bitte bestätigen Sie den Eingang.\n\nMit freundlichen Grüßen,\n\n{absender_name}",
+          "disclaimer_pre_insertion": "Mit dieser Vorlage übersenden Sie Unterlagen, um Ihrer Mitwirkungspflicht nachzukommen — etwa nach den Regelungen des Sozialgesetzbuchs, der Abgabenordnung oder des Aufenthaltsgesetzes, je nach Behörde. Die Vorlage enthält keinen Verzicht auf weitere Unterlagen-Anforderungen: Bitte fügen Sie nur den genannten Nachweis bei.",
+          "disclaimer_inline": "Hinweis: Hängen Sie nur den explizit angeforderten Nachweis an — keine zusätzlichen Dokumente."
+        },
+        "informative_rueckmeldung": {
+          "body_template_de": "{absender_name}\n{absender_strasse}\n{absender_plz} {absender_ort}\n\n{empfaenger_behoerde}\n{empfaenger_strasse}\n{empfaenger_plz} {empfaenger_ort}\n\n{ort}, {datum}\n\nAktenzeichen: {aktenzeichen}\nBetreff: Rückmeldung zu Ihrem Schreiben vom {datum_letter}\n\nSehr geehrte Damen und Herren,\n\nich nehme auf Ihr Schreiben vom {datum_letter} Bezug und teile Ihnen Folgendes mit:\n\n{rueckmeldung_text}\n\nBitte berücksichtigen Sie diese Information bei der weiteren Bearbeitung.\n\nMit freundlichen Grüßen,\n\n{absender_name}",
+          "disclaimer_pre_insertion": "Diese Vorlage ist eine reine Sachmitteilung. Sie ist **kein** Einspruch, **kein** Widerspruch, **kein** Antrag. Wenn Sie einen Bescheid förmlich anfechten möchten, ist eine andere Vorlage zu wählen — und Fristen können laufen (in der Regel ein Monat nach Bekanntgabe; geregelt etwa in der Abgabenordnung oder dem Sozialgerichtsgesetz).",
+          "disclaimer_inline": "Hinweis: Diese Mitteilung ist kein Rechtsbehelf — sie hemmt keine Frist."
+        },
+        "termin_antwort": {
+          "body_template_de": "{absender_name}\n{absender_strasse}\n{absender_plz} {absender_ort}\n\n{empfaenger_behoerde}\n{empfaenger_strasse}\n{empfaenger_plz} {empfaenger_ort}\n\n{ort}, {datum}\n\nAktenzeichen: {aktenzeichen}\nBetreff: Antwort zu Ihrem Terminvorschlag\n\nSehr geehrte Damen und Herren,\n\n{mode, select, bestaetigen {den von Ihnen vorgeschlagenen Termin am {termin_vorgeschlagen} bestätige ich hiermit.} verschieben {den von Ihnen vorgeschlagenen Termin am {termin_vorgeschlagen} kann ich leider nicht wahrnehmen. Ich schlage stattdessen den {termin_neu_gewuenscht} vor.} absagen {den von Ihnen vorgeschlagenen Termin am {termin_vorgeschlagen} muss ich leider absagen. Ich werde mich bei nächster Gelegenheit erneut um einen Termin bemühen.} other {den von Ihnen vorgeschlagenen Termin am {termin_vorgeschlagen} bestätige ich hiermit.}}\n\nMit freundlichen Grüßen,\n\n{absender_name}",
+          "disclaimer_pre_insertion": "Diese Vorlage antwortet auf einen Terminvorschlag der Behörde. Bei Verschiebung oder Absage ist der Vorschlag eines Alternativtermins (Modus „verschieben“) in der Regel hilfreich. Beachten Sie, dass eine versäumte Mitwirkung im laufenden Verfahren nachteilige Folgen haben kann — etwa nach den Mitwirkungs-Regelungen des Sozialgesetzbuchs oder des Aufenthaltsgesetzes, je nach Behörde.",
+          "disclaimer_inline": "Hinweis: Eine Absage ohne Alternativtermin kann das Verfahren verzögern.",
+          "mode_legend": "Modus",
+          "mode": {
+            "bestaetigen": "Termin bestätigen",
+            "verschieben": "Termin verschieben",
+            "absagen": "Termin absagen"
+          }
+        },
+        "freitext": {
+          "body_template_de": "{absender_name}\n{absender_strasse}\n{absender_plz} {absender_ort}\n\n{empfaenger_behoerde}\n{empfaenger_strasse}\n{empfaenger_plz} {empfaenger_ort}\n\n{ort}, {datum}\n\nAktenzeichen: {aktenzeichen}\n\nSehr geehrte Damen und Herren,\n\n\n\nMit freundlichen Grüßen,\n\n{absender_name}",
+          "disclaimer_inline": "Sie schreiben ohne Vorlage. Datum, Aktenzeichen und Empfänger sind aus dem Brief vorbefüllt."
+        }
+      },
+      "body_textarea_label": "Antwort-Text (Deutsch)",
+      "body_textarea_de_hint": "Behörden parsen Deutsch — bitte verfassen Sie auf Deutsch.",
+      "template_loading": "Vorlage wird geladen …",
+      "body_textarea_placeholder": {
+        "frist_verlaengerung": "Begründung für die Fristverlängerung …",
+        "nachweis_einreichen": "Begleittext zur Bescheinigung …",
+        "informative_rueckmeldung": "Ihre Rückmeldung an die Behörde …",
+        "termin_antwort": "Ihre Antwort auf den Terminvorschlag …",
+        "freitext": "Verfassen Sie Ihre Antwort …"
+      },
+      "template_switch_confirm_title": "Vorlage wechseln?",
+      "template_switch_confirm_body": "Sie haben bereits Text verfasst. Eine andere Vorlage zu wählen überschreibt Ihren Text.",
+      "template_switch_confirm_cta_yes": "Vorlage übernehmen",
+      "template_switch_confirm_cta_no": "Abbrechen",
+      "attachments": {
+        "label": "Anhänge",
+        "constraints_template": "max. {maxFiles} Dateien · max. {maxFileMb} MB pro Datei · max. {maxTotalMb} MB gesamt · {allowedTypes}",
+        "add_button": "Datei hinzufügen",
+        "remove_template": "Anhang ‚{name}' entfernen",
+        "size_template": "{size_kb} KB",
+        "error_too_large_file": "Datei ‚{name}' überschreitet die Maximalgröße ({maxFileMb} MB).",
+        "error_too_many": "Maximale Anzahl Dateien ({maxFiles}) erreicht.",
+        "error_total_too_large": "Gesamtgröße aller Anhänge überschreitet {maxTotalMb} MB.",
+        "error_mime_not_allowed": "Dateityp ‚{name}' nicht erlaubt. Zulässig: {allowedTypes}.",
+        "errors_heading": "Diese Anhänge wurden abgelehnt:"
+      },
+      "draft_saved_template": "Entwurf gespeichert vor {n}s",
+      "draft_saving": "Entwurf wird gespeichert …",
+      "draft_save_error": "Speichern fehlgeschlagen. Erneut versuchen?",
+      "draft_save_error_retry": "Erneut versuchen",
+      "draft_just_now": "Entwurf gespeichert (gerade eben)",
+      "draft_discard_button": "Entwurf verwerfen",
+      "draft_discard_confirm_title": "Entwurf verwerfen?",
+      "draft_discard_confirm_body": "Der gespeicherte Antwort-Entwurf wird gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",
+      "draft_discard_confirm_cta": "Verwerfen",
+      "draft_discard_confirm_cta_cancel": "Abbrechen",
+      "save_and_close_button": "Speichern und schließen",
+      "versand_button": "Antwort versenden (simuliert)",
+      "versand_modal": {
+        "title": "Antwort simuliert versenden?",
+        "body": "Diese Demo simuliert den Versand. Es geht nichts an {empfaenger_behoerde}. Bitte verfassen Sie Ihre Antwort so, wie Sie sie tatsächlich an die Behörde senden würden — Beleidigungen oder Drohungen können nach §§ 185, 241 StGB strafbar sein, auch wenn dies hier nur eine Übung ist.",
+        "cta_send": "Versenden simulieren",
+        "cta_cancel": "Abbrechen"
+      },
+      "send_error_toast": "Versand fehlgeschlagen, bitte erneut versuchen.",
+      "send_in_progress": "Versand wird simuliert …",
+      "confirmation": {
+        "headline": "Antwort simuliert versendet",
+        "mock_disclaimer": "[MOCK – Versand simuliert. Es ging nichts an die Behörde.]",
+        "metadata_label_sent_at": "Versendet am",
+        "metadata_label_kanal": "Versand-Kanal",
+        "metadata_label_files": "Anhänge ({count})",
+        "no_attachments": "Keine Anhänge",
+        "cta_view_in_cockpit": "Diese Antwort im Datenschutz-Cockpit anzeigen",
+        "cta_close": "Schließen",
+        "view_sent_link": "Versendete Antwort anzeigen",
+        "kanal_realitaetscheck_template": "Heute (Mai 2026): tatsächlicher Antwort-Kanal wäre {kanal_heute}. Diese Demo simuliert den Versand.",
+        "body_heading": "Ihre Antwort",
+        "kanal_speculative_2027_text": "antrags-thread-gebundene bidirektionale Kommunikation auf Basis des ZBP/BundID-Modells",
+        "full_receipt_template": "[MOCK] Ihre Antwort wurde simuliert versendet. In einem realen 2027-Szenario würde sie {kanal_speculative_2027_text} an {empfaenger_behoerde} übermittelt — antrags-thread-gebunden auf Basis des ZBP/BundID-Modells.",
+        "sent_at_template": "am {datum} um {uhrzeit} Uhr"
+      },
+      "speculative_banner_title": "Stand 2027 — Speculative Design"
+    },
+    "draft": {
+      "group_title_template": "Entwürfe ({count})",
+      "row_label_template": "Entwurf: Antwort an {behoerde}",
+      "row_meta_template": "Az {aktenzeichen} · zuletzt bearbeitet vor {relTime}",
+      "row_cta": "Weiter schreiben",
+      "empty_state_hint": "Keine offenen Entwürfe."
+    }
+  }
+}

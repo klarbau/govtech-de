@@ -1,0 +1,654 @@
+{
+  "app": {
+    "name": "GovTech DE",
+    "tagline": "Kamu yönetimi yeniden düşünüldü.",
+    "skip_to_content": "Ana içeriğe atla"
+  },
+  "nav": {
+    "dashboard": "Panel",
+    "posteingang": "Gelen kutusu",
+    "stammdaten": "Kişisel veriler",
+    "vorgaenge": "İşlemler",
+    "dokumente": "Belgeler",
+    "termine": "Randevular",
+    "steuer": "Vergi",
+    "familie": "Aile",
+    "assistent": "Asistan",
+    "datenschutz": "Gizlilik"
+  },
+  "topbar": {
+    "language_label": "Dil",
+    "theme_toggle_light": "Açık tema",
+    "theme_toggle_dark": "Koyu tema",
+    "theme_toggle_system": "Sistem ayarı",
+    "user_menu": "Kullanıcı menüsü"
+  },
+  "footer": {
+    "imprint": "Künye (Impressum)",
+    "privacy": "Gizlilik",
+    "accessibility": "Erişilebilirlik"
+  },
+  "landing": {
+    "eyebrow": "GovTech DE — kavram demosu",
+    "title": "Kamu yönetimi yeniden düşünüldü",
+    "subtitle": "DeutschlandID, EUDI Wallet ve Deutschland-Stack üzerine kurulu, vatandaş odaklı bir katmanın kavramsal prototipi. Tüm veriler sentetiktir.",
+    "personas_title": "Bir profil seçin",
+    "personas_helper": "Demo, hazır bir veri kümesini yükler. İstediğiniz zaman değiştirebilirsiniz.",
+    "persona_anna": "Anna Petrov, 28 — Blue Card EU, Berlin",
+    "persona_schmidt": "Schmidt ailesi — Hamburg, doğum bekleniyor",
+    "persona_mehmet": "Mehmet Yıldız, 34 — Köln, işyeri kurmayı planlıyor",
+    "cta_continue": "Demoyu aç"
+  },
+  "common": {
+    "cta": {
+      "zurueck": "Geri",
+      "weiter": "Devam",
+      "bestaetigen": "Onayla",
+      "abbrechen": "İptal",
+      "erneut_versuchen": "Yeniden dene"
+    },
+    "frist": {
+      "gesetzlich": "yasal süre",
+      "unverzueglich": "gecikmeksizin",
+      "vertraglich": "sözleşmesel süre"
+    },
+    "disclaimer": {
+      "prototype_title": "Prototip uyarısı",
+      "prototype": "Prototip uyarısı. Bu demo, 2027'de Deutschland-Stack ve EUDI Wallet ile bir adres değişikliğinin nasıl görünebileceğini gösterir. Veriler ve kurum yanıtları sentetiktir ([MOCK] olarak işaretlenmiştir).\n\nBugün (Mayıs 2026 itibarıyla) ikamet kayıt dairesi (Meldeamt) gösterilen adımların yalnızca bir kısmını otomatik olarak yapar: önceki kayıt dairesine taşınma bildirimi (§ 33 BMG), kimlik kartındaki adres güncellemesi (§ 28 PAuswG) ve vergi dairesine (Finanzamt), yayın katkı payı servisine (Beitragsservice) ve askerlik idaresine (Wehrverwaltung) düzenli aktarımlar (§ 36 BMG ile § 11 fıkra 4 RBStV / § 39 AO / § 58c SG bağlantılı olarak). Sağlık sigortası (Krankenkasse), banka, sigorta şirketi, işveren ve enerji sağlayıcı için ilgili kişinin onayı gereklidir (GDPR madde 6 fıkra 1 (a)). Araç sahipleri, aile yardımları kasası (Familienkasse) ve yabancılar dairesi (Ausländerbehörde) için her birine ayrı bir aktif bildirim gerekir — bu demo, ülke genelinde henüz canlıda olmayan, eID ile onaylanan hızlı bir işleyişi simüle eder.",
+      "bussgeld_frist_modal": "§ 17 BMG, taşındıktan sonraki iki hafta içinde kayıt yapmayı zorunlu kılar. § 54 fıkra 2 No. 1 BMG bunun için 1.000 €'ya kadar idari para cezası öngörür. Belediye uygulamasında vatandaş daireleri (Bürgerämter) gecikmeli kayıt için tipik olarak 10–50 € ceza verir; tutarı her dosya için ilgili daire belirler. § 54 fıkra 1 BMG kapsamındaki 50.000 €'ya kadar olan cezalar yalnızca yanlış veya eksik beyan için geçerlidir, gecikme için değil."
+    },
+    "frist_detail": {
+      "title": "§ 17 BMG'ye göre süre — ayrıntılar",
+      "open_cta": "Neden 14 gün?",
+      "close_cta": "Kapat"
+    }
+  },
+  "umzug": {
+    "start": {
+      "title": "Adres değişikliği",
+      "subtitle": "Birkaç adımda ilgili tüm kurumları bilgilendirelim.",
+      "adresse": {
+        "label": "Yeni adresiniz",
+        "strasse": "Sokak",
+        "hausnummer": "Bina numarası",
+        "zusatz": "Ek bilgi (isteğe bağlı)",
+        "plz": "Posta kodu (PLZ)",
+        "ort": "Şehir"
+      },
+      "stichtag": {
+        "label": "Taşınma tarihi",
+        "helper": "Yeni eve taşındığınız tarih."
+      },
+      "wohnungsgeber": {
+        "title": "Konut sağlayıcı belgesi (Wohnungsgeberbestätigung, § 19 BMG, zorunlu)",
+        "cta_upload": "Dosya seç",
+        "cta_demo": "Örnek kullan",
+        "helper_de": "§ 19 BMG uyarınca ev sahipleri bu belgeyi taşınma tarihinden itibaren iki hafta içinde düzenlemekle yükümlüdür.",
+        "selected_template": "{filename} seçildi",
+        "demo_filename": "[MOCK] Wohnungsgeberbestaetigung_Vogel.pdf"
+      },
+      "cta_weiter": "Önizlemeye devam et",
+      "error": {
+        "plz_invalid": "Lütfen geçerli, beş haneli bir posta kodu girin.",
+        "wohnungsgeber_missing": "Konut sağlayıcı belgesi (Wohnungsgeberbestätigung) olmadan kayıt yapılamaz (§ 19 BMG).",
+        "auslandsadresse": "Yurt dışına taşınmak için ayrı bir kayıt silme işlemi gerekir (§ 17 fıkra 2 BMG). Bu işlem hazırlık aşamasındadır.",
+        "felder_unvollstaendig": "Lütfen zorunlu tüm alanları doldurun."
+      }
+    },
+    "preview": {
+      "title": "Önizleme: onayladığınızda neler oluyor",
+      "subtitle_template": "Yeni adres: {adresse} · {stichtag} itibarıyla",
+      "block_a": {
+        "title": "Sizin yerinize otomatik yapıyoruz",
+        "subhead": "§ 33 BMG · § 34 BMG · § 36 BMG"
+      },
+      "block_b": {
+        "title": "Onayınızla",
+        "subhead": "GDPR madde 6 fıkra 1 (a)",
+        "consent_helper": "Onayınızı dilediğiniz zaman geri çekebilirsiniz — gizlilik kokpitine (Datenschutz-Cockpit) bakın."
+      },
+      "block_c": {
+        "title": "Kendiniz hallediyorsunuz",
+        "helper": "Bu alıcılara doğrudan ulaşamıyoruz — sizin için şablonlar hazırlıyoruz."
+      },
+      "block_d": {
+        "title": "Biz hazırlıyoruz — siz eID ile onaylıyorsunuz",
+        "subhead": "§ 18 PAuswG · ilgili özel norm",
+        "eid_helper": "Başvuruyu kişisel verilerinizle dolduruyoruz. Çevrimiçi kimlik işleviyle tek dokunuşta onaylıyorsunuz."
+      },
+      "cta_start_autopilot": "Otomatik pilotu başlat",
+      "empty_block_d_hidden": "",
+      "loading": "Önizleme yükleniyor …",
+      "error": "Önizleme yüklenemedi."
+    },
+    "run": {
+      "title": "Otomatik pilot çalışıyor …",
+      "subtitle_template": "{adresse} · taşınma {stichtag}",
+      "vorgang_label": "İşlem #{id}",
+      "status": {
+        "pending": "bekliyor",
+        "in_progress": "devam ediyor",
+        "confirmed": "onaylandı",
+        "failed": "Hata — yeniden deneyin",
+        "needs_eid": "eID dokunuşu gerekli"
+      },
+      "eid_dialog": {
+        "title": "eID ile onaylayın",
+        "body_template": "Yeni adresinizi {behoerde} kurumuna iletiyoruz. Lütfen kimlik kartınızı okuyucuya tutun ve PIN ile onaylayın.",
+        "cta_confirm": "eID ile onayla",
+        "cta_cancel": "İptal"
+      },
+      "cta_pause": "Duraklat",
+      "cta_cancel": "İptal",
+      "cta_to_vorgang": "İşleme git",
+      "frist_tooltip": {
+        "bmg_17": "§ 17 BMG'ye göre süre: taşınmadan itibaren iki hafta.",
+        "bmg_33_3wt": "§ 33 BMG'ye göre süre: en geç üç iş günü.",
+        "fzv_15_unverzueglich": "§ 15 FZV'ye göre süre: ikametgâh değişikliğinden sonra gecikmeksizin."
+      },
+      "aktenzeichen_label": "Dosya numarası (Aktenzeichen)",
+      "cancel_dialog": {
+        "title": "Otomatik pilot iptal edilsin mi?",
+        "body": "Onaylanmış kayıtlar geri alınamaz — düzeltme ancak yeni bir adres değişikliği başvurusuyla yapılır.",
+        "cta_keep_running": "Çalışmaya devam etsin",
+        "cta_confirm_cancel": "Yine de iptal et"
+      }
+    },
+    "detail": {
+      "title": "İşlem: adres değişikliği",
+      "angelegt_template": "Oluşturuldu: {datum}",
+      "stichtag_template": "Taşınma: {datum}",
+      "status": {
+        "laeuft": "sürüyor",
+        "abgeschlossen": "tamamlandı",
+        "fehlerhaft": "hatalarla tamamlandı"
+      },
+      "adresse_alt": "Önceki adres",
+      "adresse_neu": "Yeni adres",
+      "beteiligte_behoerden_count": "İlgili kurumlar ({count})",
+      "posteingang_count": "Bu işleme ait gelen kutusu ({count})",
+      "cta_datenschutz": "Gizlilik kokpitini aç",
+      "brief_label": "Yazı",
+      "aktz_label": "Dosya numarası",
+      "termin_label_template": "Randevu: {datum}, {ort}",
+      "not_found_title": "İşlem bulunamadı",
+      "not_found_body": "Bu işlem mevcut değil ya da silinmiş.",
+      "back_to_dashboard": "Panele dön"
+    },
+    "rechtsgrundlage": {
+      "bmg_17": "§ 17 BMG: taşınmadan itibaren iki hafta içinde kayıt zorunluluğu.",
+      "bmg_33": "§ 33 BMG: kayıt daireleri arasında veri aktarımı — taşınma bildirimi otomatik olarak, kayıttan sonra en geç üç iş günü içinde gönderilir.",
+      "bmg_34": "§ 34 BMG: kamu görevlerinin yerine getirilmesi için gerekli olduğu ölçüde, onay aranmadan diğer kamu kurumlarına veri aktarımı.",
+      "bmg_36": "§ 36 BMG: düzenli veri aktarımları — alıcılar ve veriler özel kanunla belirlenir.",
+      "fzv_15": "§ 15 FZV: ikametgâh değişikliğinde araç sahibinin bildirim yükümlülüğü — Bölüm I trafik tescil belgesi (Zulassungsbescheinigung Teil I) gecikmeksizin güncellenmelidir.",
+      "aufenthg_18g": "§ 18g AufenthG: yabancı nitelikli iş gücü için Blue Card EU (2023 tarihli AufenthG reformundan bu yana).",
+      "aufenthg_87": "§ 87 AufenthG: yabancılar dairelerine (Ausländerbehörden) yalnızca talep üzerine veri aktarımı, otomatik gönderim yoktur.",
+      "pauswg_18": "§ 18 PAuswG: çevrimiçi kimlik işlevi — eID, hukuken bağlayıcı bir irade beyanı olarak kabul edilir.",
+      "pauswg_28": "§ 28 PAuswG: kimlik kartında adres güncellemesi (Bundesdruckerei tarafından düzenlenen adres etiketi).",
+      "dsgvo_6_1_a": "GDPR madde 6 fıkra 1 (a): ilgili kişinin onayı — her zaman geri çekilebilir.",
+      "estg_67_68": "§§ 67–68 EStG: çocuk parası başvurusu ve değişiklikleri bildirme yükümlülüğü.",
+      "rbstv_11_4": "§ 11 fıkra 4 RBStV: yayın katkı payı servisine (Beitragsservice) düzenli kayıt verisi aktarımı.",
+      "sgb_iv_28a": "§ 28a SGB IV: işverenin sosyal güvenlik kurumlarına yönelik DEÜV bildirimleri.",
+      "detail_title": "Yasal dayanak",
+      "open_cta": "Yasal dayanağı göster"
+    }
+  },
+  "placeholder": {
+    "section_title": "{section}",
+    "wip": "Bu bölüm hazırlanıyor.",
+    "wip_helper": "Bu kavram demosu öncelikle adres değişikliği otomatik pilotuna odaklanır. Diğer işlemler ardından gelecektir."
+  },
+  "posteingang": {
+    "skip_link": {
+      "zur_brief_liste": "Yazı listesine geç"
+    },
+    "hero": {
+      "title": "Gelen kutusu (Posteingang)",
+      "subtitle": "Tüm resmi yazılar tek bir yerde. Şaşırmak yerine anlayın.",
+      "speculative_footer": "Bu demo, 2027'de birleşik bir resmi yazışma gelen kutusunun (Posteingang) nasıl görünebileceğini gösterir. Mayıs 2026 itibarıyla (kavramsal senaryo): Merkezi Vatandaş Posta Kutusu (ZBP/BundID) canlıda (~3,8 milyon posta kutusu taşındı), iki yönlü iletişim Temmuz 2026'dan itibaren planlanıyor; Mein ELSTER'in kendi gelen kutusu var ve elektronik tebligat (elektronische Bekanntgabe) 01.01.2027'den itibaren varsayılan olarak planlanmış durumda. Almanya'da 2026'da *birleşik* bir gelen kutusu henüz mevcut değil — demo, nasıl görünebileceğini gösterir. Veriler ve yazılar sentetiktir (`[MOCK]`)."
+    },
+    "watermark": {
+      "banner": "[MOCK – idari demo, gerçek veri yok]",
+      "inline": "[MOCK]"
+    },
+    "list": {
+      "tab_chronologisch": "Zaman sırasıyla",
+      "tab_nach_vorgang": "İşleme (Vorgang) göre grupla",
+      "group": {
+        "neu": "Yeni",
+        "frist_unter_7d": "Süre ≤ 7 gün",
+        "frist_ueber_7d": "Süre > 7 gün",
+        "erledigt": "Tamamlandı",
+        "archiv": "Arşiv",
+        "andere": "Diğer"
+      },
+      "empty_inbox": "Gelen kutunuzda yazı yok.",
+      "empty_filter": "Seçilen filtrelerle eşleşen yazı yok. Gelen kutusu yenilensin mi?",
+      "cta_refresh": "Gelen kutusunu yenile",
+      "error_load": "Yazılar yüklenemedi — yeniden denensin mi?",
+      "region_label": "Yazı listesi"
+    },
+    "search": {
+      "placeholder": "Dosya numarası (Aktenzeichen) veya kurum ara …",
+      "aria_label": "Dosya numarası (Aktenzeichen) veya kurum arama",
+      "hits_count_template": "{count, plural, =0 {Sonuç yok} =1 {1 sonuç} other {# sonuç}}"
+    },
+    "filter": {
+      "title": "Filtreler",
+      "aria_label": "Yazıları filtrele",
+      "drawer_title": "Filtre seçin",
+      "popover_title": "Yazıları filtrele",
+      "popover_apply": "Filtreleri uygula",
+      "popover_clear": "Filtreleri sıfırla",
+      "close": "Filtreleri kapat",
+      "cta_open_mobile": "Filtreler",
+      "cta_reset": "Tüm filtreleri sıfırla",
+      "kategorie": {
+        "title": "Kurum kategorisi",
+        "bund": "Federal (Bund)",
+        "land": "Eyalet (Land)",
+        "kommunal": "Belediye (Kommunal)",
+        "sonstige": "Diğer (öz yönetim, özel hukuk)",
+        "selbstverwaltung": "Öz yönetim (Selbstverwaltung)",
+        "privatrechtl-behoerdenartig": "Özel hukuk (kuruma benzer)"
+      },
+      "status": {
+        "title": "Durum",
+        "neu": "Yeni",
+        "frist_unter_7d": "Süre ≤ 7 gün",
+        "frist_ueber_7d": "Süre > 7 gün",
+        "erledigt": "Tamamlandı",
+        "archiv": "Arşiv"
+      }
+    },
+    "inbox": {
+      "active_filters_label": "Aktif filtreler:",
+      "filter_chip_remove_aria": "‚{filter}' filtresini kaldır",
+      "filter_button_label": "Filtreler",
+      "filter_button_count_template": "Filtreler ({count})",
+      "vorgang_gruppe_filtered_template": "({gesamt} içinden {gefiltert} filtrelendi)",
+      "active_filters_clear_all": "Tümünü temizle"
+    },
+    "actions": {
+      "kebab_menu_aria": "Diğer eylemler",
+      "open_kebab": "Diğer eylemleri aç"
+    },
+    "card": {
+      "aktenzeichen_label": "Dosya numarası (Aktenzeichen)",
+      "frist_label": "Süre (Frist)",
+      "frist_keine": "Süre yok",
+      "frist_pre_open_template": "Süre {datum}",
+      "frist_abgelaufen_template": "Süre {datum} tarihinde doldu",
+      "brieftyp_label": "Yazı türü",
+      "vorgang_tag_template": "‚{title}' işlemine ait",
+      "vorgang_anlegen_template": "Yeni işlem (Vorgang)? {brieftyp} {jahr} oluşturulsun mu?",
+      "markiere_gelesen": "Bu yazıyı okundu olarak işaretle",
+      "cta_open": "Yazıyı aç",
+      "status": {
+        "ungelesen": "Okunmadı",
+        "gelesen": "Okundu",
+        "erledigt": "Tamamlandı"
+      },
+      "authentizitaet": {
+        "empfangen_template": "{kanal} üzerinden alındı",
+        "eingabe_buerger": "Vatandaş tarafından girildi",
+        "eudi_versiegelt": "EUDI Wallet ile mühürlü",
+        "channels": {
+          "briefpost": "Posta (Briefpost)",
+          "mein_elster": "Mein ELSTER",
+          "zbp_bundid": "ZBP/BundID",
+          "krankenkassen_portal": "Sağlık sigortası portalı",
+          "eingabe_buerger": "Vatandaş girişi",
+          "eudi_versiegelt": "EUDI Wallet"
+        },
+        "icon_label": "Yazı",
+        "icon_aria_template": "{kanal} üzerinden alındı"
+      },
+      "datenschutz_link": "Bu yazının hangi verileri nerede işlendi?",
+      "datenschutz_link_aria": "Bu yazı için veri koruma kabinini aç",
+      "utility_row_aria": "Yazı yardımcı eylemleri"
+    },
+    "gruppe": {
+      "titel_template": "İşlem (Vorgang): {titel} ({count})",
+      "sonstige_titel_template": "Diğer ({count})",
+      "aufklappen": "Aç",
+      "zuklappen": "Kapat",
+      "earliest_frist_template": "En yakın süre: {datum}"
+    },
+    "archetype": {
+      "label": {
+        "steuerbescheid": "Vergi tahakkuku (Steuerbescheid)",
+        "krankenkasse-beitrag": "Sağlık sigortası primi",
+        "beitragsservice-mahnung": "Yayın katkı payı (Beitragsservice)",
+        "abh-verlaengerung": "Oturum izni (Aufenthaltstitel)",
+        "familienkasse-nachweis": "Aile yardımları (Familienkasse)",
+        "buergeramt-meldung": "Vatandaş dairesi (Bürgeramt)",
+        "ihk-beitrag": "Sanayi ve Ticaret Odası (IHK) aidatı",
+        "berufsgenossenschaft-beitrag": "Meslek kooperatifi aidatı",
+        "standesamt-urkunde": "Nüfus dairesi (Standesamt)",
+        "sonstiges": "Yazı"
+      }
+    },
+    "reader": {
+      "zurueck": "Gelen kutusuna dön",
+      "not_found_title": "Yazı bulunamadı",
+      "not_found_body": "Bu yazı mevcut değil ya da silinmiş.",
+      "originaltext_heading": "Orijinal metin",
+      "originaltext_authoritative_label": "hukuken bağlayıcı",
+      "summary_heading": "Özet (yapay zekâ)",
+      "summary_skeleton_hint": "Özet yapay zekâ ile hazırlanıyor — lütfen önemli bilgileri orijinal metinle karşılaştırın.",
+      "summary_authoritative_banner": "Hukuken bağlayıcı olan orijinal metindir. Lütfen önemli bilgileri kontrol edin.",
+      "summary_error": "Özet geçici olarak kullanılamıyor — yanındaki orijinal metin esastır.",
+      "summary_error_retry": "Yeniden dene",
+      "tab_originaltext": "Orijinal metin",
+      "tab_zusammenfassung": "Özet",
+      "vorgang_link_template": "‚{title}' işlemi",
+      "archetype_short": "Yazı",
+      "empfangen_label": "Alındığı tarih",
+      "aktenzeichen_primaer_label": "Dosya numarası (Aktenzeichen)",
+      "aktenzeichen_weitere_label": "Diğer dosya numaraları",
+      "frist_chip_zahlung_template": "Ödeme {tage}",
+      "frist_chip_einspruch_template": "İtiraz (Einspruch) {tage}",
+      "frist_chip_sonstige_template": "{label} {tage}",
+      "frist_chip_keine": "Süre yok",
+      "frist_chip_today": "bugün son gün",
+      "frist_chip_days_template": "{tage, plural, =1 {1 gün} other {# gün}} içinde",
+      "frist_chip_abgelaufen_template": "{datum} tarihinde doldu",
+      "frist_sr_open_template": "{typ}: {datum} tarihine kadar {tage, plural, =0 {0 gün} =1 {1 gün} other {# gün}} kaldı",
+      "frist_sr_overdue_template": "{typ}: süre {datum} tarihinde doldu",
+      "frist_added_toast": "Süre indirilebilir bir .ics dosyası olarak hazırlandı.",
+      "actions_heading": "Bu yazıya ilişkin eylemler",
+      "actions": {
+        "kalender": "Süreyi takvime ekle (.ics)",
+        "kalender_per_frist_template": "{typ} takvime ekle (.ics)",
+        "originalbrief": "Orijinal metni göster",
+        "speichern": "Yazıyı kaydet (.txt)",
+        "markiere_gelesen": "Bu yazıyı okundu olarak işaretle",
+        "citation_mismatch_disabled_hint": "Süre orijinalde net olarak doğrulanamadı. Takvim dışa aktarımı devre dışı — lütfen tarihi orijinal metinden kontrol edin."
+      },
+      "skip_link": {
+        "aria": "Atlayarak gezinme",
+        "zur_zusammenfassung": "Özete atla",
+        "zum_original": "Orijinal metne atla"
+      },
+      "citation": {
+        "popover_title": "Orijinal ifade",
+        "scroll_to_original": "Orijinal metinde göster",
+        "marker_aria_template": "{n} numaralı maddeye ait orijinal ifade",
+        "mismatch_warning": "Bu süre orijinal metinde net olarak doğrulanamadı — lütfen kendiniz kontrol edin.",
+        "mismatch_warning_sr": "Atıf eşleşmiyor — süreyi orijinalde kontrol edin."
+      },
+      "frist_modal": {
+        "title": "Süre ayrıntıları",
+        "zitat_label": "Yazıdaki orijinal ifade:",
+        "kalender_cta": "Takvime ekle",
+        "disclaimer": "Bu süre yazıdan otomatik olarak tespit edildi. Orijinal ifade: ‚{zitat}'. Lütfen tarihi doğrulayın."
+      },
+      "neuer_vorgang": {
+        "title": "Bu yazıdan yeni bir işlem (Vorgang) oluşturulsun mu?",
+        "body_template": "İşlem türü olarak ‚{typ}' öneriyoruz. Türü aşağıdan değiştirebilirsiniz.",
+        "typ_legend": "İşlem türü",
+        "vorgangs_typ": {
+          "steuer-jahr": "Vergi (yıl)",
+          "familienkasse": "Aile yardımları (Familienkasse)",
+          "aufenthaltstitel-verlaengerung": "Oturum izni uzatma",
+          "sonstige": "Diğer"
+        },
+        "cta_anlegen": "İşlem oluştur",
+        "cta_abbrechen": "İptal",
+        "submitting": "Oluşturuluyor …",
+        "toast_success": "İşlem oluşturuldu. Yönlendiriliyorsunuz.",
+        "toast_error": "İşlem oluşturulamadı — lütfen yeniden deneyin."
+      },
+      "was_kann_ich_tun": {
+        "heading": "Ne yapabilirim?",
+        "helper": "Olası eylemler (bilgi amaçlı — hukuki tavsiye değildir):"
+      }
+    },
+    "was_kann_ich_tun": {
+      "steuerbescheid": {
+        "zahlung": "Ödemeyi yapın",
+        "einspruch": "İtiraz edin (Einspruch, 1 ay içinde, § 355 AO)",
+        "aussetzung": "Yürütmenin durdurulmasını talep edin (Aussetzung der Vollziehung, § 361 AO)",
+        "saeumniszuschlag_info": "Not: vade tarihinden itibaren gecikme zammı (Säumniszuschläge) işler (§ 240 AO, ayda %1)"
+      },
+      "krankenkasse-beitrag": {
+        "zahlung": "Primi ödeyin",
+        "widerspruch": "İtiraz edin (Widerspruch, 1 ay içinde, § 84 SGG)",
+        "befreiung_pruefen": "Prim muafiyetini / mağduriyet durumunu inceleyin"
+      },
+      "beitragsservice-mahnung": {
+        "zahlung": "Borcu ödeyin",
+        "widerspruch": "İtiraz edin (Widerspruch, 1 ay içinde)",
+        "befreiung_pruefen": "Muafiyet başvurusunu inceleyin (örn. SGB-II yardımı alanlar için)"
+      },
+      "abh-verlaengerung": {
+        "termin_buchen": "Uzatma için randevu alın",
+        "nachweise_sammeln": "Belgeleri hazırlayın (pasaport, sağlık sigortası, çalışma belgesi, konut sağlayıcı belgesi / Wohnungsgeberbestätigung)",
+        "fiktionsbescheinigung_info": "Not: zamanında başvurulduğunda devam farziyeti uygulanır (Fortbestands-Fiktion, § 81 fıkra 4 AufenthG)"
+      },
+      "familienkasse-nachweis": {
+        "nachweis_einreichen": "İstenen belgeleri sunun",
+        "fristverlaengerung_pruefen": "Süre uzatımını yazılı olarak talep edin"
+      },
+      "buergeramt-meldung": {
+        "keine_aktion": "İşlem gerekmiyor (bilgilendirme amaçlı onay)",
+        "folgeprozesse_pruefen": "Bağlı süreçleri inceleyin (araç, sağlık sigortası, banka)"
+      },
+      "ihk-beitrag": {
+        "zahlung": "Aidatı ödeyin",
+        "widerspruch": "İtiraz edin (Widerspruch)",
+        "abweichende_festsetzung_pruefen": "Farklı tahakkuk başvurusunu inceleyin (mağduriyet)"
+      },
+      "berufsgenossenschaft-beitrag": {
+        "zahlung": "Aidatı ödeyin",
+        "widerspruch": "İtiraz edin (Widerspruch, 1 ay içinde)"
+      },
+      "standesamt-urkunde": {
+        "keine_aktion": "İşlem gerekmiyor (belgeyi saklayın)",
+        "folge_familienkasse": "Familienkasse'ye çocuk parası başvurusu yapın",
+        "folge_krankenkasse": "Çocuğu sağlık sigortasına ekleyin (aile sigortası)",
+        "folge_steueridnr": "Vergi numarası (Steuer-IdNr.) Federal Merkezi Vergi Dairesi (BZSt) tarafından otomatik verilir"
+      }
+    },
+    "normtooltip": {
+      "aria_open": "Norm açıklamasını aç",
+      "vwvfg_41_2": "§ 41 fıkra 2 VwVfG: idari işlem (Verwaltungsakt) postaya verildikten 4. günde tebliğ edilmiş sayılır (01.01.2025'ten itibaren posta hukuku reformu uyarınca).",
+      "vwvfg_41_2a": "§ 41 fıkra 2a VwVfG: rıza ile portaldan sunulmuşsa, idari işlem alındığı günün ertesi günü tebliğ edilmiş sayılır.",
+      "ao_122": "§ 122 AO: idari işlemin tebliği (Bekanntgabe); posta yoluyla 4 günlük varsayım uygulanır (§ 122 fıkra 2 AO).",
+      "ao_122a": "§ 122a AO: vergi tahakkuklarının (Steuerbescheide) Mein ELSTER üzerinden elektronik tebliği — sunulduktan sonraki 4. günde tebliğ edilmiş sayılır (fıkra 4).",
+      "vwzg_5": "§ 5 VwZG: resmi elektronik tebligat; gönderildikten sonraki 4. günde tebliğ edilmiş sayılır (aksi ispatlanabilir).",
+      "ao_240": "§ 240 AO: gecikme zammı (Säumniszuschlag) — vade tarihinden itibaren ödenmemiş vergi borcu üzerinden başlayan her ay için %1.",
+      "ao_361": "§ 361 AO: hukuka uygunluk konusunda ciddi şüpheler varsa veya icra fahiş bir mağduriyet oluşturuyorsa yürütmenin durdurulması (Aussetzung der Vollziehung) talep edilebilir.",
+      "ao_355": "§ 355 AO: itiraz süresi (Einspruchsfrist) — vergi tahakkukunun tebliğinden itibaren 1 ay.",
+      "ao_357": "§ 357 AO: itiraz (Einspruch) vergi dairesine (Finanzamt) yazılı veya elektronik olarak yapılır.",
+      "vwgo_70": "§ 70 VwGO: itiraz süresi (Widerspruchsfrist) — idari işlemin tebliğinden itibaren 1 ay.",
+      "sgg_84": "§ 84 SGG: sosyal yargı sürecinde itiraz — tebliğden itibaren 1 ay.",
+      "owig_67": "§ 67 OWiG: para cezası kararına (Bußgeldbescheid) itiraz — tebliğden itibaren 2 hafta.",
+      "rdg_2": "§ 2 RDG: hukuk hizmeti (Rechtsdienstleistung), bireysel vakanın hukuki incelemesini gerektiren, başkasına ait işlerdeki bir faaliyettir.",
+      "ao_30": "§ 30 AO: vergi mahremiyeti (Steuergeheimnis) — kişisel vergi verilerinin korunması.",
+      "ao_87a": "§ 87a AO: vergi makamlarıyla (Finanzbehörden) elektronik iletişim.",
+      "bdsg_22": "§ 22 BDSG: özel kategorilerdeki kişisel verilerin işlenmesi.",
+      "estg_68": "§ 68 EStG: çocuk parasında işbirliği yükümlülükleri — belgeler talep üzerine sunulur.",
+      "aufenthg_81_4": "§ 81 fıkra 4 AufenthG: devam farziyeti (Fortbestands-Fiktion) — zamanında uzatma başvurusu yapılırsa oturum izni (Aufenthaltstitel) devam ediyor sayılır.",
+      "ao_110": "§ 110 AO: kusur olmaksızın süre kaçırıldığında eski hâle iade (Wiedereinsetzung).",
+      "dsgvo_6": "Madde 6 GDPR: kişisel verilerin işlenmesinin hukuki dayanakları.",
+      "dsgvo_9": "Madde 9 GDPR: özel kategorilerdeki kişisel veriler (sağlık, etnik köken, …).",
+      "dsgvo_22": "Madde 22 GDPR: yalnızca otomatik işlemeye dayalı bir karara tabi olmama hakkı.",
+      "dsgvo_28": "Madde 28 GDPR: işleyen — işleyenle sözleşme.",
+      "bgh_smartlaw": "BGH I ZR 113/20 (Smartlaw, 2021): sözleşme oluşturucu, hukuka aykırı bir hukuk hizmeti değildir — araç niteliği taşır, vekâlet ilişkisi kurmaz."
+    },
+    "disclaimer": {
+      "opening_title": "Açma hakkında uyarı",
+      "opening": "Açma hakkında uyarı. Bu uygulama, resmi yazılar için bir okuma ve açıklama katmanıdır. Burada bir yazı kartını açmak veya okundu olarak işaretlemek **yalnızca uygulama içi okuma durumudur** — bu, § 41 fıkra 2a VwVfG veya § 122a AO anlamında bir alma **değildir** ve **hiçbir** hukuki tebligat (rechtliche Bekanntgabe) tetiklemez.\n\nHukuki tebligat, **resmî** kanaldaki iletim yoluna göre belirlenir:\n- **Posta (Briefpost)** (en yaygın durum — sağlık sigortası, yayın katkı payı dairesi (Beitragsservice), aile yardımları kasası (Familienkasse), yabancılar dairesi (Ausländerbehörde), vatandaş dairesi (Bürgeramt), idari para cezası dairesi (Bußgeldstelle)): postaya verildikten sonraki **dördüncü günde** tebliğ edilmiş sayılır (01.01.2025 tarihli posta hukuku reformundan bu yana § 41 fıkra 2 VwVfG veya § 122 fıkra 2 AO).\n- **Mein ELSTER** (elektronik vergi beyannamesinde vergi tahakkukları): alıma sunulduktan sonraki **dördüncü günde** tebliğ edilmiş sayılır (§ 122a fıkra 4 AO). 01.01.2027'den itibaren elektronik tebligat varsayılan olacaktır (itiraz seçenekli); o tarihe kadar etkin onaylı geçiş aşaması geçerlidir.\n- **Merkezi Vatandaş Posta Kutusu (ZBP/BundID), rıza ile**: alındıktan **bir gün sonra** tebliğ edilmiş sayılır (§ 41 fıkra 2a VwVfG). 10 gün içinde alınmazsa, tebligat gerçekleşmez.\n- **Resmi elektronik tebligat** (örneğin idari yargı, sosyal mahkeme): gönderildikten sonraki **dördüncü günde** tebliğ edilmiş sayılır, daha sonra alındığının ispatı durumunda aksi gösterilebilir (§ 5 fıkra 7 VwZG).\n\nLütfen **resmi posta kutularınızı** ve fiziksel posta kutunuzu **düzenli olarak** kontrol edin. Bu uygulama bunun yerine geçmez.\n\nÇeviri notu: bu uyarının Almanca orijinali bağlayıcıdır; çeviri yalnızca anlamayı kolaylaştırır.",
+      "no_legal_advice_title": "Hukuki danışmanlık değildir",
+      "no_legal_advice": "Bu yapay zekâ açıklaması **genel bilgi** ve anlama yardımıdır — Hukuk Hizmetleri Yasası (§ 2 RDG) anlamında **bir hukuk hizmeti değildir**. Bireysel durumunuzun değerlendirmesini **yapmaz** (BGH I ZR 113/20 ‚Smartlaw' içtihat hattı: araç niteliği, vekâlet ilişkisi yok, başarı vaadi yok).\n\nSomut bir hukuki değerlendirme — örneğin bir itirazın başarı şansı, hangi gerekçenin tutarlı olacağı veya bir kararın (Bescheid) hukuka uygun olup olmadığı — **yalnızca** hukuk hizmeti vermeye yetkili kişilerce yapılabilir: avukat (Rechtsanwält:in, BRAO), tüketici merkezi (Verbraucherzentrale, UKlaG/§ 8 RDG), sosyal birlik (örn. SoVD, VdK) veya yetkili Vergi Danışmanlığı Odası. Yapay zekâ **başarı vaadinde bulunmaz** ve sizi resmi makamlar karşısında **temsil etmez**. Yanıt veya süre önerileri bağlayıcı değildir; her giriş ve gönderimin sorumluluğu size aittir.\n\nÇeviri notu: bu uyarının Almanca orijinali bağlayıcıdır.",
+      "mock_data_title": "Demo yazılar sentetiktir",
+      "mock_data": "Burada gösterilen tüm yazılar, dosya numaraları (Aktenzeichen), tutarlar ve kişisel veriler **sentetiktir** ve `[MOCK]` ile işaretlenmiştir. Bu demo **gerçek resmi yazıları işlemez** ve Mein ELSTER'e, Merkezi Vatandaş Posta Kutusu'na (ZBP/BundID), sağlık sigortası portallarına veya başka resmi posta kutularına **bağlı değildir**. Bu demoda yazı yükleme **devre dışıdır**. Lütfen giriş alanlarına gerçek yazı veya kişisel veri yapıştırmayın — demo, hassas bilgilerin işlenmesi için onaylı değildir.\n\nÇeviri notu: bu uyarının Almanca orijinali bağlayıcıdır.",
+      "original_authoritative": "**Hukuken bağlayıcı olan yalnızca kararın (Bescheid) Almanca orijinal metnidir.** Yapay zekâ özeti ve olası çeviriler yalnızca anlama yardımıdır ve — tüm yapay zekâ üretimi metinler gibi — hata ya da eksiklik içerebilir. Şüphe durumunda kurumun ifadesi geçerlidir. Tüm metni okumak için ‚Orijinal metni göster' seçeneğine tıklayın ve önemli bilgileri (süre, tutar, dosya numarası) orijinalle karşılaştırın.\n\nÇeviri notu: bu metnin Almanca orijinali bağlayıcıdır; bu Türkçe metin yalnızca anlama yardımıdır.",
+      "frist_modal_inline": "Bu süre yazıdan otomatik olarak tespit edildi. Lütfen tarihi orijinal metinden doğrulayın.",
+      "summary_footer_hint": "Özet, orijinal metni tamamlar; yerine geçmez. Yazıdaki orijinal ifadeyi görmek için bir maddenin yanındaki [⌖] işaretine tıklayın.",
+      "rechtliche_hinweise_summary": "Hukuki uyarılar"
+    },
+    "toast": {
+      "refresh_after_vorgang_created": "Gelen kutusu güncellendi."
+    },
+    "sticky_action": {
+      "frist_label_template": "Süre {datum} ({tage_template})",
+      "frist_label_no_frist": "Süre yok",
+      "cta_kalender": "Süreyi takvime ekle (.ics)",
+      "cta_reply": "Yanıt yaz",
+      "cta_reply_resume_draft": "Taslağa devam et",
+      "cta_reply_again": "Yeniden yanıtla",
+      "cta_reply_view_sent": "Gönderilen yanıtı göster",
+      "already_replied_template": "{datum} tarihinde yanıtlandı",
+      "overflow_label": "Diğer eylemler",
+      "overflow": {
+        "speichern": "Yazıyı kaydet (.txt)",
+        "original_pdf": "Orijinal metni göster",
+        "markiere_gelesen": "Bu yazıyı okundu olarak işaretle"
+      }
+    },
+    "compose": {
+      "cta_open_sheet": "Yanıt yaz",
+      "sheet_title": "{behoerde} kurumuna yanıt",
+      "sheet_close_aria": "Yanıt panelini kapat",
+      "recipient_label_template": "Alıcı: {behoerde}",
+      "bezug_label_template": "Konu: {aktenzeichen}",
+      "outbound_speculative": "2027 itibarıyla — kavramsal tasarım. Bu demoda ZBP/BundID modeli üzerine kurulu, başvuru ipliğine bağlı (antrags-thread-gebunden) iki yönlü iletişimi simüle ediyoruz: yanıtlar her zaman somut bir yazının ipliğinde yaşar (dosya numarası / Aktenzeichen ile sabitlenir), serbest bir posta kutusu olarak değil. Bugün (Mayıs 2026) yanıt kanalı kuruma göre değişir: Vergi dairesi (Finanzamt) için Mein ELSTER, sağlık sigortaları için sigorta portalı, vatandaş ve yabancılar daireleri için eyalet hizmet portalı (Landes-Service-Portal), sıklıkla hâlâ posta. {behoerde} kurumuna hiçbir şey gönderilmez.",
+      "behoerde_kanal": {
+        "bundid_postfach_2027": "BundID posta kutusu (BundID-Postfach, kavramsal 2027)",
+        "service_portal_land": "Eyalet hizmet portalı (Landes-Service-Portal)",
+        "elster": "Mein ELSTER",
+        "familienkasse_online": "Familienkasse Online",
+        "beitragsservice": "Beitragsservice portalı",
+        "aok_portal": "Mein-AOK portalı",
+        "briefpost": "Posta (Briefpost, kâğıt)"
+      },
+      "template_picker": {
+        "legend": "Şablon seçin",
+        "frist_verlaengerung": {
+          "label": "Süre uzatma talep et",
+          "description": "Sürenin uzatılması talebi (yalnızca idari).",
+          "icon": "🕐"
+        },
+        "nachweis_einreichen": {
+          "label": "Belge sun",
+          "description": "Eklenen belgeye refakat metni.",
+          "icon": "📎"
+        },
+        "informative_rueckmeldung": {
+          "label": "Bilgilendirme yanıtı",
+          "description": "Kurumun sorusuna yanıt.",
+          "icon": "ℹ️"
+        },
+        "termin_antwort": {
+          "label": "Randevu yanıtı",
+          "description": "Önerilen randevuyu onayla, ertele veya iptal et.",
+          "icon": "📅"
+        },
+        "freitext": {
+          "label": "Kendi metnini yaz",
+          "description": "Şablonsuz başla.",
+          "icon": "📝"
+        }
+      },
+      "templates": {
+        "frist_verlaengerung": {
+          "disclaimer_pre_insertion": "Bu şablon yalnızca süre uzatma talebini ifade eder. Kişisel davanızın hukuki bir değerlendirmesini içermez. Uzatmanın verilip verilmeyeceğine, ilgili usul mevzuatının (örneğin Vergi Kanunu Abgabenordnung veya İdari Usul Kanunu Verwaltungsverfahrensgesetz) kurallarına göre kurum karar verir. Gerekçeyi siz yazarsınız — uygulama argüman önermez.",
+          "disclaimer_inline": "Uyarı: sürenin uzatılıp uzatılmayacağına kurum kendisi karar verir."
+        },
+        "nachweis_einreichen": {
+          "disclaimer_pre_insertion": "Bu şablonla, kuruma göre değişen iş birliği yükümlülüğünüzü yerine getirmek için belge gönderirsiniz — örneğin Sosyal Kanun (Sozialgesetzbuch), Vergi Kanunu (Abgabenordnung) veya İkamet Kanunu (Aufenthaltsgesetz) hükümleri kapsamında. Şablon, ek belge taleplerinden vazgeçildiği anlamına gelmez: lütfen yalnızca istenen belgeyi ekleyin.",
+          "disclaimer_inline": "Uyarı: yalnızca açıkça istenen belgeyi ekleyin — ek belge eklemeyin."
+        },
+        "informative_rueckmeldung": {
+          "disclaimer_pre_insertion": "Bu şablon salt bir maddi bildirimdir. **İtiraz (Einspruch) değildir**, **şikâyet (Widerspruch) değildir**, **başvuru değildir**. Bir kararı (Bescheid) usulen itiraza tabi tutmak istiyorsanız başka bir şablon seçilmelidir — ve süreler işliyor olabilir (genellikle tebligattan sonra bir ay; örneğin Vergi Kanunu (Abgabenordnung) veya Sosyal Mahkeme Kanunu (Sozialgerichtsgesetz) ile düzenlenmiştir).",
+          "disclaimer_inline": "Uyarı: bu bildirim bir hukuki çare değildir — herhangi bir süreyi durdurmaz."
+        },
+        "termin_antwort": {
+          "disclaimer_pre_insertion": "Bu şablon kurumun randevu önerisine yanıt verir. Erteleme veya iptal hâlinde alternatif bir tarih önermek (mod „verschieben“) genellikle yardımcı olur. Yürüyen bir prosedürde iş birliği yükümlülüğünüzü yerine getirmemenin olumsuz sonuçları olabileceğini unutmayın — örneğin Sosyal Kanun (Sozialgesetzbuch) veya İkamet Kanunu (Aufenthaltsgesetz) hükümleri kapsamında, kuruma göre değişerek.",
+          "disclaimer_inline": "Uyarı: alternatif tarih önermeden iptal etmek prosedürü geciktirebilir.",
+          "mode_legend": "İşlem",
+          "mode": {
+            "bestaetigen": "Onayla",
+            "verschieben": "Yeniden planla",
+            "absagen": "İptal et"
+          }
+        },
+        "freitext": {
+          "disclaimer_inline": "Şablonsuz yazıyorsunuz. Tarih, dosya numarası (Aktenzeichen) ve alıcı yazıdan önceden doldurulmuştur."
+        }
+      },
+      "body_textarea_label": "Yanıt metni (Almanca)",
+      "body_textarea_de_hint": "Kurumlar Almanca okur — lütfen Almanca yazın.",
+      "body_textarea_placeholder": {
+        "frist_verlaengerung": "Süre uzatma gerekçesi …",
+        "nachweis_einreichen": "Belgeye refakat metni …",
+        "informative_rueckmeldung": "Kuruma yanıtınız …",
+        "termin_antwort": "Randevu önerisine yanıtınız …",
+        "freitext": "Yanıtınızı yazın …"
+      },
+      "template_switch_confirm_title": "Şablon değiştirilsin mi?",
+      "template_switch_confirm_body": "Halihazırda metin yazdınız. Başka bir şablon seçmek metninizin üzerine yazar.",
+      "template_switch_confirm_cta_yes": "Şablonu uygula",
+      "template_switch_confirm_cta_no": "İptal",
+      "attachments": {
+        "label": "Ekler",
+        "constraints_template": "azami {maxFiles} dosya · dosya başına azami {maxFileMb} MB · toplam azami {maxTotalMb} MB · {allowedTypes}",
+        "add_button": "Dosya ekle",
+        "remove_template": "‚{name}' ekini kaldır",
+        "size_template": "{size_kb} KB",
+        "error_too_large_file": "‚{name}' dosyası azami boyutu ({maxFileMb} MB) aşıyor.",
+        "error_too_many": "Azami dosya sayısına ({maxFiles}) ulaşıldı.",
+        "error_total_too_large": "Tüm eklerin toplam boyutu {maxTotalMb} MB sınırını aşıyor.",
+        "error_mime_not_allowed": "‚{name}' dosya türüne izin verilmiyor. İzin verilen: {allowedTypes}.",
+        "errors_heading": "Bu ekler reddedildi:"
+      },
+      "draft_saved_template": "Taslak {n} sn önce kaydedildi",
+      "draft_saving": "Taslak kaydediliyor …",
+      "draft_save_error": "Kaydetme başarısız. Yeniden denensin mi?",
+      "draft_save_error_retry": "Yeniden dene",
+      "draft_just_now": "Taslak kaydedildi (az önce)",
+      "draft_discard_button": "Taslağı sil",
+      "draft_discard_confirm_title": "Taslak silinsin mi?",
+      "draft_discard_confirm_body": "Kaydedilmiş yanıt taslağı silinecek. Bu işlem geri alınamaz.",
+      "draft_discard_confirm_cta": "Sil",
+      "draft_discard_confirm_cta_cancel": "İptal",
+      "save_and_close_button": "Kaydet ve kapat",
+      "versand_button": "Yanıtı gönder (simülasyon)",
+      "versand_modal": {
+        "title": "Yanıt simüle olarak gönderilsin mi?",
+        "body": "Bu demo göndermeyi simüle eder. {empfaenger_behoerde} kurumuna hiçbir şey gitmez. Lütfen yanıtınızı, kuruma gerçekten gönderecekmişsiniz gibi yazın — hakaret veya tehditler Alman Ceza Kanunu §§ 185, 241 — StGB uyarınca cezalandırılabilir, burası yalnızca bir alıştırma olsa bile.",
+        "cta_send": "Göndermeyi simüle et",
+        "cta_cancel": "İptal"
+      },
+      "send_error_toast": "Gönderim başarısız, lütfen yeniden deneyin.",
+      "send_in_progress": "Gönderim simüle ediliyor …",
+      "confirmation": {
+        "headline": "Yanıt gönderildi (simülasyon)",
+        "mock_disclaimer": "[MOCK – gönderim simüle edildi. Kuruma hiçbir şey gitmedi.]",
+        "metadata_label_sent_at": "Gönderildiği tarih",
+        "metadata_label_kanal": "Gönderim kanalı",
+        "metadata_label_files": "Ekler ({count})",
+        "no_attachments": "Ek yok",
+        "cta_view_in_cockpit": "Bu yanıtı veri koruma kabinine göster",
+        "cta_close": "Kapat",
+        "view_sent_link": "Gönderilen yanıtı göster",
+        "kanal_realitaetscheck_template": "Bugün (Mayıs 2026): gerçek yanıt kanalı {kanal_heute} olurdu. Bu demo göndermeyi simüle eder.",
+        "body_heading": "Yanıtınız",
+        "kanal_speculative_2027_text": "ZBP/BundID modeline dayalı, başvuru iş parçacığına bağlı çift yönlü iletişim",
+        "full_receipt_template": "[MOCK] Yanıtınız simüle olarak gönderildi. Gerçek bir 2027 senaryosunda {empfaenger_behoerde} kurumuna {kanal_speculative_2027_text} olarak iletilirdi — başvuru iş parçacığına bağlı, ZBP/BundID modeline dayalı.",
+        "sent_at_template": "{datum} tarihinde saat {uhrzeit}"
+      },
+      "speculative_banner_title": "2027 itibarıyla — kavramsal tasarım"
+    },
+    "draft": {
+      "group_title_template": "Taslaklar ({count})",
+      "row_label_template": "Taslak: {behoerde} kurumuna yanıt",
+      "row_meta_template": "Dosya no. {aktenzeichen} · son düzenleme {relTime} önce",
+      "row_cta": "Yazmaya devam et",
+      "empty_state_hint": "Açık taslak yok."
+    }
+  }
+}
