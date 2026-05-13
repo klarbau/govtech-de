@@ -17,6 +17,12 @@ export const adresseSchema = z.object({
   land: z.string().optional(),
 });
 
+export const bundidPostfachAnbindungSchema = z.enum([
+  'angebunden',
+  'in_pilotierung',
+  'nicht_angebunden',
+]);
+
 export const behoerdeSchema = z
   .object({
     id: z.string(),
@@ -34,6 +40,11 @@ export const behoerdeSchema = z
       portal_url: z.string().optional(),
       supports_eudi: z.boolean(),
     }),
+    // V1.2 — Spec § 4.3 Pflicht-Feld. Behörden ohne expliziten Wert (alte
+    // localStorage-Buckets aus V1/V1.1) werden beim Read durch
+    // `migrateBehoerdenV11ToV12` mit `nicht_angebunden`-Default befüllt;
+    // Schema-Validierung erzwingt den Wert ab V1.2-Boot.
+    bundid_postfach_anbindung: bundidPostfachAnbindungSchema,
   })
   .passthrough();
 
@@ -77,6 +88,151 @@ const personaSchemaBase = z.object({
   kindergeld_bezug: z.boolean(),
   wehrerfasst: z.boolean(),
   sprachen: z.array(z.string()),
+  // V1 Stammdaten — additive optionale Felder (Spec § 4.3).
+  fruehere_namen: z.array(z.string()).optional(),
+  doktorgrad: z.string().optional(),
+  geburtsort: z.string().optional(),
+  geschlecht: z.enum(['m', 'w', 'd', 'x', 'unbestimmt']).optional(),
+  religion: z.string().optional(),
+  personalausweis_nr: z
+    .object({ nummer: z.string(), gueltig_bis: z.string() })
+    .passthrough()
+    .optional(),
+  reisepass: z
+    .object({ nummer: z.string(), gueltig_bis: z.string() })
+    .passthrough()
+    .optional(),
+  eat_can: z.string().optional(),
+  azr_nr: z.string().optional(),
+  // V1.2 Kontakt-Schicht — full rename aus V1 `{ email?, mobil? }` (Spec § 4.1).
+  // Schema akzeptiert sowohl V1.1-shape (BundID-Postfach + notification_praeferenzen)
+  // als auch Legacy-V1-shape — letztere wird durch `migrateKontaktV1ToV11` beim
+  // ersten V1.2-Boot in den neuen Shape überführt (`persistence-migrations.ts`).
+  // `passthrough` lässt zusätzliche Legacy-Felder (`email`, `mobil`) durch und
+  // verhindert Reseed bei Pre-V1.2-localStorage.
+  kontakt: z
+    .object({
+      bundid_email: z
+        .object({
+          value: z.string(),
+          verified: z.boolean(),
+          quelle: z.literal('bundid'),
+          verifiziert_am: z.string().optional(),
+        })
+        .passthrough()
+        .optional(),
+      bundid_mobil: z
+        .object({
+          value: z.string(),
+          verified: z.boolean(),
+          quelle: z.literal('bundid_self_attested'),
+          verifiziert_am: z.string().optional(),
+        })
+        .passthrough()
+        .optional(),
+      bundid_postfach: z
+        .object({
+          aktiviert: z.boolean(),
+          status: z.enum(['aktiv', 'inaktiv', 'teilaktiviert']),
+          aktiviert_am: z.string().optional(),
+        })
+        .passthrough()
+        .optional(),
+      notification_praeferenzen: z
+        .object({
+          steuer: z.enum(['postfach', 'email_pilot', 'sms_pilot', 'brief']),
+          sozial: z.enum(['postfach', 'email_pilot', 'sms_pilot', 'brief']),
+          familie: z.enum(['postfach', 'email_pilot', 'sms_pilot', 'brief']),
+          verkehr: z.enum(['postfach', 'email_pilot', 'sms_pilot', 'brief']),
+          sonstige: z.enum(['postfach', 'email_pilot', 'sms_pilot', 'brief']),
+        })
+        .passthrough()
+        .optional(),
+      // Legacy V1-shape (kept for migration source-detection — see
+      // `persistence-migrations.ts:migrateKontaktV1ToV11`).
+      email: z.string().optional(),
+      mobil: z.string().optional(),
+    })
+    .passthrough()
+    .optional(),
+  eheschliessung: z
+    .object({ datum: z.string(), ort: z.string(), az: z.string() })
+    .passthrough()
+    .optional(),
+  // V1.1 — Renten/KV optionale Felder (Spec § 4.1). Alle additiv.
+  renten_track: z.enum(['A', 'B', 'C']).optional(),
+  renten_eckdaten_v1_1: z
+    .object({
+      grundlage_kurzauszug: z.object({
+        beitragszeit_von: z.string(),
+        beitragszeit_bis: z.string(),
+        entgeltpunkte_aktuell: z.number(),
+      }),
+      em_rente_prognose_eur_monat: z.number(),
+      regelalter_prognose_eur_monat: z.number(),
+      anpassungs_wirkung: z.object({
+        beispiel_prozent_p_a: z.number(),
+        plus_eur_monat: z.number(),
+      }),
+      beitragsuebersicht: z.object({
+        jahr: z.string(),
+        gesamt_eur: z.number(),
+        versicherter_anteil_eur: z.number(),
+        arbeitgeber_anteil_eur: z.number(),
+        oeffentliche_kassen_eur: z.number().optional(),
+      }),
+      stichtag: z.string(),
+      quelle_letter_id: z.string(),
+      abgelegt_am: z.string(),
+    })
+    .passthrough()
+    .optional(),
+  kvnr_v1_1: z
+    .object({
+      unveraenderbar: z.string(),
+      veraenderbar: z.string(),
+    })
+    .passthrough()
+    .optional(),
+  familienversichert_ueber: z.string().optional(),
+  familienversichert_bis: z.string().optional(),
+  epa_status_v1_1: z
+    .object({
+      eingerichtet: z.boolean(),
+      widerspruch_gesetzt: z.boolean(),
+      eingerichtet_am: z.string().optional(),
+      widerspruch_am: z.string().optional(),
+    })
+    .passthrough()
+    .optional(),
+  erezept_modus_v1_1: z.enum(['app', 'egk', 'papier']).optional(),
+  pflegegrad_v1_1: z
+    .object({
+      grad: z.union([
+        z.literal(1),
+        z.literal(2),
+        z.literal(3),
+        z.literal(4),
+        z.literal(5),
+      ]),
+      bewilligt_am: z.string(),
+      pflegekasse_id: z.string(),
+      begutachtung_stelle: z.enum(['md', 'medicproof']),
+    })
+    .passthrough()
+    .optional(),
+  anrechnungszeit_pflege_v1_1: z
+    .object({
+      monate: z.number().int().nonnegative(),
+      pflegebeduerftige_person: z.string().optional(),
+      rechtsgrundlage: z.string(),
+    })
+    .passthrough()
+    .optional(),
+  versorgungswerk_v1_1: z
+    .object({ name: z.string(), mitgliedsnummer: z.string() })
+    .passthrough()
+    .optional(),
 });
 
 // Persona ist rekursiv (familie.partner: Persona). Wir typen das Feld
@@ -104,8 +260,23 @@ export const letterArchetypeSchema = z.enum([
   'ihk-beitrag',
   'berufsgenossenschaft-beitrag',
   'standesamt-urkunde',
+  // V1.1 — § 109 SGB VI Yellow-Letter (jährliche Renteninformation).
+  'renteninfo',
   'sonstiges',
 ]);
+
+// Compile-time guard: zod-Enum und TS-Union (`LetterArchetype` aus `@/types/letter`)
+// müssen identisch sein. Drift → tsc-Fehler in dieser Datei.
+import type { LetterArchetype as _LetterArchetypeTs } from '@/types/letter';
+type _SchemaLetterArchetype = z.infer<typeof letterArchetypeSchema>;
+type _AssertEqArchetype<A, B> = [A] extends [B]
+  ? ([B] extends [A] ? true : never)
+  : never;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _letterArchetypeDriftGuard: _AssertEqArchetype<
+  _SchemaLetterArchetype,
+  _LetterArchetypeTs
+> = true;
 
 export const letterAuthChannelSchema = z.enum([
   'briefpost',
@@ -214,6 +385,15 @@ export const letterSchema = z
     status: z.enum(['ungelesen', 'gelesen', 'erledigt']),
     empfangen_am: z.string(),
     vorgang_id: z.string().optional(),
+    // V1.5.1 — Erlassdatum des Bescheids (Domain-Doc § 3, ISO-8601 YYYY-MM-DD).
+    // Optional; nur bei Letter-Archetypes mit Bescheid-Charakter gepflegt.
+    bescheid_dated_at: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, 'ISO-Datum YYYY-MM-DD')
+      .optional(),
+    // V1.2 — Kanal (brief / postfach / email_pilot). Optional; existing letters
+    // bleiben kompatibel (Default-Render = brief). Spec § 9.
+    kanal: z.enum(['brief', 'postfach', 'email_pilot']).optional(),
   })
   .passthrough();
 
@@ -389,7 +569,21 @@ export const replyTemplateIdSchema = z.enum([
   'nachweis_einreichen',
   'informative_rueckmeldung',
   'termin_antwort',
+  // V1.5.1 — Skelett-Templates (Domain-Doc § 3, RDG-clean):
+  'rechtsbehelf_einspruch_skelett',
+  'rechtsbehelf_widerspruch_skelett',
+  'aussetzung_vollziehung_skelett',
 ]);
+
+// Compile-time guard: zod-Enum und TS-Union (`ReplyTemplateId` aus
+// `@/types/letter`) müssen identisch sein. Drift → tsc-Fehler in dieser Datei.
+import type { ReplyTemplateId as _ReplyTemplateIdTs } from '@/types/letter';
+type _SchemaReplyTemplateId = z.infer<typeof replyTemplateIdSchema>;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _replyTemplateIdDriftGuard: _AssertEq<
+  _SchemaReplyTemplateId,
+  _ReplyTemplateIdTs
+> = true;
 
 export const replyTerminModeSchema = z.enum([
   'bestaetigen',
@@ -474,5 +668,303 @@ export const replySchema = z
     }
   });
 
-/** Map letterId → Reply (genau eine Reply pro Brief). */
-export const letterRepliesMapSchema = z.record(replySchema);
+/**
+ * V1.5.1 — Map letterId → Array von Replies (Cross-Template-Versand-Pfad
+ * erzeugt zwei separate Reply-Records pro Letter; Spec V1.5.1 § 8.4).
+ * V1.5.0-Storage (`Record<string, Reply>`) wird beim ersten V1.5.1-Boot über
+ * `persistence-migrations.ts` zu Single-Element-Arrays migriert.
+ */
+export const letterRepliesMapSchema = z.record(z.array(replySchema));
+
+/**
+ * Legacy V1.5.0-Schema-Variant — wird ausschließlich in der Persistence-
+ * Migration genutzt, um stored data im alten Shape zu erkennen und in den
+ * neuen Shape zu überführen (siehe `persistence-migrations.ts`).
+ */
+export const letterRepliesMapV150Schema = z.record(replySchema);
+
+// ---------------------------------------------------------------------------
+// V1 — Stammdaten (Spec § 5.2)
+// ---------------------------------------------------------------------------
+
+export const stammdatenSektionIdSchema = z.enum([
+  'identitaet',
+  'anschrift',
+  'familie',
+  // V1.1 — additive Sektionen (Spec § 12).
+  'altersvorsorge',
+  'krankenversicherung_pflege',
+  'dokumente',
+  'sperren_einstellungen',
+]);
+
+export const stammdatenFieldEditabilitySchema = z.enum([
+  'read_only',
+  'self_edit',
+  'self_edit_speculative_2027',
+  'hidden_by_default',
+  'self_edit_mock_pattern',
+]);
+
+export const stammdatenUebermittlungssperreIdSchema = z.enum([
+  'religionsgesellschaften_42_3',
+  'adressbuch_verlage_50_5',
+  'wahlwerbung_50_1',
+  'oeffentlich_rechtl_rundfunk_42',
+]);
+
+// Compile-time guards: Schema-Enums = TS-Unions (V1.5.0-Muster).
+import type {
+  StammdatenSektionId as _StammdatenSektionIdTs,
+  StammdatenFieldEditability as _StammdatenFieldEditabilityTs,
+  StammdatenUebermittlungssperreId as _StammdatenUebermittlungssperreIdTs,
+} from '@/types/stammdaten';
+type _SchemaStammdatenSektionId = z.infer<typeof stammdatenSektionIdSchema>;
+type _SchemaStammdatenFieldEditability = z.infer<
+  typeof stammdatenFieldEditabilitySchema
+>;
+type _SchemaStammdatenUebermittlungssperreId = z.infer<
+  typeof stammdatenUebermittlungssperreIdSchema
+>;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _stammdatenSektionIdDriftGuard: _AssertEq<
+  _SchemaStammdatenSektionId,
+  _StammdatenSektionIdTs
+> = true;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _stammdatenFieldEditabilityDriftGuard: _AssertEq<
+  _SchemaStammdatenFieldEditability,
+  _StammdatenFieldEditabilityTs
+> = true;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _stammdatenUebermittlungssperreIdDriftGuard: _AssertEq<
+  _SchemaStammdatenUebermittlungssperreId,
+  _StammdatenUebermittlungssperreIdTs
+> = true;
+
+export const uebermittlungsLogEntrySchema = z
+  .object({
+    id: z.string().min(1),
+    timestamp: z.string().regex(/^\d{4}-\d{2}-\d{2}T/, 'ISO-8601 timestamp'),
+    // V1.2 Hard-Line § 11.40: additiver 4. Wert `behoerde_zu_buerger` (Notification.gesendet,
+    // Posteingang.eingegangen). Same Bucket — kein neuer Bucket.
+    kategorie: z.enum([
+      'behoerde_zu_behoerde',
+      'app_aktivitaet',
+      'speculative_2027',
+      'behoerde_zu_buerger',
+    ]),
+    field_id: z.string().optional(),
+    sektion: stammdatenSektionIdSchema.optional(),
+    absender_behoerde_id: z.string().optional(),
+    empfaenger_id: z.string().optional(),
+    zweck_i18n_key: z.string().min(1),
+    rechtsgrundlage: z.string().min(1),
+    note: z.string().optional(),
+  })
+  .passthrough();
+
+export const stammdatenSperrenSchema = z
+  .object({
+    auskunftssperre_aktiv: z.boolean(),
+    auskunftssperre_begruendung: z.string().min(30).optional(),
+    auskunftssperre_befristet_bis: z.string().optional(),
+    uebermittlungssperren: z.array(stammdatenUebermittlungssperreIdSchema),
+  })
+  .passthrough();
+
+export const stammdatenIbanSpeculativeSchema = z
+  .object({
+    iban: z.string().optional(),
+    consented_pushes: z.object({
+      familienkasse: z.boolean(),
+      elster: z.boolean(),
+      gkv: z.boolean(),
+    }),
+  })
+  .passthrough();
+
+export const stammdatenReligionConsentSchema = z
+  .object({
+    consent_session: z.boolean(),
+    last_shown_at: z.string().optional(),
+  })
+  .passthrough();
+
+/**
+ * V1-Kontakt-Bucket (legacy shape). Bleibt für Backward-Compat erhalten:
+ * V1-Daten mit `email` / `mobil` werden via `migrateKontaktV1ToV11` in den
+ * V1.2-Bucket `stammdaten:notification-praeferenzen` überführt; das hier
+ * persistierte `sprachpraeferenz`-Feld bleibt hingegen V1.x-stabil und wird
+ * nicht migriert.
+ */
+export const stammdatenKontaktBucketSchema = z.record(
+  z
+    .object({
+      email: z.string().optional(),
+      mobil: z.string().optional(),
+      sprachpraeferenz: z.string(),
+    })
+    .passthrough(),
+);
+
+// ---------------------------------------------------------------------------
+// V1.2 — Kontakt-Schicht (Spec § 5.2). BundID-Postfach + E-Mail + Mobilfunk +
+// Notification-Präferenzen. Hard-Lines § 11.31–§ 11.41.
+// ---------------------------------------------------------------------------
+
+export const notificationKanalSchema = z.enum([
+  'postfach',
+  'email_pilot',
+  'sms_pilot',
+  'brief',
+]);
+
+export const notificationPraeferenzenSchema = z
+  .object({
+    steuer: notificationKanalSchema,
+    sozial: notificationKanalSchema,
+    familie: notificationKanalSchema,
+    verkehr: notificationKanalSchema,
+    sonstige: notificationKanalSchema,
+  })
+  .passthrough();
+
+export const bundIdEmailSchema = z
+  .object({
+    value: z.string().min(1),
+    verified: z.boolean(),
+    quelle: z.literal('bundid'),
+    verifiziert_am: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}/, 'ISO-Datum')
+      .optional(),
+  })
+  .passthrough();
+
+export const bundIdMobilSchema = z
+  .object({
+    value: z.string().min(1),
+    verified: z.boolean(),
+    quelle: z.literal('bundid_self_attested'),
+    verifiziert_am: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}/, 'ISO-Datum')
+      .optional(),
+  })
+  .passthrough();
+
+export const bundIdPostfachSchema = z
+  .object({
+    aktiviert: z.boolean(),
+    status: z.enum(['aktiv', 'inaktiv', 'teilaktiviert']),
+    aktiviert_am: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}/, 'ISO-Datum')
+      .optional(),
+  })
+  .passthrough();
+
+export const personaKontaktSchema = z
+  .object({
+    bundid_email: bundIdEmailSchema,
+    bundid_mobil: bundIdMobilSchema.optional(),
+    bundid_postfach: bundIdPostfachSchema,
+    notification_praeferenzen: notificationPraeferenzenSchema,
+  })
+  .passthrough();
+
+/**
+ * V1.2 Kontakt-Bucket — `Record<PersonaId, PersonaKontakt>`. Persistiert in
+ * `govtech-de:v1:stammdaten:notification-praeferenzen`. Schema-Version v2
+ * (gebumpt aus V1 — Migration in `persistence-migrations.ts`).
+ */
+export const stammdatenKontaktV2BucketSchema = z.record(personaKontaktSchema);
+
+// Compile-time guard: zod-Schema und TS-Interface müssen identisch sein.
+import type {
+  BundidPostfachAnbindung as _BundidPostfachAnbindungTs,
+  NotificationKanal as _NotificationKanalTs,
+} from '@/types/persona-kontakt';
+type _SchemaBundidPostfachAnbindung = z.infer<typeof bundidPostfachAnbindungSchema>;
+type _SchemaNotificationKanal = z.infer<typeof notificationKanalSchema>;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _bundidPostfachAnbindungDriftGuard: _AssertEq<
+  _SchemaBundidPostfachAnbindung,
+  _BundidPostfachAnbindungTs
+> = true;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _notificationKanalDriftGuard: _AssertEq<
+  _SchemaNotificationKanal,
+  _NotificationKanalTs
+> = true;
+
+export const stammdatenSperrenBucketSchema = z.record(stammdatenSperrenSchema);
+
+export const stammdatenIbanSpeculativeBucketSchema = z.record(
+  stammdatenIbanSpeculativeSchema,
+);
+
+export const stammdatenUebermittlungsLogBucketSchema = z.record(
+  z.array(uebermittlungsLogEntrySchema),
+);
+
+// ---------------------------------------------------------------------------
+// V1.1 — Renten/KV-Bucket-Schemas (Spec § 4.4)
+// ---------------------------------------------------------------------------
+
+/**
+ * `RentenEckdaten` aus Yellow Letter (§ 109 Abs. 3 SGB VI; 5 Pflicht-Inhalte).
+ * Persistiert in `govtech-de:v1:stammdaten:renten-eckdaten-v1-1` als
+ * `Record<PersonaId, RentenEckdaten>` — überschrieben pro Bridge-Aufruf.
+ */
+export const rentenEckdatenSchema = z
+  .object({
+    grundlage_kurzauszug: z.object({
+      beitragszeit_von: z.string(),
+      beitragszeit_bis: z.string(),
+      entgeltpunkte_aktuell: z.number(),
+    }),
+    em_rente_prognose_eur_monat: z.number(),
+    regelalter_prognose_eur_monat: z.number(),
+    anpassungs_wirkung: z.object({
+      beispiel_prozent_p_a: z.number(),
+      plus_eur_monat: z.number(),
+    }),
+    beitragsuebersicht: z.object({
+      jahr: z.string(),
+      gesamt_eur: z.number(),
+      versicherter_anteil_eur: z.number(),
+      arbeitgeber_anteil_eur: z.number(),
+      oeffentliche_kassen_eur: z.number().optional(),
+    }),
+    stichtag: z.string(),
+    quelle_letter_id: z.string(),
+    abgelegt_am: z.string(),
+  })
+  .passthrough();
+
+export const rentenEckdatenBucketSchema = z.record(rentenEckdatenSchema);
+
+/**
+ * Yellow-Letter-Bridge-applied-Bucket — Liste der bereits gebridgeten
+ * `letter_id`s pro Persona. Hard-Line § 11.25 Idempotenz.
+ *
+ * Shape: `Record<PersonaId, string[]>`.
+ */
+export const yellowLetterBridgeAppliedBucketSchema = z.record(
+  z.array(z.string()),
+);
+
+/**
+ * `PflegegradConsent` — wird in **sessionStorage** gehalten (Hard-Line § 11.22),
+ * NICHT in localStorage. Schema dient der Validierung des sessionStorage-Maps.
+ */
+export const pflegegradConsentSchema = z
+  .object({
+    consent_session: z.boolean(),
+    last_shown_at: z.string().optional(),
+  })
+  .passthrough();
+
+export const pflegegradConsentBucketSchema = z.record(pflegegradConsentSchema);

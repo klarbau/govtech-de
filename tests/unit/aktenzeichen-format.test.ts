@@ -107,6 +107,21 @@ const FORMAT_RULES: FormatRule[] = [
     regex: new RegExp(`^${MOCK}AOK-[A-Z]{2}-\\d{4}-\\d{8}$`),
     behoerdeIds: [], // wird dynamisch zugeordnet (Sonderfall — siehe unten)
   },
+  {
+    // V1.1 — Renteninformation (§ 109 SGB VI). Format: VSNR + ' / RI-YYYY'.
+    // VSNR-Format: NN NNNNNN [A-Z] NNN (Bereichsnummer + Geburtsdatum + Buchstabe + Seriennummer).
+    name: 'DRV — Renteninformation NN NNNNNN [A-Z] NNN / RI-YYYY',
+    regex: new RegExp(
+      `^${MOCK}\\d{2} \\d{6} [A-Z] \\d{3} / RI-\\d{4}$`,
+    ),
+    behoerdeIds: [
+      'drv-berlin-brandenburg',
+      'drv-nord',
+      'drv-rheinland',
+      'drv-bayern-sued',
+      'drv-bund',
+    ],
+  },
 ];
 
 // Sekundär-Aktenzeichen (`aktenzeichen_weitere`).

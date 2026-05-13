@@ -50,7 +50,14 @@
     "frist": {
       "gesetzlich": "statutory deadline",
       "unverzueglich": "without undue delay",
-      "vertraglich": "contractual deadline"
+      "vertraglich": "contractual deadline",
+      "zahlung": "Payment",
+      "einspruch": "Objection",
+      "widerspruch": "Appeal",
+      "klage": "Lawsuit",
+      "nachweis": "Proof",
+      "antragstellung": "Application",
+      "sonstige": "Deadline"
     },
     "disclaimer": {
       "prototype_title": "Prototype notice",
@@ -502,6 +509,7 @@
       "cta_reply_again": "Reply again",
       "cta_reply_view_sent": "View sent reply",
       "already_replied_template": "Already replied on {datum}",
+      "already_replied_dual_template": "Already replied on {datum} with 2 replies ({template_a_label} + {template_b_label})",
       "overflow_label": "More actions",
       "overflow": {
         "speichern": "Save letter (.txt)",
@@ -551,6 +559,21 @@
           "label": "Write your own text",
           "description": "Start without a template.",
           "icon": "📝"
+        },
+        "rechtsbehelf_einspruch_skelett": {
+          "label": "File an objection (Einspruch)",
+          "description": "Skeleton letter with the mandatory details — you write the reasoning yourself.",
+          "icon": "⚖️"
+        },
+        "rechtsbehelf_widerspruch_skelett": {
+          "label": "File a formal protest (Widerspruch)",
+          "description": "Skeleton letter with the mandatory details — you write the reasoning yourself.",
+          "icon": "🛡️"
+        },
+        "aussetzung_vollziehung_skelett": {
+          "label": "Apply to suspend enforcement (Aussetzung der Vollziehung)",
+          "description": "§ 361 of the Fiscal Code (Abgabenordnung, AO) — skeleton application; you write the reasoning yourself.",
+          "icon": "⏸️"
         }
       },
       "templates": {
@@ -578,7 +601,75 @@
         },
         "freitext": {
           "disclaimer_inline": "You are writing without a template. Date, file reference (Aktenzeichen) and recipient are pre-filled from the letter."
+        },
+        "rechtsbehelf_einspruch_skelett": {
+          "label": "File an objection (Einspruch)",
+          "beschreibung": "Skeleton letter with the mandatory details — you write the reasoning yourself.",
+          "disclaimer_pre_insertion": "This template contains only the mandatory details (date, file reference, recipient and the declaration of the legal remedy). **You write the reasoning yourself** — the app does not suggest arguments, because assessing your individual case is a legal service within the meaning of § 2 of the Legal Services Act (Rechtsdienstleistungsgesetz, RDG) and may only be provided by lawyers, registered persons, consumer advice centres (Verbraucherzentralen) or social associations (Sozialverbände).",
+          "disclaimer_inline": "Note: you write the reasoning yourself — the app does not generate it."
+        },
+        "rechtsbehelf_widerspruch_skelett": {
+          "label": "File a formal protest (Widerspruch)",
+          "beschreibung": "Skeleton letter with the mandatory details — you write the reasoning yourself.",
+          "disclaimer_pre_insertion": "This template contains only the mandatory details (date, file reference, recipient and the declaration of the legal remedy). **You write the reasoning yourself** — the app does not suggest arguments, because assessing your individual case is a legal service within the meaning of § 2 of the Legal Services Act (Rechtsdienstleistungsgesetz, RDG) and may only be provided by lawyers, registered persons, consumer advice centres (Verbraucherzentralen) or social associations (Sozialverbände).",
+          "disclaimer_inline": "Note: you write the reasoning yourself — the app does not generate it.",
+          "disclaimer_pre_insertion_zusatz_sgg": "For a notice issued by a social-insurance body, the **Widerspruch** (formal protest) is the correct legal remedy — not the Einspruch (§ 84 of the Social Court Act, Sozialgerichtsgesetz, SGG). Note also: contributions remain due despite a Widerspruch (§ 86a (2) no. 1 SGG).",
+          "disclaimer_pre_insertion_zusatz_vwgo": "Note: even a Widerspruch has no suspensive effect in contribution matters (§ 80 (2) no. 1 of the Code of Administrative Court Procedure, Verwaltungsgerichtsordnung, VwGO) — the claim remains due despite the protest."
+        },
+        "aussetzung_vollziehung_skelett": {
+          "label": "Apply to suspend enforcement (Aussetzung der Vollziehung)",
+          "beschreibung": "§ 361 of the Fiscal Code (Abgabenordnung, AO) — skeleton application; you write the reasoning yourself.",
+          "disclaimer_pre_insertion": "Suspension is **not granted automatically** — the authority reviews each application on its own (§ 361 (2) of the Fiscal Code, Abgabenordnung, AO). Late-payment penalties under § 240 AO continue to accrue as long as the suspension has not been granted. This template assumes that you have already filed an objection (Einspruch) or are filing one at the same time.",
+          "disclaimer_inline": "Note: suspension is not granted automatically — late-payment penalties continue to accrue until the authority has decided."
         }
+      },
+      "pre_insertion_modal": {
+        "einspruch_ao": {
+          "title": "File the objection with the right authority",
+          "body": "An objection (Einspruch) must be lodged with the authority whose administrative act is being challenged (§ 357 (2) sentence 1 of the Fiscal Code, Abgabenordnung, AO). We have taken „{empfaenger_behoerde}“ from the letterhead as the addressee. Please verify the recipient address yourself — an objection lodged with the wrong body only preserves the deadline if it reaches the competent authority while the deadline is still running (§ 357 (2) sentence 4 AO).",
+          "cta_continue": "Insert skeleton",
+          "cta_cancel": "Cancel"
+        },
+        "einspruch_ao_familienkasse_zusatz": "Note: Kindergeld (child benefit) decisions are challenged under the rules of the Fiscal Code (Abgabenordnung, AO) — not under the Social Court Act (Sozialgerichtsgesetz). Deadline and form follow from § 357 AO. This is because Kindergeld is a tax benefit within the meaning of § 31 of the Income Tax Act (Einkommensteuergesetz, EStG) (BFH III R 26/22, 2023).",
+        "widerspruch_sgg": {
+          "title": "File the formal protest with the right authority",
+          "body": "A Widerspruch in a social-insurance matter must be lodged with the body that issued the notice (§ 84 (2) sentence 1 of the Social Court Act, Sozialgerichtsgesetz, SGG). We have taken „{empfaenger_behoerde}“ from the letterhead as the addressee. Please verify the recipient address yourself — lodging with another domestic authority preserves the deadline only because that authority must forward the protest to the competent body without delay (§ 84 (2) sentence 2 SGG).",
+          "cta_continue": "Insert skeleton",
+          "cta_cancel": "Cancel"
+        },
+        "widerspruch_vwgo": {
+          "title": "File the formal protest with the right authority",
+          "body": "A Widerspruch must be lodged with the authority that issued the contested administrative act (§ 70 (1) sentence 1 of the Code of Administrative Court Procedure, Verwaltungsgerichtsordnung, VwGO). We have taken „{empfaenger_behoerde}“ from the letterhead as the addressee. Please verify the recipient address yourself — in some federal states (such as Bavaria) the formal-protest procedure has been abolished for certain subject areas; in those cases an action must be brought directly before the administrative court (Verwaltungsgericht) instead of a Widerspruch.",
+          "cta_continue": "Insert skeleton",
+          "cta_cancel": "Cancel"
+        },
+        "aussetzung_ao": {
+          "title": "Suspension of enforcement — important notes",
+          "body": "Suspension of enforcement (Aussetzung der Vollziehung) must be applied for at the tax authority that issued the contested notice (§ 361 (2) sentence 1 of the Fiscal Code, Abgabenordnung, AO). It is **not granted automatically** — the authority will only grant suspension if there are serious doubts as to the lawfulness of the notice or if enforcement would constitute undue hardship (§ 361 (2) sentence 2 AO). Late-payment penalties under § 240 AO continue to accrue as long as suspension has not been granted; furthermore, suspension presupposes that an objection (Einspruch) has already been filed.",
+          "cta_continue": "Insert skeleton",
+          "cta_cancel": "Cancel"
+        }
+      },
+      "frist_cited_format": {
+        "einspruch_ao": "You have **1 month** from notification of the notice to file an objection — **§ 355 (1) of the Fiscal Code (Abgabenordnung, AO)**. The deadline ends on {frist_datum}.",
+        "widerspruch_sgg": "You have **1 month** from notification of the notice to file a formal protest — **§ 84 (1) of the Social Court Act (Sozialgerichtsgesetz, SGG)**. The deadline ends on {frist_datum}.",
+        "widerspruch_vwgo": "You have **1 month** from notification of the notice to file a formal protest — **§ 70 (1) sentence 1 of the Code of Administrative Court Procedure (Verwaltungsgerichtsordnung, VwGO)**. The deadline ends on {frist_datum}.",
+        "aussetzung_ao": "You can apply for a suspension of enforcement at any time while the objection proceedings are pending — **§ 361 (2) of the Fiscal Code (Abgabenordnung, AO)**. There is no separate deadline, but filing quickly is important because late-payment penalties under § 240 AO continue to accrue."
+      },
+      "bekanntgabe_caveat": "Note: this notice was made available electronically via Mein ELSTER. The **fourth day** after provision is deemed the date of notification (§ 122a (4) of the Fiscal Code, Abgabenordnung, AO). The deadline therefore ends four days later than for postal notification.",
+      "bekanntgabe_caveat_summary": "When does the deadline start? Notes on electronic notification",
+      "frist_abgelaufen_warnung": "According to our data, the deadline stated in the notice expired on {frist_datum}. A late filing is possible but is regularly rejected as inadmissible — unless the legal-remedy instructions in the notice were defective (in which case a one-year deadline applies) or the conditions for restoration of the previous status (Wiedereinsetzung in den vorigen Stand) are met. Please obtain advice from a consumer advice centre (Verbraucherzentrale), a social association (Sozialverband) or a lawyer before filing.",
+      "skelett_footer_no_legal_advice": "Please have the prospects of success of your legal remedy assessed by a consumer advice centre (Verbraucherzentrale), a social association (Sozialverband) or a lawyer — the app does not provide such an assessment.",
+      "skelett_visibility_explainer": {
+        "kein_rechtsbehelf_bei_mitwirkung": "Note: this letter is a request to cooperate, not a formal notice (Bescheid). You cannot (yet) file a legal remedy here — please submit the requested evidence or request an extension of the deadline."
+      },
+      "template_switch": {
+        "dual_send": "Send both as separate letters",
+        "discard_and_switch": "Discard current draft and switch",
+        "cancel": "Cancel"
+      },
+      "cross_send": {
+        "reply1_sent_announcement": "Reply 1 sent. Preparing Reply 2 …"
       },
       "body_textarea_label": "Reply text (German)",
       "body_textarea_de_hint": "Authorities parse German — please write in German.",
@@ -649,6 +740,498 @@
       "row_meta_template": "File ref. {aktenzeichen} · last edited {relTime} ago",
       "row_cta": "Continue writing",
       "empty_state_hint": "No open drafts."
+    },
+    "bridge": {
+      "renten_cta_label": "Save these values to my personal data",
+      "renten_already_applied": "Already saved on {datum} in your Pension provision (Altersvorsorge) section",
+      "renten_toast_success": "Pension information (Renteninformation) saved in your Pension provision (Altersvorsorge) section",
+      "renten_navigate_label": "Go to Pension provision (Altersvorsorge)",
+      "renten_section_title": "Save these values to my personal data (Stammdaten)",
+      "renten_section_subtitle": "From this pension statement (Renteninformation) we transfer the five mandatory items (§ 109 Abs. 3 SGB VI) into your Pension provision (Altersvorsorge) section.",
+      "renten_toast_already_applied": "This pension statement (Renteninformation) has already been transferred.",
+      "renten_toast_error": "Transfer failed — please try again."
+    }
+  },
+  "stammdaten": {
+    "page": {
+      "title": "Personal data (Stammdaten)",
+      "loading": "Loading profile …",
+      "refreshing": "Profile is being refreshed.",
+      "error_load": "Profile could not be loaded — please try again?",
+      "error_retry": "Try again",
+      "religion_consent_error": "Could not enable the religion display.",
+      "sperre_error": "Could not activate the block.",
+      "iban_push_error": "Could not simulate the IBAN push.",
+      "beschaeftigung_heading": "Employment (read-only aggregation)",
+      "beschaeftigung_helper": "These fields are kept outside the registration register (DRV, health insurer, tax office) and are shown here only as an aggregate."
+    },
+    "tab": {
+      "aria_label": "Personal-data sections",
+      "profil": { "label": "My profile" },
+      "wallet": { "label": "Wallet & external recipients" }
+    },
+    "hero": {
+      "eyebrow": "Single source of truth",
+      "title": "Privacy cockpit (Datenschutzcockpit) — pilot phase",
+      "title_with_name": "Personal data of {name}",
+      "summary": "You are recorded in {register_count} public registers.",
+      "last_transmission": "Last transmission: {dauer} ago — {feld} from {absender} to {empfaenger}. Legal basis: {rechtsgrundlage}.",
+      "cta_full_log": "Open full activity log",
+      "empty_state": "No recent transmissions — welcome!",
+      "dsc_pilot_phase_label": "Privacy cockpit (Datenschutzcockpit) — pilot phase",
+      "dsc_pilot_tooltip": "Gradual onboarding: the Federal Motor Transport Authority (Kraftfahrt-Bundesamt) has been connected to the IDA procedure since 04/2026 (DSC connection to follow); the Federal Employment Agency / STEP register is in pilot. Nationwide connection of the 51 RegMoG registers is on the 2026/2027 roadmap.",
+      "vision_2027_banner_title": "2027 vision: convergence of BundID + DSC + EUDI Wallet",
+      "vision_2027_banner_body": "This personal-data view shows what a converged citizen view of the hypothetical 2027 picture — BundID master-data service, the privacy cockpit (Datenschutzcockpit) under the Identification Number Act (Identifikationsnummerngesetz, IDNrG), and the EUDI Wallet PID — could look like. Today (May 2026) this convergence has not yet been reached.",
+      "disclaimer_lese_title": "Note: read-only signposting layer",
+      "disclaimer_audit_title": "Note: in-app activity log"
+    },
+    "sektion": {
+      "identitaet": { "title": "Identity" },
+      "anschrift": { "title": "Address" },
+      "familie": { "title": "Family" },
+      "dokumente": { "title": "Documents" },
+      "sperren_einstellungen": { "title": "Restrictions & settings" },
+      "altersvorsorge": {
+        "title": "Pension provision (Altersvorsorge)",
+        "subtitle": "Statutory pension, professional pension funds and private provision at a glance"
+      },
+      "kv_pflege": {
+        "title": "Health insurance & long-term care",
+        "subtitle": "Health insurer, ePA, eRezept and long-term care"
+      },
+      "kontakt_postfach": { "title": "Contact & inbox (Kontakt & Postfach)" },
+      "notification_praeferenzen": { "title": "Notification preferences (2027 vision)" },
+      "sr_field_count": "{count, plural, =1 {1 field in this section} other {# fields in this section}}",
+      "aktivitaet_aside_label": "Activity log for this section"
+    },
+    "field_card": {
+      "quelle_label": "Source",
+      "letztes_update_label": "Last update",
+      "value_empty": "—",
+      "reveal_religion": "Show religious affiliation"
+    },
+    "cta": {
+      "korrigieren": "Open correction path",
+      "korrekturweg_label": "Correction path",
+      "familie_preview": "{partner} partner / {kinder} child(ren)",
+      "sperre_aktivieren": "Activate block (demo)",
+      "iban_push_trigger": "Simulate IBAN push"
+    },
+    "field": {
+      "familienname": { "label": "Family name" },
+      "fruehere_namen": { "label": "Previous names" },
+      "vornamen": { "label": "Given names" },
+      "doktorgrad": { "label": "Doctoral degree (Doktorgrad)" },
+      "geburtsdatum": { "label": "Date of birth" },
+      "geburtsort": { "label": "Place of birth" },
+      "staatsangehoerigkeit": { "label": "Nationality" },
+      "steuer_id": { "label": "Tax identification number (Steuer-IdNr)" },
+      "anschrift_aktuell": { "label": "Current main address" },
+      "anschriften_historisch": { "label": "Previous addresses" },
+      "familienstand": { "label": "Marital status" },
+      "partner": { "label": "Spouse / civil partner" },
+      "kinder": { "label": "Children" },
+      "eheschliessung": { "label": "Marriage / civil partnership" },
+      "personalausweis": { "label": "National ID card (Personalausweis)" },
+      "reisepass": { "label": "Passport (Reisepass)" },
+      "eat_can": { "label": "Electronic residence title (eAT) — CAN" },
+      "azr_nr": { "label": "AZR number (Ausländerzentralregister)" },
+      "religionszugehoerigkeit": { "label": "Religious affiliation" },
+      "kontakt_email": { "label": "Email address" },
+      "kontakt_mobil": { "label": "Mobile number" },
+      "sprachpraeferenz": { "label": "Language preference" },
+      "iban": { "label": "IBAN for refunds" },
+      "uebermittlungssperren": { "label": "Transmission blocks (Übermittlungssperren, §§ 42 (3), 50 (5) BMG)" },
+      "kvnr": { "label": "Health insurance number (KVNR)" },
+      "drv_versicherungsnummer": { "label": "Pension insurance number (DRV)" },
+      "elstam": { "label": "ELStAM (tax class, allowances)" },
+      "geschlecht": {
+        "label": "Gender entry (Geschlechtseintrag)",
+        "value": {
+          "m": "male",
+          "w": "female",
+          "d": "diverse",
+          "x": "no entry (X)",
+          "unbestimmt": "indeterminate"
+        }
+      },
+      "religion": {
+        "value": {
+          "rk": "Roman Catholic",
+          "ev": "Protestant",
+          "ohne": "no religious affiliation",
+          "andere": "other"
+        }
+      },
+      "auskunftssperre": {
+        "label": "Information block (Auskunftssperre, § 51 (1) BMG)",
+        "value": {
+          "aktiv": "active (demo pattern)",
+          "inaktiv": "inactive"
+        }
+      },
+      "uebermittlungssperre": {
+        "value": {
+          "aktiv": "active (demo pattern)",
+          "inaktiv": "inactive"
+        }
+      },
+      "uebermittlungssperre_42_3": {
+        "label": "Transmission block for religious communities (§ 42 (3) BMG)"
+      },
+      "beschaeftigung": {
+        "typ": { "label": "Employment type" },
+        "arbeitgeber": { "label": "Employer" },
+        "kvnr": { "label": "KVNR" },
+        "drv": { "label": "DRV no." }
+      }
+    },
+    "korrekturweg": {
+      "familienname": { "pointer": "Correction at the registry office (Standesamt) under § 1355 BGB / § 45 PStG." },
+      "fruehere_namen": { "pointer": "Correction at the registry office (Standesamt) under § 45 PStG." },
+      "vornamen": { "pointer": "Correction at the registry office (Standesamt) under § 45 PStG." },
+      "doktorgrad": { "pointer": "Correction via the citizens' office (Bürgeramt) with proof upload (§ 3 (1) no. 6 BMG)." },
+      "geburtsdatum": { "pointer": "Correction at the registry office (Standesamt) of the place of birth." },
+      "geburtsort": { "pointer": "Correction at the registry office (Standesamt) of the place of birth." },
+      "geschlecht": { "pointer": "Declaration at the registry office (Standesamt) under § 4 SBGG (registration) and § 2 SBGG (in-person notarisation)." },
+      "staatsangehoerigkeit": { "pointer": "Correction via the naturalisation authority (Einbürgerungsbehörde) under StAG." },
+      "steuer_id": { "pointer": "Issued for life by the Federal Central Tax Office (Bundeszentralamt für Steuern) under § 139b AO — cannot be changed." },
+      "anschrift_aktuell": { "pointer": "Citizens' office (Bürgeramt) appointment or electronic registration (eWA) under § 17 BMG." },
+      "anschriften_historisch": { "pointer": "Updates are triggered by a new registration under § 17 BMG." },
+      "familienstand": { "pointer": "Correction at the registry office (Standesamt) under PStG." },
+      "partner": { "pointer": "Correction at the registry office (Standesamt) under PStG." },
+      "kinder": { "pointer": "Correction at the registry office (Standesamt) under § 21 PStG." },
+      "eheschliessung": { "pointer": "Correction at the registry office (Standesamt) where the marriage was registered." },
+      "personalausweis": { "pointer": "Reissue at the citizens' office (Bürgeramt) under PAuswG." },
+      "reisepass": { "pointer": "Reissue at the citizens' office (Bürgeramt) under PassG." },
+      "eat_can": { "pointer": "Correction via the immigration authority (Ausländerbehörde) under AufenthG." },
+      "azr_nr": { "pointer": "Correction via the immigration authority (Ausländerbehörde) under § 34 AZRG." },
+      "religionszugehoerigkeit": { "pointer": "Joining / leaving: registry office (Standesamt) or religious community; storage under § 3 (1) no. 11 BMG." },
+      "kontakt_email": { "pointer": "Edit directly in your BundID account (app setting)." },
+      "kontakt_mobil": { "pointer": "Edit directly in your BundID account (app setting)." },
+      "sprachpraeferenz": { "pointer": "App-internal setting — has no effect on authorities." },
+      "iban": { "pointer": "Today (May 2026) the IBAN must be filed separately with each authority — this app simulates a 2027 pattern." },
+      "auskunftssperre": { "pointer": "Application with reasons at the citizens' office (Bürgeramt) under § 51 (1) BMG." },
+      "uebermittlungssperren": { "pointer": "Application at the citizens' office (Bürgeramt) under §§ 42 (3), 50 (5) BMG (no reasons required)." },
+      "kvnr": { "pointer": "Update via your health insurer's member portal (§ 290 SGB V)." },
+      "drv_versicherungsnummer": { "pointer": "Update via your DRV pension account (§ 147 SGB VI)." },
+      "elstam": { "pointer": "Update via Mein ELSTER or the tax office (Finanzamt) under § 39 EStG." }
+    },
+    "disclaimer": {
+      "lese_schicht": "This app is a **read-only signposting layer**. It does **not** make any changes to your data in the responsible registers itself. Corrections are made exclusively through the relevant authority's procedure — for example, at the citizens' office (Bürgeramt) under § 17 BMG for your address; at the registry office (Standesamt) under PStG for marital status and given names; at the registry office (Standesamt) under § 4 SBGG for the **registration** of a gender-entry change (orally or in writing, three months before the declaration) and under § 2 SBGG for the **in-person notarisation of the declaration** at the registry office; at the Federal Central Tax Office (Bundeszentralamt für Steuern) for the tax identification number (§ 139b AO). For each field we show you the right path.",
+      "audit_log_app_internal": "The activity log shown here records only your activities within this app (views, filters, self-edits). It is **not** an official authority audit trail. The official audit layer for IDNr-based data transmissions between public bodies is provided by the Privacy Cockpit (Datenschutzcockpit) under § 9 IDNrG with a 24-month retention period — available at datenschutzcockpit.bund.de once the relevant registers are connected. As of May 2026: pilot phase with limited register coverage; the Federal Motor Transport Authority (Kraftfahrt-Bundesamt) joined the IDA procedure on 15 April 2026, with DSC connection to follow. A nationwide connection of all 51 RegMoG registers is on the 2026/2027 roadmap.",
+      "eudi_speculative": "The function shown here — releasing personal data as a wallet attestation to private recipients (e.g. bank, landlord, energy provider) at the click of a button — simulates a **vision for 2027**. It is based on the EUDI Wallet Regulation (EU) 2024/1183 and the Architecture and Reference Framework (as of May 2026: v2.0). The duty to provide an EUDI Wallet applies in Germany no earlier than 2026/2027; third-party acceptance, trust-service compliance and fee models are not yet finalised in law.",
+      "iban_speculative": "A central IBAN record with automatic transfer to the family benefits office (Familienkasse), tax office (Finanzamt) and health insurer (Krankenkasse) is **not** available today (May 2026). This demo simulates a 2027 pattern. At present you must file your bank details with each authority separately.",
+      "religion_art9": "Religious affiliation is a special category of personal data under Art. 9 GDPR. It is shown here only on click. Storage in the registration register is based on § 3 (1) no. 11 BMG; its use for income tax and church tax is based on § 51a EStG together with the church-tax procedure at the Federal Central Tax Office (KiStAM at BZSt).",
+      "religion_consent_toggle_label": "I expressly consent to my religious affiliation being shown in this app (Art. 9 (2) (a) GDPR). This consent applies only to the current session.",
+      "sperren_mock_pattern": "In a real system, an information block or transmission block under § 51 BMG (with reasons) or under §§ 42 (3), 50 (5) BMG (without reasons) is recorded only upon application to the responsible registration authority (Meldebehörde). This in-app toggle is a demo pattern and does not replace an official application.",
+      "renteninfo_info_only": "This app does not calculate pensions. Values come from your pension information (Renteninformation) of {stichtag} (§ 109 para. 3 SGB VI).",
+      "pflegegrad_art9": "Care level (Pflegegrad) is a health-data category under Art. 9 GDPR and possibly under EuGH 01/08/2022 C-184/20 (broad reading of health data). Legal basis for setting up the care level: § 14 SGB XI; deadline for the Pflegekasse decision: § 18c SGB XI (25 working days).",
+      "epa_anlage_widerspruch": "Information on ePA setup pursuant to § 343 SGB V; setup is automatic under § 342 para. 1 sentence 2 SGB V since 15/01/2025. You can object to setup via your health insurer.",
+      "zfdr_unvollstaendig": "The Digital pension overview (rentenuebersicht.de) aggregates over 700 provision institutions with around 137 million entitlements. Professional pension funds (Versorgungswerke), civil-servant pensions (Beamtenversorgung) and direct commitments (Direktzusagen) are not connected today.",
+      "pflegegrad_consent_toggle_label": "I expressly consent to the display of my care level (Pflegegrad) in this app (Art. 9 para. 2 lit. a GDPR). This consent applies only to the current session.",
+      "track_c_empty_state_body": "You have no pension information (Renteninformation) because you are not compulsorily insured in the statutory pension scheme (GRV). For private health insurance (PKV) there is no central aggregator like the Digital pension overview (ZfDR) — you have to use your insurer's app. Options: 1) voluntary statutory pension insurance (§ 7 SGB VI), 2) review private provision, 3) if your profession requires compulsory insurance (§ 2 SGB VI), apply for compulsory insurance.",
+      "eugh_c184_20_weite_lesart": "EuGH C-184/20 (01/08/2022) also covers indirect inferences about health data."
+    },
+    "subtab": {
+      "wallet_externe_empfaenger": {
+        "banner_title": "2027 vision — Wallet & external recipients",
+        "banner": "**2027 vision** — Wallet & external recipients. This section shows how EUDI-Wallet-based data sharing with private recipients (bank, landlord, energy provider) *could* look. Today (May 2026) this function is not available.",
+        "disclaimer_title": "Note on the EUDI Wallet 2027 vision (expand/collapse disclaimer)",
+        "kategorie": {
+          "bank": "Main bank",
+          "hausverwaltung": "Property management",
+          "energieversorger": "Energy provider"
+        },
+        "cta_simulate": "Simulate request",
+        "preview_error": "Preview could not be created — please try again.",
+        "arf_footer": "Data basis: EUDI Architecture and Reference Framework (as of May 2026: v2.0); PID Rulebook v1.4 — 8 mandatory attributes, 4 of 6 optional attributes."
+      }
+    },
+    "aktivitaet": {
+      "list_heading": "Activity log",
+      "empty": "No entries in this section.",
+      "zweck": {
+        "adressuebermittlung_buergeramt_finanzamt": "Address transmission to the tax administration",
+        "adressuebermittlung_buergeramt_beitragsservice": "Address transmission to the broadcasting fee service (Beitragsservice)",
+        "adressuebermittlung_buergeramt_gkv": "Address flow to the health insurer (DEÜV)",
+        "adressuebermittlung_buergeramt_bapersbw": "Address notification for military registration",
+        "app_religion_angezeigt": "Religious affiliation shown in the app",
+        "app_kontakt_geaendert": "Contact details changed in the app",
+        "app_sprache_geaendert": "Language preference changed in the app",
+        "app_sperre_aktiviert": "Block activated as in-app demo",
+        "app_sperre_deaktiviert": "Block deactivated as in-app demo",
+        "spec_iban_push_simuliert": "IBAN push (2027 vision) to {empfaenger} simulated",
+        "spec_wallet_attestation_preview": "Wallet attestation preview (2027 vision) for {empfaenger}",
+        "renteninfo_eingelesen": "Pension information (Renteninformation) saved in personal data (§ 109 para. 1 + para. 3 SGB VI)",
+        "app_pflegegrad_angezeigt": "Care level (Pflegegrad) shown in the app (Art. 9 para. 2 lit. a GDPR in conjunction with § 14 SGB XI)",
+        "app_epa_banner_gesehen": "ePA status banner viewed (§ 342 para. 1 sentence 2 in conjunction with § 343 SGB V)",
+        "bridge_skipped_idempotent": "Bridge call skipped (pension information already saved)",
+        "pflegegrad_consent_erteilt": "Consent given to display care level (Art. 9 para. 2 lit. a GDPR)",
+        "pflegegrad_consent_widerrufen": "Consent to display care level revoked",
+        "epa_widerspruch_geandert": "ePA opposition status changed",
+        "anrechnungszeit_pflege_offengelegt": "Care credit period (Anrechnungszeit Pflege) revealed (§ 3 SGB VI; coupled with care-level consent)"
+      },
+      "kategorie": {
+        "behoerde_zu_behoerde": { "label": "Authority-to-authority transmission" },
+        "app_aktivitaet": { "label": "App activity (not an official transmission log)" },
+        "speculative_2027": { "label": "2027 vision (demo)" },
+        "behoerde_zu_buerger": { "label": "Authority-to-citizen (notification / inbox delivery)" }
+      },
+      "richtung": {
+        "label": "Direction",
+        "alle": { "label": "All directions" },
+        "eingehend": { "label": "Incoming (authority to citizen)" },
+        "ausgehend": { "label": "Outgoing (citizen to authorities)" },
+        "intern": { "label": "Internal (app activity)" }
+      }
+    },
+    "modal": {
+      "religion_consent": {
+        "title": "Show religious affiliation — consent required",
+        "cta_show": "Show religious affiliation",
+        "cta_cancel": "Cancel"
+      },
+      "sperren_aktivieren": {
+        "title": "Activate block as an in-app demo",
+        "title_auskunftssperre": "Activate information block under § 51 (1) BMG",
+        "title_uebermittlungssperre": "Activate transmission block {sperre}",
+        "cta_activate": "Activate block as a demo pattern",
+        "cta_cancel": "Cancel",
+        "begruendung_label": "Reasons (minimum 30 characters, § 51 (1) BMG)",
+        "begruendung_helper_template": "{count} of at least {min} characters.",
+        "begruendung_too_short_template": "Reasons too short: {count} of {min} characters required (§ 51 (1) BMG)."
+      },
+      "iban_push": {
+        "title": "Simulate IBAN push — 2027 vision",
+        "iban_label": "IBAN",
+        "empfaenger_legend": "Recipients of the mock push",
+        "empfaenger_label": {
+          "familienkasse": "Family benefits office (Familienkasse)",
+          "elster": "ELSTER / tax office (Finanzamt)",
+          "gkv": "Health insurer (GKV)"
+        },
+        "cta_simulate": "Simulate mock push",
+        "cta_cancel": "Cancel"
+      },
+      "wallet_attestation_preview": {
+        "title": "Wallet attestation preview",
+        "empfaenger_label": "Recipient",
+        "section_pflicht": "PID mandatory attributes (8)",
+        "section_optional": "PID optional attributes (4 of 6)",
+        "loading": "Creating preview …",
+        "attestation_id_label": "Mock attestation ID",
+        "cta_close": "Close"
+      },
+      "pflegegrad_consent": {
+        "title": "Show care level (Pflegegrad) — consent required",
+        "cta_show": "Show care level",
+        "cta_cancel": "Cancel",
+        "eugh_lesart_intro": "Broad reading of Art. 9 GDPR according to"
+      }
+    },
+    "badge": {
+      "2027_vision": "2027 vision",
+      "pilot_phase": "Pilot phase",
+      "art9_relevant": "Sensitive data — indirectly Art. 9",
+      "mock": "[MOCK]"
+    },
+    "altersvorsorge": {
+      "traeger_label": "Provider:",
+      "empty_state_body": "As soon as your next pension information (Renteninformation) arrives in your inbox, the values (earnings points, forecasts, contribution summary) will be filed here for your overview.",
+      "yellow_letter_echo": {
+        "card_top_3": {
+          "entgeltpunkte": "Earnings points (Entgeltpunkte)",
+          "regelalter_prognose": "Forecast standard retirement pension (Regelaltersrente, age 67)",
+          "em_rente_prognose": "Forecast reduced earning capacity pension (Erwerbsminderungsrente)"
+        },
+        "expandable_label": "Show all 5 mandatory contents (§ 109 para. 3 SGB VI)",
+        "tooltip": {
+          "anpassungs_wirkung": "Effect of future adjustments — example: at {prozent} % p.a. the value rises by {plus} EUR/month until retirement",
+          "beitragsuebersicht": "Contribution summary {jahr}: {gesamt} EUR (you: {versicherter}, employer: {arbeitgeber})"
+        },
+        "stamp": "Values come from your pension information (Renteninformation) of {stichtag} (file ref. {aktenzeichen}). Calculation by the German Pension Insurance (Deutsche Rentenversicherung) under § 109 SGB VI."
+      },
+      "eckwert": {
+        "entgeltpunkte_unit": "points",
+        "monthly_unit": "/ month",
+        "monthly_aria": "per month",
+        "expandable_aria_template": "{label} — show details",
+        "tooltip_anpassungen_label": "Effect of future adjustments",
+        "tooltip_beitrag_template": "Contribution summary {jahr}",
+        "label_grundlage": "Basis of calculation",
+        "label_em_rente": "Reduced earning capacity pension if it started today",
+        "label_regelalter": "Forecast standard retirement pension (age 67, no further contributions)",
+        "label_anpassungen": "Effect of future adjustments",
+        "label_beitrag_template": "Contribution summary {jahr}",
+        "body_grundlage_template": "Contribution periods {beitragszeit_von} – {beitragszeit_bis}; {entgeltpunkte} earnings points (Entgeltpunkte) acquired.",
+        "body_em_rente_template": "{eur} per month.",
+        "body_regelalter_template": "{eur} per month.",
+        "body_anpassungen_template": "at {prozent} % p.a. approx. +{plus} per month until retirement.",
+        "body_beitrag_template": "{gesamt} total (you: {versicherter}; employer: {arbeitgeber})."
+      }
+    },
+    "zfdr_wegweiser": {
+      "title": "Cross-provider overview: Digital pension overview (Digitale Rentenübersicht)",
+      "cta": "Go to the Digital pension overview (rentenuebersicht.de)"
+    },
+    "track_c": {
+      "empty_state_title": "No pension information available",
+      "empty_state_body": "You have no pension information (Renteninformation) because you are not compulsorily insured in the statutory pension scheme (GRV). For private health insurance (PKV) there is no central aggregator like the Digital pension overview (ZfDR) — you have to use your insurer's app. Options: 1) voluntary statutory pension insurance (§ 7 SGB VI), 2) review private provision, 3) if your profession requires compulsory insurance (§ 2 SGB VI), apply for compulsory insurance."
+    },
+    "kv_pflege": {
+      "krankenkasse": {
+        "label": "Health insurer (Krankenkasse)",
+        "kvnr_label": "Health insurance number (KVNR, § 290 SGB V)",
+        "kvnr_part_unveraenderbar_label": "Unchangeable part (lifelong)",
+        "kvnr_part_veraenderbar_label": "Changeable part (insurer-specific)",
+        "versicherten_status": {
+          "pflicht": "Compulsorily insured",
+          "freiwillig": "Voluntarily insured",
+          "familienversichert": "Family-insured",
+          "privat": "Privately insured (PKV)"
+        }
+      },
+      "familienversicherung": {
+        "title": "Family insurance (Familienversicherung)",
+        "status_pill": "Family-insured via {stammversicherte} — until at most {bis_datum}",
+        "einkommen_grenze_tooltip": "Income limit 2026: 565 EUR/month general or 603 EUR mini-job (§ 10 SGB V)"
+      },
+      "epa": {
+        "title": "Electronic patient record (ePA)",
+        "status_pill_eingerichtet": "ePA set up (default since 15/01/2025)",
+        "status_pill_widerspruch_nein": "Set-up not opposed",
+        "status_pill_widerspruch_ja": "Set-up opposed",
+        "cta_external": "You manage the ePA via your health insurer's app",
+        "disclaimer_heading": "Note on the ePA",
+        "rechtsgrundlage_label": "Legal basis:",
+        "eingerichtet_seit_template": "Set up since {date}"
+      },
+      "erezept": {
+        "title": "eRezept (electronic prescription)",
+        "modus": {
+          "app": "Via the gematik E-Rezept app",
+          "egk": "Via the eGK card at the pharmacy",
+          "papier": "Via paper printout"
+        }
+      },
+      "pflege": {
+        "title": "Long-term care insurance (Pflegeversicherung)",
+        "kasse_label": "Long-term care fund (Pflegekasse)",
+        "pflegegrad_collapsed_button": "Show care level",
+        "pflegegrad_grad_label": "Care level (Pflegegrad) {grad}",
+        "bewilligt_am_label": "Approved on {datum}",
+        "begutachtung_md_label": "Assessed by the Medical Service (Medizinischer Dienst, GKV)",
+        "begutachtung_medicproof_label": "Assessed by MEDICPROOF (PKV)",
+        "frist_25_at": "The Pflegekasse must decide within 25 working days (§ 18c SGB XI)",
+        "cta_hoeherstufung": "Apply for upgrade → online portal of your Pflegekasse"
+      }
+    },
+    "kontakt": {
+      "foederalismus_card_disclaimer": "In the 2026 reality, alongside BundID at least five state-level accounts run in parallel (Service-BW, Mein-Servicekonto-Berlin, NRW-Konto, BayernID, HH-Servicekonto). This demo abstracts to BundID; OZG 2.0 (Onlinezugangsgesetz 2.0) provides for convergence by 24.07.2028.",
+      "foederalismus_card_aria_label": "Federalism disclaimer (Föderalismus) — reality of state-level accounts",
+      "loading": "Loading contact data …",
+      "error_load": "Contact data could not be loaded.",
+      "error_retry": "Try again",
+      "anbindung_pill": {
+        "angebunden": "BundID-connected",
+        "in_pilotierung": "Pilot phase",
+        "nicht_angebunden": "Not connected to BundID"
+      },
+      "cascade": {
+        "vorher_label": "Before: postal letter",
+        "nachher_label": "After: BundID inbox (Postfach)",
+        "vorher_caption_template": "Familienkasse letter of {datum} (postal letter, § 41 (2) VwVfG)",
+        "nachher_caption_template": "Follow-up decision of {datum} (BundID inbox, § 9 OZG)",
+        "nachher_aktenzeichen_label": "Reference number (Aktenzeichen):",
+        "reduced_motion_announce": "Follow-up decision has been placed in your inbox.",
+        "section_aria_label": "Familienkasse switch cascade — before/after comparison"
+      },
+      "card": {
+        "bundid_postfach": {
+          "title": "BundID inbox (Postfach)",
+          "status": {
+            "aktiv": "Inbox active",
+            "inaktiv": "Inbox not activated",
+            "teilaktiviert": "Inbox in activation"
+          }
+        },
+        "email": {
+          "title": "Verified email (BundID)",
+          "verified_label": "Verified via BundID on {datum}"
+        },
+        "mobil": {
+          "title": "Mobile phone",
+          "cta_verify": "Verify (mock OTP)",
+          "cta_add": "Add mobile number (demo)"
+        },
+        "postanschrift": {
+          "title": "Postal address",
+          "cross_ref_link_label": "Go to address section"
+        }
+      },
+      "email": {
+        "disclaimer_only_for_bundid_attached": "This email is used only by authorities connected to BundID — Bürgeramt Friedrichshain-Kreuzberg is piloting it.",
+        "disclaimer_selbststaendig": "Note: ELSTER, your health insurer (Krankenkasse) and the trade-association accident insurer (Berufsgenossenschaft) may hold different contact details — this demo only shows the BundID data."
+      },
+      "mobil": {
+        "disclaimer_self_attested": "The mobile number is self-attested. Germany has no authoritative state register of mobile numbers. § 3 BMG (Bundesmeldegesetz) does not include mobile numbers.",
+        "hardlock_only_notification": "Usable only for notifications about new inbox messages — never as a binding delivery channel."
+      },
+      "postfach": {
+        "wegweiser_pointer": "Activate inside your BundID account at id.bund.de/de/postfach. § 9 (1) sentence 2 OZG (Onlinezugangsgesetz): you may opt out per individual application."
+      },
+      "postanschrift": {
+        "cross_ref_pointer": "Your postal address is shown in the Address section. Authoritative source: civil register (Melderegister, § 3 BMG). Correction path: Bürgeramt appointment / online residence registration (eWA, § 17 BMG)."
+      },
+      "notification": {
+        "vision_banner": "2027 vision — this feature does not exist in Germany today; OZG 2.0 (Onlinezugangsgesetz 2.0) does not provide for it by 2028 either",
+        "save_confirm_body": "You have just changed 2027-vision data. In today's reality this changes nothing.",
+        "save_confirm": {
+          "cta_save": "Save demo preference",
+          "cta_cancel": "Cancel"
+        },
+        "kategorie": {
+          "steuer": { "label": "Tax (Finanzamt / BZSt)" },
+          "sozial": { "label": "Social benefits (DRV / GKV / Bürgergeld)" },
+          "familie": { "label": "Family (Familienkasse / Elterngeld)" },
+          "verkehr": { "label": "Traffic (vehicle / fines / driving licence)" },
+          "sonstige": { "label": "Other (Bürgeramt / residence / other)" }
+        },
+        "kanal": {
+          "postfach": { "label": "BundID inbox (Postfach)" },
+          "email_pilot": { "label": "Email notification (pilot)" },
+          "sms_pilot": { "label": "SMS notification (pilot)" },
+          "brief": { "label": "Postal letter (default)" }
+        },
+        "option": {
+          "sms_pilot": {
+            "disclaimer_redaction": "SMS notifications contain no social-data content (SGB X §§ 67ff.) — only a pointer that a new message is in your inbox."
+          },
+          "abh_hardlock_tooltip": "The LEA Berlin / ABH Köln (immigration authorities, Ausländerbehörde) are not connected to the BundID inbox in 2026. Decisions under §§ 86, 87 AufenthG (Aufenthaltsgesetz) are still served by postal letter (§ 41 (2) VwVfG, Verwaltungsverfahrensgesetz).",
+          "kfz_hint": "Vehicle authorities (KFZ) are not connected to the BundID inbox in 2026 — postal letter remains the channel today.",
+          "steuer_hint_elster": "Tax decisions are served via the ELSTER inbox (§ 122a (4) AO, Abgabenordnung), not the BundID inbox."
+        },
+        "live_counter": {
+          "savings": "You will save approximately {briefe_pro_jahr_gespart} letters per year and {tage_frist_gespart} days of delivery deadline per decision (§ 9 OZG inbox fiction vs. § 41 (2) VwVfG postal-letter fiction).",
+          "no_savings": "This setting saves no letters — it only changes the notification address, not the binding delivery channel. Decisions still arrive by postal letter (§ 41 (2) VwVfG)."
+        }
+      },
+      "modal": {
+        "mobil_otp": {
+          "title": "Verify mobile number — mock OTP",
+          "input_label": "6-digit mock OTP code",
+          "demo_hint": "Demo pattern: code 124857 is accepted. No real SMS is sent.",
+          "cta_verify": "Verify"
+        },
+        "save_confirm": {
+          "title": "Save 2027-vision data?"
+        }
+      },
+      "toast": {
+        "familienkasse_followup": "Follow-up decision now in your inbox (demo)",
+        "familienkasse_angebunden": "Familienkasse Berlin-Brandenburg is connected to BundID — preference applied (demo)"
+      }
     }
   }
 }

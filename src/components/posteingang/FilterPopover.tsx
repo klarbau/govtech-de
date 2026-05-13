@@ -44,8 +44,10 @@ interface FilterPopoverProps {
   onOpenChange: (next: boolean) => void;
   selected: FilterKategorie[];
   onChange: (next: FilterKategorie[]) => void;
-  /** Trigger-Element (FilterButton). */
-  trigger: React.ReactNode;
+  /** Trigger-Element (FilterButton). MUSS ein einzelnes React-Element sein —
+   * base-ui klont es und merged Trigger-Props (incl. `type`, `aria-*`, ref).
+   * Fragments/Strings/Arrays sind nicht erlaubt (sonst React-Fragment-Warning). */
+  trigger: React.ReactElement;
   /** Klasse für das Popup. */
   className?: string;
 }
@@ -89,7 +91,7 @@ export function FilterPopover({
 
   return (
     <PopoverPrimitive.Root open={open} onOpenChange={onOpenChange}>
-      <PopoverPrimitive.Trigger render={<>{trigger}</>} />
+      <PopoverPrimitive.Trigger render={trigger} />
       <PopoverPrimitive.Portal>
         <PopoverPrimitive.Positioner sideOffset={6} align="start">
           <PopoverPrimitive.Popup

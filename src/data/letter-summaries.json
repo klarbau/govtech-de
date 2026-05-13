@@ -528,5 +528,33 @@
       { "label": "Termin verschieben", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.standesamt-urkunde.termin_verschieben" },
       { "label": "Termin absagen", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.standesamt-urkunde.termin_absagen" }
     ]
+  },
+  "letter-renteninfo-anna-2026-05": {
+    "pre_open": {
+      "text": "DRV Berlin-Brandenburg · Renteninformation · Keine Frist",
+      "generated_at": "2026-05-08T10:14:00.000Z"
+    },
+    "post_open": {
+      "bullets": [
+        { "text": "Grundlage der Berechnung: 01/2018 – 12/2025 (8,1 Jahre Beitragszeit); 6,8 Entgeltpunkte erworben." },
+        { "text": "Bei sofortiger voller Erwerbsminderung: 312,21 €/Monat." },
+        { "text": "Prognose Regelaltersrente (67, ohne weitere Beiträge): 743,99 €/Monat." },
+        { "text": "Wirkung künftiger Anpassungen: ca. +1.100 €/Monat bis Renteneintritt bei 2 % p.a." },
+        { "text": "Beitragsübersicht 2025: 8.414,52 € gesamt (Sie/Arbeitgeber je 4.207,26 €)." }
+      ],
+      "citations": [
+        { "bullet_index": 0, "original_zitat": "Grundlage der Berechnung: Beitragszeiten 01/2018 – 12/2025 (8,1 Jahre); 6,8 Entgeltpunkte erworben." },
+        { "bullet_index": 1, "original_zitat": "Bei sofortiger voller Erwerbsminderung: 312,21 €/Monat." },
+        { "bullet_index": 2, "original_zitat": "Prognose Regelaltersrente bei Erreichen Regelaltersgrenze 67 (ohne weitere Beiträge): 743,99 €/Monat." },
+        { "bullet_index": 3, "original_zitat": "Wirkung künftiger Anpassungen: bei jährlicher Anpassung von durchschn. 2 % steigt der prognostizierte Wert um ca. 1.100 €/Monat bis zum Renteneintritt." },
+        { "bullet_index": 4, "original_zitat": "Beitragsübersicht 2025: 8.414,52 € gesamt (davon Sie: 4.207,26 €; Arbeitgeber: 4.207,26 €)." }
+      ],
+      "generated_at": "2026-05-08T10:14:00.000Z",
+      "model": "claude-haiku-4-5-20251001"
+    },
+    "vorschlaege": [
+      { "label": "Werte in meinen Stammdaten ablegen", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.renteninfo.in_stammdaten_ablegen" },
+      { "label": "Im DRV-Kundenportal öffnen", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.renteninfo.drv_kundenportal_oeffnen" }
+    ]
   }
 }

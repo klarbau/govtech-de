@@ -50,7 +50,14 @@
     "frist": {
       "gesetzlich": "yasal süre",
       "unverzueglich": "gecikmeksizin",
-      "vertraglich": "sözleşmesel süre"
+      "vertraglich": "sözleşmesel süre",
+      "zahlung": "Ödeme",
+      "einspruch": "İtiraz",
+      "widerspruch": "Şikâyet",
+      "klage": "Dava",
+      "nachweis": "Kanıt",
+      "antragstellung": "Başvuru",
+      "sonstige": "Süre"
     },
     "disclaimer": {
       "prototype_title": "Prototip uyarısı",
@@ -502,6 +509,7 @@
       "cta_reply_again": "Yeniden yanıtla",
       "cta_reply_view_sent": "Gönderilen yanıtı göster",
       "already_replied_template": "{datum} tarihinde yanıtlandı",
+      "already_replied_dual_template": "{datum} tarihinde 2 yanıt olarak yanıtlandı ({template_a_label} + {template_b_label})",
       "overflow_label": "Diğer eylemler",
       "overflow": {
         "speichern": "Yazıyı kaydet (.txt)",
@@ -551,6 +559,21 @@
           "label": "Kendi metnini yaz",
           "description": "Şablonsuz başla.",
           "icon": "📝"
+        },
+        "rechtsbehelf_einspruch_skelett": {
+          "label": "İtiraz sun (Einspruch)",
+          "description": "Zorunlu bilgileri içeren iskelet yazı — gerekçeyi siz yazarsınız.",
+          "icon": "⚖️"
+        },
+        "rechtsbehelf_widerspruch_skelett": {
+          "label": "Şikâyet sun (Widerspruch)",
+          "description": "Zorunlu bilgileri içeren iskelet yazı — gerekçeyi siz yazarsınız.",
+          "icon": "🛡️"
+        },
+        "aussetzung_vollziehung_skelett": {
+          "label": "Yürütmenin durdurulmasını talep et (Aussetzung der Vollziehung)",
+          "description": "Vergi Kanunu (Abgabenordnung, AO) § 361 — iskelet başvuru, gerekçeyi siz yazarsınız.",
+          "icon": "⏸️"
         }
       },
       "templates": {
@@ -578,7 +601,75 @@
         },
         "freitext": {
           "disclaimer_inline": "Şablonsuz yazıyorsunuz. Tarih, dosya numarası (Aktenzeichen) ve alıcı yazıdan önceden doldurulmuştur."
+        },
+        "rechtsbehelf_einspruch_skelett": {
+          "label": "İtiraz sun (Einspruch)",
+          "beschreibung": "Zorunlu bilgileri içeren iskelet yazı — gerekçeyi siz yazarsınız.",
+          "disclaimer_pre_insertion": "Bu şablon yalnızca zorunlu bilgileri içerir (tarih, dosya numarası, alıcı ve hukuki çarenin beyanı). **Gerekçeyi siz yazarsınız** — uygulama argüman önermez, çünkü kişisel davanızın değerlendirmesi Hukuki Hizmetler Kanunu'nun (Rechtsdienstleistungsgesetz, RDG) § 2 anlamında bir hukuki hizmettir ve yalnızca avukatlar, kayıtlı kişiler, tüketici merkezleri (Verbraucherzentralen) veya sosyal dernekler (Sozialverbände) tarafından sunulabilir.",
+          "disclaimer_inline": "Uyarı: gerekçeyi siz yazarsınız — uygulama bunu üretmez."
+        },
+        "rechtsbehelf_widerspruch_skelett": {
+          "label": "Şikâyet sun (Widerspruch)",
+          "beschreibung": "Zorunlu bilgileri içeren iskelet yazı — gerekçeyi siz yazarsınız.",
+          "disclaimer_pre_insertion": "Bu şablon yalnızca zorunlu bilgileri içerir (tarih, dosya numarası, alıcı ve hukuki çarenin beyanı). **Gerekçeyi siz yazarsınız** — uygulama argüman önermez, çünkü kişisel davanızın değerlendirmesi Hukuki Hizmetler Kanunu'nun (Rechtsdienstleistungsgesetz, RDG) § 2 anlamında bir hukuki hizmettir ve yalnızca avukatlar, kayıtlı kişiler, tüketici merkezleri (Verbraucherzentralen) veya sosyal dernekler (Sozialverbände) tarafından sunulabilir.",
+          "disclaimer_inline": "Uyarı: gerekçeyi siz yazarsınız — uygulama bunu üretmez.",
+          "disclaimer_pre_insertion_zusatz_sgg": "Bir sosyal güvenlik kurumunun kararına karşı doğru hukuki çare **Widerspruch** (şikâyet) olup Einspruch değildir (Sosyal Mahkeme Kanunu, Sozialgerichtsgesetz, SGG § 84). Ayrıca dikkat: şikâyete rağmen primler ödenmeye devam eder (SGG § 86a fıkra 2 no. 1).",
+          "disclaimer_pre_insertion_zusatz_vwgo": "Dikkat: prim/aidat işlerinde Widerspruch'un da yürütmeyi durdurucu etkisi yoktur (İdari Yargılama Kanunu, Verwaltungsgerichtsordnung, VwGO § 80 fıkra 2 no. 1) — talep, şikâyete rağmen muaccel kalır."
+        },
+        "aussetzung_vollziehung_skelett": {
+          "label": "Yürütmenin durdurulmasını talep et (Aussetzung der Vollziehung)",
+          "beschreibung": "Vergi Kanunu (Abgabenordnung, AO) § 361 — iskelet başvuru, gerekçeyi siz yazarsınız.",
+          "disclaimer_pre_insertion": "Yürütmenin durdurulması **otomatik olarak verilmez** — kurum her başvuruyu kendisi inceler (Vergi Kanunu, Abgabenordnung, AO § 361 fıkra 2). Durdurma verilmediği sürece AO § 240 uyarınca gecikme zamları işlemeye devam eder. Bu şablon, halihazırda bir itiraz (Einspruch) sunduğunuzu veya eş zamanlı sunduğunuzu varsayar.",
+          "disclaimer_inline": "Uyarı: durdurma otomatik verilmez — kurum karar verene kadar gecikme zamları işlemeye devam eder."
         }
+      },
+      "pre_insertion_modal": {
+        "einspruch_ao": {
+          "title": "İtirazı doğru kuruma sunun",
+          "body": "İtiraz (Einspruch), idari işlemine karşı çıkılan kurum nezdinde sunulur (Vergi Kanunu, Abgabenordnung, AO § 357 fıkra 2 cümle 1). Yazının başlığından „{empfaenger_behoerde}“ alıcı olarak alındı. Lütfen alıcı adresini kendiniz doğrulayın — yanlış kuruma sunulan itiraz, ancak süresi içinde yetkili kuruma ulaşırsa süreyi korur (AO § 357 fıkra 2 cümle 4).",
+          "cta_continue": "İskeleti ekle",
+          "cta_cancel": "Vazgeç"
+        },
+        "einspruch_ao_familienkasse_zusatz": "Uyarı: çocuk parası (Kindergeld) kararlarına Vergi Kanunu (Abgabenordnung, AO) kuralları çerçevesinde itiraz edilir — Sosyal Mahkeme Kanunu (Sozialgerichtsgesetz) çerçevesinde değil. Süre ve şekil AO § 357'den çıkar. Bunun nedeni Kindergeld'in Gelir Vergisi Kanunu'nun (Einkommensteuergesetz, EStG) § 31 anlamında bir vergi avantajı olmasıdır (BFH III R 26/22, 2023).",
+        "widerspruch_sgg": {
+          "title": "Şikâyeti doğru kuruma sunun",
+          "body": "Sosyal güvenlik konusundaki Widerspruch, kararı çıkaran makama sunulur (Sosyal Mahkeme Kanunu, Sozialgerichtsgesetz, SGG § 84 fıkra 2 cümle 1). Yazının başlığından „{empfaenger_behoerde}“ alıcı olarak alındı. Lütfen alıcı adresini kendiniz doğrulayın — başka bir Alman kurumuna yapılan başvurunun süreyi koruması ancak o kurumun şikâyeti gecikmeksizin yetkili makama iletme yükümlülüğünden kaynaklanır (SGG § 84 fıkra 2 cümle 2).",
+          "cta_continue": "İskeleti ekle",
+          "cta_cancel": "Vazgeç"
+        },
+        "widerspruch_vwgo": {
+          "title": "Şikâyeti doğru kuruma sunun",
+          "body": "Şikâyet (Widerspruch), itiraz edilen idari işlemi çıkaran kuruma sunulur (İdari Yargılama Kanunu, Verwaltungsgerichtsordnung, VwGO § 70 fıkra 1 cümle 1). Yazının başlığından „{empfaenger_behoerde}“ alıcı olarak alındı. Lütfen alıcı adresini kendiniz doğrulayın — bazı eyaletlerde (örneğin Bavyera) belirli alanlarda şikâyet yolu kaldırılmıştır; bu durumda şikâyet yerine doğrudan idare mahkemesine (Verwaltungsgericht) dava açılır.",
+          "cta_continue": "İskeleti ekle",
+          "cta_cancel": "Vazgeç"
+        },
+        "aussetzung_ao": {
+          "title": "Yürütmenin durdurulması — önemli bilgiler",
+          "body": "Yürütmenin durdurulması (Aussetzung der Vollziehung), itiraza konu kararı çıkaran maliye idaresinden talep edilir (Vergi Kanunu, Abgabenordnung, AO § 361 fıkra 2 cümle 1). **Otomatik verilmez** — kurum, yalnızca kararın hukuka uygunluğuna ilişkin ciddi şüpheler bulunduğunda veya yürütme aşırı bir sertlik oluşturacaksa durdurma verir (AO § 361 fıkra 2 cümle 2). Durdurma verilmediği sürece AO § 240 uyarınca gecikme zamları işlemeye devam eder; ayrıca durdurma, daha önce sunulmuş bir itirazı (Einspruch) gerektirir.",
+          "cta_continue": "İskeleti ekle",
+          "cta_cancel": "Vazgeç"
+        }
+      },
+      "frist_cited_format": {
+        "einspruch_ao": "Kararın tebliğinden itibaren itiraz sunmak için **1 ay** süreniz var — **Vergi Kanunu (Abgabenordnung, AO) § 355 fıkra 1**. Süre {frist_datum} tarihinde sona erer.",
+        "widerspruch_sgg": "Kararın tebliğinden itibaren şikâyet sunmak için **1 ay** süreniz var — **Sosyal Mahkeme Kanunu (Sozialgerichtsgesetz, SGG) § 84 fıkra 1**. Süre {frist_datum} tarihinde sona erer.",
+        "widerspruch_vwgo": "Kararın tebliğinden itibaren şikâyet sunmak için **1 ay** süreniz var — **İdari Yargılama Kanunu (Verwaltungsgerichtsordnung, VwGO) § 70 fıkra 1 cümle 1**. Süre {frist_datum} tarihinde sona erer.",
+        "aussetzung_ao": "Yürütmenin durdurulmasını, itiraz prosedürü devam ettiği sürece dilediğiniz zaman talep edebilirsiniz — **Vergi Kanunu (Abgabenordnung, AO) § 361 fıkra 2**. Ayrı bir süre yoktur, ancak hızlı başvuru önemlidir çünkü AO § 240 uyarınca gecikme zamları işlemeye devam eder."
+      },
+      "bekanntgabe_caveat": "Uyarı: bu karar Mein ELSTER üzerinden elektronik olarak sunuldu. Tebliğ tarihi olarak sunumdan sonraki **dördüncü gün** geçerlidir (Vergi Kanunu, Abgabenordnung, AO § 122a fıkra 4). Süre buna göre posta tebliğine kıyasla dört gün sonra sona erer.",
+      "bekanntgabe_caveat_summary": "Süre ne zaman başlar? Elektronik tebliğ hakkında bilgiler",
+      "frist_abgelaufen_warnung": "Verilerimize göre kararda belirtilen süre {frist_datum} tarihinde dolmuştur. Geç başvuru mümkündür ancak genellikle kabul edilemez bulunarak reddedilir — kararın hukuki çare uyarısı kusurluysa (bu durumda bir yıllık süre uygulanır) ya da eski hâle iade (Wiedereinsetzung in den vorigen Stand) koşulları sağlanıyorsa farklıdır. Lütfen başvurudan önce bir tüketici merkezinden (Verbraucherzentrale), bir sosyal dernekten (Sozialverband) veya bir avukattan danışmanlık alın.",
+      "skelett_footer_no_legal_advice": "Hukuki çarenizin başarı şansını lütfen bir tüketici merkezi (Verbraucherzentrale), sosyal dernek (Sozialverband) veya avukat aracılığıyla değerlendirin — uygulama bu değerlendirmeyi yapmaz.",
+      "skelett_visibility_explainer": {
+        "kein_rechtsbehelf_bei_mitwirkung": "Uyarı: bu yazı bir iş birliği talebidir, bir karar (Bescheid) değildir. Burada (henüz) bir hukuki çare sunamazsınız — lütfen istenen belgeyi ibraz edin veya süre uzatımı talep edin."
+      },
+      "template_switch": {
+        "dual_send": "İkisini ayrı yazılar olarak gönder",
+        "discard_and_switch": "Mevcut taslağı sil ve değiştir",
+        "cancel": "Vazgeç"
+      },
+      "cross_send": {
+        "reply1_sent_announcement": "Yanıt 1 gönderildi. Yanıt 2 hazırlanıyor …"
       },
       "body_textarea_label": "Yanıt metni (Almanca)",
       "body_textarea_de_hint": "Kurumlar Almanca okur — lütfen Almanca yazın.",
@@ -649,6 +740,498 @@
       "row_meta_template": "Dosya no. {aktenzeichen} · son düzenleme {relTime} önce",
       "row_cta": "Yazmaya devam et",
       "empty_state_hint": "Açık taslak yok."
+    },
+    "bridge": {
+      "renten_cta_label": "Değerleri kişisel verilerime kaydet",
+      "renten_already_applied": "{datum} tarihinde Yaşlılık güvencesi (Altersvorsorge) bölümünüze zaten kaydedildi",
+      "renten_toast_success": "Emeklilik bilgisi (Renteninformation) Yaşlılık güvencesi (Altersvorsorge) bölümünüze kaydedildi",
+      "renten_navigate_label": "Yaşlılık güvencesi (Altersvorsorge) bölümüne git",
+      "renten_section_title": "Değerleri kişisel verilerime (Stammdaten) kaydet",
+      "renten_section_subtitle": "Bu emeklilik bilgisinden (Renteninformation) beş zorunlu maddeyi (§ 109 Abs. 3 SGB VI) Stammdaten'inizdeki Yaşlılık güvencesi (Altersvorsorge) bölümüne aktarıyoruz.",
+      "renten_toast_already_applied": "Bu emeklilik bilgisi (Renteninformation) daha önce aktarılmıştı.",
+      "renten_toast_error": "Aktarma başarısız oldu — lütfen tekrar deneyin."
+    }
+  },
+  "stammdaten": {
+    "page": {
+      "title": "Kişisel veriler (Stammdaten)",
+      "loading": "Profil yükleniyor …",
+      "refreshing": "Profil yenileniyor.",
+      "error_load": "Profil yüklenemedi — tekrar denenmesini ister misiniz?",
+      "error_retry": "Tekrar dene",
+      "religion_consent_error": "Dini aidiyet görünümü etkinleştirilemedi.",
+      "sperre_error": "Engel etkinleştirilemedi.",
+      "iban_push_error": "IBAN aktarımı simüle edilemedi.",
+      "beschaeftigung_heading": "Çalışma durumu (yalnızca okuma amaçlı toplama)",
+      "beschaeftigung_helper": "Bu alanlar nüfus kayıt sicili dışında tutulur (DRV, sağlık sigortası, vergi dairesi) ve burada yalnızca toplu olarak görüntülenir."
+    },
+    "tab": {
+      "aria_label": "Kişisel veri bölümleri",
+      "profil": { "label": "Profilim" },
+      "wallet": { "label": "Cüzdan ve dış alıcılar" }
+    },
+    "hero": {
+      "eyebrow": "Tek doğru kaynak",
+      "title": "Veri koruma kokpiti (Datenschutzcockpit) — pilot aşama",
+      "title_with_name": "{name} — Kişisel veriler",
+      "summary": "{register_count} kamu sicilinde kayıtlısınız.",
+      "last_transmission": "Son aktarım: {dauer} önce — {feld}, {absender} kurumundan {empfaenger} kurumuna. Hukuki dayanak: {rechtsgrundlage}.",
+      "cta_full_log": "Tam etkinlik günlüğünü aç",
+      "empty_state": "Yakın zamanda aktarım yok — hoş geldiniz!",
+      "dsc_pilot_phase_label": "Veri koruma kokpiti (Datenschutzcockpit) — pilot aşama",
+      "dsc_pilot_tooltip": "Aşamalı bağlanma: Federal Motorlu Taşıtlar Dairesi (Kraftfahrt-Bundesamt) 04/2026'dan beri IDA prosedürüne bağlı (DSC bağlantısı bunu izleyecek), Federal İş Ajansı / STEP sicili pilotta. RegMoG'un 51 sicilinin tümünün kapsamlı bağlantısı 2026/2027 yol haritasındadır.",
+      "vision_2027_banner_title": "2027 vizyonu: BundID + DSC + EUDI Wallet yakınsaması",
+      "vision_2027_banner_body": "Bu kişisel veri görünümü, varsayımsal 2027 tablosunda — BundID ana veri servisi, Kimlik Numarası Kanunu (Identifikationsnummerngesetz, IDNrG) uyarınca veri koruma kokpiti (Datenschutzcockpit) ve EUDI Cüzdan PID'si — yakınsamış bir yurttaş görünümünün nasıl olabileceğini gösterir. Bugün (Mayıs 2026) bu yakınsama henüz sağlanmamıştır.",
+      "disclaimer_lese_title": "Not: okuma ve yönlendirme katmanı",
+      "disclaimer_audit_title": "Not: uygulama içi etkinlik günlüğü"
+    },
+    "sektion": {
+      "identitaet": { "title": "Kimlik" },
+      "anschrift": { "title": "Adres" },
+      "familie": { "title": "Aile" },
+      "dokumente": { "title": "Belgeler" },
+      "sperren_einstellungen": { "title": "Engeller ve ayarlar" },
+      "altersvorsorge": {
+        "title": "Yaşlılık güvencesi (Altersvorsorge)",
+        "subtitle": "Yasal emeklilik, meslek emeklilik kurumları ve özel emeklilik genel bakışı"
+      },
+      "kv_pflege": {
+        "title": "Sağlık sigortası ve bakım",
+        "subtitle": "Sağlık sigortası kasası, ePA, eRezept ve bakım"
+      },
+      "kontakt_postfach": { "title": "İletişim ve posta kutusu (Kontakt & Postfach)" },
+      "notification_praeferenzen": { "title": "Bildirim tercihleri (2027 vizyonu)" },
+      "sr_field_count": "{count, plural, =1 {Bu bölümde 1 alan} other {Bu bölümde # alan}}",
+      "aktivitaet_aside_label": "Bu bölümün etkinlik günlüğü"
+    },
+    "field_card": {
+      "quelle_label": "Kaynak",
+      "letztes_update_label": "Son güncelleme",
+      "value_empty": "—",
+      "reveal_religion": "Dini aidiyeti göster"
+    },
+    "cta": {
+      "korrigieren": "Düzeltme yolunu aç",
+      "korrekturweg_label": "Düzeltme yolu",
+      "familie_preview": "{partner} eş / {kinder} çocuk",
+      "sperre_aktivieren": "Engeli etkinleştir (demo)",
+      "iban_push_trigger": "IBAN aktarımını simüle et"
+    },
+    "field": {
+      "familienname": { "label": "Soyadı" },
+      "fruehere_namen": { "label": "Önceki adlar" },
+      "vornamen": { "label": "Adlar" },
+      "doktorgrad": { "label": "Doktora unvanı (Doktorgrad)" },
+      "geburtsdatum": { "label": "Doğum tarihi" },
+      "geburtsort": { "label": "Doğum yeri" },
+      "staatsangehoerigkeit": { "label": "Vatandaşlık" },
+      "steuer_id": { "label": "Vergi kimlik numarası (Steuer-IdNr)" },
+      "anschrift_aktuell": { "label": "Mevcut ana adres" },
+      "anschriften_historisch": { "label": "Önceki adresler" },
+      "familienstand": { "label": "Medeni durum" },
+      "partner": { "label": "Eş / hayat arkadaşı" },
+      "kinder": { "label": "Çocuklar" },
+      "eheschliessung": { "label": "Evlilik / hayat ortaklığı" },
+      "personalausweis": { "label": "Kimlik kartı (Personalausweis)" },
+      "reisepass": { "label": "Pasaport (Reisepass)" },
+      "eat_can": { "label": "Elektronik oturma izni (eAT) — CAN" },
+      "azr_nr": { "label": "AZR numarası (Ausländerzentralregister)" },
+      "religionszugehoerigkeit": { "label": "Dini aidiyet" },
+      "kontakt_email": { "label": "E-posta adresi" },
+      "kontakt_mobil": { "label": "Cep telefonu numarası" },
+      "sprachpraeferenz": { "label": "Dil tercihi" },
+      "iban": { "label": "İade için IBAN" },
+      "uebermittlungssperren": { "label": "Aktarım engelleri (Übermittlungssperren, §§ 42 Abs. 3, 50 Abs. 5 BMG)" },
+      "kvnr": { "label": "Sağlık sigortası numarası (KVNR)" },
+      "drv_versicherungsnummer": { "label": "Emeklilik sigortası numarası (DRV)" },
+      "elstam": { "label": "ELStAM (vergi sınıfı, muafiyetler)" },
+      "geschlecht": {
+        "label": "Cinsiyet kaydı (Geschlechtseintrag)",
+        "value": {
+          "m": "erkek",
+          "w": "kadın",
+          "d": "çeşitli (divers)",
+          "x": "kayıt yok (X)",
+          "unbestimmt": "belirsiz"
+        }
+      },
+      "religion": {
+        "value": {
+          "rk": "Roma Katolik",
+          "ev": "Evanjelik",
+          "ohne": "dini aidiyet yok",
+          "andere": "diğer"
+        }
+      },
+      "auskunftssperre": {
+        "label": "Bilgi engeli (Auskunftssperre, § 51 Abs. 1 BMG)",
+        "value": {
+          "aktiv": "etkin (demo örüntüsü)",
+          "inaktiv": "etkin değil"
+        }
+      },
+      "uebermittlungssperre": {
+        "value": {
+          "aktiv": "etkin (demo örüntüsü)",
+          "inaktiv": "etkin değil"
+        }
+      },
+      "uebermittlungssperre_42_3": {
+        "label": "Dini topluluklara aktarım engeli (§ 42 Abs. 3 BMG)"
+      },
+      "beschaeftigung": {
+        "typ": { "label": "İstihdam türü" },
+        "arbeitgeber": { "label": "İşveren" },
+        "kvnr": { "label": "KVNR" },
+        "drv": { "label": "DRV no." }
+      }
+    },
+    "korrekturweg": {
+      "familienname": { "pointer": "Düzeltme nüfus dairesinde (Standesamt) § 1355 BGB / § 45 PStG uyarınca yapılır." },
+      "fruehere_namen": { "pointer": "Düzeltme nüfus dairesinde (Standesamt) § 45 PStG uyarınca yapılır." },
+      "vornamen": { "pointer": "Düzeltme nüfus dairesinde (Standesamt) § 45 PStG uyarınca yapılır." },
+      "doktorgrad": { "pointer": "Düzeltme, vatandaş hizmetleri bürosunda (Bürgeramt) belge yüklemesiyle yapılır (§ 3 Abs. 1 Nr. 6 BMG)." },
+      "geburtsdatum": { "pointer": "Düzeltme doğum yerinin nüfus dairesinde (Standesamt) yapılır." },
+      "geburtsort": { "pointer": "Düzeltme doğum yerinin nüfus dairesinde (Standesamt) yapılır." },
+      "geschlecht": { "pointer": "Bildirim nüfus dairesinde (Standesamt) § 4 SBGG (kayıt) ve § 2 SBGG (şahsen tasdik) uyarınca yapılır." },
+      "staatsangehoerigkeit": { "pointer": "Düzeltme vatandaşlığa kabul makamı (Einbürgerungsbehörde) aracılığıyla StAG uyarınca yapılır." },
+      "steuer_id": { "pointer": "Federal Merkez Vergi Dairesi (Bundeszentralamt für Steuern) tarafından § 139b AO uyarınca ömür boyu verilir — değiştirilemez." },
+      "anschrift_aktuell": { "pointer": "Bürgeramt randevusu veya elektronik ikamet kaydı (Anmeldung — eWA) § 17 BMG uyarınca." },
+      "anschriften_historisch": { "pointer": "Güncellemeler § 17 BMG uyarınca yeni bir Anmeldung ile gerçekleşir." },
+      "familienstand": { "pointer": "Düzeltme nüfus dairesinde (Standesamt) PStG uyarınca yapılır." },
+      "partner": { "pointer": "Düzeltme nüfus dairesinde (Standesamt) PStG uyarınca yapılır." },
+      "kinder": { "pointer": "Düzeltme nüfus dairesinde (Standesamt) § 21 PStG uyarınca yapılır." },
+      "eheschliessung": { "pointer": "Düzeltme evliliğin kıyıldığı nüfus dairesinde (Standesamt) yapılır." },
+      "personalausweis": { "pointer": "Yeniden basım Bürgeramt'ta PAuswG uyarınca yapılır." },
+      "reisepass": { "pointer": "Yeniden basım Bürgeramt'ta PassG uyarınca yapılır." },
+      "eat_can": { "pointer": "Düzeltme yabancılar dairesi (Ausländerbehörde) aracılığıyla AufenthG uyarınca yapılır." },
+      "azr_nr": { "pointer": "Düzeltme yabancılar dairesi (Ausländerbehörde) aracılığıyla § 34 AZRG uyarınca yapılır." },
+      "religionszugehoerigkeit": { "pointer": "Giriş / çıkış: nüfus dairesi (Standesamt) veya dini topluluk; saklama § 3 Abs. 1 Nr. 11 BMG uyarınca." },
+      "kontakt_email": { "pointer": "BundID hesabınızda doğrudan değiştirilebilir (uygulama ayarı)." },
+      "kontakt_mobil": { "pointer": "BundID hesabınızda doğrudan değiştirilebilir (uygulama ayarı)." },
+      "sprachpraeferenz": { "pointer": "Uygulama içi ayar — kurumlara etkisi yoktur." },
+      "iban": { "pointer": "Bugün (Mayıs 2026) IBAN her kuruma ayrı ayrı verilmek zorundadır — bu uygulama 2027 senaryosunu simüle eder." },
+      "auskunftssperre": { "pointer": "Gerekçeli başvuru Bürgeramt'a § 51 Abs. 1 BMG uyarınca yapılır." },
+      "uebermittlungssperren": { "pointer": "Bürgeramt'a başvuru §§ 42 Abs. 3, 50 Abs. 5 BMG uyarınca (gerekçesiz)." },
+      "kvnr": { "pointer": "Sağlık sigortanızın üye portalı üzerinden güncelleyin (§ 290 SGB V)." },
+      "drv_versicherungsnummer": { "pointer": "DRV hesabınız üzerinden güncelleyin (§ 147 SGB VI)." },
+      "elstam": { "pointer": "Mein ELSTER veya vergi dairesi (Finanzamt) üzerinden § 39 EStG uyarınca güncelleyin." }
+    },
+    "disclaimer": {
+      "lese_schicht": "Bu uygulama bir **okuma ve yönlendirme katmanıdır**. Yetkili sicillerdeki verilerinizde **kendi başına** hiçbir değişiklik yapmaz. Düzeltmeler yalnızca ilgili kurumun prosedürü üzerinden yapılır — örneğin adres için Bürgeramt'ta § 17 BMG uyarınca; medeni durum ve adlar için nüfus dairesinde (Standesamt) PStG uyarınca; cinsiyet kaydı değişikliğinin **kaydı** için nüfus dairesinde (Standesamt) § 4 SBGG uyarınca (sözlü veya yazılı, beyandan üç ay önce) ve **beyanın şahsen tasdiki** için § 2 SBGG uyarınca nüfus dairesinde; vergi kimlik numarası için Federal Merkez Vergi Dairesi'nde (Bundeszentralamt für Steuern) § 139b AO uyarınca. Her alan için size doğru yolu gösteriyoruz.",
+      "audit_log_app_internal": "Burada görünen etkinlik günlüğü yalnızca sizin bu uygulama içindeki eylemlerinizi kaydeder (görüntülemeler, filtreler, kişisel düzenlemeler). Bu, **kurumsal** bir denetim izi **değildir**. IDNr tabanlı kamu kurumları arası veri aktarımları için kurumsal denetim katmanını veri koruma kokpiti (Datenschutzcockpit) § 9 IDNrG uyarınca 24 ay saklama süresiyle sağlar — ilgili siciller bağlandıkça datenschutzcockpit.bund.de adresinden erişilebilir. Mayıs 2026 itibarıyla: sınırlı sicil kapsamıyla pilot aşama; Federal Motorlu Taşıtlar Dairesi (Kraftfahrt-Bundesamt) 15.04.2026 tarihinde IDA prosedürüne katıldı, DSC bağlantısı bunu izleyecek. RegMoG'un 51 sicilinin tümünün kapsamlı bağlantısı 2026/2027 yol haritasındadır.",
+      "eudi_speculative": "Burada gösterilen işlev — kişisel verileri tek tıkla özel alıcılara (banka, ev sahibi, enerji tedarikçisi) cüzdan kanıtı (Attestation) olarak iletmek — **2027 vizyonunu** simüle eder. EUDI Cüzdan Tüzüğü (AB) 2024/1183 ile Architecture and Reference Framework'e (Mayıs 2026 itibarıyla: v2.0) dayanır. Almanya'nın EUDI cüzdanı sağlama yükümlülüğü en erken 2026/2027'de devreye girer; üçüncü taraf kabulü, güven hizmeti uyumluluğu ve ücret modelleri henüz bağlayıcı şekilde düzenlenmemiştir.",
+      "iban_speculative": "IBAN'ın merkezi olarak kaydedilip aile yardımları kasasına (Familienkasse), vergi dairesine (Finanzamt) ve sağlık sigortasına (Krankenkasse) otomatik aktarılması bugün (Mayıs 2026) **mevcut değildir**. Bu demo bir 2027 senaryosunu simüle eder. Şu anda banka bilgilerinizi her kuruma ayrı ayrı bildirmek zorundasınız.",
+      "religion_art9": "Dini aidiyet, GDPR'nin 9. maddesi anlamında özel nitelikli kişisel veridir. Burada yalnızca tıklamayla gösterilir. Nüfus sicilinde saklanması § 3 Abs. 1 Nr. 11 BMG'ye; gelir vergisi ve kilise vergisi için kullanımı § 51a EStG ile birlikte BZSt'deki KiStAM prosedürüne dayanır.",
+      "religion_consent_toggle_label": "Dini aidiyetimin bu uygulamada gösterilmesine açıkça onay veriyorum (GDPR Madde 9 fıkra 2 bent a). Bu onay yalnızca mevcut oturum için geçerlidir.",
+      "sperren_mock_pattern": "Gerçek sistemde bilgi engeli veya aktarım engeli, § 51 BMG uyarınca (gerekçeli) ya da §§ 42 Abs. 3, 50 Abs. 5 BMG uyarınca (gerekçesiz) yalnızca yetkili kayıt makamına (Meldebehörde) yapılan başvuruyla kaydedilir. Uygulama içindeki bu anahtar bir demo örüntüsüdür ve resmi başvurunun yerine geçmez.",
+      "renteninfo_info_only": "Bu uygulama emeklilik hesaplaması yapmaz. Değerler {stichtag} tarihli emeklilik bilginizden (Renteninformation) alınmıştır (§ 109 Abs. 3 SGB VI).",
+      "pflegegrad_art9": "Bakım derecesi (Pflegegrad), Genel Veri Koruma Tüzüğü (DSGVO/Datenschutz-Grundverordnung) Madde 9 kapsamında bir sağlık verisi kategorisidir; geniş yorum açısından Avrupa Adalet Divanı'nın (Europäischer Gerichtshof) 01.08.2022 tarihli C-184/20 sayılı kararı da uygulanabilir. Derecenin tesisi için yasal dayanak: § 14 SGB XI; bakım kasası karar süresi: § 18c SGB XI (25 iş günü).",
+      "epa_anlage_widerspruch": "ePA oluşturulması hakkında bilgi § 343 SGB V uyarınca; oluşturma 15.01.2025'ten itibaren § 342 Abs. 1 S. 2 SGB V uyarınca otomatiktir. Sağlık sigortası kasanız üzerinden oluşturmaya itiraz edebilirsiniz.",
+      "zfdr_unvollstaendig": "Dijital emeklilik özeti (rentenuebersicht.de) 700'den fazla emeklilik kurumunu ve yaklaşık 137 milyon emeklilik hakkını bir araya getirir. Meslek emeklilik kasaları (Versorgungswerke), memur emeklilikleri (Beamtenversorgung) ve doğrudan işveren taahhütleri (Direktzusagen) bugün sisteme bağlı değildir.",
+      "pflegegrad_consent_toggle_label": "Bakım derecemin (Pflegegrad) bu uygulamada gösterilmesine açıkça onay veriyorum (Art. 9 Abs. 2 lit. a DSGVO). Bu onay yalnızca mevcut oturum için geçerlidir.",
+      "track_c_empty_state_body": "Yasal emeklilik sigortasında (GRV) zorunlu sigortalı olmadığınız için emeklilik bilginiz (Renteninformation) bulunmamaktadır. Özel sağlık sigortası (PKV) için Dijital emeklilik özeti (ZfDR) gibi merkezi bir toplayıcı yoktur — sigortacınızın uygulamasını kullanmanız gerekir. Seçenekler: 1) gönüllü yasal emeklilik sigortası (§ 7 SGB VI), 2) özel emekliliği gözden geçirin, 3) mesleğiniz zorunlu sigortayı gerektiriyorsa (§ 2 SGB VI), zorunlu sigorta için başvuru yapın.",
+      "eugh_c184_20_weite_lesart": "EuGH C-184/20 (01.08.2022) kararı, sağlık verilerine ilişkin dolaylı çıkarımları da kapsar."
+    },
+    "subtab": {
+      "wallet_externe_empfaenger": {
+        "banner_title": "2027 vizyonu — Cüzdan ve dış alıcılar",
+        "banner": "**2027 vizyonu** — Cüzdan ve dış alıcılar. Bu bölüm, EUDI cüzdan tabanlı veri paylaşımının özel alıcılarla (banka, ev sahibi, enerji tedarikçisi) *nasıl görünebileceğini* gösterir. Bugün (Mayıs 2026) bu işlev mevcut değildir.",
+        "disclaimer_title": "EUDI Cüzdan 2027 vizyonu hakkında not (açıklamayı genişlet/daralt)",
+        "kategorie": {
+          "bank": "Ana banka",
+          "hausverwaltung": "Bina yönetimi",
+          "energieversorger": "Enerji tedarikçisi"
+        },
+        "cta_simulate": "Talebi simüle et",
+        "preview_error": "Önizleme oluşturulamadı — lütfen tekrar deneyin.",
+        "arf_footer": "Veri tabanı: EUDI Architecture and Reference Framework (Mayıs 2026 itibarıyla: v2.0); PID Rulebook v1.4 — 8 zorunlu nitelik, 6 üzerinden 4 isteğe bağlı nitelik."
+      }
+    },
+    "aktivitaet": {
+      "list_heading": "Etkinlik günlüğü",
+      "empty": "Bu bölümde kayıt yok.",
+      "zweck": {
+        "adressuebermittlung_buergeramt_finanzamt": "Vergi idaresine adres aktarımı",
+        "adressuebermittlung_buergeramt_beitragsservice": "Yayın katkı payı servisine (Beitragsservice) adres aktarımı",
+        "adressuebermittlung_buergeramt_gkv": "Sağlık sigortasına adres akışı (DEÜV)",
+        "adressuebermittlung_buergeramt_bapersbw": "Askerlik kaydı için adres bildirimi",
+        "app_religion_angezeigt": "Dini aidiyet uygulamada gösterildi",
+        "app_kontakt_geaendert": "İletişim bilgileri uygulamada değiştirildi",
+        "app_sprache_geaendert": "Dil tercihi uygulamada değiştirildi",
+        "app_sperre_aktiviert": "Engel uygulama içi demo olarak etkinleştirildi",
+        "app_sperre_deaktiviert": "Engel uygulama içi demo olarak devre dışı bırakıldı",
+        "spec_iban_push_simuliert": "IBAN aktarımı (2027 vizyonu) {empfaenger} kurumuna simüle edildi",
+        "spec_wallet_attestation_preview": "Cüzdan kanıt önizlemesi (2027 vizyonu): {empfaenger}",
+        "renteninfo_eingelesen": "Emeklilik bilgisi kişisel verilere kaydedildi (§ 109 Abs. 1 + Abs. 3 SGB VI)",
+        "app_pflegegrad_angezeigt": "Bakım derecesi (Pflegegrad) uygulamada gösterildi (Art. 9 Abs. 2 lit. a DSGVO ile § 14 SGB XI birlikte)",
+        "app_epa_banner_gesehen": "ePA durum afişi görüntülendi (§ 342 Abs. 1 S. 2 ile § 343 SGB V birlikte)",
+        "bridge_skipped_idempotent": "Köprü çağrısı atlandı (emeklilik bilgisi zaten kaydedilmiş)",
+        "pflegegrad_consent_erteilt": "Bakım derecesinin gösterilmesine onay verildi (Art. 9 Abs. 2 lit. a DSGVO)",
+        "pflegegrad_consent_widerrufen": "Bakım derecesinin gösterilmesine onay geri çekildi",
+        "epa_widerspruch_geandert": "ePA itiraz durumu değiştirildi",
+        "anrechnungszeit_pflege_offengelegt": "Bakım sayım süresi (Anrechnungszeit Pflege) açıklandı (§ 3 SGB VI; bakım derecesi onayına bağlı)"
+      },
+      "kategorie": {
+        "behoerde_zu_behoerde": { "label": "Kurumdan kuruma aktarım" },
+        "app_aktivitaet": { "label": "Uygulama etkinliği (resmi aktarım günlüğü değildir)" },
+        "speculative_2027": { "label": "2027 vizyonu (demo)" },
+        "behoerde_zu_buerger": { "label": "Kurumdan vatandaşa (bildirim / posta kutusuna geliş)" }
+      },
+      "richtung": {
+        "label": "Yön",
+        "alle": { "label": "Tüm yönler" },
+        "eingehend": { "label": "Gelen (kurum → vatandaş)" },
+        "ausgehend": { "label": "Giden (vatandaş → kurumlar)" },
+        "intern": { "label": "Dahili (uygulama etkinliği)" }
+      }
+    },
+    "modal": {
+      "religion_consent": {
+        "title": "Dini aidiyeti göster — onay gereklidir",
+        "cta_show": "Dini aidiyeti göster",
+        "cta_cancel": "İptal"
+      },
+      "sperren_aktivieren": {
+        "title": "Engeli uygulama içi demo olarak etkinleştir",
+        "title_auskunftssperre": "§ 51 Abs. 1 BMG uyarınca bilgi engelini etkinleştir",
+        "title_uebermittlungssperre": "{sperre} aktarım engelini etkinleştir",
+        "cta_activate": "Engeli demo örüntüsü olarak etkinleştir",
+        "cta_cancel": "İptal",
+        "begruendung_label": "Gerekçe (en az 30 karakter, § 51 Abs. 1 BMG)",
+        "begruendung_helper_template": "{count} / en az {min} karakter.",
+        "begruendung_too_short_template": "Gerekçe çok kısa: {count} / {min} karakter gereklidir (§ 51 Abs. 1 BMG)."
+      },
+      "iban_push": {
+        "title": "IBAN aktarımını simüle et — 2027 vizyonu",
+        "iban_label": "IBAN",
+        "empfaenger_legend": "Demo aktarımının alıcıları",
+        "empfaenger_label": {
+          "familienkasse": "Aile yardımları kasası (Familienkasse)",
+          "elster": "ELSTER / vergi dairesi (Finanzamt)",
+          "gkv": "Sağlık sigortası (GKV)"
+        },
+        "cta_simulate": "Demo aktarımını simüle et",
+        "cta_cancel": "İptal"
+      },
+      "wallet_attestation_preview": {
+        "title": "Cüzdan kanıt önizlemesi",
+        "empfaenger_label": "Alıcı",
+        "section_pflicht": "PID zorunlu nitelikleri (8)",
+        "section_optional": "PID isteğe bağlı nitelikleri (6 üzerinden 4)",
+        "loading": "Önizleme oluşturuluyor …",
+        "attestation_id_label": "Demo kanıt kimliği",
+        "cta_close": "Kapat"
+      },
+      "pflegegrad_consent": {
+        "title": "Bakım derecesini (Pflegegrad) göster — onay gereklidir",
+        "cta_show": "Bakım derecesini göster",
+        "cta_cancel": "İptal",
+        "eugh_lesart_intro": "DSGVO Madde 9'un geniş yorumu, şu karara göre:"
+      }
+    },
+    "badge": {
+      "2027_vision": "2027 vizyonu",
+      "pilot_phase": "Pilot aşama",
+      "art9_relevant": "Hassas veri — dolaylı olarak Madde 9",
+      "mock": "[MOCK]"
+    },
+    "altersvorsorge": {
+      "traeger_label": "Kurum:",
+      "empty_state_body": "Bir sonraki emeklilik bilginiz (Renteninformation) gelen kutunuza ulaştığında değerler (ücret puanları, tahminler, prim özeti) genel bakış için burada saklanacaktır.",
+      "yellow_letter_echo": {
+        "card_top_3": {
+          "entgeltpunkte": "Ücret puanları (Entgeltpunkte)",
+          "regelalter_prognose": "Standart yaşlılık emekliliği tahmini (Regelaltersrente, 67 yaş)",
+          "em_rente_prognose": "Kazanç gücü azalmış emekliliği tahmini (Erwerbsminderungsrente)"
+        },
+        "expandable_label": "5 zorunlu içeriğin tümünü göster (§ 109 Abs. 3 SGB VI)",
+        "tooltip": {
+          "anpassungs_wirkung": "Gelecekteki uyarlamaların etkisi — örnek: yıllık % {prozent} ile değer emekliliğe kadar aylık {plus} € artar",
+          "beitragsuebersicht": "{jahr} primler özeti: {gesamt} € (Siz: {versicherter}, işveren: {arbeitgeber})"
+        },
+        "stamp": "Değerler {stichtag} tarihli emeklilik bilginizden (Renteninformation) alınmıştır (dosya no. {aktenzeichen}). Hesaplama Alman Emeklilik Sigortası (Deutsche Rentenversicherung) tarafından § 109 SGB VI uyarınca yapılmıştır."
+      },
+      "eckwert": {
+        "entgeltpunkte_unit": "puan",
+        "monthly_unit": "/ ay",
+        "monthly_aria": "ayda",
+        "expandable_aria_template": "{label} — ayrıntıları göster",
+        "tooltip_anpassungen_label": "Gelecekteki uyarlamaların etkisi",
+        "tooltip_beitrag_template": "{jahr} primler özeti",
+        "label_grundlage": "Hesaplamanın temeli",
+        "label_em_rente": "Hemen başlaması durumunda kazanç gücü azalmış emekliliği",
+        "label_regelalter": "Standart yaşlılık emekliliği tahmini (67 yaş, ek prim olmadan)",
+        "label_anpassungen": "Gelecekteki uyarlamaların etkisi",
+        "label_beitrag_template": "{jahr} primler özeti",
+        "body_grundlage_template": "Prim dönemleri {beitragszeit_von} – {beitragszeit_bis}; {entgeltpunkte} kazanç puanı (Entgeltpunkte) kazanıldı.",
+        "body_em_rente_template": "{eur} ay başına.",
+        "body_regelalter_template": "{eur} ay başına.",
+        "body_anpassungen_template": "yıllık {prozent} % oranında emekliliğe kadar yaklaşık +{plus} ay başına.",
+        "body_beitrag_template": "{gesamt} toplam (siz: {versicherter}; işveren: {arbeitgeber})."
+      }
+    },
+    "zfdr_wegweiser": {
+      "title": "Tüm taşıyıcılar üzerinden genel bakış: Dijital emeklilik özeti (Digitale Rentenübersicht)",
+      "cta": "Dijital emeklilik özetine git (rentenuebersicht.de)"
+    },
+    "track_c": {
+      "empty_state_title": "Emeklilik bilgisi yok",
+      "empty_state_body": "Yasal emeklilik sigortasında (GRV) zorunlu sigortalı olmadığınız için emeklilik bilginiz (Renteninformation) bulunmamaktadır. Özel sağlık sigortası (PKV) için Dijital emeklilik özeti (ZfDR) gibi merkezi bir toplayıcı yoktur — sigortacınızın uygulamasını kullanmanız gerekir. Seçenekler: 1) gönüllü yasal emeklilik sigortası (§ 7 SGB VI), 2) özel emekliliği gözden geçirin, 3) mesleğiniz zorunlu sigortayı gerektiriyorsa (§ 2 SGB VI), zorunlu sigorta için başvuru yapın."
+    },
+    "kv_pflege": {
+      "krankenkasse": {
+        "label": "Sağlık sigortası kasası (Krankenkasse)",
+        "kvnr_label": "Sağlık sigortası numarası (KVNR, § 290 SGB V)",
+        "kvnr_part_unveraenderbar_label": "Değiştirilemez kısım (ömür boyu)",
+        "kvnr_part_veraenderbar_label": "Değiştirilebilir kısım (kasaya bağlı)",
+        "versicherten_status": {
+          "pflicht": "Zorunlu sigortalı",
+          "freiwillig": "Gönüllü sigortalı",
+          "familienversichert": "Aile sigortalı",
+          "privat": "Özel sigortalı (PKV)"
+        }
+      },
+      "familienversicherung": {
+        "title": "Aile sigortası (Familienversicherung)",
+        "status_pill": "{stammversicherte} üzerinden aile sigortalı — en geç {bis_datum} tarihine kadar",
+        "einkommen_grenze_tooltip": "2026 gelir sınırı: genel olarak 565 €/ay veya mini iş için 603 € (§ 10 SGB V)"
+      },
+      "epa": {
+        "title": "Elektronik hasta dosyası (ePA)",
+        "status_pill_eingerichtet": "ePA oluşturuldu (15.01.2025'ten beri standart)",
+        "status_pill_widerspruch_nein": "Oluşturmaya itiraz edilmedi",
+        "status_pill_widerspruch_ja": "Oluşturmaya itiraz edildi",
+        "cta_external": "ePA'yı sağlık sigortası kasanızın uygulamasından yönetirsiniz",
+        "disclaimer_heading": "ePA hakkında not",
+        "rechtsgrundlage_label": "Yasal dayanak:",
+        "eingerichtet_seit_template": "{date} tarihinden beri oluşturulmuş"
+      },
+      "erezept": {
+        "title": "Elektronik reçete (eRezept)",
+        "modus": {
+          "app": "gematik E-Rezept uygulaması üzerinden",
+          "egk": "Eczanede eGK kartı üzerinden",
+          "papier": "Kâğıt çıktı üzerinden"
+        }
+      },
+      "pflege": {
+        "title": "Bakım sigortası (Pflegeversicherung)",
+        "kasse_label": "Bakım kasası (Pflegekasse)",
+        "pflegegrad_collapsed_button": "Bakım derecesini göster",
+        "pflegegrad_grad_label": "Bakım derecesi (Pflegegrad) {grad}",
+        "bewilligt_am_label": "{datum} tarihinde onaylandı",
+        "begutachtung_md_label": "Tıbbi Hizmet (Medizinischer Dienst, GKV) tarafından değerlendirildi",
+        "begutachtung_medicproof_label": "MEDICPROOF (PKV) tarafından değerlendirildi",
+        "frist_25_at": "Bakım kasası (Pflegekasse) 25 iş günü içinde karar vermek zorundadır (§ 18c SGB XI)",
+        "cta_hoeherstufung": "Yükseltme başvurusu → bakım kasanızın çevrimiçi şubesi"
+      }
+    },
+    "kontakt": {
+      "foederalismus_card_disclaimer": "2026 gerçekliğinde BundID'nin yanı sıra paralel olarak 5+ eyalet hesabı bulunmaktadır (Service-BW, Mein-Servicekonto-Berlin, NRW-Konto, BayernID, HH-Servicekonto). Bu demo BundID üzerinden soyutlama yapar; OZG 2.0 (Onlinezugangsgesetz 2.0) 24.07.2028 tarihine kadar bir yakınsama öngörmektedir.",
+      "foederalismus_card_aria_label": "Federalizm (Föderalismus) açıklaması — eyalet hesapları gerçekliği",
+      "loading": "İletişim verileri yükleniyor …",
+      "error_load": "İletişim verileri yüklenemedi.",
+      "error_retry": "Tekrar dene",
+      "anbindung_pill": {
+        "angebunden": "BundID'ye bağlı",
+        "in_pilotierung": "Pilot aşaması",
+        "nicht_angebunden": "BundID'ye bağlı değil"
+      },
+      "cascade": {
+        "vorher_label": "Önce: kâğıt mektup",
+        "nachher_label": "Sonra: BundID posta kutusu (Postfach)",
+        "vorher_caption_template": "{datum} tarihli Familienkasse mektubu (kâğıt mektup, § 41 fıkra 2 VwVfG)",
+        "nachher_caption_template": "{datum} tarihli takip kararı (BundID posta kutusu, § 9 OZG)",
+        "nachher_aktenzeichen_label": "Dosya numarası (Aktenzeichen):",
+        "reduced_motion_announce": "Takip kararı posta kutunuza yerleştirildi.",
+        "section_aria_label": "Familienkasse değişim kaskadı — önce/sonra karşılaştırması"
+      },
+      "card": {
+        "bundid_postfach": {
+          "title": "BundID posta kutusu (Postfach)",
+          "status": {
+            "aktiv": "Posta kutusu aktif",
+            "inaktiv": "Posta kutusu etkinleştirilmedi",
+            "teilaktiviert": "Posta kutusu etkinleştirme aşamasında"
+          }
+        },
+        "email": {
+          "title": "Doğrulanmış e-posta (BundID)",
+          "verified_label": "BundID üzerinden {datum} tarihinde doğrulandı"
+        },
+        "mobil": {
+          "title": "Cep telefonu",
+          "cta_verify": "Doğrula (sahte OTP)",
+          "cta_add": "Cep telefonu ekle (demo)"
+        },
+        "postanschrift": {
+          "title": "Posta adresi",
+          "cross_ref_link_label": "Adres bölümüne git"
+        }
+      },
+      "email": {
+        "disclaimer_only_for_bundid_attached": "Bu e-posta yalnızca BundID'ye bağlı kurumlar tarafından kullanılır — Bürgeramt Friedrichshain-Kreuzberg pilot uygulamada yer alıyor.",
+        "disclaimer_selbststaendig": "Not: ELSTER, sağlık sigortası kasası (Krankenkasse) ve meslek kazaları sigortası (Berufsgenossenschaft) farklı iletişim bilgileri tutuyor olabilir — bu demo yalnızca BundID verilerini gösterir."
+      },
+      "mobil": {
+        "disclaimer_self_attested": "Cep telefonu numarası kişinin kendi beyanına dayanır (self-attested). Almanya'da cep telefonu numaraları için resmi bir devlet sicili yoktur. § 3 BMG (Bundesmeldegesetz) cep telefonu numarasını içermez.",
+        "hardlock_only_notification": "Yalnızca posta kutusuna gelen yeni mesajlar için bildirim olarak kullanılabilir — asla bağlayıcı tebliğ kanalı olarak değil."
+      },
+      "postfach": {
+        "wegweiser_pointer": "BundID hesabınız üzerinden id.bund.de/de/postfach adresinden etkinleştirme. § 9 fıkra 1 cümle 2 OZG (Onlinezugangsgesetz): her bir başvuruda vazgeçme mümkündür."
+      },
+      "postanschrift": {
+        "cross_ref_pointer": "Posta adresiniz «Adres» bölümünde gösterilir. Resmi kaynak: nüfus sicili (Melderegister, § 3 BMG). Düzeltme yolu: Bürgeramt randevusu / çevrimiçi ikamet kaydı (eWA, § 17 BMG)."
+      },
+      "notification": {
+        "vision_banner": "2027 vizyonu — bu işlev Almanya'da bugün mevcut değildir; OZG 2.0 (Onlinezugangsgesetz 2.0) 2028'e kadar da bunu öngörmemektedir",
+        "save_confirm_body": "Az önce 2027-vizyon verilerini değiştirdiniz. Bugünün gerçekliğinde bu hiçbir şey değiştirmez.",
+        "save_confirm": {
+          "cta_save": "Demo tercihini kaydet",
+          "cta_cancel": "İptal"
+        },
+        "kategorie": {
+          "steuer": { "label": "Vergi (Finanzamt / BZSt)" },
+          "sozial": { "label": "Sosyal yardımlar (DRV / GKV / Bürgergeld)" },
+          "familie": { "label": "Aile (Familienkasse / Elterngeld)" },
+          "verkehr": { "label": "Trafik (KFZ / cezalar / sürücü belgesi)" },
+          "sonstige": { "label": "Diğer (Bürgeramt / ikamet / diğer)" }
+        },
+        "kanal": {
+          "postfach": { "label": "BundID posta kutusu" },
+          "email_pilot": { "label": "E-posta bildirimi (pilot)" },
+          "sms_pilot": { "label": "SMS bildirimi (pilot)" },
+          "brief": { "label": "Kâğıt mektup (varsayılan)" }
+        },
+        "option": {
+          "sms_pilot": {
+            "disclaimer_redaction": "SMS bildirimi sosyal veri içeriği (SGB X §§ 67ff.) içermez — yalnızca posta kutusunda yeni bir mesajın bulunduğuna dair bir bilgi içerir."
+          },
+          "abh_hardlock_tooltip": "Yabancılar dairesi LEA Berlin / ABH Köln (Ausländerbehörde) 2026'da BundID posta kutusuna bağlı değildir. §§ 86, 87 AufenthG (Aufenthaltsgesetz) kapsamındaki kararlar kâğıt mektupla tebliğ edilmeye devam eder (§ 41 fıkra 2 VwVfG, Verwaltungsverfahrensgesetz).",
+          "kfz_hint": "Trafik kurumları (KFZ) 2026'da BundID posta kutusuna bağlı değildir — bugün hâlâ kâğıt mektup geçerli.",
+          "steuer_hint_elster": "Vergi kararları ELSTER gelen kutusu üzerinden gider (§ 122a fıkra 4 AO, Abgabenordnung), BundID posta kutusu üzerinden değil."
+        },
+        "live_counter": {
+          "savings": "Yılda yaklaşık {briefe_pro_jahr_gespart} mektup ve karar başına {tage_frist_gespart} gün tebliğ süresi tasarruf edeceksiniz (§ 9 OZG posta kutusu varsayımı vs. § 41 fıkra 2 VwVfG kâğıt mektup varsayımı).",
+          "no_savings": "Bu ayar mektup tasarrufu sağlamaz — yalnızca bildirim adresini değiştirir, bağlayıcı tebliğ kanalını değil. Kararlar kâğıt mektupla gelmeye devam eder (§ 41 fıkra 2 VwVfG)."
+        }
+      },
+      "modal": {
+        "mobil_otp": {
+          "title": "Cep telefonunu doğrula — sahte OTP",
+          "input_label": "6 haneli sahte OTP kodu",
+          "demo_hint": "Demo deseni: 124857 kodu kabul edilir. Gerçek SMS gönderilmez.",
+          "cta_verify": "Doğrula"
+        },
+        "save_confirm": {
+          "title": "2027-vizyon verileri kaydedilsin mi?"
+        }
+      },
+      "toast": {
+        "familienkasse_followup": "Sonraki karar şimdi posta kutusunda (demo)",
+        "familienkasse_angebunden": "Familienkasse Berlin-Brandenburg BundID'ye bağlı — tercih uygulandı (demo)"
+      }
     }
   }
 }

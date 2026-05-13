@@ -17,3 +17,14 @@ export type {
   ReplyTemplateId as ReplyTemplateIdResolver,
   ReplyTerminMode as ReplyTerminModeResolver,
 } from './reply-templates';
+// V1.5.1 — Picker-Order + Norm-Familie + Pre-Insertion-Modal-Spec.
+export {
+  getReplyTemplatePickerOrder,
+  pickNormFamilie,
+  getPreInsertionModalSpec,
+} from './reply-template-order';
+export type {
+  NormFamilie,
+  PreInsertionModalSpec,
+  ReplyTemplateIdWithFreitext,
+} from './reply-template-order';

@@ -17,6 +17,10 @@ export type LetterArchetype =
   | 'ihk-beitrag'
   | 'berufsgenossenschaft-beitrag'
   | 'standesamt-urkunde'
+  // V1.1 — § 109 SGB VI Yellow-Letter (jährliche Renteninformation).
+  // Hard-Line § 11.27 + § 11.20 (separater CTA-Pfad „Werte in Stammdaten ablegen",
+  // NICHT Reply-Template).
+  | 'renteninfo'
   | 'sonstiges';
 
 /**
@@ -173,6 +177,38 @@ export interface Letter {
   empfangen_am: string;
   /** Optionaler Bezug zu einem laufenden Vorgang. */
   vorgang_id?: string;
+  /**
+   * V1.5.1 — Erlassdatum des Bescheids (aus dem Briefkopf-Stempel der erlassenden
+   * Behörde). Optional; nur bei Letter-Archetypes mit Bescheid-Charakter
+   * gepflegt (Steuerbescheid, KK-Beitrag, BG-Beitrag, IHK-Beitrag,
+   * Beitragsservice-Festsetzung, Familienkasse-Aufhebungs-/Ablehnungsbescheid).
+   * Mitwirkungs-Aufforderungen, Bestätigungs-Schreiben, Termin-Vorschläge tragen
+   * das Feld nicht.
+   *
+   * Format: ISO-8601 YYYY-MM-DD. Semantisch unterschieden von `empfangen_am`
+   * (Inbox-Receipt-Timestamp): in der Regel 1–7 Tage VOR `empfangen_am`,
+   * ausgenommen `auth_channel === 'mein-elster'` (§ 122a Abs. 4 AO
+   * Bekanntgabe-Fiktion 4. Tag) — siehe Domain-Doc V1.5.1 § 8.
+   *
+   * V1.5.1 Skelett-Templates lösen den `{datum_bescheid}`-Token aus diesem
+   * Feld auf; bei `undefined` Fallback auf `letter.empfangen_am` (graceful
+   * degradation — Domain-Doc § 3 Resolver-Hard-Rule).
+   */
+  bescheid_dated_at?: string;
+  /**
+   * V1.2 — Kanal, über den der Bescheid bekanntgegeben wurde / wird. Optional
+   * (Default-Render = `brief`); existing letters bleiben kompatibel.
+   *
+   * - `brief`: Postbrief via § 41 Abs. 2 VwVfG (3-Tage-Bekanntgabe-Fiktion).
+   * - `postfach`: BundID-Postfach via § 9 OZG (4-Tage-Bekanntgabe-Fiktion).
+   * - `email_pilot`: BundID-E-Mail-Notification (Pilot, kein Bescheid).
+   *
+   * Spec § 9 (Mock-Letter-Bridge); existing `letter-familienkasse-bewilligung`
+   * trägt nach V1.2-Seed-Update `kanal: 'brief'` für die Vorher-Frame-Visualisierung
+   * der Familienkasse-Wechsel-Cascade. `letter-familienkasse-bewilligung-postfach-followup`
+   * (zur Laufzeit erzeugt) trägt `kanal: 'postfach'` für die Nachher-Frame-Animation.
+   */
+  kanal?: 'brief' | 'postfach' | 'email_pilot';
 }
 
 /** Status-Filter inkl. abgeleiteter Frist-Buckets. */
@@ -266,10 +302,16 @@ export type LetterActivityLog = Record<string, LetterActivityLogEntry[]>;
 export type ReplyStatus = 'draft' | 'sent_simulated' | 'deleted';
 
 /**
- * Whitelist der V1.5.0-Templates (Domain-Validiert + Verifier-getrimmt).
- * Skelett-Templates (`rechtsbehelf_skelett_einspruch`, `…_widerspruch`) sind
- * V1.5.1-OUT — siehe Verifier-Verdict, sie benötigen den Adressat-Risiko-Modal,
- * der erst dort spezifiziert wird.
+ * Whitelist der Reply-Templates (Domain-Validiert + Verifier-getrimmt).
+ *
+ * V1.5.0-Set: `frist_verlaengerung`, `nachweis_einreichen`,
+ * `informative_rueckmeldung`, `termin_antwort`.
+ *
+ * V1.5.1-Erweiterung (Rechtsbehelf-Skelette + Aussetzung der Vollziehung,
+ * Domain-Doc `posteingang-v1.5.1-rechtsbehelf-aussetzung.md`):
+ *   - `rechtsbehelf_einspruch_skelett` (AO-Familie + OWiG-Hook V2)
+ *   - `rechtsbehelf_widerspruch_skelett` (SGG-/VwGO-Familie)
+ *   - `aussetzung_vollziehung_skelett` (§ 361 AO, nur AO-Familie)
  *
  * `null` als Template-ID kennzeichnet den `freitext`-Modus (kein Skelett, nur
  * optionaler Stammdaten-Prefill von Empfänger + Aktenzeichen + Datum).
@@ -278,7 +320,11 @@ export type ReplyTemplateId =
   | 'frist_verlaengerung'
   | 'nachweis_einreichen'
   | 'informative_rueckmeldung'
-  | 'termin_antwort';
+  | 'termin_antwort'
+  // V1.5.1 — Skelett-Templates (RDG-clean, Werkzeug-Charakter):
+  | 'rechtsbehelf_einspruch_skelett'
+  | 'rechtsbehelf_widerspruch_skelett'
+  | 'aussetzung_vollziehung_skelett';
 
 /**
  * Modus-Radio für `termin_antwort`. Cover-Text passt sich an den gewählten
@@ -382,5 +428,18 @@ export interface Reply {
  */
 export type ReplyDraft = Reply & { status: 'draft' };
 
-/** Map letterId → einzige aktuelle Reply pro Brief. */
-export type LetterReplyMap = Record<string, Reply>;
+/**
+ * Map letterId → chronologisch geordnete Reply-Liste.
+ *
+ * V1.5.0 schema was `Record<string, Reply>` (eine Reply pro Brief). V1.5.1
+ * erweitert auf ein Array, weil der Cross-Template-Versand-Pfad (Einspruch +
+ * Aussetzung der Vollziehung) zwei separate `Reply`-Records auf demselben
+ * Letter erzeugt (Spec V1.5.1 § 8.4). Persistence migriert V1.5.0-Storage
+ * automatisch beim ersten V1.5.1-Boot (siehe `persistence-migrations.ts`).
+ *
+ * Konvention: höchstens **eine** Reply pro Letter mit `status === 'draft'`;
+ * beliebig viele mit `status === 'sent_simulated'`. Die Reply-Liste ist
+ * chronologisch nach `created_at` aufsteigend gespeichert (sent-Replies
+ * tragen ein späteres `sent_at` als ihr `created_at`).
+ */
+export type LetterReplyMap = Record<string, Reply[]>;

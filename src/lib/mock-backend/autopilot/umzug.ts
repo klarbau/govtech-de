@@ -31,6 +31,8 @@ import type {
 import { aktenzeichenForBehoerde } from '../id';
 import { uuid } from '../id';
 import { wait } from '../latency';
+import { appendLogEntry } from '../stammdaten/api';
+import type { UebermittlungsLogEntry } from '@/types';
 
 const MOCK_FOOTER =
   '[MOCK – Verwaltungsdemo, keine echten Daten]';
@@ -288,6 +290,90 @@ export interface UmzugAutopilotContext {
   persona: Persona;
 }
 
+/**
+ * Stammdaten-Activity-Log-Hook (Spec § 8.1). Wird pro confirmed Cascade-Schritt
+ * aufgerufen und schreibt einen `UebermittlungsLogEntry` der Kategorie
+ * `behoerde_zu_behoerde` (Block A) oder `app_aktivitaet` (Block B = consent-
+ * basiert; technisch privater Empfänger und damit kein behördlicher Push iSv
+ * § 36 BMG).
+ */
+function emitStammdatenLogForCascadeStep(opts: {
+  personaId: string;
+  absenderBehoerdeId: string;
+  empfaengerBehoerdeId: string;
+  block: 'A' | 'B' | 'D';
+}): void {
+  const { personaId, absenderBehoerdeId, empfaengerBehoerdeId, block } = opts;
+  // Heuristic: zweck per Empfänger. Frontend liest den i18n-Key direkt.
+  const zweck = (() => {
+    if (empfaengerBehoerdeId.startsWith('finanzamt-')) {
+      return 'stammdaten.aktivitaet.zweck.adressuebermittlung_buergeramt_finanzamt';
+    }
+    if (empfaengerBehoerdeId === 'beitragsservice-koeln') {
+      return 'stammdaten.aktivitaet.zweck.adressuebermittlung_buergeramt_beitragsservice';
+    }
+    if (
+      empfaengerBehoerdeId.startsWith('aok-') ||
+      empfaengerBehoerdeId === 'tk-hamburg'
+    ) {
+      return 'stammdaten.aktivitaet.zweck.adressuebermittlung_buergeramt_gkv';
+    }
+    if (empfaengerBehoerdeId === 'bapersbw') {
+      return 'stammdaten.aktivitaet.zweck.adressuebermittlung_buergeramt_bapersbw';
+    }
+    return 'stammdaten.aktivitaet.zweck.adressuebermittlung_buergeramt_finanzamt';
+  })();
+
+  const rechtsgrundlage = (() => {
+    if (empfaengerBehoerdeId === 'beitragsservice-koeln') {
+      return '§ 11 Abs. 4 RBStV i.V.m. § 36 BMG';
+    }
+    if (
+      empfaengerBehoerdeId.startsWith('aok-') ||
+      empfaengerBehoerdeId === 'tk-hamburg'
+    ) {
+      return '§ 28a SGB IV (DEÜV)';
+    }
+    if (empfaengerBehoerdeId.startsWith('finanzamt-')) {
+      return '§ 36 BMG i.V.m. § 139b AO';
+    }
+    if (empfaengerBehoerdeId === 'bundesdruckerei') {
+      return '§ 28 PAuswG';
+    }
+    if (empfaengerBehoerdeId === 'kfz-berlin-labo') {
+      return '§ 15 FZV';
+    }
+    if (empfaengerBehoerdeId === 'abh-berlin-lea') {
+      return '§ 86 AufenthG';
+    }
+    if (empfaengerBehoerdeId.startsWith('familienkasse-')) {
+      return '§§ 67/68 EStG + § 36 BMG';
+    }
+    return '§ 36 BMG';
+  })();
+
+  const entry: UebermittlungsLogEntry = {
+    id: `log-${uuid()}`,
+    timestamp: new Date().toISOString(),
+    kategorie: block === 'B' ? 'app_aktivitaet' : 'behoerde_zu_behoerde',
+    field_id: 'anschrift_aktuell',
+    sektion: 'anschrift',
+    absender_behoerde_id: absenderBehoerdeId,
+    empfaenger_id: empfaengerBehoerdeId,
+    zweck_i18n_key: zweck,
+    rechtsgrundlage,
+    note: `persona_id:${personaId}; field_id:anschrift_aktuell; quelle:umzug_cascade; mock:true`,
+  };
+  try {
+    appendLogEntry(personaId, entry);
+  } catch (err) {
+    // Defensiv: Stammdaten-Log darf den Cascade-Run NICHT crashen.
+    if (typeof console !== 'undefined') {
+      console.warn('[umzug-autopilot] stammdaten log emit failed', err);
+    }
+  }
+}
+
 const FAILURE_RATE = 0.05;
 const isReliable = (): boolean => {
   if (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_RELIABLE === '1') return true;
@@ -379,6 +465,16 @@ export async function* umzugAutopilot(
       },
       letter,
     };
+
+    // Stammdaten-Activity-Log-Hook (Spec § 8.1): pro confirmed Block-A-Schritt
+    // ein `behoerde_zu_behoerde`-Eintrag. Absender ist das Bürgeramt der
+    // Anmeldung — kanonisch `buergeramt-berlin-mitte` für die V1-Demo.
+    emitStammdatenLogForCascadeStep({
+      personaId: persona.id,
+      absenderBehoerdeId: 'buergeramt-berlin-mitte',
+      empfaengerBehoerdeId: entry.behoerdeId,
+      block: 'A',
+    });
   }
 
   // ---------- Block D — vor Block B (entspricht Run-Reihenfolge der Spec) ----------
@@ -453,6 +549,16 @@ export async function* umzugAutopilot(
         requires_consent: true,
       },
     };
+
+    // Stammdaten-Activity-Log-Hook für Block B (consent-basiert; Empfänger
+    // ist privatrechtlich, daher `app_aktivitaet`-Kategorie statt
+    // `behoerde_zu_behoerde`).
+    emitStammdatenLogForCascadeStep({
+      personaId: persona.id,
+      absenderBehoerdeId: 'buergeramt-berlin-mitte',
+      empfaengerBehoerdeId: entry.behoerdeId,
+      block: 'B',
+    });
   }
 }
 

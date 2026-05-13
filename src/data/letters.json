@@ -27,7 +27,8 @@
       "steuerbescheid.saeumniszuschlag_info"
     ],
     "status": "gelesen",
-    "empfangen_am": "2026-03-12T08:14:00.000Z"
+    "empfangen_am": "2026-03-12T08:14:00.000Z",
+    "bescheid_dated_at": "2026-03-09"
   },
   {
     "id": "letter-aok-rechnung-zuzahlung",
@@ -74,7 +75,8 @@
       "beitragsservice-mahnung.befreiung_pruefen"
     ],
     "status": "gelesen",
-    "empfangen_am": "2026-01-08T07:30:00.000Z"
+    "empfangen_am": "2026-01-08T07:30:00.000Z",
+    "bescheid_dated_at": "2026-01-04"
   },
   {
     "id": "letter-abh-erinnerung-verlaengerung",
@@ -117,6 +119,7 @@
     "absender_behoerde_id": "familienkasse-berlin-brandenburg",
     "empfaenger_persona_id": "anna-petrov",
     "aktenzeichen": "[MOCK] 115FK668412",
+    "kanal": "brief",
     "betreff": "Ihr Kindergeld — Kindergeldnummer [MOCK] 115FK668412",
     "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nFamilienkasse Berlin-Brandenburg, 14460 Potsdam\n\nSehr geehrte Frau Petrov,\n\nin oben genannter Angelegenheit teilen wir Ihnen mit, dass Ihr Antrag auf Kindergeld für Ihren Sohn Lev (geb. 03.11.2024) bewilligt wurde.\n\nMonatlicher Anspruch: 250,00 €\nLaufzeit: ab 01.12.2024\n\nDie Auszahlung erfolgt monatlich auf das uns vorliegende Konto.\n\nMit freundlichen Grüßen\nFamilienkasse Berlin-Brandenburg\nAz. [MOCK] 115FK668412",
     "ai_summary": {
@@ -265,7 +268,8 @@
       "krankenkasse-beitrag.befreiung_pruefen"
     ],
     "status": "ungelesen",
-    "empfangen_am": "2026-05-15T10:00:00.000Z"
+    "empfangen_am": "2026-05-15T10:00:00.000Z",
+    "bescheid_dated_at": "2026-05-12"
   },
   {
     "id": "letter-schmidt-fa-steuerbescheid-2024",
@@ -291,7 +295,7 @@
       },
       {
         "typ": "einspruch",
-        "datum": "2026-06-12",
+        "datum": "2026-06-08",
         "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Einspruch eingelegt werden.",
         "citation_match": false,
         "rechtsgrundlage": "§ 355 AO"
@@ -304,7 +308,8 @@
       "steuerbescheid.saeumniszuschlag_info"
     ],
     "status": "ungelesen",
-    "empfangen_am": "2026-05-13T07:45:00.000Z"
+    "empfangen_am": "2026-05-13T07:45:00.000Z",
+    "bescheid_dated_at": "2026-05-08"
   },
   {
     "id": "letter-schmidt-beitragsservice-festsetzung",
@@ -333,7 +338,8 @@
       "beitragsservice-mahnung.befreiung_pruefen"
     ],
     "status": "ungelesen",
-    "empfangen_am": "2026-05-12T09:20:00.000Z"
+    "empfangen_am": "2026-05-12T09:20:00.000Z",
+    "bescheid_dated_at": "2026-05-08"
   },
   {
     "id": "letter-mehmet-fa-steuerbescheid-2024",
@@ -359,7 +365,7 @@
       },
       {
         "typ": "einspruch",
-        "datum": "2026-06-12",
+        "datum": "2026-06-04",
         "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Einspruch eingelegt werden.",
         "citation_match": false,
         "rechtsgrundlage": "§ 355 AO"
@@ -372,7 +378,8 @@
       "steuerbescheid.saeumniszuschlag_info"
     ],
     "status": "ungelesen",
-    "empfangen_am": "2026-05-08T06:30:00.000Z"
+    "empfangen_am": "2026-05-08T06:30:00.000Z",
+    "bescheid_dated_at": "2026-05-04"
   },
   {
     "id": "letter-mehmet-ihk-beitrag",
@@ -401,7 +408,8 @@
       "ihk-beitrag.abweichende_festsetzung_pruefen"
     ],
     "status": "ungelesen",
-    "empfangen_am": "2026-05-13T08:45:00.000Z"
+    "empfangen_am": "2026-05-13T08:45:00.000Z",
+    "bescheid_dated_at": "2026-05-09"
   },
   {
     "id": "letter-mehmet-bgw-beitrag",
@@ -436,7 +444,8 @@
       "berufsgenossenschaft-beitrag.widerspruch"
     ],
     "status": "ungelesen",
-    "empfangen_am": "2026-05-13T11:10:00.000Z"
+    "empfangen_am": "2026-05-13T11:10:00.000Z",
+    "bescheid_dated_at": "2026-05-09"
   },
   {
     "id": "letter-mehmet-krankenkasse-freiwillig",
@@ -465,7 +474,8 @@
       "krankenkasse-beitrag.befreiung_pruefen"
     ],
     "status": "ungelesen",
-    "empfangen_am": "2026-05-13T13:00:00.000Z"
+    "empfangen_am": "2026-05-13T13:00:00.000Z",
+    "bescheid_dated_at": "2026-05-10"
   },
   {
     "id": "letter-mehmet-beitragsservice-mahnung",
@@ -494,7 +504,8 @@
       "beitragsservice-mahnung.befreiung_pruefen"
     ],
     "status": "ungelesen",
-    "empfangen_am": "2026-05-12T07:00:00.000Z"
+    "empfangen_am": "2026-05-12T07:00:00.000Z",
+    "bescheid_dated_at": "2026-05-08"
   },
   {
     "id": "letter-anna-standesamt-eheschliessung-termin",
@@ -525,5 +536,49 @@
     ],
     "status": "ungelesen",
     "empfangen_am": "2026-05-08T09:15:00.000Z"
+  },
+  {
+    "id": "letter-renteninfo-anna-2026-05",
+    "absender_behoerde_id": "drv-berlin-brandenburg",
+    "empfaenger_persona_id": "anna-petrov",
+    "aktenzeichen": "[MOCK] 65 170395 P 042 / RI-2026",
+    "aktenzeichen_weitere": ["[MOCK] 65 170395 P 042"],
+    "betreff": "Ihre Renteninformation 2026 (§ 109 Abs. 1 SGB VI)",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nDeutsche Rentenversicherung Berlin-Brandenburg\nFriedrich-Ebert-Str. 34, 14469 Potsdam\n\nSehr geehrte Frau Petrov,\n\ndiese Renteninformation gibt Ihnen einen Überblick über Ihre bisher erworbenen Anwartschaften aus der gesetzlichen Rentenversicherung sowie eine Prognose Ihrer voraussichtlichen Regelaltersrente. Sie wird Ihnen gemäß § 109 Sozialgesetzbuch Sechstes Buch (SGB VI) jährlich übersandt.\n\n1. Grundlage der Berechnung: Beitragszeiten 01/2018 – 12/2025 (8,1 Jahre); 6,8 Entgeltpunkte erworben.\n2. Bei sofortiger voller Erwerbsminderung: 312,21 €/Monat.\n3. Prognose Regelaltersrente bei Erreichen Regelaltersgrenze 67 (ohne weitere Beiträge): 743,99 €/Monat.\n4. Wirkung künftiger Anpassungen: bei jährlicher Anpassung von durchschn. 2 % steigt der prognostizierte Wert um ca. 1.100 €/Monat bis zum Renteneintritt.\n5. Beitragsübersicht 2025: 8.414,52 € gesamt (davon Sie: 4.207,26 €; Arbeitgeber: 4.207,26 €).\n\nVoraussetzung dieser Prognose: Mindestversicherungszeit nach § 50 SGB VI ist erfüllt.\n\nDiese Mitteilung ist maschinell erstellt und auch ohne Unterschrift gültig. Bei Fragen zu Ihrer Rente nutzen Sie bitte unser Online-Kundenportal eservice-drv.de oder vereinbaren einen Termin in einer unserer Beratungsstellen.\n\nMit freundlichen Grüßen\nDeutsche Rentenversicherung Berlin-Brandenburg\nAz. [MOCK] 65 170395 P 042 / RI-2026",
+    "ai_summary": {
+      "de": "Renteninformation 2026 — fünf Pflicht-Inhalte (§ 109 Abs. 3 SGB VI): 6,8 Entgeltpunkte; EM-Renten-Prognose 312 €/Monat; Regelalter-Prognose 744 €/Monat; Anpassungs-Plus ~1.100 €/Monat; Beiträge 2025 = 8.415 €.",
+      "pre_open": {
+        "text": "DRV Berlin-Brandenburg · Renteninformation · Keine Frist",
+        "generated_at": "2026-05-08T10:14:00.000Z"
+      },
+      "post_open": {
+        "bullets": [
+          { "text": "Grundlage der Berechnung: 01/2018 – 12/2025 (8,1 Jahre Beitragszeit); 6,8 Entgeltpunkte erworben." },
+          { "text": "Bei sofortiger voller Erwerbsminderung: 312,21 €/Monat." },
+          { "text": "Prognose Regelaltersrente (67, ohne weitere Beiträge): 743,99 €/Monat." },
+          { "text": "Wirkung künftiger Anpassungen: ca. +1.100 €/Monat bis Renteneintritt bei 2 % p.a." },
+          { "text": "Beitragsübersicht 2025: 8.414,52 € gesamt (Sie/Arbeitgeber je 4.207,26 €)." }
+        ],
+        "citations": [
+          { "bullet_index": 0, "original_zitat": "Grundlage der Berechnung: Beitragszeiten 01/2018 – 12/2025 (8,1 Jahre); 6,8 Entgeltpunkte erworben." },
+          { "bullet_index": 1, "original_zitat": "Bei sofortiger voller Erwerbsminderung: 312,21 €/Monat." },
+          { "bullet_index": 2, "original_zitat": "Prognose Regelaltersrente bei Erreichen Regelaltersgrenze 67 (ohne weitere Beiträge): 743,99 €/Monat." },
+          { "bullet_index": 3, "original_zitat": "Wirkung künftiger Anpassungen: bei jährlicher Anpassung von durchschn. 2 % steigt der prognostizierte Wert um ca. 1.100 €/Monat bis zum Renteneintritt." },
+          { "bullet_index": 4, "original_zitat": "Beitragsübersicht 2025: 8.414,52 € gesamt (davon Sie: 4.207,26 €; Arbeitgeber: 4.207,26 €)." }
+        ],
+        "generated_at": "2026-05-08T10:14:00.000Z",
+        "model": "claude-haiku-4-5-20251001"
+      }
+    },
+    "archetype": "renteninfo",
+    "auth_channel": "briefpost",
+    "fristen": [],
+    "was_kann_ich_tun_options": [
+      "renteninfo.in_stammdaten_ablegen",
+      "renteninfo.drv_kundenportal_oeffnen"
+    ],
+    "status": "ungelesen",
+    "empfangen_am": "2026-05-08T10:14:00.000Z",
+    "bescheid_dated_at": "2026-05-04"
   }
 ]

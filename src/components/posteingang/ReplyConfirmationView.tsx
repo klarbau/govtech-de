@@ -9,23 +9,30 @@ import { cn, formatDateDe, formatTimeDe } from '@/lib/utils';
 import type { Reply } from '@/types';
 
 interface ReplyConfirmationViewProps {
-  reply: Reply;
+  /**
+   * Eine oder mehrere bereits gesendete Replies, chronologisch aufsteigend
+   * sortiert (`sent_at ?? created_at`). Cross-Template-Versand-Pfad
+   * (Spec § 8.3 step 5) übergibt 2 Replies — beide werden gestapelt
+   * gerendert. Single-Reply-Pfad übergibt ein Array der Länge 1.
+   */
+  replies: Reply[];
   letterId: string;
   empfaengerBehoerde: string;
   /** Heute-Kanal-Realitäts-Check (z. B. „Familienkasse-Online"). */
   kanalHeute: string;
   onClose: () => void;
-  onViewSubmittedBody: () => void;
+  onViewSubmittedBody: (reply: Reply) => void;
   className?: string;
 }
 
 /**
  * [MOCK] Versand-Bestätigungs-View, gerendert im Sheet nach erfolgreichem
  * `sendReplySimulated` (Spec §4.4). Read-only — Body + Anhänge + Kanal +
- * Realitäts-Check.
+ * Realitäts-Check. Bei Cross-Template-Versand (Spec § 8.3) werden zwei
+ * Reply-Karten vertikal gestapelt.
  */
 export function ReplyConfirmationView({
-  reply,
+  replies,
   letterId,
   empfaengerBehoerde,
   kanalHeute,
@@ -34,13 +41,6 @@ export function ReplyConfirmationView({
   className,
 }: ReplyConfirmationViewProps) {
   const t = useTranslations('posteingang.compose.confirmation');
-
-  const sentAt = reply.sent_at
-    ? t('sent_at_template', {
-        datum: formatDateDe(reply.sent_at),
-        uhrzeit: formatTimeDe(reply.sent_at),
-      })
-    : '';
 
   const receiptText = t('full_receipt_template', {
     kanal_speculative_2027_text: t('kanal_speculative_2027_text'),
@@ -71,6 +71,57 @@ export function ReplyConfirmationView({
         </div>
       </header>
 
+      <div className="flex flex-col gap-3">
+        {replies.map((reply, index) => (
+          <ReplyCard
+            key={reply.id ?? `${reply.sent_at ?? reply.created_at}-${index}`}
+            reply={reply}
+            onViewSubmittedBody={() => onViewSubmittedBody(reply)}
+          />
+        ))}
+      </div>
+
+      <div className="rounded-lg border border-border bg-muted/40 p-3 text-xs leading-relaxed text-muted-foreground">
+        {receiptText}
+      </div>
+
+      <p className="text-xs leading-relaxed text-muted-foreground">
+        {t('kanal_realitaetscheck_template', { kanal_heute: kanalHeute })}
+      </p>
+
+      <div className="flex flex-wrap items-center gap-2 pt-2">
+        <Link
+          href={`/datenschutz?letter=${encodeURIComponent(letterId)}`}
+          className="text-xs underline underline-offset-4 text-muted-foreground hover:text-foreground"
+        >
+          {t('cta_view_in_cockpit')}
+        </Link>
+        <span className="ml-auto" aria-hidden="true" />
+        <Button type="button" size="sm" onClick={onClose}>
+          {t('cta_close')}
+        </Button>
+      </div>
+    </section>
+  );
+}
+
+interface ReplyCardProps {
+  reply: Reply;
+  onViewSubmittedBody: () => void;
+}
+
+function ReplyCard({ reply, onViewSubmittedBody }: ReplyCardProps) {
+  const t = useTranslations('posteingang.compose.confirmation');
+
+  const sentAt = reply.sent_at
+    ? t('sent_at_template', {
+        datum: formatDateDe(reply.sent_at),
+        uhrzeit: formatTimeDe(reply.sent_at),
+      })
+    : '';
+
+  return (
+    <div className="flex flex-col gap-3 rounded-lg border border-border bg-background/40 p-3">
       <dl className="grid gap-x-4 gap-y-2 text-xs sm:grid-cols-[auto_1fr]">
         <dt className="font-medium text-muted-foreground">
           {t('metadata_label_sent_at')}
@@ -109,29 +160,16 @@ export function ReplyConfirmationView({
         </dd>
       </dl>
 
-      <div className="rounded-lg border border-border bg-muted/40 p-3 text-xs leading-relaxed text-muted-foreground">
-        {receiptText}
-      </div>
-
-      <p className="text-xs leading-relaxed text-muted-foreground">
-        {t('kanal_realitaetscheck_template', { kanal_heute: kanalHeute })}
-      </p>
-
-      <div className="flex flex-wrap items-center gap-2 pt-2">
-        <Button type="button" variant="outline" size="sm" onClick={onViewSubmittedBody}>
+      <div>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={onViewSubmittedBody}
+        >
           {t('view_sent_link')}
         </Button>
-        <Link
-          href={`/datenschutz?letter=${encodeURIComponent(letterId)}`}
-          className="text-xs underline underline-offset-4 text-muted-foreground hover:text-foreground"
-        >
-          {t('cta_view_in_cockpit')}
-        </Link>
-        <span className="ml-auto" aria-hidden="true" />
-        <Button type="button" size="sm" onClick={onClose}>
-          {t('cta_close')}
-        </Button>
       </div>
-    </section>
+    </div>
   );
 }

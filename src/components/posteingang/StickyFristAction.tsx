@@ -16,12 +16,18 @@ import {
 
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import type { LetterFrist } from '@/types';
+import type { LetterFrist, Reply } from '@/types';
 
 interface StickyFristActionProps {
   fristen: LetterFrist[];
   /** Bereits beantwortet → Datum für „Bereits beantwortet am" Hinweis. */
   alreadyRepliedAt: string | null;
+  /**
+   * Alle gesendeten Replies, chronologisch aufsteigend (Spec § 8.5). Bei
+   * `replies.length >= 2` rendert der Hint die dual-template-Variante mit
+   * den Labels der beiden letzten Replies.
+   */
+  replies?: Reply[];
   /** Existierender Draft → CTA-Label wechselt auf „Entwurf weiter schreiben". */
   hasDraft: boolean;
   /** Reply existiert → Reply-Button wird zu „Erneut antworten" / „Versendete Antwort anzeigen". */
@@ -48,6 +54,7 @@ interface StickyFristActionProps {
 export function StickyFristAction({
   fristen,
   alreadyRepliedAt,
+  replies,
   hasDraft,
   hasSentReply,
   onCalendar,
@@ -61,6 +68,7 @@ export function StickyFristAction({
 }: StickyFristActionProps) {
   const t = useTranslations('posteingang.sticky_action');
   const tReader = useTranslations('posteingang.reader');
+  const tPicker = useTranslations('posteingang.compose.template_picker');
 
   const earliest = fristen[0];
   const fristLabel = (() => {
@@ -89,6 +97,43 @@ export function StickyFristAction({
     ? format(parseISO(alreadyRepliedAt), 'dd.MM.yyyy', { locale: de })
     : null;
 
+  /**
+   * Spec § 8.5 — Cross-Template-Versand-Pfad: bei zwei oder mehr versendeten
+   * Replies wird der dual-template-Hint genutzt. Für 3+ Replies werden die
+   * zwei letzten (chronologisch jüngsten) verwendet.
+   */
+  function lookupTemplateLabel(reply: Reply): string {
+    if (!reply.template_id) return t('cta_reply');
+    try {
+      return tPicker(`${reply.template_id}.label`);
+    } catch {
+      return reply.template_id;
+    }
+  }
+  const sentReplies = (replies ?? []).filter(
+    (r) => r.status === 'sent_simulated',
+  );
+  const isDualTemplateReply = sentReplies.length >= 2;
+  const dualTemplateHint = (() => {
+    if (!isDualTemplateReply) return null;
+    const lastTwo = sentReplies.slice(-2);
+    const [a, b] = lastTwo;
+    if (!a || !b) return null;
+    const refDate = b.sent_at ?? a.sent_at;
+    if (!refDate) return null;
+    let datum: string;
+    try {
+      datum = format(parseISO(refDate), 'dd.MM.yyyy', { locale: de });
+    } catch {
+      datum = refDate;
+    }
+    return t('already_replied_dual_template', {
+      datum,
+      template_a_label: lookupTemplateLabel(a),
+      template_b_label: lookupTemplateLabel(b),
+    });
+  })();
+
   return (
     <aside
       aria-label={t('overflow_label')}
@@ -109,11 +154,15 @@ export function StickyFristAction({
         >
           {fristLabel}
         </span>
-        {alreadyRepliedAt && formattedReplyDate && (
+        {dualTemplateHint ? (
+          <span className="text-xs text-muted-foreground">
+            {dualTemplateHint}
+          </span>
+        ) : alreadyRepliedAt && formattedReplyDate ? (
           <span className="text-xs text-muted-foreground">
             {t('already_replied_template', { datum: formattedReplyDate })}
           </span>
-        )}
+        ) : null}
       </div>
       <div className="flex flex-wrap items-center gap-2">
         {earliest && earliest.citation_match !== false && (

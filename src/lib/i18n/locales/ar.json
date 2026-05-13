@@ -50,7 +50,14 @@
     "frist": {
       "gesetzlich": "مهلة قانونية",
       "unverzueglich": "دون تأخير",
-      "vertraglich": "مهلة تعاقدية"
+      "vertraglich": "مهلة تعاقدية",
+      "zahlung": "دفع",
+      "einspruch": "اعتراض",
+      "widerspruch": "تظلم",
+      "klage": "دعوى",
+      "nachweis": "إثبات",
+      "antragstellung": "طلب",
+      "sonstige": "مهلة"
     },
     "disclaimer": {
       "prototype_title": "ملاحظة حول النموذج الأوّلي",
@@ -502,6 +509,7 @@
       "cta_reply_again": "الرد مجدداً",
       "cta_reply_view_sent": "عرض الرد المُرسل",
       "already_replied_template": "تم الرد في {datum}",
+      "already_replied_dual_template": "تم الرد في {datum} برسالتين ({template_a_label} + {template_b_label})",
       "overflow_label": "إجراءات أخرى",
       "overflow": {
         "speichern": "حفظ الرسالة (.txt)",
@@ -551,6 +559,21 @@
           "label": "كتابة نص خاص",
           "description": "البدء دون قالب.",
           "icon": "📝"
+        },
+        "rechtsbehelf_einspruch_skelett": {
+          "label": "تقديم اعتراض (Einspruch)",
+          "description": "رسالة هيكلية تتضمن البيانات الإلزامية — تكتب التسبيب بنفسك.",
+          "icon": "⚖️"
+        },
+        "rechtsbehelf_widerspruch_skelett": {
+          "label": "تقديم تظلم (Widerspruch)",
+          "description": "رسالة هيكلية تتضمن البيانات الإلزامية — تكتب التسبيب بنفسك.",
+          "icon": "🛡️"
+        },
+        "aussetzung_vollziehung_skelett": {
+          "label": "تقديم طلب وقف التنفيذ (Aussetzung der Vollziehung)",
+          "description": "§ 361 من القانون الضريبي (Abgabenordnung, AO) — هيكل الطلب، تكتب التسبيب بنفسك.",
+          "icon": "⏸️"
         }
       },
       "templates": {
@@ -578,7 +601,75 @@
         },
         "freitext": {
           "disclaimer_inline": "أنت تكتب دون قالب. التاريخ ورقم الملف (Aktenzeichen) والمستلِم مُعَبَّأة مسبقاً من الرسالة."
+        },
+        "rechtsbehelf_einspruch_skelett": {
+          "label": "تقديم اعتراض (Einspruch)",
+          "beschreibung": "رسالة هيكلية تتضمن البيانات الإلزامية — تكتب التسبيب بنفسك.",
+          "disclaimer_pre_insertion": "يتضمن هذا القالب البيانات الإلزامية فقط (التاريخ ورقم الملف والمستلِم وإعلان وسيلة الطعن). **تكتب التسبيب بنفسك** — والتطبيق لا يقترح حججاً، لأن تقييم حالتك الفردية خدمة قانونية بمفهوم § 2 من قانون الخدمات القانونية (Rechtsdienstleistungsgesetz, RDG) ولا يجوز إلا للمحامين أو الأشخاص المسجلين أو مراكز المستهلكين (Verbraucherzentralen) أو الجمعيات الاجتماعية (Sozialverbände).",
+          "disclaimer_inline": "ملاحظة: تكتب التسبيب بنفسك — والتطبيق لا يولّده."
+        },
+        "rechtsbehelf_widerspruch_skelett": {
+          "label": "تقديم تظلم (Widerspruch)",
+          "beschreibung": "رسالة هيكلية تتضمن البيانات الإلزامية — تكتب التسبيب بنفسك.",
+          "disclaimer_pre_insertion": "يتضمن هذا القالب البيانات الإلزامية فقط (التاريخ ورقم الملف والمستلِم وإعلان وسيلة الطعن). **تكتب التسبيب بنفسك** — والتطبيق لا يقترح حججاً، لأن تقييم حالتك الفردية خدمة قانونية بمفهوم § 2 من قانون الخدمات القانونية (Rechtsdienstleistungsgesetz, RDG) ولا يجوز إلا للمحامين أو الأشخاص المسجلين أو مراكز المستهلكين (Verbraucherzentralen) أو الجمعيات الاجتماعية (Sozialverbände).",
+          "disclaimer_inline": "ملاحظة: تكتب التسبيب بنفسك — والتطبيق لا يولّده.",
+          "disclaimer_pre_insertion_zusatz_sgg": "في القرارات الصادرة عن جهة من جهات الضمان الاجتماعي تكون **Widerspruch** (التظلم) هي وسيلة الطعن الصحيحة — لا الـ Einspruch (§ 84 من قانون المحكمة الاجتماعية، Sozialgerichtsgesetz, SGG). انتبه أيضاً: تظل الاشتراكات مستحقة الأداء بالرغم من التظلم (§ 86a الفقرة 2 رقم 1 SGG).",
+          "disclaimer_pre_insertion_zusatz_vwgo": "انتبه: حتى الـ Widerspruch ليس له أثر موقف في شؤون الاشتراكات (§ 80 الفقرة 2 رقم 1 من قانون قضاء الإدارة، Verwaltungsgerichtsordnung, VwGO) — يبقى الالتزام مستحقاً بالرغم من التظلم."
+        },
+        "aussetzung_vollziehung_skelett": {
+          "label": "تقديم طلب وقف التنفيذ (Aussetzung der Vollziehung)",
+          "beschreibung": "§ 361 من القانون الضريبي (Abgabenordnung, AO) — هيكل الطلب، تكتب التسبيب بنفسك.",
+          "disclaimer_pre_insertion": "وقف التنفيذ **لا يُمنح تلقائياً** — تنظر الجهة في كل طلب باستقلالية (§ 361 الفقرة 2 من القانون الضريبي، Abgabenordnung, AO). تستمر زيادات التأخير وفق § 240 AO في النشوء طالما لم يُمنح الوقف. يفترض هذا القالب أنك قد قدّمت اعتراضاً (Einspruch) أو تقدّمه في الوقت ذاته.",
+          "disclaimer_inline": "ملاحظة: لا يُمنح وقف التنفيذ تلقائياً — وتستمر زيادات التأخير في النشوء حتى تبتّ الجهة."
         }
+      },
+      "pre_insertion_modal": {
+        "einspruch_ao": {
+          "title": "قدِّم الاعتراض إلى الجهة الصحيحة",
+          "body": "يُقدَّم الاعتراض (Einspruch) إلى الجهة التي يُطعن في قرارها الإداري (§ 357 الفقرة 2 الجملة 1 من القانون الضريبي، Abgabenordnung, AO). أخذنا من ترويسة الرسالة „{empfaenger_behoerde}“ مستلِماً. يُرجى التحقق من عنوان المستلِم بنفسك — الاعتراض المُقدَّم لجهة غير صحيحة لا يحفظ المهلة إلا إذا وصل الجهة المختصة قبل انقضاء المهلة (§ 357 الفقرة 2 الجملة 4 AO).",
+          "cta_continue": "إدراج القالب",
+          "cta_cancel": "إلغاء"
+        },
+        "einspruch_ao_familienkasse_zusatz": "ملاحظة: يُطعن في قرارات إعانة الأطفال (Kindergeld) وفق قواعد القانون الضريبي (Abgabenordnung, AO) — لا وفق قانون المحكمة الاجتماعية (Sozialgerichtsgesetz). تستند المهلة والشكل إلى § 357 AO. ذلك لأن إعانة الأطفال هي امتياز ضريبي بمفهوم § 31 من قانون ضريبة الدخل (Einkommensteuergesetz, EStG) (BFH III R 26/22, 2023).",
+        "widerspruch_sgg": {
+          "title": "قدِّم التظلم إلى الجهة الصحيحة",
+          "body": "يُقدَّم التظلم (Widerspruch) في شأن الضمان الاجتماعي إلى الجهة التي أصدرت القرار (§ 84 الفقرة 2 الجملة 1 من قانون المحكمة الاجتماعية، Sozialgerichtsgesetz, SGG). أخذنا من ترويسة الرسالة „{empfaenger_behoerde}“ مستلِماً. يُرجى التحقق من عنوان المستلِم بنفسك — التقديم لجهة ألمانية أخرى يحفظ المهلة فقط لأن تلك الجهة ملزمة بإحالة التظلم دون تأخير إلى الجهة المختصة (§ 84 الفقرة 2 الجملة 2 SGG).",
+          "cta_continue": "إدراج القالب",
+          "cta_cancel": "إلغاء"
+        },
+        "widerspruch_vwgo": {
+          "title": "قدِّم التظلم إلى الجهة الصحيحة",
+          "body": "يُقدَّم التظلم (Widerspruch) إلى الجهة التي أصدرت القرار الإداري المطعون فيه (§ 70 الفقرة 1 الجملة 1 من قانون قضاء الإدارة، Verwaltungsgerichtsordnung, VwGO). أخذنا من ترويسة الرسالة „{empfaenger_behoerde}“ مستلِماً. يُرجى التحقق من عنوان المستلِم بنفسك — في بعض الولايات الاتحادية (مثل بافاريا) أُلغي إجراء التظلم في مجالات معينة؛ في تلك الحالات تُرفع الدعوى مباشرة إلى المحكمة الإدارية (Verwaltungsgericht) بدل التظلم.",
+          "cta_continue": "إدراج القالب",
+          "cta_cancel": "إلغاء"
+        },
+        "aussetzung_ao": {
+          "title": "وقف التنفيذ — ملاحظات مهمة",
+          "body": "يُقدَّم طلب وقف التنفيذ (Aussetzung der Vollziehung) إلى الجهة المالية التي أصدرت القرار المطعون فيه (§ 361 الفقرة 2 الجملة 1 من القانون الضريبي، Abgabenordnung, AO). وهو **لا يُمنح تلقائياً** — لا تمنحه الجهة إلا عند وجود شكوك جدية في المشروعية أو إذا كان التنفيذ يُشكل عسراً غير مستحق (§ 361 الفقرة 2 الجملة 2 AO). تستمر زيادات التأخير وفق § 240 AO في النشوء طالما لم يُمنح الوقف؛ كما يفترض الوقف أن يكون قد سبق تقديم اعتراض (Einspruch).",
+          "cta_continue": "إدراج القالب",
+          "cta_cancel": "إلغاء"
+        }
+      },
+      "frist_cited_format": {
+        "einspruch_ao": "أمامك **شهر واحد** من تاريخ تبليغ القرار لتقديم اعتراض — **§ 355 الفقرة 1 من القانون الضريبي (Abgabenordnung, AO)**. تنتهي المهلة في {frist_datum}.",
+        "widerspruch_sgg": "أمامك **شهر واحد** من تاريخ تبليغ القرار لتقديم تظلم — **§ 84 الفقرة 1 من قانون المحكمة الاجتماعية (Sozialgerichtsgesetz, SGG)**. تنتهي المهلة في {frist_datum}.",
+        "widerspruch_vwgo": "أمامك **شهر واحد** من تاريخ تبليغ القرار لتقديم تظلم — **§ 70 الفقرة 1 الجملة 1 من قانون قضاء الإدارة (Verwaltungsgerichtsordnung, VwGO)**. تنتهي المهلة في {frist_datum}.",
+        "aussetzung_ao": "يمكنك تقديم طلب وقف التنفيذ في أي وقت ما دام إجراء الاعتراض جارياً — **§ 361 الفقرة 2 من القانون الضريبي (Abgabenordnung, AO)**. لا توجد مهلة مستقلة، لكن التقديم السريع مهم لأن زيادات التأخير وفق § 240 AO تستمر في النشوء."
+      },
+      "bekanntgabe_caveat": "ملاحظة: أُتيح هذا القرار إلكترونياً عبر Mein ELSTER. يُعدّ **اليوم الرابع** بعد الإتاحة تاريخاً للتبليغ (§ 122a الفقرة 4 من القانون الضريبي، Abgabenordnung, AO). لذلك تنتهي المهلة بعد أربعة أيام مقارنة بالتبليغ بالبريد الورقي.",
+      "bekanntgabe_caveat_summary": "متى تبدأ المهلة؟ ملاحظات حول التبليغ الإلكتروني",
+      "frist_abgelaufen_warnung": "وفقاً لبياناتنا انقضت المهلة المذكورة في القرار في {frist_datum}. التقديم المتأخر ممكن، لكنه يُرفض عادةً بوصفه غير مقبول — إلا إذا كانت إرشادات وسيلة الطعن في القرار معيبة (فتسري عندئذ مهلة سنة) أو توافرت شروط إعادة الحال إلى ما كانت عليه (Wiedereinsetzung in den vorigen Stand). يُرجى استشارة مركز المستهلكين (Verbraucherzentrale) أو جمعية اجتماعية (Sozialverband) أو محامٍ قبل التقديم.",
+      "skelett_footer_no_legal_advice": "يُرجى تقييم فرص نجاح وسيلة الطعن لديك من خلال مركز المستهلكين (Verbraucherzentrale) أو جمعية اجتماعية (Sozialverband) أو محامٍ — لا يُقدِّم التطبيق هذا التقييم.",
+      "skelett_visibility_explainer": {
+        "kein_rechtsbehelf_bei_mitwirkung": "ملاحظة: هذه الرسالة طلب تعاون، لا قرار (Bescheid). لا يمكنك (بعد) تقديم وسيلة طعن هنا — يُرجى تقديم المستند المطلوب أو طلب تمديد المهلة."
+      },
+      "template_switch": {
+        "dual_send": "إرسال كليهما كرسالتين منفصلتين",
+        "discard_and_switch": "حذف المسودة الحالية والتبديل",
+        "cancel": "إلغاء"
+      },
+      "cross_send": {
+        "reply1_sent_announcement": "تم إرسال الرد ١. جارٍ تحضير الرد ٢ …"
       },
       "body_textarea_label": "نص الرد (بالألمانية)",
       "body_textarea_de_hint": "الجهات تقرأ بالألمانية — يُرجى الكتابة بالألمانية.",
@@ -649,6 +740,498 @@
       "row_meta_template": "رقم الملف {aktenzeichen} · آخر تعديل قبل {relTime}",
       "row_cta": "متابعة الكتابة",
       "empty_state_hint": "لا توجد مسودات مفتوحة."
+    },
+    "bridge": {
+      "renten_cta_label": "حفظ القيم في بياناتي الشخصية",
+      "renten_already_applied": "محفوظة بالفعل في {datum} في قسم «التأمين التقاعدي» (Altersvorsorge)",
+      "renten_toast_success": "حُفظت معلومات التقاعد (Renteninformation) في قسم «التأمين التقاعدي» (Altersvorsorge)",
+      "renten_navigate_label": "الانتقال إلى قسم «التأمين التقاعدي» (Altersvorsorge)",
+      "renten_section_title": "حفظ القيم في بياناتي الأساسية (Stammdaten)",
+      "renten_section_subtitle": "من معلومات التقاعد هذه (Renteninformation) ننقل البنود الخمسة الإلزامية (§ 109 Abs. 3 SGB VI) إلى قسم «التأمين التقاعدي» (Altersvorsorge) في بياناتك الأساسية.",
+      "renten_toast_already_applied": "تم نقل معلومات التقاعد هذه (Renteninformation) من قبل.",
+      "renten_toast_error": "فشل النقل — يرجى المحاولة مرة أخرى."
+    }
+  },
+  "stammdaten": {
+    "page": {
+      "title": "البيانات الأساسية (Stammdaten)",
+      "loading": "يتم تحميل الملف الشخصي …",
+      "refreshing": "يتم تحديث الملف الشخصي.",
+      "error_load": "تعذَّر تحميل الملف الشخصي — هل تريدون المحاولة مجدداً؟",
+      "error_retry": "إعادة المحاولة",
+      "religion_consent_error": "تعذَّر تفعيل عرض الانتماء الديني.",
+      "sperre_error": "تعذَّر تفعيل الحجب.",
+      "iban_push_error": "تعذَّر محاكاة إرسال IBAN.",
+      "beschaeftigung_heading": "العمل (تجميع للقراءة فقط)",
+      "beschaeftigung_helper": "تُحفظ هذه الحقول خارج سجل التسجيل (DRV، شركة التأمين الصحي، مكتب الضرائب) وتُعرَض هنا فقط بصورة مجمَّعة."
+    },
+    "tab": {
+      "aria_label": "أقسام البيانات الأساسية",
+      "profil": { "label": "ملفي الشخصي" },
+      "wallet": { "label": "المحفظة والجهات الخارجية المستلمة" }
+    },
+    "hero": {
+      "eyebrow": "مصدر بيانات موحَّد",
+      "title": "قمرة قيادة حماية البيانات (Datenschutzcockpit) — مرحلة تجريبية",
+      "title_with_name": "البيانات الأساسية لـ {name}",
+      "summary": "أنتم مسجَّلون في {register_count} من السجلات الحكومية.",
+      "last_transmission": "آخر إرسال: قبل {dauer} — {feld} من {absender} إلى {empfaenger}. الأساس القانوني: {rechtsgrundlage}.",
+      "cta_full_log": "فتح سجل النشاط الكامل",
+      "empty_state": "لا توجد عمليات إرسال حديثة — أهلاً بكم!",
+      "dsc_pilot_phase_label": "قمرة قيادة حماية البيانات (Datenschutzcockpit) — مرحلة تجريبية",
+      "dsc_pilot_tooltip": "ربط تدريجي: انضم المكتب الاتحادي للسيارات (Kraftfahrt-Bundesamt) إلى إجراء IDA منذ 04/2026 (يتبعه الربط بـ DSC)، والوكالة الاتحادية للتشغيل / سجل STEP في المرحلة التجريبية. الربط الشامل لجميع 51 سجلاً ضمن RegMoG يقع ضمن خارطة طريق 2026/2027.",
+      "vision_2027_banner_title": "رؤية 2027: تقارب BundID + DSC + EUDI Wallet",
+      "vision_2027_banner_body": "تعرض هذه الواجهة كيف يمكن أن تبدو رؤية مواطن متقاربة في صورة 2027 الافتراضية — خدمة البيانات الأساسية BundID، وقمرة قيادة حماية البيانات (Datenschutzcockpit) وفقاً لقانون رقم التعريف (Identifikationsnummerngesetz, IDNrG)، و PID لمحفظة EUDI. اليوم (مايو 2026) لم يتحقق هذا التقارب بعد.",
+      "disclaimer_lese_title": "ملاحظة: طبقة قراءة وإرشاد",
+      "disclaimer_audit_title": "ملاحظة: سجل النشاط الداخلي للتطبيق"
+    },
+    "sektion": {
+      "identitaet": { "title": "الهوية" },
+      "anschrift": { "title": "العنوان" },
+      "familie": { "title": "العائلة" },
+      "dokumente": { "title": "الوثائق" },
+      "sperren_einstellungen": { "title": "أوامر الحجب والإعدادات" },
+      "altersvorsorge": {
+        "title": "التأمين التقاعدي (Altersvorsorge)",
+        "subtitle": "التقاعد القانوني وصناديق التقاعد المهنية والتأمين الخاص — نظرة عامة"
+      },
+      "kv_pflege": {
+        "title": "التأمين الصحي والرعاية",
+        "subtitle": "صندوق التأمين الصحي وملف المريض الإلكتروني (ePA) والوصفة الإلكترونية (eRezept) والرعاية"
+      },
+      "kontakt_postfach": { "title": "التواصل وصندوق البريد (Kontakt & Postfach)" },
+      "notification_praeferenzen": { "title": "تفضيلات الإشعارات (رؤية 2027)" },
+      "sr_field_count": "{count, plural, =0 {لا حقول في هذا القسم} =1 {حقل واحد في هذا القسم} =2 {حقلان في هذا القسم} few {# حقول في هذا القسم} many {# حقلاً في هذا القسم} other {# حقل في هذا القسم}}",
+      "aktivitaet_aside_label": "سجل النشاط لهذا القسم"
+    },
+    "field_card": {
+      "quelle_label": "المصدر",
+      "letztes_update_label": "آخر تحديث",
+      "value_empty": "—",
+      "reveal_religion": "عرض الانتماء الديني"
+    },
+    "cta": {
+      "korrigieren": "فتح مسار التصحيح",
+      "korrekturweg_label": "مسار التصحيح",
+      "familie_preview": "{partner} شريك / {kinder} طفل",
+      "sperre_aktivieren": "تفعيل الحجب (عرض توضيحي)",
+      "iban_push_trigger": "محاكاة إرسال IBAN"
+    },
+    "field": {
+      "familienname": { "label": "اسم العائلة" },
+      "fruehere_namen": { "label": "الأسماء السابقة" },
+      "vornamen": { "label": "الأسماء الشخصية" },
+      "doktorgrad": { "label": "درجة الدكتوراه (Doktorgrad)" },
+      "geburtsdatum": { "label": "تاريخ الميلاد" },
+      "geburtsort": { "label": "مكان الميلاد" },
+      "staatsangehoerigkeit": { "label": "الجنسية" },
+      "steuer_id": { "label": "رقم التعريف الضريبي (Steuer-IdNr)" },
+      "anschrift_aktuell": { "label": "العنوان الرئيسي الحالي" },
+      "anschriften_historisch": { "label": "العناوين السابقة" },
+      "familienstand": { "label": "الحالة المدنية" },
+      "partner": { "label": "الزوج/الزوجة أو الشريك المسجل" },
+      "kinder": { "label": "الأطفال" },
+      "eheschliessung": { "label": "الزواج / المعاشرة المسجلة" },
+      "personalausweis": { "label": "بطاقة الهوية الوطنية (Personalausweis)" },
+      "reisepass": { "label": "جواز السفر (Reisepass)" },
+      "eat_can": { "label": "تصريح الإقامة الإلكتروني (eAT) — CAN" },
+      "azr_nr": { "label": "رقم AZR (Ausländerzentralregister)" },
+      "religionszugehoerigkeit": { "label": "الانتماء الديني" },
+      "kontakt_email": { "label": "عنوان البريد الإلكتروني" },
+      "kontakt_mobil": { "label": "رقم الهاتف المحمول" },
+      "sprachpraeferenz": { "label": "تفضيل اللغة" },
+      "iban": { "label": "رقم IBAN لاسترداد المبالغ" },
+      "uebermittlungssperren": { "label": "حجب الإرسال (Übermittlungssperren، §§ 42 Abs. 3, 50 Abs. 5 BMG)" },
+      "kvnr": { "label": "رقم التأمين الصحي (KVNR)" },
+      "drv_versicherungsnummer": { "label": "رقم التأمين التقاعدي (DRV)" },
+      "elstam": { "label": "ELStAM (الفئة الضريبية والإعفاءات)" },
+      "geschlecht": {
+        "label": "تسجيل الجنس (Geschlechtseintrag)",
+        "value": {
+          "m": "ذكر",
+          "w": "أنثى",
+          "d": "متنوِّع (divers)",
+          "x": "بلا قيد (X)",
+          "unbestimmt": "غير محدَّد"
+        }
+      },
+      "religion": {
+        "value": {
+          "rk": "كاثوليكي روماني",
+          "ev": "إنجيلي",
+          "ohne": "بلا انتماء ديني",
+          "andere": "أخرى"
+        }
+      },
+      "auskunftssperre": {
+        "label": "حجب المعلومات (Auskunftssperre، § 51 Abs. 1 BMG)",
+        "value": {
+          "aktiv": "مُفعَّل (نمط توضيحي)",
+          "inaktiv": "غير مُفعَّل"
+        }
+      },
+      "uebermittlungssperre": {
+        "value": {
+          "aktiv": "مُفعَّل (نمط توضيحي)",
+          "inaktiv": "غير مُفعَّل"
+        }
+      },
+      "uebermittlungssperre_42_3": {
+        "label": "حجب الإرسال للجماعات الدينية (§ 42 Abs. 3 BMG)"
+      },
+      "beschaeftigung": {
+        "typ": { "label": "نوع العمل" },
+        "arbeitgeber": { "label": "صاحب العمل" },
+        "kvnr": { "label": "KVNR" },
+        "drv": { "label": "رقم DRV" }
+      }
+    },
+    "korrekturweg": {
+      "familienname": { "pointer": "التصحيح في مكتب السجل المدني (Standesamt) وفقاً لـ § 1355 BGB / § 45 PStG." },
+      "fruehere_namen": { "pointer": "التصحيح في مكتب السجل المدني (Standesamt) وفقاً لـ § 45 PStG." },
+      "vornamen": { "pointer": "التصحيح في مكتب السجل المدني (Standesamt) وفقاً لـ § 45 PStG." },
+      "doktorgrad": { "pointer": "التصحيح عبر مكتب المواطنين (Bürgeramt) مع تحميل وثيقة إثبات (§ 3 Abs. 1 Nr. 6 BMG)." },
+      "geburtsdatum": { "pointer": "التصحيح في مكتب السجل المدني (Standesamt) لمكان الميلاد." },
+      "geburtsort": { "pointer": "التصحيح في مكتب السجل المدني (Standesamt) لمكان الميلاد." },
+      "geschlecht": { "pointer": "الإقرار في مكتب السجل المدني (Standesamt) وفقاً لـ § 4 SBGG (التسجيل) و § 2 SBGG (التوثيق الشخصي)." },
+      "staatsangehoerigkeit": { "pointer": "التصحيح عبر سلطة التجنيس (Einbürgerungsbehörde) وفقاً لـ StAG." },
+      "steuer_id": { "pointer": "يُصدَر مدى الحياة من قِبَل المكتب الاتحادي المركزي للضرائب (Bundeszentralamt für Steuern) وفقاً لـ § 139b AO — لا يمكن تغييره." },
+      "anschrift_aktuell": { "pointer": "موعد في Bürgeramt أو التسجيل الإلكتروني للسكن (eWA) وفقاً لـ § 17 BMG." },
+      "anschriften_historisch": { "pointer": "تُجرى التحديثات من خلال تسجيل جديد وفقاً لـ § 17 BMG." },
+      "familienstand": { "pointer": "التصحيح في مكتب السجل المدني (Standesamt) وفقاً لـ PStG." },
+      "partner": { "pointer": "التصحيح في مكتب السجل المدني (Standesamt) وفقاً لـ PStG." },
+      "kinder": { "pointer": "التصحيح في مكتب السجل المدني (Standesamt) وفقاً لـ § 21 PStG." },
+      "eheschliessung": { "pointer": "التصحيح في مكتب السجل المدني (Standesamt) الذي تمّ فيه عقد الزواج." },
+      "personalausweis": { "pointer": "إعادة الإصدار في Bürgeramt وفقاً لـ PAuswG." },
+      "reisepass": { "pointer": "إعادة الإصدار في Bürgeramt وفقاً لـ PassG." },
+      "eat_can": { "pointer": "التصحيح عبر سلطة شؤون الأجانب (Ausländerbehörde) وفقاً لـ AufenthG." },
+      "azr_nr": { "pointer": "التصحيح عبر سلطة شؤون الأجانب (Ausländerbehörde) وفقاً لـ § 34 AZRG." },
+      "religionszugehoerigkeit": { "pointer": "الانضمام / الخروج: مكتب السجل المدني (Standesamt) أو الجماعة الدينية؛ التخزين وفقاً لـ § 3 Abs. 1 Nr. 11 BMG." },
+      "kontakt_email": { "pointer": "تُعدَّل مباشرةً في حساب BundID (إعداد التطبيق)." },
+      "kontakt_mobil": { "pointer": "تُعدَّل مباشرةً في حساب BundID (إعداد التطبيق)." },
+      "sprachpraeferenz": { "pointer": "إعداد داخلي للتطبيق — لا تأثير له على الجهات الحكومية." },
+      "iban": { "pointer": "اليوم (مايو 2026) يجب تقديم IBAN بشكل منفصل لكل جهة — يُحاكي هذا التطبيق نمط عام 2027." },
+      "auskunftssperre": { "pointer": "طلب مع تبرير في Bürgeramt وفقاً لـ § 51 Abs. 1 BMG." },
+      "uebermittlungssperren": { "pointer": "طلب في Bürgeramt وفقاً لـ §§ 42 Abs. 3, 50 Abs. 5 BMG (دون تبرير)." },
+      "kvnr": { "pointer": "التحديث عبر بوابة العضوية لشركة التأمين الصحي الخاصة بكم (§ 290 SGB V)." },
+      "drv_versicherungsnummer": { "pointer": "التحديث عبر حساب DRV (§ 147 SGB VI)." },
+      "elstam": { "pointer": "التحديث عبر Mein ELSTER أو مكتب الضرائب (Finanzamt) وفقاً لـ § 39 EStG." }
+    },
+    "disclaimer": {
+      "lese_schicht": "هذا التطبيق هو **طبقة قراءة وإرشاد**. وهو **لا** يُجري بنفسه أي تغييرات على بياناتكم في السجلات المختصة. تتمّ التصحيحات حصرياً من خلال إجراءات الجهة الحكومية المختصة — مثلاً في Bürgeramt وفقاً لـ § 17 BMG لتصحيح العنوان؛ في مكتب السجل المدني (Standesamt) وفقاً لـ PStG لتصحيح الحالة المدنية والأسماء الشخصية؛ في مكتب السجل المدني (Standesamt) وفقاً لـ § 4 SBGG **للتسجيل** بشأن تغيير قيد الجنس (شفهياً أو خطياً، قبل ثلاثة أشهر من الإقرار) ووفقاً لـ § 2 SBGG **للتوثيق الشخصي للإقرار** في مكتب السجل المدني؛ في المكتب الاتحادي المركزي للضرائب (Bundeszentralamt für Steuern) لرقم التعريف الضريبي (§ 139b AO). لكلّ حقل نعرض عليكم الطريق الصحيح.",
+      "audit_log_app_internal": "سجل النشاط المعروض هنا يُسجّل حصراً أنشطتكم داخل هذا التطبيق (المشاهدات، التصفية، التعديلات الذاتية). وهو **ليس** سجلاً رسمياً للجهات الحكومية. الطبقة الرسمية لتدقيق إرسالات البيانات بين الجهات العامة المستندة إلى IDNr تُقدِّمها قمرة قيادة حماية البيانات (Datenschutzcockpit) وفقاً لـ § 9 IDNrG بمدة احتفاظ تبلغ 24 شهراً — متاحة على datenschutzcockpit.bund.de بمجرد ربط السجلات المعنية. حتى مايو 2026: مرحلة تجريبية بتغطية محدودة للسجلات؛ انضم المكتب الاتحادي للسيارات (Kraftfahrt-Bundesamt) إلى إجراء IDA بتاريخ 15.04.2026، ويتبعه ربط DSC. الربط الشامل لجميع 51 سجلاً ضمن RegMoG هو خارطة طريق 2026/2027.",
+      "eudi_speculative": "الوظيفة المعروضة هنا — تحرير البيانات الأساسية كإثبات محفظة (Attestation) للمستلمين الخاصين، مثل البنك أو المؤجِّر أو مزوِّد الطاقة، بنقرة واحدة — تُحاكي **رؤية لعام 2027**. وهي تستند إلى لائحة محفظة EUDI (الاتحاد الأوروبي) 2024/1183 وإلى Architecture and Reference Framework (حتى مايو 2026: v2.0). يبدأ التزام ألمانيا بتوفير محفظة EUDI في 2026/2027 على أقرب تقدير؛ ولم يُحسَم بعد بشكل ملزم قبول الجهات الخارجية، ومطابقة خدمات الثقة، ونماذج الرسوم.",
+      "iban_speculative": "إيداع IBAN مركزياً مع التسليم التلقائي إلى صندوق الأسرة (Familienkasse) ومكتب الضرائب (Finanzamt) وشركة التأمين الصحي (Krankenkasse) **غير** متاح اليوم (مايو 2026). تُحاكي هذه التجربة نمط عام 2027. حالياً، يجب عليكم تقديم بياناتكم البنكية لكل جهة على حدة.",
+      "religion_art9": "الانتماء الديني فئة خاصة من البيانات الشخصية وفقاً للمادة 9 من اللائحة العامة لحماية البيانات (DSGVO). يُعرَض هنا فقط بنقرة. يستند تخزينه في سجل التسجيل إلى § 3 Abs. 1 Nr. 11 BMG؛ ويستند استخدامه لضريبة الدخل وضريبة الكنيسة إلى § 51a EStG بالاقتران مع إجراء KiStAM لدى BZSt.",
+      "religion_consent_toggle_label": "أُوافق صراحةً على عرض انتمائي الديني في هذا التطبيق (المادة 9 الفقرة 2 الحرف a من DSGVO). تنطبق هذه الموافقة فقط على الجلسة الحالية.",
+      "sperren_mock_pattern": "في النظام الفعلي، لا يتمّ تسجيل حجب المعلومات أو حجب الإرسال وفقاً لـ § 51 BMG (مع تبرير) أو وفقاً لـ §§ 42 Abs. 3, 50 Abs. 5 BMG (دون تبرير) إلا بطلب يُقدَّم إلى سلطة التسجيل المختصة (Meldebehörde). هذا المفتاح داخل التطبيق نمط توضيحي ولا يُغني عن الطلب الرسمي.",
+      "renteninfo_info_only": "هذا التطبيق لا يحسب المعاشات. القيم مأخوذة من إفادتكم التقاعدية (Renteninformation) بتاريخ {stichtag} (§ 109 Abs. 3 SGB VI).",
+      "pflegegrad_art9": "درجة الحاجة للرعاية (Pflegegrad) فئة من البيانات الصحية وفقاً للمادة 9 من اللائحة العامة لحماية البيانات (DSGVO/Datenschutz-Grundverordnung)، وعند التفسير الموسَّع وفقاً لقرار محكمة العدل الأوروبية (Europäischer Gerichtshof) بتاريخ 01.08.2022 في القضية C-184/20. الأساس القانوني لتحديد الدرجة: § 14 SGB XI؛ مهلة قرار صندوق الرعاية: § 18c SGB XI (25 يوم عمل).",
+      "epa_anlage_widerspruch": "معلومات حول إنشاء ePA وفقاً للمادة § 343 SGB V؛ يتم الإنشاء تلقائياً وفقاً للمادة § 342 Abs. 1 S. 2 SGB V منذ 15.01.2025. يمكنكم الاعتراض على الإنشاء عبر صندوق التأمين الصحي الخاص بكم.",
+      "zfdr_unvollstaendig": "تجمع نظرة التقاعد الرقمية (rentenuebersicht.de) أكثر من 700 جهة تأمين تقاعدي وحوالى 137 مليون استحقاق. صناديق التقاعد المهنية (Versorgungswerke) ومعاشات الموظفين الحكوميين (Beamtenversorgung) والالتزامات المباشرة من صاحب العمل (Direktzusagen) ليست مرتبطة بالنظام اليوم.",
+      "pflegegrad_consent_toggle_label": "أوافق صراحةً على إظهار درجة الحاجة للرعاية (Pflegegrad) في هذا التطبيق (Art. 9 Abs. 2 lit. a DSGVO). تسري هذه الموافقة فقط للجلسة الحالية.",
+      "track_c_empty_state_body": "ليس لديكم إفادة تقاعدية (Renteninformation) لأنكم غير مشمولين بالتأمين الإلزامي في نظام التقاعد الحكومي (GRV). لا يوجد مُجمِّع مركزي للتأمين الصحي الخاص (PKV) مثل نظرة التقاعد الرقمية (ZfDR) — عليكم استخدام تطبيق شركة التأمين الخاصة بكم. الخيارات: 1) الاشتراك الطوعي في نظام التقاعد الحكومي (§ 7 SGB VI)، 2) مراجعة التأمين الخاص، 3) إذا كانت مهنتكم تستوجب التأمين الإلزامي (§ 2 SGB VI)، تقديم طلب التأمين الإلزامي.",
+      "eugh_c184_20_weite_lesart": "يشمل قرار EuGH C-184/20 (01.08.2022) أيضاً الاستنتاجات غير المباشرة المتعلقة بالبيانات الصحية."
+    },
+    "subtab": {
+      "wallet_externe_empfaenger": {
+        "banner_title": "رؤية 2027 — المحفظة والجهات الخارجية المستلمة",
+        "banner": "**رؤية 2027** — المحفظة والجهات الخارجية المستلمة. يعرض هذا القسم *كيف يمكن* أن تبدو مشاركة البيانات عبر محفظة EUDI مع المستلمين الخاصين (البنك، المؤجِّر، مزوِّد الطاقة). اليوم (مايو 2026) هذه الوظيفة غير متاحة.",
+        "disclaimer_title": "ملاحظة بشأن رؤية محفظة EUDI لعام 2027 (توسيع/طي الإيضاح)",
+        "kategorie": {
+          "bank": "البنك الرئيسي",
+          "hausverwaltung": "إدارة العقار",
+          "energieversorger": "مزوِّد الطاقة"
+        },
+        "cta_simulate": "محاكاة الطلب",
+        "preview_error": "تعذَّر إنشاء المعاينة — يُرجى المحاولة مجدداً.",
+        "arf_footer": "مرجع البيانات: EUDI Architecture and Reference Framework (حتى مايو 2026: v2.0)؛ PID Rulebook v1.4 — 8 سمات إلزامية، 4 من 6 سمات اختيارية."
+      }
+    },
+    "aktivitaet": {
+      "list_heading": "سجل النشاط",
+      "empty": "لا توجد إدخالات في هذا القسم.",
+      "zweck": {
+        "adressuebermittlung_buergeramt_finanzamt": "إرسال العنوان إلى الإدارة الضريبية",
+        "adressuebermittlung_buergeramt_beitragsservice": "إرسال العنوان إلى خدمة رسوم البث (Beitragsservice)",
+        "adressuebermittlung_buergeramt_gkv": "نقل العنوان إلى شركة التأمين الصحي (DEÜV)",
+        "adressuebermittlung_buergeramt_bapersbw": "إخطار العنوان للتسجيل العسكري",
+        "app_religion_angezeigt": "عُرِض الانتماء الديني في التطبيق",
+        "app_kontakt_geaendert": "عُدِّلت بيانات الاتصال في التطبيق",
+        "app_sprache_geaendert": "عُدِّل تفضيل اللغة في التطبيق",
+        "app_sperre_aktiviert": "فُعِّل الحجب كعرض توضيحي داخل التطبيق",
+        "app_sperre_deaktiviert": "أُلغي تفعيل الحجب كعرض توضيحي داخل التطبيق",
+        "spec_iban_push_simuliert": "تمت محاكاة إرسال IBAN (رؤية 2027) إلى {empfaenger}",
+        "spec_wallet_attestation_preview": "معاينة إثبات المحفظة (رؤية 2027) لـ {empfaenger}",
+        "renteninfo_eingelesen": "حُفظت إفادة التقاعد ضمن البيانات الأساسية (§ 109 Abs. 1 + Abs. 3 SGB VI)",
+        "app_pflegegrad_angezeigt": "تم إظهار درجة الحاجة للرعاية (Pflegegrad) في التطبيق (Art. 9 Abs. 2 lit. a DSGVO بالاقتران مع § 14 SGB XI)",
+        "app_epa_banner_gesehen": "تمت معاينة لافتة حالة ePA (§ 342 Abs. 1 S. 2 بالاقتران مع § 343 SGB V)",
+        "bridge_skipped_idempotent": "تم تخطي استدعاء الجسر (الإفادة التقاعدية محفوظة بالفعل)",
+        "pflegegrad_consent_erteilt": "مُنحت الموافقة على إظهار درجة الحاجة للرعاية (Art. 9 Abs. 2 lit. a DSGVO)",
+        "pflegegrad_consent_widerrufen": "سُحبت الموافقة على إظهار درجة الحاجة للرعاية",
+        "epa_widerspruch_geandert": "تم تغيير حالة الاعتراض على ePA",
+        "anrechnungszeit_pflege_offengelegt": "تم الكشف عن فترة احتساب الرعاية (Anrechnungszeit Pflege؛ § 3 SGB VI؛ مرتبطة بالموافقة على إظهار الدرجة)"
+      },
+      "kategorie": {
+        "behoerde_zu_behoerde": { "label": "إرسال بين الجهات الحكومية" },
+        "app_aktivitaet": { "label": "نشاط التطبيق (ليس سجل إرسال رسمياً)" },
+        "speculative_2027": { "label": "رؤية 2027 (عرض توضيحي)" },
+        "behoerde_zu_buerger": { "label": "من الجهة الحكومية إلى المواطن/ة (إشعار / وصول إلى صندوق البريد)" }
+      },
+      "richtung": {
+        "label": "الاتجاه",
+        "alle": { "label": "كل الاتجاهات" },
+        "eingehend": { "label": "وارد (الجهة الحكومية ← المواطن/ة)" },
+        "ausgehend": { "label": "صادر (المواطن/ة ← الجهات الحكومية)" },
+        "intern": { "label": "داخلي (نشاط التطبيق)" }
+      }
+    },
+    "modal": {
+      "religion_consent": {
+        "title": "عرض الانتماء الديني — الموافقة مطلوبة",
+        "cta_show": "عرض الانتماء الديني",
+        "cta_cancel": "إلغاء"
+      },
+      "sperren_aktivieren": {
+        "title": "تفعيل الحجب كعرض توضيحي داخل التطبيق",
+        "title_auskunftssperre": "تفعيل حجب المعلومات وفقاً لـ § 51 Abs. 1 BMG",
+        "title_uebermittlungssperre": "تفعيل حجب الإرسال {sperre}",
+        "cta_activate": "تفعيل الحجب كنمط توضيحي",
+        "cta_cancel": "إلغاء",
+        "begruendung_label": "التبرير (30 حرفاً على الأقل، § 51 Abs. 1 BMG)",
+        "begruendung_helper_template": "{count} من أصل {min} حرفاً على الأقل.",
+        "begruendung_too_short_template": "التبرير قصير جداً: {count} من {min} حرفاً مطلوب (§ 51 Abs. 1 BMG)."
+      },
+      "iban_push": {
+        "title": "محاكاة إرسال IBAN — رؤية 2027",
+        "iban_label": "IBAN",
+        "empfaenger_legend": "مستلمو الإرسال التوضيحي",
+        "empfaenger_label": {
+          "familienkasse": "صندوق الأسرة (Familienkasse)",
+          "elster": "ELSTER / مكتب الضرائب (Finanzamt)",
+          "gkv": "شركة التأمين الصحي (GKV)"
+        },
+        "cta_simulate": "محاكاة إرسال توضيحي",
+        "cta_cancel": "إلغاء"
+      },
+      "wallet_attestation_preview": {
+        "title": "معاينة إثبات المحفظة",
+        "empfaenger_label": "المستلِم",
+        "section_pflicht": "السمات الإلزامية لـ PID (8)",
+        "section_optional": "السمات الاختيارية لـ PID (4 من 6)",
+        "loading": "يتم إنشاء المعاينة …",
+        "attestation_id_label": "معرِّف الإثبات التوضيحي",
+        "cta_close": "إغلاق"
+      },
+      "pflegegrad_consent": {
+        "title": "إظهار درجة الحاجة للرعاية (Pflegegrad) — يُشترط الموافقة",
+        "cta_show": "إظهار درجة الحاجة للرعاية",
+        "cta_cancel": "إلغاء",
+        "eugh_lesart_intro": "التفسير الموسَّع للمادة 9 من DSGVO وفقاً لـ"
+      }
+    },
+    "badge": {
+      "2027_vision": "رؤية 2027",
+      "pilot_phase": "مرحلة تجريبية",
+      "art9_relevant": "بيانات حساسة — مرتبطة بشكل غير مباشر بالمادة 9",
+      "mock": "[MOCK]"
+    },
+    "altersvorsorge": {
+      "traeger_label": "الجهة:",
+      "empty_state_body": "بمجرد وصول إفادتكم التقاعدية التالية (Renteninformation) إلى صندوق وارد بريدكم، ستُحفظ القيم (نقاط الأجر، التوقعات، نظرة الاشتراكات) هنا للاطلاع.",
+      "yellow_letter_echo": {
+        "card_top_3": {
+          "entgeltpunkte": "نقاط الأجر (Entgeltpunkte)",
+          "regelalter_prognose": "توقع التقاعد بسن المعاش العادي (Regelaltersrente، 67 سنة)",
+          "em_rente_prognose": "توقع تقاعد العجز عن الكسب (Erwerbsminderungsrente)"
+        },
+        "expandable_label": "عرض جميع البنود الإلزامية الخمسة (§ 109 Abs. 3 SGB VI)",
+        "tooltip": {
+          "anpassungs_wirkung": "تأثير التعديلات المستقبلية — مثال: عند {prozent} % سنوياً ترتفع القيمة بمقدار {plus} يورو/شهرياً حتى سن التقاعد",
+          "beitragsuebersicht": "نظرة عامة على الاشتراكات لعام {jahr}: {gesamt} يورو (أنتم: {versicherter}، صاحب العمل: {arbeitgeber})"
+        },
+        "stamp": "القيم مأخوذة من إفادتكم التقاعدية (Renteninformation) بتاريخ {stichtag} (رقم الملف {aktenzeichen}). الحساب من قبل التأمين الألماني للتقاعد (Deutsche Rentenversicherung) وفقاً للمادة § 109 SGB VI."
+      },
+      "eckwert": {
+        "entgeltpunkte_unit": "نقاط",
+        "monthly_unit": "/ شهرياً",
+        "monthly_aria": "في الشهر",
+        "expandable_aria_template": "{label} — عرض التفاصيل",
+        "tooltip_anpassungen_label": "تأثير التعديلات المستقبلية",
+        "tooltip_beitrag_template": "نظرة الاشتراكات {jahr}",
+        "label_grundlage": "أساس الحساب",
+        "label_em_rente": "تقاعد العجز عن الكسب عند الحدوث الفوري",
+        "label_regelalter": "توقع التقاعد بسن المعاش العادي (67 سنة، دون اشتراكات إضافية)",
+        "label_anpassungen": "تأثير التعديلات المستقبلية",
+        "label_beitrag_template": "نظرة الاشتراكات {jahr}",
+        "body_grundlage_template": "فترات الاشتراك {beitragszeit_von} – {beitragszeit_bis}؛ تم اكتساب {entgeltpunkte} من نقاط الأجر (Entgeltpunkte).",
+        "body_em_rente_template": "{eur} شهرياً.",
+        "body_regelalter_template": "{eur} شهرياً.",
+        "body_anpassungen_template": "بنسبة {prozent} % سنوياً، نحو +{plus} شهرياً حتى سن التقاعد.",
+        "body_beitrag_template": "{gesamt} الإجمالي (حضرتك: {versicherter}؛ صاحب العمل: {arbeitgeber})."
+      }
+    },
+    "zfdr_wegweiser": {
+      "title": "نظرة عامة شاملة عبر الجهات: نظرة التقاعد الرقمية (Digitale Rentenübersicht)",
+      "cta": "الانتقال إلى نظرة التقاعد الرقمية (rentenuebersicht.de)"
+    },
+    "track_c": {
+      "empty_state_title": "لا توجد إفادة تقاعدية",
+      "empty_state_body": "ليس لديكم إفادة تقاعدية (Renteninformation) لأنكم غير مشمولين بالتأمين الإلزامي في نظام التقاعد الحكومي (GRV). لا يوجد مُجمِّع مركزي للتأمين الصحي الخاص (PKV) مثل نظرة التقاعد الرقمية (ZfDR) — عليكم استخدام تطبيق شركة التأمين الخاصة بكم. الخيارات: 1) الاشتراك الطوعي في نظام التقاعد الحكومي (§ 7 SGB VI)، 2) مراجعة التأمين الخاص، 3) إذا كانت مهنتكم تستوجب التأمين الإلزامي (§ 2 SGB VI)، تقديم طلب التأمين الإلزامي."
+    },
+    "kv_pflege": {
+      "krankenkasse": {
+        "label": "صندوق التأمين الصحي (Krankenkasse)",
+        "kvnr_label": "رقم التأمين الصحي (KVNR، § 290 SGB V)",
+        "kvnr_part_unveraenderbar_label": "الجزء غير القابل للتغيير (مدى الحياة)",
+        "kvnr_part_veraenderbar_label": "الجزء القابل للتغيير (تابع للصندوق)",
+        "versicherten_status": {
+          "pflicht": "مؤمَّن إلزامياً",
+          "freiwillig": "مؤمَّن طوعياً",
+          "familienversichert": "مؤمَّن ضمن التأمين العائلي",
+          "privat": "مؤمَّن لدى التأمين الخاص (PKV)"
+        }
+      },
+      "familienversicherung": {
+        "title": "التأمين العائلي (Familienversicherung)",
+        "status_pill": "تأمين عائلي عبر {stammversicherte} — لغاية {bis_datum} كحد أقصى",
+        "einkommen_grenze_tooltip": "حد الدخل لعام 2026: 565 يورو/شهرياً بشكل عام أو 603 يورو للعمل المصغر (§ 10 SGB V)"
+      },
+      "epa": {
+        "title": "ملف المريض الإلكتروني (ePA)",
+        "status_pill_eingerichtet": "تم إنشاء ePA (المعيار منذ 15.01.2025)",
+        "status_pill_widerspruch_nein": "لم يُقدَّم اعتراض على الإنشاء",
+        "status_pill_widerspruch_ja": "اعتُرض على الإنشاء",
+        "cta_external": "تُدار ePA عبر تطبيق صندوق التأمين الصحي الخاص بكم",
+        "disclaimer_heading": "ملاحظة بشأن ePA",
+        "rechtsgrundlage_label": "الأساس القانوني:",
+        "eingerichtet_seit_template": "الإنشاء منذ {date}"
+      },
+      "erezept": {
+        "title": "الوصفة الإلكترونية (eRezept)",
+        "modus": {
+          "app": "الاستلام عبر تطبيق gematik E-Rezept",
+          "egk": "الاستلام عبر بطاقة eGK في الصيدلية",
+          "papier": "الاستلام عبر مطبوعة ورقية"
+        }
+      },
+      "pflege": {
+        "title": "تأمين الرعاية (Pflegeversicherung)",
+        "kasse_label": "صندوق الرعاية (Pflegekasse)",
+        "pflegegrad_collapsed_button": "إظهار درجة الحاجة للرعاية",
+        "pflegegrad_grad_label": "درجة الحاجة للرعاية (Pflegegrad) {grad}",
+        "bewilligt_am_label": "تمت الموافقة في {datum}",
+        "begutachtung_md_label": "تقييم بواسطة الخدمة الطبية (Medizinischer Dienst، GKV)",
+        "begutachtung_medicproof_label": "تقييم بواسطة MEDICPROOF (PKV)",
+        "frist_25_at": "يجب على صندوق الرعاية (Pflegekasse) اتخاذ القرار خلال 25 يوم عمل (§ 18c SGB XI)",
+        "cta_hoeherstufung": "تقديم طلب رفع الدرجة ← البوابة الإلكترونية لصندوق الرعاية الخاص بكم"
+      }
+    },
+    "kontakt": {
+      "foederalismus_card_disclaimer": "في واقع 2026 يوجد إلى جانب BundID خمسة حسابات ولايات أو أكثر بشكل متوازٍ (Service-BW وMein-Servicekonto-Berlin وNRW-Konto وBayernID وHH-Servicekonto). هذا العرض التوضيحي يُجرّد إلى BundID؛ ينص قانون OZG 2.0 (Onlinezugangsgesetz 2.0) على التقارب حتى 24.07.2028.",
+      "foederalismus_card_aria_label": "تنويه الفيدرالية (Föderalismus) — واقع حسابات الولايات",
+      "loading": "يتم تحميل بيانات الاتصال …",
+      "error_load": "تعذّر تحميل بيانات الاتصال.",
+      "error_retry": "حاول مرة أخرى",
+      "anbindung_pill": {
+        "angebunden": "مرتبط بـ BundID",
+        "in_pilotierung": "مرحلة تجريبية",
+        "nicht_angebunden": "غير مرتبط بـ BundID"
+      },
+      "cascade": {
+        "vorher_label": "قبل: خطاب ورقي",
+        "nachher_label": "بعد: صندوق بريد BundID (Postfach)",
+        "vorher_caption_template": "خطاب Familienkasse بتاريخ {datum} (خطاب ورقي، § 41 الفقرة 2 VwVfG)",
+        "nachher_caption_template": "قرار لاحق بتاريخ {datum} (صندوق بريد BundID، § 9 OZG)",
+        "nachher_aktenzeichen_label": "رقم الملف (Aktenzeichen):",
+        "reduced_motion_announce": "تم إيداع القرار اللاحق في صندوق البريد.",
+        "section_aria_label": "تسلسل تبديل Familienkasse — مقارنة قبل/بعد"
+      },
+      "card": {
+        "bundid_postfach": {
+          "title": "صندوق بريد BundID (Postfach)",
+          "status": {
+            "aktiv": "صندوق البريد فعّال",
+            "inaktiv": "صندوق البريد غير مُفعَّل",
+            "teilaktiviert": "صندوق البريد قيد التفعيل"
+          }
+        },
+        "email": {
+          "title": "بريد إلكتروني مُتحقَّق منه (BundID)",
+          "verified_label": "تم التحقق عبر BundID بتاريخ {datum}"
+        },
+        "mobil": {
+          "title": "الهاتف المحمول",
+          "cta_verify": "تحقق (رمز OTP وهمي)",
+          "cta_add": "إضافة رقم محمول (عرض توضيحي)"
+        },
+        "postanschrift": {
+          "title": "العنوان البريدي",
+          "cross_ref_link_label": "إلى قسم العنوان"
+        }
+      },
+      "email": {
+        "disclaimer_only_for_bundid_attached": "يُستخدم هذا البريد الإلكتروني فقط من قِبَل الجهات الحكومية المرتبطة بـ BundID — مكتب المواطنين Bürgeramt Friedrichshain-Kreuzberg في مرحلة تجريبية.",
+        "disclaimer_selbststaendig": "ملاحظة: قد يحتفظ نظام ELSTER وصندوق التأمين الصحي (Krankenkasse) ومؤسسة تأمين الحوادث المهنية (Berufsgenossenschaft) ببيانات اتصال مختلفة — هذا العرض التوضيحي يُظهر فقط بيانات BundID."
+      },
+      "mobil": {
+        "disclaimer_self_attested": "رقم الهاتف المحمول مُقرَّر ذاتياً (self-attested). لا يوجد في ألمانيا سجل حكومي رسمي لأرقام الهواتف المحمولة. لا تتضمن المادة § 3 BMG (Bundesmeldegesetz) رقم الهاتف المحمول.",
+        "hardlock_only_notification": "يُستخدم فقط للإشعار بوصول رسائل جديدة إلى صندوق البريد — لا يُستخدم أبداً كقناة تبليغ ملزمة."
+      },
+      "postfach": {
+        "wegweiser_pointer": "التفعيل من خلال حساب BundID الخاص بكم على id.bund.de/de/postfach. § 9 الفقرة 1 الجملة 2 OZG (Onlinezugangsgesetz): يمكن الانسحاب في كل طلب على حدة."
+      },
+      "postanschrift": {
+        "cross_ref_pointer": "يُعرَض عنوانكم البريدي في قسم «العنوان». المصدر الرسمي: سجل المواطنين (Melderegister, § 3 BMG). مسار التصحيح: موعد في Bürgeramt / تسجيل السكن إلكترونياً (eWA, § 17 BMG)."
+      },
+      "notification": {
+        "vision_banner": "رؤية 2027 — هذه الوظيفة لا توجد في ألمانيا اليوم؛ ولا ينص عليها قانون OZG 2.0 (Onlinezugangsgesetz 2.0) حتى عام 2028",
+        "save_confirm_body": "لقد قمتم لتوّكم بتغيير بيانات «رؤية 2027». في واقع اليوم لا يُغيّر ذلك شيئاً.",
+        "save_confirm": {
+          "cta_save": "حفظ تفضيل العرض التوضيحي",
+          "cta_cancel": "إلغاء"
+        },
+        "kategorie": {
+          "steuer": { "label": "الضرائب (Finanzamt / BZSt)" },
+          "sozial": { "label": "المزايا الاجتماعية (DRV / GKV / Bürgergeld)" },
+          "familie": { "label": "الأسرة (Familienkasse / Elterngeld)" },
+          "verkehr": { "label": "المرور (KFZ / مخالفات / رخصة قيادة)" },
+          "sonstige": { "label": "أخرى (Bürgeramt / إقامة / أخرى)" }
+        },
+        "kanal": {
+          "postfach": { "label": "صندوق بريد BundID" },
+          "email_pilot": { "label": "إشعار بالبريد الإلكتروني (تجريبي)" },
+          "sms_pilot": { "label": "إشعار بالرسائل القصيرة SMS (تجريبي)" },
+          "brief": { "label": "خطاب ورقي (الافتراضي)" }
+        },
+        "option": {
+          "sms_pilot": {
+            "disclaimer_redaction": "لا يحتوي إشعار SMS على بيانات اجتماعية (SGB X §§ 67ff.) — فقط إشارة إلى وصول رسالة جديدة إلى صندوق البريد."
+          },
+          "abh_hardlock_tooltip": "إدارة شؤون الأجانب LEA Berlin / ABH Köln (Ausländerbehörde) ليست مرتبطة بصندوق بريد BundID في عام 2026. تُسلَّم القرارات وفق §§ 86, 87 AufenthG (Aufenthaltsgesetz) عبر الخطاب الورقي (§ 41 الفقرة 2 VwVfG, Verwaltungsverfahrensgesetz).",
+          "kfz_hint": "إدارات المركبات (KFZ) ليست مرتبطة بصندوق بريد BundID في عام 2026 — اليوم لا يزال الخطاب الورقي.",
+          "steuer_hint_elster": "تمر القرارات الضريبية عبر صندوق وارد ELSTER (§ 122a الفقرة 4 AO, Abgabenordnung)، وليس صندوق بريد BundID."
+        },
+        "live_counter": {
+          "savings": "ستوفّرون تقريباً {briefe_pro_jahr_gespart} خطاب في السنة و{tage_frist_gespart} يوماً من مهلة التبليغ لكل قرار (افتراض التبليغ § 9 OZG مقابل افتراض الخطاب الورقي § 41 الفقرة 2 VwVfG).",
+          "no_savings": "هذا الإعداد لا يوفّر خطابات — فهو يغيّر فقط عنوان الإشعار، لا قناة التبليغ الملزمة. لا تزال القرارات تصل عبر خطاب ورقي (§ 41 الفقرة 2 VwVfG)."
+        }
+      },
+      "modal": {
+        "mobil_otp": {
+          "title": "التحقق من رقم الهاتف المحمول — رمز OTP وهمي",
+          "input_label": "رمز OTP وهمي مكوّن من 6 أرقام",
+          "demo_hint": "نمط العرض التوضيحي: يُقبل الرمز 124857. لا يتم إرسال رسالة قصيرة فعلية.",
+          "cta_verify": "تحقق"
+        },
+        "save_confirm": {
+          "title": "حفظ بيانات «رؤية 2027»؟"
+        }
+      },
+      "toast": {
+        "familienkasse_followup": "القرار اللاحق الآن في صندوق البريد (عرض توضيحي)",
+        "familienkasse_angebunden": "Familienkasse Berlin-Brandenburg مرتبطة بـ BundID — تم تطبيق التفضيل (عرض توضيحي)"
+      }
     }
   }
 }
