@@ -27,6 +27,7 @@ import {
   write,
   type CollectionKey,
 } from './persistence';
+import { runStorageMigrations } from './persistence-migrations';
 import {
   behoerdenArraySchema,
   consentSchema,
@@ -37,9 +38,18 @@ import {
   metaSchema,
   personasArraySchema,
   personaSchema,
+  stammdatenIbanSpeculativeBucketSchema,
+  stammdatenKontaktBucketSchema,
+  stammdatenKontaktV2BucketSchema,
+  stammdatenSperrenBucketSchema,
+  stammdatenUebermittlungsLogBucketSchema,
   termineArraySchema,
   vorgaengeArraySchema,
 } from './schemas';
+import {
+  reseedStammdatenForPersona,
+  seedStammdatenForPersona,
+} from './stammdaten/api';
 
 const DEFAULT_PERSONA_ID = 'anna-petrov';
 
@@ -57,9 +67,24 @@ const fixtures = {
  * Idempotent — kann beim App-Boot bedenkenlos mehrfach aufgerufen werden.
  */
 export function seedIfEmpty(): void {
+  // V1.5.1: Migrate stored data from V1.5.0 shapes BEFORE any bucket reads, so
+  // schema-validating reads in this function do not trip on the legacy shape
+  // and trigger unnecessary reseeds. Idempotent — runs each migration exactly
+  // once via the `schema-migrations` marker key.
+  runStorageMigrations();
+
   // Reference-Daten (Behörden) immer aus Fixtures laden — nicht-mutable im UI.
   readOrInit('behoerden' as CollectionKey, behoerdenArraySchema, fixtures.behoerden);
-  readOrInit('personas' as CollectionKey, personasArraySchema, fixtures.personas);
+  // Cast via `unknown`: Persona-Schema ist permissive (passthrough); Persona-
+  // Type trägt seit V1.2 verschachtelte typed Felder (Aufenthaltstitel,
+  // PersonaKontakt) ohne Index-Signatur — strikte Inferenz der Schema-Output-
+  // Form schlägt fehl. localStorage-Validation läuft über Zod, TS-Cast ist
+  // hier nur ein Type-Hint.
+  readOrInit(
+    'personas' as CollectionKey,
+    personasArraySchema as unknown as import('zod').ZodType<Persona[]>,
+    fixtures.personas,
+  );
 
   // Per-Persona-State.
   const meta = read('meta' as CollectionKey, metaSchema);
@@ -97,6 +122,35 @@ export function seedIfEmpty(): void {
   readOrInit('letter-activity-log' as CollectionKey, letterActivityLogSchema, {});
   // V1.5 — Reply-Bucket: leer initialisieren, wenn nicht vorhanden.
   readOrInit('letter-replies' as CollectionKey, letterRepliesMapSchema, {});
+  // V1 Stammdaten — vier neue Buckets (Spec § 5.4). Religion-Consent ist
+  // bewusst NICHT als Bucket registriert (Hard-Line § 11.4: session-only).
+  readOrInit('stammdaten:sperren' as CollectionKey, stammdatenSperrenBucketSchema, {});
+  readOrInit(
+    'stammdaten:iban-speculative' as CollectionKey,
+    stammdatenIbanSpeculativeBucketSchema,
+    {},
+  );
+  readOrInit('stammdaten:kontakt' as CollectionKey, stammdatenKontaktBucketSchema, {});
+  readOrInit(
+    'stammdaten:uebermittlungs-log' as CollectionKey,
+    stammdatenUebermittlungsLogBucketSchema,
+    {},
+  );
+  // V1.2 Kontakt-Schicht — Bucket initialisieren (Migration `v1-to-v12-kontakt-schicht`
+  // füllt ihn beim ersten Boot mit Persona-Snapshots; hier nur Empty-State-Init).
+  readOrInit(
+    'stammdaten:notification-praeferenzen' as CollectionKey,
+    stammdatenKontaktV2BucketSchema,
+    {},
+  );
+  // Per-Persona-Initial-Seed (idempotent — überschreibt bestehende Einträge nicht).
+  try {
+    seedStammdatenForPersona(personaId);
+  } catch (err) {
+    if (typeof console !== 'undefined') {
+      console.warn('[mock-backend/seed] stammdaten seed failed', err);
+    }
+  }
 }
 
 function filterByPersona(letters: Letter[], personaId: string): Letter[] {
@@ -121,6 +175,15 @@ function seedForPersona(personaId: string): void {
   write('letter-activity-log' as CollectionKey, {});
   // V1.5 — Reply-Bucket: bei jedem Persona-Wechsel leer.
   write('letter-replies' as CollectionKey, {});
+  // V1 Stammdaten — Persona-Reseed (Sperren / IBAN / Kontakt / Initial-Log
+  // zurücksetzen; Religion-Consent ohnehin session-only).
+  try {
+    reseedStammdatenForPersona(personaId);
+  } catch (err) {
+    if (typeof console !== 'undefined') {
+      console.warn('[mock-backend/seed] stammdaten reseed failed', err);
+    }
+  }
 }
 
 /**

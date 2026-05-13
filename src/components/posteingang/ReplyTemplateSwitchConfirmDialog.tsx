@@ -12,19 +12,38 @@ interface ReplyTemplateSwitchConfirmDialogProps {
   onOpenChange: (next: boolean) => void;
   onConfirm: () => void;
   onCancel: () => void;
+  /**
+   * V1.5.1 (Spec § 8.2): wenn `true`, rendert der Dialog mit drei Buttons —
+   * primary „Beide als getrennte Briefe versenden" / secondary „Aktuellen
+   * Entwurf verwerfen und wechseln" / tertiary „Abbrechen". Trigger ↔ Switch
+   * zwischen `rechtsbehelf_einspruch_skelett` und
+   * `aussetzung_vollziehung_skelett` auf demselben Letter.
+   *
+   * Bei `false` (Default) bleibt das V1.5.0-2-Button-Verhalten unverändert
+   * (Verwerfen / Abbrechen).
+   */
+  dualSendMode?: boolean;
+  /**
+   * Pflicht im 3-Button-Mode: Aktion für „Beide als getrennte Briefe
+   * versenden" — startet den Cross-Template-Versand-Pfad in der ReplySheet.
+   */
+  onDualSend?: () => void;
 }
 
 /**
  * Bestätigungs-Dialog vor dem Wechsel der Antwort-Vorlage, wenn der Body
- * bereits Inhalt enthält (Spec §4.6 + Code-Review BLOCKER #1, 2026-05-09).
- * Ersetzt `window.confirm`, damit (a) `title`, `body`, `cta_yes`, `cta_no`
- * via `t()` lokalisiert sind und (b) die Bestätigungs-UI dem Restdesign folgt.
+ * bereits Inhalt enthält.
+ *
+ * V1.5.0: 2-Button-Mode (Verwerfen / Abbrechen).
+ * V1.5.1 § 8.2: 3-Button-Mode für Einspruch ↔ Aussetzung-Switch.
  */
 export function ReplyTemplateSwitchConfirmDialog({
   open,
   onOpenChange,
   onConfirm,
   onCancel,
+  dualSendMode = false,
+  onDualSend,
 }: ReplyTemplateSwitchConfirmDialogProps) {
   const t = useTranslations('posteingang.compose');
   useStripBaseUiFocusGuardAriaHidden(open);
@@ -51,18 +70,41 @@ export function ReplyTemplateSwitchConfirmDialog({
           <AlertDialogPrimitive.Description className="leading-relaxed text-muted-foreground">
             {t('template_switch_confirm_body')}
           </AlertDialogPrimitive.Description>
-          <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
-            <AlertDialogPrimitive.Close
-              render={
-                <Button type="button" variant="outline" onClick={onCancel} />
-              }
-            >
-              {t('template_switch_confirm_cta_no')}
-            </AlertDialogPrimitive.Close>
-            <Button type="button" onClick={onConfirm}>
-              {t('template_switch_confirm_cta_yes')}
-            </Button>
-          </div>
+          {dualSendMode ? (
+            <div className="flex flex-col gap-2 pt-2">
+              <Button
+                type="button"
+                onClick={onDualSend}
+                autoFocus
+                data-testid="template-switch-dual-send"
+              >
+                {t('template_switch.dual_send')}
+              </Button>
+              <Button type="button" variant="outline" onClick={onConfirm}>
+                {t('template_switch.discard_and_switch')}
+              </Button>
+              <AlertDialogPrimitive.Close
+                render={
+                  <Button type="button" variant="ghost" onClick={onCancel} />
+                }
+              >
+                {t('template_switch.cancel')}
+              </AlertDialogPrimitive.Close>
+            </div>
+          ) : (
+            <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
+              <AlertDialogPrimitive.Close
+                render={
+                  <Button type="button" variant="outline" onClick={onCancel} />
+                }
+              >
+                {t('template_switch_confirm_cta_no')}
+              </AlertDialogPrimitive.Close>
+              <Button type="button" onClick={onConfirm}>
+                {t('template_switch_confirm_cta_yes')}
+              </Button>
+            </div>
+          )}
         </AlertDialogPrimitive.Popup>
       </AlertDialogPrimitive.Portal>
     </AlertDialogPrimitive.Root>

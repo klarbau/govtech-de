@@ -5,6 +5,40 @@
     "nachname": "Petrov",
     "geburtsdatum": "1997-03-22",
     "staatsangehoerigkeit": "russisch",
+    "geburtsort": "Sofia, Bulgarien",
+    "geschlecht": "w",
+    "religion": "ohne",
+    "fruehere_namen": [],
+    "personalausweis_nr": {
+      "nummer": "[MOCK] T0123456X",
+      "gueltig_bis": "2032-08-04"
+    },
+    "kontakt": {
+      "bundid_email": {
+        "value": "[MOCK] anna.petrov@example.de",
+        "verified": true,
+        "quelle": "bundid",
+        "verifiziert_am": "2025-11-04"
+      },
+      "bundid_mobil": {
+        "value": "[MOCK] +49 30 12345678",
+        "verified": true,
+        "quelle": "bundid_self_attested",
+        "verifiziert_am": "2026-04-15"
+      },
+      "bundid_postfach": {
+        "aktiviert": true,
+        "status": "aktiv",
+        "aktiviert_am": "2026-05-08"
+      },
+      "notification_praeferenzen": {
+        "steuer": "brief",
+        "sozial": "brief",
+        "familie": "brief",
+        "verkehr": "brief",
+        "sonstige": "brief"
+      }
+    },
     "adresse": {
       "strasse": "Friedrichstraße",
       "hausnummer": "100",
@@ -35,11 +69,16 @@
           "land": "DE"
         },
         "steuer_id": "[MOCK] 12 884 215 663",
-        "familie": { "kinder": [] },
+        "familie": {
+          "kinder": []
+        },
         "kfz_halter": false,
         "kindergeld_bezug": false,
         "wehrerfasst": false,
-        "sprachen": ["de", "en"]
+        "sprachen": [
+          "de",
+          "en"
+        ]
       },
       "kinder": [
         {
@@ -56,11 +95,15 @@
             "land": "DE"
           },
           "steuer_id": "[MOCK] 39 220 117 084",
-          "familie": { "kinder": [] },
+          "familie": {
+            "kinder": []
+          },
           "kfz_halter": false,
           "kindergeld_bezug": false,
           "wehrerfasst": false,
-          "sprachen": []
+          "sprachen": [],
+          "familienversichert_ueber": "anna-petrov",
+          "familienversichert_bis": "2049-11"
         }
       ]
     },
@@ -78,7 +121,22 @@
     "kfz_halter": false,
     "kindergeld_bezug": true,
     "wehrerfasst": false,
-    "sprachen": ["ru", "de", "en"]
+    "sprachen": [
+      "ru",
+      "de",
+      "en"
+    ],
+    "renten_track": "A",
+    "kvnr_v1_1": {
+      "unveraenderbar": "[MOCK] M845192036",
+      "veraenderbar": "[MOCK] 7741826401"
+    },
+    "epa_status_v1_1": {
+      "eingerichtet": true,
+      "widerspruch_gesetzt": false,
+      "eingerichtet_am": "2025-01-15"
+    },
+    "erezept_modus_v1_1": "app"
   },
   {
     "id": "markus-schmidt",
@@ -86,6 +144,47 @@
     "nachname": "Schmidt",
     "geburtsdatum": "1988-02-14",
     "staatsangehoerigkeit": "deutsch",
+    "geburtsort": "Hamburg",
+    "geschlecht": "m",
+    "religion": "rk",
+    "fruehere_namen": [
+      "Müller"
+    ],
+    "doktorgrad": "Dr.",
+    "kontakt": {
+      "bundid_email": {
+        "value": "[MOCK] elias.schmidt@example.de",
+        "verified": true,
+        "quelle": "bundid",
+        "verifiziert_am": "2024-09-12"
+      },
+      "bundid_mobil": {
+        "value": "[MOCK] +49 89 87654321",
+        "verified": false,
+        "quelle": "bundid_self_attested"
+      },
+      "bundid_postfach": {
+        "aktiviert": false,
+        "status": "teilaktiviert",
+        "aktiviert_am": "2026-03-21"
+      },
+      "notification_praeferenzen": {
+        "steuer": "brief",
+        "sozial": "brief",
+        "familie": "brief",
+        "verkehr": "brief",
+        "sonstige": "brief"
+      }
+    },
+    "personalausweis_nr": {
+      "nummer": "[MOCK] L8821447K",
+      "gueltig_bis": "2030-02-14"
+    },
+    "eheschliessung": {
+      "datum": "2024-06-22",
+      "ort": "Hamburg",
+      "az": "[MOCK] M-E-00471/2024"
+    },
     "adresse": {
       "strasse": "Eppendorfer Weg",
       "hausnummer": "212",
@@ -110,7 +209,9 @@
           "land": "DE"
         },
         "steuer_id": "[MOCK] 33 110 884 552",
-        "familie": { "kinder": [] },
+        "familie": {
+          "kinder": []
+        },
         "beschaeftigung": {
           "typ": "selbstaendig",
           "rolle": "Architektin"
@@ -118,7 +219,10 @@
         "kfz_halter": true,
         "kindergeld_bezug": false,
         "wehrerfasst": false,
-        "sprachen": ["de", "en"]
+        "sprachen": [
+          "de",
+          "en"
+        ]
       },
       "kinder": [
         {
@@ -134,11 +238,15 @@
             "ort": "Hamburg",
             "land": "DE"
           },
-          "familie": { "kinder": [] },
+          "familie": {
+            "kinder": []
+          },
           "kfz_halter": false,
           "kindergeld_bezug": false,
           "wehrerfasst": false,
-          "sprachen": []
+          "sprachen": [],
+          "familienversichert_ueber": "markus-schmidt",
+          "familienversichert_bis": "2047-01"
         }
       ]
     },
@@ -156,14 +264,96 @@
     "kfz_halter": true,
     "kindergeld_bezug": true,
     "wehrerfasst": false,
-    "sprachen": ["de", "en"]
+    "sprachen": [
+      "de",
+      "en"
+    ],
+    "renten_track": "A",
+    "kvnr_v1_1": {
+      "unveraenderbar": "[MOCK] S224108873",
+      "veraenderbar": "[MOCK] 4411300802"
+    },
+    "renten_eckdaten_v1_1": {
+      "grundlage_kurzauszug": {
+        "beitragszeit_von": "2010-09",
+        "beitragszeit_bis": "2025-12",
+        "entgeltpunkte_aktuell": 22.4
+      },
+      "em_rente_prognose_eur_monat": 988.55,
+      "regelalter_prognose_eur_monat": 1842.3,
+      "anpassungs_wirkung": {
+        "beispiel_prozent_p_a": 2,
+        "plus_eur_monat": 1480
+      },
+      "beitragsuebersicht": {
+        "jahr": "2025",
+        "gesamt_eur": 11820,
+        "versicherter_anteil_eur": 5910,
+        "arbeitgeber_anteil_eur": 5910
+      },
+      "stichtag": "2026-04-12",
+      "quelle_letter_id": "letter-renteninfo-schmidt-seed-default",
+      "abgelegt_am": "2026-04-12T08:00:00.000Z"
+    },
+    "pflegegrad_v1_1": {
+      "grad": 2,
+      "bewilligt_am": "2025-09-14",
+      "pflegekasse_id": "tk-pflegekasse",
+      "begutachtung_stelle": "md"
+    },
+    "anrechnungszeit_pflege_v1_1": {
+      "monate": 18,
+      "pflegebeduerftige_person": "Lena Schmidt (Partnerin)",
+      "rechtsgrundlage": "§ 3 SGB VI"
+    },
+    "epa_status_v1_1": {
+      "eingerichtet": true,
+      "widerspruch_gesetzt": false,
+      "eingerichtet_am": "2025-01-15"
+    },
+    "erezept_modus_v1_1": "app"
   },
   {
     "id": "mehmet-yildiz",
     "vorname": "Mehmet",
     "nachname": "Yıldız",
     "geburtsdatum": "1990-09-04",
-    "staatsangehoerigkeit": "deutsch",
+    "staatsangehoerigkeit": "tuerkisch",
+    "geburtsort": "Konya, Türkei",
+    "geschlecht": "m",
+    "religion": "ohne",
+    "fruehere_namen": [],
+    "kontakt": {
+      "bundid_email": {
+        "value": "[MOCK] mehmet.yildiz@example.de",
+        "verified": true,
+        "quelle": "bundid",
+        "verifiziert_am": "2025-08-30"
+      },
+      "bundid_mobil": {
+        "value": "[MOCK] +49 221 5550199",
+        "verified": true,
+        "quelle": "bundid_self_attested",
+        "verifiziert_am": "2025-08-30"
+      },
+      "bundid_postfach": {
+        "aktiviert": false,
+        "status": "inaktiv"
+      },
+      "notification_praeferenzen": {
+        "steuer": "brief",
+        "sozial": "brief",
+        "familie": "brief",
+        "verkehr": "brief",
+        "sonstige": "brief"
+      }
+    },
+    "personalausweis_nr": {
+      "nummer": "[MOCK] K7783255M",
+      "gueltig_bis": "2031-09-04"
+    },
+    "eat_can": "[MOCK] T0123456X",
+    "azr_nr": "[MOCK] 6724813-090",
     "adresse": {
       "strasse": "Venloer Straße",
       "hausnummer": "388",
@@ -173,6 +363,12 @@
     },
     "steuer_id": "[MOCK] 81 003 552 991",
     "rentenversicherungsnummer": "[MOCK] 38 040990 Y 224",
+    "aufenthaltstitel": {
+      "norm": "§ 21 AufenthG",
+      "valid_until": "2027-08-31",
+      "az": "[MOCK] ABH-K-2024/21-3849",
+      "abh_behoerde_id": "abh-koeln"
+    },
     "familie": {
       "kinder": [
         {
@@ -188,28 +384,46 @@
             "ort": "Köln",
             "land": "DE"
           },
-          "familie": { "kinder": [] },
+          "familie": {
+            "kinder": []
+          },
           "kfz_halter": false,
           "kindergeld_bezug": false,
           "wehrerfasst": false,
-          "sprachen": []
+          "sprachen": [],
+          "familienversichert_ueber": "mehmet-yildiz",
+          "familienversichert_bis": "2042-06"
         }
       ]
     },
     "beschaeftigung": {
-      "typ": "angestellt",
-      "arbeitgeber": "Energiewende Consulting Köln GmbH",
-      "rolle": "Senior Berater Erneuerbare Energien",
-      "beginn": "2014-01-15"
+      "typ": "selbstaendig",
+      "rolle": "Freiberuflicher Berater für Erneuerbare Energien",
+      "beginn": "2018-04-01"
     },
     "krankenversicherung": {
       "typ": "gkv",
       "traeger": "Barmer",
-      "versichertennummer": "[MOCK] BARMER-2014-99880142"
+      "versichertennummer": "[MOCK] BARMER-2018-99880142"
     },
     "kfz_halter": true,
     "kindergeld_bezug": true,
     "wehrerfasst": false,
-    "sprachen": ["de", "tr", "en"]
+    "sprachen": [
+      "de",
+      "tr",
+      "en"
+    ],
+    "renten_track": "C",
+    "kvnr_v1_1": {
+      "unveraenderbar": "[MOCK] Y104440996",
+      "veraenderbar": "[MOCK] 9988014200"
+    },
+    "epa_status_v1_1": {
+      "eingerichtet": true,
+      "widerspruch_gesetzt": false,
+      "eingerichtet_am": "2025-01-15"
+    },
+    "erezept_modus_v1_1": "app"
   }
 ]

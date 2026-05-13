@@ -512,6 +512,7 @@
       "cta_reply_again": "Erneut antworten",
       "cta_reply_view_sent": "Versendete Antwort anzeigen",
       "already_replied_template": "Bereits beantwortet am {datum}",
+      "already_replied_dual_template": "Bereits beantwortet am {datum} mit 2 Antworten ({template_a_label} + {template_b_label})",
       "overflow_label": "Weitere Aktionen",
       "overflow": {
         "speichern": "Brief speichern (.txt)",
@@ -561,6 +562,21 @@
           "label": "Eigenen Text verfassen",
           "description": "Ohne Vorlage starten.",
           "icon": "📝"
+        },
+        "rechtsbehelf_einspruch_skelett": {
+          "label": "Einspruch einlegen",
+          "description": "Skelett-Brief mit Pflicht-Angaben — Begründung schreiben Sie selbst.",
+          "icon": "⚖️"
+        },
+        "rechtsbehelf_widerspruch_skelett": {
+          "label": "Widerspruch einlegen",
+          "description": "Skelett-Brief mit Pflicht-Angaben — Begründung schreiben Sie selbst.",
+          "icon": "🛡️"
+        },
+        "aussetzung_vollziehung_skelett": {
+          "label": "Aussetzung der Vollziehung beantragen",
+          "description": "§ 361 AO — Skelett-Antrag, Begründung schreiben Sie selbst.",
+          "icon": "⏸️"
         }
       },
       "templates": {
@@ -593,7 +609,78 @@
         "freitext": {
           "body_template_de": "{absender_name}\n{absender_strasse}\n{absender_plz} {absender_ort}\n\n{empfaenger_behoerde}\n{empfaenger_strasse}\n{empfaenger_plz} {empfaenger_ort}\n\n{ort}, {datum}\n\nAktenzeichen: {aktenzeichen}\n\nSehr geehrte Damen und Herren,\n\n\n\nMit freundlichen Grüßen,\n\n{absender_name}",
           "disclaimer_inline": "Sie schreiben ohne Vorlage. Datum, Aktenzeichen und Empfänger sind aus dem Brief vorbefüllt."
+        },
+        "rechtsbehelf_einspruch_skelett": {
+          "body_template_de": "{absender_name}\n{absender_strasse}\n{absender_plz} {absender_ort}\n\n{empfaenger_behoerde}\n{empfaenger_strasse}\n{empfaenger_plz} {empfaenger_ort}\n\n{ort}, {datum}\n\nAktenzeichen: {aktenzeichen}\nBetreff: Einspruch gegen den Bescheid vom {datum_bescheid}\n\nSehr geehrte Damen und Herren,\n\nhiermit lege ich gegen Ihren Bescheid vom {datum_bescheid} mit dem oben genannten Aktenzeichen Einspruch ein.\n\nMit freundlichen Grüßen,\n\n{absender_name}",
+          "label": "Einspruch einlegen",
+          "beschreibung": "Skelett-Brief mit Pflicht-Angaben — Begründung schreiben Sie selbst.",
+          "disclaimer_pre_insertion": "Diese Vorlage enthält nur die Pflicht-Angaben (Datum, Aktenzeichen, Empfänger und die Erklärung des Rechtsbehelfs). Eine **Begründung schreiben Sie selbst** — die App schlägt keine Argumente vor, weil die Bewertung Ihres Einzelfalls eine Rechtsdienstleistung im Sinne des § 2 RDG ist und nur durch Anwält:innen, registrierte Personen, Verbraucherzentralen oder Sozialverbände erfolgen darf.",
+          "disclaimer_inline": "Hinweis: Die Begründung schreiben Sie selbst — die App generiert sie nicht."
+        },
+        "rechtsbehelf_widerspruch_skelett": {
+          "body_template_de": "{absender_name}\n{absender_strasse}\n{absender_plz} {absender_ort}\n\n{empfaenger_behoerde}\n{empfaenger_strasse}\n{empfaenger_plz} {empfaenger_ort}\n\n{ort}, {datum}\n\nAktenzeichen: {aktenzeichen}\nBetreff: Widerspruch gegen den Bescheid vom {datum_bescheid}\n\nSehr geehrte Damen und Herren,\n\nhiermit lege ich gegen Ihren Bescheid vom {datum_bescheid} mit dem oben genannten Aktenzeichen Widerspruch ein.\n\nMit freundlichen Grüßen,\n\n{absender_name}",
+          "label": "Widerspruch einlegen",
+          "beschreibung": "Skelett-Brief mit Pflicht-Angaben — Begründung schreiben Sie selbst.",
+          "disclaimer_pre_insertion": "Diese Vorlage enthält nur die Pflicht-Angaben (Datum, Aktenzeichen, Empfänger und die Erklärung des Rechtsbehelfs). Eine **Begründung schreiben Sie selbst** — die App schlägt keine Argumente vor, weil die Bewertung Ihres Einzelfalls eine Rechtsdienstleistung im Sinne des § 2 RDG ist und nur durch Anwält:innen, registrierte Personen, Verbraucherzentralen oder Sozialverbände erfolgen darf.",
+          "disclaimer_inline": "Hinweis: Die Begründung schreiben Sie selbst — die App generiert sie nicht.",
+          "disclaimer_pre_insertion_zusatz_sgg": "Bei einem Bescheid einer Sozialversicherung ist der **Widerspruch** der richtige Rechtsbehelf — nicht der Einspruch (§ 84 SGG). Beachten Sie außerdem: Beiträge bleiben trotz Widerspruch fällig (§ 86a Abs. 2 Nr. 1 SGG).",
+          "disclaimer_pre_insertion_zusatz_vwgo": "Beachten Sie: Auch ein Widerspruch hat in Beitrags-Sachen keine aufschiebende Wirkung (§ 80 Abs. 2 Nr. 1 VwGO) — die Forderung bleibt trotz Widerspruch fällig."
+        },
+        "aussetzung_vollziehung_skelett": {
+          "body_template_de": "{absender_name}\n{absender_strasse}\n{absender_plz} {absender_ort}\n\n{empfaenger_behoerde}\n{empfaenger_strasse}\n{empfaenger_plz} {empfaenger_ort}\n\n{ort}, {datum}\n\nAktenzeichen: {aktenzeichen}\nBetreff: Antrag auf Aussetzung der Vollziehung\n\nSehr geehrte Damen und Herren,\n\nhiermit beantrage ich die Aussetzung der Vollziehung des oben genannten Bescheids vom {datum_bescheid} bis zur Entscheidung über meinen Einspruch.\n\nMit freundlichen Grüßen,\n\n{absender_name}",
+          "label": "Aussetzung der Vollziehung beantragen",
+          "beschreibung": "§ 361 AO — Skelett-Antrag, Begründung schreiben Sie selbst.",
+          "disclaimer_pre_insertion": "Die Aussetzung wird **nicht automatisch** gewährt — die Behörde prüft jeden Antrag eigenständig (§ 361 Abs. 2 AO). Säumniszuschläge nach § 240 AO entstehen weiter, solange die Aussetzung nicht bewilligt ist. Diese Vorlage setzt voraus, dass Sie bereits einen Einspruch eingelegt haben oder gleichzeitig einlegen.",
+          "disclaimer_inline": "Hinweis: Aussetzung wird nicht automatisch gewährt — Säumniszuschläge entstehen weiter, bis die Behörde entschieden hat."
         }
+      },
+      "pre_insertion_modal": {
+        "einspruch_ao": {
+          "title": "Einspruch bei der richtigen Stelle einlegen",
+          "body": "Ein Einspruch ist bei der Behörde einzulegen, deren Verwaltungsakt angefochten wird (§ 357 Abs. 2 Satz 1 AO). Wir haben aus dem Briefkopf „{empfaenger_behoerde}“ als Adressat übernommen. Bitte prüfen Sie die Empfänger-Anschrift selbst — ein Einspruch bei einer falschen Stelle wahrt die Frist nur dann, wenn er die zuständige Behörde noch innerhalb der Frist erreicht (§ 357 Abs. 2 Satz 4 AO).",
+          "cta_continue": "Skelett einfügen",
+          "cta_cancel": "Abbrechen"
+        },
+        "einspruch_ao_familienkasse_zusatz": "Hinweis: Kindergeld-Bescheide werden nach den Regeln der Abgabenordnung (AO) angefochten — nicht nach dem Sozialgerichtsgesetz. Frist und Form folgen aus § 357 AO. Das gilt, weil Kindergeld eine Steuervergütung im Sinne des § 31 EStG ist (BFH III R 26/22, 2023).",
+        "widerspruch_sgg": {
+          "title": "Widerspruch bei der richtigen Stelle einlegen",
+          "body": "Ein Widerspruch in einer sozialversicherungsrechtlichen Sache ist bei der Stelle einzulegen, die den Bescheid erlassen hat (§ 84 Abs. 2 Satz 1 SGG). Wir haben aus dem Briefkopf „{empfaenger_behoerde}“ als Adressat übernommen. Bitte prüfen Sie die Empfänger-Anschrift selbst — eine Einlegung bei einer anderen inländischen Behörde wahrt die Frist nur, weil diese Behörde den Widerspruch unverzüglich an die zuständige Stelle weiterleiten muss (§ 84 Abs. 2 Satz 2 SGG).",
+          "cta_continue": "Skelett einfügen",
+          "cta_cancel": "Abbrechen"
+        },
+        "widerspruch_vwgo": {
+          "title": "Widerspruch bei der richtigen Stelle einlegen",
+          "body": "Ein Widerspruch ist bei der Behörde einzulegen, die den angefochtenen Verwaltungsakt erlassen hat (§ 70 Abs. 1 Satz 1 VwGO). Wir haben aus dem Briefkopf „{empfaenger_behoerde}“ als Adressat übernommen. Bitte prüfen Sie die Empfänger-Anschrift selbst — in einigen Bundesländern (etwa Bayern) ist das Widerspruchsverfahren in bestimmten Sachgebieten abgeschafft; dann ist statt des Widerspruchs unmittelbar die Klage zum Verwaltungsgericht zu erheben.",
+          "cta_continue": "Skelett einfügen",
+          "cta_cancel": "Abbrechen"
+        },
+        "aussetzung_ao": {
+          "title": "Aussetzung der Vollziehung — Hinweise",
+          "body": "Die Aussetzung der Vollziehung ist bei der Finanzbehörde zu beantragen, die den angefochtenen Bescheid erlassen hat (§ 361 Abs. 2 Satz 1 AO). Sie wird **nicht automatisch** gewährt — die Behörde gewährt die Aussetzung nur, wenn ernstliche Zweifel an der Rechtmäßigkeit bestehen oder die Vollziehung eine unbillige Härte bedeuten würde (§ 361 Abs. 2 Satz 2 AO). Säumniszuschläge nach § 240 AO entstehen weiter, solange die Aussetzung nicht bewilligt ist; die Aussetzung setzt überdies einen bereits eingelegten Einspruch voraus.",
+          "cta_continue": "Skelett einfügen",
+          "cta_cancel": "Abbrechen"
+        }
+      },
+      "frist_cited_format": {
+        "einspruch_ao": "Sie haben **1 Monat** ab Bekanntgabe des Bescheids Zeit, um Einspruch einzulegen — **§ 355 Abs. 1 AO**. Die Frist endet am {frist_datum}.",
+        "widerspruch_sgg": "Sie haben **1 Monat** ab Bekanntgabe des Bescheids Zeit, um Widerspruch einzulegen — **§ 84 Abs. 1 SGG**. Die Frist endet am {frist_datum}.",
+        "widerspruch_vwgo": "Sie haben **1 Monat** ab Bekanntgabe des Bescheids Zeit, um Widerspruch einzulegen — **§ 70 Abs. 1 Satz 1 VwGO**. Die Frist endet am {frist_datum}.",
+        "aussetzung_ao": "Eine Aussetzung der Vollziehung können Sie jederzeit beantragen, solange das Einspruchsverfahren läuft — **§ 361 Abs. 2 AO**. Eine eigene Frist gibt es nicht, eine schnelle Antragstellung ist aber wichtig, weil Säumniszuschläge nach § 240 AO weiter entstehen."
+      },
+      "bekanntgabe_caveat": "Hinweis: Dieser Bescheid wurde elektronisch über Mein ELSTER bereitgestellt. Als Bekanntgabe-Datum gilt der **vierte Tag** nach Bereitstellung (§ 122a Abs. 4 AO). Die Frist endet entsprechend vier Tage später als bei einer Briefpost-Bekanntgabe.",
+      "bekanntgabe_caveat_summary": "Wann beginnt die Frist? Hinweise zur elektronischen Bekanntgabe",
+      "frist_abgelaufen_warnung": "Die im Bescheid genannte Frist ist nach unseren Daten am {frist_datum} abgelaufen. Eine verspätete Einlegung ist möglich, wird aber regelmäßig als unzulässig zurückgewiesen — es sei denn, die Rechtsbehelfsbelehrung war fehlerhaft (dann gilt eine Jahres-Frist) oder die Voraussetzungen für Wiedereinsetzung in den vorigen Stand sind erfüllt. Bitte lassen Sie sich vor der Einlegung von einer Verbraucherzentrale, einem Sozialverband oder einer Anwält:in beraten.",
+      "skelett_footer_no_legal_advice": "Erfolgsaussichten Ihres Rechtsbehelfs lassen Sie bitte von einer Verbraucherzentrale, einem Sozialverband oder einer Anwält:in prüfen — die App liefert dazu keine Bewertung.",
+      "skelett_visibility_explainer": {
+        "kein_rechtsbehelf_bei_mitwirkung": "Hinweis: Dieser Brief ist eine Mitwirkungs-Aufforderung, kein Bescheid. Sie können hier (noch) keinen Rechtsbehelf einlegen — bitte reichen Sie den angeforderten Nachweis ein oder bitten Sie um Fristverlängerung."
+      },
+      "template_switch": {
+        "dual_send": "Beide als getrennte Briefe versenden",
+        "discard_and_switch": "Aktuellen Entwurf verwerfen und wechseln",
+        "cancel": "Abbrechen"
+      },
+      "cross_send": {
+        "reply1_sent_announcement": "Reply 1 versendet. Vorbereitung Reply 2 …"
       },
       "body_textarea_label": "Antwort-Text (Deutsch)",
       "body_textarea_de_hint": "Behörden parsen Deutsch — bitte verfassen Sie auf Deutsch.",
@@ -665,6 +752,528 @@
       "row_meta_template": "Az {aktenzeichen} · zuletzt bearbeitet vor {relTime}",
       "row_cta": "Weiter schreiben",
       "empty_state_hint": "Keine offenen Entwürfe."
+    },
+    "bridge": {
+      "renten_cta_label": "Werte in meinen Stammdaten ablegen",
+      "renten_already_applied": "Bereits am {datum} in Ihrer Sektion Altersvorsorge abgelegt",
+      "renten_toast_success": "Renteninformation in Ihrer Sektion Altersvorsorge abgelegt",
+      "renten_navigate_label": "Zur Sektion Altersvorsorge",
+      "renten_section_title": "Werte in meinen Stammdaten ablegen",
+      "renten_section_subtitle": "Aus dieser Renteninformation übernehmen wir die fünf Pflicht-Inhalte (§ 109 Abs. 3 SGB VI) in Ihre Stammdaten-Sektion Altersvorsorge.",
+      "renten_toast_already_applied": "Diese Renteninformation wurde bereits übernommen.",
+      "renten_toast_error": "Übernahme fehlgeschlagen — bitte erneut versuchen."
+    }
+  },
+  "stammdaten": {
+    "page": {
+      "title": "Stammdaten",
+      "loading": "Profil wird geladen …",
+      "refreshing": "Profil wird aktualisiert.",
+      "error_load": "Profil konnte nicht geladen werden — bitte erneut versuchen?",
+      "error_retry": "Erneut versuchen",
+      "religion_consent_error": "Religion-Anzeige konnte nicht aktiviert werden.",
+      "sperre_error": "Sperre konnte nicht aktiviert werden.",
+      "iban_push_error": "IBAN-Push konnte nicht simuliert werden.",
+      "beschaeftigung_heading": "Beschäftigung (Read-only-Aggregation)",
+      "beschaeftigung_helper": "Diese Felder werden außerhalb des Melderegisters geführt (DRV, Krankenkasse, Finanzamt) und sind hier nur als Aggregat sichtbar."
+    },
+    "tab": {
+      "aria_label": "Stammdaten-Bereiche",
+      "profil": { "label": "Mein Profil" },
+      "wallet": { "label": "Wallet & Externe Empfänger" }
+    },
+    "hero": {
+      "eyebrow": "Single-Source-of-Truth",
+      "title": "Datenschutzcockpit (Pilot-Phase)",
+      "title_with_name": "Stammdaten von {name}",
+      "summary": "Sie sind in {register_count} öffentlichen Registern geführt.",
+      "last_transmission": "Letzte Übermittlung: vor {dauer} — {feld} vom {absender} an {empfaenger}. Rechtsgrundlage: {rechtsgrundlage}.",
+      "cta_full_log": "Vollständiges Aktivitätsprotokoll öffnen",
+      "empty_state": "Keine kürzlichen Übermittlungen — willkommen!",
+      "dsc_pilot_phase_label": "Datenschutzcockpit (Pilot-Phase)",
+      "dsc_pilot_tooltip": "Sukzessive Anbindung: KBA seit 04/2026 an IDA (DSC folgt), BA/STEP im Pilot. Eine flächendeckende Anbindung der 51 RegMoG-Register ist Roadmap 2026/2027.",
+      "vision_2027_banner_title": "2027-Vision: Konvergenz BundID + DSC + EUDI Wallet",
+      "vision_2027_banner_body": "Diese Stammdaten-Sicht zeigt, wie eine konvergierte Bürger:innen-Sicht auf das hypothetische 2027-Bild aus BundID-Stammdatenservice, Datenschutzcockpit nach IDNrG und EUDI-Wallet-PID aussehen könnte. Heute (Mai 2026) ist diese Konvergenz noch nicht erreicht.",
+      "disclaimer_lese_title": "Hinweis: Lese- und Wegweiser-Schicht",
+      "disclaimer_audit_title": "Hinweis: App-internes Aktivitätsprotokoll"
+    },
+    "sektion": {
+      "identitaet": { "title": "Identität" },
+      "anschrift": { "title": "Anschrift" },
+      "familie": { "title": "Familie" },
+      "dokumente": { "title": "Dokumente" },
+      "sperren_einstellungen": { "title": "Sperren & Einstellungen" },
+      "altersvorsorge": {
+        "title": "Altersvorsorge",
+        "subtitle": "Gesetzliche Rente, Versorgungswerke und Privatvorsorge im Überblick"
+      },
+      "kv_pflege": {
+        "title": "Krankenversicherung & Pflege",
+        "subtitle": "Krankenkasse, ePA, eRezept und Pflege"
+      },
+      "kontakt_postfach": { "title": "Kontakt & Postfach" },
+      "notification_praeferenzen": { "title": "Notification-Präferenzen (2027-Vision)" },
+      "sr_field_count": "{count, plural, =1 {1 Feld in dieser Sektion} other {# Felder in dieser Sektion}}",
+      "aktivitaet_aside_label": "Aktivitätsprotokoll dieser Sektion"
+    },
+    "field_card": {
+      "quelle_label": "Quelle",
+      "letztes_update_label": "Letztes Update",
+      "value_empty": "—",
+      "reveal_religion": "Religionszugehörigkeit anzeigen"
+    },
+    "cta": {
+      "korrigieren": "Korrigieren-Pfad öffnen",
+      "korrekturweg_label": "Korrekturweg",
+      "familie_preview": "{partner} Partner:in / {kinder} Kind(er)",
+      "sperre_aktivieren": "Sperre aktivieren (Demo)",
+      "iban_push_trigger": "IBAN-Push simulieren"
+    },
+    "field": {
+      "familienname": { "label": "Familienname" },
+      "fruehere_namen": { "label": "Frühere Namen" },
+      "vornamen": { "label": "Vornamen" },
+      "doktorgrad": { "label": "Doktorgrad" },
+      "geburtsdatum": { "label": "Geburtsdatum" },
+      "geburtsort": { "label": "Geburtsort" },
+      "geschlecht": { "label": "Geschlechtseintrag" },
+      "staatsangehoerigkeit": { "label": "Staatsangehörigkeit" },
+      "steuer_id": { "label": "Steuer-Identifikationsnummer" },
+      "anschrift_aktuell": { "label": "Aktuelle Hauptanschrift" },
+      "anschriften_historisch": { "label": "Frühere Anschriften" },
+      "familienstand": { "label": "Familienstand" },
+      "partner": { "label": "Ehegatte / Lebenspartner:in" },
+      "kinder": { "label": "Kinder" },
+      "eheschliessung": { "label": "Eheschließung / Verpartnerung" },
+      "personalausweis": { "label": "Personalausweis" },
+      "reisepass": { "label": "Reisepass" },
+      "eat_can": { "label": "elektronischer Aufenthaltstitel (eAT) — CAN" },
+      "azr_nr": { "label": "AZR-Nummer (Ausländerzentralregister)" },
+      "religionszugehoerigkeit": { "label": "Religionszugehörigkeit" },
+      "kontakt_email": { "label": "E-Mail-Adresse" },
+      "kontakt_mobil": { "label": "Mobilnummer" },
+      "sprachpraeferenz": { "label": "Sprachpräferenz" },
+      "iban": { "label": "IBAN für Erstattungen" },
+      "auskunftssperre": { "label": "Auskunftssperre nach § 51 Abs. 1 BMG" },
+      "uebermittlungssperren": { "label": "Übermittlungssperren nach §§ 42 Abs. 3, 50 Abs. 5 BMG" },
+      "kvnr": { "label": "Krankenversichertennummer (KVNR)" },
+      "drv_versicherungsnummer": { "label": "Rentenversicherungsnummer (DRV)" },
+      "elstam": { "label": "ELStAM (Steuerklasse, Freibeträge)" },
+      "geschlecht": {
+        "label": "Geschlechtseintrag",
+        "value": {
+          "m": "männlich",
+          "w": "weiblich",
+          "d": "divers",
+          "x": "ohne Angabe (X)",
+          "unbestimmt": "unbestimmt"
+        }
+      },
+      "religion": {
+        "value": {
+          "rk": "römisch-katholisch",
+          "ev": "evangelisch",
+          "ohne": "ohne Religionszugehörigkeit",
+          "andere": "andere"
+        }
+      },
+      "auskunftssperre": {
+        "label": "Auskunftssperre nach § 51 Abs. 1 BMG",
+        "value": {
+          "aktiv": "aktiv (Demo-Pattern)",
+          "inaktiv": "inaktiv"
+        }
+      },
+      "uebermittlungssperre": {
+        "value": {
+          "aktiv": "aktiv (Demo-Pattern)",
+          "inaktiv": "inaktiv"
+        }
+      },
+      "uebermittlungssperre_42_3": {
+        "label": "Übermittlungssperre Religionsgesellschaften (§ 42 Abs. 3 BMG)"
+      },
+      "beschaeftigung": {
+        "typ": { "label": "Beschäftigungstyp" },
+        "arbeitgeber": { "label": "Arbeitgeber" },
+        "kvnr": { "label": "KVNR" },
+        "drv": { "label": "DRV-Nr." }
+      }
+    },
+    "korrekturweg": {
+      "familienname": { "pointer": "Korrektur beim Standesamt nach § 1355 BGB / § 45 PStG." },
+      "fruehere_namen": { "pointer": "Korrektur beim Standesamt nach § 45 PStG." },
+      "vornamen": { "pointer": "Korrektur beim Standesamt nach § 45 PStG." },
+      "doktorgrad": { "pointer": "Korrektur über Bürgeramt mit Beleg-Upload (§ 3 Abs. 1 Nr. 6 BMG)." },
+      "geburtsdatum": { "pointer": "Korrektur beim Standesamt des Geburtsorts." },
+      "geburtsort": { "pointer": "Korrektur beim Standesamt des Geburtsorts." },
+      "geschlecht": { "pointer": "Erklärung beim Standesamt nach § 4 SBGG (Anmeldung) und § 2 SBGG (persönliche Beurkundung)." },
+      "staatsangehoerigkeit": { "pointer": "Korrektur über Einbürgerungsbehörde nach StAG." },
+      "steuer_id": { "pointer": "Lebenslang vergeben durch das Bundeszentralamt für Steuern (§ 139b AO) — nicht änderbar." },
+      "anschrift_aktuell": { "pointer": "Bürgeramt-Termin oder elektronische Wohnsitz-Anmeldung (eWA) nach § 17 BMG." },
+      "anschriften_historisch": { "pointer": "Korrekturen werden durch eine neue Anmeldung nach § 17 BMG ausgelöst." },
+      "familienstand": { "pointer": "Korrektur beim Standesamt nach PStG." },
+      "partner": { "pointer": "Korrektur beim Standesamt nach PStG." },
+      "kinder": { "pointer": "Korrektur beim Standesamt nach § 21 PStG." },
+      "eheschliessung": { "pointer": "Korrektur beim Standesamt der Eheschließung." },
+      "personalausweis": { "pointer": "Neuausstellung beim Bürgeramt nach PAuswG." },
+      "reisepass": { "pointer": "Neuausstellung beim Bürgeramt nach PassG." },
+      "eat_can": { "pointer": "Korrektur über die Ausländerbehörde nach AufenthG." },
+      "azr_nr": { "pointer": "Korrektur über die Ausländerbehörde nach § 34 AZRG." },
+      "religionszugehoerigkeit": { "pointer": "Eintritt / Austritt: Standesamt oder Religionsgemeinschaft; Speicherung nach § 3 Abs. 1 Nr. 11 BMG." },
+      "kontakt_email": { "pointer": "Direkt im BundID-Konto änderbar (App-Einstellung)." },
+      "kontakt_mobil": { "pointer": "Direkt im BundID-Konto änderbar (App-Einstellung)." },
+      "sprachpraeferenz": { "pointer": "App-interne Einstellung — keine Behörden-Wirkung." },
+      "iban": { "pointer": "Heute (Mai 2026) pro Behörde separat zu hinterlegen — diese App simuliert ein 2027-Pattern." },
+      "auskunftssperre": { "pointer": "Antrag mit Begründung beim Bürgeramt nach § 51 Abs. 1 BMG." },
+      "uebermittlungssperren": { "pointer": "Antrag beim Bürgeramt nach §§ 42 Abs. 3, 50 Abs. 5 BMG (ohne Begründung)." },
+      "kvnr": { "pointer": "Korrektur über das Mitgliedsportal Ihrer Krankenkasse (§ 290 SGB V)." },
+      "drv_versicherungsnummer": { "pointer": "Korrektur über das DRV-Konto (§ 147 SGB VI)." },
+      "elstam": { "pointer": "Korrektur über Mein ELSTER bzw. das Finanzamt (§ 39 EStG)." }
+    },
+    "disclaimer": {
+      "lese_schicht": "Diese App ist eine **Lese- und Wegweiser-Schicht**. Sie selbst nimmt **keine** Änderungen an Ihren Daten in den zuständigen Registern vor. Korrekturen erfolgen ausschließlich im jeweiligen Behörden-Verfahren — etwa beim Bürgeramt nach § 17 BMG für die Anschrift, beim Standesamt nach PStG für Familienstand und Vornamen, beim Standesamt nach § 4 SBGG für die Anmeldung der Geschlechtseintrag-Änderung (mündlich oder schriftlich, drei Monate vor der Erklärung) und nach § 2 SBGG für die persönliche Beurkundung der Erklärung beim Standesamt, beim Bundeszentralamt für Steuern für die Identifikationsnummer (§ 139b AO). Wir zeigen Ihnen pro Feld den richtigen Weg an.",
+      "audit_log_app_internal": "Das hier sichtbare Aktivitätsprotokoll erfasst ausschließlich Ihre Aktivitäten in dieser App (Aufrufe, Filter, Selbst-Editierungen). Es ist **keine** behördliche Audit-Spur. Den behördlichen Audit-Layer für IDNr-basierte Datenübermittlungen zwischen öffentlichen Stellen liefert das Datenschutzcockpit nach § 9 IDNrG mit einer Speicherfrist von 24 Monaten — abrufbar unter datenschutzcockpit.bund.de, sobald die jeweiligen Register angebunden sind. Stand Mai 2026: Pilot-Phase mit punktueller Register-Abdeckung; das Kraftfahrt-Bundesamt hat sich zum 15.04.2026 an das IDA-Verfahren angeschlossen, die DSC-Anbindung folgt. Eine flächendeckende Anbindung der 51 RegMoG-Register ist Roadmap 2026/2027.",
+      "eudi_speculative": "Die hier gezeigte Funktion, Stammdaten als Wallet-Nachweis (Attestation) an private Empfänger — etwa Bank, Vermieter:in, Energieversorger — auf Klick freizugeben, simuliert eine **Vision für 2027**. Sie basiert auf der EUDI-Wallet-Verordnung (EU) 2024/1183 und dem Architecture and Reference Framework (Stand Mai 2026: v2.0). Die Pflicht zur Bereitstellung einer EUDI-Wallet greift in Deutschland frühestens 2026/2027; Drittanbieter-Akzeptanz, Trust-Service-Konformität und Gebührenmodelle sind noch nicht verbindlich geregelt.",
+      "iban_speculative": "Eine zentrale IBAN-Hinterlegung mit automatischer Übergabe an Familienkasse, Finanzamt und Krankenkasse ist heute (Mai 2026) **nicht** verfügbar. Diese Demo simuliert ein 2027-Pattern. Aktuell müssen Sie Ihre Bankverbindung pro Behörde separat hinterlegen.",
+      "religion_art9": "Die Religionszugehörigkeit ist eine besondere Kategorie personenbezogener Daten nach Art. 9 DSGVO. Sie wird hier nur auf Klick eingeblendet. Speicherung im Melderegister beruht auf § 3 Abs. 1 Nr. 11 BMG; die Verwendung zur Lohn- und Einkommensteuer auf § 51a EStG i.V.m. KiStAM (BZSt).",
+      "religion_consent_toggle_label": "Ich willige ausdrücklich in die Anzeige meines Religionsmerkmals in dieser App ein (Art. 9 Abs. 2 lit. a DSGVO). Diese Einwilligung gilt nur für die aktuelle Sitzung.",
+      "sperren_mock_pattern": "Im echten System erfolgt die Eintragung einer Auskunfts- oder Übermittlungssperre nach § 51 BMG (mit Begründung) bzw. nach §§ 42 Abs. 3, 50 Abs. 5 BMG (ohne Begründung) ausschließlich auf Antrag bei der zuständigen Meldebehörde. Dieser App-interne Toggle ist ein Demo-Pattern und ersetzt keine behördliche Antragstellung.",
+      "renteninfo_info_only": "Diese App berechnet keine Renten. Werte stammen aus Ihrer Renteninformation vom {stichtag} (§ 109 Abs. 3 SGB VI).",
+      "pflegegrad_art9": "Pflegegrad ist eine Gesundheitsdaten-Kategorie nach Art. 9 DSGVO und ggf. EuGH 01.08.2022 C-184/20 (weite Lesart von Gesundheitsdaten). Rechtsgrundlage Pflegegrad-Einrichtung: § 14 SGB XI; Frist Pflegekasse-Entscheidung: § 18c SGB XI (25 Arbeitstage).",
+      "epa_anlage_widerspruch": "Information zur ePA-Anlage gemäß § 343 SGB V; Anlage erfolgt automatisch nach § 342 Abs. 1 S. 2 SGB V seit 15.01.2025. Sie können der Anlage über Ihre Krankenkasse widersprechen.",
+      "zfdr_unvollstaendig": "Die Digitale Rentenübersicht (rentenuebersicht.de) bündelt über 700 Vorsorgeeinrichtungen mit rund 137 Mio. Anwartschaften. Versorgungswerke, Beamtenversorgung und Direktzusagen sind dort heute nicht angebunden.",
+      "pflegegrad_consent_toggle_label": "Ich willige ausdrücklich in die Anzeige meines Pflegegrads in dieser App ein (Art. 9 Abs. 2 lit. a DSGVO). Diese Einwilligung gilt nur für die aktuelle Sitzung.",
+      "track_c_empty_state_body": "Sie haben keine Renteninformation, weil Sie nicht in der GRV pflichtversichert sind. Im PKV-Bereich existiert kein zentraler Aggregator wie ZfDR — Sie müssen die App Ihres Versicherers nutzen. Optionen: 1) freiwillige GRV (§ 7 SGB VI), 2) Privatvorsorge prüfen, 3) Falls Pflichtversicherten-Beruf (§ 2 SGB VI), Pflichtversicherung beantragen.",
+      "eugh_c184_20_weite_lesart": "EuGH C-184/20 (01.08.2022) erfasst auch indirekte Schlüsse auf Gesundheitsdaten."
+    },
+    "subtab": {
+      "wallet_externe_empfaenger": {
+        "banner_title": "2027-Vision — Wallet & externe Empfänger",
+        "banner": "Diese Sektion zeigt, wie eine EUDI-Wallet-basierte Datenfreigabe an private Empfänger (Bank, Vermieter:in, Energieversorger) aussehen könnte. Heute (Mai 2026) ist diese Funktion nicht verfügbar.",
+        "disclaimer_title": "Hinweis zur EUDI-Wallet-2027-Vision (Disclaimer ein-/ausklappen)",
+        "kategorie": {
+          "bank": "Hausbank",
+          "hausverwaltung": "Hausverwaltung",
+          "energieversorger": "Energieversorger"
+        },
+        "cta_simulate": "Anfrage simulieren",
+        "preview_error": "Vorschau konnte nicht erstellt werden — bitte erneut versuchen.",
+        "arf_footer": "Datengrundlage: EUDI Architecture and Reference Framework (Stand Mai 2026: v2.0); PID-Rulebook v1.4 — 8 Pflichtattribute, 4 von 6 Hilfsattributen."
+      }
+    },
+    "aktivitaet": {
+      "list_heading": "Aktivitätsprotokoll",
+      "empty": "Keine Einträge in dieser Sektion.",
+      "zweck": {
+        "adressuebermittlung_buergeramt_finanzamt": "Adressübermittlung an Finanzverwaltung",
+        "adressuebermittlung_buergeramt_beitragsservice": "Adressübermittlung an Rundfunkbeitragsservice",
+        "adressuebermittlung_buergeramt_gkv": "Adressfluss zur Krankenkasse (DEÜV)",
+        "adressuebermittlung_buergeramt_bapersbw": "Wehrerfassungs-Adressmitteilung",
+        "app_religion_angezeigt": "Religionsmerkmal in der App angezeigt",
+        "app_kontakt_geaendert": "Kontaktdaten in der App geändert",
+        "app_sprache_geaendert": "Sprachpräferenz in der App geändert",
+        "app_sperre_aktiviert": "Sperre als App-Demo aktiviert",
+        "app_sperre_deaktiviert": "Sperre als App-Demo deaktiviert",
+        "spec_iban_push_simuliert": "IBAN-Push (2027-Vision) an {empfaenger} simuliert",
+        "spec_wallet_attestation_preview": "Wallet-Attestation-Vorschau (2027-Vision) für {empfaenger}",
+        "renteninfo_eingelesen": "Renteninformation in Stammdaten abgelegt (§ 109 Abs. 1 + Abs. 3 SGB VI)",
+        "app_pflegegrad_angezeigt": "Pflegegrad in der App angezeigt (Art. 9 Abs. 2 lit. a DSGVO i.V.m. § 14 SGB XI)",
+        "app_epa_banner_gesehen": "ePA-Status-Banner gesehen (§ 342 Abs. 1 S. 2 i.V.m. § 343 SGB V)",
+        "bridge_skipped_idempotent": "Bridge-Aufruf übersprungen (Renteninformation bereits abgelegt)",
+        "pflegegrad_consent_erteilt": "Einwilligung zur Pflegegrad-Anzeige erteilt (Art. 9 Abs. 2 lit. a DSGVO)",
+        "pflegegrad_consent_widerrufen": "Einwilligung zur Pflegegrad-Anzeige widerrufen",
+        "epa_widerspruch_geandert": "ePA-Widerspruchs-Status geändert",
+        "anrechnungszeit_pflege_offengelegt": "Anrechnungszeit Pflege offengelegt (§ 3 SGB VI; gekoppelt an Pflegegrad-Einwilligung)"
+      },
+      "kategorie": {
+        "behoerde_zu_behoerde": { "label": "Behörden-zu-Behörden-Übermittlung" },
+        "app_aktivitaet": { "label": "App-Aktivität (kein behördliches Übermittlungs-Log)" },
+        "speculative_2027": { "label": "2027-Vision (Demo)" },
+        "behoerde_zu_buerger": { "label": "Behörde-zu-Bürger:in (Notification / Postfach-Eingang)" }
+      },
+      "richtung": {
+        "label": "Richtung",
+        "alle": { "label": "Alle Richtungen" },
+        "eingehend": { "label": "Eingehend (Behörde → Bürger:in)" },
+        "ausgehend": { "label": "Ausgehend (Bürger:in → Behörden)" },
+        "intern": { "label": "Intern (App-Aktivität)" }
+      }
+    },
+    "modal": {
+      "religion_consent": {
+        "title": "Religionsmerkmal anzeigen — Einwilligung erforderlich",
+        "cta_show": "Religionsmerkmal anzeigen",
+        "cta_cancel": "Abbrechen"
+      },
+      "sperren_aktivieren": {
+        "title": "Sperre als App-Demo aktivieren",
+        "title_auskunftssperre": "Auskunftssperre nach § 51 Abs. 1 BMG aktivieren",
+        "title_uebermittlungssperre": "Übermittlungssperre {sperre} aktivieren",
+        "cta_activate": "Sperre als Demo-Pattern aktivieren",
+        "cta_cancel": "Abbrechen",
+        "begruendung_label": "Begründung (Min. 30 Zeichen, § 51 Abs. 1 BMG)",
+        "begruendung_helper_template": "{count} von Mindestens {min} Zeichen.",
+        "begruendung_too_short_template": "Begründung zu kurz: {count} von {min} Zeichen erforderlich (§ 51 Abs. 1 BMG)."
+      },
+      "iban_push": {
+        "title": "IBAN-Push simulieren — 2027-Vision",
+        "iban_label": "IBAN",
+        "empfaenger_legend": "Empfänger des Mock-Pushes",
+        "empfaenger_label": {
+          "familienkasse": "Familienkasse",
+          "elster": "ELSTER / Finanzamt",
+          "gkv": "Krankenkasse (GKV)"
+        },
+        "cta_simulate": "Mock-Push simulieren",
+        "cta_cancel": "Abbrechen"
+      },
+      "wallet_attestation_preview": {
+        "title": "Wallet-Attestation-Vorschau",
+        "empfaenger_label": "Empfänger",
+        "section_pflicht": "PID-Pflichtattribute (8)",
+        "section_optional": "PID-Hilfsattribute (4 von 6)",
+        "loading": "Vorschau wird erstellt …",
+        "attestation_id_label": "Mock-Attestation-ID",
+        "cta_close": "Schließen"
+      },
+      "pflegegrad_consent": {
+        "title": "Pflegegrad anzeigen — Einwilligung erforderlich",
+        "cta_show": "Pflegegrad anzeigen",
+        "cta_cancel": "Abbrechen",
+        "eugh_lesart_intro": "Weite Lesart Art. 9 DSGVO nach"
+      }
+    },
+    "badge": {
+      "2027_vision": "2027-Vision",
+      "pilot_phase": "Pilot-Phase",
+      "art9_relevant": "Sensible Daten — Art. 9 mittelbar",
+      "mock": "[MOCK]"
+    },
+    "altersvorsorge": {
+      "traeger_label": "Träger:",
+      "empty_state_body": "Sobald Sie Ihre nächste Renteninformation in Ihrem Posteingang erhalten, werden die Werte (Entgeltpunkte, Prognosen, Beitragsübersicht) hier zur Übersicht abgelegt.",
+      "yellow_letter_echo": {
+        "card_top_3": {
+          "entgeltpunkte": "Entgeltpunkte",
+          "regelalter_prognose": "Prognose Regelaltersrente (67)",
+          "em_rente_prognose": "Prognose Erwerbsminderungsrente"
+        },
+        "expandable_label": "Alle 5 Pflicht-Inhalte (§ 109 Abs. 3 SGB VI) anzeigen",
+        "tooltip": {
+          "anpassungs_wirkung": "Wirkung künftiger Anpassungen — Beispiel: bei {prozent} % p.a. steigt der Wert um {plus} €/Monat bis Renteneintritt",
+          "beitragsuebersicht": "Beitragsübersicht {jahr}: {gesamt} € (Sie: {versicherter}, Arbeitgeber: {arbeitgeber})"
+        },
+        "stamp": "Werte stammen aus Ihrer Renteninformation vom {stichtag} (Az. {aktenzeichen}). Berechnung durch DRV-Träger nach § 109 SGB VI."
+      },
+      "eckwert": {
+        "entgeltpunkte_unit": "Punkte",
+        "monthly_unit": "/ Monat",
+        "monthly_aria": "pro Monat",
+        "expandable_aria_template": "{label} — Details anzeigen",
+        "tooltip_anpassungen_label": "Wirkung künftiger Anpassungen",
+        "tooltip_beitrag_template": "Beitragsübersicht {jahr}",
+        "label_grundlage": "Grundlage der Berechnung",
+        "label_em_rente": "Erwerbsminderungsrente bei sofortigem Eintritt",
+        "label_regelalter": "Prognose Regelaltersrente (67, ohne weitere Beiträge)",
+        "label_anpassungen": "Wirkung künftiger Anpassungen",
+        "label_beitrag_template": "Beitragsübersicht {jahr}",
+        "body_grundlage_template": "Beitragszeiten {beitragszeit_von} – {beitragszeit_bis}; {entgeltpunkte} Entgeltpunkte erworben.",
+        "body_em_rente_template": "{eur} pro Monat.",
+        "body_regelalter_template": "{eur} pro Monat.",
+        "body_anpassungen_template": "bei {prozent} % p.a. ca. +{plus} pro Monat bis Renteneintritt.",
+        "body_beitrag_template": "{gesamt} gesamt (Sie: {versicherter}; Arbeitgeber: {arbeitgeber})."
+      }
+    },
+    "zfdr_wegweiser": {
+      "title": "Trägerübergreifender Überblick: Digitale Rentenübersicht",
+      "cta": "Zur Digitalen Rentenübersicht (rentenuebersicht.de)"
+    },
+    "track_c": {
+      "empty_state_title": "Keine Renteninformation vorhanden",
+      "empty_state_body": "Sie haben keine Renteninformation, weil Sie nicht in der GRV pflichtversichert sind. Im PKV-Bereich existiert kein zentraler Aggregator wie ZfDR — Sie müssen die App Ihres Versicherers nutzen. Optionen: 1) freiwillige GRV (§ 7 SGB VI), 2) Privatvorsorge prüfen, 3) Falls Pflichtversicherten-Beruf (§ 2 SGB VI), Pflichtversicherung beantragen."
+    },
+    "kv_pflege": {
+      "krankenkasse": {
+        "label": "Krankenkasse",
+        "kvnr_label": "Krankenversichertennummer (KVNR, § 290 SGB V)",
+        "kvnr_part_unveraenderbar_label": "Unveränderbarer Teil (lebenslang)",
+        "kvnr_part_veraenderbar_label": "Veränderbarer Teil (Kassenbezug)",
+        "versicherten_status": {
+          "pflicht": "Pflichtversichert",
+          "freiwillig": "Freiwillig versichert",
+          "familienversichert": "Familienversichert",
+          "privat": "Privat versichert (PKV)"
+        }
+      },
+      "familienversicherung": {
+        "title": "Familienversicherung",
+        "status_pill": "Familienversichert über {stammversicherte} — bis längstens {bis_datum}",
+        "einkommen_grenze_tooltip": "Einkommensgrenze 2026: 565 €/Monat allgemein bzw. 603 € Minijob (§ 10 SGB V)"
+      },
+      "epa": {
+        "title": "Elektronische Patientenakte (ePA)",
+        "status_pill_eingerichtet": "ePA eingerichtet (Standard seit 15.01.2025)",
+        "status_pill_widerspruch_nein": "Anlage nicht widersprochen",
+        "status_pill_widerspruch_ja": "Anlage widersprochen",
+        "cta_external": "ePA verwalten Sie über Ihre Kassen-App",
+        "disclaimer_heading": "Hinweis zur ePA",
+        "rechtsgrundlage_label": "Rechtsgrundlage:",
+        "eingerichtet_seit_template": "Einrichtung seit {date}"
+      },
+      "erezept": {
+        "title": "eRezept",
+        "modus": {
+          "app": "Bezug via gematik E-Rezept-App",
+          "egk": "Bezug via eGK in der Apotheke",
+          "papier": "Bezug via Papierausdruck"
+        }
+      },
+      "pflege": {
+        "title": "Pflegeversicherung",
+        "kasse_label": "Pflegekasse",
+        "pflegegrad_collapsed_button": "Pflegegrad anzeigen",
+        "pflegegrad_grad_label": "Pflegegrad {grad}",
+        "bewilligt_am_label": "Bewilligt am {datum}",
+        "begutachtung_md_label": "Begutachtet durch Medizinischen Dienst (GKV)",
+        "begutachtung_medicproof_label": "Begutachtet durch MEDICPROOF (PKV)",
+        "frist_25_at": "Pflegekasse muss innerhalb von 25 Arbeitstagen entscheiden (§ 18c SGB XI)",
+        "cta_hoeherstufung": "Höherstufung beantragen → Online-Filiale Ihrer Pflegekasse"
+      }
+    },
+    "kontakt": {
+      "loading": "Kontakt-Daten werden geladen …",
+      "error_load": "Kontakt-Daten konnten nicht geladen werden.",
+      "error_retry": "Erneut versuchen",
+      "foederalismus_card_disclaimer": "In der 2026-Realität existieren neben BundID 5+ Länder-Konten parallel (Service-BW, Mein-Servicekonto-Berlin, NRW-Konto, BayernID, HH-Servicekonto). Diese Demo abstrahiert auf BundID; OZG 2.0 sieht eine Konvergenz bis 24.07.2028 vor.",
+      "foederalismus_card_aria_label": "Föderalismus-Disclaimer — Länder-Konten-Realität",
+      "anbindung_pill": {
+        "angebunden": "BundID-angebunden",
+        "in_pilotierung": "Pilot-Phase",
+        "nicht_angebunden": "Nicht an BundID angebunden"
+      },
+      "card": {
+        "bundid_postfach": {
+          "title": "BundID-Postfach",
+          "status": {
+            "aktiv": "Postfach aktiv",
+            "inaktiv": "Postfach nicht aktiviert",
+            "teilaktiviert": "Postfach in Aktivierung"
+          },
+          "aktiviert_seit_template": "Aktiv seit {datum}",
+          "wegweiser_link_label": "Zum BundID-Konto (id.bund.de)",
+          "norm_pointer": "Rechtsgrundlage: § 9 OZG (elektronische Bekanntgabe per BundID-Postfach)."
+        },
+        "email": {
+          "title": "Verifizierte E-Mail (BundID)",
+          "verified_label": "Verifiziert via BundID am {datum}",
+          "not_verified_label": "Nicht verifiziert",
+          "read_only_pointer": "Änderung nur direkt im BundID-Konto unter id.bund.de."
+        },
+        "mobil": {
+          "title": "Mobilfunk",
+          "verified_label": "Verifiziert am {datum}",
+          "not_verified_label": "Nicht verifiziert (self-attested)",
+          "no_value_helper": "Keine Mobilfunknummer hinterlegt.",
+          "cta_verify": "Verifizieren (Mock-OTP)",
+          "cta_add": "Mobilfunk hinterlegen (Demo)"
+        },
+        "postanschrift": {
+          "title": "Postanschrift",
+          "cross_ref_link_label": "Zur Anschrift-Sektion"
+        }
+      },
+      "email": {
+        "disclaimer_only_for_bundid_attached": "Diese E-Mail wird nur von BundID-angebundenen Behörden genutzt — Bürgeramt Friedrichshain-Kreuzberg pilotiert.",
+        "disclaimer_selbststaendig": "Hinweis: ELSTER, Krankenkasse und Berufsgenossenschaft halten ggf. abweichende Kontaktdaten — diese Demo zeigt nur die BundID-Daten."
+      },
+      "mobil": {
+        "disclaimer_self_attested": "Mobilfunknummer ist self-attested. Es gibt in Deutschland kein staatliches authoritative-Register für Mobilfunknummern. § 3 BMG enthält Mobilfunknummer nicht.",
+        "hardlock_only_notification": "Nur für Notification über Postfach-Eingang nutzbar — niemals als Bekanntgabe-Kanal."
+      },
+      "postfach": {
+        "wegweiser_pointer": "Aktivierung im BundID-Konto unter id.bund.de/de/postfach. § 9 Abs. 1 S. 2 OZG: Opt-Out im jeweiligen Antrag möglich."
+      },
+      "postanschrift": {
+        "cross_ref_pointer": "Ihre Postanschrift wird in der Sektion Anschrift angezeigt. Authoritative Quelle: Melderegister (§ 3 BMG). Korrekturweg: Bürgeramt-Termin / eWA online (§ 17 BMG)."
+      },
+      "notification": {
+        "vision_banner_heading": "2027-Vision",
+        "vision_banner_aria_label": "2027-Vision-Banner — Notification-Präferenzen sind Speculative",
+        "vision_banner": "2027-Vision — diese Funktion existiert in DE heute nicht; OZG 2.0 sieht sie bis 2028 nicht vor",
+        "save_confirm_body": "Sie haben eben 2027-Vision-Daten geändert. In der heutigen Realität ändert das nichts.",
+        "current_value_label": "Aktuelle Wahl:",
+        "cta_save": "Speichern",
+        "save_pending": "Wird gespeichert …",
+        "save_confirm": {
+          "cta_save": "Demo-Präferenz speichern",
+          "cta_cancel": "Abbrechen"
+        },
+        "kategorie": {
+          "steuer": { "label": "Steuer (Finanzamt / BZSt)" },
+          "sozial": { "label": "Sozialleistungen (DRV / GKV / Bürgergeld)" },
+          "familie": { "label": "Familie (Familienkasse / Elterngeld)" },
+          "verkehr": { "label": "Verkehr (KFZ / Bußgeld / Führerschein)" },
+          "sonstige": { "label": "Sonstige (Bürgeramt / Aufenthalt / sonstige)" }
+        },
+        "kanal": {
+          "postfach": { "label": "BundID-Postfach" },
+          "email_pilot": { "label": "E-Mail-Notification (Pilot)" },
+          "sms_pilot": { "label": "SMS-Notification (Pilot)" },
+          "brief": { "label": "Postbrief (Default)" }
+        },
+        "option": {
+          "sms_pilot": {
+            "disclaimer_redaction": "SMS-Notification enthält keine Sozialdaten-Inhalte (SGB X §§ 67ff.) — nur ein Hinweis, dass eine neue Nachricht im Postfach-Eingang vorliegt."
+          },
+          "abh_hardlock_tooltip": "Die LEA Berlin / ABH Köln sind 2026 nicht an das BundID-Postfach angebunden. Bescheide nach §§ 86, 87 AufenthG erfolgen weiterhin per Postbrief (§ 41 Abs. 2 VwVfG).",
+          "kfz_hint": "KFZ-Behörden sind 2026 nicht an BundID-Postfach angebunden — heute weiterhin Postbrief.",
+          "steuer_hint_elster": "Steuer-Bescheide laufen über ELSTER-Posteingang (§ 122a Abs. 4 AO), nicht BundID-Postfach.",
+          "sms_only_notification": "Bescheide werden weiterhin im BundID-Postfach bereitgestellt. Per SMS erhalten Sie nur einen Hinweis auf neue Post.",
+          "pilot_phase_note": "Diese Behörde ist in der BundID-Postfach-Pilot-Phase — Roll-out 2026 noch nicht abgeschlossen.",
+          "not_angebunden_note": "Diese Behörde ist nicht an das BundID-Postfach angebunden — Bescheide kommen heute weiterhin per Postbrief."
+        },
+        "abh_subcard": {
+          "title": "Aufenthalt / ABH",
+          "value_label": "Aktuell: Postbrief (§ 41 Abs. 2 VwVfG)",
+          "disabled_reason": "Hard-Lock — siehe Tooltip"
+        },
+        "live_counter": {
+          "savings": "Sie sparen voraussichtlich {briefe_pro_jahr_gespart} Briefe pro Jahr und {tage_frist_gespart} Tage Bekanntgabe-Frist je Bescheid (§ 9 OZG-Postfach-Fiktion vs. § 41 Abs. 2 VwVfG-Postbrief-Fiktion).",
+          "no_savings": "Diese Einstellung erspart Ihnen keine Briefe — sie ändert nur die Notification-Adresse, nicht den Bekanntgabe-Kanal. Bescheide kommen weiterhin per Postbrief (§ 41 Abs. 2 VwVfG).",
+          "aria_label": "Live-Zeitersparnis-Anzeige"
+        }
+      },
+      "modal": {
+        "mobil_otp": {
+          "title": "Mobilfunk verifizieren — Mock-OTP",
+          "input_label": "6-stelliger Mock-OTP-Code",
+          "input_placeholder": "______",
+          "demo_hint": "Demo-Pattern: Code 124857 wird akzeptiert. Kein echter SMS-Versand.",
+          "cta_verify": "Verifizieren",
+          "cta_cancel": "Abbrechen",
+          "error_invalid": "OTP ungültig. Demo-Code lautet 124857.",
+          "success_toast": "Mobilfunknummer verifiziert (Mock)."
+        },
+        "save_confirm": {
+          "title": "2027-Vision-Daten speichern?"
+        }
+      },
+      "cascade": {
+        "vorher_label": "Vorher: Postbrief",
+        "nachher_label": "Nachher: BundID-Postfach",
+        "vorher_caption_template": "Familienkasse-Brief vom {datum} (Postbrief, § 41 Abs. 2 VwVfG)",
+        "nachher_caption_template": "Folgebescheid vom {datum} (BundID-Postfach, § 9 OZG)",
+        "nachher_aktenzeichen_label": "Aktenzeichen:",
+        "reduced_motion_announce": "Folge-Bescheid wurde im Postfach abgelegt.",
+        "section_aria_label": "Familienkasse-Wechsel-Cascade — Vorher/Nachher-Vergleich"
+      },
+      "toast": {
+        "familienkasse_followup": "Folge-Bescheid jetzt im Postfach (Demo)",
+        "familienkasse_angebunden": "Familienkasse Berlin-Brandenburg ist BundID-angebunden — Präferenz übernommen (Demo)",
+        "praeferenz_gespeichert": "Präferenz gespeichert (Demo).",
+        "otp_error": "OTP-Verifikation fehlgeschlagen."
+      }
     }
   }
 }

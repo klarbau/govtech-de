@@ -3,7 +3,11 @@
     "id": "buergeramt-berlin-mitte",
     "name_de": "Bezirksamt Mitte von Berlin — Bürgeramt Müllerstraße",
     "kategorie": "kommune",
-    "zustaendige_themen": ["meldewesen", "personalausweis", "fuehrungszeugnis"],
+    "zustaendige_themen": [
+      "meldewesen",
+      "personalausweis",
+      "fuehrungszeugnis"
+    ],
     "adresse": {
       "strasse": "Müllerstraße",
       "hausnummer": "146",
@@ -14,13 +18,18 @@
     "online": {
       "portal_url": "https://service.berlin.de/dienstleistung/120335/",
       "supports_eudi": true
-    }
+    },
+    "bundid_postfach_anbindung": "in_pilotierung"
   },
   {
     "id": "finanzamt-koerperschaften-i-berlin",
     "name_de": "Finanzamt für Körperschaften I Berlin",
     "kategorie": "land",
-    "zustaendige_themen": ["einkommensteuer", "lohnsteuer", "steuerliche_zustaendigkeit"],
+    "zustaendige_themen": [
+      "einkommensteuer",
+      "lohnsteuer",
+      "steuerliche_zustaendigkeit"
+    ],
     "adresse": {
       "strasse": "Bredtschneiderstraße",
       "hausnummer": "5",
@@ -31,13 +40,17 @@
     "online": {
       "portal_url": "https://www.elster.de",
       "supports_eudi": false
-    }
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
   },
   {
     "id": "kfz-berlin-labo",
     "name_de": "Landesamt für Bürger- und Ordnungsangelegenheiten — KFZ-Zulassung Berlin",
     "kategorie": "land",
-    "zustaendige_themen": ["kfz_zulassung", "halteranschrift"],
+    "zustaendige_themen": [
+      "kfz_zulassung",
+      "halteranschrift"
+    ],
     "adresse": {
       "strasse": "Jüterboger Straße",
       "hausnummer": "3",
@@ -48,13 +61,17 @@
     "online": {
       "portal_url": "https://www.berlin.de/labo/mobilitaet/kfz-zulassung/",
       "supports_eudi": false
-    }
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
   },
   {
     "id": "aok-nordost",
     "name_de": "AOK Nordost — Die Gesundheitskasse",
     "kategorie": "sozialversicherung",
-    "zustaendige_themen": ["krankenversicherung", "pflegeversicherung"],
+    "zustaendige_themen": [
+      "krankenversicherung",
+      "pflegeversicherung"
+    ],
     "adresse": {
       "strasse": "Wilhelmstraße",
       "hausnummer": "1",
@@ -65,13 +82,16 @@
     "online": {
       "portal_url": "https://www.aok.de/pk/nordost/",
       "supports_eudi": false
-    }
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
   },
   {
     "id": "beitragsservice-koeln",
     "name_de": "ARD ZDF Deutschlandradio Beitragsservice",
     "kategorie": "land",
-    "zustaendige_themen": ["rundfunkbeitrag"],
+    "zustaendige_themen": [
+      "rundfunkbeitrag"
+    ],
     "adresse": {
       "strasse": "Freimersdorfer Weg",
       "hausnummer": "6",
@@ -82,13 +102,17 @@
     "online": {
       "portal_url": "https://www.rundfunkbeitrag.de",
       "supports_eudi": false
-    }
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
   },
   {
     "id": "familienkasse-berlin-brandenburg",
     "name_de": "Familienkasse Berlin-Brandenburg der Bundesagentur für Arbeit",
     "kategorie": "bund",
-    "zustaendige_themen": ["kindergeld", "kinderzuschlag"],
+    "zustaendige_themen": [
+      "kindergeld",
+      "kinderzuschlag"
+    ],
     "adresse": {
       "strasse": "Friedrich-Ebert-Straße",
       "hausnummer": "31",
@@ -99,13 +123,18 @@
     "online": {
       "portal_url": "https://www.arbeitsagentur.de/familie-und-kinder/kindergeld-online-beantragen",
       "supports_eudi": false
-    }
+    },
+    "bundid_postfach_anbindung": "angebunden"
   },
   {
     "id": "abh-berlin-lea",
     "name_de": "Landesamt für Einwanderung Berlin (LEA)",
     "kategorie": "land",
-    "zustaendige_themen": ["aufenthaltstitel", "blue_card_eu", "niederlassungserlaubnis"],
+    "zustaendige_themen": [
+      "aufenthaltstitel",
+      "blue_card_eu",
+      "niederlassungserlaubnis"
+    ],
     "adresse": {
       "strasse": "Friedrich-Krause-Ufer",
       "hausnummer": "24",
@@ -116,13 +145,18 @@
     "online": {
       "portal_url": "https://www.berlin.de/einwanderung/",
       "supports_eudi": true
-    }
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
   },
   {
     "id": "bundesdruckerei",
     "name_de": "Bundesdruckerei GmbH",
     "kategorie": "bund",
-    "zustaendige_themen": ["personalausweis_produktion", "reisepass_produktion", "eat_karte"],
+    "zustaendige_themen": [
+      "personalausweis_produktion",
+      "reisepass_produktion",
+      "eat_karte"
+    ],
     "adresse": {
       "strasse": "Kommandantenstraße",
       "hausnummer": "18",
@@ -133,13 +167,17 @@
     "online": {
       "portal_url": "https://www.bundesdruckerei.de",
       "supports_eudi": true
-    }
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
   },
   {
     "id": "buergeramt-berlin-friedrichshain-kreuzberg",
     "name_de": "Bezirksamt Friedrichshain-Kreuzberg von Berlin — Bürgeramt Schlesische Straße",
     "kategorie": "kommune",
-    "zustaendige_themen": ["meldewesen", "personalausweis"],
+    "zustaendige_themen": [
+      "meldewesen",
+      "personalausweis"
+    ],
     "adresse": {
       "strasse": "Schlesische Straße",
       "hausnummer": "27a",
@@ -150,13 +188,16 @@
     "online": {
       "portal_url": "https://service.berlin.de",
       "supports_eudi": true
-    }
+    },
+    "bundid_postfach_anbindung": "in_pilotierung"
   },
   {
     "id": "berliner-sparkasse",
     "name_de": "Berliner Sparkasse",
     "kategorie": "privat",
-    "zustaendige_themen": ["bankverbindung"],
+    "zustaendige_themen": [
+      "bankverbindung"
+    ],
     "adresse": {
       "strasse": "Alexanderplatz",
       "hausnummer": "2",
@@ -167,13 +208,17 @@
     "online": {
       "portal_url": "https://www.berliner-sparkasse.de",
       "supports_eudi": false
-    }
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
   },
   {
     "id": "allianz-hausrat",
     "name_de": "Allianz Versicherungs-AG — Hausratversicherung",
     "kategorie": "privat",
-    "zustaendige_themen": ["hausratversicherung", "haftpflicht"],
+    "zustaendige_themen": [
+      "hausratversicherung",
+      "haftpflicht"
+    ],
     "adresse": {
       "strasse": "Königinstraße",
       "hausnummer": "28",
@@ -184,13 +229,16 @@
     "online": {
       "portal_url": "https://www.allianz.de",
       "supports_eudi": false
-    }
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
   },
   {
     "id": "vattenfall-strom",
     "name_de": "Vattenfall Europe Sales GmbH",
     "kategorie": "privat",
-    "zustaendige_themen": ["stromvertrag"],
+    "zustaendige_themen": [
+      "stromvertrag"
+    ],
     "adresse": {
       "strasse": "Überseering",
       "hausnummer": "12",
@@ -201,13 +249,18 @@
     "online": {
       "portal_url": "https://www.vattenfall.de",
       "supports_eudi": false
-    }
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
   },
   {
     "id": "telekom",
     "name_de": "Telekom Deutschland GmbH",
     "kategorie": "privat",
-    "zustaendige_themen": ["mobilfunkvertrag", "festnetz", "internetanschluss"],
+    "zustaendige_themen": [
+      "mobilfunkvertrag",
+      "festnetz",
+      "internetanschluss"
+    ],
     "adresse": {
       "strasse": "Landgrabenweg",
       "hausnummer": "151",
@@ -218,13 +271,19 @@
     "online": {
       "portal_url": "https://www.telekom.de",
       "supports_eudi": false
-    }
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
   },
   {
     "id": "standesamt-hamburg-eimsbuettel",
     "name_de": "Standesamt Hamburg-Eimsbüttel",
     "kategorie": "kommune",
-    "zustaendige_themen": ["geburtsurkunde", "eheurkunde", "sterbeurkunde", "vaterschaftsanerkennung"],
+    "zustaendige_themen": [
+      "geburtsurkunde",
+      "eheurkunde",
+      "sterbeurkunde",
+      "vaterschaftsanerkennung"
+    ],
     "adresse": {
       "strasse": "Grindelberg",
       "hausnummer": "66",
@@ -235,13 +294,19 @@
     "online": {
       "portal_url": "https://www.hamburg.de/eimsbuettel/standesamt/",
       "supports_eudi": false
-    }
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
   },
   {
     "id": "standesamt-berlin-mitte",
     "name_de": "Standesamt Mitte von Berlin",
     "kategorie": "kommune",
-    "zustaendige_themen": ["geburtsurkunde", "eheurkunde", "sterbeurkunde", "eheschliessung"],
+    "zustaendige_themen": [
+      "geburtsurkunde",
+      "eheurkunde",
+      "sterbeurkunde",
+      "eheschliessung"
+    ],
     "adresse": {
       "strasse": "Karl-Marx-Allee",
       "hausnummer": "31",
@@ -252,13 +317,18 @@
     "online": {
       "portal_url": "https://service.berlin.de/standesamt-mitte/",
       "supports_eudi": false
-    }
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
   },
   {
     "id": "finanzamt-hamburg-eimsbuettel",
     "name_de": "Finanzamt Hamburg-Eimsbüttel",
     "kategorie": "land",
-    "zustaendige_themen": ["einkommensteuer", "lohnsteuer", "steuerliche_zustaendigkeit"],
+    "zustaendige_themen": [
+      "einkommensteuer",
+      "lohnsteuer",
+      "steuerliche_zustaendigkeit"
+    ],
     "adresse": {
       "strasse": "Bei der Apostelkirche",
       "hausnummer": "1",
@@ -269,13 +339,17 @@
     "online": {
       "portal_url": "https://www.elster.de",
       "supports_eudi": false
-    }
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
   },
   {
     "id": "tk-hamburg",
     "name_de": "Techniker Krankenkasse — Hauptverwaltung",
     "kategorie": "sozialversicherung",
-    "zustaendige_themen": ["krankenversicherung", "pflegeversicherung"],
+    "zustaendige_themen": [
+      "krankenversicherung",
+      "pflegeversicherung"
+    ],
     "adresse": {
       "strasse": "Bramfelder Straße",
       "hausnummer": "140",
@@ -286,13 +360,18 @@
     "online": {
       "portal_url": "https://www.tk.de",
       "supports_eudi": false
-    }
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
   },
   {
     "id": "finanzamt-koeln-mitte",
     "name_de": "Finanzamt Köln-Mitte",
     "kategorie": "land",
-    "zustaendige_themen": ["einkommensteuer", "lohnsteuer", "selbstaendige_einkuenfte"],
+    "zustaendige_themen": [
+      "einkommensteuer",
+      "lohnsteuer",
+      "selbstaendige_einkuenfte"
+    ],
     "adresse": {
       "strasse": "Hohenzollernring",
       "hausnummer": "85",
@@ -303,13 +382,18 @@
     "online": {
       "portal_url": "https://www.elster.de",
       "supports_eudi": false
-    }
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
   },
   {
     "id": "ihk-koeln",
     "name_de": "Industrie- und Handelskammer zu Köln",
     "kategorie": "sozialversicherung",
-    "zustaendige_themen": ["ihk_beitrag", "gewerbeauskunft", "ausbildung"],
+    "zustaendige_themen": [
+      "ihk_beitrag",
+      "gewerbeauskunft",
+      "ausbildung"
+    ],
     "adresse": {
       "strasse": "Unter Sachsenhausen",
       "hausnummer": "10-26",
@@ -320,13 +404,18 @@
     "online": {
       "portal_url": "https://www.ihk.de/koeln",
       "supports_eudi": false
-    }
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
   },
   {
     "id": "vbg-hamburg",
     "name_de": "Verwaltungs-Berufsgenossenschaft (VBG)",
     "kategorie": "sozialversicherung",
-    "zustaendige_themen": ["unfallversicherung", "berufsgenossenschaft_beitrag", "praevention"],
+    "zustaendige_themen": [
+      "unfallversicherung",
+      "berufsgenossenschaft_beitrag",
+      "praevention"
+    ],
     "adresse": {
       "strasse": "Deelbögenkamp",
       "hausnummer": "4",
@@ -337,13 +426,17 @@
     "online": {
       "portal_url": "https://www.vbg.de",
       "supports_eudi": false
-    }
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
   },
   {
     "id": "aok-rheinland-hamburg",
     "name_de": "AOK Rheinland/Hamburg — Die Gesundheitskasse",
     "kategorie": "sozialversicherung",
-    "zustaendige_themen": ["krankenversicherung", "pflegeversicherung"],
+    "zustaendige_themen": [
+      "krankenversicherung",
+      "pflegeversicherung"
+    ],
     "adresse": {
       "strasse": "Kasernenstraße",
       "hausnummer": "61",
@@ -354,6 +447,298 @@
     "online": {
       "portal_url": "https://www.aok.de/pk/rh/",
       "supports_eudi": false
-    }
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
+  },
+  {
+    "id": "bzst",
+    "name_de": "Bundeszentralamt für Steuern",
+    "kategorie": "bund",
+    "zustaendige_themen": [
+      "steuer_identifikationsnummer",
+      "kindergeld_zentrale",
+      "kontenabruf"
+    ],
+    "adresse": {
+      "strasse": "An der Küppe",
+      "hausnummer": "1",
+      "plz": "53225",
+      "ort": "Bonn",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.bzst.de",
+      "supports_eudi": false
+    },
+    "bundid_postfach_anbindung": "angebunden"
+  },
+  {
+    "id": "bamf",
+    "name_de": "Bundesamt für Migration und Flüchtlinge",
+    "kategorie": "bund",
+    "zustaendige_themen": [
+      "asyl",
+      "azr",
+      "integrationskurs",
+      "auslaenderzentralregister"
+    ],
+    "adresse": {
+      "strasse": "Frankenstraße",
+      "hausnummer": "210",
+      "plz": "90461",
+      "ort": "Nürnberg",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.bamf.de",
+      "supports_eudi": false
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
+  },
+  {
+    "id": "abh-koeln",
+    "name_de": "Stadt Köln — Ausländerbehörde",
+    "kategorie": "kommune",
+    "zustaendige_themen": [
+      "aufenthaltstitel",
+      "blue_card_eu",
+      "niederlassungserlaubnis"
+    ],
+    "adresse": {
+      "strasse": "Walter-Pauli-Ring",
+      "hausnummer": "2-6",
+      "plz": "51103",
+      "ort": "Köln",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.stadt-koeln.de/leben-in-koeln/auslaender",
+      "supports_eudi": false
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
+  },
+  {
+    "id": "barmer-koeln",
+    "name_de": "Barmer — Hauptverwaltung Wuppertal/Köln",
+    "kategorie": "sozialversicherung",
+    "zustaendige_themen": [
+      "krankenversicherung",
+      "pflegeversicherung"
+    ],
+    "adresse": {
+      "strasse": "Axel-Springer-Platz",
+      "hausnummer": "1",
+      "plz": "20355",
+      "ort": "Hamburg",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.barmer.de",
+      "supports_eudi": false
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
+  },
+  {
+    "id": "drv-bund",
+    "name_de": "Deutsche Rentenversicherung Bund",
+    "kategorie": "bund",
+    "zustaendige_themen": [
+      "rentenversicherung",
+      "ueberregionale_verfahren"
+    ],
+    "adresse": {
+      "strasse": "Ruhrstraße",
+      "hausnummer": "2",
+      "plz": "10709",
+      "ort": "Berlin",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.deutsche-rentenversicherung.de",
+      "supports_eudi": false
+    },
+    "bundid_postfach_anbindung": "angebunden"
+  },
+  {
+    "id": "drv-berlin-brandenburg",
+    "name_de": "Deutsche Rentenversicherung Berlin-Brandenburg",
+    "kategorie": "sozialversicherung",
+    "zustaendige_themen": [
+      "rentenversicherung_regional"
+    ],
+    "adresse": {
+      "strasse": "Bertha-von-Suttner-Straße",
+      "hausnummer": "1",
+      "plz": "15236",
+      "ort": "Frankfurt (Oder)",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.deutsche-rentenversicherung.de/BB",
+      "supports_eudi": false
+    },
+    "bundid_postfach_anbindung": "angebunden"
+  },
+  {
+    "id": "drv-nord",
+    "name_de": "Deutsche Rentenversicherung Nord",
+    "kategorie": "sozialversicherung",
+    "zustaendige_themen": [
+      "rentenversicherung_regional"
+    ],
+    "adresse": {
+      "strasse": "Ziegelstraße",
+      "hausnummer": "150",
+      "plz": "23556",
+      "ort": "Lübeck",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.deutsche-rentenversicherung.de/Nord",
+      "supports_eudi": false
+    },
+    "bundid_postfach_anbindung": "angebunden"
+  },
+  {
+    "id": "drv-rheinland",
+    "name_de": "Deutsche Rentenversicherung Rheinland",
+    "kategorie": "sozialversicherung",
+    "zustaendige_themen": [
+      "rentenversicherung_regional"
+    ],
+    "adresse": {
+      "strasse": "Königsallee",
+      "hausnummer": "71",
+      "plz": "40215",
+      "ort": "Düsseldorf",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.deutsche-rentenversicherung.de/Rheinland",
+      "supports_eudi": false
+    },
+    "bundid_postfach_anbindung": "angebunden"
+  },
+  {
+    "id": "drv-bayern-sued",
+    "name_de": "Deutsche Rentenversicherung Bayern Süd",
+    "kategorie": "sozialversicherung",
+    "zustaendige_themen": [
+      "rentenversicherung_regional"
+    ],
+    "adresse": {
+      "strasse": "Am Alten Viehmarkt",
+      "hausnummer": "2",
+      "plz": "84028",
+      "ort": "Landshut",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.deutsche-rentenversicherung.de/BayernSued",
+      "supports_eudi": false
+    },
+    "bundid_postfach_anbindung": "angebunden"
+  },
+  {
+    "id": "gematik",
+    "name_de": "gematik GmbH (Telematikinfrastruktur)",
+    "kategorie": "bund",
+    "zustaendige_themen": [
+      "telematikinfrastruktur",
+      "epa",
+      "erezept"
+    ],
+    "adresse": {
+      "strasse": "Friedrichstraße",
+      "hausnummer": "136",
+      "plz": "10117",
+      "ort": "Berlin",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.gematik.de",
+      "supports_eudi": false
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
+  },
+  {
+    "id": "aok-nordost-pflegekasse",
+    "name_de": "AOK Nordost — Pflegekasse",
+    "kategorie": "sozialversicherung",
+    "zustaendige_themen": [
+      "pflegeversicherung"
+    ],
+    "adresse": {
+      "strasse": "Wilhelmstraße",
+      "hausnummer": "1",
+      "plz": "10963",
+      "ort": "Berlin",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.aok.de/pk/nordost/pflege/",
+      "supports_eudi": false
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
+  },
+  {
+    "id": "tk-pflegekasse",
+    "name_de": "TK-Pflegekasse",
+    "kategorie": "sozialversicherung",
+    "zustaendige_themen": [
+      "pflegeversicherung"
+    ],
+    "adresse": {
+      "strasse": "Bramfelder Straße",
+      "hausnummer": "140",
+      "plz": "22305",
+      "ort": "Hamburg",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.tk.de/pflege",
+      "supports_eudi": false
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
+  },
+  {
+    "id": "barmer-pflegekasse",
+    "name_de": "Barmer Pflegekasse",
+    "kategorie": "sozialversicherung",
+    "zustaendige_themen": [
+      "pflegeversicherung"
+    ],
+    "adresse": {
+      "strasse": "Axel-Springer-Platz",
+      "hausnummer": "1",
+      "plz": "20355",
+      "ort": "Hamburg",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.barmer.de/pflege",
+      "supports_eudi": false
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
+  },
+  {
+    "id": "zfdr-drv-bund",
+    "name_de": "Zentrale Stelle für die Digitale Rentenübersicht (ZfDR)",
+    "kategorie": "bund",
+    "zustaendige_themen": [
+      "rentenuebersicht"
+    ],
+    "adresse": {
+      "strasse": "Ruhrstraße",
+      "hausnummer": "2",
+      "plz": "10709",
+      "ort": "Berlin",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.rentenuebersicht.de",
+      "supports_eudi": false
+    },
+    "bundid_postfach_anbindung": "angebunden"
   }
 ]

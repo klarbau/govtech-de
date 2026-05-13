@@ -1,4 +1,15 @@
 import type { Adresse } from './adresse';
+import type { PersonaKontakt } from './persona-kontakt';
+import type {
+  AnrechnungszeitPflege,
+  EpaStatus,
+  ERezeptModus,
+  KvnrV11,
+  Pflegegrad,
+  RentenEckdaten,
+  RentenTrack,
+  Versorgungswerk,
+} from './renten-kv';
 
 /** Krankenversicherungs-Stammsatz (gesetzlich oder privat). */
 export interface Krankenversicherung {
@@ -64,4 +75,113 @@ export interface Persona {
   wehrerfasst: boolean;
   /** ISO-639-1-Codes der gesprochenen Sprachen (z. B. ['de','ru','en']). */
   sprachen: string[];
+
+  // -------------------------------------------------------------------------
+  // V1 Stammdaten — additive optionale Felder (Spec § 4.3). Kein Bruch an
+  // existierenden V1.5.0/V1.5.1-Konsumenten (Umzug, Posteingang).
+  // -------------------------------------------------------------------------
+
+  /**
+   * Frühere Namen (z. B. Geburtsname). Optional — nur gepflegt für Personas
+   * mit Namensänderung (Schmidt-Persona post-Heirat).
+   */
+  fruehere_namen?: string[];
+
+  /** Doktorgrad. */
+  doktorgrad?: string;
+
+  /** Geburtsort. */
+  geburtsort?: string;
+
+  /** Geschlecht (BMG § 3 Abs. 1 Nr. 7). */
+  geschlecht?: 'm' | 'w' | 'd' | 'x' | 'unbestimmt';
+
+  /** Religionszugehörigkeit (BMG § 3 Abs. 1 Nr. 11; Art. 9 DSGVO). */
+  religion?: 'rk' | 'ev' | 'ohne' | 'andere' | string;
+
+  /** Personalausweis-Nummer (synthetisch, [MOCK]). */
+  personalausweis_nr?: { nummer: string; gueltig_bis: string };
+
+  /** Reisepass (synthetisch, [MOCK]). */
+  reisepass?: { nummer: string; gueltig_bis: string };
+
+  /** eAT-CAN — nur Drittstaatsangehörige (Mehmet). */
+  eat_can?: string;
+
+  /** AZR-Nr. — nur Drittstaatsangehörige. */
+  azr_nr?: string;
+
+  /**
+   * V1.2 Kontakt-Schicht (BundID-Postfach + Notification-Präferenzen).
+   * **Full rename** aus V1 `kontakt: { email?, mobil? }` (Spec § 4.1). V1-Daten
+   * werden beim ersten V1.2-Boot durch `migrateKontaktV1ToV11` in den neuen
+   * Shape überführt (Spec § 4.1 + `persistence-migrations.ts`).
+   *
+   * `undefined` = Persona hat noch keinen V1.2-Kontakt-Snapshot — der Mock-
+   * Backend liefert in diesem Fall einen Default mit
+   * `bundid_postfach.status === 'inaktiv'` und `notification_praeferenzen`-
+   * Default `5×'brief'` (Hard-Line § 11.34).
+   */
+  kontakt?: PersonaKontakt;
+
+  /** Eheschließung — Standesamt-Daten (synthetisch, [MOCK]). */
+  eheschliessung?: { datum: string; ort: string; az: string };
+
+  // -------------------------------------------------------------------------
+  // V1.1 Stammdaten Renten/KV — additive optionale Felder (Spec § 4.1).
+  // Alle Felder optional; V1-Konsumenten bleiben kompatibel.
+  // -------------------------------------------------------------------------
+
+  /**
+   * V1.1 — Renten-Track-Override.
+   *  - 'A' Pflicht in GRV (Default für Angestellte / § 2 SGB VI Pflicht-Selbst.)
+   *  - 'B' Versorgungswerk (Kammerberuf)
+   *  - 'C' Privat-Vorsorge-only (kein Pflicht-System; Hard-Line § 11.24)
+   * `undefined` = aus `beschaeftigung` ableiten (Fallback: 'A').
+   */
+  renten_track?: RentenTrack;
+
+  /**
+   * V1.1 — Renten-Eckdaten aus dem letzten Yellow Letter (§ 109 Abs. 3 SGB VI).
+   * `undefined` = noch kein Yellow Letter eingelesen oder Track B/C.
+   */
+  renten_eckdaten_v1_1?: RentenEckdaten;
+
+  /**
+   * V1.1 — KVNR im § 290-konformen 10/10-Format (zusätzlich zu V1
+   * `krankenversicherung.versichertennummer`).
+   */
+  kvnr_v1_1?: KvnrV11;
+
+  /**
+   * V1.1 — Familienversicherten-Beziehung. `familienversichert_ueber` zeigt auf
+   * den/die Stamm-Versicherte:n; bei `undefined` ist die Person eigen-versichert.
+   */
+  familienversichert_ueber?: PersonaId | string;
+  /** ISO YYYY-MM oder YYYY-MM-DD: Mitversicherung läuft längstens bis. */
+  familienversichert_bis?: string;
+
+  /**
+   * V1.1 — ePA-Status (eingerichtet seit 15.01.2025, § 342 Abs. 1 S. 2 SGB V).
+   * Default `{ eingerichtet: true, widerspruch_gesetzt: false }`.
+   */
+  epa_status_v1_1?: EpaStatus;
+
+  /** V1.1 — eRezept-Bezugsmodus. Default 'app'. */
+  erezept_modus_v1_1?: ERezeptModus;
+
+  /**
+   * V1.1 — Pflegegrad (Art-9-relevant; nur sichtbar nach Modal-Consent —
+   * Hard-Line § 11.22).
+   */
+  pflegegrad_v1_1?: Pflegegrad;
+
+  /**
+   * V1.1 — Anrechnungszeit Pflege (§ 3 SGB VI). Hard-Line § 11.30: gekoppelt
+   * an Pflegegrad-Modal-Toggle (semantische Art-9-Coupling).
+   */
+  anrechnungszeit_pflege_v1_1?: AnrechnungszeitPflege;
+
+  /** V1.1 — Versorgungswerk (Track B; nur Kammerberufe). */
+  versorgungswerk_v1_1?: Versorgungswerk;
 }

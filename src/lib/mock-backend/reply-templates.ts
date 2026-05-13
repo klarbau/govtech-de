@@ -71,7 +71,12 @@ export type ReplyTemplateId =
   | 'nachweis_einreichen'
   | 'informative_rueckmeldung'
   | 'termin_antwort'
-  | 'freitext';
+  | 'freitext'
+  // V1.5.1 — Skelett-Templates (Spec § 4.2; Domain-Doc § 3). RDG-clean,
+  // Werkzeug-Charakter; Resolver löst neuen Token `{datum_bescheid}` auf.
+  | 'rechtsbehelf_einspruch_skelett'
+  | 'rechtsbehelf_widerspruch_skelett'
+  | 'aussetzung_vollziehung_skelett';
 
 export type ReplyTerminMode = 'bestaetigen' | 'verschieben' | 'absagen';
 
@@ -423,6 +428,28 @@ export function resolveReplyBodySync(
 
   const template = getBodyTemplate(input.templateId);
   if (template === undefined) {
+    // V1.5.1 (build-pipeline-Konvention): die drei Skelett-Templates werden
+    // von i18n-localizer parallel zu mock-backend-coder befüllt. Solange das
+    // i18n-Leaf noch nicht existiert, sollen wir nicht hart crashen — siehe
+    // V1.5-Ship-Lessons-Memory („missing-key escape-hatch"). Wir liefern einen
+    // leeren String und loggen in dev. Hard-fail bleibt für die V1.5.0-Templates,
+    // die bereits in de.json existieren — fehlt dort eines, ist Drift.
+    const isV151SkelettTemplate =
+      input.templateId === 'rechtsbehelf_einspruch_skelett' ||
+      input.templateId === 'rechtsbehelf_widerspruch_skelett' ||
+      input.templateId === 'aussetzung_vollziehung_skelett';
+    if (isV151SkelettTemplate) {
+      if (
+        typeof process !== 'undefined' &&
+        process.env?.NODE_ENV !== 'production' &&
+        typeof console !== 'undefined'
+      ) {
+        console.warn(
+          `[mock-backend/reply-templates] V1.5.1 Skelett-Template "${input.templateId}" not yet present in de.json — returning empty body until i18n-localizer ships the key.`,
+        );
+      }
+      return '';
+    }
     throw new MockBackendError(
       `Body-Template "${input.templateId}" nicht in de.json gefunden — Domain/i18n-Drift.`,
       { code: 'TEMPLATE_NOT_FOUND', retryable: false },
@@ -449,7 +476,17 @@ export function resolveReplyBodySync(
   const empfaengerOrt = behoerde?.adresse.ort ?? '';
 
   const datum = formatDateDe(new Date());
+  // {datum_letter}: Brief-Empfangsdatum (V1.5.0 — "Schreiben vom" usage).
   const datumLetter = formatDateDe(letter.empfangen_am);
+  // {datum_bescheid}: Erlassdatum des Bescheids (V1.5.1 — "Bescheid vom" usage,
+  // Domain-Doc § 3 Resolver-Hard-Rule, Spec § 11.9). Fallback auf empfangen_am,
+  // falls bescheid_dated_at undefined (z. B. nicht-Bescheid-Letter, die das
+  // Skelett aber trotzdem rendern könnten — graceful degradation).
+  // STRIKT als separate lokale Variable von datumLetter — keine Wiederverwendung
+  // (Spec § 11.9 Hard-Line).
+  const datumBescheid = letter.bescheid_dated_at
+    ? formatDateDe(letter.bescheid_dated_at)
+    : datumLetter;
 
   // {frist_alt}: erste Frist des Briefs (zahlung/nachweis/einspruch je nach
   // Archetyp). Wenn keine vorhanden → leerer String (nicht `[…]`, weil das
@@ -504,6 +541,8 @@ export function resolveReplyBodySync(
     ort: absenderOrt,
     datum,
     datum_letter: datumLetter,
+    // V1.5.1: separater Token mit eigener Quelle (`bescheid_dated_at`).
+    datum_bescheid: datumBescheid,
     aktenzeichen: letter.aktenzeichen,
     frist_alt: fristAlt,
     frist_neu_gewuenscht: fristNeuGewuenscht,

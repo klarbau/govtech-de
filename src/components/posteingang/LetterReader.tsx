@@ -31,6 +31,7 @@ import { FristChip } from './FristChip';
 import { NeuerVorgangAusBriefModal } from './NeuerVorgangAusBriefModal';
 import { OriginaltextBlock, type OriginaltextBlockHandle } from './OriginaltextBlock';
 import { RechtlicheHinweiseDetails } from './RechtlicheHinweiseDetails';
+import { RentenBridgeCTA } from './RentenBridgeCTA';
 import { ReplySheet } from './ReplySheet';
 import { StickyFristAction } from './StickyFristAction';
 import { WasKannIchTunFooter } from './WasKannIchTunFooter';
@@ -88,6 +89,7 @@ export function LetterReader({
 }: LetterReaderProps) {
   const t = useTranslations('posteingang.reader');
   const tArche = useTranslations('posteingang.archetype.label');
+  const tBridge = useTranslations('posteingang.bridge');
   const router = useRouter();
 
   const [summary, setSummary] = React.useState<LetterAiSummaryPostOpen | null>(
@@ -104,7 +106,14 @@ export function LetterReader({
   const [vorgangModal, setVorgangModal] = React.useState<Letter | null>(null);
   const [replyOpen, setReplyOpen] = React.useState(false);
   const [reply, setReply] = React.useState<Reply | null>(null);
+  const [replies, setReplies] = React.useState<Reply[]>([]);
   const [draft, setDraft] = React.useState<ReplyDraft | null>(null);
+
+  // V1.1 — Yellow-Letter-Bridge State (Hard-Line § 11.20 separater CTA-Pfad).
+  const [bridgeAppliedAt, setBridgeAppliedAt] = React.useState<string | null>(
+    null,
+  );
+  const [bridgePending, setBridgePending] = React.useState(false);
 
   const originalRef = React.useRef<OriginaltextBlockHandle>(null);
 
@@ -145,9 +154,13 @@ export function LetterReader({
   // Reply / Draft state laden.
   const refreshReplyState = React.useCallback(async () => {
     try {
-      const r = await api.getReplyByLetterId(letter.id);
-      setReply(r && r.status === 'sent_simulated' ? r : null);
+      const list = await api.getRepliesForLetter(letter.id);
+      const sentList = list.filter((r) => r.status === 'sent_simulated');
+      setReplies(sentList);
+      // Latest reply (chronologisch zuletzt) für Single-Reply-CTA-Hint.
+      setReply(sentList.length > 0 ? (sentList[sentList.length - 1] ?? null) : null);
     } catch {
+      setReplies([]);
       setReply(null);
     }
     try {
@@ -161,6 +174,54 @@ export function LetterReader({
   React.useEffect(() => {
     void refreshReplyState();
   }, [refreshReplyState]);
+
+  // V1.1 — Yellow-Letter-Bridge: lade applied-Status für renteninfo-Briefe.
+  React.useEffect(() => {
+    if (letter.archetype !== 'renteninfo') return;
+    let cancelled = false;
+    void api.getProfile().then(async (persona) => {
+      try {
+        const av = await api.getAltersvorsorge(persona.id);
+        if (cancelled) return;
+        if (
+          av?.yellow_letter_id === letter.id &&
+          av.eckdaten?.abgelegt_am
+        ) {
+          setBridgeAppliedAt(av.eckdaten.abgelegt_am);
+        }
+      } catch {
+        // Stiller Fehler — Idempotenz-Indikator ist optional.
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [letter.id, letter.archetype]);
+
+  const onApplyBridge = React.useCallback(async () => {
+    setBridgePending(true);
+    try {
+      const persona = await api.getProfile();
+      const result = await api.applyYellowLetterBridge({
+        letter_id: letter.id,
+        persona_id: persona.id,
+      });
+      if (result.applied && result.eckdaten) {
+        setBridgeAppliedAt(result.eckdaten.abgelegt_am);
+        toast.success(tBridge('renten_toast_success'));
+        router.push('/stammdaten#altersvorsorge');
+      } else {
+        // Idempotenz § 11.25: 2. Aufruf returns applied: false.
+        toast.info(tBridge('renten_toast_already_applied'));
+        router.push('/stammdaten#altersvorsorge');
+      }
+    } catch (err) {
+      toast.error(tBridge('renten_toast_error'));
+      if (typeof console !== 'undefined') console.error(err);
+    } finally {
+      setBridgePending(false);
+    }
+  }, [letter.id, router, tBridge]);
 
   const onAddToCalendar = React.useCallback(
     (frist: LetterFrist) => {
@@ -357,6 +418,32 @@ export function LetterReader({
         <OriginaltextBlock ref={originalRef} body={letter.body_de} />
       </div>
 
+      {letter.archetype === 'renteninfo' && (
+        <section
+          aria-labelledby="renten-bridge-title"
+          data-testid="renten-bridge-section"
+          className="rounded-xl border border-border bg-card p-4 shadow-sm"
+        >
+          <h2
+            id="renten-bridge-title"
+            className="text-sm font-semibold tracking-tight text-foreground"
+          >
+            {tBridge('renten_section_title')}
+          </h2>
+          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+            {tBridge('renten_section_subtitle')}
+          </p>
+          <div className="mt-3">
+            <RentenBridgeCTA
+              letterAktenzeichen={letter.aktenzeichen}
+              appliedAt={bridgeAppliedAt}
+              onApply={onApplyBridge}
+              pending={bridgePending}
+            />
+          </div>
+        </section>
+      )}
+
       <WasKannIchTunFooter archetype={archetype} options={actionOptions} />
 
       <RechtlicheHinweiseDetails />
@@ -364,6 +451,7 @@ export function LetterReader({
       <StickyFristAction
         fristen={fristen}
         alreadyRepliedAt={reply?.sent_at ?? null}
+        replies={replies}
         hasDraft={!!draft}
         hasSentReply={!!reply}
         onCalendar={onAddToCalendar}

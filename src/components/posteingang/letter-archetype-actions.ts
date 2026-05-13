@@ -55,6 +55,13 @@ export const ARCHETYPE_ACTION_DEFAULTS: Record<LetterArchetype, string[]> = {
     'standesamt-urkunde.folge_krankenkasse',
     'standesamt-urkunde.folge_steueridnr',
   ],
+  // V1.1 — Renteninformation (info-only). Bridge-CTA ist separater Pfad
+  // (Hard-Line § 11.20); reine Was-kann-ich-tun-Optionen sind Wegweiser auf
+  // Stammdaten-Bridge + DRV-Kundenportal.
+  renteninfo: [
+    'renteninfo.in_stammdaten_ablegen',
+    'renteninfo.drv_kundenportal_oeffnen',
+  ],
   sonstiges: [],
 };
 
@@ -72,6 +79,7 @@ export const ARCHETYPE_TO_VORGANG_TYP: Record<
   'ihk-beitrag': 'sonstige',
   'berufsgenossenschaft-beitrag': 'sonstige',
   'standesamt-urkunde': 'sonstige',
+  renteninfo: 'sonstige',
   sonstiges: 'sonstige',
 };
 
@@ -89,5 +97,6 @@ export const ARCHETYPE_LABEL_KEYS: Record<LetterArchetype, string> = {
   'ihk-beitrag': 'ihk-beitrag',
   'berufsgenossenschaft-beitrag': 'berufsgenossenschaft-beitrag',
   'standesamt-urkunde': 'standesamt-urkunde',
+  renteninfo: 'renteninfo',
   sonstiges: 'sonstiges',
 };

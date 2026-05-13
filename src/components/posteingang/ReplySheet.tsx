@@ -24,10 +24,7 @@ import {
 } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 import { api, getMockKanalForBehoerde } from '@/lib/mock-backend';
-import {
-  nachweisBezeichnungen,
-  type ReplyTemplateId as TemplateChoice,
-} from '@/lib/mock-backend/reply-templates';
+import { nachweisBezeichnungen } from '@/lib/mock-backend/reply-templates';
 import {
   LETTER_ATTACHMENT_LIMITS,
   type Behoerde,
@@ -38,19 +35,20 @@ import {
   type ReplyTerminMode,
 } from '@/types';
 
+import { BekanntgabeCaveatDetails } from './BekanntgabeCaveatDetails';
+import { FristAbgelaufenWarnung } from './FristAbgelaufenWarnung';
+import { FristCitedFormatHeader } from './FristCitedFormatHeader';
+import { PreInsertionModal } from './PreInsertionModal';
 import { PreVersandModal } from './PreVersandModal';
 import { ReplyConfirmationView } from './ReplyConfirmationView';
 import { ReplyDiscardConfirmDialog } from './ReplyDiscardConfirmDialog';
 import { ReplyTemplateSwitchConfirmDialog } from './ReplyTemplateSwitchConfirmDialog';
-
-const TEMPLATE_IDS: ReplyTemplateId[] = [
-  'frist_verlaengerung',
-  'nachweis_einreichen',
-  'informative_rueckmeldung',
-  'termin_antwort',
-];
-
-const TEMPLATE_CHOICES: TemplateChoice[] = [...TEMPLATE_IDS, 'freitext'];
+import {
+  getReplyTemplatePickerOrder,
+  isCompanionSkelettSwitch,
+  isSkelettTemplate,
+  type ReplyTemplateChoice,
+} from './preInsertionModalLookup';
 
 interface ReplySheetProps {
   open: boolean;
@@ -64,16 +62,13 @@ interface ReplySheetProps {
 }
 
 interface FormState {
-  template: TemplateChoice;
+  template: ReplyTemplateChoice;
   mode: ReplyTerminMode | null;
   body: string;
   attachments: File[];
   /** persistierte Mock-Anhänge (nur Metadaten). */
   persistedAttachments: ReplyDraft['attachments'];
-  /** Controlled-list-Auswahl für `nachweis_einreichen` (Domain §8 / Spec
-   *  §1399). Wird beim Resolver als `userInput.nachweis_bezeichnung`
-   *  übergeben — ein Free-Text-Feld ist für diesen Slot bewusst gesperrt
-   *  (RDG-Drift-Schutz). */
+  /** Controlled-list-Auswahl für `nachweis_einreichen`. */
   nachweisBezeichnung: string | null;
 }
 
@@ -94,9 +89,16 @@ function relTimeAgo(date: Date, now: Date): { kind: 'now' | 'sec' | 'min'; n: nu
 }
 
 /**
- * Compose-Sheet (Spec §4.3). 480 px Desktop / fullscreen Mobile; AR-RTL
- * flippt zur linken Kante via Tailwind `rtl:`-Variants. Reply-Textarea
- * bleibt LTR-DE (`dir="ltr" lang="de"`) unabhängig von UI-Locale.
+ * Compose-Sheet (Spec V1.5 §4.3 + V1.5.1 §§ 6, 7, 8, 9).
+ *
+ * Render-Reihenfolge im Body (V1.5.1 § 9.1):
+ *   1. Outbound-Speculative-Banner (V1.5.0)
+ *   2. FristAbgelaufenWarnung (conditional)
+ *   3. FristCitedFormatHeader (conditional, Skelett-Templates only)
+ *   4. BekanntgabeCaveatDetails (conditional, mein-elster only)
+ *   5. ReplyTemplatePicker (mit V1.5.1-Order)
+ *   6. Termin-Mode-Radios | Nachweis-Select | Body-Textarea | Anhänge
+ *   7. Skelett-Footer-No-Legal-Advice-Hint (conditional)
  */
 export function ReplySheet({
   open,
@@ -118,6 +120,15 @@ export function ReplySheet({
     persistedAttachments: [],
     nachweisBezeichnung: null,
   });
+  /**
+   * Visual-only Default-Highlight für `pickerOrder[0]`, wenn dieses ein
+   * Skelett-Template ist (Hard-Line § 11.13). Der zugehörige Radio-Input ist
+   * NICHT `checked` — das Body-Feld bleibt leer, bis User klickt und der
+   * Pre-Insertion-Modal bestätigt wird. Wir trennen "empfohlen" vom
+   * "ausgewählt"-State, damit `onChange` auf dem ersten Klick feuert.
+   */
+  const [recommendedTemplate, setRecommendedTemplate] =
+    React.useState<ReplyTemplateId | null>(null);
   const [draftId, setDraftId] = React.useState<string | null>(null);
   const [draftCreatedAt, setDraftCreatedAt] = React.useState<string | null>(null);
   const [lastSavedAt, setLastSavedAt] = React.useState<Date | null>(null);
@@ -128,7 +139,14 @@ export function ReplySheet({
   const [versandPending, setVersandPending] = React.useState(false);
   const [discardOpen, setDiscardOpen] = React.useState(false);
   const [templateSwitchTarget, setTemplateSwitchTarget] =
-    React.useState<TemplateChoice | null>(null);
+    React.useState<ReplyTemplateChoice | null>(null);
+  const [preInsertionTarget, setPreInsertionTarget] =
+    React.useState<ReplyTemplateId | null>(null);
+  const [crossSendStage, setCrossSendStage] = React.useState<
+    'idle' | 'reply1-pending' | 'reply2-prep' | 'reply2-pending' | 'done'
+  >('idle');
+  const [crossSendAnnouncement, setCrossSendAnnouncement] =
+    React.useState<string>('');
   const [attachmentErrors, setAttachmentErrors] = React.useState<AttachmentError[]>(
     [],
   );
@@ -137,7 +155,20 @@ export function ReplySheet({
   const [confirmation, setConfirmation] = React.useState<Reply | null>(
     existingReply,
   );
-  const [readOnlyView, setReadOnlyView] = React.useState(false);
+  /**
+   * Vollständige Reply-Liste für den aktuellen Letter, chronologisch
+   * aufsteigend (Spec § 8.3 step 5). Single-Reply-Pfad: Länge 1.
+   * Cross-Template-Versand-Pfad: Länge 2 (Einspruch + Aussetzung).
+   */
+  const [replies, setReplies] = React.useState<Reply[]>(
+    existingReply ? [existingReply] : [],
+  );
+  const [readOnlyReply, setReadOnlyReply] = React.useState<Reply | null>(null);
+
+  const pickerOrder = React.useMemo(
+    () => getReplyTemplatePickerOrder(letter),
+    [letter],
+  );
 
   const [, setTick] = React.useState(0);
   React.useEffect(() => {
@@ -158,10 +189,12 @@ export function ReplySheet({
         // resolver throws PERSONA_NOT_FOUND on first reply if needed
       }
       try {
-        const reply = await api.getReplyByLetterId(letter.id);
+        const list = await api.getRepliesForLetter(letter.id);
         if (cancelled) return;
-        if (reply && reply.status === 'sent_simulated') {
-          setConfirmation(reply);
+        const sentList = list.filter((r) => r.status === 'sent_simulated');
+        if (sentList.length > 0) {
+          setReplies(sentList);
+          setConfirmation(sentList[sentList.length - 1] ?? null);
           return;
         }
       } catch {
@@ -171,7 +204,7 @@ export function ReplySheet({
         const draft = await api.getReplyDraft(letter.id);
         if (cancelled) return;
         if (draft) {
-          const tpl: TemplateChoice = draft.template_id ?? 'freitext';
+          const tpl: ReplyTemplateChoice = draft.template_id ?? 'freitext';
           setFormState({
             template: tpl,
             mode: draft.mode ?? null,
@@ -184,6 +217,23 @@ export function ReplySheet({
           setDraftCreatedAt(draft.created_at);
           setLastSavedAt(parseISO(draft.updated_at));
           setSavingState('saved');
+        } else {
+          // Default-Highlight = pickerOrder[0] (Spec § 6.3); aber nur wenn
+          // kein Draft existiert. Skelett-Templates triggern den Modal nicht
+          // automatisch — User muss explizit klicken (Hard-Line § 11.13).
+          //
+          // Wenn pickerOrder[0] ein Skelett ist: NICHT in formState.template
+          // schreiben, sonst wäre der Radio bereits `checked` und der erste
+          // Klick würde keinen `onChange` feuern → Pre-Insertion-Modal käme
+          // nie. Stattdessen visueller Highlight via `recommendedTemplate`.
+          const initial = pickerOrder[0] ?? 'freitext';
+          if (isSkelettTemplate(initial)) {
+            setRecommendedTemplate(initial);
+            setFormState((s) => ({ ...s, template: 'freitext' }));
+          } else {
+            setRecommendedTemplate(null);
+            setFormState((s) => ({ ...s, template: initial }));
+          }
         }
       } catch {
         // no persisted draft
@@ -192,7 +242,7 @@ export function ReplySheet({
     return () => {
       cancelled = true;
     };
-  }, [open, letter.id]);
+  }, [open, letter.id, pickerOrder]);
 
   React.useEffect(() => {
     if (open) return;
@@ -204,6 +254,7 @@ export function ReplySheet({
       persistedAttachments: [],
       nachweisBezeichnung: null,
     });
+    setRecommendedTemplate(null);
     setDraftId(null);
     setDraftCreatedAt(null);
     setLastSavedAt(null);
@@ -211,13 +262,19 @@ export function ReplySheet({
     setVersandModalOpen(false);
     setDiscardOpen(false);
     setTemplateSwitchTarget(null);
+    setPreInsertionTarget(null);
+    setCrossSendStage('idle');
+    setCrossSendAnnouncement('');
     setAttachmentErrors([]);
-    setReadOnlyView(false);
-  }, [open]);
+    setReadOnlyReply(null);
+    setReplies(existingReply ? [existingReply] : []);
+  }, [open, existingReply]);
 
-  const lastSaveRef = React.useRef<{ body: string; template: TemplateChoice; mode: ReplyTerminMode | null }>(
-    { body: '', template: 'freitext', mode: null },
-  );
+  const lastSaveRef = React.useRef<{
+    body: string;
+    template: ReplyTemplateChoice;
+    mode: ReplyTerminMode | null;
+  }>({ body: '', template: 'freitext', mode: null });
   React.useEffect(() => {
     if (!open) return;
     if (confirmation) return;
@@ -229,7 +286,11 @@ export function ReplySheet({
     ) {
       return;
     }
-    if (formState.body.trim().length === 0 && formState.persistedAttachments.length === 0 && formState.attachments.length === 0) {
+    if (
+      formState.body.trim().length === 0 &&
+      formState.persistedAttachments.length === 0 &&
+      formState.attachments.length === 0
+    ) {
       return;
     }
     const handle = window.setTimeout(() => {
@@ -237,7 +298,14 @@ export function ReplySheet({
     }, 2000);
     return () => window.clearTimeout(handle);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formState.body, formState.template, formState.mode, formState.attachments.length, open, confirmation]);
+  }, [
+    formState.body,
+    formState.template,
+    formState.mode,
+    formState.attachments.length,
+    open,
+    confirmation,
+  ]);
 
   async function persistDraft(): Promise<ReplyDraft | null> {
     setSavingState('saving');
@@ -286,10 +354,14 @@ export function ReplySheet({
   }
 
   async function loadTemplateBody(
-    next: TemplateChoice,
+    next: ReplyTemplateChoice,
     modeNext: ReplyTerminMode | null,
     nachweisNext: string | null,
   ) {
+    // Sobald ein echter Template-Wechsel passiert, ist die initiale
+    // Skelett-Empfehlung obsolet — sonst doppelter Highlight (recommended +
+    // checked auf demselben Item bzw. zweier Items).
+    setRecommendedTemplate(null);
     if (next === 'freitext') {
       setFormState((s) => ({
         ...s,
@@ -335,7 +407,7 @@ export function ReplySheet({
     }
   }
 
-  function performTemplateSwitch(next: TemplateChoice) {
+  function performTemplateSwitch(next: ReplyTemplateChoice) {
     if (next === 'termin_antwort') {
       void loadTemplateBody(next, formState.mode ?? 'bestaetigen', null);
     } else if (next === 'nachweis_einreichen') {
@@ -345,13 +417,41 @@ export function ReplySheet({
     }
   }
 
-  function onTemplateClick(next: TemplateChoice) {
-    if (formState.template === next) return;
-    if (formState.body.trim().length > 0) {
-      setTemplateSwitchTarget(next);
+  /**
+   * Klick auf einen Picker-Radio.
+   *
+   * Routing:
+   *   - Skelett-Template + leerer Body → öffne PreInsertionModal direkt.
+   *   - Skelett-Template + nicht-leerer Body + companion-Skelett-Vorlage
+   *     im Draft → öffne 3-Button-Switch-Dialog.
+   *   - Skelett-Template + nicht-leerer Body sonst → 2-Button-Switch-Dialog;
+   *     bei Bestätigung wird PreInsertionModal aufgesetzt.
+   *   - Non-Skelett-Template + leerer Body → direkter Switch.
+   *   - Non-Skelett-Template + nicht-leerer Body → 2-Button-Switch-Dialog.
+   */
+  function onTemplateClick(next: ReplyTemplateChoice) {
+    if (formState.template === next) {
+      // Click auf bereits ausgewähltes Template: nur No-Op, AUSSER es ist
+      // freitext und es gibt noch eine offene Skelett-Empfehlung — dann
+      // nimmt der User die Empfehlung explizit an: Recommendation löschen.
+      if (next === 'freitext' && recommendedTemplate !== null) {
+        setRecommendedTemplate(null);
+      }
       return;
     }
-    performTemplateSwitch(next);
+    const hasBody = formState.body.trim().length > 0;
+    const targetIsSkelett = isSkelettTemplate(next);
+
+    if (!hasBody) {
+      if (targetIsSkelett) {
+        setPreInsertionTarget(next as ReplyTemplateId);
+        return;
+      }
+      performTemplateSwitch(next);
+      return;
+    }
+
+    setTemplateSwitchTarget(next);
   }
 
   function onModeChange(nextMode: ReplyTerminMode) {
@@ -457,7 +557,50 @@ export function ReplySheet({
         kanal: null,
       };
       const sent = await api.sendReplySimulated(letter.id, draft);
+
+      if (crossSendStage === 'reply1-pending') {
+        // Cross-Template-Versand-Pfad (Spec § 8.3): Reply 1 ist gesendet,
+        // jetzt Sheet re-hydratisieren mit dem companion-Skelett-Template.
+        setVersandModalOpen(false);
+        setVersandPending(false);
+        const companionId: ReplyTemplateId =
+          sent.template_id === 'rechtsbehelf_einspruch_skelett'
+            ? 'aussetzung_vollziehung_skelett'
+            : 'rechtsbehelf_einspruch_skelett';
+        setCrossSendStage('reply2-prep');
+        setCrossSendAnnouncement(t('cross_send.reply1_sent_announcement'));
+        // Form zurücksetzen, draft ID frei für Reply 2
+        setFormState((s) => ({
+          ...s,
+          template: 'freitext',
+          mode: null,
+          body: '',
+        }));
+        setDraftId(null);
+        setDraftCreatedAt(null);
+        setLastSavedAt(null);
+        setSavingState('idle');
+        // Trigger Pre-Insertion-Modal für Reply 2 — damit User die Norm-
+        // Familie für AdV bestätigt (Hard-Line § 11.13).
+        setPreInsertionTarget(companionId);
+        onPersisted?.();
+        return;
+      }
+
+      if (crossSendStage === 'reply2-pending') {
+        setCrossSendStage('done');
+      }
       setConfirmation(sent);
+      // Cross-Template-Versand-Pfad (Spec § 8.3 step 5): nach Reply 2
+      // bzw. nach jedem Single-Send die volle Liste laden, damit
+      // <ReplyConfirmationView> alle Replies stapelt.
+      try {
+        const list = await api.getRepliesForLetter(letter.id);
+        const sentList = list.filter((r) => r.status === 'sent_simulated');
+        setReplies(sentList.length > 0 ? sentList : [sent]);
+      } catch {
+        setReplies([sent]);
+      }
       setVersandModalOpen(false);
       onPersisted?.();
     } catch {
@@ -477,6 +620,22 @@ export function ReplySheet({
     setDiscardOpen(false);
     onOpenChange(false);
     onPersisted?.();
+  }
+
+  /** Cross-Template-Versand starten — Spec § 8.3. */
+  function onDualSend() {
+    // Bei Klick „Beide als getrennte Briefe versenden": versende den aktuellen
+    // Draft (Reply 1) zuerst; nach Erfolg re-hydratisiert `onSendConfirm` das
+    // Sheet mit dem companion-Template (Reply 2).
+    if (templateSwitchTarget) {
+      // Wir merken uns den Companion-Wechsel implizit über den Template-State —
+      // der Switch passiert NICHT vor dem Versand: Reply 1 behält das aktuelle
+      // Template. Companion-Switch wird nach Versand 1 in `onSendConfirm` für
+      // Reply 2 aufgesetzt.
+      setTemplateSwitchTarget(null);
+    }
+    setCrossSendStage('reply1-pending');
+    setVersandModalOpen(true);
   }
 
   const empfaengerName = empfaengerBehoerde?.name_de ?? letter.absender_behoerde_id;
@@ -507,6 +666,31 @@ export function ReplySheet({
     });
   })();
 
+  // Switch-Dialog 3-Button-Mode prüfen (Spec § 8.1).
+  const switchDualMode =
+    templateSwitchTarget !== null &&
+    isCompanionSkelettSwitch(formState.template, templateSwitchTarget);
+
+  const currentIsSkelett = isSkelettTemplate(formState.template);
+
+  // Inline-Disclaimer-Render (V1.5.0-Verhalten erhalten + V1.5.1 Skelett-Footer).
+  const disclaimerInline = (() => {
+    if (formState.template === 'freitext') return null;
+    try {
+      return tTemplates(`${formState.template}.disclaimer_inline`);
+    } catch {
+      return null;
+    }
+  })();
+  const skelettFooter = (() => {
+    if (!currentIsSkelett) return null;
+    try {
+      return t('skelett_footer_no_legal_advice');
+    } catch {
+      return null;
+    }
+  })();
+
   return (
     <>
       <Sheet open={open} onOpenChange={onOpenChange}>
@@ -531,13 +715,13 @@ export function ReplySheet({
           {confirmation ? (
             <>
               <SheetBody>
-                {readOnlyView ? (
+                {readOnlyReply ? (
                   <div className="flex flex-col gap-3">
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      onClick={() => setReadOnlyView(false)}
+                      onClick={() => setReadOnlyReply(null)}
                       className="self-start"
                     >
                       <X className="size-4" aria-hidden="true" />
@@ -551,17 +735,17 @@ export function ReplySheet({
                       lang="de"
                       className="whitespace-pre-wrap rounded-lg border border-border bg-muted/40 p-3 font-sans text-xs leading-relaxed"
                     >
-                      {confirmation.body_de}
+                      {readOnlyReply.body_de}
                     </pre>
                   </div>
                 ) : (
                   <ReplyConfirmationView
-                    reply={confirmation}
+                    replies={replies.length > 0 ? replies : [confirmation]}
                     letterId={letter.id}
                     empfaengerBehoerde={empfaengerName}
                     kanalHeute={kanalHeute}
                     onClose={() => onOpenChange(false)}
-                    onViewSubmittedBody={() => setReadOnlyView(true)}
+                    onViewSubmittedBody={(r) => setReadOnlyReply(r)}
                   />
                 )}
               </SheetBody>
@@ -570,6 +754,27 @@ export function ReplySheet({
             <>
               <SheetBody>
                 <SpeculativeBanner empfaenger={empfaengerName} />
+
+                <FristAbgelaufenWarnung
+                  letter={letter}
+                  templateId={formState.template}
+                />
+
+                <FristCitedFormatHeader
+                  letter={letter}
+                  templateId={formState.template}
+                />
+
+                <BekanntgabeCaveatDetails letter={letter} />
+
+                <div
+                  className="sr-only"
+                  role="status"
+                  aria-live="polite"
+                  data-testid="cross-send-announcement"
+                >
+                  {crossSendAnnouncement}
+                </div>
 
                 <fieldset className="flex flex-col gap-2">
                   <legend className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
@@ -580,14 +785,48 @@ export function ReplySheet({
                     aria-labelledby="template-picker-title"
                     className="grid gap-2 sm:grid-cols-1"
                   >
-                    {TEMPLATE_CHOICES.map((id) => {
-                      const checked = formState.template === id;
+                    {pickerOrder.map((id) => {
+                      // Solange eine Skelett-Empfehlung vorliegt (= User hat
+                      // noch keine bewusste Wahl getroffen), wird KEIN Radio
+                      // als "ausgewählt" gerendert — sonst doppelter
+                      // Highlight (recommended + checked auf zwei Zeilen).
+                      const isRecommendationActive =
+                        recommendedTemplate !== null;
+                      const checked =
+                        !isRecommendationActive && formState.template === id;
+                      const recommended = recommendedTemplate === id;
+                      const highlighted = checked || recommended;
+                      const labelKey = `${id}.label`;
+                      const descKey = `${id}.description`;
+                      const iconKey = `${id}.icon`;
+                      // Defensive lookup — i18n-localizer arbeitet parallel.
+                      const label = (() => {
+                        try {
+                          return tPicker(labelKey);
+                        } catch {
+                          return id;
+                        }
+                      })();
+                      const description = (() => {
+                        try {
+                          return tPicker(descKey);
+                        } catch {
+                          return '';
+                        }
+                      })();
+                      const icon = (() => {
+                        try {
+                          return tPicker(iconKey);
+                        } catch {
+                          return '';
+                        }
+                      })();
                       return (
                         <label
                           key={id}
                           className={cn(
                             'flex cursor-pointer items-start gap-2 rounded-lg border p-3 text-sm transition-colors',
-                            checked
+                            highlighted
                               ? 'border-foreground/40 bg-muted'
                               : 'border-border hover:bg-muted/40',
                           )}
@@ -601,21 +840,21 @@ export function ReplySheet({
                           />
                           <span className="flex flex-col gap-0.5">
                             <span className="font-medium">
-                              <span aria-hidden="true">
-                                {tPicker(`${id}.icon`)}
-                              </span>{' '}
-                              {tPicker(`${id}.label`)}
+                              <span aria-hidden="true">{icon}</span>{' '}
+                              {label}
                             </span>
-                            <span
-                              className={cn(
-                                'text-xs',
-                                checked
-                                  ? 'text-foreground/85'
-                                  : 'text-muted-foreground',
-                              )}
-                            >
-                              {tPicker(`${id}.description`)}
-                            </span>
+                            {description && (
+                              <span
+                                className={cn(
+                                  'text-xs',
+                                  highlighted
+                                    ? 'text-foreground/85'
+                                    : 'text-muted-foreground',
+                                )}
+                              >
+                                {description}
+                              </span>
+                            )}
                           </span>
                         </label>
                       );
@@ -655,13 +894,6 @@ export function ReplySheet({
 
                 {formState.template === 'nachweis_einreichen' && (
                   <div className="flex flex-col gap-2 rounded-lg border border-border bg-muted/30 p-3">
-                    {/* TODO(post-V1.5): dedizierte i18n-Keys
-                        `posteingang.compose.templates.nachweis_einreichen.bezeichnung_label`
-                        + `…bezeichnung_placeholder` ergänzen, sobald
-                        i18n-localizer für V1.5.1 sechs Locales pflegt. Bis
-                        dahin re-using `template_picker.label` (DE: „Nachweis
-                        einreichen") als sinnvolle Beschriftung — Domain §8
-                        verbietet Free-Text, der `<Select>` ist Pflicht. */}
                     <label
                       htmlFor="reply-nachweis-bezeichnung"
                       className="px-1 text-xs font-medium uppercase tracking-wide text-muted-foreground"
@@ -719,9 +951,17 @@ export function ReplySheet({
                   >
                     {t('body_textarea_de_hint')}
                   </p>
-                  {formState.template !== 'freitext' && (
+                  {disclaimerInline && (
                     <p className="text-[11px] leading-relaxed text-muted-foreground">
-                      {tTemplates(`${formState.template}.disclaimer_inline`)}
+                      {disclaimerInline}
+                    </p>
+                  )}
+                  {skelettFooter && (
+                    <p
+                      className="text-[11px] leading-relaxed text-muted-foreground"
+                      data-testid="skelett-footer-no-legal-advice"
+                    >
+                      {skelettFooter}
                     </p>
                   )}
                 </div>
@@ -825,12 +1065,45 @@ export function ReplySheet({
         onOpenChange={(next) => {
           if (!next) setTemplateSwitchTarget(null);
         }}
+        dualSendMode={switchDualMode}
         onConfirm={() => {
           const target = templateSwitchTarget;
           setTemplateSwitchTarget(null);
-          if (target) performTemplateSwitch(target);
+          if (!target) return;
+          if (isSkelettTemplate(target)) {
+            // Standard-Switch zu Skelett: zuerst PreInsertionModal aufsetzen
+            // (Hard-Line § 11.13), erst nach dessen Bestätigung Body laden.
+            setPreInsertionTarget(target as ReplyTemplateId);
+          } else {
+            performTemplateSwitch(target);
+          }
         }}
         onCancel={() => setTemplateSwitchTarget(null)}
+        onDualSend={onDualSend}
+      />
+
+      <PreInsertionModal
+        open={preInsertionTarget !== null}
+        onOpenChange={(next) => {
+          if (!next) setPreInsertionTarget(null);
+        }}
+        letter={letter}
+        empfaengerBehoerde={empfaengerBehoerde}
+        templateId={preInsertionTarget}
+        onConfirm={() => {
+          const target = preInsertionTarget;
+          setPreInsertionTarget(null);
+          if (!target) return;
+          performTemplateSwitch(target);
+          // Cross-Template-Versand-Pfad: nach Reply 2 PreInsertion-Confirm
+          // wird der Body geladen — User klickt dann manuell auf Versenden,
+          // der `crossSendStage === 'reply2-prep'` triggered im
+          // onSendConfirm → 'reply2-pending' → 'done'.
+          if (crossSendStage === 'reply2-prep') {
+            setCrossSendStage('reply2-pending');
+          }
+        }}
+        onCancel={() => setPreInsertionTarget(null)}
       />
     </>
   );

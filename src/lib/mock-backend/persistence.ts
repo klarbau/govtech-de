@@ -22,10 +22,30 @@ export type CollectionKey =
   | 'termine'
   | 'consent'
   | 'letter-activity-log'
-  // V1.5 — Antwort verfassen. Schema: `Record<letterId, Reply>` — genau eine
-  // Reply pro Brief; sent_simulated-Replies bleiben erhalten, Drafts werden
-  // beim nächsten saveReplyDraft überschrieben.
-  | 'letter-replies';
+  // V1.5 — Antwort verfassen. V1.5.0-Schema: `Record<letterId, Reply>` (genau
+  // eine Reply pro Brief). V1.5.1-Schema: `Record<letterId, Reply[]>`, weil
+  // der Cross-Template-Versand-Pfad (Einspruch + Aussetzung) zwei Reply-Records
+  // auf demselben Letter erzeugt (Spec V1.5.1 § 8.4). Migration aus V1.5.0
+  // läuft idempotent in `persistence-migrations.ts:runStorageMigrations()`.
+  | 'letter-replies'
+  // V1 — Stammdaten (Spec § 5.4). Vier neue persistente Buckets, Religion-
+  // Consent ist bewusst NICHT persistiert (Hard-Line § 11.4: bei Reload
+  // wird `consent_session` auf `false` zurückgesetzt — sessionStorage-Layer
+  // in api.ts).
+  | 'stammdaten:sperren'
+  | 'stammdaten:iban-speculative'
+  | 'stammdaten:kontakt'
+  | 'stammdaten:uebermittlungs-log'
+  // V1.1 — Renten/KV (Spec § 4.4). Pflegegrad-Consent ist bewusst NICHT
+  // hier registriert (Hard-Line § 11.22: sessionStorage-only, kein
+  // localStorage-Bucket).
+  | 'stammdaten:renten-eckdaten-v1-1'
+  | 'stammdaten:yellow-letter-bridge-applied'
+  // V1.2 — Kontakt-Schicht (Spec § 5.4). Bucket-Bump V1 → V2 erfolgt durch
+  // `migrateKontaktV1ToV11` in `persistence-migrations.ts`. Das vorherige
+  // `stammdaten:kontakt`-Bucket trägt nur noch `sprachpraeferenz` (V1-stable);
+  // BundID-Postfach + Notification-Präferenzen leben im neuen Bucket.
+  | 'stammdaten:notification-praeferenzen';
 
 const fullKey = (key: CollectionKey): string => `${NAMESPACE}${key}`;
 

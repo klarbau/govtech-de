@@ -39,7 +39,9 @@
 import type {
   BehoerdeKategorie,
   Behoerde,
+  BundidPostfachAnbindung,
   Document as VaultDocument,
+  EpaStatus,
   Letter,
   LetterActivityEvent,
   LetterActivityLog,
@@ -53,14 +55,27 @@ import type {
   LetterReplyMap,
   MockBackendEvent,
   MockBackendEventListener,
+  NotificationKanal,
+  NotificationPraeferenzen,
   Persona,
+  PersonaId,
+  PersonaKontakt,
   Reply,
   ReplyDraft,
+  Stammdaten,
+  StammdatenSektionId,
+  StammdatenUebermittlungssperreId,
   Termin,
+  ToggleNotificationPraeferenzResult,
+  UebermittlungsLogEntry,
   UmzugInput,
   UmzugPreview,
   Vorgang,
   VorgangFilter,
+  VorgangsKategorie,
+  WalletAttestation,
+  WalletAttestationPreview,
+  YellowLetterBridgeResult,
 } from '@/types';
 import { LETTER_ATTACHMENT_LIMITS } from '@/types';
 import letterSummariesFixture from '@/data/letter-summaries.json';
@@ -70,6 +85,9 @@ import {
   buildUmzugPreview,
   umzugAutopilot,
 } from './autopilot/umzug';
+import { appendLogEntry, stammdatenApi } from './stammdaten/api';
+import { stammdatenV11Api } from './stammdaten/v1-1-api';
+import { stammdatenV12Api } from './stammdaten/v1-2-api';
 import { MockBackendError } from './errors';
 import { emit, subscribe } from './events';
 import { uuid } from './id';
@@ -223,6 +241,75 @@ function loadReplies(): LetterReplyMap {
 
 function saveReplies(map: LetterReplyMap): void {
   write('letter-replies' as CollectionKey, map);
+}
+
+// ----------------------------------------------------------------------------
+// V1.5.1 — Reply-Bucket-Helpers (Array-Shape `Record<letterId, Reply[]>`).
+// Spec § 8.4: Cross-Template-Versand-Pfad erzeugt 2 Reply-Records pro Letter.
+// V1.5.0-Daten werden über `persistence-migrations.ts` zu Single-Element-
+// Arrays migriert, bevor `loadReplies()` zum ersten Mal liest.
+// ----------------------------------------------------------------------------
+
+function listRepliesForLetter(letterId: string): Reply[] {
+  const map = loadReplies();
+  return map[letterId] ?? [];
+}
+
+/**
+ * Liefert den (höchstens einen) aktiven Draft eines Briefs. Konvention:
+ * höchstens **eine** Reply pro Letter mit `status === 'draft'`. Wenn mehrere
+ * Drafts existieren würden (Bug-Pfad), wird der zuletzt erstellte zurückgegeben.
+ */
+function findDraftReply(letterId: string): Reply | undefined {
+  const list = listRepliesForLetter(letterId);
+  const drafts = list.filter((r) => r.status === 'draft');
+  if (drafts.length === 0) return undefined;
+  // Zuletzt erstellt = größtes created_at.
+  return drafts.reduce((a, b) =>
+    a.created_at.localeCompare(b.created_at) >= 0 ? a : b,
+  );
+}
+
+/**
+ * Liefert die zuletzt versandte Reply (oder den Draft, falls noch keine
+ * versandt wurde) — semantisch „die aktuell relevante Reply" für den Letter.
+ * Sortier-Schlüssel: `sent_at` (sent_simulated) bzw. `created_at` (Draft).
+ */
+function findLatestReply(letterId: string): Reply | undefined {
+  const list = listRepliesForLetter(letterId);
+  if (list.length === 0) return undefined;
+  return list.reduce((a, b) => {
+    const aKey = a.sent_at ?? a.created_at;
+    const bKey = b.sent_at ?? b.created_at;
+    return aKey.localeCompare(bKey) >= 0 ? a : b;
+  });
+}
+
+/** Schreibt eine Reply in den Bucket — upsert by `id`, kein Delete. */
+function upsertReply(letterId: string, reply: Reply): void {
+  const map = loadReplies();
+  const list = map[letterId] ?? [];
+  const idx = list.findIndex((r) => r.id === reply.id);
+  if (idx >= 0) {
+    list[idx] = reply;
+  } else {
+    list.push(reply);
+  }
+  map[letterId] = list;
+  saveReplies(map);
+}
+
+/** Löscht eine Reply aus dem Bucket (für deleteReplyDraft). */
+function removeReplyById(letterId: string, replyId: string): void {
+  const map = loadReplies();
+  const list = map[letterId] ?? [];
+  const filtered = list.filter((r) => r.id !== replyId);
+  if (filtered.length === 0) {
+    delete map[letterId];
+  } else {
+    map[letterId] = filtered;
+  }
+  saveReplies(map);
 }
 
 // ----------------------------------------------------------------------------
@@ -570,8 +657,20 @@ export interface MockBackendApi {
    * via i18n-Template `posteingang.compose.confirmation.full_receipt_template`.
    */
   sendReplySimulated(letterId: string, draft: ReplyDraft): Promise<Reply>;
-  /** Liefert die zuletzt versandte Reply für einen Brief (oder `null`). */
+  /**
+   * Liefert die zuletzt versandte oder gespeicherte Reply für einen Brief
+   * (oder `null`). Sortier-Schlüssel: `sent_at` bzw. `created_at`. V1.5.1:
+   * Cross-Template-Versand erzeugt mehrere Replies pro Letter; diese
+   * Methode gibt den jüngsten Eintrag zurück (Spec § 8.4 Architect-Empfehlung).
+   */
   getReplyByLetterId(letterId: string): Promise<Reply | null>;
+  /**
+   * V1.5.1 — Liefert alle Replies eines Briefs in chronologischer Reihenfolge
+   * (sortiert nach `sent_at` ?? `created_at`, aufsteigend). Wird vom
+   * `<ReplyConfirmationView>` für den Cross-Template-Versand-Pfad konsumiert
+   * (Spec § 8.3, Domain-Doc § 5.D2).
+   */
+  getRepliesForLetter(letterId: string): Promise<Reply[]>;
   /**
    * Resolves a Reply-Body-Template to a fully-substituted DE-citizen-letter
    * body. Reads the template from `de.json`, substitutes Persona /
@@ -584,6 +683,221 @@ export interface MockBackendApi {
    *   `PERSONA_NOT_FOUND` / `LETTER_NOT_FOUND` / `TEMPLATE_NOT_FOUND`.
    */
   resolveReplyBody(input: ResolveReplyBodyInput): Promise<string>;
+
+  // ---------------------- V1 Stammdaten — Read ----------------------
+  /** Single-Source-of-Truth Read-Model (Spec § 5.1; Hard-Line § 11.19). */
+  getStammdaten(personaId: PersonaId): Promise<Stammdaten>;
+  /** Activity-Log einer Persona; optional gefiltert nach Sektion / Kategorie. */
+  getUebermittlungsLog(
+    personaId: PersonaId,
+    opts?: {
+      limit?: number;
+      sektion?: StammdatenSektionId;
+      kategorie?: UebermittlungsLogEntry['kategorie'];
+    },
+  ): Promise<UebermittlungsLogEntry[]>;
+
+  // ---------------------- V1 Stammdaten — Write ----------------------
+  /** Hängt einen Eintrag ans Aktivitätsprotokoll an (Umzug-Cascade-Hook). */
+  appendStammdatenLogEntry(
+    personaId: PersonaId,
+    entry: Omit<UebermittlungsLogEntry, 'id'> & { id?: string },
+  ): Promise<UebermittlungsLogEntry>;
+  /** Religion-Consent (session-only — Hard-Line § 11.4). */
+  setReligionSessionConsent(
+    personaId: PersonaId,
+    consent: boolean,
+  ): Promise<{ wert?: string }>;
+  /** Auskunftssperre § 51 BMG; Begründung min 30 Zeichen pflicht (§ 11.14). */
+  toggleAuskunftssperre(
+    personaId: PersonaId,
+    aktiv: boolean,
+    begruendung?: string,
+  ): Promise<void>;
+  toggleUebermittlungssperre(
+    personaId: PersonaId,
+    sperreId: StammdatenUebermittlungssperreId,
+    aktiv: boolean,
+  ): Promise<void>;
+  toggleSpeicherungssperre(
+    personaId: PersonaId,
+    sperreId: StammdatenUebermittlungssperreId,
+    aktiv: boolean,
+  ): Promise<void>;
+  addIbanSpeculative(personaId: PersonaId, iban: string): Promise<void>;
+  dismissIbanSpeculative(personaId: PersonaId): Promise<void>;
+  simulateIbanPush(
+    personaId: PersonaId,
+    targets: { familienkasse: boolean; elster: boolean; gkv: boolean },
+  ): Promise<void>;
+  updateKontakt(
+    personaId: PersonaId,
+    input: { email?: string; mobil?: string },
+  ): Promise<void>;
+  updateSprache(personaId: PersonaId, sprache: string): Promise<void>;
+  /** Wallet-Sub-Tab: 3 fixe Mock-Empfänger (Hard-Line § 11.18). */
+  getWalletAttestations(personaId: PersonaId): Promise<WalletAttestation[]>;
+  /** Mock-Attestation-Vorschau (preview-only, kein Versand). */
+  getWalletAttestationPreview(
+    personaId: PersonaId,
+    attestationId: string,
+  ): Promise<WalletAttestationPreview>;
+
+  // ---------------------- V1.1 Stammdaten — Renten/KV ----------------------
+  // Spec: docs/specs/stammdaten-v1-1-renten-kv.md § 5.1.
+  // Hard-Lines § 11.21–§ 11.30 (verifier-locked).
+  //
+  // Hand-off note für assistant-engineer (V1.1):
+  //   getAltersvorsorge(personaId)             → Track-A/B/C-Daten + Eckdaten
+  //   getKrankenversicherungPflege(personaId)  → KVNR / ePA / Pflegegrad gated
+  //   applyYellowLetterBridge({letterId, personaId})
+  //                                            → idempotent (§ 11.25)
+  //   consentPflegegrad(personaId, consent)    → sessionStorage (§ 11.22)
+  //   revokePflegegradConsent(personaId)
+  //   getEpaStatus(personaId)                  → Disclaimer-Banner (§ 11.26)
+
+  /**
+   * Liefert Altersvorsorge-Sektion einer Persona. Returns `null` für
+   * Personas ohne ausreichend gepflegte V1.1-Daten (Track A ohne DRV,
+   * unbekannter Track). Track C: returns mit `eckdaten === undefined`
+   * (Hard-Line § 11.24 Mehmet-Empty-State).
+   */
+  getAltersvorsorge(
+    personaId: PersonaId,
+  ): Promise<NonNullable<Stammdaten['altersvorsorge']> | null>;
+
+  /**
+   * Liefert Krankenversicherung-&-Pflege-Sektion einer Persona. Pflegegrad
+   * ist nur sichtbar bei `pflegegrad_consent.consent_session === true`
+   * (Hard-Line § 11.22). Anrechnungszeit Pflege ist semantisch gekoppelt
+   * (Hard-Line § 11.30 — gleicher Toggle).
+   */
+  getKrankenversicherungPflege(
+    personaId: PersonaId,
+  ): Promise<NonNullable<Stammdaten['krankenversicherung_pflege']> | null>;
+
+  /**
+   * Yellow-Letter-Bridge — übernimmt RentenEckdaten aus einem Posteingang-
+   * Brief (§ 109 Abs. 3 SGB VI, 5 Pflicht-Inhalte) in die Stammdaten-Sektion
+   * Altersvorsorge.
+   *
+   * Hard-Line § 11.25 Idempotenz: bei wiederholtem Aufruf mit demselben
+   * `letter_id` returns `{ applied: false }` und emittiert
+   * `stammdaten/yellow-letter-bridge-skipped-idempotent` ohne Activity-Log-
+   * Eintrag. Page-Reload-stabil (Bucket persistiert in localStorage).
+   */
+  applyYellowLetterBridge(args: {
+    letter_id: string;
+    persona_id: PersonaId;
+  }): Promise<YellowLetterBridgeResult>;
+
+  /**
+   * Pflegegrad-Consent (session-only, NICHT in localStorage — Hard-Line § 11.22).
+   * Pattern erbt von V1-Religion-Consent (§ 11.4) mit separatem
+   * sessionStorage-Key `govtech-de:v1:stammdaten:pflegegrad-consent-session`.
+   *
+   * Bei `consent === true`: schreibt Activity-Log-Eintrag mit
+   * `Art. 9 Abs. 2 lit. a DSGVO i.V.m. § 14 SGB XI`. Bei `false`: Revoke
+   * ohne Log.
+   */
+  consentPflegegrad(personaId: PersonaId, consent: boolean): Promise<void>;
+
+  /** Hard-Reset Pflegegrad-Session-Consent (z. B. bei Persona-Switch). */
+  revokePflegegradConsent(personaId: PersonaId): Promise<void>;
+
+  /**
+   * Liefert ePA-Status (für `<EpaStatusFieldCard>` Disclaimer-Banner).
+   * Schreibt `epa-banner-seen`-Activity-Log-Eintrag mit zwei-Norm-Zitat
+   * `§ 342 Abs. 1 S. 2 i.V.m. § 343 SGB V` (Hard-Line § 11.26).
+   */
+  getEpaStatus(personaId: PersonaId): Promise<EpaStatus>;
+
+  // ---------------------- V1.2 Stammdaten — Kontakt-Schicht ----------------------
+  // Spec: docs/specs/stammdaten-v1-1-kontakt-schicht.md § 5.1.
+  // Hard-Lines § 11.31–§ 11.41 (verifier-locked).
+  //
+  // Hand-off note für assistant-engineer (V1.2):
+  //   getKontakt(personaId)                       → BundID-Postfach + E-Mail + Mobilfunk + Notification
+  //   getNotificationPraeferenzen(personaId)      → 5-Kategorien-Map
+  //   getBehoerdeAnbindung(behoerdeId)            → 'angebunden' | 'in_pilotierung' | 'nicht_angebunden'
+  //   toggleNotificationPraeferenz(personaId, kategorie, kanal)
+  //                                               → counter + optional cascade (Hero: familie × postfach)
+  //   simulatePostfachAktivierung(personaId)      → Demo-Only (Hard-Line § 11.32)
+  //   simulateMobilOtpFlow(personaId, {code})     → Mock-OTP, akzeptiert MOCK_OTP_DEMO_CODE
+  //   simulateFamilienkasseFollowupLetter(personaId)
+  //                                               → Hero-Cascade-Bridge zum Posteingang
+
+  /**
+   * Liefert den V1.2-Kontakt-Snapshot der Persona (BundID-Postfach + E-Mail
+   * + Mobilfunk + Notification-Präferenzen). Lazy-Init bei erstem Aufruf.
+   * Spec § 5.1.
+   */
+  getKontakt(personaId: PersonaId): Promise<PersonaKontakt>;
+
+  /** Liefert nur die Notification-Präferenzen (5-Kategorien-Map). */
+  getNotificationPraeferenzen(
+    personaId: PersonaId,
+  ): Promise<NotificationPraeferenzen>;
+
+  /**
+   * Liefert den BundID-Postfach-Anbindungs-Status einer Behörde
+   * (Pflicht-Feld; Hard-Line § 11.35). Wirft `BEHOERDE_NOT_FOUND` bei
+   * unbekannter Behörde.
+   */
+  getBehoerdeAnbindung(
+    behoerdeId: string,
+  ): Promise<BundidPostfachAnbindung>;
+
+  /**
+   * Wechselt die Notification-Präferenz für eine Kategorie. Schreibt einen
+   * Activity-Log-Eintrag Kategorie `speculative_2027` (Hard-Line § 11.40).
+   *
+   * Counter-Werte aus `SAVINGS_LOOKUP` (Spec § 5.5). Bei Hero-Pfad
+   * (Anna × `familie` × `postfach`) wird zusätzlich `cascade`-Daten
+   * zurückgegeben — Frontend triggert dann die Cross-fade-Animation und
+   * `simulateFamilienkasseFollowupLetter()`.
+   *
+   * Hard-Lock § 11.35: drittstaatsangehörige Personas + Kategorie `sonstige`
+   * + Kanal !== `brief` → wirft `BUNDID_HARD_LOCK_ABH`, wenn die zuständige
+   * ABH `nicht_angebunden` ist.
+   */
+  toggleNotificationPraeferenz(
+    personaId: PersonaId,
+    kategorie: VorgangsKategorie,
+    kanal: NotificationKanal,
+  ): Promise<ToggleNotificationPraeferenzResult>;
+
+  /**
+   * Demo-Only: simuliert Postfach-Aktivierung (Hard-Line § 11.32 — in V1.2
+   * NICHT im UI als CTA verfügbar; ausschließlich Test-Helper / DevTools).
+   */
+  simulatePostfachAktivierung(
+    personaId: PersonaId,
+  ): Promise<{ aktiviert_am: string }>;
+
+  /**
+   * Mock-OTP-Flow für Mobilfunk. Akzeptiert immer Code `124857`
+   * (`MOCK_OTP_DEMO_CODE`); alle anderen Werte werfen `OTP_INVALID`.
+   * Bei verified=true: Activity-Log Kategorie `app_aktivitaet`.
+   * Spec § 5.1; kein echter SMS-Versand (Hard-Line § 11.37).
+   */
+  simulateMobilOtpFlow(
+    personaId: PersonaId,
+    args: { code: string },
+  ): Promise<{ verified: boolean }>;
+
+  /**
+   * Hero-Demo-Specific: erzeugt nach Familie-Kategorie-Wechsel auf `postfach`
+   * eine Mock-Postfach-Nachricht der Familienkasse als Bridge zum Posteingang.
+   *
+   * - Fügt `letter-familienkasse-bewilligung-postfach-followup` zum Letters-
+   *   Bucket hinzu, mit `kanal: 'postfach'`.
+   * - 1 Activity-Log-Eintrag Kategorie `behoerde_zu_buerger`.
+   * - Idempotent: bei Re-Aufruf wird der existing letter zurückgegeben.
+   *
+   * Spec § 9 Mock-Letter-Bridge.
+   */
+  simulateFamilienkasseFollowupLetter(personaId: PersonaId): Promise<Letter>;
 
   // Subscribe
   subscribe(listener: MockBackendEventListener): () => void;
@@ -654,6 +968,43 @@ async function bestaetigeImpl(
     completed_at: new Date().toISOString(),
     letter_id: letterId,
   });
+
+  // Stammdaten-Activity-Log-Hook für Block D (Spec § 8.4): nach erfolgreicher
+  // eID-Bestätigung wird eine `behoerde_zu_behoerde`-Übermittlung dokumentiert
+  // (KFZ-Halter, Familienkasse, ABH-eAT — jeweils mit der für den Empfänger
+  // einschlägigen Spezialnorm).
+  try {
+    const rechtsgrundlage = step.behoerde_id.startsWith('familienkasse-')
+      ? '§§ 67/68 EStG i.V.m. § 36 BMG'
+      : step.behoerde_id === 'kfz-berlin-labo'
+        ? '§ 15 FZV i.V.m. § 36 BMG'
+        : step.behoerde_id === 'abh-berlin-lea'
+          ? '§ 86 AufenthG i.V.m. § 36 BMG'
+          : '§ 36 BMG';
+    const zweck = step.behoerde_id.startsWith('familienkasse-')
+      ? 'stammdaten.aktivitaet.zweck.adressuebermittlung_buergeramt_finanzamt'
+      : step.behoerde_id === 'kfz-berlin-labo'
+        ? 'stammdaten.aktivitaet.zweck.adressuebermittlung_buergeramt_finanzamt'
+        : step.behoerde_id === 'abh-berlin-lea'
+          ? 'stammdaten.aktivitaet.zweck.adressuebermittlung_buergeramt_bapersbw'
+          : 'stammdaten.aktivitaet.zweck.adressuebermittlung_buergeramt_finanzamt';
+    appendLogEntry(persona.id, {
+      id: `log-${uuid()}`,
+      timestamp: new Date().toISOString(),
+      kategorie: 'behoerde_zu_behoerde',
+      field_id: 'anschrift_aktuell',
+      sektion: 'anschrift',
+      absender_behoerde_id: 'buergeramt-berlin-mitte',
+      empfaenger_id: step.behoerde_id,
+      zweck_i18n_key: zweck,
+      rechtsgrundlage,
+      note: `persona_id:${persona.id}; field_id:anschrift_aktuell; quelle:umzug_cascade_block_d; mock:true`,
+    });
+  } catch (err) {
+    if (typeof console !== 'undefined') {
+      console.warn('[mock-backend] Block-D stammdaten log emit failed', err);
+    }
+  }
 
   const after = loadVorgaenge().find((v) => v.id === vorgangId);
   if (after && isVorgangFullyResolved(after) && after.status !== 'abgeschlossen') {
@@ -1211,12 +1562,12 @@ export const api: MockBackendApi & {
   getReplyDraft: (letterId: string) =>
     withLatency<ReplyDraft | null>(
       () => {
-        const map = loadReplies();
-        const reply = map[letterId];
-        if (!reply) return null;
-        if (reply.status !== 'draft') return null;
+        // V1.5.1: höchstens ein Draft pro Letter; mehrere sent_simulated
+        // sind nach Cross-Template-Versand möglich (Spec § 8.4).
+        const draft = findDraftReply(letterId);
+        if (!draft) return null;
         // Schema-Re-Validierung (V1-Pattern: niemals ungeprüft aus Storage zurückgeben).
-        const parsed = replySchema.safeParse(reply);
+        const parsed = replySchema.safeParse(draft);
         if (!parsed.success) return null;
         return parsed.data as ReplyDraft;
       },
@@ -1235,28 +1586,24 @@ export const api: MockBackendApi & {
           );
         }
 
-        const map = loadReplies();
-        const existing = map[letterId];
+        // V1.5.1: höchstens ein Draft pro Letter (mehrere sent_simulated
+        // möglich, aber Drafts werden upserted). „isFirstSave" meint hier:
+        // gibt es überhaupt schon eine Reply für diesen Brief (egal ob
+        // Draft oder Sent)? — Aktivitäts-Log-Konvention V1.5.0.
+        const existingDraft = findDraftReply(letterId);
+        const allReplies = listRepliesForLetter(letterId);
+        const isFirstSave = allReplies.length === 0;
         const now = new Date().toISOString();
-        const isFirstSave = !existing;
-
-        // Bei sent_simulated: nicht überschreiben (Reply ist bereits versandt).
-        if (existing && existing.status === 'sent_simulated') {
-          throw new MockBackendError(
-            `Reply für Brief "${letterId}" wurde bereits simuliert versandt — Draft-Save nicht mehr möglich.`,
-            { code: 'REPLY_ALREADY_SENT', retryable: false },
-          );
-        }
 
         const merged: Reply = {
-          id: existing?.id ?? `reply-${uuid()}`,
+          id: existingDraft?.id ?? `reply-${uuid()}`,
           letter_id: letterId,
           status: 'draft',
-          template_id: partial.template_id ?? existing?.template_id ?? null,
-          mode: partial.mode ?? existing?.mode,
-          body_de: partial.body_de ?? existing?.body_de ?? '',
-          attachments: partial.attachments ?? existing?.attachments ?? [],
-          created_at: existing?.created_at ?? now,
+          template_id: partial.template_id ?? existingDraft?.template_id ?? null,
+          mode: partial.mode ?? existingDraft?.mode,
+          body_de: partial.body_de ?? existingDraft?.body_de ?? '',
+          attachments: partial.attachments ?? existingDraft?.attachments ?? [],
+          created_at: existingDraft?.created_at ?? now,
           updated_at: now,
           sent_at: null,
           kanal: null,
@@ -1280,8 +1627,7 @@ export const api: MockBackendApi & {
           );
         }
 
-        map[letterId] = validation.data as Reply;
-        saveReplies(map);
+        upsertReply(letterId, validation.data as Reply);
 
         // Activity-Log-Einträge:
         //  - bei erstem Save: zusätzlich `reply_compose_started` (vorher unmöglich
@@ -1296,10 +1642,14 @@ export const api: MockBackendApi & {
           });
         }
         // Wenn ein Template-ID übergeben wurde und es ein Wechsel ist → reply_template_inserted.
+        // V1.5.1 Spec § 11.11: Note-Format ist `template_id:<id>`-Marker (semicolon-
+        // getrennt für Multi-Marker). V1.5.0 hat `template:<id>` benutzt — wir
+        // rotieren auf `template_id:<id>`, damit V1.5.1-Skelett-Templates
+        // gleich aussehen wie V1.5.0-Templates.
         if (
           partial.template_id !== undefined &&
           partial.template_id !== null &&
-          partial.template_id !== existing?.template_id
+          partial.template_id !== existingDraft?.template_id
         ) {
           appendActivityLogInternal(letterId, {
             letter_id: letterId,
@@ -1307,7 +1657,7 @@ export const api: MockBackendApi & {
             at: now,
             by: 'app_internal',
             rechtsgrundlage: 'Art. 6 Abs. 1 lit. a DSGVO Einwilligung',
-            note: `template:${partial.template_id}`,
+            note: `template_id:${partial.template_id}`,
           });
         }
         appendActivityLogInternal(letterId, {
@@ -1326,17 +1676,12 @@ export const api: MockBackendApi & {
   deleteReplyDraft: (letterId: string) =>
     withLatency<void>(
       () => {
-        const map = loadReplies();
-        const existing = map[letterId];
-        if (!existing) return;
-        if (existing.status === 'sent_simulated') {
-          throw new MockBackendError(
-            `Reply für Brief "${letterId}" wurde bereits simuliert versandt — Löschen nicht mehr möglich.`,
-            { code: 'REPLY_ALREADY_SENT', retryable: false },
-          );
-        }
-        delete map[letterId];
-        saveReplies(map);
+        // V1.5.1: nur den Draft löschen — sent_simulated-Replies bleiben
+        // erhalten (Cross-Template-Versand-Pfad: Reply 1 ist bereits sent
+        // wenn der User in den 3-Button-Switch den „Verwerfen"-Pfad wählt).
+        const draft = findDraftReply(letterId);
+        if (!draft) return;
+        removeReplyById(letterId, draft.id);
         appendActivityLogInternal(letterId, {
           letter_id: letterId,
           event: 'reply_draft_deleted',
@@ -1431,19 +1776,23 @@ export const api: MockBackendApi & {
           );
         }
 
-        const map = loadReplies();
-        map[letterId] = validation.data as Reply;
-        saveReplies(map);
+        // V1.5.1: upsert statt overwrite — sent Replies werden zur Liste
+        // hinzugefügt; existierende Drafts mit demselben `id` werden ersetzt
+        // (Cross-Template-Versand-Pfad: Reply 1 sent + Reply 2 sent).
+        upsertReply(letterId, validation.data as Reply);
 
+        // V1.5.1 Spec § 11.11: Note-Format ist semicolon-getrennte
+        // `<key>:<value>`-Paare. `template_id:<id>` ist der Pflicht-Marker
+        // für die drei neuen Skelett-Templates; `channel:<resolved>` ergänzt
+        // den Versand-Kanal für Datenschutz-Cockpit-Transparenz.
+        const templateIdValue = draft.template_id ?? 'freitext';
         appendActivityLogInternal(letterId, {
           letter_id: letterId,
           event: 'reply_sent_simulated',
           at: now,
           by: 'app_internal',
           rechtsgrundlage: 'Art. 6 Abs. 1 lit. a DSGVO Einwilligung',
-          note: draft.template_id
-            ? `template:${draft.template_id};kanal:${kanal}`
-            : `template:freitext;kanal:${kanal}`,
+          note: `template_id:${templateIdValue}; channel:${kanal}`,
         });
 
         return validation.data as Reply;
@@ -1454,8 +1803,10 @@ export const api: MockBackendApi & {
   getReplyByLetterId: (letterId: string) =>
     withLatency<Reply | null>(
       () => {
-        const map = loadReplies();
-        const reply = map[letterId];
+        // V1.5.1: bei mehreren Replies (Cross-Template-Versand) den jüngsten
+        // Eintrag zurückgeben (Spec § 8.4 Architect-Empfehlung). Sortier-
+        // Schlüssel: sent_at ?? created_at.
+        const reply = findLatestReply(letterId);
         if (!reply) return null;
         const parsed = replySchema.safeParse(reply);
         if (!parsed.success) return null;
@@ -1464,9 +1815,156 @@ export const api: MockBackendApi & {
       { min: 150, max: 350 },
     ),
 
+  getRepliesForLetter: (letterId: string) =>
+    withLatency<Reply[]>(
+      () => {
+        // Aufsteigend chronologisch sortiert (sent_at ?? created_at), damit
+        // <ReplyConfirmationView> Replies in Versand-Reihenfolge rendern kann
+        // (Cross-Template-Versand: Einspruch zuerst, Aussetzung danach).
+        const list = listRepliesForLetter(letterId);
+        const validated: Reply[] = [];
+        for (const reply of list) {
+          const parsed = replySchema.safeParse(reply);
+          if (parsed.success) validated.push(parsed.data as Reply);
+        }
+        return [...validated].sort((a, b) => {
+          const aKey = a.sent_at ?? a.created_at;
+          const bKey = b.sent_at ?? b.created_at;
+          return aKey.localeCompare(bKey);
+        });
+      },
+      { min: 150, max: 350 },
+    ),
+
   // ---------- V1.5 — Reply-Body-Resolver ----------
   resolveReplyBody: (input: ResolveReplyBodyInput) =>
     resolveReplyBodyImpl(input),
+
+  // ---------- V1 — Stammdaten ----------
+  // Delegate-Pattern: alle Methoden leben in `stammdaten/api.ts` und werden
+  // hier nur durchgereicht. `ensureBooted()` wird beim ersten persona-Lookup
+  // implizit über `loadPersonaById` → `readOrInit('personas')` ausgelöst,
+  // weil persistence.ts auf `seedIfEmpty()` wartet.
+  getStammdaten: (personaId: PersonaId) => {
+    ensureBooted();
+    return stammdatenApi.getStammdaten(personaId);
+  },
+  getUebermittlungsLog: (personaId, opts) => {
+    ensureBooted();
+    return stammdatenApi.getUebermittlungsLog(personaId, opts);
+  },
+  appendStammdatenLogEntry: (personaId, entry) => {
+    ensureBooted();
+    return stammdatenApi.appendStammdatenLogEntry(personaId, entry);
+  },
+  setReligionSessionConsent: (personaId, consent) => {
+    ensureBooted();
+    return stammdatenApi.setReligionSessionConsent(personaId, consent);
+  },
+  toggleAuskunftssperre: (personaId, aktiv, begruendung) => {
+    ensureBooted();
+    return stammdatenApi.toggleAuskunftssperre(personaId, aktiv, begruendung);
+  },
+  toggleUebermittlungssperre: (personaId, sperreId, aktiv) => {
+    ensureBooted();
+    return stammdatenApi.toggleUebermittlungssperre(personaId, sperreId, aktiv);
+  },
+  toggleSpeicherungssperre: (personaId, sperreId, aktiv) => {
+    ensureBooted();
+    return stammdatenApi.toggleSpeicherungssperre(personaId, sperreId, aktiv);
+  },
+  addIbanSpeculative: (personaId, iban) => {
+    ensureBooted();
+    return stammdatenApi.addIbanSpeculative(personaId, iban);
+  },
+  dismissIbanSpeculative: (personaId) => {
+    ensureBooted();
+    return stammdatenApi.dismissIbanSpeculative(personaId);
+  },
+  simulateIbanPush: (personaId, targets) => {
+    ensureBooted();
+    return stammdatenApi.simulateIbanPush(personaId, targets);
+  },
+  updateKontakt: (personaId, input) => {
+    ensureBooted();
+    return stammdatenApi.updateKontakt(personaId, input);
+  },
+  updateSprache: (personaId, sprache) => {
+    ensureBooted();
+    return stammdatenApi.updateSprache(personaId, sprache);
+  },
+  getWalletAttestations: (personaId) => {
+    ensureBooted();
+    return stammdatenApi.getWalletAttestations(personaId);
+  },
+  getWalletAttestationPreview: (personaId, attestationId) => {
+    ensureBooted();
+    return stammdatenApi.getWalletAttestationPreview(personaId, attestationId);
+  },
+
+  // ---------- V1.1 — Stammdaten Renten/KV ----------
+  // Delegate-Pattern: alle V1.1-Methoden leben in `stammdaten/v1-1-api.ts`
+  // und werden hier nur durchgereicht.
+  getAltersvorsorge: (personaId) => {
+    ensureBooted();
+    return stammdatenV11Api.getAltersvorsorge(personaId);
+  },
+  getKrankenversicherungPflege: (personaId) => {
+    ensureBooted();
+    return stammdatenV11Api.getKrankenversicherungPflege(personaId);
+  },
+  applyYellowLetterBridge: (args) => {
+    ensureBooted();
+    return stammdatenV11Api.applyYellowLetterBridge(args);
+  },
+  consentPflegegrad: (personaId, consent) => {
+    ensureBooted();
+    return stammdatenV11Api.consentPflegegrad(personaId, consent);
+  },
+  revokePflegegradConsent: (personaId) => {
+    ensureBooted();
+    return stammdatenV11Api.revokePflegegradConsent(personaId);
+  },
+  getEpaStatus: (personaId) => {
+    ensureBooted();
+    return stammdatenV11Api.getEpaStatus(personaId);
+  },
+
+  // ---------- V1.2 — Stammdaten Kontakt-Schicht ----------
+  // Delegate-Pattern: alle V1.2-Methoden leben in `stammdaten/v1-2-api.ts`
+  // und werden hier nur durchgereicht.
+  getKontakt: (personaId) => {
+    ensureBooted();
+    return stammdatenV12Api.getKontakt(personaId);
+  },
+  getNotificationPraeferenzen: (personaId) => {
+    ensureBooted();
+    return stammdatenV12Api.getNotificationPraeferenzen(personaId);
+  },
+  getBehoerdeAnbindung: (behoerdeId) => {
+    ensureBooted();
+    return stammdatenV12Api.getBehoerdeAnbindung(behoerdeId);
+  },
+  toggleNotificationPraeferenz: (personaId, kategorie, kanal) => {
+    ensureBooted();
+    return stammdatenV12Api.toggleNotificationPraeferenz(
+      personaId,
+      kategorie,
+      kanal,
+    );
+  },
+  simulatePostfachAktivierung: (personaId) => {
+    ensureBooted();
+    return stammdatenV12Api.simulatePostfachAktivierung(personaId);
+  },
+  simulateMobilOtpFlow: (personaId, args) => {
+    ensureBooted();
+    return stammdatenV12Api.simulateMobilOtpFlow(personaId, args);
+  },
+  simulateFamilienkasseFollowupLetter: (personaId) => {
+    ensureBooted();
+    return stammdatenV12Api.simulateFamilienkasseFollowupLetter(personaId);
+  },
 
   // ---------- Subscribe ----------
   subscribe: (listener: MockBackendEventListener) => subscribe(listener),
