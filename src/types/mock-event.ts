@@ -1,3 +1,4 @@
+import type { BehoerdeId } from './behoerde';
 import type { Document } from './document';
 import type { Letter } from './letter';
 import type { PersonaId } from './persona';
@@ -120,6 +121,27 @@ export type StammdatenEvent =
       type: 'stammdaten/familienkasse-followup-letter-simulated';
       persona_id: PersonaId;
       letter_id: string;
+    }
+  // V1.3 — Mobilität (Spec § 6.7). Hard-Lines § 11.1–§ 11.14.
+  | {
+      type: 'stammdaten/mobilitaet-punkte-pulled';
+      persona_id: PersonaId;
+      punkte: number;
+      aktenzeichen: string;
+    }
+  | {
+      type: 'stammdaten/mobilitaet-mdl-preview-opened';
+      persona_id: PersonaId;
+    }
+  | {
+      type: 'stammdaten/mobilitaet-korrekturweg-fe-cta-opened';
+      persona_id: PersonaId;
+      behoerde_id: BehoerdeId;
+    }
+  | {
+      type: 'stammdaten/mobilitaet-halter-adresse-marker-set';
+      persona_id: PersonaId;
+      vorgang_id: string;
     };
 
 /**

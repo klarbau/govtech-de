@@ -580,5 +580,64 @@
     "status": "ungelesen",
     "empfangen_am": "2026-05-08T10:14:00.000Z",
     "bescheid_dated_at": "2026-05-04"
+  },
+  {
+    "id": "letter-pflichtumtausch-fe-hamburg-schmidt-2026-05",
+    "absender_behoerde_id": "fe-hamburg-lbv",
+    "empfaenger_persona_id": "markus-schmidt",
+    "aktenzeichen": "[MOCK] LBV-HH-FE-2026/05-PU-8842",
+    "betreff": "Pflichtumtausch Ihres Führerscheins — Stichtag 19.01.2027 — Aktenzeichen [MOCK] LBV-HH-FE-2026/05-PU-8842",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nLandesbetrieb Verkehr Hamburg — Fahrerlaubnis-Abteilung\nAusschläger Weg 100, 20537 Hamburg\n\nSehr geehrter Herr Dr. Schmidt,\n\nnach § 6 Abs. 7 FeV in Verbindung mit Anlage 8a (Pflichtumtauschen-Tabelle) endet die Gültigkeit Ihres bisherigen Führerscheins zum 19.01.2027. Wir bitten Sie, fristgerecht einen Umtausch in den fälschungssicheren EU-Kartenführerschein zu beantragen.\n\nHinweis: Nach Ablauf der Frist können Sie keinen Nachweis Ihrer Fahrberechtigung mehr durch den abgelaufenen Führerschein erbringen; das Führen von Kraftfahrzeugen ohne gültigen Führerschein ist eine Ordnungswidrigkeit (§ 75 Nr. 4 FeV).\n\nMit freundlichen Grüßen\nLandesbetrieb Verkehr Hamburg — Fahrerlaubnis-Abteilung\nAz. [MOCK] LBV-HH-FE-2026/05-PU-8842",
+    "ai_summary": {
+      "de": "Frist 19.01.2027 (~8 Monate); Pflichtumtausch in EU-Kartenführerschein bei Landesbetrieb Verkehr Hamburg. Keine sofortige Aktion erforderlich."
+    },
+    "archetype": "sonstiges",
+    "auth_channel": "briefpost",
+    "fristen": [
+      {
+        "typ": "antragstellung",
+        "datum": "2027-01-19",
+        "original_zitat": "nach § 6 Abs. 7 FeV in Verbindung mit Anlage 8a endet die Gültigkeit Ihres bisherigen Führerscheins zum 19.01.2027.",
+        "citation_match": true,
+        "rechtsgrundlage": "§ 6 Abs. 7 FeV i.V.m. Anlage 8a FeV"
+      }
+    ],
+    "was_kann_ich_tun_options": [],
+    "status": "ungelesen",
+    "empfangen_am": "2026-05-04T09:30:00.000Z"
+  },
+  {
+    "id": "letter-fzv-15-aufforderung-kfz-koeln-mehmet-2026-04",
+    "absender_behoerde_id": "kfz-koeln-stadt",
+    "empfaenger_persona_id": "mehmet-yildiz",
+    "aktenzeichen": "[MOCK] STADT-K/STR-KFZ-2026-04-19922",
+    "betreff": "Mitteilung Ihrer Halter-Anschrift gemäß § 15 FZV — Aktenzeichen [MOCK] STADT-K/STR-KFZ-2026-04-19922",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nStadt Köln — Straßenverkehrsamt — KFZ-Zulassungsstelle\nHohenstaufenring 16, 50674 Köln\n\nSehr geehrter Herr Yıldız,\n\naufgrund einer uns von dritter Seite zugegangenen Information zu einer möglichen Anschriftenänderung bitten wir Sie, unverzüglich (i.d.R. innerhalb einer Woche) eine entsprechende Mitteilung nach § 15 FZV abzugeben. Bei Nichtbefolgung setzen wir Ihnen eine Frist von vier Wochen; mit fruchtlosem Ablauf erlischt die Zulassung Ihres Fahrzeugs (§ 15 Abs. 4 FZV).\n\nEine vorsätzliche oder fahrlässige Verletzung der Mitteilungspflicht stellt eine Ordnungswidrigkeit dar (§ 75 Nr. 1 FZV i.V.m. § 24 StVG); regelmäßige Verwarnung 40 €.\n\nMit freundlichen Grüßen\nStadt Köln — Straßenverkehrsamt — KFZ-Zulassungsstelle\nAz. [MOCK] STADT-K/STR-KFZ-2026-04-19922",
+    "ai_summary": {
+      "de": "Aufforderung zur Halter-Anschrifts-Mitteilung nach § 15 FZV; unverzüglich (i.d.R. innerhalb einer Woche). Kein Konflikt mit Mehmets aktueller Anschrift — vermutlich Irrtum, Rück-Klarstellung empfohlen."
+    },
+    "archetype": "sonstiges",
+    "auth_channel": "briefpost",
+    "fristen": [],
+    "was_kann_ich_tun_options": [],
+    "status": "ungelesen",
+    "empfangen_am": "2026-04-22T11:00:00.000Z"
+  },
+  {
+    "id": "letter-faer-auskunft-pdf-mehmet-2026-05",
+    "absender_behoerde_id": "kba-flensburg",
+    "empfaenger_persona_id": "mehmet-yildiz",
+    "aktenzeichen": "[MOCK] FAER-AK-2026-04127831",
+    "betreff": "Auskunft aus dem Fahreignungsregister gemäß § 30 Abs. 8 StVG — Geschäftszeichen [MOCK] FAER-AK-2026-04127831",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nKraftfahrt-Bundesamt — Referat Z21\nFördestraße 16, 24944 Flensburg\n\nSehr geehrter Herr Yıldız,\n\nhiermit übersenden wir Ihnen die von Ihnen beantragte Auskunft über die zu Ihrer Person im Fahreignungsregister gespeicherten Daten.\n\nPunktestand zum Stichtag 30.04.2026: 1 Punkt.\nStand der zugrunde liegenden Eintragungen: 16.03.2024.\n\nDiese Auskunft ist gebührenfrei. Sie wurde aufgrund Ihres elektronischen Antrags vom 30.04.2026 unter Verwendung Ihrer eID-Funktion ausgestellt.\n\nMit freundlichen Grüßen\nKraftfahrt-Bundesamt — Referat Z21\nAz. [MOCK] FAER-AK-2026-04127831",
+    "ai_summary": {
+      "de": "FAER-Auskunft: 1 Punkt; gebührenfrei; keine Aktion erforderlich. Maßnahmen-Schwellen (4–5 P. Ermahnung) nicht überschritten."
+    },
+    "archetype": "sonstiges",
+    "auth_channel": "briefpost",
+    "fristen": [],
+    "was_kann_ich_tun_options": [],
+    "status": "ungelesen",
+    "empfangen_am": "2026-05-02T07:15:00.000Z"
   }
 ]

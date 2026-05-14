@@ -74,6 +74,18 @@
     }
   },
   "umzug": {
+    "wizard": {
+      "aria_label": "Umzug-Assistent — Fortschritt",
+      "step_label_template": "Schritt {current} von {total}",
+      "step_status_done": "abgeschlossen",
+      "step_status_current": "aktuell",
+      "step_status_upcoming": "ausstehend",
+      "steps": {
+        "adresse": "Adresse",
+        "vorschau": "Vorschau",
+        "autopilot": "Autopilot läuft"
+      }
+    },
     "start": {
       "title": "Umzug",
       "subtitle": "In wenigen Schritten alle relevanten Stellen informieren.",
@@ -108,6 +120,8 @@
     "preview": {
       "title": "Vorschau: Was passiert, wenn Sie bestätigen",
       "subtitle_template": "Neue Adresse: {adresse} · ab {stichtag}",
+      "hero_title_template": "Autopilot bereit — {count, plural, =0 {keine Stelle} =1 {1 Stelle} other {# Stellen}} zur Benachrichtigung",
+      "hero_subtitle": "Die folgenden Schritte werden in vier Blöcken ausgeführt. Sie behalten zu jedem Zeitpunkt die Kontrolle.",
       "block_a": {
         "title": "Erledigen wir automatisch",
         "subhead": "§ 33 BMG · § 34 BMG · § 36 BMG"
@@ -190,7 +204,7 @@
       "bmg_33": "§ 33 BMG: Datenübermittlung zwischen Meldebehörden — Wegzugsmitteilung erfolgt automatisch, spätestens drei Werktage nach Anmeldung.",
       "bmg_34": "§ 34 BMG: Datenübermittlung an andere öffentliche Stellen ohne Einwilligung, soweit zur Erfüllung öffentlicher Aufgaben erforderlich.",
       "bmg_36": "§ 36 BMG: regelmäßige Datenübermittlungen — Empfänger und Daten durch Spezialgesetz festgelegt.",
-      "fzv_15": "§ 15 FZV: Halter-Mitteilungspflicht bei Wohnsitzwechsel — Zulassungsbescheinigung Teil I unverzüglich aktualisieren.",
+      "fzv_15": "§ 15 FZV: Halter-Mitteilungspflicht bei Wohnsitzwechsel — Zulassungsbescheinigung Teil I unverzüglich (i.d.R. innerhalb einer Woche) bei der Zulassungsstelle anpassen.",
       "aufenthg_18g": "§ 18g AufenthG: Blue Card EU für ausländische Fachkräfte (seit AufenthG-Reform 2023).",
       "aufenthg_87": "§ 87 AufenthG: Datenübermittlung an Ausländerbehörden auf Ersuchen, kein automatischer Push.",
       "pauswg_18": "§ 18 PAuswG: Online-Ausweisfunktion — eID als rechtswirksame Willenserklärung.",
@@ -224,6 +238,7 @@
     "list": {
       "tab_chronologisch": "Chronologisch",
       "tab_nach_vorgang": "Nach Vorgang gruppieren",
+      "tab_filter_badge_aria": "{count, plural, =1 {1 aktiver Filter} other {# aktive Filter}}",
       "group": {
         "neu": "Neu",
         "frist_unter_7d": "Frist offen ≤ 7 Tagen",
@@ -316,7 +331,12 @@
       },
       "datenschutz_link": "Welche Daten dieses Briefs wurden wo verarbeitet?",
       "datenschutz_link_aria": "Datenschutz-Cockpit für diesen Brief öffnen",
-      "utility_row_aria": "Brief-Hilfsaktionen"
+      "utility_row_aria": "Brief-Hilfsaktionen",
+      "action_hint": {
+        "antwort_erforderlich": "Antwort erforderlich",
+        "zur_kenntnis": "Zur Kenntnis",
+        "erledigt": "Erledigt"
+      }
     },
     "gruppe": {
       "titel_template": "Vorgang: {titel} ({count})",
@@ -416,6 +436,8 @@
       }
     },
     "was_kann_ich_tun": {
+      "hint_zahlung": "Sie haben eine Nachzahlung — Optionen: Einspruch (falls Berechnung falsch) oder Aussetzung der Vollziehung (falls Zahlung jetzt nicht möglich).",
+      "hint_frist": "Innerhalb der Frist können Sie: Einspruch einlegen ODER Aussetzung beantragen ODER ignorieren (Säumniszuschlag fällt an).",
       "steuerbescheid": {
         "zahlung": "Zahlung leisten",
         "einspruch": "Einspruch einlegen (innerhalb 1 Monat, § 355 AO)",
@@ -746,6 +768,12 @@
       },
       "speculative_banner_title": "Stand 2027 — Speculative Design"
     },
+    "reply": {
+      "skeleton_disclaimer": "Generierter Vortext nach rechtlichen Vorlagen — bitte überprüfen und ggf. anpassen.",
+      "body_preview_heading": "Inhalt der gesendeten Antwort",
+      "body_preview_full_toggle": "Vollständig anzeigen",
+      "body_preview_full_toggle_close": "Einklappen"
+    },
     "draft": {
       "group_title_template": "Entwürfe ({count})",
       "row_label_template": "Entwurf: Antwort an {behoerde}",
@@ -779,8 +807,12 @@
     },
     "tab": {
       "aria_label": "Stammdaten-Bereiche",
-      "profil": { "label": "Mein Profil" },
-      "wallet": { "label": "Wallet & Externe Empfänger" }
+      "profil": {
+        "label": "Mein Profil"
+      },
+      "wallet": {
+        "label": "Wallet & Externe Empfänger"
+      }
     },
     "hero": {
       "eyebrow": "Single-Source-of-Truth",
@@ -795,14 +827,47 @@
       "vision_2027_banner_title": "2027-Vision: Konvergenz BundID + DSC + EUDI Wallet",
       "vision_2027_banner_body": "Diese Stammdaten-Sicht zeigt, wie eine konvergierte Bürger:innen-Sicht auf das hypothetische 2027-Bild aus BundID-Stammdatenservice, Datenschutzcockpit nach IDNrG und EUDI-Wallet-PID aussehen könnte. Heute (Mai 2026) ist diese Konvergenz noch nicht erreicht.",
       "disclaimer_lese_title": "Hinweis: Lese- und Wegweiser-Schicht",
-      "disclaimer_audit_title": "Hinweis: App-internes Aktivitätsprotokoll"
+      "disclaimer_audit_title": "Hinweis: App-internes Aktivitätsprotokoll",
+      "summary_prominent": "Sie sind in {register_count} öffentlichen Registern erfasst.",
+      "last_transmission_short": "Letzte Übermittlung vor {dauer}.",
+      "disclaimer_section_label": "Erläuterungen zur Lese-Schicht"
+    },
+    "section_nav": {
+      "label": "Stammdaten-Sektionen",
+      "jump_to": "Zu Sektion springen",
+      "items": {
+        "identitaet": "Identität",
+        "anschrift": "Anschrift",
+        "familie": "Familie",
+        "altersvorsorge": "Altersvorsorge",
+        "krankenversicherung_pflege": "KV & Pflege",
+        "mobilitaet": "Mobilität",
+        "dokumente": "Dokumente",
+        "sperren_einstellungen": "Sperren"
+      }
+    },
+    "mdl_teaser": {
+      "title": "Digitaler Führerschein im Wallet",
+      "body": "Ihre Fahrerlaubnis steht als mobile Driving Licence (ISO/IEC 18013-5) im Wallet zur Vorschau bereit.",
+      "cta": "Im Wallet ansehen",
+      "vision_pill": "2029-Vision"
     },
     "sektion": {
-      "identitaet": { "title": "Identität" },
-      "anschrift": { "title": "Anschrift" },
-      "familie": { "title": "Familie" },
-      "dokumente": { "title": "Dokumente" },
-      "sperren_einstellungen": { "title": "Sperren & Einstellungen" },
+      "identitaet": {
+        "title": "Identität"
+      },
+      "anschrift": {
+        "title": "Anschrift"
+      },
+      "familie": {
+        "title": "Familie"
+      },
+      "dokumente": {
+        "title": "Dokumente"
+      },
+      "sperren_einstellungen": {
+        "title": "Sperren & Einstellungen"
+      },
       "altersvorsorge": {
         "title": "Altersvorsorge",
         "subtitle": "Gesetzliche Rente, Versorgungswerke und Privatvorsorge im Überblick"
@@ -811,8 +876,21 @@
         "title": "Krankenversicherung & Pflege",
         "subtitle": "Krankenkasse, ePA, eRezept und Pflege"
       },
-      "kontakt_postfach": { "title": "Kontakt & Postfach" },
-      "notification_praeferenzen": { "title": "Notification-Präferenzen (2027-Vision)" },
+      "kontakt_postfach": {
+        "title": "Kontakt & Postfach"
+      },
+      "notification_praeferenzen": {
+        "title": "Notification-Präferenzen (2027-Vision)"
+      },
+      "mobilitaet": {
+        "title": "Mobilität (Führerschein + Fahrzeuge)",
+        "subtitle": "Fahrerlaubnis, Punktestand, eigene Fahrzeuge — als Lese- und Wegweiser-Schicht.",
+        "preview_no_fe": "Keine Fahrerlaubnis registriert",
+        "preview_fe_classes": "Klasse {klassen}",
+        "preview_fe_with_pflichtumtausch": "Klasse {klassen} — Pflichtumtausch bis {stichtag}",
+        "preview_fe_only": "Klasse {klassen} · Punktestand on-demand",
+        "preview_halter_count": "{count, plural, =0 {kein Fahrzeug als Halter} =1 {1 Fahrzeug als Halter} other {# Fahrzeuge als Halter}}"
+      },
       "sr_field_count": "{count, plural, =1 {1 Feld in dieser Sektion} other {# Felder in dieser Sektion}}",
       "aktivitaet_aside_label": "Aktivitätsprotokoll dieser Sektion"
     },
@@ -820,7 +898,15 @@
       "quelle_label": "Quelle",
       "letztes_update_label": "Letztes Update",
       "value_empty": "—",
-      "reveal_religion": "Religionszugehörigkeit anzeigen"
+      "reveal_religion": "Religionszugehörigkeit anzeigen",
+      "halter_adresse": {
+        "title": "Halter-Anschrift (Zulassungsstelle)",
+        "label_strasse_hausnummer": "{strasse} {hausnummer}",
+        "label_plz_ort": "{plz} {ort}",
+        "uebergangs_badge_via_umzug": "Adressänderung über Umzug-Vorgang ausgelöst — Bestätigung der Zulassungsstelle steht aus.",
+        "uebergangs_badge_tooltip": "Wir haben den Pre-Fill der i-Kfz-Adressänderung (§ 15 FZV) für Sie vorbereitet — die Bestätigung Ihrer Zulassungsstelle erhalten Sie auf dem regulären Weg. Diese App ist nicht-hoheitlich; sie hat die Adresse nicht selbst geändert.",
+        "sync_status_known": "bekannt — keine offene Mitteilung nach § 15 FZV"
+      }
     },
     "cta": {
       "korrigieren": "Korrigieren-Pfad öffnen",
@@ -830,35 +916,24 @@
       "iban_push_trigger": "IBAN-Push simulieren"
     },
     "field": {
-      "familienname": { "label": "Familienname" },
-      "fruehere_namen": { "label": "Frühere Namen" },
-      "vornamen": { "label": "Vornamen" },
-      "doktorgrad": { "label": "Doktorgrad" },
-      "geburtsdatum": { "label": "Geburtsdatum" },
-      "geburtsort": { "label": "Geburtsort" },
-      "geschlecht": { "label": "Geschlechtseintrag" },
-      "staatsangehoerigkeit": { "label": "Staatsangehörigkeit" },
-      "steuer_id": { "label": "Steuer-Identifikationsnummer" },
-      "anschrift_aktuell": { "label": "Aktuelle Hauptanschrift" },
-      "anschriften_historisch": { "label": "Frühere Anschriften" },
-      "familienstand": { "label": "Familienstand" },
-      "partner": { "label": "Ehegatte / Lebenspartner:in" },
-      "kinder": { "label": "Kinder" },
-      "eheschliessung": { "label": "Eheschließung / Verpartnerung" },
-      "personalausweis": { "label": "Personalausweis" },
-      "reisepass": { "label": "Reisepass" },
-      "eat_can": { "label": "elektronischer Aufenthaltstitel (eAT) — CAN" },
-      "azr_nr": { "label": "AZR-Nummer (Ausländerzentralregister)" },
-      "religionszugehoerigkeit": { "label": "Religionszugehörigkeit" },
-      "kontakt_email": { "label": "E-Mail-Adresse" },
-      "kontakt_mobil": { "label": "Mobilnummer" },
-      "sprachpraeferenz": { "label": "Sprachpräferenz" },
-      "iban": { "label": "IBAN für Erstattungen" },
-      "auskunftssperre": { "label": "Auskunftssperre nach § 51 Abs. 1 BMG" },
-      "uebermittlungssperren": { "label": "Übermittlungssperren nach §§ 42 Abs. 3, 50 Abs. 5 BMG" },
-      "kvnr": { "label": "Krankenversichertennummer (KVNR)" },
-      "drv_versicherungsnummer": { "label": "Rentenversicherungsnummer (DRV)" },
-      "elstam": { "label": "ELStAM (Steuerklasse, Freibeträge)" },
+      "familienname": {
+        "label": "Familienname"
+      },
+      "fruehere_namen": {
+        "label": "Frühere Namen"
+      },
+      "vornamen": {
+        "label": "Vornamen"
+      },
+      "doktorgrad": {
+        "label": "Doktorgrad"
+      },
+      "geburtsdatum": {
+        "label": "Geburtsdatum"
+      },
+      "geburtsort": {
+        "label": "Geburtsort"
+      },
       "geschlecht": {
         "label": "Geschlechtseintrag",
         "value": {
@@ -869,19 +944,82 @@
           "unbestimmt": "unbestimmt"
         }
       },
-      "religion": {
-        "value": {
-          "rk": "römisch-katholisch",
-          "ev": "evangelisch",
-          "ohne": "ohne Religionszugehörigkeit",
-          "andere": "andere"
-        }
+      "staatsangehoerigkeit": {
+        "label": "Staatsangehörigkeit"
+      },
+      "steuer_id": {
+        "label": "Steuer-Identifikationsnummer"
+      },
+      "anschrift_aktuell": {
+        "label": "Aktuelle Hauptanschrift"
+      },
+      "anschriften_historisch": {
+        "label": "Frühere Anschriften"
+      },
+      "familienstand": {
+        "label": "Familienstand"
+      },
+      "partner": {
+        "label": "Ehegatte / Lebenspartner:in"
+      },
+      "kinder": {
+        "label": "Kinder"
+      },
+      "eheschliessung": {
+        "label": "Eheschließung / Verpartnerung"
+      },
+      "personalausweis": {
+        "label": "Personalausweis"
+      },
+      "reisepass": {
+        "label": "Reisepass"
+      },
+      "eat_can": {
+        "label": "elektronischer Aufenthaltstitel (eAT) — CAN"
+      },
+      "azr_nr": {
+        "label": "AZR-Nummer (Ausländerzentralregister)"
+      },
+      "religionszugehoerigkeit": {
+        "label": "Religionszugehörigkeit"
+      },
+      "kontakt_email": {
+        "label": "E-Mail-Adresse"
+      },
+      "kontakt_mobil": {
+        "label": "Mobilnummer"
+      },
+      "sprachpraeferenz": {
+        "label": "Sprachpräferenz"
+      },
+      "iban": {
+        "label": "IBAN für Erstattungen"
       },
       "auskunftssperre": {
         "label": "Auskunftssperre nach § 51 Abs. 1 BMG",
         "value": {
           "aktiv": "aktiv (Demo-Pattern)",
           "inaktiv": "inaktiv"
+        }
+      },
+      "uebermittlungssperren": {
+        "label": "Übermittlungssperren nach §§ 42 Abs. 3, 50 Abs. 5 BMG"
+      },
+      "kvnr": {
+        "label": "Krankenversichertennummer (KVNR)"
+      },
+      "drv_versicherungsnummer": {
+        "label": "Rentenversicherungsnummer (DRV)"
+      },
+      "elstam": {
+        "label": "ELStAM (Steuerklasse, Freibeträge)"
+      },
+      "religion": {
+        "value": {
+          "rk": "römisch-katholisch",
+          "ev": "evangelisch",
+          "ohne": "ohne Religionszugehörigkeit",
+          "andere": "andere"
         }
       },
       "uebermittlungssperre": {
@@ -894,42 +1032,108 @@
         "label": "Übermittlungssperre Religionsgesellschaften (§ 42 Abs. 3 BMG)"
       },
       "beschaeftigung": {
-        "typ": { "label": "Beschäftigungstyp" },
-        "arbeitgeber": { "label": "Arbeitgeber" },
-        "kvnr": { "label": "KVNR" },
-        "drv": { "label": "DRV-Nr." }
+        "typ": {
+          "label": "Beschäftigungstyp"
+        },
+        "arbeitgeber": {
+          "label": "Arbeitgeber"
+        },
+        "kvnr": {
+          "label": "KVNR"
+        },
+        "drv": {
+          "label": "DRV-Nr."
+        }
       }
     },
     "korrekturweg": {
-      "familienname": { "pointer": "Korrektur beim Standesamt nach § 1355 BGB / § 45 PStG." },
-      "fruehere_namen": { "pointer": "Korrektur beim Standesamt nach § 45 PStG." },
-      "vornamen": { "pointer": "Korrektur beim Standesamt nach § 45 PStG." },
-      "doktorgrad": { "pointer": "Korrektur über Bürgeramt mit Beleg-Upload (§ 3 Abs. 1 Nr. 6 BMG)." },
-      "geburtsdatum": { "pointer": "Korrektur beim Standesamt des Geburtsorts." },
-      "geburtsort": { "pointer": "Korrektur beim Standesamt des Geburtsorts." },
-      "geschlecht": { "pointer": "Erklärung beim Standesamt nach § 4 SBGG (Anmeldung) und § 2 SBGG (persönliche Beurkundung)." },
-      "staatsangehoerigkeit": { "pointer": "Korrektur über Einbürgerungsbehörde nach StAG." },
-      "steuer_id": { "pointer": "Lebenslang vergeben durch das Bundeszentralamt für Steuern (§ 139b AO) — nicht änderbar." },
-      "anschrift_aktuell": { "pointer": "Bürgeramt-Termin oder elektronische Wohnsitz-Anmeldung (eWA) nach § 17 BMG." },
-      "anschriften_historisch": { "pointer": "Korrekturen werden durch eine neue Anmeldung nach § 17 BMG ausgelöst." },
-      "familienstand": { "pointer": "Korrektur beim Standesamt nach PStG." },
-      "partner": { "pointer": "Korrektur beim Standesamt nach PStG." },
-      "kinder": { "pointer": "Korrektur beim Standesamt nach § 21 PStG." },
-      "eheschliessung": { "pointer": "Korrektur beim Standesamt der Eheschließung." },
-      "personalausweis": { "pointer": "Neuausstellung beim Bürgeramt nach PAuswG." },
-      "reisepass": { "pointer": "Neuausstellung beim Bürgeramt nach PassG." },
-      "eat_can": { "pointer": "Korrektur über die Ausländerbehörde nach AufenthG." },
-      "azr_nr": { "pointer": "Korrektur über die Ausländerbehörde nach § 34 AZRG." },
-      "religionszugehoerigkeit": { "pointer": "Eintritt / Austritt: Standesamt oder Religionsgemeinschaft; Speicherung nach § 3 Abs. 1 Nr. 11 BMG." },
-      "kontakt_email": { "pointer": "Direkt im BundID-Konto änderbar (App-Einstellung)." },
-      "kontakt_mobil": { "pointer": "Direkt im BundID-Konto änderbar (App-Einstellung)." },
-      "sprachpraeferenz": { "pointer": "App-interne Einstellung — keine Behörden-Wirkung." },
-      "iban": { "pointer": "Heute (Mai 2026) pro Behörde separat zu hinterlegen — diese App simuliert ein 2027-Pattern." },
-      "auskunftssperre": { "pointer": "Antrag mit Begründung beim Bürgeramt nach § 51 Abs. 1 BMG." },
-      "uebermittlungssperren": { "pointer": "Antrag beim Bürgeramt nach §§ 42 Abs. 3, 50 Abs. 5 BMG (ohne Begründung)." },
-      "kvnr": { "pointer": "Korrektur über das Mitgliedsportal Ihrer Krankenkasse (§ 290 SGB V)." },
-      "drv_versicherungsnummer": { "pointer": "Korrektur über das DRV-Konto (§ 147 SGB VI)." },
-      "elstam": { "pointer": "Korrektur über Mein ELSTER bzw. das Finanzamt (§ 39 EStG)." }
+      "familienname": {
+        "pointer": "Korrektur beim Standesamt nach § 1355 BGB / § 45 PStG."
+      },
+      "fruehere_namen": {
+        "pointer": "Korrektur beim Standesamt nach § 45 PStG."
+      },
+      "vornamen": {
+        "pointer": "Korrektur beim Standesamt nach § 45 PStG."
+      },
+      "doktorgrad": {
+        "pointer": "Korrektur über Bürgeramt mit Beleg-Upload (§ 3 Abs. 1 Nr. 6 BMG)."
+      },
+      "geburtsdatum": {
+        "pointer": "Korrektur beim Standesamt des Geburtsorts."
+      },
+      "geburtsort": {
+        "pointer": "Korrektur beim Standesamt des Geburtsorts."
+      },
+      "geschlecht": {
+        "pointer": "Erklärung beim Standesamt nach § 4 SBGG (Anmeldung) und § 2 SBGG (persönliche Beurkundung)."
+      },
+      "staatsangehoerigkeit": {
+        "pointer": "Korrektur über Einbürgerungsbehörde nach StAG."
+      },
+      "steuer_id": {
+        "pointer": "Lebenslang vergeben durch das Bundeszentralamt für Steuern (§ 139b AO) — nicht änderbar."
+      },
+      "anschrift_aktuell": {
+        "pointer": "Bürgeramt-Termin oder elektronische Wohnsitz-Anmeldung (eWA) nach § 17 BMG."
+      },
+      "anschriften_historisch": {
+        "pointer": "Korrekturen werden durch eine neue Anmeldung nach § 17 BMG ausgelöst."
+      },
+      "familienstand": {
+        "pointer": "Korrektur beim Standesamt nach PStG."
+      },
+      "partner": {
+        "pointer": "Korrektur beim Standesamt nach PStG."
+      },
+      "kinder": {
+        "pointer": "Korrektur beim Standesamt nach § 21 PStG."
+      },
+      "eheschliessung": {
+        "pointer": "Korrektur beim Standesamt der Eheschließung."
+      },
+      "personalausweis": {
+        "pointer": "Neuausstellung beim Bürgeramt nach PAuswG."
+      },
+      "reisepass": {
+        "pointer": "Neuausstellung beim Bürgeramt nach PassG."
+      },
+      "eat_can": {
+        "pointer": "Korrektur über die Ausländerbehörde nach AufenthG."
+      },
+      "azr_nr": {
+        "pointer": "Korrektur über die Ausländerbehörde nach § 34 AZRG."
+      },
+      "religionszugehoerigkeit": {
+        "pointer": "Eintritt / Austritt: Standesamt oder Religionsgemeinschaft; Speicherung nach § 3 Abs. 1 Nr. 11 BMG."
+      },
+      "kontakt_email": {
+        "pointer": "Direkt im BundID-Konto änderbar (App-Einstellung)."
+      },
+      "kontakt_mobil": {
+        "pointer": "Direkt im BundID-Konto änderbar (App-Einstellung)."
+      },
+      "sprachpraeferenz": {
+        "pointer": "App-interne Einstellung — keine Behörden-Wirkung."
+      },
+      "iban": {
+        "pointer": "Heute (Mai 2026) pro Behörde separat zu hinterlegen — diese App simuliert ein 2027-Pattern."
+      },
+      "auskunftssperre": {
+        "pointer": "Antrag mit Begründung beim Bürgeramt nach § 51 Abs. 1 BMG."
+      },
+      "uebermittlungssperren": {
+        "pointer": "Antrag beim Bürgeramt nach §§ 42 Abs. 3, 50 Abs. 5 BMG (ohne Begründung)."
+      },
+      "kvnr": {
+        "pointer": "Korrektur über das Mitgliedsportal Ihrer Krankenkasse (§ 290 SGB V)."
+      },
+      "drv_versicherungsnummer": {
+        "pointer": "Korrektur über das DRV-Konto (§ 147 SGB VI)."
+      },
+      "elstam": {
+        "pointer": "Korrektur über Mein ELSTER bzw. das Finanzamt (§ 39 EStG)."
+      }
     },
     "disclaimer": {
       "lese_schicht": "Diese App ist eine **Lese- und Wegweiser-Schicht**. Sie selbst nimmt **keine** Änderungen an Ihren Daten in den zuständigen Registern vor. Korrekturen erfolgen ausschließlich im jeweiligen Behörden-Verfahren — etwa beim Bürgeramt nach § 17 BMG für die Anschrift, beim Standesamt nach PStG für Familienstand und Vornamen, beim Standesamt nach § 4 SBGG für die Anmeldung der Geschlechtseintrag-Änderung (mündlich oder schriftlich, drei Monate vor der Erklärung) und nach § 2 SBGG für die persönliche Beurkundung der Erklärung beim Standesamt, beim Bundeszentralamt für Steuern für die Identifikationsnummer (§ 139b AO). Wir zeigen Ihnen pro Feld den richtigen Weg an.",
@@ -945,7 +1149,14 @@
       "zfdr_unvollstaendig": "Die Digitale Rentenübersicht (rentenuebersicht.de) bündelt über 700 Vorsorgeeinrichtungen mit rund 137 Mio. Anwartschaften. Versorgungswerke, Beamtenversorgung und Direktzusagen sind dort heute nicht angebunden.",
       "pflegegrad_consent_toggle_label": "Ich willige ausdrücklich in die Anzeige meines Pflegegrads in dieser App ein (Art. 9 Abs. 2 lit. a DSGVO). Diese Einwilligung gilt nur für die aktuelle Sitzung.",
       "track_c_empty_state_body": "Sie haben keine Renteninformation, weil Sie nicht in der GRV pflichtversichert sind. Im PKV-Bereich existiert kein zentraler Aggregator wie ZfDR — Sie müssen die App Ihres Versicherers nutzen. Optionen: 1) freiwillige GRV (§ 7 SGB VI), 2) Privatvorsorge prüfen, 3) Falls Pflichtversicherten-Beruf (§ 2 SGB VI), Pflichtversicherung beantragen.",
-      "eugh_c184_20_weite_lesart": "EuGH C-184/20 (01.08.2022) erfasst auch indirekte Schlüsse auf Gesundheitsdaten."
+      "eugh_c184_20_weite_lesart": "EuGH C-184/20 (01.08.2022) erfasst auch indirekte Schlüsse auf Gesundheitsdaten.",
+      "fuehrerschein_lese_schicht": "Diese App ist auch für die Mobilitäts-Sektion eine Lese- und Wegweiser-Schicht. Klassen, Schlüsselzahlen, Erteilungs- und Ablaufdaten sind illustrative Snapshots aus den ZFER-Selbstauskunfts-Pfaden des Kraftfahrt-Bundesamts und Ihrer kommunalen Fahrerlaubnisbehörde. Keine Schreib-Operation in das Zentrale Fahrerlaubnisregister oder das örtliche FE-Register. Korrekturen erfolgen ausschließlich bei Ihrer kommunalen Fahrerlaubnisbehörde (§ 73 FeV).",
+      "faer_punkte_on_demand": "Ihr Punktestand wird niemals dauerhaft in dieser App gespeichert. Jeder Abruf nach § 30 Abs. 8 StVG erfordert eine eID-Authentifizierung (§ 30a StVG) und ist im Aktivitätsprotokoll dieser App protokolliert. Das Ergebnis wird ausschließlich für 5 Minuten in dieser Ansicht gehalten und danach automatisch verworfen.",
+      "kfz_halter_adresse_speculative": "Bei Adressänderung müssen Sie nach § 15 FZV unverzüglich Ihre Zulassungsstelle informieren. Eine automatische Synchronisierung zwischen Bürgeramt und Zulassungsstelle gibt es heute (Mai 2026) nicht. Diese Demo simuliert ein 2027-Pattern. Im echten Verfahren stoßen Sie den i-Kfz-Vorgang Stufe 4 selbst an — die App zeigt Ihnen den Pre-Fill und den Wegweiser zu Ihrer Zulassungsstelle.",
+      "eudi_mdl_speculative": "Die hier gezeigte Vorschau eines mobilen EU-Führerscheins (mDL) als Wallet-Nachweis simuliert eine Vision für 2029-2031. Rechtsgrundlage: Richtlinie (EU) 2025/2205 vom 22.10.2025; Anwendungsbeginn 26.11.2029; mDL als Default-Format ~Mai 2031 (54 Monate nach erstem Implementing Act). National ist seit Ende 2026 ein digitaler Führerschein in der i-Kfz-App des Kraftfahrt-Bundesamts geplant — diese Demo zeigt nicht die i-Kfz-App, sondern das hypothetische Konvergenz-Bild zur EUDI-Wallet.",
+      "fe_nr_read_only": "FE-Nummer ist ein authoritativer Register-Identifier (Zentrales Fahrerlaubnisregister, § 48 Abs. 2 StVG). Korrekturen erfolgen ausschließlich bei der kommunalen Fahrerlaubnisbehörde (§ 73 FeV).",
+      "fin_masked_default": "Fahrgestellnummer (FIN) ist ein personenbezogener Identifier. Sie wird hier standardmäßig maskiert dargestellt; volle Anzeige nur auf Klick.",
+      "mitnutzer_no_halter": "Mitnutzer:innen sind rechtlich keine Halter:innen. Die § 15 FZV-Mitteilungspflicht trifft ausschließlich den Halter (FZV § 6)."
     },
     "subtab": {
       "wallet_externe_empfaenger": {
@@ -984,20 +1195,46 @@
         "pflegegrad_consent_erteilt": "Einwilligung zur Pflegegrad-Anzeige erteilt (Art. 9 Abs. 2 lit. a DSGVO)",
         "pflegegrad_consent_widerrufen": "Einwilligung zur Pflegegrad-Anzeige widerrufen",
         "epa_widerspruch_geandert": "ePA-Widerspruchs-Status geändert",
-        "anrechnungszeit_pflege_offengelegt": "Anrechnungszeit Pflege offengelegt (§ 3 SGB VI; gekoppelt an Pflegegrad-Einwilligung)"
+        "anrechnungszeit_pflege_offengelegt": "Anrechnungszeit Pflege offengelegt (§ 3 SGB VI; gekoppelt an Pflegegrad-Einwilligung)",
+        "kfz_faer_punkte_pulled": "Punktestand im Fahreignungsregister abgerufen (§ 30 Abs. 8 StVG i.V.m. § 30a StVG)",
+        "kfz_halter_adresse_prefilled_via_umzug": "Halter-Adresse: Pre-Fill der i-Kfz-Adressänderung über Umzug-Vorgang",
+        "kfz_korrekturweg_fe_cta_opened": "Wegweiser zur Fahrerlaubnisbehörde geöffnet",
+        "kfz_mdl_preview_opened": "mDL-Mock-Vorschau geöffnet (2029-Vision)"
+      },
+      "note": {
+        "kfz_faer_punkte_pulled": "FAER-Selbstauskunft simuliert; Punktestand {punkte} (Stand {stichtag}); Az. {aktenzeichen}. Ergebnis nicht persistiert (TTL 5 min). Rechtsgrundlage § 30 Abs. 8 StVG.",
+        "kfz_halter_adresse_prefilled_via_umzug": "Pre-Fill der i-Kfz-Adressänderung (§ 15 FZV) über Umzug-Vorgang {vorgang_id} ausgelöst. Bestätigung der Zulassungsstelle steht aus.",
+        "kfz_korrekturweg_fe_cta_opened": "Korrekturweg-CTA für Fahrerlaubnisbehörde {behoerde_name} geöffnet.",
+        "kfz_mdl_preview_opened": "mDL-Mock-Vorschau geöffnet (2029-Vision, kein echter Issuance-Vorgang)."
       },
       "kategorie": {
-        "behoerde_zu_behoerde": { "label": "Behörden-zu-Behörden-Übermittlung" },
-        "app_aktivitaet": { "label": "App-Aktivität (kein behördliches Übermittlungs-Log)" },
-        "speculative_2027": { "label": "2027-Vision (Demo)" },
-        "behoerde_zu_buerger": { "label": "Behörde-zu-Bürger:in (Notification / Postfach-Eingang)" }
+        "behoerde_zu_behoerde": {
+          "label": "Behörden-zu-Behörden-Übermittlung"
+        },
+        "app_aktivitaet": {
+          "label": "App-Aktivität (kein behördliches Übermittlungs-Log)"
+        },
+        "speculative_2027": {
+          "label": "2027-Vision (Demo)"
+        },
+        "behoerde_zu_buerger": {
+          "label": "Behörde-zu-Bürger:in (Notification / Postfach-Eingang)"
+        }
       },
       "richtung": {
         "label": "Richtung",
-        "alle": { "label": "Alle Richtungen" },
-        "eingehend": { "label": "Eingehend (Behörde → Bürger:in)" },
-        "ausgehend": { "label": "Ausgehend (Bürger:in → Behörden)" },
-        "intern": { "label": "Intern (App-Aktivität)" }
+        "alle": {
+          "label": "Alle Richtungen"
+        },
+        "eingehend": {
+          "label": "Eingehend (Behörde → Bürger:in)"
+        },
+        "ausgehend": {
+          "label": "Ausgehend (Bürger:in → Behörden)"
+        },
+        "intern": {
+          "label": "Intern (App-Aktivität)"
+        }
       }
     },
     "modal": {
@@ -1083,15 +1320,18 @@
         "body_regelalter_template": "{eur} pro Monat.",
         "body_anpassungen_template": "bei {prozent} % p.a. ca. +{plus} pro Monat bis Renteneintritt.",
         "body_beitrag_template": "{gesamt} gesamt (Sie: {versicherter}; Arbeitgeber: {arbeitgeber})."
+      },
+      "zfdr_wegweiser": {
+        "title": "Trägerübergreifender Überblick: Digitale Rentenübersicht",
+        "cta": "Zur Digitalen Rentenübersicht (rentenuebersicht.de)"
+      },
+      "track_c": {
+        "empty_state_title": "Keine Renteninformation vorhanden",
+        "empty_state_body": "Sie haben keine Renteninformation, weil Sie nicht in der GRV pflichtversichert sind. Im PKV-Bereich existiert kein zentraler Aggregator wie ZfDR — Sie müssen die App Ihres Versicherers nutzen. Optionen: 1) freiwillige GRV (§ 7 SGB VI), 2) Privatvorsorge prüfen, 3) Falls Pflichtversicherten-Beruf (§ 2 SGB VI), Pflichtversicherung beantragen."
+      },
+      "anrechnungszeiten": {
+        "title": "Anrechnungszeiten"
       }
-    },
-    "zfdr_wegweiser": {
-      "title": "Trägerübergreifender Überblick: Digitale Rentenübersicht",
-      "cta": "Zur Digitalen Rentenübersicht (rentenuebersicht.de)"
-    },
-    "track_c": {
-      "empty_state_title": "Keine Renteninformation vorhanden",
-      "empty_state_body": "Sie haben keine Renteninformation, weil Sie nicht in der GRV pflichtversichert sind. Im PKV-Bereich existiert kein zentraler Aggregator wie ZfDR — Sie müssen die App Ihres Versicherers nutzen. Optionen: 1) freiwillige GRV (§ 7 SGB VI), 2) Privatvorsorge prüfen, 3) Falls Pflichtversicherten-Beruf (§ 2 SGB VI), Pflichtversicherung beantragen."
     },
     "kv_pflege": {
       "krankenkasse": {
@@ -1210,17 +1450,35 @@
           "cta_cancel": "Abbrechen"
         },
         "kategorie": {
-          "steuer": { "label": "Steuer (Finanzamt / BZSt)" },
-          "sozial": { "label": "Sozialleistungen (DRV / GKV / Bürgergeld)" },
-          "familie": { "label": "Familie (Familienkasse / Elterngeld)" },
-          "verkehr": { "label": "Verkehr (KFZ / Bußgeld / Führerschein)" },
-          "sonstige": { "label": "Sonstige (Bürgeramt / Aufenthalt / sonstige)" }
+          "steuer": {
+            "label": "Steuer (Finanzamt / BZSt)"
+          },
+          "sozial": {
+            "label": "Sozialleistungen (DRV / GKV / Bürgergeld)"
+          },
+          "familie": {
+            "label": "Familie (Familienkasse / Elterngeld)"
+          },
+          "verkehr": {
+            "label": "Verkehr (KFZ / Bußgeld / Führerschein)"
+          },
+          "sonstige": {
+            "label": "Sonstige (Bürgeramt / Aufenthalt / sonstige)"
+          }
         },
         "kanal": {
-          "postfach": { "label": "BundID-Postfach" },
-          "email_pilot": { "label": "E-Mail-Notification (Pilot)" },
-          "sms_pilot": { "label": "SMS-Notification (Pilot)" },
-          "brief": { "label": "Postbrief (Default)" }
+          "postfach": {
+            "label": "BundID-Postfach"
+          },
+          "email_pilot": {
+            "label": "E-Mail-Notification (Pilot)"
+          },
+          "sms_pilot": {
+            "label": "SMS-Notification (Pilot)"
+          },
+          "brief": {
+            "label": "Postbrief (Default)"
+          }
         },
         "option": {
           "sms_pilot": {
@@ -1273,6 +1531,171 @@
         "familienkasse_angebunden": "Familienkasse Berlin-Brandenburg ist BundID-angebunden — Präferenz übernommen (Demo)",
         "praeferenz_gespeichert": "Präferenz gespeichert (Demo).",
         "otp_error": "OTP-Verifikation fehlgeschlagen."
+      }
+    },
+    "mobilitaet": {
+      "gruppe": {
+        "fahrerlaubnis": {
+          "label": "Fahrerlaubnis"
+        },
+        "halter": {
+          "label": "KFZ-Halter"
+        },
+        "wallet_cross_ref": {
+          "label": "Mobiler Führerschein (mDL) im Wallet"
+        }
+      },
+      "fe": {
+        "fe_nr_label": "Fahrerlaubnis-Nummer (FE-Nr)",
+        "fe_behoerde_label": "Ausstellende Fahrerlaubnisbehörde",
+        "fe_aktenzeichen_label": "Aktenzeichen FE-Behörde",
+        "eat_stufe4_pill": "eAT-eID Stufe 4",
+        "ausstellungsdatum_label": "Ausstellungsdatum (deutsche Karte)",
+        "klassen_disclosure_collapsed": "Klassen und Schlüsselzahlen anzeigen",
+        "klassen_disclosure_expanded": "Klassen und Schlüsselzahlen ausblenden",
+        "klasse_erteilt_label": "Erteilt am {datum}",
+        "klasse_gueltig_unbefristet": "gültig unbefristet",
+        "klasse_gueltig_bis_label": "gültig bis {datum}",
+        "klasse_label": "Klasse {klasse}",
+        "schluesselzahlen_legend": "Schlüsselzahlen (Anlage 9 FeV)",
+        "schluesselzahl_keine": "keine Schlüsselzahlen",
+        "schluesselzahl": {
+          "70": "70 — Umtausch-Kennzeichnung",
+          "78": "78 — Beschränkung auf Fahrzeuge mit Automatikgetriebe",
+          "79": "79 — Beschränkung Anhängelast",
+          "95": "95 — Berufskraftfahrer:innen-Qualifikation (BKrFQG), 5 Jahre gültig",
+          "96": "96 — Anhängerlast Vorstufe zu BE",
+          "79_06": "79.06 — Klasse B mit Trike-Erweiterung"
+        },
+        "korrekturweg_cta": "Korrekturweg → kommunale FE-Behörde",
+        "korrekturweg_modal": {
+          "title": "Korrekturen Ihrer Fahrerlaubnis-Daten",
+          "body": "Korrekturen an FE-Nummer, Klassen oder Schlüsselzahlen erfolgen ausschließlich bei Ihrer kommunalen Fahrerlaubnisbehörde (§ 73 FeV). Diese App ist nicht-hoheitlich und kann keine Korrekturen vornehmen. Wegweiser zur zuständigen Stelle:",
+          "telefonkontakt_label": "Telefonkontakt (Mock)",
+          "online_dienst_label": "OZG-Online-Dienst (Mock-Status)",
+          "online_dienst_value_mock": "in Planung — Stand Mai 2026",
+          "cta_close": "Schließen"
+        },
+        "empty_state": {
+          "title": "Keine Fahrerlaubnis im Profil hinterlegt",
+          "body": "Sie haben keine Fahrerlaubnis im Profil hinterlegt. Sie können dies bei Ihrer Fahrerlaubnisbehörde ({fe_behoerde_default_name}) prüfen oder eine bereits bestehende FE über die ZFER-Selbstauskunft beim Kraftfahrt-Bundesamt (§ 30 StVG) in das Profil einlesen lassen."
+        }
+      },
+      "pflichtumtausch": {
+        "title": "Pflichtumtausch Führerschein (Anlage 8a FeV)",
+        "frist_aktiv": {
+          "body": "Ihr Führerschein muss bis {stichtag} umgetauscht werden. Anlage 8a FeV legt Stichtage abhängig von Geburtsjahr und Ausstellungsdatum fest (§ 6 Abs. 7 FeV). Wegweiser: Termin bei {fe_behoerde_name} buchen.",
+          "cta": "Termin bei {fe_behoerde_name}",
+          "warning_30d": "Frist läuft in weniger als 30 Tagen ab — bitte zeitnah handeln."
+        },
+        "frist_abgelaufen": {
+          "body": "Pflichtumtausch-Stichtag {stichtag} ist abgelaufen. Mit dem alten Führerschein können Sie aktuell keinen Nachweis Ihrer Fahrberechtigung erbringen (Ordnungswidrigkeit § 75 Nr. 4 FeV). Wegweiser: Termin bei {fe_behoerde_name} buchen."
+        },
+        "umtausch_erfolgt": {
+          "body": "Umtausch erfolgt am {erfolgt_am}. Ihr aktueller EU-Kartenführerschein ist gültig."
+        },
+        "stiller_hinweis": "Stichtag-Berechnung benötigt Geburtsjahr und Ausstellungsdatum im Profil — bitte Bürgeramt-Datenkranz prüfen."
+      },
+      "punkte": {
+        "title": "Punktestand im Fahreignungsregister",
+        "cta_pull": "Punktestand abrufen (eID-Reauth, Mock)",
+        "cta_pull_disabled_no_fe": "Erfordert eingetragene Fahrerlaubnis",
+        "cta_pull_again": "Punktestand erneut abrufen",
+        "modal": {
+          "title": "Punktestand abrufen — Einwilligung erforderlich",
+          "body": "Ein FAER-Abruf nach § 30 Abs. 8 StVG erfordert eine eID-Authentifizierung (§ 30a StVG) und wird im Aktivitätsprotokoll dieser App protokolliert. Das Ergebnis wird nur für 5 Minuten in dieser Ansicht gehalten und nirgendwo dauerhaft gespeichert. Möchten Sie den simulierten Abruf jetzt durchführen?",
+          "consent_toggle_label": "Ich willige in den simulierten FAER-Abruf nach § 30 Abs. 8 StVG ein.",
+          "cta_confirm": "Punktestand abrufen (Mock)",
+          "cta_cancel": "Abbrechen"
+        },
+        "result": {
+          "label": "Punktestand zum Stichtag",
+          "zero_punkte": "0 Punkte",
+          "value": "{punkte, plural, =1 {1 Punkt} other {# Punkte}}",
+          "stichtag_label_short": "Stand der zugrundeliegenden Eintragungen",
+          "stichtag_label": "Stand der zugrundeliegenden Eintragungen: {stichtag}",
+          "aktenzeichen_label_short": "Geschäftszeichen",
+          "aktenzeichen_label": "Geschäftszeichen: {aktenzeichen}",
+          "ttl_countdown": "Gilt noch {seconds} Sekunden — danach wird das Ergebnis verworfen.",
+          "ttl_expired": "Ergebnis verworfen — bitte erneut abrufen, falls benötigt.",
+          "activity_log_hint": "Eintrag im Aktivitätsprotokoll: kfz_faer_punkte_pulled"
+        },
+        "error": {
+          "toast": "FAER-Abruf temporär nicht verfügbar — bitte erneut versuchen."
+        }
+      },
+      "halter": {
+        "card_title": "Eigenes Fahrzeug",
+        "fahrzeug_label": "Fahrzeug",
+        "kennzeichen_label": "Kennzeichen",
+        "fin_label": "Fahrgestellnummer (FIN, masked)",
+        "fin_reveal_cta": "Vollständige FIN anzeigen",
+        "fin_hide_cta": "FIN wieder maskieren",
+        "fin_aria_label_masked": "Fahrgestellnummer maskiert, letzte vier Stellen {tail}",
+        "fin_aria_label_full": "Fahrgestellnummer vollständig: {fin}",
+        "marke_modell_baujahr": "{marke} {modell} · Baujahr {baujahr}",
+        "hu_label": "Hauptuntersuchung gültig bis",
+        "hu_frist_warning_90d": "HU-Frist läuft in {days} Tagen ab",
+        "evb_label": "eVB-Nummer (Versicherer-Bestätigung)",
+        "zulassungsstelle_label": "Zulassungsstelle",
+        "aktenzeichen_label": "Aktenzeichen Zulassungsstelle",
+        "mitnutzer_pill": "Mitnutzer:in: {vorname} {nachname}",
+        "mitnutzer_pill_aria_label": "Mitnutzer:in {vorname} {nachname} — rechtlich kein Halter",
+        "mitnutzer_pill_tooltip": "Mitnutzer:innen sind rechtlich keine Halter:innen. § 15 FZV-Mitteilungspflicht trifft nur den Halter (FZV § 6); diese App bildet die Halter-Eigenschaft ab, nicht die Nutzungs-Realität.",
+        "empty_state": {
+          "title": "Keine eigenen Fahrzeuge im Profil",
+          "body": "Sie sind nicht als Halter:in eines Fahrzeugs hinterlegt. Falls Sie ein Fahrzeug nutzen, das auf jemand anderen zugelassen ist, sind Sie Mitnutzer:in — die § 15 FZV-Mitteilungspflicht trifft Sie nicht."
+        }
+      },
+      "wallet_cross_ref": {
+        "link_label": "mDL im Wallet ansehen → Sub-Tab Wallet & Externe Empfänger",
+        "vision_pill": "2029-Vision",
+        "vision_pill_aria_label": "Vision für 2029, mobiler Führerschein"
+      },
+      "toast": {
+        "punkte_pulled": "Punktestand erfolgreich abgerufen (Mock).",
+        "korrekturweg_modal_opened": "Wegweiser-Modal geöffnet — Korrekturen bei kommunaler FE-Behörde."
+      },
+      "error": {
+        "load_failed": "Mobilität-Daten konnten nicht geladen werden — bitte erneut versuchen."
+      }
+    },
+    "wallet": {
+      "mdl": {
+        "title": "Mobiler EU-Führerschein (mDL) — Mock-Vorschau",
+        "status_not_issued": "Noch nicht ausgestellt — mDL-Default voraussichtlich ab ~Mai 2031",
+        "preview_cta": "Vorschau öffnen",
+        "preview_cta_disabled_tooltip": "Vorschau eines hypothetischen mDL-Attestats (Mock — keine echte Issuance).",
+        "cross_ref_from_mobilitaet": "mDL im Wallet ansehen → Sub-Tab Wallet & Externe Empfänger",
+        "vision_banner_2031_eyebrow": "2029–2031-Vision",
+        "vision_banner_2031_body": "Anwendungsbeginn 26.11.2029; mDL-Default ~Mai 2031 nach Implementing Act Art. 5(7) der RL (EU) 2025/2205. Nationale i-Kfz-App des KBA seit Ende 2026 geplant — diese Demo zeigt nicht die i-Kfz-App, sondern das hypothetische Konvergenz-Bild zur EUDI-Wallet.",
+        "vision_banner_aria_label": "Vision-Hinweis 2029 bis 2031 zum mobilen Führerschein",
+        "modal": {
+          "title": "mDL-Attestation — Vorschau (Mock)",
+          "disclaimer_header": "Diese Vorschau bildet eine hypothetische mDL-Attestation nach RL (EU) 2025/2205 ab. Anwendungsbeginn 26.11.2029; mDL-Default ~Mai 2031. Keine echte Issuance.",
+          "toggle_group_label": "Selective Disclosure — welche Attribute möchten Sie freigeben?",
+          "toggle_group_helper": "Toggle-Set ist auf ISO/IEC 18013-5 Annex B beschränkt.",
+          "preview_json_label": "Mock-Attestation-Vorschau (selected fields):",
+          "preview_empty": "Wählen Sie oben Attribute aus, die freigegeben werden sollen.",
+          "cta_close": "Schließen",
+          "footer_mock_hint": "Mock — keine echte Issuance.",
+          "toggle": {
+            "given_name": "Vorname",
+            "family_name": "Nachname",
+            "birth_date": "Geburtsdatum",
+            "age_over_18": "Über 18 Jahre",
+            "age_in_years": "Alter in Jahren",
+            "driving_privileges": "Fahrerlaubnis-Klassen + Schlüsselzahlen + Daten",
+            "portrait": "Lichtbild",
+            "signature_usual_mark": "Unterschrift",
+            "issue_date": "Ausstellungsdatum",
+            "expiry_date": "Ablaufdatum",
+            "issuing_authority": "Ausstellende Behörde",
+            "issuing_country": "Ausstellender Staat",
+            "document_number": "FE-Nummer (document_number)",
+            "un_distinguishing_sign": "UN-Unterscheidungszeichen (D)"
+          }
+        }
       }
     }
   }

@@ -1,4 +1,5 @@
 import type { Adresse } from './adresse';
+import type { Mobilitaet } from './mobilitaet';
 import type { PersonaKontakt } from './persona-kontakt';
 import type {
   AnrechnungszeitPflege,
@@ -184,4 +185,25 @@ export interface Persona {
 
   /** V1.1 — Versorgungswerk (Track B; nur Kammerberufe). */
   versorgungswerk_v1_1?: Versorgungswerk;
+
+  // -------------------------------------------------------------------------
+  // V1.3 Stammdaten — Mobilität (Spec § 5.1).
+  // -------------------------------------------------------------------------
+
+  /**
+   * V1.3 — Mobilität-Block (Lese-Schicht).
+   *
+   * `undefined` = Persona ohne FE und ohne Halter-Eigenschaft; UI rendert
+   * Empty-State.
+   *
+   * HL-MOB-1 + HL-MOB-10 — alle Felder darin sind Read-Only-Snapshots aus dem
+   * Persona-Seed. UI darf keinen Self-Edit-Pfad für FE-Nr, Klassen,
+   * Schlüsselzahlen, FIN, Kennzeichen, Halter-Adresse bieten.
+   *
+   * HL-MOB-11 / VL-4 — `punkte` darf in dieser Struktur NICHT als persistiertes
+   * Feld existieren. Punktestand-On-Demand-Result lebt component-local mit
+   * TTL ≤ 5 min, niemals in `localStorage`. `mobilitaetSchema.strict()` in
+   * `src/lib/mock-backend/schemas.ts` rejected `punkte` als Excess-Key.
+   */
+  mobilitaet?: Mobilitaet;
 }

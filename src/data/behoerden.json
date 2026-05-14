@@ -46,7 +46,7 @@
   {
     "id": "kfz-berlin-labo",
     "name_de": "Landesamt für Bürger- und Ordnungsangelegenheiten — KFZ-Zulassung Berlin",
-    "kategorie": "land",
+    "kategorie": "kommune",
     "zustaendige_themen": [
       "kfz_zulassung",
       "halteranschrift"
@@ -740,5 +740,155 @@
       "supports_eudi": false
     },
     "bundid_postfach_anbindung": "angebunden"
+  },
+  {
+    "id": "kba-flensburg",
+    "name_de": "Kraftfahrt-Bundesamt",
+    "kategorie": "bund",
+    "zustaendige_themen": [
+      "zfer_selbstauskunft",
+      "faer_selbstauskunft",
+      "zfzr_halterauskunft"
+    ],
+    "adresse": {
+      "strasse": "Fördestraße",
+      "hausnummer": "16",
+      "plz": "24944",
+      "ort": "Flensburg",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.kba.de",
+      "supports_eudi": false
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
+  },
+  {
+    "id": "fe-berlin-labo",
+    "name_de": "Landesamt für Bürger- und Ordnungsangelegenheiten — Abt. III Fahrerlaubnis",
+    "kategorie": "kommune",
+    "zustaendige_themen": [
+      "fahrerlaubnis",
+      "pflichtumtausch",
+      "anerkennung_auslaendischer_fs"
+    ],
+    "adresse": {
+      "strasse": "Puttkamerstraße",
+      "hausnummer": "16-18",
+      "plz": "10958",
+      "ort": "Berlin",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.berlin.de/labo/mobilitaet/fahrerlaubnis/",
+      "supports_eudi": false
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
+  },
+  {
+    "id": "fe-hamburg-lbv",
+    "name_de": "Landesbetrieb Verkehr — Fahrerlaubnis-Abteilung",
+    "kategorie": "kommune",
+    "zustaendige_themen": [
+      "fahrerlaubnis",
+      "pflichtumtausch"
+    ],
+    "adresse": {
+      "strasse": "Ausschläger Weg",
+      "hausnummer": "100",
+      "plz": "20537",
+      "ort": "Hamburg",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.hamburg.de/lbv/",
+      "supports_eudi": false
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
+  },
+  {
+    "id": "fe-koeln-stadt",
+    "name_de": "Stadt Köln — Straßenverkehrsamt — Fahrerlaubnisstelle",
+    "kategorie": "kommune",
+    "zustaendige_themen": [
+      "fahrerlaubnis",
+      "pflichtumtausch"
+    ],
+    "adresse": {
+      "strasse": "Hohenstaufenring",
+      "hausnummer": "16",
+      "plz": "50674",
+      "ort": "Köln",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.stadt-koeln.de/leben-in-koeln/auto-strassenverkehr/fahrerlaubnis",
+      "supports_eudi": false
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
+  },
+  {
+    "id": "kfz-hamburg-lbv",
+    "name_de": "Landesbetrieb Verkehr — KFZ-Zulassung",
+    "kategorie": "kommune",
+    "zustaendige_themen": [
+      "kfz_zulassung",
+      "halteranschrift"
+    ],
+    "adresse": {
+      "strasse": "Ausschläger Weg",
+      "hausnummer": "100",
+      "plz": "20537",
+      "ort": "Hamburg",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.hamburg.de/lbv/kfz-zulassung/",
+      "supports_eudi": false
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
+  },
+  {
+    "id": "kfz-koeln-stadt",
+    "name_de": "Stadt Köln — Straßenverkehrsamt — KFZ-Zulassungsstelle",
+    "kategorie": "kommune",
+    "zustaendige_themen": [
+      "kfz_zulassung",
+      "halteranschrift"
+    ],
+    "adresse": {
+      "strasse": "Hohenstaufenring",
+      "hausnummer": "16",
+      "plz": "50674",
+      "ort": "Köln",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.stadt-koeln.de/leben-in-koeln/auto-strassenverkehr/kfz-zulassung",
+      "supports_eudi": false
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
+  },
+  {
+    "id": "labo-berlin",
+    "name_de": "Landesamt für Bürger- und Ordnungsangelegenheiten Berlin",
+    "kategorie": "kommune",
+    "zustaendige_themen": [
+      "buerger_ordnung",
+      "kfz",
+      "fahrerlaubnis"
+    ],
+    "adresse": {
+      "strasse": "Puttkamerstraße",
+      "hausnummer": "16-18",
+      "plz": "10958",
+      "ort": "Berlin",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.berlin.de/labo/",
+      "supports_eudi": false
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
   }
 ]

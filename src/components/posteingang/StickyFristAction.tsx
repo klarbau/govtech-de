@@ -18,6 +18,8 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { LetterFrist, Reply } from '@/types';
 
+import styles from './StickyFristAction.module.css';
+
 interface StickyFristActionProps {
   fristen: LetterFrist[];
   /** Bereits beantwortet → Datum für „Bereits beantwortet am" Hinweis. */
@@ -71,13 +73,20 @@ export function StickyFristAction({
   const tPicker = useTranslations('posteingang.compose.template_picker');
 
   const earliest = fristen[0];
+  // Phase 6b — Berechne `daysToFrist` für Dringlichkeits-Outline-Highlight
+  // (HL-DS-11: statisches Outline, kein Loop).
+  const daysToFrist = earliest
+    ? differenceInCalendarDays(
+        parseISO(earliest.datum),
+        fromIso ? parseISO(fromIso) : new Date(),
+      )
+    : null;
+  const isVeryUrgent = daysToFrist !== null && daysToFrist >= 0 && daysToFrist < 3;
+
   const fristLabel = (() => {
     if (!earliest) return t('frist_label_no_frist');
     const datum = format(parseISO(earliest.datum), 'dd.MM.yyyy', { locale: de });
-    const days = differenceInCalendarDays(
-      parseISO(earliest.datum),
-      fromIso ? parseISO(fromIso) : new Date(),
-    );
+    const days = daysToFrist ?? 0;
     const tageTemplate =
       days < 0
         ? tReader('frist_chip_abgelaufen_template', { datum })
@@ -137,19 +146,44 @@ export function StickyFristAction({
   return (
     <aside
       aria-label={t('overflow_label')}
+      data-frist-urgent={isVeryUrgent ? 'true' : undefined}
       className={cn(
-        // Mobile: fixed Bottom-Sheet. Desktop ≥ md: sticky right-rail Bottom-Band.
-        'sticky bottom-0 z-30 -mx-4 mt-4 flex flex-col gap-2 border-t border-border bg-background/95 px-4 py-3 backdrop-blur supports-backdrop-filter:bg-background/80 md:rounded-xl md:border md:border-border md:px-4 md:py-3 md:shadow-md',
+        // Phase 6b (Audit #3): immer fixed bottom auf allen Breakpoints; auf
+        // Desktop horizontal zentriert. HL-DS-14 strukturell unverändert
+        // (Pattern bleibt Sticky-Footer-Action; nur Sticky → Fixed Migration).
+        'sticky bottom-0 z-30 -mx-4 mt-4 flex flex-col gap-2 border-t',
+        'border-[var(--ds-color-border)] bg-[var(--ds-color-surface-raised)]/95',
+        'px-4 py-3 backdrop-blur supports-backdrop-filter:bg-[var(--ds-color-surface-raised)]/80',
+        'md:rounded-xl md:border md:px-4 md:py-3 md:shadow-md',
+        // Outline-Highlight für <3d (HL-DS-11: statisch + fade-out, kein
+        // Loop). prefers-reduced-motion: animation None → Outline bleibt
+        // statisch sichtbar bis fade-out durch CSS.
+        isVeryUrgent && styles.urgentHighlight,
         className,
       )}
     >
       <div className="flex flex-wrap items-center gap-2">
         <span
           className={cn(
-            'inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium',
-            earliest
-              ? 'bg-amber-100 text-amber-900 ring-1 ring-amber-300/60 dark:bg-amber-900/40 dark:text-amber-100'
-              : 'bg-muted text-muted-foreground ring-1 ring-border',
+            'inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ring-1 tabular-nums',
+            !earliest &&
+              'bg-[var(--ds-color-surface-muted)] text-[var(--ds-color-text-secondary)] ring-[var(--ds-color-border)]',
+            earliest &&
+              daysToFrist !== null &&
+              daysToFrist < 0 &&
+              'bg-[var(--ds-color-danger)] text-[var(--ds-color-accent-foreground)] ring-[var(--ds-color-danger)]',
+            earliest &&
+              isVeryUrgent &&
+              'bg-[color-mix(in_oklch,var(--ds-color-danger)_12%,var(--ds-color-surface))] text-[var(--ds-color-danger)] ring-[var(--ds-color-danger)]/40',
+            earliest &&
+              daysToFrist !== null &&
+              daysToFrist >= 3 &&
+              daysToFrist < 7 &&
+              'bg-[var(--ds-color-warning-soft)] text-amber-950 ring-[var(--ds-color-warning)]/40 dark:text-[var(--ds-color-text-primary)]',
+            earliest &&
+              daysToFrist !== null &&
+              daysToFrist >= 7 &&
+              'bg-[var(--ds-color-surface-muted)] text-[var(--ds-color-text-secondary)] ring-[var(--ds-color-border)]',
           )}
         >
           {fristLabel}

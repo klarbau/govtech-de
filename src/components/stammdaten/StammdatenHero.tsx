@@ -119,7 +119,7 @@ export function StammdatenHero({
         </h1>
       </header>
 
-      <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-5 shadow-sm">
+      <div className="flex flex-col gap-4 rounded-xl border border-border bg-card p-5 shadow-sm sm:p-6">
         <div className="flex flex-wrap items-center gap-2">
           <span
             className="inline-flex items-center gap-1.5 rounded-full bg-sky-100 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-sky-900 ring-1 ring-sky-300/70 dark:bg-sky-900/40 dark:text-sky-100 dark:ring-sky-700/60"
@@ -131,7 +131,7 @@ export function StammdatenHero({
           </span>
         </div>
         <p
-          className="text-sm leading-relaxed text-foreground"
+          className="text-lg font-medium leading-snug text-foreground sm:text-xl"
           data-testid="hero-summary"
         >
           {summaryNode}
@@ -145,7 +145,7 @@ export function StammdatenHero({
         <Link
           href="/datenschutz"
           data-testid="hero-cta-full-log"
-          className="inline-flex h-7 items-center gap-1 self-start rounded-[min(var(--radius-md),12px)] border border-border bg-background px-2.5 text-[0.8rem] font-medium text-foreground hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          className="inline-flex min-h-[44px] items-center gap-1 self-start rounded-[min(var(--radius-md),12px)] border border-border bg-background px-3 py-2 text-sm font-medium text-foreground hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         >
           {tHero('cta_full_log')}
           <ArrowRight className="size-3.5" aria-hidden="true" />
@@ -153,38 +153,49 @@ export function StammdatenHero({
       </div>
 
       <div
-        className="flex flex-col gap-2 rounded-xl border border-violet-200/70 bg-violet-50/60 p-4 dark:border-violet-700/60 dark:bg-violet-900/20"
+        className="flex items-start gap-3 rounded-xl border border-violet-200/70 bg-violet-50/60 p-3 dark:border-violet-700/60 dark:bg-violet-900/20"
         data-testid="hero-2027-vision-banner"
       >
-        <div className="flex items-center gap-2">
-          <Sparkles className="size-4 text-violet-700 dark:text-violet-200" aria-hidden="true" />
+        <Sparkles
+          className="mt-0.5 size-4 shrink-0 text-violet-700 dark:text-violet-200"
+          aria-hidden="true"
+        />
+        <div className="flex flex-col gap-1">
           <span className="text-sm font-semibold text-violet-900 dark:text-violet-100">
             {tHero('vision_2027_banner_title')}
           </span>
+          <p className="text-xs leading-relaxed text-violet-900 dark:text-violet-100">
+            {tHero('vision_2027_banner_body')}
+          </p>
         </div>
-        <p className="text-xs leading-relaxed text-violet-900/90 dark:text-violet-100/90">
-          {tHero('vision_2027_banner_body')}
-        </p>
       </div>
 
-      <details className="rounded-lg border border-border bg-muted/40 px-4 py-3 text-sm">
+      <details
+        className="rounded-lg border border-border bg-muted/40 px-4 py-3 text-sm"
+        data-testid="hero-disclaimer-group"
+      >
         <summary className="flex cursor-pointer list-none items-center gap-2 font-medium text-foreground marker:hidden">
           <Info className="size-4 text-muted-foreground" aria-hidden="true" />
-          <span>{tHero('disclaimer_lese_title')}</span>
+          <span>{tHero('disclaimer_section_label')}</span>
         </summary>
-        <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
-          {wrapNormZitate(lese)}
-        </p>
-      </details>
-
-      <details className="rounded-lg border border-border bg-muted/40 px-4 py-3 text-sm">
-        <summary className="flex cursor-pointer list-none items-center gap-2 font-medium text-foreground marker:hidden">
-          <Info className="size-4 text-muted-foreground" aria-hidden="true" />
-          <span>{tHero('disclaimer_audit_title')}</span>
-        </summary>
-        <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
-          {wrapNormZitate(auditAppInternal)}
-        </p>
+        <div className="mt-3 flex flex-col gap-3">
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              {tHero('disclaimer_lese_title')}
+            </h3>
+            <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+              {wrapNormZitate(lese)}
+            </p>
+          </div>
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              {tHero('disclaimer_audit_title')}
+            </h3>
+            <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+              {wrapNormZitate(auditAppInternal)}
+            </p>
+          </div>
+        </div>
       </details>
     </section>
   );

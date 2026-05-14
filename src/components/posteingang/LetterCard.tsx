@@ -3,7 +3,6 @@
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 
-import { BehoerdenBadge } from '@/components/shared/BehoerdenBadge';
 import { DatenschutzCockpitLink } from '@/components/shared/DatenschutzCockpitLink';
 import { cn } from '@/lib/utils';
 import type { Behoerde, Letter } from '@/types';
@@ -33,14 +32,17 @@ function letterUrl(id: string): string {
 }
 
 /**
- * V1.5-LetterCard — vereinfachte Hierarchie (Spec §4.5 + Verifier #B1).
+ * Phase 6b — LetterCard mit 3-zeiliger Hierarchie (Audit-Finding #1).
  *
- * Hauptzeile: `[Status-dot] [FristChip] | [Behörde-Badge] [Brieftyp] | [Aktenzeichen]`
- * Optional: VorgangsBuendelTag oder „Neuer Vorgang? …"-CTA
- * Utility-Zeile: 16-px-Shield-Icon (Datenschutz) + Tiny-Authentizitäts-Icon
+ * Zeile 1 (Hero, größte Wahrnehmung): FristChip prominent + Action-Hint
+ *   ("Antwort erforderlich" / "Zur Kenntnis" / "Erledigt").
+ * Zeile 2 (Mittel): Behörde-Name als reines Text-Label (HL-DS-10: KEINE
+ *   Kategorie-Farb-Differenzierung mehr) + Brieftyp.
+ * Zeile 3 (Mobile sr-only via `<details>`): Aktenzeichen (tabular-nums,
+ *   HL-DS-6).
  *
- * Authentizitäts-Badge + Datenschutz-Cockpit-Link bleiben on-card; visuelles
- * Gewicht ist auf 16-px-Icons reduziert, Volltext lebt in `aria-label`.
+ * Vorgangs-Optional-Zeile + Utility-Zeile (Datenschutz/Authentizität) bleiben
+ * strukturell erhalten; V1.5/V1.5.1-Hard-Lines unverändert.
  */
 export function LetterCard({
   letter,
@@ -75,10 +77,24 @@ export function LetterCard({
   })();
 
   const isUngelesen = letter.status === 'ungelesen';
+  const isErledigt = letter.status === 'erledigt';
   const earliestFrist = fristen[0];
   const fristDatum = earliestFrist?.datum
     ? earliestFrist.datum.split('-').reverse().join('.')
     : '';
+
+  // Action-Hint Heuristik (Phase 6b Zeile 1, Audit #1):
+  //   erledigt → "Erledigt"
+  //   keine Frist + keine required_action → "Zur Kenntnis"
+  //   sonst → "Antwort erforderlich"
+  const actionHintKey: 'erledigt' | 'zur_kenntnis' | 'antwort_erforderlich' =
+    isErledigt
+      ? 'erledigt'
+      : fristen.length === 0 && !letter.required_action
+        ? 'zur_kenntnis'
+        : 'antwort_erforderlich';
+  const actionHint = t(`action_hint.${actionHintKey}`);
+
   const articleAriaLabel = earliestFrist
     ? t('cta_open') +
       ': ' +
@@ -96,10 +112,16 @@ export function LetterCard({
     >
       <Link
         href={letterUrl(letter.id)}
-        className="absolute inset-0 z-0 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
+        className={cn(
+          'absolute inset-0 z-0 rounded-xl outline-none',
+          // HL-DS-7: sichtbarer Focus-Ring statt outline-none ohne Ersatz.
+          'focus-visible:outline-2 focus-visible:outline-offset-2',
+          'focus-visible:outline-[var(--ds-color-accent)] focus-visible:ring-2 focus-visible:ring-ring/60',
+        )}
         aria-label={t('cta_open')}
       />
-      {/* Hauptzeile: Status-dot + FristChip | Behörde + Brieftyp | Aktenzeichen */}
+
+      {/* Zeile 1 (Hero, größte Wahrnehmung): FristChip + Action-Hint */}
       <div className="pointer-events-none relative z-10 flex flex-wrap items-center gap-x-3 gap-y-2">
         {isUngelesen && (
           <span
@@ -111,33 +133,63 @@ export function LetterCard({
           {isUngelesen ? t('status.ungelesen') : t('status.gelesen')}
         </span>
         {fristen.length > 0 ? (
-          <FristChip frist={fristen[0]!} fromIso={nowIso} />
+          <FristChip
+            frist={fristen[0]!}
+            fromIso={nowIso}
+            // Hero-Größe: text-h4 (Phase 6b Audit #1).
+            className="text-[length:var(--ds-text-h4,0.9375rem)] font-semibold"
+          />
         ) : (
-          <span className="text-xs text-muted-foreground">{t('frist_keine')}</span>
+          <span className="text-sm font-medium text-[var(--ds-color-text-secondary)]">
+            {t('frist_keine')}
+          </span>
         )}
-        <span aria-hidden="true" className="text-muted-foreground/40">
-          ·
-        </span>
-        <BehoerdenBadge
-          name={behoerdeName}
-          kategorie={absender?.kategorie}
-          className="text-xs"
-        />
         <span
           className={cn(
-            'truncate text-xs',
-            isUngelesen ? 'font-semibold text-foreground' : 'text-foreground/80',
+            'text-sm',
+            isErledigt
+              ? 'text-[var(--ds-color-success)]'
+              : actionHintKey === 'antwort_erforderlich'
+                ? 'font-semibold text-[var(--ds-color-text-primary)]'
+                : 'text-[var(--ds-color-text-secondary)]',
           )}
         >
-          {brieftyp}
-        </span>
-        <span aria-hidden="true" className="text-muted-foreground/40">
-          ·
-        </span>
-        <span className="font-mono text-[11px] text-muted-foreground">
-          {letter.aktenzeichen}
+          {actionHint}
         </span>
       </div>
+
+      {/* Zeile 2: Behörde-Name (text-only, HL-DS-10) + Brieftyp */}
+      <div className="pointer-events-none relative z-10 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
+        <span
+          className={cn(
+            'font-medium text-[var(--ds-color-text-primary)]',
+            isUngelesen && 'font-semibold',
+          )}
+        >
+          {behoerdeName}
+        </span>
+        <span aria-hidden="true" className="text-[var(--ds-color-text-muted)]">
+          ·
+        </span>
+        <span className="truncate text-[var(--ds-color-text-secondary)]">
+          {brieftyp}
+        </span>
+      </div>
+
+      {/* Zeile 3: Aktenzeichen — Desktop sichtbar, Mobile (<640px) in <details>. */}
+      <div className="pointer-events-none relative z-10 hidden sm:block">
+        <span className="tabular-nums text-xs text-[var(--ds-color-text-muted)]">
+          {t('aktenzeichen_label')}: {letter.aktenzeichen}
+        </span>
+      </div>
+      <details className="pointer-events-auto relative z-10 block sm:hidden">
+        <summary className="cursor-pointer text-xs text-[var(--ds-color-text-muted)]">
+          {t('aktenzeichen_label')}
+        </summary>
+        <span className="mt-1 block tabular-nums text-xs text-[var(--ds-color-text-secondary)]">
+          {letter.aktenzeichen}
+        </span>
+      </details>
 
       {/* Optionale Vorgangs-Zeile */}
       {(letter.vorgang_id || showInitialVorgangCta) && (

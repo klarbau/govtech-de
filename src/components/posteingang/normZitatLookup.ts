@@ -136,6 +136,40 @@ export const NORM_ZITAT_ARIA_LABELS: Record<string, string> = {
   '§ 122a AO': 'Paragraph 122a der Abgabenordnung',
   'Art. 13 DSGVO': 'Artikel 13 der Datenschutz-Grundverordnung',
   'Art. 14 DSGVO': 'Artikel 14 der Datenschutz-Grundverordnung',
+
+  // Stammdaten V1.3 — Mobilität-Norm-Zitate (Spec § 8 / VL-3).
+  '§ 4 StVG': 'Paragraph 4 des Straßenverkehrsgesetzes',
+  '§ 24 StVG': 'Paragraph 24 des Straßenverkehrsgesetzes',
+  '§ 28 StVG': 'Paragraph 28 des Straßenverkehrsgesetzes',
+  '§ 29 StVG': 'Paragraph 29 des Straßenverkehrsgesetzes',
+  '§ 30 StVG': 'Paragraph 30 des Straßenverkehrsgesetzes',
+  '§ 30 Abs. 8 StVG':
+    'Paragraph 30 Absatz 8 des Straßenverkehrsgesetzes',
+  '§ 30a StVG': 'Paragraph 30a des Straßenverkehrsgesetzes',
+  '§ 48 StVG': 'Paragraph 48 des Straßenverkehrsgesetzes',
+  '§ 48 Abs. 2 StVG':
+    'Paragraph 48 Absatz 2 des Straßenverkehrsgesetzes',
+  '§ 65 StVG': 'Paragraph 65 des Straßenverkehrsgesetzes',
+  '§ 47 FeV': 'Paragraph 47 der Fahrerlaubnis-Verordnung',
+  '§ 73 FeV': 'Paragraph 73 der Fahrerlaubnis-Verordnung',
+  '§ 6 Abs. 7 FeV':
+    'Paragraph 6 Absatz 7 der Fahrerlaubnis-Verordnung',
+  '§ 75 Nr. 4 FeV':
+    'Paragraph 75 Nummer 4 der Fahrerlaubnis-Verordnung',
+  'Anlage 8a FeV': 'Anlage 8a der Fahrerlaubnis-Verordnung',
+  'Anlage 9 FeV': 'Anlage 9 der Fahrerlaubnis-Verordnung',
+  'Anlage 11 FeV': 'Anlage 11 der Fahrerlaubnis-Verordnung',
+  '§ 15 FZV': 'Paragraph 15 der Fahrzeug-Zulassungsverordnung',
+  '§ 15 Abs. 4 FZV':
+    'Paragraph 15 Absatz 4 der Fahrzeug-Zulassungsverordnung',
+  '§ 57 FZV': 'Paragraph 57 der Fahrzeug-Zulassungsverordnung',
+  '§ 60 FZV': 'Paragraph 60 der Fahrzeug-Zulassungsverordnung',
+  '§ 75 Nr. 1 FZV':
+    'Paragraph 75 Nummer 1 der Fahrzeug-Zulassungsverordnung',
+  'RL (EU) 2025/2205':
+    'Richtlinie (EU) 2025/2205 zur Modernisierung der EU-Führerschein-Regeln',
+  'ISO/IEC 18013-5':
+    'ISO/IEC-Norm 18013-5 für den mobilen Führerschein (mDL)',
 };
 
 /**
@@ -149,6 +183,11 @@ export function getNormZitatAriaLabel(text: string): string | undefined {
 
 /**
  * Regex zur Erkennung von §-Citations in einem Body-String.
+ *
+ * V1.3 (Mobilität): erweitert um StVG / FeV / FZV; zusätzlich werden
+ * `Anlage 8a FeV`, `Anlage 9 FeV`, `Anlage 11 FeV` und EU-Richtlinien-Zitate
+ * im Format `RL (EU) YYYY/NNNN` getrennt als alternative Top-Level-
+ * Alternativen erkannt (über `|`-Branches im umgebenden Pattern).
  */
 export const NORM_ZITAT_REGEX =
-  /§\s*\d+[a-z]?(?:\s+Abs\.\s*\d+[a-z]?)?(?:\s+S(?:atz|\.)\s*\d+)?(?:\s+Nr\.\s*\d+[a-z]?)?\s+(?:AO|SGG|VwGO|VwVfG|EStG|OWiG|RDG|BMG|IDNrG|OZG|BDSG|SBGG|PStG|RBStV|SG|BGB|AufenthG|SGB(?:\s+(?:I{1,3}|IV|V|VI|VII|VIII|IX|X|XI|XII|XIV))?)/g;
+  /§\s*\d+[a-z]?(?:\s+Abs\.\s*\d+[a-z]?)?(?:\s+S(?:atz|\.)\s*\d+)?(?:\s+Nr\.\s*\d+[a-z]?)?\s+(?:AO|SGG|VwGO|VwVfG|EStG|OWiG|RDG|BMG|IDNrG|OZG|BDSG|SBGG|PStG|RBStV|SG|BGB|AufenthG|StVG|FeV|FZV|SGB(?:\s+(?:I{1,3}|IV|V|VI|VII|VIII|IX|X|XI|XII|XIV))?)|Anlage\s+\d+[a-z]?\s+FeV|RL\s+\(EU\)\s+\d{4}\/\d{4}/g;

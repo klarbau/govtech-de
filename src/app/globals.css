@@ -15,6 +15,204 @@
   --color-brand-700: oklch(0.42 0.21 255);
 }
 
+/* design-system-v2 Phase 5a — additive design tokens.
+   Declared in :root (not @theme) so Tailwind v4 does not prune them; they are
+   consumed by CSS-Vars and Tailwind arbitrary-value syntax in Phase 5b/5c/5d/6a/6b/6c.
+   No existing token is renamed or overridden. */
+:root {
+  /* Type-scale (premium-minimal, 5-px-rhythm line-heights) */
+  --ds-text-h1: 3rem;
+  --ds-text-h2: 2.25rem;
+  --ds-text-h3: 1.5rem;
+  --ds-text-h4: 1.1875rem;
+  --ds-text-body: 1rem;
+  --ds-text-small: 0.875rem;
+  --ds-line-h1: 1.083;
+  --ds-line-h2: 1.111;
+  --ds-line-h3: 1.25;
+  --ds-line-h4: 1.316;
+  --ds-line-body: 1.5;
+  --ds-line-small: 1.429;
+
+  /* Fixed 5-px-rhythm spacing (additive; Tailwind 4-pt default untouched) */
+  --ds-space-fixed-5: 0.3125rem;
+  --ds-space-fixed-10: 0.625rem;
+  --ds-space-fixed-15: 0.9375rem;
+  --ds-space-fixed-20: 1.25rem;
+  --ds-space-fixed-25: 1.5625rem;
+  --ds-space-fixed-30: 1.875rem;
+  --ds-space-fixed-40: 2.5rem;
+  --ds-space-fixed-50: 3.125rem;
+  --ds-space-fixed-60: 3.75rem;
+
+  /* Motion curves + durations */
+  --ds-ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ds-ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+  --ds-ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ds-ease-standard: cubic-bezier(0.65, 0, 0.35, 1);
+  --ds-duration-fast: 150ms;
+  --ds-duration-base: 250ms;
+  --ds-duration-base-plus: 400ms;
+  --ds-duration-slow: 600ms;
+  --ds-duration-page: 800ms;
+
+  /* design-system-v2 Phase 5b — OKLCH color tokens (additive, parallel to
+     shadcn-defaults). Values verbatim from spec § 3.3.
+     Hue 80° (warm-neutral) for Surface/Border; Hue 250° for cool text & accent.
+     Chroma <= 0.005 on Surface/Border (HL-DS-3). Single chromatic accent family
+     (Trust-Blau 252°), plus 3 status families (warning 80°, danger 27°, success
+     152°) and info-soft (245°) for V1.2 Föderalismus-Disclaimer (HL-DS-14).
+     Existing shadcn tokens (--background, --foreground, --muted-foreground,
+     --primary, etc.) are NOT renamed or overridden. */
+
+  /* Surface (warm-neutral, Chroma <= 0.004) */
+  --ds-color-surface: oklch(100% 0 0);
+  --ds-color-surface-raised: oklch(98% 0.002 80);
+  --ds-color-surface-muted: oklch(95% 0.003 80);
+
+  /* Border (warm-neutral) */
+  --ds-color-border: oklch(86% 0.004 80);
+  --ds-color-border-strong: oklch(65% 0.005 80);
+
+  /* Text (cool-neutral, Hue 250° for crisp legibility on warm-surface).
+     text-secondary L=0.45 matches the V1.5.1 --muted-foreground hardening
+     (5.63:1 light contrast floor against surface) — NOT to be relaxed (HL-DS-7).
+     text-muted L=0.55 is Spec § 3.3 verbatim, intended for disabled-state /
+     low-stakes captions; its 4.84:1 contrast meets BITV AA but NOT the V1.5.1
+     floor, so it MUST NOT be used for body or essential captions. */
+  --ds-color-text-primary: oklch(20% 0.005 250);
+  --ds-color-text-secondary: oklch(45% 0.005 250);
+  --ds-color-text-muted: oklch(55% 0.015 250);
+
+  /* Accent — Trust-Blau, single chromatic family (HL-DS-3) */
+  --ds-color-accent: oklch(40% 0.12 252);
+  --ds-color-accent-soft: oklch(95% 0.025 252);
+  --ds-color-accent-foreground: oklch(100% 0 0);
+
+  /* Status families (3 — HL-DS-3) */
+  --ds-color-warning: oklch(55% 0.13 80);
+  --ds-color-warning-soft: oklch(97% 0.04 90);
+  --ds-color-danger: oklch(48% 0.18 27);
+  --ds-color-success: oklch(45% 0.12 152);
+
+  /* Föderalismus-Info (V1.2 pattern — HL-DS-14) */
+  --ds-color-info-soft: oklch(94% 0.018 245);
+}
+
+/* design-system-v2 Phase 5b — Dark-Mode OKLCH tokens.
+   Activated via `prefers-color-scheme: dark` (Research § "Dark Mode — Option B")
+   AND via `.dark` class (compatibility with next-themes ThemeToggle).
+   V1.5.1 floor for --ds-color-text-muted on dark: 5.53:1 against --ds-color-surface. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ds-color-surface: oklch(15% 0.004 250);
+    --ds-color-surface-raised: oklch(20% 0.005 250);
+    --ds-color-surface-muted: oklch(24% 0.006 250);
+    --ds-color-border: oklch(32% 0.008 250);
+    --ds-color-border-strong: oklch(45% 0.01 250);
+    --ds-color-text-primary: oklch(94% 0.004 250);
+    --ds-color-text-secondary: oklch(78% 0.005 250);
+    --ds-color-text-muted: oklch(64% 0.012 250);
+    --ds-color-accent: oklch(72% 0.13 252);
+    --ds-color-accent-soft: oklch(32% 0.05 252);
+    --ds-color-accent-foreground: oklch(15% 0.004 250);
+    --ds-color-warning: oklch(78% 0.13 80);
+    --ds-color-warning-soft: oklch(28% 0.05 80);
+    --ds-color-danger: oklch(72% 0.13 27);
+    --ds-color-success: oklch(76% 0.11 152);
+    --ds-color-info-soft: oklch(28% 0.04 245);
+  }
+}
+
+.dark {
+  --ds-color-surface: oklch(15% 0.004 250);
+  --ds-color-surface-raised: oklch(20% 0.005 250);
+  --ds-color-surface-muted: oklch(24% 0.006 250);
+  --ds-color-border: oklch(32% 0.008 250);
+  --ds-color-border-strong: oklch(45% 0.01 250);
+  --ds-color-text-primary: oklch(94% 0.004 250);
+  --ds-color-text-secondary: oklch(78% 0.005 250);
+  --ds-color-text-muted: oklch(64% 0.012 250);
+  --ds-color-accent: oklch(72% 0.13 252);
+  --ds-color-accent-soft: oklch(32% 0.05 252);
+  --ds-color-accent-foreground: oklch(15% 0.004 250);
+  --ds-color-warning: oklch(78% 0.13 80);
+  --ds-color-warning-soft: oklch(28% 0.05 80);
+  --ds-color-danger: oklch(72% 0.13 27);
+  --ds-color-success: oklch(76% 0.11 152);
+  --ds-color-info-soft: oklch(28% 0.04 245);
+}
+
+/* design-system-v2 Phase 5b — OKLCH browser-fallback (HEX approximation).
+   Manual @supports block (no PostCSS plugin — keeps build-setup simple and
+   reviewable per Phase 5b plan). Triggered on Chromium <= 108, Edge Legacy and
+   institutional browsers that cannot parse oklch(). HEX values verbatim from
+   spec § 3.3 "Light hex" / "Dark hex" columns.
+
+   Limitation: this is an approximation — modern browsers (>= 99% of users) get
+   the OKLCH path with perceptually-uniform tokens. The fallback ensures no
+   `transparent` / `unset` color renders on legacy chassis. */
+@supports not (color: oklch(0% 0 0)) {
+  :root {
+    --ds-color-surface: #FFFFFF;
+    --ds-color-surface-raised: #FAFAF8;
+    --ds-color-surface-muted: #F2F1ED;
+    --ds-color-border: #DCDAD3;
+    --ds-color-border-strong: #9F998D;
+    --ds-color-text-primary: #1A1D23;
+    --ds-color-text-secondary: #4A5060;
+    --ds-color-text-muted: #6B7280;
+    --ds-color-accent: #1A4D8F;
+    --ds-color-accent-soft: #E8F0FA;
+    --ds-color-accent-foreground: #FFFFFF;
+    --ds-color-warning: #946400;
+    --ds-color-warning-soft: #FFF8E1;
+    --ds-color-danger: #B3261E;
+    --ds-color-success: #2D6B3F;
+    --ds-color-info-soft: #E6EEF7;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ds-color-surface: #0F1115;
+      --ds-color-surface-raised: #161A20;
+      --ds-color-surface-muted: #1C2128;
+      --ds-color-border: #2B2F38;
+      --ds-color-border-strong: #4A5060;
+      --ds-color-text-primary: #ECEEF2;
+      --ds-color-text-secondary: #B4BAC4;
+      --ds-color-text-muted: #8A93A0;
+      --ds-color-accent: #6FA8FF;
+      --ds-color-accent-soft: #1F3A5C;
+      --ds-color-accent-foreground: #0F1115;
+      --ds-color-warning: #E5B547;
+      --ds-color-warning-soft: #3A2D0E;
+      --ds-color-danger: #F2837C;
+      --ds-color-success: #6FCB8B;
+      --ds-color-info-soft: #1F2C3E;
+    }
+  }
+
+  .dark {
+    --ds-color-surface: #0F1115;
+    --ds-color-surface-raised: #161A20;
+    --ds-color-surface-muted: #1C2128;
+    --ds-color-border: #2B2F38;
+    --ds-color-border-strong: #4A5060;
+    --ds-color-text-primary: #ECEEF2;
+    --ds-color-text-secondary: #B4BAC4;
+    --ds-color-text-muted: #8A93A0;
+    --ds-color-accent: #6FA8FF;
+    --ds-color-accent-soft: #1F3A5C;
+    --ds-color-accent-foreground: #0F1115;
+    --ds-color-warning: #E5B547;
+    --ds-color-warning-soft: #3A2D0E;
+    --ds-color-danger: #F2837C;
+    --ds-color-success: #6FCB8B;
+    --ds-color-info-soft: #1F2C3E;
+  }
+}
+
 @layer base {
   :root {
     color-scheme: light dark;
@@ -44,6 +242,13 @@
   html {
     @apply font-sans;
   }
+}
+
+/* design-system-v2 Phase 5a — tabular-nums utility for monospaced digits.
+   HL-DS-6 consumer sites (Aktenzeichen, FE-Nr, IBAN, AZR-ID, Renten-Nr, Frist-Daten,
+   Kfz-Kennzeichen) will apply this class in Phase 5b+; declared here for early availability. */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }
 
 @theme inline {
@@ -265,4 +470,224 @@
     oklch(1 0 0 / 10%);
   --sidebar-ring:
     oklch(0.556 0 0);
+}
+
+/* design-system-v2 Phase 5e — Hochkontrast-Layer (BITV 2.0 § 1.4.6 AAA, ≥ 7:1).
+   Additiv; greift nur wenn das OS `prefers-contrast: more` signalisiert. Kein
+   UI-Toggle in V1. Greift sowohl auf shadcn-Tokens (`--foreground`,
+   `--border`, `--muted-foreground`, `--ring`) als auch auf Phase-5b-Aliase
+   (sobald gesetzt) ein. Quelle: Spec § 8 (verbatim aus Research). */
+@media (prefers-contrast: more) {
+  :root {
+    /* shadcn-legacy tokens */
+    --foreground: oklch(0 0 0);
+    --card-foreground: oklch(0 0 0);
+    --popover-foreground: oklch(0 0 0);
+    --primary: oklch(0 0 0);
+    --secondary-foreground: oklch(0 0 0);
+    --accent-foreground: oklch(0 0 0);
+    --muted-foreground: oklch(0.30 0 0);
+    --border: oklch(0.40 0 0);
+    --input: oklch(0.40 0 0);
+    --ring: oklch(0.20 0 0);
+    --sidebar-foreground: oklch(0 0 0);
+    --sidebar-border: oklch(0.40 0 0);
+    --sidebar-ring: oklch(0.20 0 0);
+
+    /* Phase-5b --ds-color-* tokens (additive) */
+    --ds-color-text-primary: oklch(0% 0 0);
+    --ds-color-text-secondary: oklch(15% 0 0);
+    --ds-color-text-muted: oklch(30% 0 0);
+    --ds-color-border: oklch(40% 0 0);
+    --ds-color-border-strong: oklch(20% 0 0);
+    --ds-color-accent: oklch(28% 0.18 252);
+    --ds-color-warning: oklch(30% 0.15 80);
+    --ds-color-danger: oklch(30% 0.20 27);
+    --ds-color-success: oklch(30% 0.13 152);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --foreground: oklch(1 0 0);
+      --card-foreground: oklch(1 0 0);
+      --popover-foreground: oklch(1 0 0);
+      --primary: oklch(1 0 0);
+      --secondary-foreground: oklch(1 0 0);
+      --accent-foreground: oklch(1 0 0);
+      --muted-foreground: oklch(0.80 0 0);
+      --border: oklch(0.70 0 0);
+      --input: oklch(0.70 0 0);
+      --ring: oklch(0.85 0 0);
+      --sidebar-foreground: oklch(1 0 0);
+      --sidebar-border: oklch(0.70 0 0);
+      --sidebar-ring: oklch(0.85 0 0);
+
+      --ds-color-text-primary: oklch(100% 0 0);
+      --ds-color-text-secondary: oklch(92% 0 0);
+      --ds-color-text-muted: oklch(80% 0 0);
+      --ds-color-border: oklch(70% 0 0);
+      --ds-color-border-strong: oklch(85% 0 0);
+      --ds-color-accent: oklch(85% 0.13 252);
+    }
+  }
+
+  *:focus-visible {
+    outline-width: 3px !important;
+    outline-offset: 3px !important;
+  }
+}
+
+/* design-system-v2 Phase 5e — Print-Stylesheet (HL-DS-13).
+   A4 portrait, monochrom, Geist (Hauptfont), tabular-nums für Aktenzeichen
+   / Fristen / IBAN, page-break-hygiene, URL-Anhängung an Links. Sidebar, Topbar,
+   StickyFristAction, Modals, Popover werden aus dem Print-Flow entfernt; der
+   Brief-Body und die AI-Zusammenfassung bleiben. Quelle: Spec § 7 (verbatim aus
+   Research § "Print-Stylesheet"). */
+@media print {
+  :root {
+    /* shadcn-legacy tokens — monochrom */
+    --background: #ffffff;
+    --foreground: #000000;
+    --card: #ffffff;
+    --card-foreground: #000000;
+    --popover: #ffffff;
+    --popover-foreground: #000000;
+    --primary: #000000;
+    --primary-foreground: #ffffff;
+    --secondary: #ffffff;
+    --secondary-foreground: #000000;
+    --muted: #ffffff;
+    --muted-foreground: #444444;
+    --accent: #ffffff;
+    --accent-foreground: #000000;
+    --destructive: #000000;
+    --destructive-foreground: #ffffff;
+    --border: #000000;
+    --input: #000000;
+    --ring: #000000;
+    --sidebar: #ffffff;
+    --sidebar-foreground: #000000;
+    --sidebar-border: #000000;
+    --sidebar-ring: #000000;
+
+    /* Phase-5b --ds-color-* tokens — monochrom */
+    --ds-color-surface: #ffffff;
+    --ds-color-surface-raised: #ffffff;
+    --ds-color-surface-muted: #ffffff;
+    --ds-color-text-primary: #000000;
+    --ds-color-text-secondary: #000000;
+    --ds-color-text-muted: #444444;
+    --ds-color-border: #000000;
+    --ds-color-border-strong: #000000;
+    --ds-color-accent: #000000;
+    --ds-color-accent-soft: #ffffff;
+    --ds-color-accent-foreground: #ffffff;
+    --ds-color-warning: #000000;
+    --ds-color-warning-soft: #ffffff;
+    --ds-color-danger: #000000;
+    --ds-color-success: #000000;
+    --ds-color-info-soft: #ffffff;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 20mm 18mm 22mm 18mm;
+  }
+
+  html,
+  body {
+    font-family: var(--font-sans), 'Times New Roman', serif;
+    font-size: 11pt;
+    line-height: 1.4;
+    color: #000;
+    background: #fff;
+  }
+
+  *,
+  *::before,
+  *::after {
+    color: #000 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  .tabular-nums,
+  [data-tabular],
+  th,
+  td {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Layout-Shell + Interaktionsflächen aus dem Print-Flow entfernen.
+     Brief-Body, AI-Summary, Frist-Chips und der Bescheid-Inhalt bleiben sichtbar. */
+  nav,
+  aside,
+  [role="navigation"],
+  [data-print="hide"],
+  button:not([data-print="show"]),
+  .sticky-frist-action,
+  [data-popover],
+  [data-modal],
+  [role="dialog"] {
+    display: none !important;
+  }
+
+  [data-print="show"] {
+    display: block !important;
+  }
+
+  /* Page-Break-Hygiene */
+  .letter-card,
+  .bescheid-section,
+  .vorgang-step,
+  [data-print-block] {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  h1,
+  h2,
+  h3 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  p,
+  li {
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Print-Footer (QR + Verify-URL) für die 3 Print-Routes; wird in
+     späteren Iterationen durch <PrintFooter /> Component bestückt. */
+  .print-footer {
+    position: fixed;
+    bottom: 10mm;
+    left: 18mm;
+    right: 18mm;
+    border-top: 1pt solid #000;
+    padding-top: 4mm;
+    font-size: 9pt;
+    color: #000;
+  }
+
+  .print-qr {
+    display: block;
+    width: 22mm;
+    height: 22mm;
+  }
+
+  /* Links: URL anhängen (außer für interne Anker und JS-Pseudo-Links). */
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 9pt;
+    color: #444;
+  }
+
+  a[href^="#"]::after,
+  a[href^="javascript:"]::after {
+    content: "";
+  }
 }

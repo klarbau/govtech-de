@@ -28,6 +28,7 @@ import {
   type CollectionKey,
 } from './persistence';
 import { runStorageMigrations } from './persistence-migrations';
+import { SEED_MOBILITAET } from './mobilitaet/seed-mobilitaet';
 import {
   behoerdenArraySchema,
   consentSchema,
@@ -41,6 +42,7 @@ import {
   stammdatenIbanSpeculativeBucketSchema,
   stammdatenKontaktBucketSchema,
   stammdatenKontaktV2BucketSchema,
+  stammdatenMobilitaetBucketSchema,
   stammdatenSperrenBucketSchema,
   stammdatenUebermittlungsLogBucketSchema,
   termineArraySchema,
@@ -143,6 +145,14 @@ export function seedIfEmpty(): void {
     stammdatenKontaktV2BucketSchema,
     {},
   );
+  // V1.3 Mobilität — Bucket aus Seed initialisieren (Migration
+  // `v12-to-v13-mobilitaet` füllt ebenfalls; hier nur Default-Init für
+  // den Fall, dass die Migration auf bereits geseeded localStorage trifft).
+  readOrInit(
+    'stammdaten:mobilitaet' as CollectionKey,
+    stammdatenMobilitaetBucketSchema,
+    SEED_MOBILITAET,
+  );
   // Per-Persona-Initial-Seed (idempotent — überschreibt bestehende Einträge nicht).
   try {
     seedStammdatenForPersona(personaId);
@@ -182,6 +192,32 @@ function seedForPersona(personaId: string): void {
   } catch (err) {
     if (typeof console !== 'undefined') {
       console.warn('[mock-backend/seed] stammdaten reseed failed', err);
+    }
+  }
+  // V1.3 Mobilität — Bucket aus Seed re-init für aktive Persona (idempotent;
+  // andere Personas im Bucket bleiben unangetastet).
+  try {
+    const existing = (() => {
+      try {
+        const raw = read(
+          'stammdaten:mobilitaet' as CollectionKey,
+          stammdatenMobilitaetBucketSchema,
+        );
+        return raw ?? {};
+      } catch {
+        return {};
+      }
+    })();
+    if (SEED_MOBILITAET[personaId]) {
+      const merged = { ...existing } as Record<string, unknown>;
+      merged[personaId] = JSON.parse(
+        JSON.stringify(SEED_MOBILITAET[personaId]),
+      );
+      write('stammdaten:mobilitaet' as CollectionKey, merged);
+    }
+  } catch (err) {
+    if (typeof console !== 'undefined') {
+      console.warn('[mock-backend/seed] mobilitaet reseed failed', err);
     }
   }
 }

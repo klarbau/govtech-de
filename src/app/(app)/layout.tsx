@@ -3,6 +3,7 @@ import { getTranslations } from 'next-intl/server';
 import { Footer } from '@/components/layout/Footer';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Topbar } from '@/components/layout/Topbar';
+import { PrototypeDisclaimerBanner } from '@/components/shared/PrototypeDisclaimerBanner';
 
 export default async function AppLayout({
   children,
@@ -23,12 +24,13 @@ export default async function AppLayout({
         <Sidebar />
         <div className="flex min-w-0 flex-1 flex-col">
           <Topbar />
+          <PrototypeDisclaimerBanner />
           <main
             id="main-content"
             tabIndex={-1}
-            className="flex-1 px-4 py-8 md:px-8"
+            className="flex-1 px-4 py-8 sm:px-6 lg:px-8"
           >
-            <div className="mx-auto w-full max-w-5xl">{children}</div>
+            <div className="mx-auto w-full max-w-7xl">{children}</div>
           </main>
           <Footer />
         </div>

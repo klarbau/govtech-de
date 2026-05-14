@@ -110,8 +110,23 @@ interface ReplyCardProps {
   onViewSubmittedBody: () => void;
 }
 
+/** Erste 3 nichtleere Zeilen für die Preview-blockquote (Phase 6b Audit #2). */
+function firstThreeNonEmptyLines(body: string): { preview: string; isTruncated: boolean } {
+  const lines = body.split(/\r?\n/);
+  const nonEmpty: string[] = [];
+  for (const ln of lines) {
+    if (ln.trim().length === 0) continue;
+    nonEmpty.push(ln);
+    if (nonEmpty.length === 3) break;
+  }
+  const remainingNonEmpty = lines.filter((l) => l.trim().length > 0).length;
+  const isTruncated = remainingNonEmpty > nonEmpty.length || body.length > 240;
+  return { preview: nonEmpty.join('\n'), isTruncated };
+}
+
 function ReplyCard({ reply, onViewSubmittedBody }: ReplyCardProps) {
   const t = useTranslations('posteingang.compose.confirmation');
+  const tReply = useTranslations('posteingang.reply');
 
   const sentAt = reply.sent_at
     ? t('sent_at_template', {
@@ -120,8 +135,47 @@ function ReplyCard({ reply, onViewSubmittedBody }: ReplyCardProps) {
       })
     : '';
 
+  const { preview, isTruncated } = firstThreeNonEmptyLines(reply.body_de ?? '');
+
   return (
     <div className="flex flex-col gap-3 rounded-lg border border-border bg-background/40 p-3">
+      {/* Phase 6b — Body-Preview inline (Audit #2): erste 3 Zeilen als
+          blockquote, Volltext über <details>. Erhöht Transparenz "was wurde
+          versendet". Existierender "Versendete Antwort anzeigen"-Button
+          bleibt als Fallback erhalten. */}
+      {preview.length > 0 && (
+        <div className="flex flex-col gap-1">
+          <span className="text-xs font-medium uppercase tracking-wide text-[var(--ds-color-text-secondary)]">
+            {tReply('body_preview_heading')}
+          </span>
+          <blockquote
+            data-testid="reply-confirmation-body-preview"
+            className="whitespace-pre-wrap rounded border-l-2 border-[var(--ds-color-border)] bg-[var(--ds-color-surface-muted)] p-3 text-sm leading-relaxed text-[var(--ds-color-text-primary)]"
+          >
+            {preview}
+            {isTruncated && (
+              <span aria-hidden="true" className="text-[var(--ds-color-text-secondary)]">
+                {' '}…
+              </span>
+            )}
+          </blockquote>
+          {isTruncated && (
+            <details className="text-xs">
+              <summary className="cursor-pointer text-[var(--ds-color-accent)] underline underline-offset-4">
+                {tReply('body_preview_full_toggle')}
+              </summary>
+              <pre
+                dir="ltr"
+                lang="de"
+                className="mt-2 whitespace-pre-wrap rounded-md border border-[var(--ds-color-border)] bg-[var(--ds-color-surface-muted)] p-3 font-sans text-xs leading-relaxed"
+              >
+                {reply.body_de}
+              </pre>
+            </details>
+          )}
+        </div>
+      )}
+
       <dl className="grid gap-x-4 gap-y-2 text-xs sm:grid-cols-[auto_1fr]">
         <dt className="font-medium text-muted-foreground">
           {t('metadata_label_sent_at')}

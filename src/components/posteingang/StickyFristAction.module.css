@@ -1,0 +1,28 @@
+/* design-system-v2 Phase 6b — StickyFristAction urgent-Outline-Highlight.
+   Audit-Finding #3: Frist < 3d soll beim ersten Render 1s visuell heraus-
+   stechen. HL-DS-11: statisches Outline für 1s mit Fade-out, KEIN Loop.
+   prefers-reduced-motion: reduce: kein Fade, Outline direkt sichtbar ohne
+   Animation. */
+
+@keyframes sticky-frist-urgent-highlight-fade {
+  0% {
+    outline-color: color-mix(in oklch, var(--ds-color-danger) 70%, transparent);
+  }
+  100% {
+    outline-color: transparent;
+  }
+}
+
+.urgentHighlight {
+  outline: 2px solid color-mix(in oklch, var(--ds-color-danger) 70%, transparent);
+  outline-offset: -1px;
+  animation: sticky-frist-urgent-highlight-fade var(--ds-duration-slow, 1s)
+    var(--ds-ease-out-quart, cubic-bezier(0.165, 0.84, 0.44, 1)) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .urgentHighlight {
+    animation: none;
+    outline-color: color-mix(in oklch, var(--ds-color-danger) 70%, transparent);
+  }
+}

@@ -22,8 +22,11 @@ import {
   letterRepliesMapSchema,
   letterRepliesMapV150Schema,
 } from './schemas';
+import { SEED_MOBILITAET } from './mobilitaet/seed-mobilitaet';
 import type {
   LetterReplyMap,
+  Mobilitaet,
+  PersonaId,
   PersonaKontakt,
   Reply,
 } from '@/types';
@@ -36,6 +39,9 @@ const REPLIES_KEY = `${NAMESPACE}letter-replies`;
 const KONTAKT_V12_KEY = `${NAMESPACE}stammdaten:notification-praeferenzen`;
 const PERSONAS_KEY = `${NAMESPACE}personas`;
 const BEHOERDEN_KEY = `${NAMESPACE}behoerden`;
+// V1.3 — Mobilität (Spec § 5.3). Bucket + Schema-Version-Marker.
+const MOBILITAET_KEY = `${NAMESPACE}stammdaten:mobilitaet`;
+const SCHEMA_VERSION_KEY = `${NAMESPACE}stammdaten:schema-version`;
 
 /** Liste aller Migrationen, die exakt einmal pro Storage laufen. */
 const ALL_MIGRATIONS = [
@@ -53,6 +59,13 @@ const ALL_MIGRATIONS = [
   // sub-set Whitelist (Familienkasse, Bürgerämter Berlin) bekommt
   // realismus-Werte. Idempotent — überschreibt vorhandene Werte nicht.
   'v1-to-v12-behoerden-anbindung-default',
+  // V1.2 → V1.3 Mobilität-Schicht (Spec § 5.3). Pro Persona: `mobilitaet`-
+  // Block aus Seed übernehmen (idempotent — überschreibt existierende
+  // Werte NICHT); Lena Schmidt `kfz_halter`-Korrektur (V1.0-Drift) auf
+  // `false`; Anna `halter_adresse.uebergangs_marker_via_umzug` auf `true`
+  // mit Vorgang-Ref. Schema-Version-Marker `'1.3'` setzen. Sicherheits-
+  // Guard: kein `punkte`-Feld in `persona.mobilitaet` (VL-4 / HL-MOB-11).
+  'v12-to-v13-mobilitaet',
 ] as const;
 
 type MigrationId = (typeof ALL_MIGRATIONS)[number];
@@ -521,6 +534,144 @@ export function migrateBehoerdenAnbindungDefault(): void {
   }
 }
 
+// ---------------------------------------------------------------------------
+// V1.2 → V1.3 Mobilität-Schicht-Migration (Spec § 5.3)
+// ---------------------------------------------------------------------------
+
+/**
+ * Defensive-strip aller `punkte`-/`punktezahl`-Felder aus einem
+ * `Mobilitaet`-Objekt (HL-MOB-11 / VL-4). Mutiert in-place.
+ * Re-Export aus Test-Hilfen.
+ */
+export function stripPunkteField(mob: Mobilitaet | undefined): Mobilitaet | undefined {
+  if (!mob) return mob;
+  const record = mob as unknown as Record<string, unknown>;
+  if ('punkte' in record) delete record.punkte;
+  if ('punktezahl' in record) delete record.punktezahl;
+  return mob;
+}
+
+/**
+ * V1.2 → V1.3 Mobilität-Schicht-Migration (Spec § 5.3).
+ *
+ * Schritte:
+ *   1. Prüft `schema-version`-Marker: bei `'1.3'` → no-op (Idempotenz).
+ *   2. Pro Persona im `personas`-Bucket:
+ *      a. Wenn `persona.mobilitaet` fehlt → aus `SEED_MOBILITAET` kopieren.
+ *      b. Defensive strip von `punkte`/`punktezahl`-Excess-Keys
+ *         (HL-MOB-11 / VL-4).
+ *      c. Lena Schmidt (`markus-schmidt.familie.partner`)
+ *         `kfz_halter`-Korrektur auf `false` (V1.0-Drift; VL-12).
+ *   3. Schreibt den Mobilität-Bucket `stammdaten:mobilitaet` aus den
+ *      kombinierten Persona-Mobilität-Werten neu (idempotent: existierende
+ *      Werte werden NICHT überschrieben).
+ *   4. Setzt `schema-version` auf `'1.3'`.
+ *
+ * Lossless: kein Persona-Bestandsdatum geht verloren. Re-Run = no-op.
+ *
+ * Architect-Hinweis (Spec § 5.3): die Funktion heißt `migratePersonaV12ToV13`
+ * (kanonisch laut Spec); ein Alias `migrateMobilitaetV12ToV13` wird ebenfalls
+ * exportiert, damit Tests beide Importpfade greifen können.
+ */
+export function migratePersonaV12ToV13(): void {
+  if (!isBrowser()) return;
+
+  // 1. Idempotenz: schon migriert?
+  const versionRaw = window.localStorage.getItem(SCHEMA_VERSION_KEY);
+  if (versionRaw !== null) {
+    try {
+      const parsed = JSON.parse(versionRaw) as { version?: string };
+      if (parsed?.version === '1.3') return;
+    } catch {
+      // ignore corrupt marker — werden wir gleich überschreiben.
+    }
+  }
+
+  // 2. Persona-Bucket-Mutation: mobilitaet additiv + Lena-Korrektur + punkte-Strip.
+  const personasRaw = window.localStorage.getItem(PERSONAS_KEY);
+  const personasParsed: unknown = (() => {
+    if (personasRaw === null) return undefined;
+    try {
+      return JSON.parse(personasRaw);
+    } catch {
+      return undefined;
+    }
+  })();
+
+  if (Array.isArray(personasParsed)) {
+    for (const p of personasParsed) {
+      if (!p || typeof p !== 'object') continue;
+      const persona = p as {
+        id?: PersonaId;
+        mobilitaet?: Mobilitaet;
+        familie?: { partner?: { id?: string; kfz_halter?: boolean } };
+      };
+      const personaId = persona.id;
+      if (!personaId) continue;
+
+      // a. mobilitaet aus Seed übernehmen, falls noch nicht vorhanden.
+      if (!persona.mobilitaet && SEED_MOBILITAET[personaId]) {
+        persona.mobilitaet = JSON.parse(
+          JSON.stringify(SEED_MOBILITAET[personaId]),
+        ) as Mobilitaet;
+      }
+
+      // b. Defensive punkte-Strip (HL-MOB-11 / VL-4).
+      stripPunkteField(persona.mobilitaet);
+
+      // c. Lena-Korrektur (VL-12): Schmidt-Vater bleibt einziger Halter.
+      if (
+        personaId === 'markus-schmidt' &&
+        persona.familie?.partner?.id === 'lena-schmidt' &&
+        persona.familie.partner.kfz_halter === true
+      ) {
+        persona.familie.partner.kfz_halter = false;
+      }
+    }
+    window.localStorage.setItem(PERSONAS_KEY, JSON.stringify(personasParsed));
+  }
+
+  // 3. Standalone-Bucket `stammdaten:mobilitaet` schreiben (idempotent —
+  //    existierende Werte überschreiben wir NICHT, fehlende füllen wir).
+  const existingMobBucketRaw = window.localStorage.getItem(MOBILITAET_KEY);
+  const existingBucket: Record<PersonaId, Mobilitaet> = (() => {
+    if (existingMobBucketRaw === null) return {};
+    try {
+      const parsed: unknown = JSON.parse(existingMobBucketRaw);
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+        return parsed as Record<PersonaId, Mobilitaet>;
+      }
+      return {};
+    } catch {
+      return {};
+    }
+  })();
+
+  for (const [personaId, seedValue] of Object.entries(SEED_MOBILITAET)) {
+    if (!existingBucket[personaId]) {
+      existingBucket[personaId] = JSON.parse(JSON.stringify(seedValue)) as Mobilitaet;
+    }
+    // Defensive punkte-Strip.
+    stripPunkteField(existingBucket[personaId]);
+  }
+  window.localStorage.setItem(MOBILITAET_KEY, JSON.stringify(existingBucket));
+
+  // 4. Schema-Version-Marker.
+  window.localStorage.setItem(
+    SCHEMA_VERSION_KEY,
+    JSON.stringify({ version: '1.3' }),
+  );
+
+  if (typeof console !== 'undefined') {
+    console.warn(
+      '[mock-backend/persistence-migrations] migrated persona schema V1.2 → V1.3 (Mobilität-Sektion + Lena kfz_halter-Korrektur + punkte-Excess-Key-Strip).',
+    );
+  }
+}
+
+/** Alias für Tests, die den Mobilität-zentrischen Namen erwarten. */
+export const migrateMobilitaetV12ToV13 = migratePersonaV12ToV13;
+
 /**
  * Public Entry-Point: läuft idempotent alle ausstehenden Migrationen.
  * `seed.ts:seedIfEmpty()` ruft das vor jedem Bucket-Lookup.
@@ -547,5 +698,10 @@ export function runStorageMigrations(): void {
   if (!executed.has('v1-to-v12-behoerden-anbindung-default')) {
     migrateBehoerdenAnbindungDefault();
     recordMigration('v1-to-v12-behoerden-anbindung-default');
+  }
+
+  if (!executed.has('v12-to-v13-mobilitaet')) {
+    migratePersonaV12ToV13();
+    recordMigration('v12-to-v13-mobilitaet');
   }
 }

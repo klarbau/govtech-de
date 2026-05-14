@@ -170,11 +170,14 @@ const BLOCK_B: BlockBEntry[] = [
   },
 ];
 
+// V1.3 VL-13 + VL-14 co-correction (Spec § 9.2): Block-D-KFZ-Step ist Pre-Fill
+// der i-Kfz-Adressänderung gemäß § 15 FZV. Der Frist-Wortlaut im Brief ist
+// „unverzüglich (i.d.R. innerhalb einer Woche)" (VL-2). Forbidden phrases
+// (per ban-list-grep test): siehe Spec § 11.13 + § 11.14.
 const BLOCK_D: BlockDEntry[] = [
   {
     behoerdeId: 'kfz-berlin-labo',
-    aktion:
-      'Halter-Adressänderung Zulassungsbescheinigung Teil I (§ 15 FZV)',
+    aktion: 'Pre-Fill der i-Kfz-Adressänderung gemäß § 15 FZV',
     rechtsgrundlage: '§ 15 FZV + § 18 PAuswG eID',
     personaFlag: 'kfz_halter',
     visibleIf: (p) => p.kfz_halter === true,
@@ -184,7 +187,7 @@ const BLOCK_D: BlockDEntry[] = [
       betreffTemplate:
         'Ihre Mitteilung gem. § 15 FZV — Halteranschrift {az}',
       floskel:
-        'in oben genannter Angelegenheit haben wir die Halteranschrift Ihres Fahrzeugs auf Ihre neue Anschrift aktualisiert:\n\n{neue_adresse}\n\nEine neue Zulassungsbescheinigung Teil I geht Ihnen in den nächsten Werktagen postalisch zu.',
+        'in oben genannter Angelegenheit bestätigen wir den Eingang Ihrer Mitteilung nach § 15 FZV. Wir haben den Pre-Fill der i-Kfz-Adressänderung mit Ihrer neuen Anschrift vorbereitet:\n\n{neue_adresse}\n\nEine neue Zulassungsbescheinigung Teil I geht Ihnen in den nächsten Werktagen postalisch zu.',
       abschluss: 'Mit freundlichen Grüßen\nKFZ-Zulassung Berlin',
     },
   },

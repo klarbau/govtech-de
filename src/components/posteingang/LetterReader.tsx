@@ -265,6 +265,7 @@ export function LetterReader({
         <Link
           href="/posteingang"
           className="inline-flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+          data-print="hide"
         >
           <ArrowLeft className="size-4" aria-hidden="true" />
           {t('zurueck')}
@@ -444,7 +445,11 @@ export function LetterReader({
         </section>
       )}
 
-      <WasKannIchTunFooter archetype={archetype} options={actionOptions} />
+      <WasKannIchTunFooter
+        archetype={archetype}
+        options={actionOptions}
+        letter={letter}
+      />
 
       <RechtlicheHinweiseDetails />
 

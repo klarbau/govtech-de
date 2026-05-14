@@ -37,7 +37,13 @@ export function FristChip({ frist, fromIso, className, onClick }: FristChipProps
   const datumFormatted = format(deadline, 'dd.MM.yyyy', { locale: de });
 
   const overdue = days < 0;
-  const urgent = !overdue && days <= 7;
+  // Phase 6b — Dringlichkeits-Palette (audit #3):
+  //   days < 0   → danger-strong (abgelaufen, Icon-Variant warning)
+  //   days < 3   → danger        (sehr dringend)
+  //   days < 7   → warning       (dringend, amber-Migration → DS-Token)
+  //   days >= 7  → neutral       (Standardchip)
+  const veryUrgent = !overdue && days < 3;
+  const urgent = !overdue && !veryUrgent && days < 7;
 
   const typLabel = tCommon(fristTypLabelKey(frist.typ));
   const tageLabel = overdue
@@ -54,11 +60,21 @@ export function FristChip({ frist, fromIso, className, onClick }: FristChipProps
         datum: datumFormatted,
       });
 
+  // Palette nutzt design-system-v2 Tokens (Phase 5b). Fallback-Pfad: existierende
+  // amber-Klassen für `urgent` werden durch `--ds-color-warning(-soft)` ersetzt.
+  // V1.5.1-`text-amber-950`-Härtung (HL-DS-7) ist hier nicht betroffen — FristChip
+  // ist nicht in der `text-amber-950`-Whitelist (V1.3 Mobilitäts-Banner).
   const palette = overdue
-    ? 'bg-red-50 text-red-900 ring-red-300 dark:bg-red-950 dark:text-red-100 dark:ring-red-800'
-    : urgent
-      ? 'bg-amber-100 text-amber-900 ring-amber-300/60 dark:bg-amber-900/40 dark:text-amber-100 dark:ring-amber-700/60'
-      : 'bg-muted text-foreground ring-border';
+    ? // abgelaufen → danger-strong (HL-DS-3)
+      'bg-[var(--ds-color-danger)] text-[var(--ds-color-accent-foreground)] ring-[var(--ds-color-danger)]'
+    : veryUrgent
+      ? // < 3 Tage → danger (soft surface, strong text)
+        'bg-[color-mix(in_oklch,var(--ds-color-danger)_12%,var(--ds-color-surface))] text-[var(--ds-color-danger)] ring-[var(--ds-color-danger)]/40'
+      : urgent
+        ? // < 7 Tage → warning
+          'bg-[var(--ds-color-warning-soft)] text-amber-950 ring-[var(--ds-color-warning)]/40 dark:text-[var(--ds-color-text-primary)]'
+        : // >= 7 Tage → neutral
+          'bg-[var(--ds-color-surface-muted)] text-[var(--ds-color-text-secondary)] ring-[var(--ds-color-border)]';
 
   const Wrapper: 'button' | 'span' = onClick ? 'button' : 'span';
 

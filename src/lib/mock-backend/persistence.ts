@@ -45,7 +45,13 @@ export type CollectionKey =
   // `migrateKontaktV1ToV11` in `persistence-migrations.ts`. Das vorherige
   // `stammdaten:kontakt`-Bucket trägt nur noch `sprachpraeferenz` (V1-stable);
   // BundID-Postfach + Notification-Präferenzen leben im neuen Bucket.
-  | 'stammdaten:notification-praeferenzen';
+  | 'stammdaten:notification-praeferenzen'
+  // V1.3 — Mobilität (Spec § 5.3). `Record<PersonaId, Mobilitaet>`. Strict-
+  // mode: kein `punkte`-Feld erlaubt (HL-MOB-11 / VL-4). Punktestand-Result
+  // ist component-local mit TTL ≤ 5 min, niemals in localStorage.
+  | 'stammdaten:mobilitaet'
+  // V1.3 — Schema-Version-Marker für Mobilität-Migration V12→V13.
+  | 'stammdaten:schema-version';
 
 const fullKey = (key: CollectionKey): string => `${NAMESPACE}${key}`;
 

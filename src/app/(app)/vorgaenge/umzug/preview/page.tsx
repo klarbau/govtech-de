@@ -12,6 +12,7 @@ import { PrototypeDisclaimer } from '@/components/shared/PrototypeDisclaimer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { CascadePreview } from '@/components/umzug/CascadePreview';
+import { WizardProgress } from '@/components/umzug/WizardProgress';
 import { api } from '@/lib/mock-backend/api';
 import { useUmzugDraft } from '@/stores/umzugDraft';
 import type {
@@ -91,7 +92,7 @@ export default function UmzugPreviewPage() {
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-4">
         <Link
           href="/vorgaenge/umzug/start"
           className="inline-flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
@@ -99,17 +100,20 @@ export default function UmzugPreviewPage() {
           <ArrowLeft className="size-4" aria-hidden="true" />
           {tCommon('cta.zurueck')}
         </Link>
-        <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-          {t('title')}
-        </h1>
-        {draft.neueAdresse && draft.stichtagIso ? (
-          <p className="text-muted-foreground">
-            {t('subtitle_template', {
-              adresse: subtitleAdresse,
-              stichtag: subtitleStichtag,
-            })}
-          </p>
-        ) : null}
+        <WizardProgress currentStep={1} />
+        <div className="flex flex-col gap-2">
+          <h1 className="text-3xl font-semibold tracking-tight text-foreground">
+            {t('title')}
+          </h1>
+          {draft.neueAdresse && draft.stichtagIso ? (
+            <p className="text-muted-foreground">
+              {t('subtitle_template', {
+                adresse: subtitleAdresse,
+                stichtag: subtitleStichtag,
+              })}
+            </p>
+          ) : null}
+        </div>
       </div>
 
       {error ? (
