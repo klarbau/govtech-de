@@ -90,13 +90,41 @@ export function StammdatenFieldCard({
 
   const showHidden = hiddenByDefault === true && consentVisible !== true;
 
+  // Phase-6c — Density-Refactor (Audit-Finding #3):
+  // Bei langem Wert (>30 Zeichen) ODER ≥ 2 Badges → Badges in separater Zeile
+  // unter dem Header rendern, statt inline mit dem Label.
+  const badgeCount =
+    (speculative2027 ? 1 : 0) + (art9Relevant ? 1 : 0) + (mockWatermark ? 1 : 0);
+  const valueLength = typeof value === 'string' ? value.length : 0;
+  const badgesOnSeparateRow = badgeCount >= 2 || valueLength > 30;
+
+  const badges = (
+    <>
+      {speculative2027 && <IbanSpeculativeBadge />}
+      {art9Relevant && (
+        <span
+          className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-900 ring-1 ring-amber-300/70 dark:bg-amber-900/40 dark:text-amber-100 dark:ring-amber-700/60"
+          data-testid={`art9-badge-${fieldId}`}
+        >
+          <ShieldAlert className="size-3" aria-hidden="true" />
+          {tBadge('art9_relevant')}
+        </span>
+      )}
+      {mockWatermark && (
+        <span className="inline-flex items-center rounded-md bg-amber-100 px-1.5 py-0.5 font-mono text-[11px] font-medium uppercase tracking-wide text-amber-900 ring-1 ring-amber-300/70 dark:bg-amber-900/40 dark:text-amber-100 dark:ring-amber-700/60">
+          {tBadge('mock')}
+        </span>
+      )}
+    </>
+  );
+
   return (
     <article
       aria-labelledby={labelId}
       data-testid={`field-card-${fieldId}`}
       data-editability={editability}
       className={cn(
-        'rounded-xl border border-border bg-card p-4 shadow-sm transition-colors',
+        'flex min-h-[80px] flex-col rounded-xl border border-border bg-card p-4 shadow-sm transition-colors',
         'hover:border-foreground/20',
         className,
       )}
@@ -108,22 +136,17 @@ export function StammdatenFieldCard({
         >
           {label}
         </h3>
-        {speculative2027 && <IbanSpeculativeBadge />}
-        {art9Relevant && (
-          <span
-            className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-900 ring-1 ring-amber-300/70 dark:bg-amber-900/40 dark:text-amber-100 dark:ring-amber-700/60"
-            data-testid={`art9-badge-${fieldId}`}
-          >
-            <ShieldAlert className="size-3" aria-hidden="true" />
-            {tBadge('art9_relevant')}
-          </span>
-        )}
-        {mockWatermark && (
-          <span className="inline-flex items-center rounded-md bg-amber-100 px-1.5 py-0.5 font-mono text-[11px] font-medium uppercase tracking-wide text-amber-900 ring-1 ring-amber-300/70 dark:bg-amber-900/40 dark:text-amber-100 dark:ring-amber-700/60">
-            {tBadge('mock')}
-          </span>
-        )}
+        {!badgesOnSeparateRow && badges}
       </header>
+
+      {badgesOnSeparateRow && badgeCount > 0 && (
+        <div
+          className="mt-2 flex flex-wrap items-center gap-2"
+          data-testid={`field-card-badges-${fieldId}`}
+        >
+          {badges}
+        </div>
+      )}
 
       <div className="mt-3 flex flex-col gap-3">
         {showHidden ? (

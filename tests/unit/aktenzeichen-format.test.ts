@@ -122,6 +122,32 @@ const FORMAT_RULES: FormatRule[] = [
       'drv-bund',
     ],
   },
+  {
+    // V1.3 — FE-Behörde (Stadtstaat-LBV oder kommunale Stadt-Stelle).
+    // Format: LBV-<Stadt-Kürzel>-FE-YYYY/MM-<Suffix>.
+    name: 'FE-Behörde (LBV/Stadt) — <Prefix>-FE-YYYY/MM-<Suffix>',
+    regex: new RegExp(
+      `^${MOCK}(LBV-[A-Z]{2,4}|STADT-[A-Z]|LABO)-(?:HH-)?FE[-/]\\d{4}[-/]\\d{2}[-/A-Z0-9]+\\d+$`,
+    ),
+    behoerdeIds: ['fe-hamburg-lbv', 'fe-koeln-stadt', 'fe-berlin-labo'],
+  },
+  {
+    // V1.3 — KFZ-Zulassungsstelle (kommunal). Aktenzeichen-Schema:
+    // <Stadt-Prefix>/STR-KFZ-YYYY-MM-NNNNN bzw. LBV-HH-KFZ-YYYY/MM-NNNN.
+    name: 'KFZ-Zulassungsstelle (kommunal) — <Prefix>-KFZ-YYYY-MM-<NNNNN>',
+    regex: new RegExp(
+      `^${MOCK}(STADT-[A-Z]/STR-KFZ|LBV-[A-Z]{2}-KFZ|LABO-KFZ)[-/]\\d{4}[-/]\\d{2,4}[-/A-Z0-9]*\\d+$`,
+    ),
+    behoerdeIds: ['kfz-koeln-stadt', 'kfz-hamburg-lbv'],
+  },
+  {
+    // V1.3 — KBA Flensburg (FAER/ZFER/ZFZR-Selbstauskunft).
+    // Format: FAER-AK-YYYY-NNNNNNNN (8-stellige Sequenz; eine Stelle für die
+    // FAER-Auskunft-Mock).
+    name: 'KBA — FAER-Auskunft FAER-AK-YYYY-NNNNNNNN',
+    regex: new RegExp(`^${MOCK}FAER-AK-\\d{4}-\\d{7,8}$`),
+    behoerdeIds: ['kba-flensburg'],
+  },
 ];
 
 // Sekundär-Aktenzeichen (`aktenzeichen_weitere`).

@@ -3,6 +3,8 @@ import { getTranslations } from 'next-intl/server';
 
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 import { ThemeToggle } from '@/components/layout/ThemeToggle';
+import { PrototypeDisclaimer } from '@/components/shared/PrototypeDisclaimer';
+import { PrototypeDisclaimerBanner } from '@/components/shared/PrototypeDisclaimerBanner';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default async function HomePage() {
@@ -16,6 +18,7 @@ export default async function HomePage() {
 
   return (
     <main className="min-h-screen bg-background">
+      <PrototypeDisclaimerBanner />
       <header className="flex items-center justify-end gap-2 px-6 pt-6">
         <LanguageSwitcher />
         <ThemeToggle />
@@ -64,6 +67,8 @@ export default async function HomePage() {
             ))}
           </ul>
         </section>
+
+        <PrototypeDisclaimer defaultOpen />
       </section>
     </main>
   );

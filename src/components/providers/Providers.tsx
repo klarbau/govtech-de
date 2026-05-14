@@ -2,6 +2,7 @@
 
 import { ThemeProvider } from 'next-themes';
 
+import { MotionProvider } from '@/components/providers/motion-provider';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Toaster } from '@/components/ui/sonner';
 
@@ -17,10 +18,12 @@ export function Providers({ children }: ProvidersProps) {
       enableSystem
       disableTransitionOnChange
     >
-      <TooltipProvider>
-        {children}
-        <Toaster richColors closeButton />
-      </TooltipProvider>
+      <MotionProvider>
+        <TooltipProvider>
+          {children}
+          <Toaster richColors closeButton />
+        </TooltipProvider>
+      </MotionProvider>
     </ThemeProvider>
   );
 }

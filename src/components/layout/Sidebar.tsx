@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import {
   CalendarClock,
@@ -10,11 +9,12 @@ import {
   MessageSquareText,
   ReceiptText,
   Shield,
-  UserRound,
   Users,
 } from 'lucide-react';
 
 import type { ComponentType, SVGProps } from 'react';
+
+import { SidebarNavItem } from './SidebarNavItem';
 
 interface NavItem {
   href: string;
@@ -25,7 +25,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { href: '/dashboard', i18nKey: 'dashboard', icon: Home },
   { href: '/posteingang', i18nKey: 'posteingang', icon: Inbox },
-  { href: '/stammdaten', i18nKey: 'stammdaten', icon: UserRound },
+  { href: '/stammdaten', i18nKey: 'stammdaten', icon: Landmark },
   { href: '/vorgaenge', i18nKey: 'vorgaenge', icon: FolderKanban },
   { href: '/dokumente', i18nKey: 'dokumente', icon: FileText },
   { href: '/termine', i18nKey: 'termine', icon: CalendarClock },
@@ -43,6 +43,7 @@ export async function Sidebar() {
     <aside
       className="hidden w-64 shrink-0 border-r border-border bg-sidebar text-sidebar-foreground md:flex md:flex-col"
       aria-label={tApp('name')}
+      data-print="hide"
     >
       <div className="flex h-14 items-center gap-2 border-b border-border px-4">
         <Landmark className="size-5 text-primary" aria-hidden="true" />
@@ -52,13 +53,11 @@ export async function Sidebar() {
         <ul className="flex flex-col gap-0.5">
           {navItems.map(({ href, i18nKey, icon: Icon }) => (
             <li key={href}>
-              <Link
+              <SidebarNavItem
                 href={href}
-                className="group flex items-center gap-2 rounded-md px-3 py-2 text-sm text-sidebar-foreground/80 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:bg-sidebar-accent focus-visible:text-sidebar-accent-foreground"
-              >
-                <Icon className="size-4 shrink-0 text-muted-foreground group-hover:text-sidebar-accent-foreground" aria-hidden="true" />
-                <span>{t(i18nKey)}</span>
-              </Link>
+                label={t(i18nKey)}
+                icon={<Icon className="size-4" aria-hidden="true" />}
+              />
             </li>
           ))}
         </ul>

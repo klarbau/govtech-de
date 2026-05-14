@@ -71,6 +71,18 @@
     }
   },
   "umzug": {
+    "wizard": {
+      "aria_label": "Taşınma asistanı (Umzug) — ilerleme",
+      "step_label_template": "Adım {current} / {total}",
+      "step_status_done": "tamamlandı",
+      "step_status_current": "mevcut",
+      "step_status_upcoming": "bekliyor",
+      "steps": {
+        "adresse": "Adres",
+        "vorschau": "Önizleme",
+        "autopilot": "Otomatik pilot çalışıyor"
+      }
+    },
     "start": {
       "title": "Adres değişikliği",
       "subtitle": "Birkaç adımda ilgili tüm kurumları bilgilendirelim.",
@@ -105,6 +117,8 @@
     "preview": {
       "title": "Önizleme: onayladığınızda neler oluyor",
       "subtitle_template": "Yeni adres: {adresse} · {stichtag} itibarıyla",
+      "hero_title_template": "Otomatik pilot hazır — {count, plural, =0 {hiçbir kurum} =1 {1 kurum} other {# kurum}} bilgilendirilecek",
+      "hero_subtitle": "Aşağıdaki adımlar dört blok hâlinde yürütülür. Her aşamada kontrol sizde kalır.",
       "block_a": {
         "title": "Sizin yerinize otomatik yapıyoruz",
         "subhead": "§ 33 BMG · § 34 BMG · § 36 BMG"
@@ -221,6 +235,7 @@
     "list": {
       "tab_chronologisch": "Zaman sırasıyla",
       "tab_nach_vorgang": "İşleme (Vorgang) göre grupla",
+      "tab_filter_badge_aria": "{count, plural, =1 {1 aktif filtre} other {# aktif filtre}}",
       "group": {
         "neu": "Yeni",
         "frist_unter_7d": "Süre ≤ 7 gün",
@@ -313,7 +328,12 @@
       },
       "datenschutz_link": "Bu yazının hangi verileri nerede işlendi?",
       "datenschutz_link_aria": "Bu yazı için veri koruma kabinini aç",
-      "utility_row_aria": "Yazı yardımcı eylemleri"
+      "utility_row_aria": "Yazı yardımcı eylemleri",
+      "action_hint": {
+        "antwort_erforderlich": "Yanıt gerekli",
+        "zur_kenntnis": "Bilginize",
+        "erledigt": "Tamamlandı"
+      }
     },
     "gruppe": {
       "titel_template": "İşlem (Vorgang): {titel} ({count})",
@@ -413,6 +433,8 @@
       }
     },
     "was_kann_ich_tun": {
+      "hint_zahlung": "Ek ödemeniz var — seçenekler: itiraz edin (Einspruch, hesaplama yanlışsa) veya yürütmenin durdurulmasını talep edin (Aussetzung der Vollziehung, şu anda ödeme yapılamıyorsa).",
+      "hint_frist": "Süre içinde şunları yapabilirsiniz: itiraz edin (Einspruch) VEYA yürütmenin durdurulmasını talep edin (Aussetzung der Vollziehung) VEYA görmezden gelin (gecikme cezası — Säumniszuschlag — tahakkuk eder).",
       "steuerbescheid": {
         "zahlung": "Ödemeyi yapın",
         "einspruch": "İtiraz edin (Einspruch, 1 ay içinde, § 355 AO)",
@@ -734,6 +756,12 @@
       },
       "speculative_banner_title": "2027 itibarıyla — kavramsal tasarım"
     },
+    "reply": {
+      "skeleton_disclaimer": "Hukuki şablonlara göre oluşturulmuş ön metin — lütfen kontrol edin ve gerekirse uyarlayın.",
+      "body_preview_heading": "Gönderilen yanıtın içeriği",
+      "body_preview_full_toggle": "Tamamını göster",
+      "body_preview_full_toggle_close": "Daralt"
+    },
     "draft": {
       "group_title_template": "Taslaklar ({count})",
       "row_label_template": "Taslak: {behoerde} kurumuna yanıt",
@@ -783,7 +811,30 @@
       "vision_2027_banner_title": "2027 vizyonu: BundID + DSC + EUDI Wallet yakınsaması",
       "vision_2027_banner_body": "Bu kişisel veri görünümü, varsayımsal 2027 tablosunda — BundID ana veri servisi, Kimlik Numarası Kanunu (Identifikationsnummerngesetz, IDNrG) uyarınca veri koruma kokpiti (Datenschutzcockpit) ve EUDI Cüzdan PID'si — yakınsamış bir yurttaş görünümünün nasıl olabileceğini gösterir. Bugün (Mayıs 2026) bu yakınsama henüz sağlanmamıştır.",
       "disclaimer_lese_title": "Not: okuma ve yönlendirme katmanı",
-      "disclaimer_audit_title": "Not: uygulama içi etkinlik günlüğü"
+      "disclaimer_audit_title": "Not: uygulama içi etkinlik günlüğü",
+      "summary_prominent": "{register_count} kamu kayıt sisteminde kayıtlısınız.",
+      "last_transmission_short": "Son iletim {dauer} önce.",
+      "disclaimer_section_label": "Okuma katmanına ilişkin açıklamalar"
+    },
+    "section_nav": {
+      "label": "Kişisel veri bölümleri",
+      "jump_to": "Bölüme atla",
+      "items": {
+        "identitaet": "Kimlik",
+        "anschrift": "Adres",
+        "familie": "Aile",
+        "altersvorsorge": "Emeklilik",
+        "krankenversicherung_pflege": "Sağlık ve bakım",
+        "mobilitaet": "Hareketlilik",
+        "dokumente": "Belgeler",
+        "sperren_einstellungen": "Engeller"
+      }
+    },
+    "mdl_teaser": {
+      "title": "Dijital sürücü belgesi Wallet'ta",
+      "body": "Sürücü belgeniz (Fahrerlaubnis) Wallet'ta mobil sürücü belgesi (mDL, ISO/IEC 18013-5) olarak önizlemeye hazır.",
+      "cta": "Wallet'ta görüntüle",
+      "vision_pill": "2029 vizyonu"
     },
     "sektion": {
       "identitaet": { "title": "Kimlik" },
@@ -801,6 +852,13 @@
       },
       "kontakt_postfach": { "title": "İletişim ve posta kutusu (Kontakt & Postfach)" },
       "notification_praeferenzen": { "title": "Bildirim tercihleri (2027 vizyonu)" },
+      "mobilitaet": {
+        "preview_no_fe": "Kayıtlı sürücü belgesi (Fahrerlaubnis) yok",
+        "preview_fe_classes": "Sınıf {klassen}",
+        "preview_fe_with_pflichtumtausch": "Sınıf {klassen} — zorunlu değişim (Pflichtumtausch) {stichtag} tarihine kadar",
+        "preview_fe_only": "Sınıf {klassen} · ihtiyaç hâlinde puan durumu (Punktestand)",
+        "preview_halter_count": "{count, plural, =0 {sahibi olarak araç yok} =1 {sahibi olarak 1 araç} other {sahibi olarak # araç}}"
+      },
       "sr_field_count": "{count, plural, =1 {Bu bölümde 1 alan} other {Bu bölümde # alan}}",
       "aktivitaet_aside_label": "Bu bölümün etkinlik günlüğü"
     },
@@ -1069,15 +1127,18 @@
         "body_regelalter_template": "{eur} ay başına.",
         "body_anpassungen_template": "yıllık {prozent} % oranında emekliliğe kadar yaklaşık +{plus} ay başına.",
         "body_beitrag_template": "{gesamt} toplam (siz: {versicherter}; işveren: {arbeitgeber})."
+      },
+      "zfdr_wegweiser": {
+        "title": "Tüm taşıyıcılar üzerinden genel bakış: Dijital emeklilik özeti (Digitale Rentenübersicht)",
+        "cta": "Dijital emeklilik özetine git (rentenuebersicht.de)"
+      },
+      "track_c": {
+        "empty_state_title": "Emeklilik bilgisi yok",
+        "empty_state_body": "Yasal emeklilik sigortasında (GRV) zorunlu sigortalı olmadığınız için emeklilik bilginiz (Renteninformation) bulunmamaktadır. Özel sağlık sigortası (PKV) için Dijital emeklilik özeti (ZfDR) gibi merkezi bir toplayıcı yoktur — sigortacınızın uygulamasını kullanmanız gerekir. Seçenekler: 1) gönüllü yasal emeklilik sigortası (§ 7 SGB VI), 2) özel emekliliği gözden geçirin, 3) mesleğiniz zorunlu sigortayı gerektiriyorsa (§ 2 SGB VI), zorunlu sigorta için başvuru yapın."
+      },
+      "anrechnungszeiten": {
+        "title": "Sayılan süreler (Anrechnungszeiten)"
       }
-    },
-    "zfdr_wegweiser": {
-      "title": "Tüm taşıyıcılar üzerinden genel bakış: Dijital emeklilik özeti (Digitale Rentenübersicht)",
-      "cta": "Dijital emeklilik özetine git (rentenuebersicht.de)"
-    },
-    "track_c": {
-      "empty_state_title": "Emeklilik bilgisi yok",
-      "empty_state_body": "Yasal emeklilik sigortasında (GRV) zorunlu sigortalı olmadığınız için emeklilik bilginiz (Renteninformation) bulunmamaktadır. Özel sağlık sigortası (PKV) için Dijital emeklilik özeti (ZfDR) gibi merkezi bir toplayıcı yoktur — sigortacınızın uygulamasını kullanmanız gerekir. Seçenekler: 1) gönüllü yasal emeklilik sigortası (§ 7 SGB VI), 2) özel emekliliği gözden geçirin, 3) mesleğiniz zorunlu sigortayı gerektiriyorsa (§ 2 SGB VI), zorunlu sigorta için başvuru yapın."
     },
     "kv_pflege": {
       "krankenkasse": {

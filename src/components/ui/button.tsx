@@ -18,6 +18,13 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90 focus-visible:border-destructive focus-visible:ring-destructive/40 dark:hover:bg-destructive/90 dark:focus-visible:ring-destructive/50",
         link: "text-primary underline-offset-4 hover:underline",
+        // design-system-v2 Phase 5b — Canary variant consuming OKLCH tokens.
+        // Additive: does NOT replace `default`. Use `variant="ds-primary"` to
+        // opt a single call-site in to the new Trust-Blau accent family.
+        // Focus-ring uses --ds-color-accent at 2 px outline + 2 px offset
+        // (HL-DS-7 UI-component contrast >= 3:1 via accent on surface).
+        "ds-primary":
+          "bg-[var(--ds-color-accent)] text-[var(--ds-color-accent-foreground)] hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline focus-visible:outline-[var(--ds-color-accent)]",
       },
       size: {
         default:
@@ -31,6 +38,10 @@ const buttonVariants = cva(
         "icon-sm":
           "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
         "icon-lg": "size-9",
+        // design-system-v2 Phase 5b — touch-target floor (HL-DS-8 >= 44 px).
+        // Used with `variant="ds-primary"` for the canary call-site.
+        // Full size-5e rollout (min-h-[48px] for `default`) lives in Phase 5d.
+        ds: "min-h-[44px] gap-1.5 px-4 text-base has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3",
       },
     },
     defaultVariants: {

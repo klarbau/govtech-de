@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { ArrowRight, ExternalLink } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
 
 import { Button } from '@/components/ui/button';
 import { ConsentToggle } from '@/components/shared/ConsentToggle';
@@ -58,6 +59,7 @@ export function CascadePreview({
   isStarting = false,
 }: CascadePreviewProps) {
   const t = useTranslations('umzug.preview');
+  const shouldReduceMotion = useReducedMotion();
   const [consents, setConsents] = useState<Set<BehoerdeId>>(
     () => new Set(defaultConsent),
   );
@@ -77,11 +79,31 @@ export function CascadePreview({
     onStart(Array.from(consents));
   }
 
+  const stepCount =
+    preview.block_a.length +
+    preview.block_b.length +
+    (showBlockD ? preview.block_d.length : 0);
+
   return (
-    <div className="flex flex-col gap-8">
+    <motion.div
+      className="flex flex-col gap-[var(--ds-space-fixed-30,2rem)]"
+      animate={{
+        opacity: isStarting && !shouldReduceMotion ? 0.6 : 1,
+      }}
+      transition={{ duration: 0.4, ease: [0.65, 0, 0.35, 1] }}
+      aria-busy={isStarting || undefined}
+    >
+      <header className="flex flex-col gap-2">
+        <h1 className="text-[length:var(--ds-text-h2,2.25rem)] font-semibold leading-[var(--ds-line-h2,1.111)] tracking-tight text-foreground">
+          {t('hero_title_template', { count: stepCount })}
+        </h1>
+        <p className="text-muted-foreground">{t('hero_subtitle')}</p>
+      </header>
+
       <CascadeBlock
         id="block-a"
         block="A"
+        primary
         title={t('block_a.title')}
         subhead={t('block_a.subhead')}
         rechtsgrundlagen={blockARechtsgrundlagen}
@@ -205,6 +227,6 @@ export function CascadePreview({
           {t('cta_start_autopilot')}
         </Button>
       </div>
-    </div>
+    </motion.div>
   );
 }

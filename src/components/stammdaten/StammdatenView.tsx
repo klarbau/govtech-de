@@ -10,7 +10,12 @@ import { toast } from 'sonner';
 
 import { api } from '@/lib/mock-backend';
 import { cn } from '@/lib/utils';
-import type { Behoerde, Persona } from '@/types';
+import type {
+  Behoerde,
+  MdlAttestationMock,
+  Mobilitaet,
+  Persona,
+} from '@/types';
 import type {
   Stammdaten,
   StammdatenSektionId,
@@ -20,10 +25,15 @@ import type {
 } from '@/types/stammdaten';
 
 import { IbanSpeculativePushModal, type IbanSpeculativePushTargets } from './IbanSpeculativePushModal';
+import { MdlTeaserCard } from './MdlTeaserCard';
 import { ReligionConsentModal } from './ReligionConsentModal';
 import { SperrenAktivierenConfirmDialog } from './SperrenAktivierenConfirmDialog';
 import { StammdatenFieldCard } from './StammdatenFieldCard';
 import { StammdatenHero } from './StammdatenHero';
+import {
+  StammdatenSectionNav,
+  type StammdatenSectionNavKey,
+} from './StammdatenSectionNav';
 import { StammdatenSektion } from './StammdatenSektion';
 import {
   UebermittlungsLogList,
@@ -44,6 +54,8 @@ import type {
   AnrechnungszeitEntry,
 } from './AnrechnungszeitenList';
 import type { RentenEckdatenView } from './YellowLetterEchoCard';
+import { MobilitaetSektion } from './mobilitaet/MobilitaetSektion';
+import type { PunkteResultView } from './mobilitaet/PunkteResultCard';
 import { Button } from '@/components/ui/button';
 
 interface StammdatenViewProps {
@@ -60,6 +72,8 @@ interface Loaded {
   log: UebermittlungsLogEntry[];
   altersvorsorge: NonNullable<Stammdaten['altersvorsorge']> | null;
   kvPflege: NonNullable<Stammdaten['krankenversicherung_pflege']> | null;
+  mobilitaet: Mobilitaet | null;
+  mdl: MdlAttestationMock | null;
 }
 
 /**
@@ -112,14 +126,24 @@ export function StammdatenView({ nowIso }: StammdatenViewProps) {
       const behoerdenById: Record<string, Behoerde> = {};
       for (const b of behoerden) behoerdenById[b.id] = b;
 
-      const [stammdaten, log, walletAttestations, altersvorsorge, kvPflege] =
-        await Promise.all([
-          api.getStammdaten(persona.id),
-          api.getUebermittlungsLog(persona.id, { limit: 50 }),
-          api.getWalletAttestations(persona.id),
-          api.getAltersvorsorge(persona.id),
-          api.getKrankenversicherungPflege(persona.id),
-        ]);
+      const [
+        stammdaten,
+        log,
+        walletAttestations,
+        altersvorsorge,
+        kvPflege,
+        mobilitaet,
+        mdl,
+      ] = await Promise.all([
+        api.getStammdaten(persona.id),
+        api.getUebermittlungsLog(persona.id, { limit: 50 }),
+        api.getWalletAttestations(persona.id),
+        api.getAltersvorsorge(persona.id),
+        api.getKrankenversicherungPflege(persona.id),
+        api.getMobilitaet(persona.id),
+        api.getMdlAttestation(persona.id),
+      ]);
+
       setData({
         stammdaten,
         persona,
@@ -128,6 +152,8 @@ export function StammdatenView({ nowIso }: StammdatenViewProps) {
         log,
         altersvorsorge,
         kvPflege,
+        mobilitaet,
+        mdl,
       });
     } catch (err) {
       if (typeof console !== 'undefined') console.error(err);
@@ -168,6 +194,8 @@ export function StammdatenView({ nowIso }: StammdatenViewProps) {
     log,
     altersvorsorge,
     kvPflege,
+    mobilitaet,
+    mdl,
   } = data;
 
   // V1.1 — derive sektionen-data aus Persona + altersvorsorge / kvPflege.
@@ -211,6 +239,8 @@ export function StammdatenView({ nowIso }: StammdatenViewProps) {
           nowIso={nowIso}
           altersvorsorgeData={altersvorsorgeData}
           kvPflegeData={kvPflegeData}
+          mobilitaet={mobilitaet}
+          mdl={mdl}
           onOpenReligion={() => setReligionModalOpen(true)}
           onOpenIban={() => setIbanModalOpen(true)}
           onOpenSperre={(variante, sperreId, label) =>
@@ -380,6 +410,8 @@ interface ProfilTabProps {
   nowIso: string;
   altersvorsorgeData: AltersvorsorgeSektionData | null;
   kvPflegeData: KvPflegeSektionData | null;
+  mobilitaet: Mobilitaet | null;
+  mdl: MdlAttestationMock | null;
   onOpenReligion: () => void;
   onOpenIban: () => void;
   onOpenSperre: (
@@ -399,6 +431,8 @@ function ProfilTab({
   nowIso,
   altersvorsorgeData,
   kvPflegeData,
+  mobilitaet,
+  mdl,
   onOpenReligion,
   onOpenIban,
   onOpenSperre,
@@ -422,6 +456,18 @@ function ProfilTab({
   const filterLog = (sektion: StammdatenSektionId) =>
     log.filter((e) => e.sektion === sektion).slice(0, 5);
 
+  // Phase-6c — In-Page-ToC: nur Sektionen aufnehmen, die tatsächlich gerendert
+  // werden. Render-Order entspricht der JSX-Reihenfolge unten.
+  const sectionNavKeys: StammdatenSectionNavKey[] = [
+    'identitaet',
+    'anschrift',
+    'familie',
+  ];
+  if (altersvorsorgeData) sectionNavKeys.push('altersvorsorge');
+  if (kvPflegeData) sectionNavKeys.push('krankenversicherung_pflege');
+  if (mobilitaet) sectionNavKeys.push('mobilitaet');
+  sectionNavKeys.push('dokumente', 'sperren_einstellungen');
+
   return (
     <div className="flex flex-col gap-5">
       <StammdatenHero
@@ -432,6 +478,12 @@ function ProfilTab({
         disclaimerMeta={stammdaten.disclaimer_meta}
         nowIso={nowIso}
       />
+
+      {/* Phase-6c — mDL-Teaser, nur wenn Persona eine mDL-Attestation hat. */}
+      {mdl && <MdlTeaserCard />}
+
+      {/* Phase-6c — In-Page-Section-Navigation (Audit-Finding #2). */}
+      <StammdatenSectionNav sections={sectionNavKeys} />
 
       {/* V1.2 — page-level Aktivitätsprotokoll mit Richtung-Filter
           (Spec § 6.11 / Hard-Line § 11.40). */}
@@ -716,6 +768,47 @@ function ProfilTab({
           data={kvPflegeData}
           onRequestPflegegradConsent={onOpenPflegegrad}
           onEpaBannerSeen={onEpaBannerSeen}
+        />
+      )}
+
+      {/* V1.3 — Sektion: Mobilität (zwischen Pflege und Kontakt, Spec § 3.1). */}
+      {mobilitaet && (
+        <MobilitaetSektion
+          data={{
+            fahrerlaubnis: mobilitaet.fahrerlaubnis
+              ? {
+                  fe_nr: mobilitaet.fahrerlaubnis.fe_nr,
+                  fe_behoerde_id: mobilitaet.fahrerlaubnis.fe_behoerde_id,
+                  bundesland_kennzeichen:
+                    mobilitaet.fahrerlaubnis.bundesland_kennzeichen,
+                  ausstellungsdatum:
+                    mobilitaet.fahrerlaubnis.ausstellungsdatum,
+                  fe_aktenzeichen: mobilitaet.fahrerlaubnis.fe_aktenzeichen,
+                  klassen: mobilitaet.fahrerlaubnis.klassen,
+                  pflichtumtausch_status:
+                    mobilitaet.fahrerlaubnis.pflichtumtausch_status,
+                  pflichtumtausch_stichtag:
+                    mobilitaet.fahrerlaubnis.pflichtumtausch_stichtag,
+                  pflichtumtausch_erfolgt_am:
+                    mobilitaet.fahrerlaubnis.pflichtumtausch_erfolgt_am,
+                }
+              : undefined,
+            halter: mobilitaet.halter,
+            halter_adresse: mobilitaet.halter_adresse,
+            show_eat_stufe4_pill: persona.eat_can !== undefined,
+          }}
+          behoerdenById={behoerdenById}
+          onPunktestandPull={async () => {
+            const r = await api.getPunktestandOnDemand(persona.id);
+            const view: PunkteResultView = {
+              punkte: r.punkte,
+              abgerufen_am: r.abgerufen_am,
+              ttl_seconds: r.ttl_seconds,
+              stichtag: r.stichtag,
+              aktenzeichen: r.aktenzeichen,
+            };
+            return view;
+          }}
         />
       )}
 

@@ -323,15 +323,24 @@ export function PosteingangInbox({ initial }: PosteingangInboxProps) {
               searchQuery={searchQuery}
               onSearchChange={setSearchQuery}
               behoerdenNameById={behoerdenNameMap}
+              filterCount={kategorien.length}
               className="flex-1"
             />
           </div>
 
-          <ActiveFilterChips
-            selected={kategorien}
-            onRemove={(k) => setKategorien((prev) => prev.filter((x) => x !== k))}
-            onClearAll={resetFilter}
-          />
+          {/* Phase 6b (Audit #4) — ActiveFilterChips visuell prominenter:
+              eigene Surface mit Border, Padding und ausgeschriebenem Label. */}
+          {kategorien.length > 0 && (
+            <div className="rounded-md border border-[var(--ds-color-border)] bg-[var(--ds-color-surface-muted)] px-3 py-2">
+              <ActiveFilterChips
+                selected={kategorien}
+                onRemove={(k) =>
+                  setKategorien((prev) => prev.filter((x) => x !== k))
+                }
+                onClearAll={resetFilter}
+              />
+            </div>
+          )}
         </div>
 
         {error && (

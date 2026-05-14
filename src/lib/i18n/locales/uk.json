@@ -71,6 +71,18 @@
     }
   },
   "umzug": {
+    "wizard": {
+      "aria_label": "Помічник переїзду (Umzug) — хід виконання",
+      "step_label_template": "Крок {current} з {total}",
+      "step_status_done": "завершено",
+      "step_status_current": "поточний",
+      "step_status_upcoming": "очікує",
+      "steps": {
+        "adresse": "Адреса",
+        "vorschau": "Попередній перегляд",
+        "autopilot": "Автопілот виконується"
+      }
+    },
     "start": {
       "title": "Переїзд",
       "subtitle": "За кілька кроків повідомимо всі потрібні відомства.",
@@ -105,6 +117,8 @@
     "preview": {
       "title": "Перегляд: що відбудеться після підтвердження",
       "subtitle_template": "Нова адреса: {adresse} · з {stichtag}",
+      "hero_title_template": "Автопілот готовий — повідомимо {count, plural, =0 {жодного відомства} =1 {1 відомство} few {# відомства} many {# відомств} other {# відомства}}",
+      "hero_subtitle": "Наступні кроки виконуються в чотирьох блоках. Ви зберігаєте контроль на кожному етапі.",
       "block_a": {
         "title": "Зробимо за Вас автоматично",
         "subhead": "§ 33 BMG · § 34 BMG · § 36 BMG"
@@ -221,6 +235,7 @@
     "list": {
       "tab_chronologisch": "За часом",
       "tab_nach_vorgang": "Згрупувати за справою (Vorgang)",
+      "tab_filter_badge_aria": "{count, plural, =1 {1 активний фільтр} few {# активних фільтри} many {# активних фільтрів} other {# активного фільтра}}",
       "group": {
         "neu": "Нове",
         "frist_unter_7d": "Строк ≤ 7 днів",
@@ -313,7 +328,12 @@
       },
       "datenschutz_link": "Які дані з цього листа і де оброблялися?",
       "datenschutz_link_aria": "Відкрити кабінет даних для цього листа",
-      "utility_row_aria": "Допоміжні дії з листом"
+      "utility_row_aria": "Допоміжні дії з листом",
+      "action_hint": {
+        "antwort_erforderlich": "Потрібна відповідь",
+        "zur_kenntnis": "До відома",
+        "erledigt": "Виконано"
+      }
     },
     "gruppe": {
       "titel_template": "Справа (Vorgang): {titel} ({count})",
@@ -413,6 +433,8 @@
       }
     },
     "was_kann_ich_tun": {
+      "hint_zahlung": "У Вас є доплата — варіанти: подати заперечення (Einspruch, якщо розрахунок неправильний) або клопотати про зупинення виконання (Aussetzung der Vollziehung, якщо сплатити зараз неможливо).",
+      "hint_frist": "У межах строку Ви можете: подати заперечення (Einspruch) АБО клопотати про зупинення виконання (Aussetzung der Vollziehung) АБО проігнорувати (нараховуватиметься пеня за прострочення — Säumniszuschlag).",
       "steuerbescheid": {
         "zahlung": "Здійснити оплату",
         "einspruch": "Подати заперечення (Einspruch, протягом 1 місяця, § 355 AO)",
@@ -734,6 +756,12 @@
       },
       "speculative_banner_title": "Станом на 2027 — умоглядний сценарій"
     },
+    "reply": {
+      "skeleton_disclaimer": "Згенерований преамбульний текст за юридичними шаблонами — будь ласка, перевірте та за потреби скоригуйте.",
+      "body_preview_heading": "Зміст надісланої відповіді",
+      "body_preview_full_toggle": "Показати повністю",
+      "body_preview_full_toggle_close": "Згорнути"
+    },
     "draft": {
       "group_title_template": "Чернетки ({count})",
       "row_label_template": "Чернетка: відповідь до {behoerde}",
@@ -783,7 +811,30 @@
       "vision_2027_banner_title": "Бачення 2027: конвергенція BundID + DSC + EUDI Wallet",
       "vision_2027_banner_body": "Це представлення особистих даних показує, як могла б виглядати конвергована картина для громадянина в гіпотетичному 2027 році — служба основних даних BundID, кокпіт захисту даних (Datenschutzcockpit) згідно із Законом про ідентифікаційний номер (Identifikationsnummerngesetz, IDNrG) та PID гаманця EUDI. Сьогодні (травень 2026) така конвергенція ще не досягнута.",
       "disclaimer_lese_title": "Примітка: шар для читання та навігації",
-      "disclaimer_audit_title": "Примітка: внутрішній журнал активності застосунку"
+      "disclaimer_audit_title": "Примітка: внутрішній журнал активності застосунку",
+      "summary_prominent": "Ви зареєстровані у {register_count} державних реєстрах.",
+      "last_transmission_short": "Остання передача — {dauer} тому.",
+      "disclaimer_section_label": "Пояснення до шару читання"
+    },
+    "section_nav": {
+      "label": "Розділи персональних даних",
+      "jump_to": "Перейти до розділу",
+      "items": {
+        "identitaet": "Особа",
+        "anschrift": "Адреса",
+        "familie": "Сім'я",
+        "altersvorsorge": "Пенсія",
+        "krankenversicherung_pflege": "Страхування та догляд",
+        "mobilitaet": "Мобільність",
+        "dokumente": "Документи",
+        "sperren_einstellungen": "Блокування"
+      }
+    },
+    "mdl_teaser": {
+      "title": "Цифрове посвідчення водія в Wallet",
+      "body": "Ваш дозвіл на керування транспортом (Fahrerlaubnis) доступний у Wallet для попереднього перегляду як мобільне посвідчення водія (mDL, ISO/IEC 18013-5).",
+      "cta": "Відкрити в Wallet",
+      "vision_pill": "Візія 2029"
     },
     "sektion": {
       "identitaet": { "title": "Особа" },
@@ -801,6 +852,13 @@
       },
       "kontakt_postfach": { "title": "Контакт і поштова скринька (Kontakt & Postfach)" },
       "notification_praeferenzen": { "title": "Налаштування сповіщень (Бачення 2027)" },
+      "mobilitaet": {
+        "preview_no_fe": "Дозвіл на керування транспортом (Fahrerlaubnis) не зареєстровано",
+        "preview_fe_classes": "Категорія {klassen}",
+        "preview_fe_with_pflichtumtausch": "Категорія {klassen} — обов'язковий обмін (Pflichtumtausch) до {stichtag}",
+        "preview_fe_only": "Категорія {klassen} · бали (Punktestand) на запит",
+        "preview_halter_count": "{count, plural, =0 {немає ТЗ як у власника} =1 {1 ТЗ як у власника} few {# ТЗ як у власника} many {# ТЗ як у власника} other {# ТЗ як у власника}}"
+      },
       "sr_field_count": "{count, plural, =1 {1 поле в цьому розділі} few {# поля в цьому розділі} many {# полів у цьому розділі} other {# поля в цьому розділі}}",
       "aktivitaet_aside_label": "Журнал активності цього розділу"
     },
@@ -1069,15 +1127,18 @@
         "body_regelalter_template": "{eur} на місяць.",
         "body_anpassungen_template": "за {prozent} % річних близько +{plus} на місяць до виходу на пенсію.",
         "body_beitrag_template": "{gesamt} разом (Ви: {versicherter}; роботодавець: {arbeitgeber})."
+      },
+      "zfdr_wegweiser": {
+        "title": "Зведений огляд по всіх носіях: Цифровий пенсійний огляд (Digitale Rentenübersicht)",
+        "cta": "Перейти до Цифрового пенсійного огляду (rentenuebersicht.de)"
+      },
+      "track_c": {
+        "empty_state_title": "Інформація про пенсію відсутня",
+        "empty_state_body": "У Вас немає інформації про пенсію (Renteninformation), оскільки Ви не підлягаєте обов'язковому страхуванню в державній пенсійній системі (GRV). Для приватного медичного страхування (PKV) немає єдиного агрегатора на кшталт Цифрового пенсійного огляду (ZfDR) — потрібно користуватися застосунком Вашого страховика. Варіанти: 1) добровільна участь у державній пенсійній системі (§ 7 SGB VI), 2) перевірити приватне забезпечення, 3) якщо Ваша професія передбачає обов'язкове страхування (§ 2 SGB VI), подати заяву про обов'язкове страхування."
+      },
+      "anrechnungszeiten": {
+        "title": "Зараховувані періоди (Anrechnungszeiten)"
       }
-    },
-    "zfdr_wegweiser": {
-      "title": "Зведений огляд по всіх носіях: Цифровий пенсійний огляд (Digitale Rentenübersicht)",
-      "cta": "Перейти до Цифрового пенсійного огляду (rentenuebersicht.de)"
-    },
-    "track_c": {
-      "empty_state_title": "Інформація про пенсію відсутня",
-      "empty_state_body": "У Вас немає інформації про пенсію (Renteninformation), оскільки Ви не підлягаєте обов'язковому страхуванню в державній пенсійній системі (GRV). Для приватного медичного страхування (PKV) немає єдиного агрегатора на кшталт Цифрового пенсійного огляду (ZfDR) — потрібно користуватися застосунком Вашого страховика. Варіанти: 1) добровільна участь у державній пенсійній системі (§ 7 SGB VI), 2) перевірити приватне забезпечення, 3) якщо Ваша професія передбачає обов'язкове страхування (§ 2 SGB VI), подати заяву про обов'язкове страхування."
     },
     "kv_pflege": {
       "krankenkasse": {

@@ -111,6 +111,8 @@ export function ReplySheet({
   const t = useTranslations('posteingang.compose');
   const tTemplates = useTranslations('posteingang.compose.templates');
   const tPicker = useTranslations('posteingang.compose.template_picker');
+  // Phase 6b — neuer i18n-Tree für Skelett-Banner (`posteingang.reply.*`).
+  const tReply = useTranslations('posteingang.reply');
 
   const [formState, setFormState] = React.useState<FormState>({
     template: 'freitext',
@@ -931,6 +933,20 @@ export function ReplySheet({
                   >
                     {t('body_textarea_label')}
                   </label>
+                  {/* Phase 6b — Skelett-Banner über Textarea (Audit-Finding #2).
+                      Sichtbar, sobald ein Skelett-Template einen Vortext in
+                      `formState.body` geschrieben hat — markiert deutlich, dass
+                      User den Inhalt prüfen muss. Verschieden vom unten stehenden
+                      `skelett_footer_no_legal_advice` (RDG-Hinweis). */}
+                  {currentIsSkelett && formState.body.trim().length > 0 && (
+                    <div
+                      role="note"
+                      data-testid="reply-skeleton-banner"
+                      className="rounded-md border-l-4 border-[var(--ds-color-warning)] bg-[var(--ds-color-warning-soft)] p-3 text-sm text-amber-950 dark:text-[var(--ds-color-text-primary)]"
+                    >
+                      {tReply('skeleton_disclaimer')}
+                    </div>
+                  )}
                   <textarea
                     id="reply-body"
                     aria-describedby="reply-body-hint"

@@ -61,8 +61,12 @@ export function StammdatenSektion({
 
   return (
     <section
+      id={sektionId}
       aria-labelledby={titleId}
-      className={cn('rounded-xl border border-border bg-card', className)}
+      className={cn(
+        'scroll-mt-24 rounded-xl border border-border bg-card',
+        className,
+      )}
       data-testid={`sektion-${sektionId}`}
     >
       <details

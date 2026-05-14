@@ -19,6 +19,7 @@ import {
 import { PrototypeDisclaimer } from '@/components/shared/PrototypeDisclaimer';
 import { AutopilotTimeline } from '@/components/umzug/AutopilotTimeline';
 import { EidConfirmDialog } from '@/components/umzug/EidConfirmDialog';
+import { WizardProgress } from '@/components/umzug/WizardProgress';
 import { api } from '@/lib/mock-backend/api';
 import type {
   AutopilotStep,
@@ -134,18 +135,21 @@ function UmzugRunInner() {
 
   return (
     <div className="flex flex-col gap-8">
-      <header className="flex flex-col gap-2">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          {vorgangId ? t('vorgang_label', { id: vorgangId }) : ''}
-        </p>
-        <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-          {t('title')}
-        </h1>
-        {subtitle ? (
-          <p className="text-muted-foreground">
-            {t('subtitle_template', subtitle)}
+      <header className="flex flex-col gap-4">
+        <WizardProgress currentStep={2} />
+        <div className="flex flex-col gap-2">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground tabular-nums">
+            {vorgangId ? t('vorgang_label', { id: vorgangId }) : ''}
           </p>
-        ) : null}
+          <h1 className="text-3xl font-semibold tracking-tight text-foreground">
+            {t('title')}
+          </h1>
+          {subtitle ? (
+            <p className="text-muted-foreground">
+              {t('subtitle_template', subtitle)}
+            </p>
+          ) : null}
+        </div>
       </header>
 
       {error ? (

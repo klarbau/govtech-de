@@ -9,12 +9,15 @@ import { wrapNormZitate } from '@/components/posteingang/wrapNormZitate';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { api } from '@/lib/mock-backend';
+import type { MdlAttestationMock } from '@/types';
 import type {
   WalletAttestation,
   WalletAttestationPreview,
 } from '@/types/stammdaten';
 
 import { WalletAttestationPreviewModal } from './WalletAttestationPreviewModal';
+import { WalletMdlCard } from './wallet/WalletMdlCard';
+import type { MdlPreviewData } from './wallet/WalletMdlAttestationPreviewModal';
 
 interface WalletSubTabProps {
   /** Pre-loaded list of 3 fixed mock attestations (Hard-Line § 11.18). */
@@ -55,6 +58,34 @@ export function WalletSubTab({
     null,
   );
   const [loading, setLoading] = React.useState(false);
+
+  // V1.3 — mDL-Attestation Mock-Status (zweite Card; Spec § 4.2 / VL-7).
+  const [mdl, setMdl] = React.useState<MdlAttestationMock | null>(null);
+
+  React.useEffect(() => {
+    let cancelled = false;
+    void api.getMdlAttestation(personaId).then((result) => {
+      if (!cancelled) setMdl(result);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [personaId]);
+
+  const mdlPreviewData: MdlPreviewData | null =
+    mdl?.preview_data !== undefined
+      ? {
+          given_name: mdl.preview_data.given_name,
+          family_name: mdl.preview_data.family_name,
+          birth_date: mdl.preview_data.birth_date,
+          driving_privileges: mdl.preview_data.driving_privileges,
+          issuing_authority: mdl.preview_data.issuing_authority,
+          issuing_country: mdl.preview_data.issuing_country,
+          document_number: mdl.preview_data.document_number,
+          issue_date: mdl.preview_data.issue_date,
+          expiry_date: mdl.preview_data.expiry_date,
+        }
+      : null;
 
   let bannerTitle: string;
   let bannerBody: string;
@@ -185,6 +216,14 @@ export function WalletSubTab({
           );
         })}
       </ul>
+
+      {/* V1.3 — mDL Mock-Attestation als zweite Card (Spec § 4.2 / VL-7 / VL-9). */}
+      {mdl && (
+        <WalletMdlCard
+          status={mdl.status}
+          previewData={mdlPreviewData}
+        />
+      )}
 
       <p className="text-xs text-muted-foreground">{tTab('arf_footer')}</p>
 

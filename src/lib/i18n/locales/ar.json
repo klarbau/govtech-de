@@ -71,6 +71,18 @@
     }
   },
   "umzug": {
+    "wizard": {
+      "aria_label": "مساعد تغيير العنوان (Umzug) — التقدم",
+      "step_label_template": "الخطوة {current} من {total}",
+      "step_status_done": "مكتملة",
+      "step_status_current": "الحالية",
+      "step_status_upcoming": "قادمة",
+      "steps": {
+        "adresse": "العنوان",
+        "vorschau": "معاينة",
+        "autopilot": "الطيار الآلي قيد التشغيل"
+      }
+    },
     "start": {
       "title": "تغيير العنوان",
       "subtitle": "إخطار جميع الجهات المعنية في خطوات قليلة.",
@@ -105,6 +117,8 @@
     "preview": {
       "title": "المعاينة: ما الذي يحدث عند التأكيد",
       "subtitle_template": "العنوان الجديد: {adresse} · من {stichtag}",
+      "hero_title_template": "الطيار الآلي جاهز — سيتم إخطار {count, plural, zero {لا توجد جهة} one {جهة واحدة} two {جهتين} few {# جهات} many {# جهة} other {# جهة}}",
+      "hero_subtitle": "تُنفَّذ الخطوات التالية في أربع كتل. تبقى لكم السيطرة في كل لحظة.",
       "block_a": {
         "title": "نتولّاه نحن تلقائياً",
         "subhead": "§ 33 BMG · § 34 BMG · § 36 BMG"
@@ -221,6 +235,7 @@
     "list": {
       "tab_chronologisch": "ترتيب زمني",
       "tab_nach_vorgang": "تجميع حسب المعاملة (Vorgang)",
+      "tab_filter_badge_aria": "{count, plural, zero {لا توجد فلاتر نشطة} one {فلتر واحد نشط} two {فلتران نشطان} few {# فلاتر نشطة} many {# فلتراً نشطاً} other {# فلتر نشط}}",
       "group": {
         "neu": "جديد",
         "frist_unter_7d": "المهلة ≤ 7 أيام",
@@ -313,7 +328,12 @@
       },
       "datenschutz_link": "ما البيانات من هذه الرسالة وأين جرت معالجتها؟",
       "datenschutz_link_aria": "فتح كابينة حماية البيانات لهذه الرسالة",
-      "utility_row_aria": "إجراءات مساعدة بشأن الرسالة"
+      "utility_row_aria": "إجراءات مساعدة بشأن الرسالة",
+      "action_hint": {
+        "antwort_erforderlich": "الرد مطلوب",
+        "zur_kenntnis": "للعلم",
+        "erledigt": "تمّ"
+      }
     },
     "gruppe": {
       "titel_template": "المعاملة (Vorgang): {titel} ({count})",
@@ -413,6 +433,8 @@
       }
     },
     "was_kann_ich_tun": {
+      "hint_zahlung": "لديكم مبلغ مستحق — الخيارات: تقديم اعتراض (Einspruch، إذا كان الحساب خاطئاً) أو طلب وقف التنفيذ (Aussetzung der Vollziehung، إذا تعذّر السداد الآن).",
+      "hint_frist": "ضمن المهلة يمكنكم: تقديم اعتراض (Einspruch) أو طلب وقف التنفيذ (Aussetzung der Vollziehung) أو تجاهل الأمر (ستُفرض حينئذٍ غرامة تأخير — Säumniszuschlag).",
       "steuerbescheid": {
         "zahlung": "سداد المبلغ",
         "einspruch": "تقديم اعتراض (Einspruch، خلال شهر واحد، § 355 AO)",
@@ -734,6 +756,12 @@
       },
       "speculative_banner_title": "حتى عام 2027 — تصميم افتراضي"
     },
+    "reply": {
+      "skeleton_disclaimer": "نص تمهيدي مُولَّد بناءً على قوالب قانونية — يُرجى المراجعة والتعديل عند الحاجة.",
+      "body_preview_heading": "محتوى الرد المُرسل",
+      "body_preview_full_toggle": "عرض النص كاملاً",
+      "body_preview_full_toggle_close": "طيّ"
+    },
     "draft": {
       "group_title_template": "المسودات ({count})",
       "row_label_template": "مسودة: رد إلى {behoerde}",
@@ -783,7 +811,30 @@
       "vision_2027_banner_title": "رؤية 2027: تقارب BundID + DSC + EUDI Wallet",
       "vision_2027_banner_body": "تعرض هذه الواجهة كيف يمكن أن تبدو رؤية مواطن متقاربة في صورة 2027 الافتراضية — خدمة البيانات الأساسية BundID، وقمرة قيادة حماية البيانات (Datenschutzcockpit) وفقاً لقانون رقم التعريف (Identifikationsnummerngesetz, IDNrG)، و PID لمحفظة EUDI. اليوم (مايو 2026) لم يتحقق هذا التقارب بعد.",
       "disclaimer_lese_title": "ملاحظة: طبقة قراءة وإرشاد",
-      "disclaimer_audit_title": "ملاحظة: سجل النشاط الداخلي للتطبيق"
+      "disclaimer_audit_title": "ملاحظة: سجل النشاط الداخلي للتطبيق",
+      "summary_prominent": "أنتم مسجَّلون في {register_count} سجلاً عاماً.",
+      "last_transmission_short": "آخر إرسال قبل {dauer}.",
+      "disclaimer_section_label": "إيضاحات حول طبقة القراءة"
+    },
+    "section_nav": {
+      "label": "أقسام البيانات الأساسية",
+      "jump_to": "الانتقال إلى القسم",
+      "items": {
+        "identitaet": "الهوية",
+        "anschrift": "العنوان",
+        "familie": "العائلة",
+        "altersvorsorge": "التقاعد",
+        "krankenversicherung_pflege": "التأمين والرعاية",
+        "mobilitaet": "التنقّل",
+        "dokumente": "الوثائق",
+        "sperren_einstellungen": "الحجب والإعدادات"
+      }
+    },
+    "mdl_teaser": {
+      "title": "رخصة قيادة رقمية في المحفظة (Wallet)",
+      "body": "رخصة القيادة الخاصة بكم (Fahrerlaubnis) متاحة في المحفظة (Wallet) للمعاينة كرخصة قيادة محمولة (mDL، ISO/IEC 18013-5).",
+      "cta": "فتح في المحفظة",
+      "vision_pill": "رؤية 2029"
     },
     "sektion": {
       "identitaet": { "title": "الهوية" },
@@ -801,6 +852,13 @@
       },
       "kontakt_postfach": { "title": "التواصل وصندوق البريد (Kontakt & Postfach)" },
       "notification_praeferenzen": { "title": "تفضيلات الإشعارات (رؤية 2027)" },
+      "mobilitaet": {
+        "preview_no_fe": "لا يوجد تصريح قيادة (Fahrerlaubnis) مسجَّل",
+        "preview_fe_classes": "الفئة {klassen}",
+        "preview_fe_with_pflichtumtausch": "الفئة {klassen} — تبديل إلزامي (Pflichtumtausch) حتى {stichtag}",
+        "preview_fe_only": "الفئة {klassen} · رصيد النقاط (Punktestand) عند الطلب",
+        "preview_halter_count": "{count, plural, zero {لا توجد مركبات كمالك} one {مركبة واحدة كمالك} two {مركبتان كمالك} few {# مركبات كمالك} many {# مركبة كمالك} other {# مركبة كمالك}}"
+      },
       "sr_field_count": "{count, plural, =0 {لا حقول في هذا القسم} =1 {حقل واحد في هذا القسم} =2 {حقلان في هذا القسم} few {# حقول في هذا القسم} many {# حقلاً في هذا القسم} other {# حقل في هذا القسم}}",
       "aktivitaet_aside_label": "سجل النشاط لهذا القسم"
     },
@@ -1069,15 +1127,18 @@
         "body_regelalter_template": "{eur} شهرياً.",
         "body_anpassungen_template": "بنسبة {prozent} % سنوياً، نحو +{plus} شهرياً حتى سن التقاعد.",
         "body_beitrag_template": "{gesamt} الإجمالي (حضرتك: {versicherter}؛ صاحب العمل: {arbeitgeber})."
+      },
+      "zfdr_wegweiser": {
+        "title": "نظرة عامة شاملة عبر الجهات: نظرة التقاعد الرقمية (Digitale Rentenübersicht)",
+        "cta": "الانتقال إلى نظرة التقاعد الرقمية (rentenuebersicht.de)"
+      },
+      "track_c": {
+        "empty_state_title": "لا توجد إفادة تقاعدية",
+        "empty_state_body": "ليس لديكم إفادة تقاعدية (Renteninformation) لأنكم غير مشمولين بالتأمين الإلزامي في نظام التقاعد الحكومي (GRV). لا يوجد مُجمِّع مركزي للتأمين الصحي الخاص (PKV) مثل نظرة التقاعد الرقمية (ZfDR) — عليكم استخدام تطبيق شركة التأمين الخاصة بكم. الخيارات: 1) الاشتراك الطوعي في نظام التقاعد الحكومي (§ 7 SGB VI)، 2) مراجعة التأمين الخاص، 3) إذا كانت مهنتكم تستوجب التأمين الإلزامي (§ 2 SGB VI)، تقديم طلب التأمين الإلزامي."
+      },
+      "anrechnungszeiten": {
+        "title": "الفترات المعتمدة (Anrechnungszeiten)"
       }
-    },
-    "zfdr_wegweiser": {
-      "title": "نظرة عامة شاملة عبر الجهات: نظرة التقاعد الرقمية (Digitale Rentenübersicht)",
-      "cta": "الانتقال إلى نظرة التقاعد الرقمية (rentenuebersicht.de)"
-    },
-    "track_c": {
-      "empty_state_title": "لا توجد إفادة تقاعدية",
-      "empty_state_body": "ليس لديكم إفادة تقاعدية (Renteninformation) لأنكم غير مشمولين بالتأمين الإلزامي في نظام التقاعد الحكومي (GRV). لا يوجد مُجمِّع مركزي للتأمين الصحي الخاص (PKV) مثل نظرة التقاعد الرقمية (ZfDR) — عليكم استخدام تطبيق شركة التأمين الخاصة بكم. الخيارات: 1) الاشتراك الطوعي في نظام التقاعد الحكومي (§ 7 SGB VI)، 2) مراجعة التأمين الخاص، 3) إذا كانت مهنتكم تستوجب التأمين الإلزامي (§ 2 SGB VI)، تقديم طلب التأمين الإلزامي."
     },
     "kv_pflege": {
       "krankenkasse": {

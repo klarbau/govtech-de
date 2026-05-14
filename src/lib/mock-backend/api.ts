@@ -53,13 +53,16 @@ import type {
   LetterFilter,
   LetterFrist,
   LetterReplyMap,
+  MdlAttestationMock,
   MockBackendEvent,
   MockBackendEventListener,
+  Mobilitaet,
   NotificationKanal,
   NotificationPraeferenzen,
   Persona,
   PersonaId,
   PersonaKontakt,
+  PunktestandPullResult,
   Reply,
   ReplyDraft,
   Stammdaten,
@@ -88,6 +91,10 @@ import {
 import { appendLogEntry, stammdatenApi } from './stammdaten/api';
 import { stammdatenV11Api } from './stammdaten/v1-1-api';
 import { stammdatenV12Api } from './stammdaten/v1-2-api';
+import {
+  stammdatenV13Api,
+  type UmzugVorgangSummary,
+} from './stammdaten/v1-3-api';
 import { MockBackendError } from './errors';
 import { emit, subscribe } from './events';
 import { uuid } from './id';
@@ -899,6 +906,64 @@ export interface MockBackendApi {
    */
   simulateFamilienkasseFollowupLetter(personaId: PersonaId): Promise<Letter>;
 
+  // ---------------------- V1.3 Stammdaten — Mobilität ----------------------
+  // Spec: docs/specs/stammdaten-v1-3-mobilitaet.md § 6.
+  // Hard-Lines § 11.1–§ 11.14 (verifier-locked).
+  //
+  // Hand-off note für assistant-engineer (V1.3):
+  //   getMobilitaet(personaId)              → Mobilitaet-Snapshot oder null
+  //   getPunktestandOnDemand(personaId)     → FAER-on-demand-Result, TTL 5 min,
+  //                                            niemals persistiert (HL-MOB-11)
+  //   getMdlAttestation(personaId)          → mDL-Mock-Status, 'not_issued' Default
+  //   getUmzugVorgaengeFinished(personaId)  → für Halter-Adresse-Bridge-Detection
+  //   setHalterAdresseUebergangsMarker(personaId, vorgangId)
+  //                                            → autopilot-callable, idempotent
+
+  /**
+   * Liefert den V1.3-Mobilität-Snapshot der Persona oder `null` für Sub-
+   * Personas (Lena Schmidt — Empty-State-Render). Spec § 6.1.
+   */
+  getMobilitaet(personaId: PersonaId): Promise<Mobilitaet | null>;
+
+  /**
+   * On-demand FAER-Pull. Result hat `ttl_seconds === 300`, lebt component-
+   * local und wird **niemals** in `localStorage` geschrieben (HL-MOB-11 / VL-8).
+   * Schreibt einen `app_aktivitaet`-Activity-Log-Eintrag pro Pull.
+   *
+   * Spec § 6.2.
+   */
+  getPunktestandOnDemand(
+    personaId: PersonaId,
+  ): Promise<PunktestandPullResult>;
+
+  /**
+   * Liefert den Mock-Status der mDL-Attestation einer Persona. In V1.3 für
+   * alle 3 Personas `status: 'not_issued'`; Preview-Data wird aus der
+   * Fahrerlaubnis befüllt. Spec § 6.3.
+   */
+  getMdlAttestation(
+    personaId: PersonaId,
+  ): Promise<MdlAttestationMock | null>;
+
+  /**
+   * Hilfs-Read für `<HalterAdresseFieldCard>`-Übergangs-Marker-Detection.
+   * Spec § 6.4.
+   */
+  getUmzugVorgaengeFinished(
+    personaId: PersonaId,
+  ): Promise<UmzugVorgangSummary[]>;
+
+  /**
+   * Autopilot-Hook (Spec § 9.3): nach erfolgreicher Block-D-eID-Bestätigung
+   * für eine KFZ-Behörde setzt diese Methode den Übergangs-Marker auf der
+   * Halter-Adresse + Activity-Log + Bucket-Persistenz. Idempotent
+   * (Vorgang-Ref-Lookup).
+   */
+  setHalterAdresseUebergangsMarker(
+    personaId: PersonaId,
+    vorgangId: string,
+  ): Promise<void>;
+
   // Subscribe
   subscribe(listener: MockBackendEventListener): () => void;
 }
@@ -968,6 +1033,41 @@ async function bestaetigeImpl(
     completed_at: new Date().toISOString(),
     letter_id: letterId,
   });
+
+  // V1.3 VL-13 (Spec § 9.3): nach erfolgreicher Block-D-eID-Bestätigung für
+  // eine KFZ-Behörde setzt der Autopilot den Übergangs-Marker auf der
+  // Halter-Adresse + Activity-Log-Eintrag `kfz_halter_adresse_prefilled_via_umzug`.
+  // Idempotent (zweiter Aufruf für denselben Vorgang = no-op).
+  if (
+    step.behoerde_id.startsWith('kfz-') ||
+    step.behoerde_id.startsWith('kfz_')
+  ) {
+    try {
+      await stammdatenV13Api.setHalterAdresseUebergangsMarker(
+        persona.id,
+        vorgangId,
+      );
+      appendLogEntry(persona.id, {
+        id: `log-${uuid()}`,
+        timestamp: new Date().toISOString(),
+        kategorie: 'behoerde_zu_buerger',
+        field_id: 'kfz_halter_adresse',
+        sektion: 'anschrift',
+        empfaenger_id: persona.id,
+        zweck_i18n_key:
+          'stammdaten.aktivitaet.note.kfz_halter_adresse_prefilled_via_umzug',
+        rechtsgrundlage: '§ 15 FZV (2023)',
+        note: `persona_id:${persona.id}; field_id:kfz_halter_adresse; quelle:umzug_block_d; mock:true; vorgang_id:${vorgangId}`,
+      });
+    } catch (err) {
+      if (typeof console !== 'undefined') {
+        console.warn(
+          '[mock-backend] Block-D mobilitaet uebergangs-marker set failed',
+          err,
+        );
+      }
+    }
+  }
 
   // Stammdaten-Activity-Log-Hook für Block D (Spec § 8.4): nach erfolgreicher
   // eID-Bestätigung wird eine `behoerde_zu_behoerde`-Übermittlung dokumentiert
@@ -1966,6 +2066,30 @@ export const api: MockBackendApi & {
     return stammdatenV12Api.simulateFamilienkasseFollowupLetter(personaId);
   },
 
+  // ---------- V1.3 — Stammdaten Mobilität ----------
+  // Delegate-Pattern: alle V1.3-Methoden leben in `stammdaten/v1-3-api.ts`
+  // und werden hier nur durchgereicht.
+  getMobilitaet: (personaId) => {
+    ensureBooted();
+    return stammdatenV13Api.getMobilitaet(personaId);
+  },
+  getPunktestandOnDemand: (personaId) => {
+    ensureBooted();
+    return stammdatenV13Api.getPunktestandOnDemand(personaId);
+  },
+  getMdlAttestation: (personaId) => {
+    ensureBooted();
+    return stammdatenV13Api.getMdlAttestation(personaId);
+  },
+  getUmzugVorgaengeFinished: (personaId) => {
+    ensureBooted();
+    return stammdatenV13Api.getUmzugVorgaengeFinished(personaId);
+  },
+  setHalterAdresseUebergangsMarker: (personaId, vorgangId) => {
+    ensureBooted();
+    return stammdatenV13Api.setHalterAdresseUebergangsMarker(personaId, vorgangId);
+  },
+
   // ---------- Subscribe ----------
   subscribe: (listener: MockBackendEventListener) => subscribe(listener),
 };
@@ -1973,3 +2097,4 @@ export const api: MockBackendApi & {
 // Re-exports.
 export { MockBackendError } from './errors';
 export type { MockBackendEvent };
+export type { UmzugVorgangSummary } from './stammdaten/v1-3-api';

@@ -136,7 +136,47 @@
       "widerspruch_gesetzt": false,
       "eingerichtet_am": "2025-01-15"
     },
-    "erezept_modus_v1_1": "app"
+    "erezept_modus_v1_1": "app",
+    "mobilitaet": {
+      "fahrerlaubnis": {
+        "fe_nr": "[MOCK] F0727RRE2I50",
+        "bundesland_kennzeichen": "F",
+        "fe_behoerde_id": "fe-berlin-labo",
+        "klassen": [
+          {
+            "klasse": "B",
+            "erteilt_am": "2024-03-18",
+            "schluesselzahlen": []
+          }
+        ],
+        "ausstellungsdatum": "2024-03-18",
+        "pflichtumtausch_status": "nicht_relevant",
+        "fe_aktenzeichen": "[MOCK] LABO-FE/2024-03-002831"
+      },
+      "halter": [
+        {
+          "kennzeichen": "[MOCK] B-AP 4711",
+          "marke": "VW",
+          "modell": "Polo",
+          "baujahr": "2019",
+          "fin_voll": "[MOCK] WAUZZZF40MA123456",
+          "fin_masked": "WAUZZZ•••••••3456",
+          "zulassungsstelle_id": "kfz-berlin-labo",
+          "hu_bis": "2026-06-30",
+          "evb_nummer": "[MOCK] AX21Q8L",
+          "zulassung_aktenzeichen": "[MOCK] LABO-KFZ/2024-09-104221"
+        }
+      ],
+      "halter_adresse": {
+        "strasse": "Friedrichstraße",
+        "hausnummer": "100",
+        "plz": "10117",
+        "ort": "Berlin",
+        "uebergangs_marker_via_umzug": true,
+        "uebergangs_marker_seit": "2026-05-08T11:24:00.000Z",
+        "via_umzug_vorgang_id": "vg-anna-umzug-skalitzer-friedrichstr"
+      }
+    }
   },
   {
     "id": "markus-schmidt",
@@ -216,7 +256,7 @@
           "typ": "selbstaendig",
           "rolle": "Architektin"
         },
-        "kfz_halter": true,
+        "kfz_halter": false,
         "kindergeld_bezug": false,
         "wehrerfasst": false,
         "sprachen": [
@@ -311,7 +351,57 @@
       "widerspruch_gesetzt": false,
       "eingerichtet_am": "2025-01-15"
     },
-    "erezept_modus_v1_1": "app"
+    "erezept_modus_v1_1": "app",
+    "mobilitaet": {
+      "fahrerlaubnis": {
+        "fe_nr": "[MOCK] J0512SCH08X1",
+        "bundesland_kennzeichen": "J",
+        "fe_behoerde_id": "fe-hamburg-lbv",
+        "klassen": [
+          {
+            "klasse": "B",
+            "erteilt_am": "2002-09-17",
+            "schluesselzahlen": []
+          },
+          {
+            "klasse": "BE",
+            "erteilt_am": "2010-04-22",
+            "schluesselzahlen": []
+          }
+        ],
+        "ausstellungsdatum": "2002-09-17",
+        "pflichtumtausch_stichtag": "2027-01-19",
+        "pflichtumtausch_status": "frist_aktiv",
+        "fe_aktenzeichen": "[MOCK] LBV-HH-FE/2002-09-007751"
+      },
+      "halter": [
+        {
+          "kennzeichen": "[MOCK] HH-SC 142",
+          "marke": "VW",
+          "modell": "Touran",
+          "baujahr": "2021",
+          "fin_voll": "[MOCK] WVWZZZ16MA0028842",
+          "fin_masked": "WVWZZZ•••••••8842",
+          "zulassungsstelle_id": "kfz-hamburg-lbv",
+          "hu_bis": "2027-09-15",
+          "evb_nummer": "[MOCK] VB47K3M",
+          "zulassung_aktenzeichen": "[MOCK] LBV-HH-KFZ/2021-04-08842",
+          "mitnutzer": [
+            {
+              "vorname": "Lena",
+              "nachname": "Schmidt"
+            }
+          ]
+        }
+      ],
+      "halter_adresse": {
+        "strasse": "Eppendorfer Weg",
+        "hausnummer": "212",
+        "plz": "20251",
+        "ort": "Hamburg",
+        "uebergangs_marker_via_umzug": false
+      }
+    }
   },
   {
     "id": "mehmet-yildiz",
@@ -424,6 +514,69 @@
       "widerspruch_gesetzt": false,
       "eingerichtet_am": "2025-01-15"
     },
-    "erezept_modus_v1_1": "app"
+    "erezept_modus_v1_1": "app",
+    "mobilitaet": {
+      "fahrerlaubnis": {
+        "fe_nr": "[MOCK] N0428MEH47K2",
+        "bundesland_kennzeichen": "N",
+        "fe_behoerde_id": "fe-koeln-stadt",
+        "klassen": [
+          {
+            "klasse": "B",
+            "erteilt_am": "2010-11-15",
+            "schluesselzahlen": []
+          },
+          {
+            "klasse": "C1",
+            "erteilt_am": "2015-06-08",
+            "gueltig_bis": "2030-01-19",
+            "schluesselzahlen": ["95"]
+          },
+          {
+            "klasse": "BE",
+            "erteilt_am": "2015-06-08",
+            "schluesselzahlen": []
+          }
+        ],
+        "ausstellungsdatum": "2010-11-15",
+        "pflichtumtausch_stichtag": "2025-01-19",
+        "pflichtumtausch_status": "umtausch_erfolgt",
+        "pflichtumtausch_erfolgt_am": "2025-01-14",
+        "fe_aktenzeichen": "[MOCK] STADT-K/STR-FE-2025-01-002831"
+      },
+      "halter": [
+        {
+          "kennzeichen": "[MOCK] K-VR 8088E",
+          "marke": "Hyundai",
+          "modell": "Kona Elektro",
+          "baujahr": "2024",
+          "fin_voll": "[MOCK] KMHKM81GFNU440742",
+          "fin_masked": "KMHK•••••••••0742",
+          "zulassungsstelle_id": "kfz-koeln-stadt",
+          "hu_bis": "2027-04-20",
+          "evb_nummer": "[MOCK] AX99H1L",
+          "zulassung_aktenzeichen": "[MOCK] STADT-K/STR-KFZ-2024-09-211487"
+        },
+        {
+          "kennzeichen": "[MOCK] K-MY 4711",
+          "marke": "Mercedes",
+          "modell": "Sprinter",
+          "baujahr": "2019",
+          "fin_voll": "[MOCK] WDB9061331R348123",
+          "fin_masked": "WDB9•••••••••8123",
+          "zulassungsstelle_id": "kfz-koeln-stadt",
+          "hu_bis": "2026-11-15",
+          "evb_nummer": "[MOCK] HV21M8K",
+          "zulassung_aktenzeichen": "[MOCK] STADT-K/STR-KFZ-2019-03-118099"
+        }
+      ],
+      "halter_adresse": {
+        "strasse": "Venloer Straße",
+        "hausnummer": "388",
+        "plz": "50825",
+        "ort": "Köln",
+        "uebergangs_marker_via_umzug": false
+      }
+    }
   }
 ]

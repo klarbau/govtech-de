@@ -556,5 +556,84 @@
       { "label": "Werte in meinen Stammdaten ablegen", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.renteninfo.in_stammdaten_ablegen" },
       { "label": "Im DRV-Kundenportal öffnen", "type": "action", "i18n_key": "posteingang.was_kann_ich_tun.renteninfo.drv_kundenportal_oeffnen" }
     ]
+  },
+  "letter-pflichtumtausch-fe-hamburg-schmidt-2026-05": {
+    "pre_open": {
+      "text": "LBV Hamburg · Pflichtumtausch FS · Stichtag 19.01.2027",
+      "generated_at": "2026-05-04T09:30:00.000Z"
+    },
+    "post_open": {
+      "bullets": [
+        { "text": "Pflichtumtausch Ihres Führerscheins bis **19.01.2027** (~8 Monate)." },
+        { "text": "Umtausch in EU-Kartenführerschein bei Landesbetrieb Verkehr Hamburg." },
+        { "text": "Rechtsgrundlage: § 6 Abs. 7 FeV i.V.m. Anlage 8a FeV." },
+        { "text": "Nach Ablauf: Fahren ohne gültigen Führerschein = Ordnungswidrigkeit (§ 75 Nr. 4 FeV)." },
+        { "text": "Keine sofortige Aktion erforderlich; rechtzeitig Termin buchen." }
+      ],
+      "citations": [
+        { "bullet_index": 0, "original_zitat": "endet die Gültigkeit Ihres bisherigen Führerscheins zum 19.01.2027." },
+        { "bullet_index": 1, "original_zitat": "Umtausch in den fälschungssicheren EU-Kartenführerschein zu beantragen." },
+        { "bullet_index": 2, "original_zitat": "nach § 6 Abs. 7 FeV in Verbindung mit Anlage 8a" },
+        { "bullet_index": 3, "original_zitat": "das Führen von Kraftfahrzeugen ohne gültigen Führerschein ist eine Ordnungswidrigkeit (§ 75 Nr. 4 FeV)." },
+        { "bullet_index": 4, "original_zitat": "" }
+      ],
+      "generated_at": "2026-05-04T09:30:00.000Z",
+      "model": "claude-haiku-4-5-20251001"
+    },
+    "vorschlaege": [
+      { "label": "Termin bei LBV Hamburg buchen", "type": "action" }
+    ]
+  },
+  "letter-fzv-15-aufforderung-kfz-koeln-mehmet-2026-04": {
+    "pre_open": {
+      "text": "Stadt Köln · § 15 FZV-Mitteilung · vermutlich Irrtum",
+      "generated_at": "2026-04-22T11:00:00.000Z"
+    },
+    "post_open": {
+      "bullets": [
+        { "text": "Aufforderung zur **Halter-Anschrifts-Mitteilung nach § 15 FZV**." },
+        { "text": "Frist: unverzüglich (i.d.R. innerhalb einer Woche)." },
+        { "text": "Bei Nichtbefolgung: 4-Wochen-Frist, danach Erlöschen der Zulassung (§ 15 Abs. 4 FZV)." },
+        { "text": "Ordnungswidrigkeit: § 75 Nr. 1 FZV i.V.m. § 24 StVG (Regelverwarnung 40 €)." },
+        { "text": "Kein Konflikt mit Ihrer aktuellen Anschrift — vermutlich Irrtum; Rück-Klarstellung empfohlen." }
+      ],
+      "citations": [
+        { "bullet_index": 0, "original_zitat": "eine entsprechende Mitteilung nach § 15 FZV abzugeben." },
+        { "bullet_index": 1, "original_zitat": "unverzüglich (i.d.R. innerhalb einer Woche)" },
+        { "bullet_index": 2, "original_zitat": "mit fruchtlosem Ablauf erlischt die Zulassung Ihres Fahrzeugs (§ 15 Abs. 4 FZV)." },
+        { "bullet_index": 3, "original_zitat": "(§ 75 Nr. 1 FZV i.V.m. § 24 StVG); regelmäßige Verwarnung 40 €." },
+        { "bullet_index": 4, "original_zitat": "" }
+      ],
+      "generated_at": "2026-04-22T11:00:00.000Z",
+      "model": "claude-haiku-4-5-20251001"
+    },
+    "vorschlaege": [
+      { "label": "Rück-Klarstellung an Zulassungsstelle", "type": "action" }
+    ]
+  },
+  "letter-faer-auskunft-pdf-mehmet-2026-05": {
+    "pre_open": {
+      "text": "KBA Flensburg · FAER-Auskunft · 1 Punkt · gebührenfrei",
+      "generated_at": "2026-05-02T07:15:00.000Z"
+    },
+    "post_open": {
+      "bullets": [
+        { "text": "Punktestand zum Stichtag 30.04.2026: **1 Punkt**." },
+        { "text": "Stand der zugrunde liegenden Eintragungen: 16.03.2024." },
+        { "text": "Auskunft gebührenfrei nach § 30 Abs. 8 StVG." },
+        { "text": "Ausgestellt aufgrund Ihres elektronischen Antrags vom 30.04.2026 (eID-Funktion)." },
+        { "text": "Maßnahmen-Schwellen (4–5 P. Ermahnung) nicht überschritten — keine Aktion erforderlich." }
+      ],
+      "citations": [
+        { "bullet_index": 0, "original_zitat": "Punktestand zum Stichtag 30.04.2026: 1 Punkt." },
+        { "bullet_index": 1, "original_zitat": "Stand der zugrunde liegenden Eintragungen: 16.03.2024." },
+        { "bullet_index": 2, "original_zitat": "Diese Auskunft ist gebührenfrei." },
+        { "bullet_index": 3, "original_zitat": "aufgrund Ihres elektronischen Antrags vom 30.04.2026 unter Verwendung Ihrer eID-Funktion ausgestellt." },
+        { "bullet_index": 4, "original_zitat": "" }
+      ],
+      "generated_at": "2026-05-02T07:15:00.000Z",
+      "model": "claude-haiku-4-5-20251001"
+    },
+    "vorschlaege": []
   }
 }

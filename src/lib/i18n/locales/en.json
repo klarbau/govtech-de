@@ -71,6 +71,18 @@
     }
   },
   "umzug": {
+    "wizard": {
+      "aria_label": "Move assistant (Umzug) — progress",
+      "step_label_template": "Step {current} of {total}",
+      "step_status_done": "completed",
+      "step_status_current": "current",
+      "step_status_upcoming": "upcoming",
+      "steps": {
+        "adresse": "Address",
+        "vorschau": "Preview",
+        "autopilot": "Autopilot running"
+      }
+    },
     "start": {
       "title": "Change of address",
       "subtitle": "Inform all relevant authorities in just a few steps.",
@@ -105,6 +117,8 @@
     "preview": {
       "title": "Preview: what happens when you confirm",
       "subtitle_template": "New address: {adresse} · from {stichtag}",
+      "hero_title_template": "Autopilot ready — {count, plural, =0 {no recipient} =1 {1 recipient} other {# recipients}} to be notified",
+      "hero_subtitle": "The following steps run in four blocks. You stay in control at every point.",
       "block_a": {
         "title": "We handle this automatically",
         "subhead": "§ 33 BMG · § 34 BMG · § 36 BMG"
@@ -221,6 +235,7 @@
     "list": {
       "tab_chronologisch": "Chronological",
       "tab_nach_vorgang": "Group by case (Vorgang)",
+      "tab_filter_badge_aria": "{count, plural, =1 {1 active filter} other {# active filters}}",
       "group": {
         "neu": "New",
         "frist_unter_7d": "Deadline open ≤ 7 days",
@@ -313,7 +328,12 @@
       },
       "datenschutz_link": "Which data from this letter was processed where?",
       "datenschutz_link_aria": "Open privacy cockpit for this letter",
-      "utility_row_aria": "Letter utility actions"
+      "utility_row_aria": "Letter utility actions",
+      "action_hint": {
+        "antwort_erforderlich": "Reply required",
+        "zur_kenntnis": "For your information",
+        "erledigt": "Done"
+      }
     },
     "gruppe": {
       "titel_template": "Case (Vorgang): {titel} ({count})",
@@ -413,6 +433,8 @@
       }
     },
     "was_kann_ich_tun": {
+      "hint_zahlung": "You have an outstanding payment — options: file an appeal (Einspruch, if the calculation is wrong) or apply for suspension of enforcement (Aussetzung der Vollziehung, if payment is not possible right now).",
+      "hint_frist": "Within the deadline you can: file an appeal (Einspruch) OR apply for suspension of enforcement (Aussetzung der Vollziehung) OR ignore it (a late-payment surcharge / Säumniszuschlag will accrue).",
       "steuerbescheid": {
         "zahlung": "Make payment",
         "einspruch": "File an appeal (Einspruch, within 1 month, § 355 AO)",
@@ -734,6 +756,12 @@
       },
       "speculative_banner_title": "As of 2027 — speculative design"
     },
+    "reply": {
+      "skeleton_disclaimer": "Pre-filled wording based on legal templates — please review and adjust if needed.",
+      "body_preview_heading": "Content of the sent reply",
+      "body_preview_full_toggle": "Show full text",
+      "body_preview_full_toggle_close": "Collapse"
+    },
     "draft": {
       "group_title_template": "Drafts ({count})",
       "row_label_template": "Draft: reply to {behoerde}",
@@ -783,7 +811,30 @@
       "vision_2027_banner_title": "2027 vision: convergence of BundID + DSC + EUDI Wallet",
       "vision_2027_banner_body": "This personal-data view shows what a converged citizen view of the hypothetical 2027 picture — BundID master-data service, the privacy cockpit (Datenschutzcockpit) under the Identification Number Act (Identifikationsnummerngesetz, IDNrG), and the EUDI Wallet PID — could look like. Today (May 2026) this convergence has not yet been reached.",
       "disclaimer_lese_title": "Note: read-only signposting layer",
-      "disclaimer_audit_title": "Note: in-app activity log"
+      "disclaimer_audit_title": "Note: in-app activity log",
+      "summary_prominent": "You are recorded in {register_count} public registers.",
+      "last_transmission_short": "Last transmission {dauer} ago.",
+      "disclaimer_section_label": "Notes on the read-only layer"
+    },
+    "section_nav": {
+      "label": "Personal-data sections",
+      "jump_to": "Jump to section",
+      "items": {
+        "identitaet": "Identity",
+        "anschrift": "Address",
+        "familie": "Family",
+        "altersvorsorge": "Pension",
+        "krankenversicherung_pflege": "Health & care",
+        "mobilitaet": "Mobility",
+        "dokumente": "Documents",
+        "sperren_einstellungen": "Blocks"
+      }
+    },
+    "mdl_teaser": {
+      "title": "Digital driving licence in the Wallet",
+      "body": "Your driving entitlement (Fahrerlaubnis) is available as a mobile Driving Licence (ISO/IEC 18013-5) for preview in the Wallet.",
+      "cta": "View in Wallet",
+      "vision_pill": "2029 vision"
     },
     "sektion": {
       "identitaet": { "title": "Identity" },
@@ -801,6 +852,13 @@
       },
       "kontakt_postfach": { "title": "Contact & inbox (Kontakt & Postfach)" },
       "notification_praeferenzen": { "title": "Notification preferences (2027 vision)" },
+      "mobilitaet": {
+        "preview_no_fe": "No driving entitlement (Fahrerlaubnis) registered",
+        "preview_fe_classes": "Class {klassen}",
+        "preview_fe_with_pflichtumtausch": "Class {klassen} — mandatory exchange (Pflichtumtausch) by {stichtag}",
+        "preview_fe_only": "Class {klassen} · points balance (Punktestand) on demand",
+        "preview_halter_count": "{count, plural, =0 {no vehicles as keeper} =1 {1 vehicle as keeper} other {# vehicles as keeper}}"
+      },
       "sr_field_count": "{count, plural, =1 {1 field in this section} other {# fields in this section}}",
       "aktivitaet_aside_label": "Activity log for this section"
     },
@@ -1069,15 +1127,18 @@
         "body_regelalter_template": "{eur} per month.",
         "body_anpassungen_template": "at {prozent} % p.a. approx. +{plus} per month until retirement.",
         "body_beitrag_template": "{gesamt} total (you: {versicherter}; employer: {arbeitgeber})."
+      },
+      "zfdr_wegweiser": {
+        "title": "Cross-provider overview: Digital pension overview (Digitale Rentenübersicht)",
+        "cta": "Go to the Digital pension overview (rentenuebersicht.de)"
+      },
+      "track_c": {
+        "empty_state_title": "No pension information available",
+        "empty_state_body": "You have no pension information (Renteninformation) because you are not compulsorily insured in the statutory pension scheme (GRV). For private health insurance (PKV) there is no central aggregator like the Digital pension overview (ZfDR) — you have to use your insurer's app. Options: 1) voluntary statutory pension insurance (§ 7 SGB VI), 2) review private provision, 3) if your profession requires compulsory insurance (§ 2 SGB VI), apply for compulsory insurance."
+      },
+      "anrechnungszeiten": {
+        "title": "Creditable periods (Anrechnungszeiten)"
       }
-    },
-    "zfdr_wegweiser": {
-      "title": "Cross-provider overview: Digital pension overview (Digitale Rentenübersicht)",
-      "cta": "Go to the Digital pension overview (rentenuebersicht.de)"
-    },
-    "track_c": {
-      "empty_state_title": "No pension information available",
-      "empty_state_body": "You have no pension information (Renteninformation) because you are not compulsorily insured in the statutory pension scheme (GRV). For private health insurance (PKV) there is no central aggregator like the Digital pension overview (ZfDR) — you have to use your insurer's app. Options: 1) voluntary statutory pension insurance (§ 7 SGB VI), 2) review private provision, 3) if your profession requires compulsory insurance (§ 2 SGB VI), apply for compulsory insurance."
     },
     "kv_pflege": {
       "krankenkasse": {

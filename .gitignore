@@ -19,3 +19,12 @@ pst3.html
 reader.html
 posteingang-*.txt
 posteingang-*.html
+
+# Local explorative scripts + lighthouse/probe artifacts (do not commit)
+.contrast-probe.mjs
+.rtl-probe*.mjs
+.lh-*.json
+.lh-*.html
+.lh-persona-runner*.mjs
+layout.css
+response.html

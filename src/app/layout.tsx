@@ -31,7 +31,10 @@ export default async function RootLayout({
       lang={locale}
       dir={dir}
       suppressHydrationWarning
-      className={cn('font-sans', geist.variable)}
+      className={cn(
+        'font-sans',
+        geist.variable,
+      )}
     >
       <body className="min-h-screen bg-background text-foreground antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>

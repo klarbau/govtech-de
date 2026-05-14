@@ -8,13 +8,20 @@ import { NormTooltip } from '@/components/shared/NormTooltip';
 import { cn } from '@/lib/utils';
 
 import { ARCHETYPE_ACTION_DEFAULTS } from './letter-archetype-actions';
-import type { LetterArchetype } from '@/types';
+import type { Letter, LetterArchetype } from '@/types';
 import { parseBoldAndNorms } from './utils/parse-bold-norms';
 
 interface WasKannIchTunFooterProps {
   archetype: LetterArchetype | undefined;
   /** IDs aus dem Archetyp-Katalog (Spec §6.1) — kommt vom Mock-Backend pro Brief. */
   options?: string[];
+  /**
+   * Phase 6b (Audit #5) — Optionaler Brief-Kontext für pre-action-hint.
+   * Wenn `letter.required_action.typ === 'zahlung'`: Nachzahlungs-Heuristik.
+   * Wenn ein offenes `fristen[0]` existiert (= Frist-Brief): Frist-Heuristik.
+   * Bei keiner Übereinstimmung wird kein Hint gerendert (defensive default).
+   */
+  letter?: Pick<Letter, 'required_action' | 'fristen'>;
   className?: string;
 }
 
@@ -69,9 +76,11 @@ function lookupCatalogText(
 export function WasKannIchTunFooter({
   archetype,
   options,
+  letter,
   className,
 }: WasKannIchTunFooterProps) {
   const t = useTranslations('posteingang.reader.was_kann_ich_tun');
+  const tHint = useTranslations('posteingang.was_kann_ich_tun');
   const tDisclaimer = useTranslations('posteingang.disclaimer');
   const messages = useMessages() as Record<string, unknown>;
 
@@ -83,6 +92,35 @@ export function WasKannIchTunFooter({
         : [];
 
   if (ids.length === 0) return null;
+
+  // Phase 6b (Audit #5) — pre-action-hint Heuristik (nur die zwei häufigsten
+  // Cases — Spec-Vorgabe: NICHT alle Fälle lösen):
+  //   1. required_action.typ === 'zahlung' → Nachzahlungs-Hint.
+  //   2. fristen[0] mit Typ einspruch/widerspruch/klage → Frist-Hint.
+  const hintKind: 'zahlung' | 'frist' | null = (() => {
+    if (!letter) return null;
+    if (letter.required_action?.typ === 'zahlung') return 'zahlung';
+    const earliest = letter.fristen?.[0];
+    if (
+      earliest &&
+      (earliest.typ === 'einspruch' ||
+        earliest.typ === 'widerspruch' ||
+        earliest.typ === 'klage')
+    ) {
+      return 'frist';
+    }
+    return null;
+  })();
+
+  const hintText = hintKind
+    ? (() => {
+        try {
+          return tHint(`hint_${hintKind}`);
+        } catch {
+          return null;
+        }
+      })()
+    : null;
 
   return (
     <section
@@ -102,6 +140,14 @@ export function WasKannIchTunFooter({
         />
         {t('heading')}
       </h2>
+      {hintText && (
+        <p
+          data-testid="was-kann-ich-tun-pre-hint"
+          className="rounded-md border-l-4 border-[var(--ds-color-accent)] bg-[var(--ds-color-accent-soft)] p-3 text-sm leading-relaxed text-[var(--ds-color-text-primary)]"
+        >
+          {hintText}
+        </p>
+      )}
       <p className="text-xs leading-relaxed text-muted-foreground">
         {t('helper')}
       </p>

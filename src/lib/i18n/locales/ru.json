@@ -71,6 +71,18 @@
     }
   },
   "umzug": {
+    "wizard": {
+      "aria_label": "Помощник по переезду (Umzug) — ход выполнения",
+      "step_label_template": "Шаг {current} из {total}",
+      "step_status_done": "завершён",
+      "step_status_current": "текущий",
+      "step_status_upcoming": "ожидает",
+      "steps": {
+        "adresse": "Адрес",
+        "vorschau": "Предпросмотр",
+        "autopilot": "Автопилот выполняется"
+      }
+    },
     "start": {
       "title": "Переезд",
       "subtitle": "За несколько шагов уведомим все нужные ведомства.",
@@ -105,6 +117,8 @@
     "preview": {
       "title": "Предпросмотр: что произойдёт после подтверждения",
       "subtitle_template": "Новый адрес: {adresse} · с {stichtag}",
+      "hero_title_template": "Автопилот готов — уведомим {count, plural, =0 {ни одно ведомство} =1 {1 ведомство} few {# ведомства} many {# ведомств} other {# ведомства}}",
+      "hero_subtitle": "Дальнейшие шаги выполняются в четырёх блоках. Вы сохраняете контроль на каждом этапе.",
       "block_a": {
         "title": "Сделаем за Вас автоматически",
         "subhead": "§ 33 BMG · § 34 BMG · § 36 BMG"
@@ -221,6 +235,7 @@
     "list": {
       "tab_chronologisch": "По времени",
       "tab_nach_vorgang": "Сгруппировать по делу (Vorgang)",
+      "tab_filter_badge_aria": "{count, plural, =1 {1 активный фильтр} few {# активных фильтра} many {# активных фильтров} other {# активного фильтра}}",
       "group": {
         "neu": "Новое",
         "frist_unter_7d": "Срок ≤ 7 дней",
@@ -313,7 +328,12 @@
       },
       "datenschutz_link": "Какие данные из этого письма и где обрабатывались?",
       "datenschutz_link_aria": "Открыть кабинет данных для этого письма",
-      "utility_row_aria": "Дополнительные действия по письму"
+      "utility_row_aria": "Дополнительные действия по письму",
+      "action_hint": {
+        "antwort_erforderlich": "Требуется ответ",
+        "zur_kenntnis": "К сведению",
+        "erledigt": "Готово"
+      }
     },
     "gruppe": {
       "titel_template": "Дело (Vorgang): {titel} ({count})",
@@ -413,6 +433,8 @@
       }
     },
     "was_kann_ich_tun": {
+      "hint_zahlung": "У Вас есть доплата — варианты: подать возражение (Einspruch, если расчёт неверен) или ходатайствовать о приостановлении исполнения (Aussetzung der Vollziehung, если оплатить сейчас невозможно).",
+      "hint_frist": "В пределах срока Вы можете: подать возражение (Einspruch) ИЛИ ходатайствовать о приостановлении (Aussetzung der Vollziehung) ИЛИ ничего не делать (будут начислены пени за просрочку — Säumniszuschlag).",
       "steuerbescheid": {
         "zahlung": "Произвести оплату",
         "einspruch": "Подать возражение (Einspruch, в течение 1 месяца, § 355 AO)",
@@ -734,6 +756,12 @@
       },
       "speculative_banner_title": "По состоянию на 2027 — умозрительный сценарий"
     },
+    "reply": {
+      "skeleton_disclaimer": "Сгенерированный преамбульный текст по юридическим шаблонам — пожалуйста, проверьте и при необходимости скорректируйте.",
+      "body_preview_heading": "Содержание отправленного ответа",
+      "body_preview_full_toggle": "Показать полностью",
+      "body_preview_full_toggle_close": "Свернуть"
+    },
     "draft": {
       "group_title_template": "Черновики ({count})",
       "row_label_template": "Черновик: ответ в {behoerde}",
@@ -783,7 +811,30 @@
       "vision_2027_banner_title": "Видение 2027: конвергенция BundID + DSC + EUDI Wallet",
       "vision_2027_banner_body": "Это представление личных данных показывает, как могла бы выглядеть конвергированная картина для гражданина в гипотетическом 2027 году — служба основных данных BundID, кокпит защиты данных (Datenschutzcockpit) согласно Закону об идентификационном номере (Identifikationsnummerngesetz, IDNrG) и PID кошелька EUDI. Сегодня (май 2026) такая конвергенция ещё не достигнута.",
       "disclaimer_lese_title": "Примечание: слой для чтения и навигации",
-      "disclaimer_audit_title": "Примечание: внутренний журнал активности приложения"
+      "disclaimer_audit_title": "Примечание: внутренний журнал активности приложения",
+      "summary_prominent": "Вы зарегистрированы в {register_count} государственных регистрах.",
+      "last_transmission_short": "Последняя передача — {dauer} назад.",
+      "disclaimer_section_label": "Пояснения к слою чтения"
+    },
+    "section_nav": {
+      "label": "Разделы персональных данных",
+      "jump_to": "Перейти к разделу",
+      "items": {
+        "identitaet": "Личность",
+        "anschrift": "Адрес",
+        "familie": "Семья",
+        "altersvorsorge": "Пенсия",
+        "krankenversicherung_pflege": "Страхование и уход",
+        "mobilitaet": "Мобильность",
+        "dokumente": "Документы",
+        "sperren_einstellungen": "Блокировки"
+      }
+    },
+    "mdl_teaser": {
+      "title": "Цифровое водительское удостоверение в Wallet",
+      "body": "Ваше разрешение на управление транспортом (Fahrerlaubnis) доступно для предпросмотра в Wallet как мобильное водительское удостоверение (mDL, ISO/IEC 18013-5).",
+      "cta": "Открыть в Wallet",
+      "vision_pill": "Видение 2029"
     },
     "sektion": {
       "identitaet": { "title": "Личность" },
@@ -801,6 +852,13 @@
       },
       "kontakt_postfach": { "title": "Контакт и почтовый ящик (Kontakt & Postfach)" },
       "notification_praeferenzen": { "title": "Настройки уведомлений (Видение 2027)" },
+      "mobilitaet": {
+        "preview_no_fe": "Разрешение на управление транспортом (Fahrerlaubnis) не зарегистрировано",
+        "preview_fe_classes": "Категория {klassen}",
+        "preview_fe_with_pflichtumtausch": "Категория {klassen} — обязательный обмен (Pflichtumtausch) до {stichtag}",
+        "preview_fe_only": "Категория {klassen} · баллы (Punktestand) по запросу",
+        "preview_halter_count": "{count, plural, =0 {нет ТС как у владельца} =1 {1 ТС как у владельца} few {# ТС как у владельца} many {# ТС как у владельца} other {# ТС как у владельца}}"
+      },
       "sr_field_count": "{count, plural, =1 {1 поле в этом разделе} few {# поля в этом разделе} many {# полей в этом разделе} other {# поля в этом разделе}}",
       "aktivitaet_aside_label": "Журнал активности этого раздела"
     },
@@ -1069,15 +1127,18 @@
         "body_regelalter_template": "{eur} в месяц.",
         "body_anpassungen_template": "при {prozent} % годовых ок. +{plus} в месяц до выхода на пенсию.",
         "body_beitrag_template": "{gesamt} всего (Вы: {versicherter}; работодатель: {arbeitgeber})."
+      },
+      "zfdr_wegweiser": {
+        "title": "Сводный обзор по всем носителям: Цифровой пенсионный обзор (Digitale Rentenübersicht)",
+        "cta": "Перейти к Цифровому пенсионному обзору (rentenuebersicht.de)"
+      },
+      "track_c": {
+        "empty_state_title": "Информация о пенсии отсутствует",
+        "empty_state_body": "У Вас нет информации о пенсии (Renteninformation), потому что Вы не подлежите обязательному страхованию в государственной пенсионной системе (GRV). Для частного медицинского страхования (PKV) нет единого агрегатора вроде Цифрового пенсионного обзора (ZfDR) — необходимо пользоваться приложением Вашего страховщика. Варианты: 1) добровольное участие в государственной пенсионной системе (§ 7 SGB VI), 2) проверить частное обеспечение, 3) если Ваша профессия предполагает обязательное страхование (§ 2 SGB VI), подать заявление об обязательном страховании."
+      },
+      "anrechnungszeiten": {
+        "title": "Засчитываемые периоды (Anrechnungszeiten)"
       }
-    },
-    "zfdr_wegweiser": {
-      "title": "Сводный обзор по всем носителям: Цифровой пенсионный обзор (Digitale Rentenübersicht)",
-      "cta": "Перейти к Цифровому пенсионному обзору (rentenuebersicht.de)"
-    },
-    "track_c": {
-      "empty_state_title": "Информация о пенсии отсутствует",
-      "empty_state_body": "У Вас нет информации о пенсии (Renteninformation), потому что Вы не подлежите обязательному страхованию в государственной пенсионной системе (GRV). Для частного медицинского страхования (PKV) нет единого агрегатора вроде Цифрового пенсионного обзора (ZfDR) — необходимо пользоваться приложением Вашего страховщика. Варианты: 1) добровольное участие в государственной пенсионной системе (§ 7 SGB VI), 2) проверить частное обеспечение, 3) если Ваша профессия предполагает обязательное страхование (§ 2 SGB VI), подать заявление об обязательном страховании."
     },
     "kv_pflege": {
       "krankenkasse": {

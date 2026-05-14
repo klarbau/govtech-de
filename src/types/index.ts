@@ -115,3 +115,17 @@ export type {
   WalletAttestation,
   WalletAttestationPreview,
 } from './stammdaten';
+// V1.3 — Mobilität (Führerschein + KFZ-Halter).
+export type {
+  Fahrerlaubnis,
+  FeKlasse,
+  HalterAdresse,
+  KfzHalter,
+  MdlAttestationMock,
+  MdlAttestationPreviewData,
+  MdlSelectiveDisclosureToggle,
+  Mobilitaet,
+  PflichtumtauschStatus,
+  PunktestandPullResult,
+} from './mobilitaet';
+export { ISO_18013_5_MDL_TOGGLE_SET } from './mobilitaet';

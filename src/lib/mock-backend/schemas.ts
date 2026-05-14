@@ -233,6 +233,78 @@ const personaSchemaBase = z.object({
     .object({ name: z.string(), mitgliedsnummer: z.string() })
     .passthrough()
     .optional(),
+  // V1.3 — Mobilität (Spec § 5.1). Additive optional field; Zod-Schema unten.
+  // Permissive `passthrough()`, weil das *persistierte* Persona-Schema mit
+  // dem strict-Mode (HL-MOB-11 / VL-4) auf Top-Level kollidieren würde — der
+  // strict-Punkte-Check läuft separat über `mobilitaetSchema.strict()`, das
+  // Test-only auf `Mobilitaet`-Werte angewendet wird, nicht aufs Top-Level-
+  // Persona-Schema.
+  mobilitaet: z
+    .object({
+      fahrerlaubnis: z
+        .object({
+          fe_nr: z.string(),
+          bundesland_kennzeichen: z.string().length(1),
+          fe_behoerde_id: z.string(),
+          klassen: z.array(
+            z
+              .object({
+                klasse: z.string(),
+                erteilt_am: z.string(),
+                gueltig_bis: z.string().optional(),
+                schluesselzahlen: z.array(z.string()),
+              })
+              .passthrough(),
+          ),
+          ausstellungsdatum: z.string(),
+          pflichtumtausch_stichtag: z.string().optional(),
+          pflichtumtausch_status: z.enum([
+            'nicht_relevant',
+            'frist_aktiv',
+            'frist_abgelaufen_offen',
+            'umtausch_erfolgt',
+          ]),
+          pflichtumtausch_erfolgt_am: z.string().optional(),
+          fe_aktenzeichen: z.string(),
+        })
+        .passthrough()
+        .optional(),
+      halter: z.array(
+        z
+          .object({
+            kennzeichen: z.string(),
+            marke: z.string(),
+            modell: z.string(),
+            baujahr: z.string().regex(/^\d{4}$/),
+            fin_voll: z.string(),
+            fin_masked: z.string(),
+            zulassungsstelle_id: z.string(),
+            hu_bis: z.string(),
+            evb_nummer: z.string(),
+            zulassung_aktenzeichen: z.string(),
+            mitnutzer: z
+              .array(
+                z.object({ vorname: z.string(), nachname: z.string() }),
+              )
+              .optional(),
+          })
+          .passthrough(),
+      ),
+      halter_adresse: z
+        .object({
+          strasse: z.string(),
+          hausnummer: z.string(),
+          plz: z.string().regex(/^\d{5}$/),
+          ort: z.string(),
+          uebergangs_marker_via_umzug: z.boolean(),
+          uebergangs_marker_seit: z.string().optional(),
+          via_umzug_vorgang_id: z.string().optional(),
+        })
+        .passthrough()
+        .optional(),
+    })
+    .passthrough()
+    .optional(),
 });
 
 // Persona ist rekursiv (familie.partner: Persona). Wir typen das Feld
@@ -968,3 +1040,138 @@ export const pflegegradConsentSchema = z
   .passthrough();
 
 export const pflegegradConsentBucketSchema = z.record(pflegegradConsentSchema);
+
+// ---------------------------------------------------------------------------
+// V1.3 — Mobilität (Spec § 6.8). Hard-Lines § 11.1–§ 11.14 (verifier-locked).
+// ---------------------------------------------------------------------------
+
+/**
+ * FE-Klasse-Schema. EU-Klassen-Code aus FeV: A1/A2/A/B/BE/C1/C/CE/D1/D/DE/T/L/AM.
+ */
+export const feKlasseSchema = z
+  .object({
+    klasse: z.string().regex(/^(A1|A2|A|B|BE|C1|C|CE|D1|D|DE|T|L|AM)$/),
+    erteilt_am: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    gueltig_bis: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .optional(),
+    schluesselzahlen: z.array(z.string()),
+  })
+  .strict();
+
+/**
+ * Fahrerlaubnis-Schema. FE-Nr-Format: `[MOCK] <Bundesland-Buchstabe>` +
+ * 3 numerische Behörden-Stellen + 6 alphanumerische lfd./Prüf-Stellen
+ * (lfd. 5 Zeichen + Prüfziffer [0-9X] + Ausfertigung-Ziffer; insgesamt 11-12
+ * Zeichen nach `[MOCK] `, je nachdem wie der Bundesland-Buchstabe-Suffix
+ * abgebildet wird). Die Seed-Werte (Spec § 2) sind 12 Zeichen lang
+ * (`F0727RRE2I50`, `J0512SCH08X1`, `N0428MEH47K2`), daher die etwas
+ * permissive Regex.
+ *
+ * Format-Slot-Audit:
+ *   - Pos. 1: Bundesland-Buchstabe `[A-Z]`
+ *   - Pos. 2-5: Behörden-Code (3-4 alphanumerische Zeichen; je Bundesland)
+ *   - Pos. 6-10: lfd. Nr. (alphanumerisch, 4-5 Zeichen)
+ *   - Pos. 11-12: Prüfziffer + Ausfertigung-Ziffer (kombinierter Suffix)
+ */
+export const fahrerlaubnisSchema = z
+  .object({
+    fe_nr: z
+      .string()
+      .regex(/^\[MOCK\] [A-Z][A-Z0-9]{8,11}$/),
+    bundesland_kennzeichen: z.string().length(1),
+    fe_behoerde_id: z.string(),
+    klassen: z.array(feKlasseSchema).min(1),
+    ausstellungsdatum: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    pflichtumtausch_stichtag: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .optional(),
+    pflichtumtausch_status: z.enum([
+      'nicht_relevant',
+      'frist_aktiv',
+      'frist_abgelaufen_offen',
+      'umtausch_erfolgt',
+    ]),
+    pflichtumtausch_erfolgt_am: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .optional(),
+    fe_aktenzeichen: z.string(),
+  })
+  .strict();
+
+/**
+ * KFZ-Halter-Schema. FIN nach ISO 3779: 17 Zeichen (ohne I/O/Q).
+ * HL-MOB-3 / HL-MOB-7: `fin_voll` muss `[MOCK] `-Prefix tragen; `fin_masked`
+ * ist die UI-Default-Darstellung mit 4 letzten Stellen sichtbar.
+ */
+export const kfzHalterSchema = z
+  .object({
+    kennzeichen: z.string(),
+    marke: z.string(),
+    modell: z.string(),
+    baujahr: z.string().regex(/^\d{4}$/),
+    fin_voll: z.string().regex(/^\[MOCK\] [A-HJ-NPR-Z0-9]{17}$/),
+    fin_masked: z.string(),
+    zulassungsstelle_id: z.string(),
+    hu_bis: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    evb_nummer: z.string(),
+    zulassung_aktenzeichen: z.string(),
+    mitnutzer: z
+      .array(z.object({ vorname: z.string(), nachname: z.string() }).strict())
+      .optional(),
+  })
+  .strict();
+
+/**
+ * Halter-Adresse-Schema mit Umzug-Bridge-Marker.
+ */
+export const halterAdresseSchema = z
+  .object({
+    strasse: z.string(),
+    hausnummer: z.string(),
+    plz: z.string().regex(/^\d{5}$/),
+    ort: z.string(),
+    uebergangs_marker_via_umzug: z.boolean(),
+    uebergangs_marker_seit: z.string().optional(),
+    via_umzug_vorgang_id: z.string().optional(),
+  })
+  .strict();
+
+/**
+ * Top-Level Mobilitaet-Schema. `.strict()` ist HL-MOB-11 / VL-4 critical:
+ * `punkte` und andere Excess-Keys werden vom Schema **rejected**.
+ *
+ * Unit-Test:
+ *   `tests/unit/stammdaten-v1-3-schema-no-punkte.test.ts`
+ *   `mobilitaetSchema.parse({ punkte: 3, halter: [] })` muss `throw`en.
+ */
+export const mobilitaetSchema = z
+  .object({
+    fahrerlaubnis: fahrerlaubnisSchema.optional(),
+    halter: z.array(kfzHalterSchema),
+    halter_adresse: halterAdresseSchema.optional(),
+  })
+  .strict();
+
+/**
+ * Persistenz-Bucket `govtech-de:v1:stammdaten:mobilitaet` —
+ * `Record<PersonaId, Mobilitaet>`. Strict-Mode wird auf die einzelnen
+ * Werte angewandt (über `mobilitaetSchema` mit `.strict()`).
+ */
+export const stammdatenMobilitaetBucketSchema = z.record(mobilitaetSchema);
+
+/**
+ * Compile-time guard: Zod-Schema = TS-Interface.
+ */
+import type {
+  Mobilitaet as _MobilitaetTs,
+} from '@/types/mobilitaet';
+type _SchemaMobilitaet = z.infer<typeof mobilitaetSchema>;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _mobilitaetDriftGuard: _AssertEq<
+  _SchemaMobilitaet,
+  _MobilitaetTs
+> = true;

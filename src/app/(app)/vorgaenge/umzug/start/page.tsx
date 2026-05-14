@@ -18,6 +18,7 @@ import {
   toAdresse,
   type AdresseFormValue,
 } from '@/components/umzug/AdresseInput';
+import { WizardProgress } from '@/components/umzug/WizardProgress';
 import { WohnungsgeberUpload } from '@/components/umzug/WohnungsgeberUpload';
 import { useUmzugDraft } from '@/stores/umzugDraft';
 
@@ -77,7 +78,7 @@ export default function UmzugStartPage() {
       aria-labelledby={titleId}
       className="flex flex-col gap-8"
     >
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-4">
         <Link
           href="/dashboard"
           className="inline-flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
@@ -85,13 +86,16 @@ export default function UmzugStartPage() {
           <ArrowLeft className="size-4" aria-hidden="true" />
           {tCommon('cta.zurueck')}
         </Link>
-        <h1
-          id={titleId}
-          className="text-3xl font-semibold tracking-tight text-foreground"
-        >
-          {t('title')}
-        </h1>
-        <p className="text-muted-foreground">{t('subtitle')}</p>
+        <WizardProgress currentStep={0} />
+        <div className="flex flex-col gap-2">
+          <h1
+            id={titleId}
+            className="text-3xl font-semibold tracking-tight text-foreground"
+          >
+            {t('title')}
+          </h1>
+          <p className="text-muted-foreground">{t('subtitle')}</p>
+        </div>
       </div>
 
       <Card>
@@ -104,6 +108,9 @@ export default function UmzugStartPage() {
           />
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="stichtag">{t('stichtag.label')}</Label>
+            <p id="stichtag-helper" className="text-xs text-muted-foreground">
+              {t('stichtag.helper')}
+            </p>
             <Input
               id="stichtag"
               type="date"
@@ -113,9 +120,6 @@ export default function UmzugStartPage() {
               aria-describedby="stichtag-helper"
               className="w-fit"
             />
-            <p id="stichtag-helper" className="text-xs text-muted-foreground">
-              {t('stichtag.helper')}
-            </p>
           </div>
         </CardContent>
       </Card>
