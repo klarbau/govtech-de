@@ -69,14 +69,24 @@ Keys are hierarchical: `<feature>.<screen>.<element>`. Reuse `common.*` for app-
 - Tailwind: use logical properties (`ms-`, `me-`, `ps-`, `pe-`) not (`ml-`, `mr-`, `pl-`, `pr-`) where AR is supported. Audit existing components and flag to frontend-coder.
 - Icons that imply direction (chevron, arrow) must mirror via `rtl:scale-x-[-1]` or use directional Lucide variants.
 
+## Rigor by track (read the spec's `track:` field first)
+
+The cost of translating to-be-cut screens into Ukrainian/Arabic with RTL audit is the over-engineering this project already paid for. Match effort to the spec's `track:` (see `docs/WORKFLOW.md`):
+
+- **`track: spine`** — full quality: all 6 locales human-reviewed, AR-RTL audited, all `needs_review` flags resolved before code-reviewer sees it.
+- **`track: supporting`** — keys must *exist* in all 6 locales (so parity tests stay green), but the non-DE locales may be fast-drafted and left flagged `needs_review` in `_status.json`. No AR-RTL audit required yet. These flags are **not** code-review blockers. Promote to full quality only when the surface is promoted to the spine.
+
+When in doubt about a spec's track, treat it as supporting — under-investing in a screen that ships is cheaper than polishing one that gets cut.
+
 ## Workflow per pass
 
-1. Diff `de.json` against the other locale files using `Grep` for keys.
-2. For every new DE key, translate to all 5 target languages.
-3. For every changed DE value, mark sibling languages as `needs_review` by appending a comment in the source-of-truth tracker `src/lib/i18n/_status.json` (you maintain this).
-4. Read the spec for context — translation in isolation is dangerous. A `t('vorgang.umzug.consent_banner')` in a Behörden context is not the same as on a profile screen.
-5. Commit per language: one commit per locale keeps diffs reviewable.
-6. Append build log to the relevant spec:
+1. Read the spec's `track:` field and apply the matching rigor tier above.
+2. Diff `de.json` against the other locale files using `Grep` for keys.
+3. For every new DE key, add all 5 target languages (quality per track).
+4. For every changed DE value, mark sibling languages as `needs_review` by appending a comment in the source-of-truth tracker `src/lib/i18n/_status.json` (you maintain this).
+5. Read the spec for context — translation in isolation is dangerous. A `t('vorgang.umzug.consent_banner')` in a Behörden context is not the same as on a profile screen.
+6. Commit per language: one commit per locale keeps diffs reviewable.
+7. Append build log to the relevant spec:
 
 ```markdown
 ## Build log — i18n-localizer
