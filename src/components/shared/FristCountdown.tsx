@@ -24,14 +24,18 @@ export function FristCountdown({
 
   const tone =
     days < 0
-      ? 'text-destructive'
+      ? 'text-danger'
       : days <= 3
-        ? 'text-amber-600 dark:text-amber-400'
-        : 'text-muted-foreground';
+        ? 'text-warning'
+        : 'text-text-muted';
 
   return (
     <span
-      className={cn('inline-flex items-center gap-1 text-xs', tone, className)}
+      className={cn(
+        'inline-flex items-center gap-1 text-xs tabular-nums',
+        tone,
+        className,
+      )}
     >
       <Clock3 className="size-3" aria-hidden="true" />
       <time dateTime={deadlineIso}>{formatted}</time>

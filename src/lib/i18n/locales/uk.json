@@ -28,6 +28,37 @@
     "privacy": "Конфіденційність",
     "accessibility": "Доступність"
   },
+  "error": {
+    "not_found": {
+      "code": "Помилка 404",
+      "title": "Сторінку не знайдено",
+      "description": "Ця сторінка не існує або її було переміщено. Поверніться на Dashboard, щоб продовжити.",
+      "cta": "На Dashboard"
+    }
+  },
+  "shell": {
+    "sidebar": {
+      "authority": "Федеративна Республіка Німеччина",
+      "help": "Допомога та контакти",
+      "logout": "Вийти",
+      "open": "Відкрити навігацію",
+      "close": "Закрити навігацію",
+      "nav_label": "Основна навігація"
+    },
+    "user": {
+      "menu_label": "Відкрити меню користувача",
+      "demo_name": "Анна Петрова",
+      "profile": "Профіль",
+      "switch_persona": "Змінити персону",
+      "logout": "Вийти"
+    },
+    "footer": {
+      "landmark": "Нижній колонтитул"
+    },
+    "sheet": {
+      "close": "Закрити"
+    }
+  },
   "landing": {
     "eyebrow": "GovTech DE — концепт-демо",
     "title": "Адміністрування — переосмислене",
@@ -39,6 +70,83 @@
     "persona_mehmet": "Мехмет Йилдиз, 34 роки — Кельн, планує відкрити справу",
     "cta_continue": "Відкрити демо"
   },
+  "dashboard": {
+    "title": "Панель",
+    "subtitle": "Ваш особистий огляд листів, термінів і справ",
+    "greeting": {
+      "frau": "Доброго дня, пані {nachname}",
+      "herr": "Доброго дня, пане {nachname}",
+      "neutral": "Доброго дня, {vorname} {nachname}"
+    },
+    "demo_banner": {
+      "text": "Демо-режим · демодані. Вхід через BundID трапляється рідко, тож Вам допоможе огляд змін.",
+      "disclaimer_link": "Показати примітку"
+    },
+    "diff": {
+      "title": "Від Вашого останнього входу",
+      "neue_briefe": "нових листів",
+      "frist_naeher": "термін ближче",
+      "vorgang_abgeschlossen": "справу завершено",
+      "last_login_tooltip": "На цьому пристрої востаннє {datum}",
+      "first_login": "Перший вхід на цьому пристрої",
+      "no_changes": "Змін від Вашого останнього входу немає"
+    },
+    "heute_zu_tun": {
+      "title": "Сьогодні треба зробити",
+      "sort_aria": "Сортування рекомендованих дій",
+      "sort": {
+        "ki": "ШІ",
+        "frist": "Термін",
+        "behoerde": "Відомство",
+        "vorgang": "Справа"
+      },
+      "empty_title": "Усе зроблено",
+      "empty_description": "У {jahr} році Ви завершили справ: {count}.",
+      "sort_disabled_tooltip": "Немає дій для сортування"
+    },
+    "priority": {
+      "fristnaehe": "Термін близько",
+      "folgevorgang": "Пов’язана справа",
+      "manuell": "Пріоритет вручну",
+      "termin": "Призначено зустріч"
+    },
+    "tile": {
+      "fristen": {
+        "title": "Терміни",
+        "next": "Найближчий термін: {datum}",
+        "none": "Відкритих термінів немає"
+      },
+      "posteingang": {
+        "title": "Вхідні",
+        "value": "{ungelesen} непрочитано · {gesamt} усього"
+      },
+      "vorgaenge": {
+        "title": "Справи",
+        "value": "{laufend} у роботі"
+      },
+      "termine": {
+        "title": "Зустрічі",
+        "next": "Найближча зустріч: {datum}",
+        "none": "Зустрічей не заплановано"
+      },
+      "datenschutz": {
+        "title": "Центр конфіденційності",
+        "value": "{count} дій / 30 днів"
+      },
+      "stammdaten": {
+        "title": "Стан анкетних даних",
+        "value": "Перевірити адресу",
+        "last_confirmed": "Останнє підтвердження: {datum}",
+        "never_confirmed": "Ще не підтверджено"
+      },
+      "cta_ansehen": "Переглянути",
+      "cta_oeffnen": "Відкрити"
+    },
+    "error": {
+      "load": "Не вдалося завантажити панель."
+    },
+    "loading": "Панель завантажується"
+  },
   "common": {
     "cta": {
       "zurueck": "Назад",
@@ -46,6 +154,48 @@
       "bestaetigen": "Підтвердити",
       "abbrechen": "Скасувати",
       "erneut_versuchen": "Спробувати ще раз"
+    },
+    "filter": "Фільтр",
+    "filter_active": "Активних фільтрів: {count}",
+    "search": "Пошук",
+    "all": "Усі",
+    "show_all": "Показати всі",
+    "actions": {
+      "close": "Закрити"
+    },
+    "pagination": {
+      "label": "Навігація сторінками",
+      "range": "{from}–{to} з {total}",
+      "per_page": "{count} на сторінці",
+      "prev": "Попередня сторінка",
+      "next": "Наступна сторінка",
+      "page": "Сторінка {page}"
+    },
+    "context_chip": {
+      "prototype": "Прототип · демодані",
+      "speculative": "Перспективна демофункція"
+    },
+    "empty": {
+      "default_title": "Немає записів",
+      "default_description": "Тут поки що нічого немає."
+    },
+    "status": {
+      "laufend": "У роботі",
+      "neu": "Нове",
+      "verifiziert": "Верифіковано",
+      "bestaetigt": "Підтверджено",
+      "aktiv": "Активно",
+      "geprueft": "Перевірено",
+      "erledigt": "Готово",
+      "abgeschlossen": "Завершено",
+      "eingereicht": "Подано",
+      "warten": "Очікує на Вас",
+      "in_bearbeitung": "В обробці",
+      "wird_geprueft": "На перевірці",
+      "manuell": "Перевірити вручну",
+      "vorlage": "Чернетка",
+      "ablauf_bald": "Скоро спливає",
+      "abgelaufen": "Прострочено"
     },
     "frist": {
       "gesetzlich": "законний строк",
@@ -214,6 +364,94 @@
       "open_cta": "Показати правову підставу"
     }
   },
+  "assistent": {
+    "title": "Асистент",
+    "subtitle": "Ставте запитання, розбирайтеся в листах і визначайте наступні кроки",
+    "quick": {
+      "label": "Підказки",
+      "erklaere_brief": "Поясніть мій лист",
+      "naechster_schritt": "Що робити далі?",
+      "fehlende_unterlagen": "Яких документів бракує?"
+    },
+    "log_label": "Розмова з асистентом",
+    "composer": {
+      "label": "Повідомлення асистенту",
+      "placeholder": "Напишіть повідомлення …",
+      "send": "Надіслати",
+      "attach": "Прикріпити файл",
+      "attach_disabled": "Прикріплення файлів у цій демоверсії вимкнено."
+    },
+    "message": {
+      "user_sent": "Надіслано",
+      "assistant_label": "Асистент"
+    },
+    "empty": {
+      "title": "Чим я можу Вам допомогти?",
+      "description": "Поставте запитання або оберіть підказку."
+    },
+    "streaming": {
+      "typing": "Асистент друкує …"
+    },
+    "error": {
+      "stream": "Не вдалося завантажити відповідь. Спробуйте ще раз."
+    },
+    "greeting": {
+      "intro": "Вітаємо, {vorname}, ось огляд Вашої поточної ситуації:",
+      "bullet_briefe": "{count, plural, =1 {1 непрочитаний лист} few {# непрочитані листи} other {# непрочитаних листів}} у пошті.",
+      "bullet_frist": "Найближчий термін: {betreff} — {datum}.",
+      "bullet_keine": "Наразі немає нічого термінового.",
+      "cta": "Чим я можу Вам допомогти?"
+    },
+    "tool": {
+      "reading": "Асистент працює …",
+      "running": "Виконується …",
+      "done": "Готово",
+      "failed": "Не вдалося",
+      "umzug_started": "Переїзд запущено — відомства зараз сповіщаються.",
+      "cta_kaskade": "Переглянути каскад",
+      "label": {
+        "starte_umzug": "Запустити переїзд",
+        "preview_umzug": "Підготувати переїзд",
+        "lese_posteingang": "Прочитати пошту",
+        "hole_vorgang": "Отримати справу",
+        "hole_profil": "Отримати основні дані",
+        "liste_termine": "Отримати записи на прийом",
+        "erklaere_brief": "Пояснити лист",
+        "extrahiere_frist": "Виокремити термін",
+        "vorschlage_naechsten_schritt": "Запропонувати наступний крок"
+      }
+    },
+    "umzug_confirm": {
+      "title": "Підтвердьте переїзд",
+      "subtitle": "Перевірте, будь ласка, дані. Відомства сповіщаються лише після Вашого підтвердження.",
+      "neue_adresse": "Нова адреса",
+      "stichtag": "Дата заселення",
+      "empfaenger_a": "Автоматично (закон про реєстрацію)",
+      "empfaenger_b": "За Вашою згодою",
+      "empfaenger_c": "Зробити самостійно",
+      "empfaenger_d": "З підтвердженням через eID",
+      "empfaenger_leer": "—",
+      "cta_start": "Запустити переїзд",
+      "cta_cancel": "Скасувати",
+      "cancelled": "Скасовано.",
+      "consent_note": "Отримувачі блоку B сповіщаються лише за Вашою згодою (ст. 6 ч. 1 п. a GDPR / Art. 6 Abs. 1 lit. a DSGVO); згоду можна відкликати будь-коли."
+    },
+    "kontext": {
+      "title": "Контекст",
+      "subtitle": "Я спираюся на:",
+      "posteingang": "Пошта",
+      "posteingang_value": "{ungelesen, plural, =0 {немає непрочитаних} =1 {1 непрочитаний} few {# непрочитані} other {# непрочитаних}}",
+      "dokumente": "Документи",
+      "dokumente_value": "{count, plural, =1 {1 у сховищі} few {# у сховищі} other {# у сховищі}}",
+      "termine": "Записи на прийом",
+      "termine_value": "{count, plural, =0 {нічого не заплановано} =1 {1 запланована} few {# заплановані} other {# заплановано}}",
+      "stammdaten": "Основні дані",
+      "stammdaten_value": "Актуальні",
+      "datenschutz_title": "Ваші дані захищені",
+      "datenschutz_body": "Обробляються лише дані, потрібні для Вашого запитання. Оригінали залишаються в офіційних поштових скриньках.",
+      "datenschutz_link": "Докладніше про захист даних"
+    }
+  },
   "placeholder": {
     "section_title": "{section}",
     "wip": "Цей розділ у підготовці.",
@@ -360,6 +598,11 @@
       "zurueck": "Назад до вхідних",
       "not_found_title": "Лист не знайдено",
       "not_found_body": "Цей лист не існує або був видалений.",
+      "empty_select_title": "Виберіть лист зі списку.",
+      "empty_select_body": "Ліворуч — Ваші листи від відомств. Виберіть один, щоб побачити розбір від ШІ, строки та можливі кроки.",
+      "auth_badge": "Справжність перевірено",
+      "originaltext_auszug_title": "Фрагмент оригінального тексту",
+      "originaltext_mehr": "Показати більше",
       "originaltext_heading": "Оригінальний текст",
       "originaltext_authoritative_label": "юридично обовʼязковий",
       "summary_heading": "Стислий розбір (ШІ)",
@@ -780,6 +1023,60 @@
       "renten_toast_error": "Не вдалося перенести дані — будь ласка, спробуйте ще раз."
     }
   },
+  "vorgaenge": {
+    "title": "Справи",
+    "subtitle": "Поточні та завершені справи з відомствами — стисло",
+    "filter": {
+      "alle": "Усі",
+      "laufend": "У процесі",
+      "warten": "Чекають на Вас",
+      "abgeschlossen": "Завершені"
+    },
+    "filter_aria": "Фільтрувати справи за статусом",
+    "card": {
+      "progress": "Готово {erledigt} з {gesamt}",
+      "progress_label": "Поступ",
+      "cta_weiter": "Продовжити",
+      "cta_kaskade": "Переглянути ланцюжок",
+      "cta_unterlagen": "Завантажити документи",
+      "cta_ansehen": "Відкрити справу",
+      "unterlagen_fehlen": "Бракує документів",
+      "umzug_subtitle": "Усі відповідальні відомства сповіщаються автоматично."
+    },
+    "stepper": {
+      "aria": "Хід справи «{titel}»",
+      "node_done": "{behoerde}: завершено",
+      "node_active": "{behoerde}: в обробці",
+      "node_pending": "{behoerde}: очікує",
+      "node_failed": "{behoerde}: помилка"
+    },
+    "rail": {
+      "title": "Що важливо зараз?",
+      "offene_vorgaenge": "Відкриті справи",
+      "offene_vorgaenge_count": "{count, plural, =1 {1 відкрита справа} few {# відкриті справи} other {# відкритих справ}}",
+      "frist_naht": "Наближається строк",
+      "frist_naht_days": "Строк через {tage, plural, =1 {1 день} few {# дні} other {# днів}}",
+      "warten_bestaetigung": "Очікують підтвердження",
+      "warten_bestaetigung_count": "{count, plural, =1 {1 крок відкритий} few {# кроки відкриті} other {# кроків відкрито}}",
+      "cta_ansehen": "Відкрити",
+      "alle_ansehen": "Переглянути всі справи",
+      "empty": "Зараз нічого термінового."
+    },
+    "empty": {
+      "title": "У цьому розділі немає справ",
+      "body": "Наразі в цьому розділі немає справ.",
+      "cta_umzug": "Розпочати переїзд"
+    },
+    "typ": {
+      "umzug": "Переїзд",
+      "kindergeburt": "Народження дитини",
+      "aufenthaltstitel-verlaengerung": "Продовження посвідки на проживання",
+      "eheschliessung": "Укладення шлюбу",
+      "gewerbeanmeldung": "Реєстрація бізнесу",
+      "anmeldung": "Реєстрація",
+      "sonstige": "Справа"
+    }
+  },
   "stammdaten": {
     "page": {
       "title": "Особисті дані (Stammdaten)",
@@ -791,7 +1088,8 @@
       "sperre_error": "Не вдалося активувати блокування.",
       "iban_push_error": "Не вдалося змоделювати IBAN-передачу.",
       "beschaeftigung_heading": "Зайнятість (агрегація лише для читання)",
-      "beschaeftigung_helper": "Ці поля ведуться поза реєстром реєстрації (DRV, лікарняна каса, податкове управління) і відображаються тут лише як агрегат."
+      "beschaeftigung_helper": "Ці поля ведуться поза реєстром реєстрації (DRV, лікарняна каса, податкове управління) і відображаються тут лише як агрегат.",
+      "subtitle": "Особисті дані, контакти та підтвердження в одному місці."
     },
     "tab": {
       "aria_label": "Розділи особистих даних",
@@ -873,7 +1171,9 @@
       "korrekturweg_label": "Шлях виправлення",
       "familie_preview": "{partner} партнер(ів) / {kinder} дитина(дітей)",
       "sperre_aktivieren": "Активувати блокування (демо)",
-      "iban_push_trigger": "Змоделювати IBAN-передачу"
+      "iban_push_trigger": "Змоделювати IBAN-передачу",
+      "bearbeiten": "Редагувати",
+      "verwalten": "Керувати"
     },
     "field": {
       "familienname": { "label": "Прізвище" },
@@ -1293,6 +1593,414 @@
         "familienkasse_followup": "Подальше рішення тепер у поштовій скриньці (демо)",
         "familienkasse_angebunden": "Familienkasse Berlin-Brandenburg підключена до BundID — налаштування застосовано (демо)"
       }
+    },
+    "chip": {
+      "adresse_bestaetigt": "Адресу підтверджено",
+      "wallet_verbunden": "Wallet під’єднано",
+      "aufenthalt_gueltig": "Посвідка на проживання дійсна",
+      "aufenthalt_ablauf_bald": "Термін посвідки скоро спливає"
+    },
+    "aenderungsprotokoll": {
+      "title": "Журнал змін",
+      "show_all": "Показати всі зміни"
+    },
+    "hoheit": {
+      "title": "Ви розпоряджаєтесь своїми даними",
+      "cta": "Керувати налаштуваннями"
+    },
+    "card": {
+      "persoenliches_profil": "Особистий профіль",
+      "versicherung_vorsorge": "Страхування та забезпечення",
+      "identitaetsdokumente": "Документи, що посвідчують особу",
+      "familie_bezugspersonen": "Сім’я та близькі"
+    },
+    "cross_link": {
+      "familie": "До розділу «Сім’я»"
+    }
+  },
+  "dokumente": {
+    "title": "Документи",
+    "subtitle": "Ваше особисте сховище документів зі свідоцтвами та рішеннями відомств.",
+    "search": {
+      "placeholder": "Пошук документів",
+      "aria_label": "Шукати документи"
+    },
+    "kategorie": {
+      "ausweise": "Посвідчення",
+      "bescheide": "Рішення відомств (Bescheide)",
+      "familie": "Сім’я",
+      "vertraege": "Договори"
+    },
+    "col": {
+      "dokument": "Документ",
+      "kategorie": "Категорія",
+      "status": "Статус",
+      "daten": "Видано / Дійсний до",
+      "aktionen": "Дії",
+      "nr_prefix": "№ "
+    },
+    "daten": {
+      "ausgestellt": "Видано {datum}",
+      "gueltig_bis": "Дійсний до {datum}",
+      "unbefristet": "безстроково"
+    },
+    "action": {
+      "ansehen": "Відкрити «{name}»",
+      "herunterladen": "Завантажити «{name}»",
+      "mehr": "Інші дії для «{name}»",
+      "menu_ansehen": "Відкрити",
+      "menu_teilen": "Поділитися та використати"
+    },
+    "schnellzugriff": {
+      "title": "Швидкий доступ",
+      "upload": "Завантажити документ",
+      "ordner": "Нова папка",
+      "vorlagen": "Шаблони",
+      "papier": "Подати паперовий документ"
+    },
+    "zuletzt": {
+      "title": "Нещодавно додані"
+    },
+    "teilen": {
+      "title": "Поділитися та використати",
+      "hint": "Документи можна перевірити за QR-кодом і експортувати до гаманця EUDI (EUDI Wallet).",
+      "cta": "Використати документ"
+    },
+    "preview": {
+      "title": "Перегляд документа",
+      "qr_label": "QR-код для перевірки",
+      "eudi_yes": "Можна експортувати до гаманця EUDI (EUDI Wallet)",
+      "eudi_no": "Експорт до EUDI недоступний",
+      "aussteller": "Відомство, що видало",
+      "nr_label": "Номер документа",
+      "ausgestellt_label": "Дата видачі",
+      "gueltig_bis_label": "Дійсний до"
+    },
+    "empty": {
+      "title": "Документів ще немає",
+      "filter_title": "Немає документів для цього фільтра",
+      "filter_description": "Оберіть іншу категорію або пошуковий запит."
+    },
+    "error": "Не вдалося завантажити документи.",
+    "demo_action_toast": "Демофункція — у цьому прототипі не реалізована.",
+    "filter": {
+      "sort_label": "Сортувати за",
+      "sort_name": "Назвою (А–Я)",
+      "sort_ausgestellt": "Датою видачі (спершу новіші)",
+      "sort_gueltig": "Терміном дії (спершу ті, що спливають)",
+      "status_label": "Статус"
+    }
+  },
+  "termine": {
+    "title": "Прийоми та строки",
+    "subtitle": "Прийоми у відомствах, нагадування та записи — в одному місці.",
+    "calendar": {
+      "prev": "Попередній місяць",
+      "next": "Наступний місяць",
+      "today": "Сьогодні",
+      "label": "Календар на місяць",
+      "weekday_long": {
+        "mo": "Понеділок",
+        "di": "Вівторок",
+        "mi": "Середа",
+        "do": "Четвер",
+        "fr": "П’ятниця",
+        "sa": "Субота",
+        "so": "Неділя"
+      },
+      "weekday_short": {
+        "mo": "Пн",
+        "di": "Вт",
+        "mi": "Ср",
+        "do": "Чт",
+        "fr": "Пт",
+        "sa": "Сб",
+        "so": "Нд"
+      },
+      "has_events": "{count, plural, =1 {1 прийом} few {# прийоми} many {# прийомів} other {# прийому}}",
+      "day_aria": "{datum}{events}",
+      "day_events_suffix": " — {count, plural, =1 {1 прийом} few {# прийоми} many {# прийомів} other {# прийому}}"
+    },
+    "filter": {
+      "title": "Фільтр",
+      "behoerdentermine": "Прийоми у відомствах",
+      "erinnerungen": "Нагадування та строки",
+      "buchungen": "Записи",
+      "abgeschlossen": "Завершені"
+    },
+    "naechste": {
+      "title": "Найближчі прийоми"
+    },
+    "weitere": {
+      "title": "Інші прийоми та нагадування"
+    },
+    "card": {
+      "buchungsreferenz": "Номер запису {ref}",
+      "ics": "Експорт ICS",
+      "ics_aria": "Експортувати прийом «{betreff}» в ICS",
+      "details": "Подробиці",
+      "details_anzeigen": "Показати подробиці"
+    },
+    "naechster_schritt": {
+      "title": "Наступний крок"
+    },
+    "vorbereitung": {
+      "title": "Добре підготуйтеся до прийому",
+      "reisepass": "Візьміть закордонний паспорт",
+      "alter_titel": "Візьміть попередній дозвіл на проживання (Aufenthaltstitel)",
+      "biometrie": "Візьміть біометричне фото на паспорт",
+      "gebuehr": "Підготуйте збір за оформлення",
+      "meldung": "Візьміть підтвердження від орендодавця (Wohnungsgeberbestätigung)"
+    },
+    "fristen": {
+      "title": "Строки — коротко",
+      "in_tagen": "Через {count, plural, =0 {строк сьогодні} =1 {1 день} few {# дні} many {# днів} other {# дня}}",
+      "ueberfaellig": "прострочено"
+    },
+    "ort": {
+      "video": "Прийом за відео",
+      "telefon": "Прийом за телефоном",
+      "praesenz": "Особисто"
+    },
+    "empty": {
+      "title": "Немає прийомів",
+      "description": "Наразі у Вас немає запланованих прийомів.",
+      "filter_title": "Немає прийомів за цим вибором",
+      "naechster_schritt": "Оберіть прийом, щоб побачити подробиці."
+    },
+    "error": "Не вдалося завантажити прийоми."
+  },
+  "steuer": {
+    "title": "Податки",
+    "subtitle": "Попередньо заповнена податкова декларація на основі вже відомих даних.",
+    "hero": {
+      "steuerjahr": "Податковий рік {jahr}",
+      "entwurf_badge": "Чернетка",
+      "erstattung_label": "Очікуване відшкодування",
+      "erstattung_aria": "Очікуване відшкодування {betrag}",
+      "nachzahlung_label": "Очікувана доплата",
+      "nachzahlung_aria": "Очікувана доплата {betrag}",
+      "datenquellen_label": "Джерела даних"
+    },
+    "quelle": {
+      "lohnsteuer": "Податок із заробітної плати (Lohnsteuer)",
+      "kind": "Дитина",
+      "krankenkasse": "Лікарняна каса (Krankenkasse)",
+      "bekannt": "Уже відомі дані",
+      "herkunft": "від {herkunft}"
+    },
+    "fortschritt": {
+      "title": "Перебіг",
+      "geprueft": "Дані перевірено",
+      "ergaenzen": "Додати підтвердні документи",
+      "abgabe": "Готово до подання",
+      "schritt_aria": "Крок {n} з 3: {label}",
+      "status_done": "завершено",
+      "status_active": "активно",
+      "status_pending": "не розпочато"
+    },
+    "bereiche": {
+      "title": "Огляд податкових розділів"
+    },
+    "col": {
+      "bereich": "Розділ",
+      "betrag": "Сума",
+      "status": "Статус",
+      "aktion": "Дія"
+    },
+    "status": {
+      "geprueft": "Перевірено",
+      "ergaenzen": "Доповнити",
+      "nicht_vorhanden": "Відсутнє"
+    },
+    "aktion": {
+      "ansehen": "Переглянути",
+      "ergaenzen": "Доповнити",
+      "hinzufuegen": "Додати",
+      "ansehen_aria": "Переглянути розділ «{bereich}»",
+      "ergaenzen_aria": "Додати документи для розділу «{bereich}»",
+      "hinzufuegen_aria": "Додати розділ «{bereich}»"
+    },
+    "bereich": {
+      "einkommen": "Доходи від роботи за наймом",
+      "werbungskosten": "Витрати, пов’язані з роботою (Werbungskosten)",
+      "vorsorge": "Витрати на соціальне забезпечення (Vorsorgeaufwendungen)",
+      "kinder": "Діти",
+      "aussergewoehnlich": "Надзвичайні витрати (außergewöhnliche Belastungen)",
+      "sonderausgaben": "Особливі витрати (Sonderausgaben)"
+    },
+    "fristen": {
+      "title": "Важливі терміни"
+    },
+    "frist": {
+      "abgabe": "Термін подання декларації за {jahr}",
+      "einspruch": "Термін оскарження останнього повідомлення",
+      "in_tagen": "Через {count, plural, =0 {сьогодні} one {# день} few {# дні} many {# днів} other {# дня}}",
+      "ueberfaellig": "прострочено"
+    },
+    "nachweise": {
+      "title": "Використані документи"
+    },
+    "datenschutz": {
+      "title": "Повідомлення про захист даних",
+      "verarbeitet_label": "Дані, що обробляються",
+      "daten": {
+        "lohn": "Дані про заробітну плату та доходи",
+        "kv": "Внески на медичне страхування",
+        "kind": "Дані про дітей (допомога на дітей)"
+      },
+      "rechtsgrundlage_label": "Правова підстава",
+      "empfaenger_label": "Одержувач",
+      "minimierung_hint": "Обробляються лише ті дані, які потрібні для податкової декларації.",
+      "mehr": "Докладніше про захист даних"
+    },
+    "empty": {
+      "title": "Чернетки декларації немає",
+      "description": "За цей податковий рік попередньо заповнених даних поки немає."
+    },
+    "error": "Не вдалося завантажити огляд податків.",
+    "retry": "Повторити",
+    "demo_action_toast": "Демофункція — додавання документів у цьому прототипі не передбачено.",
+    "alle_bereiche": "Показати всі розділи",
+    "weniger_bereiche": "Показати менше"
+  },
+  "datenschutz": {
+    "page": {
+      "title": "Захист даних",
+      "subtitle": "Огляд звернень до даних, згод та адміністративних справ"
+    },
+    "vision_banner": {
+      "heading": "Бачення 2027",
+      "title": "Бачення 2027",
+      "body": "Ця панель об’єднує прозорість і керування захистом Ваших даних. У реальному світі сьогодні ці функції ще розподілені між кількома установами.",
+      "dismiss": "Закрити повідомлення про бачення 2027"
+    },
+    "aktivitaet": {
+      "title": "Останні дії",
+      "show_all": "Показати всі дії",
+      "show_less": "Показати менше",
+      "empty": "Дій поки не зафіксовано."
+    },
+    "activity": {
+      "typ": {
+        "uebermittlung": "Передавання",
+        "eingang": "Надходження",
+        "app": "Дія в застосунку",
+        "vision": "Бачення"
+      },
+      "brief_geoeffnet": "Лист відкрито",
+      "ki_zusammenfassung": "Створено ШІ-резюме",
+      "adresse_uebermittelt": "Адресу передано до установи",
+      "dokument_geladen": "Документ завантажено",
+      "einwilligung_erteilt": "Згоду надано"
+    },
+    "einwilligungen": {
+      "title": "Згоди",
+      "subtitle": "Ви вирішуєте, яким установам дозволено доступ до Ваших даних",
+      "krankenkasse": "Лікарняна каса (Krankenkasse)",
+      "bank": "Банк",
+      "arbeitgeber": "Роботодавець",
+      "weitere_dienste": "Інші служби",
+      "ein": "Увімк.",
+      "aus": "Вимк.",
+      "rechtsgrundlage_label": "Правова підстава",
+      "switch_aria": "Згода: {empfaenger}",
+      "announce_ein": "Згоду «{empfaenger}» увімкнено",
+      "announce_aus": "Згоду «{empfaenger}» вимкнено"
+    },
+    "quellen": {
+      "title": "Джерела даних та одержувачі",
+      "col_stelle": "Установа",
+      "col_zugriffsart": "Тип доступу",
+      "col_aktualitaet": "Актуальність",
+      "automatisch": "автоматична синхронізація",
+      "einwilligungsbasiert": "на основі згоди",
+      "aktuell": "актуально",
+      "show_all": "Показати всіх одержувачів"
+    },
+    "kontrolle": {
+      "title": "Ваш контроль захисту даних",
+      "zugriffsprotokoll": "Журнал доступу",
+      "zugriffsprotokoll_desc": "Відстежити всі звернення до даних",
+      "datenexport": "Експорт даних",
+      "datenexport_desc": "Заберіть свої дані відповідно до ст. 20 GDPR (DSGVO)",
+      "einstellungen": "Налаштування",
+      "einstellungen_desc": "Керування налаштуваннями та блокуваннями",
+      "vision_hint": "Ця функція є частиною бачення 2027 цієї демонстрації."
+    },
+    "log": {
+      "einwilligung_geaendert": "Згоду змінено"
+    },
+    "toast": {
+      "einwilligung_error": "Не вдалося зберегти згоду."
+    },
+    "empty": {
+      "title": "Дій поки немає",
+      "description": "Щойно дані буде оброблено, вони з’являться тут."
+    },
+    "error": "Не вдалося завантажити дані про захист даних.",
+    "retry": "Повторити"
+  },
+  "familie": {
+    "page": {
+      "title": "Сім’я",
+      "subtitle": "Домогосподарство, близькі люди та спільні справи — на одному екрані"
+    },
+    "haushalt": {
+      "title": "Моє домогосподарство",
+      "count": "{count} осіб"
+    },
+    "rolle": {
+      "mutter": "Мати",
+      "vater": "Батько",
+      "partner": "Партнер",
+      "kind": "Дитина",
+      "hauptperson": "Головна особа"
+    },
+    "cta": {
+      "haushalt_verwalten": "Керувати домогосподарством"
+    },
+    "verwalten_dialog": {
+      "title": "Керувати домогосподарством",
+      "body": "Керування членами домогосподарства та правами представництва (Vertretungsrechte) — це бачення цієї демоверсії на 2027 рік. Функція з’явиться згодом.",
+      "close": "Закрити"
+    },
+    "vertretung_banner": {
+      "title": "Представництво",
+      "body": "Ви можете вести справи за членів свого домогосподарства як їхній представник (Vertretung)."
+    },
+    "vorgaenge": {
+      "title": "Спільні справи",
+      "kindergeld": "Допомога на дітей (Kindergeld)",
+      "krankenkasse": "Медичне страхування",
+      "kita": "Місце в дитячому садку (Kita)",
+      "kita_traeger": "Засновник дитячого садка (Kita-Träger)",
+      "betrifft": "Стосується: {names}",
+      "show_all": "Показати всі спільні справи"
+    },
+    "nachweise": {
+      "title": "Підтвердження та повноваження",
+      "geburtsurkunde": "Свідоцтво про народження (Geburtsurkunde)",
+      "sorge_vollmacht": "Довіреність на опіку (Sorge-Vollmacht)",
+      "vertretungsrechte": "Права представництва (Vertretungsrechte)",
+      "verknuepfungen": "Зв’язки"
+    },
+    "was_betrifft_wen": {
+      "title": "Кого що стосується?",
+      "subtitle": "Огляд для кожної особи",
+      "vorgaenge": "Справи",
+      "dokumente": "Документи",
+      "nachweise": "Підтвердження",
+      "vertretungen": "Представництва"
+    },
+    "sicher": {
+      "title": "Безпечно та захищено",
+      "body": "Дані сім’ї обробляються лише в необхідному обсязі. Права представництва (Vertretungsrechte) — це бачення цієї демоверсії на 2027 рік.",
+      "more": "Докладніше про захист даних"
+    },
+    "empty": {
+      "title": "Домогосподарство не вказано",
+      "body": "Для цього профілю членів домогосподарства не зареєстровано."
     }
   }
 }

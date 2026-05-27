@@ -1,7 +1,8 @@
 'use client';
 
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useTranslations } from 'next-intl';
+
+import { FilterTabs } from '@/components/shared/FilterTabs';
 import { cn } from '@/lib/utils';
 
 import { AktenzeichenSearch } from './AktenzeichenSearch';
@@ -30,38 +31,35 @@ export function LetterListHeader({
   const t = useTranslations('posteingang');
 
   return (
-    <div className={cn('flex flex-col gap-3', className)}>
+    <div className={cn('flex flex-col gap-3 md:flex-row md:items-center', className)}>
       <AktenzeichenSearch
         value={searchQuery}
         onChange={onSearchChange}
         behoerdenNameById={behoerdenNameById}
+        className="md:flex-1"
       />
-      <Tabs
-        value={view}
-        onValueChange={(v) =>
-          onViewChange((v as 'chronologisch' | 'nach-vorgang') ?? 'chronologisch')
-        }
-      >
-        <TabsList>
-          <TabsTrigger value="chronologisch">
-            {t('list.tab_chronologisch')}
-          </TabsTrigger>
-          <TabsTrigger value="nach-vorgang">
-            {t('list.tab_nach_vorgang')}
-            {typeof filterCount === 'number' && filterCount > 0 && (
-              <span
-                data-testid="nach-vorgang-filter-badge"
-                aria-label={t('list.tab_filter_badge_aria', {
-                  count: filterCount,
-                })}
-                className="ml-2 inline-flex min-w-5 items-center justify-center rounded-full bg-[var(--ds-color-accent)] px-1.5 text-[11px] font-medium text-[var(--ds-color-accent-foreground)] tabular-nums"
-              >
-                {filterCount}
-              </span>
-            )}
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
+      <div className="flex items-center gap-2">
+        <FilterTabs
+          ariaLabel={t('list.tab_chronologisch')}
+          tabs={[
+            { id: 'chronologisch', label: t('list.tab_chronologisch') },
+            {
+              id: 'nach-vorgang',
+              label: t('list.tab_nach_vorgang'),
+              count:
+                typeof filterCount === 'number' && filterCount > 0
+                  ? filterCount
+                  : undefined,
+            },
+          ]}
+          activeId={view}
+          onChange={(id) =>
+            onViewChange(
+              (id as 'chronologisch' | 'nach-vorgang') ?? 'chronologisch',
+            )
+          }
+        />
+      </div>
     </div>
   );
 }

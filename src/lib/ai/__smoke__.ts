@@ -18,7 +18,12 @@ import {
   isKnownTool,
   tools,
 } from './tools';
-import { validatePosteingangToolInput } from './tool-schemas';
+import {
+  TOOL_DISPATCH,
+  requiresConfirmation,
+  validatePosteingangToolInput,
+  validateUmzugToolInput,
+} from './tool-schemas';
 
 let failures = 0;
 function check(label: string, ok: boolean, detail?: unknown): void {
@@ -44,10 +49,11 @@ check(
   isKnownTool('vorschlage_naechsten_schritt'),
 );
 check(
-  'TOOL_NAMES has 8 entries (5 legacy + 3 new)',
-  TOOL_NAMES.length === 8,
+  'TOOL_NAMES has 9 entries (5 legacy + 3 posteingang + 1 preview_umzug)',
+  TOOL_NAMES.length === 9,
   TOOL_NAMES,
 );
+check('TOOL_NAMES contains preview_umzug', isKnownTool('preview_umzug'));
 
 const toolsByName = new Map(tools.map((t) => [t.name, t]));
 check('tools[] has erklaere_brief def', toolsByName.has('erklaere_brief'));
@@ -142,6 +148,100 @@ check(
   'vorschlage_naechsten_schritt rejects unknown field draftAntwort (V1 OUT)',
   !extraField.ok,
 );
+
+/* ── preview_umzug tool registration ───────────────────────────────────── */
+
+const previewUmzug = toolsByName.get('preview_umzug');
+check('tools[] has preview_umzug def', Boolean(previewUmzug));
+check(
+  'preview_umzug description states read-only / ohne Bestätigung',
+  Boolean(
+    previewUmzug?.description?.includes('read-only') ||
+      previewUmzug?.description?.includes('OHNE etwas auszulösen'),
+  ),
+);
+check(
+  'preview_umzug requires neue_adresse + stichtag_iso',
+  Array.isArray(previewUmzug?.input_schema?.required) &&
+    (previewUmzug!.input_schema.required as string[]).includes('neue_adresse') &&
+    (previewUmzug!.input_schema.required as string[]).includes('stichtag_iso'),
+);
+
+/* ── Dispatch table + irreversible-action gate (§7.3) ──────────────────── */
+
+check(
+  'TOOL_DISPATCH has an entry per tool name',
+  TOOL_NAMES.every((n) => n in TOOL_DISPATCH),
+  Object.keys(TOOL_DISPATCH),
+);
+check(
+  'starte_umzug → startUmzug, confirm-gated',
+  TOOL_DISPATCH.starte_umzug.api_method === 'startUmzug' &&
+    TOOL_DISPATCH.starte_umzug.requires_confirmation === true,
+);
+check(
+  'preview_umzug → previewUmzug, NOT confirm-gated',
+  TOOL_DISPATCH.preview_umzug.api_method === 'previewUmzug' &&
+    TOOL_DISPATCH.preview_umzug.requires_confirmation === false,
+);
+check(
+  'requiresConfirmation true ONLY for starte_umzug',
+  requiresConfirmation('starte_umzug') === true &&
+    TOOL_NAMES.filter((n) => n !== 'starte_umzug').every(
+      (n) => requiresConfirmation(n) === false,
+    ),
+);
+check(
+  'requiresConfirmation false for unknown tool name',
+  requiresConfirmation('definitely_not_a_tool') === false,
+);
+
+/* ── Umzug input validators ────────────────────────────────────────────── */
+
+const okPreview = validateUmzugToolInput('preview_umzug', {
+  neue_adresse: { strasse: 'Müllerstr.', hausnummer: '142a', plz: '13353', ort: 'Berlin', land: 'DE' },
+  stichtag_iso: '2026-06-01',
+});
+check('preview_umzug accepts valid address + stichtag', okPreview.ok);
+
+const okStart = validateUmzugToolInput('starte_umzug', {
+  neue_adresse: { strasse: 'Müllerstr.', hausnummer: '142a', plz: '13353', ort: 'Berlin', land: 'DE' },
+  stichtag_iso: '2026-06-01',
+  block_b_consent: ['aok-nordost', 'sparkasse-berlin'],
+});
+check('starte_umzug accepts valid input with consents', okStart.ok);
+
+const okStartEmptyConsent = validateUmzugToolInput('starte_umzug', {
+  neue_adresse: { strasse: 'Müllerstr.', hausnummer: '142a', plz: '13353', ort: 'Berlin', land: 'DE' },
+  stichtag_iso: '2026-06-01',
+  block_b_consent: [],
+});
+check('starte_umzug accepts empty block_b_consent (skips Block B)', okStartEmptyConsent.ok);
+
+const badPlz = validateUmzugToolInput('preview_umzug', {
+  neue_adresse: { strasse: 'Müllerstr.', hausnummer: '142a', plz: '1335', ort: 'Berlin', land: 'DE' },
+  stichtag_iso: '2026-06-01',
+});
+check('preview_umzug rejects 4-digit PLZ', !badPlz.ok);
+
+const badLand = validateUmzugToolInput('starte_umzug', {
+  neue_adresse: { strasse: 'Rue X', hausnummer: '1', plz: '75001', ort: 'Paris', land: 'FR' },
+  stichtag_iso: '2026-06-01',
+  block_b_consent: [],
+});
+check('starte_umzug rejects non-DE land (Auslandsumzug out)', !badLand.ok);
+
+const badStichtag = validateUmzugToolInput('preview_umzug', {
+  neue_adresse: { strasse: 'Müllerstr.', hausnummer: '142a', plz: '13353', ort: 'Berlin', land: 'DE' },
+  stichtag_iso: '01.06.2026',
+});
+check('preview_umzug rejects non-ISO stichtag', !badStichtag.ok);
+
+const startMissingConsent = validateUmzugToolInput('starte_umzug', {
+  neue_adresse: { strasse: 'Müllerstr.', hausnummer: '142a', plz: '13353', ort: 'Berlin', land: 'DE' },
+  stichtag_iso: '2026-06-01',
+});
+check('starte_umzug rejects missing block_b_consent', !startMissingConsent.ok);
 
 /* ── Result ─────────────────────────────────────────────────────────────── */
 

@@ -31,10 +31,10 @@ export function LetterListGroup({
     >
       <h3
         id={`group-${id}-title`}
-        className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground"
+        className="flex items-center gap-2 text-base font-semibold text-text-primary"
       >
         <span>{title}</span>
-        <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-foreground">
+        <span className="text-sm font-normal text-text-muted tabular-nums">
           {count}
         </span>
       </h3>

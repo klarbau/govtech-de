@@ -2,8 +2,11 @@
 
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
+import { FileText } from 'lucide-react';
 
 import { DatenschutzCockpitLink } from '@/components/shared/DatenschutzCockpitLink';
+import { IconCircle } from '@/components/shared/IconCircle';
+import { StatusBadge, type StatusVariant } from '@/components/shared/StatusBadge';
 import { cn } from '@/lib/utils';
 import type { Behoerde, Letter } from '@/types';
 
@@ -24,6 +27,19 @@ interface LetterCardProps {
   nowIso?: string;
   /** Triggert Öffnen des `<NeuerVorgangAusBriefModal>`. */
   onCreateVorgang?: (letter: Letter) => void;
+  /**
+   * Visuelle Variante:
+   *  - `card` (Default): die reichhaltige 3-Zeilen-Karte (V1.5-Verhalten).
+   *  - `row`: kompakte ListRow für das 3-Pane-Layout (Prototyp 08).
+   */
+  variant?: 'card' | 'row';
+  /** 3-Pane: aktiver Brief im Reader (nur `row`). */
+  selected?: boolean;
+  /**
+   * 3-Pane: Maus-Klick wählt den Brief inline aus (nur `row`); Tastatur-Enter
+   * navigiert weiterhin zu `/posteingang/[id]` (Deep-Link-Fallback).
+   */
+  onSelect?: (letter: Letter) => void;
   className?: string;
 }
 
@@ -34,15 +50,9 @@ function letterUrl(id: string): string {
 /**
  * Phase 6b — LetterCard mit 3-zeiliger Hierarchie (Audit-Finding #1).
  *
- * Zeile 1 (Hero, größte Wahrnehmung): FristChip prominent + Action-Hint
- *   ("Antwort erforderlich" / "Zur Kenntnis" / "Erledigt").
- * Zeile 2 (Mittel): Behörde-Name als reines Text-Label (HL-DS-10: KEINE
- *   Kategorie-Farb-Differenzierung mehr) + Brieftyp.
- * Zeile 3 (Mobile sr-only via `<details>`): Aktenzeichen (tabular-nums,
- *   HL-DS-6).
- *
- * Vorgangs-Optional-Zeile + Utility-Zeile (Datenschutz/Authentizität) bleiben
- * strukturell erhalten; V1.5/V1.5.1-Hard-Lines unverändert.
+ * Redesign 2026-05-27: zusätzlich eine kompakte `row`-Variante für das
+ * 3-Pane-Layout. Funktion (Navigation, Vorgangs-CTA, Authentizität) bleibt
+ * unverändert; V1.5/V1.5.1-Hard-Lines unberührt.
  */
 export function LetterCard({
   letter,
@@ -50,6 +60,9 @@ export function LetterCard({
   vorgangTitle,
   nowIso,
   onCreateVorgang,
+  variant = 'card',
+  selected,
+  onSelect,
   className,
 }: LetterCardProps) {
   const t = useTranslations('posteingang.card');
@@ -83,10 +96,15 @@ export function LetterCard({
     ? earliestFrist.datum.split('-').reverse().join('.')
     : '';
 
-  // Action-Hint Heuristik (Phase 6b Zeile 1, Audit #1):
-  //   erledigt → "Erledigt"
-  //   keine Frist + keine required_action → "Zur Kenntnis"
-  //   sonst → "Antwort erforderlich"
+  const empfangenDatum = (() => {
+    try {
+      return letter.empfangen_am.slice(0, 10).split('-').reverse().join('.');
+    } catch {
+      return letter.empfangen_am;
+    }
+  })();
+
+  // Action-Hint Heuristik (Phase 6b Zeile 1, Audit #1).
   const actionHintKey: 'erledigt' | 'zur_kenntnis' | 'antwort_erforderlich' =
     isErledigt
       ? 'erledigt'
@@ -101,6 +119,81 @@ export function LetterCard({
       [behoerdeName, brieftyp, t('frist_pre_open_template', { datum: fristDatum })].join(' · ')
     : t('cta_open') + ': ' + [behoerdeName, brieftyp, t('frist_keine')].join(' · ');
 
+  const statusVariant: StatusVariant = isErledigt
+    ? 'erledigt'
+    : isUngelesen
+      ? 'neu'
+      : 'warten';
+  const statusLabel = isErledigt
+    ? t('status.erledigt')
+    : isUngelesen
+      ? t('status.ungelesen')
+      : actionHint;
+
+  // ── ROW VARIANT (3-Pane) ──────────────────────────────────────────────
+  if (variant === 'row') {
+    return (
+      <li className={cn('list-none', className)}>
+        <Link
+          href={letterUrl(letter.id)}
+          aria-current={selected ? 'true' : undefined}
+          aria-label={articleAriaLabel}
+          onClick={(event) => {
+            // Mouse/pointer click (detail > 0) selects inline; keyboard
+            // activation (detail === 0) falls through to navigation so the
+            // deep-link route stays the < lg / no-JS fallback.
+            if (onSelect && event.detail > 0 && !event.metaKey && !event.ctrlKey) {
+              event.preventDefault();
+              onSelect(letter);
+            }
+          }}
+          className={cn(
+            'flex min-h-[44px] items-start gap-3 rounded-lg border p-3 transition-colors',
+            'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
+            selected
+              ? 'border-primary bg-accent-soft'
+              : 'border-border hover:bg-surface-muted',
+          )}
+        >
+          <IconCircle icon={<FileText aria-hidden="true" />} tone="primary" size="md" />
+          <span className="min-w-0 flex-1">
+            <span className="flex items-center gap-2">
+              {isUngelesen && (
+                <span
+                  aria-hidden="true"
+                  className="inline-block size-2 shrink-0 rounded-full bg-primary"
+                />
+              )}
+              <span
+                className={cn(
+                  'truncate text-sm text-text-primary',
+                  isUngelesen ? 'font-semibold' : 'font-medium',
+                )}
+              >
+                {behoerdeName}
+              </span>
+            </span>
+            <span className="mt-0.5 block truncate text-sm text-text-secondary">
+              {letter.betreff}
+            </span>
+            <span className="mt-1 flex items-center gap-2">
+              <span className="text-xs text-text-muted tabular-nums">
+                {empfangenDatum}
+              </span>
+              {fristen.length > 0 && !isErledigt ? (
+                <FristChip frist={fristen[0]!} fromIso={nowIso} className="text-[11px]" />
+              ) : null}
+            </span>
+          </span>
+          <StatusBadge variant={statusVariant} className="mt-0.5 shrink-0">
+            {statusLabel}
+          </StatusBadge>
+        </Link>
+      </li>
+    );
+  }
+
+  // ── CARD VARIANT (Default, V1.5) ──────────────────────────────────────
   return (
     <li
       className={cn(
@@ -114,14 +207,13 @@ export function LetterCard({
         href={letterUrl(letter.id)}
         className={cn(
           'absolute inset-0 z-0 rounded-xl outline-none',
-          // HL-DS-7: sichtbarer Focus-Ring statt outline-none ohne Ersatz.
           'focus-visible:outline-2 focus-visible:outline-offset-2',
           'focus-visible:outline-[var(--ds-color-accent)] focus-visible:ring-2 focus-visible:ring-ring/60',
         )}
         aria-label={t('cta_open')}
       />
 
-      {/* Zeile 1 (Hero, größte Wahrnehmung): FristChip + Action-Hint */}
+      {/* Zeile 1 (Hero): FristChip + Action-Hint */}
       <div className="pointer-events-none relative z-10 flex flex-wrap items-center gap-x-3 gap-y-2">
         {isUngelesen && (
           <span
@@ -136,7 +228,6 @@ export function LetterCard({
           <FristChip
             frist={fristen[0]!}
             fromIso={nowIso}
-            // Hero-Größe: text-h4 (Phase 6b Audit #1).
             className="text-[length:var(--ds-text-h4,0.9375rem)] font-semibold"
           />
         ) : (
@@ -176,7 +267,7 @@ export function LetterCard({
         </span>
       </div>
 
-      {/* Zeile 3: Aktenzeichen — Desktop sichtbar, Mobile (<640px) in <details>. */}
+      {/* Zeile 3: Aktenzeichen */}
       <div className="pointer-events-none relative z-10 hidden sm:block">
         <span className="tabular-nums text-xs text-[var(--ds-color-text-muted)]">
           {t('aktenzeichen_label')}: {letter.aktenzeichen}

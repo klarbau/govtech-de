@@ -15,7 +15,22 @@ export type DocumentTyp =
   | 'krankenversicherungskarte'
   | 'kindergeldbescheid'
   | 'rentenauskunft'
+  // Redesign-Dokumente — neue Typ-Strings (`redesign-dokumente.md` § 6).
+  | 'reisepass'
+  | 'mietvertrag'
+  | 'versicherungspolice'
+  | 'mobilfunkvertrag'
   | string;
+
+/**
+ * Vault-Kategorie für die FilterTabs im Dokumente-Screen.
+ * Optional auf `Document` — das Backend leitet sie bei Fehlen aus `typ` ab.
+ */
+export type DocumentKategorie =
+  | 'ausweise'
+  | 'bescheide'
+  | 'familie'
+  | 'vertraege';
 
 export interface Document {
   id: string;
@@ -35,4 +50,14 @@ export interface Document {
   watermark: '[MOCK]';
   /** Optionaler Bezug zu einem Vorgang (z. B. Wohnungsgeberbestätigung → Umzug). */
   vorgang_id?: string;
+
+  // ---------------------------------------------------------------------------
+  // Redesign-Dokumente — additive optionale Felder (`redesign-dokumente.md` § 6).
+  // Bestehende Seeds bleiben gültig.
+  // ---------------------------------------------------------------------------
+
+  /** Vault-Kategorie für FilterTabs. Optional — Backend leitet bei Fehlen aus `typ` ab. */
+  kategorie?: DocumentKategorie;
+  /** Optionale Dokumentnummer für die Tabellen-Anzeige (z. B. Pass-Nr.). `tabular-nums`. */
+  dokument_nr?: string;
 }

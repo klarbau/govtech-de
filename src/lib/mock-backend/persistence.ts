@@ -51,7 +51,21 @@ export type CollectionKey =
   // ist component-local mit TTL ≤ 5 min, niemals in localStorage.
   | 'stammdaten:mobilitaet'
   // V1.3 — Schema-Version-Marker für Mobilität-Migration V12→V13.
-  | 'stammdaten:schema-version';
+  | 'stammdaten:schema-version'
+  // Redesign-Termine — Reminder-Bucket (`redesign-termine.md` § 6). Analog
+  // `termine`: aus Fixture geseedet, idempotent über `seedIfEmpty`.
+  | 'reminders'
+  // Redesign-Steuer — vorausgefüllte Steuer-Übersicht (`redesign-steuer.md` § 6).
+  // `Record<personaId, Record<steuerjahr, SteuerUebersicht>>`.
+  | 'steuer'
+  // Redesign-Datenschutz — funktionale + persistierte Einwilligungs-Toggles
+  // (`redesign-datenschutz.md` § 6). Aktivitäts-Log nutzt den BESTEHENDEN
+  // `stammdaten:uebermittlungs-log`-Bucket (kein paralleler Log).
+  | 'datenschutz:einwilligungen'
+  | 'datenschutz:vision-banner-dismissed'
+  // Redesign-Dashboard — deviceLocal-State (`dashboard.md` § 5.4).
+  | 'dashboard:last-seen'
+  | 'dashboard:sort-mode';
 
 const fullKey = (key: CollectionKey): string => `${NAMESPACE}${key}`;
 

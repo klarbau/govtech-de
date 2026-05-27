@@ -1,5 +1,42 @@
 [
   {
+    "id": "termin-anna-lea-aufenthaltstitel",
+    "behoerde_id": "abh-berlin-lea",
+    "vorgang_id": "vorgang-anna-aufenthaltstitel-2027-stub",
+    "datum": "2026-06-05T14:30:00.000Z",
+    "ort": {
+      "typ": "praesenz",
+      "details": "Landesamt für Einwanderung — Friedrich-Krause-Ufer 24, 13353 Berlin, Wartebereich C"
+    },
+    "status": "bestaetigt",
+    "betreff": "Aufenthaltstitel verlängern",
+    "buchungsreferenz": "[MOCK] LEA-2026-04412",
+    "kategorie": "behoerdentermin",
+    "vorbereitung": [
+      { "label_i18n_key": "termine.vorbereitung.reisepass" },
+      { "label_i18n_key": "termine.vorbereitung.alter_titel" },
+      { "label_i18n_key": "termine.vorbereitung.biometrie" },
+      { "label_i18n_key": "termine.vorbereitung.gebuehr" }
+    ]
+  },
+  {
+    "id": "termin-anna-buergeramt-ummeldung",
+    "behoerde_id": "buergeramt-berlin-friedrichshain-kreuzberg",
+    "datum": "2026-06-11T09:15:00.000Z",
+    "ort": {
+      "typ": "praesenz",
+      "details": "Bürgeramt Friedrichshain-Kreuzberg — Frankfurter Allee 35/37, 10247 Berlin, Schalter 4"
+    },
+    "status": "gebucht",
+    "betreff": "Anmeldung neuer Wohnort",
+    "buchungsreferenz": "[MOCK] BA-FRIKR-2026-08841",
+    "kategorie": "behoerdentermin",
+    "vorbereitung": [
+      { "label_i18n_key": "termine.vorbereitung.meldung" },
+      { "label_i18n_key": "termine.vorbereitung.reisepass" }
+    ]
+  },
+  {
     "id": "termin-anna-aok-beratung",
     "behoerde_id": "aok-nordost",
     "datum": "2026-05-21T10:30:00.000Z",

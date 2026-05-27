@@ -44,7 +44,7 @@ export function FilterButton({
       aria-haspopup={hasPopup ?? 'dialog'}
       aria-expanded={expanded ?? undefined}
       aria-controls={controlsId}
-      className={cn('gap-1.5', className)}
+      className={cn('min-h-[44px] gap-1.5', className)}
     >
       <Filter className="size-4" aria-hidden="true" />
       <span>{label}</span>

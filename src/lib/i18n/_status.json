@@ -1,12 +1,25 @@
 {
   "version": 1,
   "source_locale": "de",
-  "last_synced": "2026-05-09",
+  "last_synced": "2026-05-27",
+  "patch_2026-05-27_error_not_found": "Added error.not_found.{code,title,description,cta} (4 keys) to en/ru/uk/ar/tr — were DE-only after not-found.tsx cleanup pass and threw MISSING_MESSAGE on non-DE 404. DE→target direct. 'Dashboard' kept as product term in all 5 (cta + description). Error code natural per locale: Error 404 / Ошибка 404 / Помилка 404 / خطأ 404 / Hata 404. Formal pronouns: en formal you, ru Вы(cap), uk Ви(cap), ar formal imperative (عُد / للمتابعة), tr Siz (dönün). AR RTL-safe: 'Dashboard' Latin renders LTR via bidi, no embedded markup, dir flip handled in app/layout.tsx. Did NOT touch de.json. Structural JSON review PASS on all 5 (balanced braces, no trailing comma in new block, footer→error→shell order matches DE source).",
   "languages": {
     "en": { "completion": 1.0, "review_needed": [] },
     "ru": { "completion": 1.0, "review_needed": [] },
     "uk": { "completion": 1.0, "review_needed": [] },
     "ar": { "completion": 1.0, "review_needed": [] },
     "tr": { "completion": 1.0, "review_needed": [] }
+  },
+  "last_pass": {
+    "date": "2026-05-27",
+    "track": "supporting",
+    "quality": "FULL",
+    "blocks": [
+      "familie.* (full new top-level block: 36 leaf keys per locale incl. page.{title,subtitle}, haushalt.{title,count}, rolle.{mutter,vater,partner,kind,hauptperson}, cta.haushalt_verwalten, verwalten_dialog.{title,body,close}, vertretung_banner.{title,body}, vorgaenge.{title,kindergeld,krankenkasse,kita,kita_traeger,betrifft,show_all}, nachweise.{title,geburtsurkunde,sorge_vollmacht,vertretungsrechte,verknuepfungen}, was_betrifft_wen.{title,subtitle,vorgaenge,dokumente,nachweise,vertretungen}, sicher.{title,body,more}, empty.{title,body})",
+      "stammdaten re-skin chrome ONLY (13 NEW leaf keys per locale; existing stammdaten.* NOT retouched): page.subtitle, cta.{bearbeiten,verwalten}, chip.{adresse_bestaetigt,wallet_verbunden,aufenthalt_gueltig,aufenthalt_ablauf_bald}, aenderungsprotokoll.{title,show_all}, hoheit.{title,cta}, card.{persoenliches_profil,versicherung_vorsorge,identitaetsdokumente,familie_bezugspersonen}, cross_link.familie"
+    ],
+    "locales": ["en", "ru", "uk", "ar", "tr"],
+    "review_needed_flags": 0,
+    "notes": "DE→target direct (never via EN). Behörden/legal terms parenthesized with DE Latin for non-DE: Kindergeld, Kita/Kita-Träger, Geburtsurkunde, Sorge-Vollmacht, Vertretung/Vertretungsrechte, Familienkasse (Berlin-Brandenburg), BundID, Wallet, IBAN, Aufenthaltstitel-context. Wallet/IBAN/BundID kept Latin in all 5. Pronoun consistency held: en formal you, ru Вы(cap), uk Ви(cap), ar formal أنت (أنت من يتحكم / يمكنك), tr Siz. familie.vorgaenge.betrifft + was_betrifft_wen counts use {names}/{count} ICU placeholders preserved; haushalt.count is a count noun phrase (en {count} people, ru {count} чел., uk {count} осіб, ar {count} أشخاص, tr {count} kişi) — NOTE: no ICU plural category bracketing in DE source (flat '{count} Personen'), so targets mirror flat form; if a true plural is needed later, escalate to product-architect to add MessageFormat in de.json source first. hoheit.title trust copy rendered with dignity, agentive framing ('You are in control of your data' / 'Вы распоряжаетесь своими данными' / 'Ви розпоряджаєтесь своїми даними' / 'أنت من يتحكم في بياناتك' / 'Verileriniz üzerindeki söz sizin'). AR RTL-safe: Latin Behörden-Begriffe + {names}/{count} tokens render LTR via bidi; no embedded markup; dir flip handled in app/layout.tsx per locale. STAMMDATEN: confirmed ONLY the 13 new re-skin keys were added per locale; every pre-existing stammdaten.* key (sektion/field/field_card/hero/disclaimer/cta.korrigieren etc.) left byte-identical — edits anchored on unique sibling strings, no rename, no retranslate. NOTE: did NOT touch de.json (concurrent agents). Length flags (tight UI): role badges + chips + count labels — see build-log known gaps; RU/AR 'Identity documents'/'Residence permit expiring soon' chips run longest, flagged to frontend-coder. JSON.parse gate NOT runnable in this agent (no Bash) — main-thread JSON.parse recommended per V1.5 lesson; structural review PASS (balanced braces, no trailing commas, all 5 files end at familie→root close, line 1998)."
   }
 }

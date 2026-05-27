@@ -40,8 +40,21 @@ import type {
   BehoerdeKategorie,
   Behoerde,
   BundidPostfachAnbindung,
+  DashboardSnapshot,
+  DashboardSortMode,
+  DatenquellenEintrag,
+  DatenschutzEinwilligung,
   Document as VaultDocument,
+  DocumentKategorie,
+  DscSnapshot,
+  EinwilligungEmpfaenger,
   EpaStatus,
+  HaushaltView,
+  LebenslagenHinweis,
+  PrioritizedTopAction,
+  Reminder,
+  SteuerUebersicht,
+  TopActionCandidateInput,
   Letter,
   LetterActivityEvent,
   LetterActivityLog,
@@ -89,6 +102,11 @@ import {
   umzugAutopilot,
 } from './autopilot/umzug';
 import { appendLogEntry, stammdatenApi } from './stammdaten/api';
+import { dashboardApi } from './dashboard/api';
+import { datenschutzApi } from './datenschutz/api';
+import { familieApi } from './familie/api';
+import { remindersApi } from './reminders/api';
+import { steuerApi } from './steuer/api';
 import { stammdatenV11Api } from './stammdaten/v1-1-api';
 import { stammdatenV12Api } from './stammdaten/v1-2-api';
 import {
@@ -199,6 +217,42 @@ function loadDocuments(): VaultDocument[] {
 
 function saveDocuments(docs: VaultDocument[]): void {
   write('documents' as CollectionKey, docs);
+}
+
+/**
+ * Leitet die Vault-Kategorie aus dem `typ` ab (Redesign-Dokumente § 4.2).
+ * Wird in `getDocuments()` angewandt, falls `Document.kategorie` nicht gesetzt
+ * ist — damit das Frontend die Logik nicht duplizieren muss.
+ */
+function deriveDocumentKategorie(typ: string): DocumentKategorie {
+  switch (typ) {
+    case 'aufenthaltstitel':
+    case 'fuehrerschein':
+    case 'krankenversicherungskarte':
+    case 'sozialversicherungsausweis':
+    case 'reisepass':
+    case 'personalausweis':
+      return 'ausweise';
+    case 'steuerbescheid':
+    case 'lohnsteuerbescheinigung':
+    case 'kindergeldbescheid':
+    case 'rentenauskunft':
+    case 'meldebestaetigung':
+    case 'wohnungsgeberbestaetigung':
+      return 'bescheide';
+    case 'geburtsurkunde':
+    case 'eheurkunde':
+      return 'familie';
+    case 'arbeitsvertrag':
+    case 'mietvertrag':
+    case 'versicherungspolice':
+    case 'mobilfunkvertrag':
+    case 'zulassungsbescheinigung_teil_i':
+      return 'vertraege';
+    default:
+      // Defensiver Default: unbekannte Typen → Bescheide-Sammelkategorie.
+      return 'bescheide';
+  }
 }
 
 function loadTermine(): Termin[] {
@@ -964,6 +1018,107 @@ export interface MockBackendApi {
     vorgangId: string,
   ): Promise<void>;
 
+  // ---------------------- Redesign — Dashboard ----------------------
+  // Spec: docs/specs/dashboard.md § 5.1 + docs/specs/redesign-dashboard.md.
+  //
+  // Hand-off note für assistant-engineer:
+  //   getCandidatesForTopActions(personaId) liefert strukturierte Eingaben
+  //   (KEINE Brief-Bodies). `prioritizeTopActions(candidates)` ist AI-seitig
+  //   (Anthropic-Tool-Use); hier nur ein deterministischer Frist-Fallback-Stub
+  //   (Hard-Line § 11.44) — assistant-engineer ersetzt die Implementierung.
+
+  /** Aggregierter Dashboard-Snapshot. Latenz 600–900 ms. */
+  getDashboard(
+    personaId: PersonaId,
+    opts?: { last_seen_at?: string },
+  ): Promise<DashboardSnapshot>;
+  /** Persistiert den deviceLocal lastSeenAt-Timestamp. */
+  setLastSeen(personaId: PersonaId, timestamp: string): Promise<void>;
+  /**
+   * Liest den deviceLocal last-seen-Timestamp (oder den geseedeten prior-login
+   * beim Erst-Load). `null` = echter Erst-Login ohne Seed. Damit kann das
+   * Frontend den „Seit letztem Login"-Diff auf den realen gespeicherten Stand
+   * stützen, statt einen Anker zu raten.
+   */
+  getLastSeen(personaId: PersonaId): Promise<string | null>;
+  /** Liest den persistierten Sort-Mode der „Heute zu tun"-Liste. Default `'ki'`. */
+  getDashboardSortMode(personaId: PersonaId): Promise<DashboardSortMode>;
+  /** Persistiert den Sort-Mode der „Heute zu tun"-Liste. */
+  setDashboardSortMode(
+    personaId: PersonaId,
+    mode: DashboardSortMode,
+  ): Promise<void>;
+  /** Datenschutz-Cockpit-Tile-Snapshot (App-Activity-Aggregat 30 Tage). */
+  getDsc(personaId: PersonaId): Promise<DscSnapshot>;
+  /** Strukturierte AI-Top-3-Kandidaten (keine Brief-Bodies). */
+  getCandidatesForTopActions(
+    personaId: PersonaId,
+  ): Promise<TopActionCandidateInput[]>;
+  /** Proaktive Lebenslagen-Hinweise (Empty-State + Below-Hero). */
+  getLebenslagenHinweise(
+    personaId: PersonaId,
+  ): Promise<LebenslagenHinweis[]>;
+  /**
+   * AI-seitiger Ranking-Stub (assistant-engineer-owned). Liefert hier den
+   * deterministischen Frist-Fallback; läuft NICHT durch `withLatency()`.
+   */
+  prioritizeTopActions(
+    candidates: TopActionCandidateInput[],
+  ): Promise<PrioritizedTopAction[]>;
+
+  // ---------------------- Redesign — Dokumente ----------------------
+  // `getDocuments()` (bestehend) reichert beim Laden eine abgeleitete
+  // `kategorie` an, falls nicht gesetzt (Signatur unverändert).
+
+  // ---------------------- Redesign — Termine ----------------------
+  // Spec: docs/specs/redesign-termine.md § 6.
+  //
+  // Hand-off note für assistant-engineer: künftiges Tool `get_reminders`
+  // spiegelt `getReminders()`.
+
+  /** Erinnerungen/Fristen der aktiven Persona (Seed + abgeleitet aus Vorgang.fristen[]). */
+  getReminders(): Promise<Reminder[]>;
+
+  // ---------------------- Redesign — Steuer ----------------------
+  // Spec: docs/specs/redesign-steuer.md § 6.
+
+  /** Vorausgefüllte Steuer-Übersicht der aktiven Persona für ein Jahr. */
+  getSteuerUebersicht(
+    personaId: PersonaId,
+    steuerjahr: number,
+  ): Promise<SteuerUebersicht>;
+
+  // ---------------------- Redesign — Familie ----------------------
+  // Spec: docs/specs/redesign-familie.md § 6.
+
+  /** „Mein Haushalt"-View (read-only, aus Persona abgeleitet). */
+  getFamilie(personaId: PersonaId): Promise<HaushaltView>;
+
+  // ---------------------- Redesign — Datenschutz-Cockpit ----------------------
+  // Spec: docs/specs/redesign-datenschutz.md § 6. Reuse `getUebermittlungsLog`
+  // für die Timeline (kein paralleler Log).
+
+  /** Einwilligungs-Toggle-Zustände (lazy-init aus Seed-Defaults). */
+  getDatenschutzEinwilligungen(
+    personaId: PersonaId,
+  ): Promise<DatenschutzEinwilligung[]>;
+  /**
+   * Persistiert den Einwilligungs-Toggle + emittiert einen
+   * `UebermittlungsLogEntry` (Art. 6/7 DSGVO) in den bestehenden
+   * uebermittlungs-log-Bucket.
+   */
+  setDatenschutzEinwilligung(
+    personaId: PersonaId,
+    empfaenger: EinwilligungEmpfaenger,
+    erteilt: boolean,
+  ): Promise<void>;
+  /** Datenquellen & Empfänger (read-only, abgeleitet aus Persona + behoerden.json). */
+  getDatenquellen(personaId: PersonaId): Promise<DatenquellenEintrag[]>;
+  /** Ob der 2027-Vision-Banner für eine Persona dismissed wurde. */
+  isVisionBannerDismissed(personaId: PersonaId): Promise<boolean>;
+  /** Persistiert den Vision-Banner-Dismiss. */
+  dismissVisionBanner(personaId: PersonaId): Promise<void>;
+
   // Subscribe
   subscribe(listener: MockBackendEventListener): () => void;
 }
@@ -1295,7 +1450,12 @@ export const api: MockBackendApi & {
       );
     }),
 
-  getDocuments: () => withLatency(() => loadDocuments()),
+  getDocuments: () =>
+    withLatency(() =>
+      loadDocuments().map((d) =>
+        d.kategorie ? d : { ...d, kategorie: deriveDocumentKategorie(d.typ) },
+      ),
+    ),
 
   getTermine: () =>
     withLatency(() =>
@@ -2088,6 +2248,89 @@ export const api: MockBackendApi & {
   setHalterAdresseUebergangsMarker: (personaId, vorgangId) => {
     ensureBooted();
     return stammdatenV13Api.setHalterAdresseUebergangsMarker(personaId, vorgangId);
+  },
+
+  // ---------- Redesign — Dashboard ----------
+  // Delegate-Pattern: alle Methoden leben in `dashboard/api.ts`.
+  getDashboard: (personaId, opts) => {
+    ensureBooted();
+    return dashboardApi.getDashboard(personaId, opts);
+  },
+  setLastSeen: (personaId, timestamp) => {
+    ensureBooted();
+    return dashboardApi.setLastSeen(personaId, timestamp);
+  },
+  getLastSeen: (personaId) => {
+    ensureBooted();
+    return dashboardApi.getLastSeen(personaId);
+  },
+  getDashboardSortMode: (personaId) => {
+    ensureBooted();
+    return dashboardApi.getDashboardSortMode(personaId);
+  },
+  setDashboardSortMode: (personaId, mode) => {
+    ensureBooted();
+    return dashboardApi.setDashboardSortMode(personaId, mode);
+  },
+  getDsc: (personaId) => {
+    ensureBooted();
+    return dashboardApi.getDsc(personaId);
+  },
+  getCandidatesForTopActions: (personaId) => {
+    ensureBooted();
+    return dashboardApi.getCandidatesForTopActions(personaId);
+  },
+  getLebenslagenHinweise: (personaId) => {
+    ensureBooted();
+    return dashboardApi.getLebenslagenHinweise(personaId);
+  },
+  prioritizeTopActions: (candidates) => {
+    ensureBooted();
+    return dashboardApi.prioritizeTopActions(candidates);
+  },
+
+  // ---------- Redesign — Termine ----------
+  getReminders: () => {
+    ensureBooted();
+    return remindersApi.getReminders();
+  },
+
+  // ---------- Redesign — Steuer ----------
+  getSteuerUebersicht: (personaId, steuerjahr) => {
+    ensureBooted();
+    return steuerApi.getSteuerUebersicht(personaId, steuerjahr);
+  },
+
+  // ---------- Redesign — Familie ----------
+  getFamilie: (personaId) => {
+    ensureBooted();
+    return familieApi.getFamilie(personaId);
+  },
+
+  // ---------- Redesign — Datenschutz-Cockpit ----------
+  getDatenschutzEinwilligungen: (personaId) => {
+    ensureBooted();
+    return datenschutzApi.getDatenschutzEinwilligungen(personaId);
+  },
+  setDatenschutzEinwilligung: (personaId, empfaenger, erteilt) => {
+    ensureBooted();
+    return datenschutzApi.setDatenschutzEinwilligung(
+      personaId,
+      empfaenger,
+      erteilt,
+    );
+  },
+  getDatenquellen: (personaId) => {
+    ensureBooted();
+    return datenschutzApi.getDatenquellen(personaId);
+  },
+  isVisionBannerDismissed: (personaId) => {
+    ensureBooted();
+    return datenschutzApi.isVisionBannerDismissed(personaId);
+  },
+  dismissVisionBanner: (personaId) => {
+    ensureBooted();
+    return datenschutzApi.dismissVisionBanner(personaId);
   },
 
   // ---------- Subscribe ----------

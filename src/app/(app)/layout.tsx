@@ -5,6 +5,12 @@ import { Sidebar } from '@/components/layout/Sidebar';
 import { Topbar } from '@/components/layout/Topbar';
 import { PrototypeDisclaimerBanner } from '@/components/shared/PrototypeDisclaimerBanner';
 
+// The app is a client-side mock-backend demo: every screen hydrates from
+// localStorage at runtime, so static prerendering yields nothing and trips a
+// next-intl@3 + Next 15.5 IntlProvider prerender bug. Render the whole app
+// shell dynamically (request-time), matching how it behaves in `next dev`.
+export const dynamic = 'force-dynamic';
+
 export default async function AppLayout({
   children,
 }: {

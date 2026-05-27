@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 import { BehoerdenBadge } from '@/components/shared/BehoerdenBadge';
 import { DatenschutzCockpitLink } from '@/components/shared/DatenschutzCockpitLink';
 import { MockWatermarkBanner } from '@/components/shared/MockWatermarkBanner';
+import { StatusBadge } from '@/components/shared/StatusBadge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type {
   Behoerde,
@@ -42,6 +43,12 @@ interface LetterReaderProps {
   absender: Behoerde | null;
   vorgangTitle?: string;
   nowIso: string;
+  /**
+   * Inline 3-pane mode (≥ lg): the reader sits next to the list, so the
+   * standalone „Zurück zum Posteingang"-Link is suppressed and the heading
+   * level can be demoted to keep one `<h1>` per screen (the PageHeader owns it).
+   */
+  embedded?: boolean;
 }
 
 function downloadIcs(letter: Letter, frist: LetterFrist): void {
@@ -86,6 +93,7 @@ export function LetterReader({
   absender,
   vorgangTitle,
   nowIso,
+  embedded = false,
 }: LetterReaderProps) {
   const t = useTranslations('posteingang.reader');
   const tArche = useTranslations('posteingang.archetype.label');
@@ -262,14 +270,16 @@ export function LetterReader({
   return (
     <article aria-labelledby="reader-title" className="flex flex-col gap-5">
       <div className="flex flex-col gap-3">
-        <Link
-          href="/posteingang"
-          className="inline-flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-          data-print="hide"
-        >
-          <ArrowLeft className="size-4" aria-hidden="true" />
-          {t('zurueck')}
-        </Link>
+        {!embedded && (
+          <Link
+            href="/posteingang"
+            className="inline-flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+            data-print="hide"
+          >
+            <ArrowLeft className="size-4" aria-hidden="true" />
+            {t('zurueck')}
+          </Link>
+        )}
 
         <nav aria-label={t('skip_link.aria')} className="flex gap-2 text-xs">
           <a
@@ -294,6 +304,7 @@ export function LetterReader({
               name={absender?.name_de ?? letter.absender_behoerde_id}
               kategorie={absender?.kategorie}
             />
+            <StatusBadge variant="verifiziert">{t('auth_badge')}</StatusBadge>
             <AuthentizitaetsBadge channel={authChannel} />
             {vorgangTitle ? (
               <Link
@@ -318,9 +329,21 @@ export function LetterReader({
               )
             )}
           </div>
-          <h1 id="reader-title" className="text-2xl font-semibold tracking-tight">
-            {letter.betreff}
-          </h1>
+          {embedded ? (
+            <h2
+              id="reader-title"
+              className="text-2xl font-semibold tracking-tight text-text-primary"
+            >
+              {letter.betreff}
+            </h2>
+          ) : (
+            <h1
+              id="reader-title"
+              className="text-2xl font-semibold tracking-tight"
+            >
+              {letter.betreff}
+            </h1>
+          )}
           <dl className="grid gap-x-4 gap-y-1 text-xs text-muted-foreground sm:grid-cols-[auto_1fr]">
             <dt className="font-medium">{t('aktenzeichen_primaer_label')}</dt>
             <dd className="font-mono">{letter.aktenzeichen}</dd>

@@ -35,19 +35,18 @@ export function SidebarNavItem({ href, label, icon }: SidebarNavItemProps) {
       aria-current={active ? 'page' : undefined}
       data-active={active || undefined}
       className={cn(
-        'group relative flex min-h-[44px] items-center gap-2 rounded-md border-s-4 border-s-transparent px-3 py-2 text-sm transition-colors',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50',
+        'group relative flex min-h-[44px] items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors',
         active
-          ? 'border-s-[var(--ds-color-accent)] bg-[var(--ds-color-accent-soft)] font-medium text-foreground'
-          : 'text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:bg-sidebar-accent focus-visible:text-sidebar-accent-foreground',
+          ? 'bg-accent-soft font-medium text-primary'
+          : 'text-text-secondary hover:bg-surface-muted hover:text-text-primary focus-visible:bg-surface-muted focus-visible:text-text-primary',
       )}
     >
       <span
         className={cn(
           'inline-flex shrink-0',
           active
-            ? '[&_svg]:text-[var(--ds-color-accent)]'
-            : '[&_svg]:text-muted-foreground group-hover:[&_svg]:text-sidebar-accent-foreground',
+            ? '[&_svg]:text-primary'
+            : '[&_svg]:text-text-secondary group-hover:[&_svg]:text-text-primary',
         )}
         aria-hidden="true"
       >

@@ -28,6 +28,37 @@
     "privacy": "Privacy",
     "accessibility": "Accessibility"
   },
+  "error": {
+    "not_found": {
+      "code": "Error 404",
+      "title": "Page not found",
+      "description": "This page does not exist or has been moved. Return to the Dashboard to continue.",
+      "cta": "To the Dashboard"
+    }
+  },
+  "shell": {
+    "sidebar": {
+      "authority": "Federal Republic of Germany",
+      "help": "Help & contact",
+      "logout": "Sign out",
+      "open": "Open navigation",
+      "close": "Close navigation",
+      "nav_label": "Main navigation"
+    },
+    "user": {
+      "menu_label": "Open user menu",
+      "demo_name": "Anna Petrov",
+      "profile": "Profile",
+      "switch_persona": "Switch persona",
+      "logout": "Sign out"
+    },
+    "footer": {
+      "landmark": "Footer"
+    },
+    "sheet": {
+      "close": "Close"
+    }
+  },
   "landing": {
     "eyebrow": "GovTech DE — concept demo",
     "title": "Public administration, rethought",
@@ -39,6 +70,83 @@
     "persona_mehmet": "Mehmet Yıldız, 34 — Cologne, planning to register a business",
     "cta_continue": "Open the demo"
   },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Your personal overview of letters, deadlines and cases",
+    "greeting": {
+      "frau": "Hello, Ms {nachname}",
+      "herr": "Hello, Mr {nachname}",
+      "neutral": "Hello, {vorname} {nachname}"
+    },
+    "demo_banner": {
+      "text": "Demo mode · mock data. Since you rarely log in with BundID, the changes view helps you catch up.",
+      "disclaimer_link": "View disclaimer"
+    },
+    "diff": {
+      "title": "Since your last login",
+      "neue_briefe": "new letters",
+      "frist_naeher": "deadline closer",
+      "vorgang_abgeschlossen": "case completed",
+      "last_login_tooltip": "Last seen on this device on {datum}",
+      "first_login": "First login on this device",
+      "no_changes": "No changes since your last login"
+    },
+    "heute_zu_tun": {
+      "title": "To do today",
+      "sort_aria": "Sort the recommended actions",
+      "sort": {
+        "ki": "AI",
+        "frist": "Deadline",
+        "behoerde": "Authority",
+        "vorgang": "Case"
+      },
+      "empty_title": "All done",
+      "empty_description": "You have completed {count} cases in {jahr}.",
+      "sort_disabled_tooltip": "No actions to sort"
+    },
+    "priority": {
+      "fristnaehe": "Deadline near",
+      "folgevorgang": "Follow-up case",
+      "manuell": "Prioritised manually",
+      "termin": "Appointment set"
+    },
+    "tile": {
+      "fristen": {
+        "title": "Deadlines",
+        "next": "Next deadline: {datum}",
+        "none": "No open deadlines"
+      },
+      "posteingang": {
+        "title": "Inbox",
+        "value": "{ungelesen} unread · {gesamt} total"
+      },
+      "vorgaenge": {
+        "title": "Cases",
+        "value": "{laufend} in progress"
+      },
+      "termine": {
+        "title": "Appointments",
+        "next": "Next appointment: {datum}",
+        "none": "No appointment scheduled"
+      },
+      "datenschutz": {
+        "title": "Privacy cockpit",
+        "value": "{count} activities / 30 days"
+      },
+      "stammdaten": {
+        "title": "Master-data status",
+        "value": "Check address",
+        "last_confirmed": "Last confirmed: {datum}",
+        "never_confirmed": "Not yet confirmed"
+      },
+      "cta_ansehen": "View",
+      "cta_oeffnen": "Open"
+    },
+    "error": {
+      "load": "The dashboard could not be loaded."
+    },
+    "loading": "Loading dashboard"
+  },
   "common": {
     "cta": {
       "zurueck": "Back",
@@ -46,6 +154,48 @@
       "bestaetigen": "Confirm",
       "abbrechen": "Cancel",
       "erneut_versuchen": "Try again"
+    },
+    "filter": "Filter",
+    "filter_active": "{count} filters active",
+    "search": "Search",
+    "all": "All",
+    "show_all": "Show all",
+    "actions": {
+      "close": "Close"
+    },
+    "pagination": {
+      "label": "Pagination",
+      "range": "{from}–{to} of {total}",
+      "per_page": "{count} per page",
+      "prev": "Previous page",
+      "next": "Next page",
+      "page": "Page {page}"
+    },
+    "context_chip": {
+      "prototype": "Prototype · mock data",
+      "speculative": "Speculative demo feature"
+    },
+    "empty": {
+      "default_title": "No entries",
+      "default_description": "There is nothing here at the moment."
+    },
+    "status": {
+      "laufend": "In progress",
+      "neu": "New",
+      "verifiziert": "Verified",
+      "bestaetigt": "Confirmed",
+      "aktiv": "Active",
+      "geprueft": "Checked",
+      "erledigt": "Done",
+      "abgeschlossen": "Completed",
+      "eingereicht": "Submitted",
+      "warten": "Awaiting you",
+      "in_bearbeitung": "Being processed",
+      "wird_geprueft": "Under review",
+      "manuell": "Review manually",
+      "vorlage": "Draft",
+      "ablauf_bald": "Expiring soon",
+      "abgelaufen": "Expired"
     },
     "frist": {
       "gesetzlich": "statutory deadline",
@@ -214,6 +364,94 @@
       "open_cta": "Show legal basis"
     }
   },
+  "assistent": {
+    "title": "Assistant",
+    "subtitle": "Ask questions, understand letters and identify your next steps",
+    "quick": {
+      "label": "Suggestions",
+      "erklaere_brief": "Explain my letter",
+      "naechster_schritt": "What should I do next?",
+      "fehlende_unterlagen": "Which documents are missing?"
+    },
+    "log_label": "Conversation with the assistant",
+    "composer": {
+      "label": "Message to the assistant",
+      "placeholder": "Write a message …",
+      "send": "Send",
+      "attach": "Attach file",
+      "attach_disabled": "File attachments are disabled in this demo."
+    },
+    "message": {
+      "user_sent": "Sent",
+      "assistant_label": "Assistant"
+    },
+    "empty": {
+      "title": "How can I help you?",
+      "description": "Ask a question or pick a suggestion."
+    },
+    "streaming": {
+      "typing": "Assistant is typing …"
+    },
+    "error": {
+      "stream": "The reply could not be loaded. Please try again."
+    },
+    "greeting": {
+      "intro": "Hello {vorname}, here is an overview of your current situation:",
+      "bullet_briefe": "{count, plural, =1 {1 unread letter} other {# unread letters}} in your inbox.",
+      "bullet_frist": "Next deadline: {betreff} on {datum}.",
+      "bullet_keine": "Nothing urgent is open right now.",
+      "cta": "How can I help you?"
+    },
+    "tool": {
+      "reading": "Assistant is working …",
+      "running": "Running …",
+      "done": "Done",
+      "failed": "Failed",
+      "umzug_started": "Move started — the authorities are now being notified.",
+      "cta_kaskade": "View the cascade",
+      "label": {
+        "starte_umzug": "Start the move",
+        "preview_umzug": "Prepare the move",
+        "lese_posteingang": "Read inbox",
+        "hole_vorgang": "Fetch case",
+        "hole_profil": "Fetch master data",
+        "liste_termine": "Fetch appointments",
+        "erklaere_brief": "Explain letter",
+        "extrahiere_frist": "Extract deadline",
+        "vorschlage_naechsten_schritt": "Suggest next step"
+      }
+    },
+    "umzug_confirm": {
+      "title": "Confirm your move",
+      "subtitle": "Please check the details. Authorities are only notified after your confirmation.",
+      "neue_adresse": "New address",
+      "stichtag": "Move-in date",
+      "empfaenger_a": "Automatic (registration law)",
+      "empfaenger_b": "With your consent",
+      "empfaenger_c": "For you to handle yourself",
+      "empfaenger_d": "With eID confirmation",
+      "empfaenger_leer": "—",
+      "cta_start": "Start the move",
+      "cta_cancel": "Cancel",
+      "cancelled": "Cancelled.",
+      "consent_note": "Block-B recipients are only notified with your consent (Art. 6(1)(a) GDPR / Art. 6 Abs. 1 lit. a DSGVO); revocable at any time."
+    },
+    "kontext": {
+      "title": "Context",
+      "subtitle": "I am referring to:",
+      "posteingang": "Inbox",
+      "posteingang_value": "{ungelesen, plural, =0 {none unread} =1 {1 unread} other {# unread}}",
+      "dokumente": "Documents",
+      "dokumente_value": "{count, plural, =1 {1 in the vault} other {# in the vault}}",
+      "termine": "Appointments",
+      "termine_value": "{count, plural, =0 {none scheduled} =1 {1 scheduled} other {# scheduled}}",
+      "stammdaten": "Master data",
+      "stammdaten_value": "Up to date",
+      "datenschutz_title": "Your data is protected",
+      "datenschutz_body": "Only the data needed for your question is processed. Originals stay in the official mailboxes.",
+      "datenschutz_link": "More on data protection"
+    }
+  },
   "placeholder": {
     "section_title": "{section}",
     "wip": "This section is being prepared.",
@@ -360,6 +598,11 @@
       "zurueck": "Back to inbox",
       "not_found_title": "Letter not found",
       "not_found_body": "This letter does not exist or has been deleted.",
+      "empty_select_title": "Select a letter from the list.",
+      "empty_select_body": "Your official letters are shown on the left. Select one to see the AI explanation, deadlines and possible next steps.",
+      "auth_badge": "Authenticity verified",
+      "originaltext_auszug_title": "Original text excerpt",
+      "originaltext_mehr": "Show more",
       "originaltext_heading": "Original text",
       "originaltext_authoritative_label": "legally binding",
       "summary_heading": "Summary (AI)",
@@ -780,6 +1023,60 @@
       "renten_toast_error": "Transfer failed — please try again."
     }
   },
+  "vorgaenge": {
+    "title": "Cases",
+    "subtitle": "Your ongoing and completed administrative processes at a glance",
+    "filter": {
+      "alle": "All",
+      "laufend": "Ongoing",
+      "warten": "Waiting on you",
+      "abgeschlossen": "Completed"
+    },
+    "filter_aria": "Filter cases by status",
+    "card": {
+      "progress": "{erledigt} of {gesamt} done",
+      "progress_label": "Progress",
+      "cta_weiter": "Continue",
+      "cta_kaskade": "View cascade",
+      "cta_unterlagen": "Upload documents",
+      "cta_ansehen": "View case",
+      "unterlagen_fehlen": "Documents missing",
+      "umzug_subtitle": "All relevant authorities are notified automatically."
+    },
+    "stepper": {
+      "aria": "Progress of the case {titel}",
+      "node_done": "{behoerde}: completed",
+      "node_active": "{behoerde}: in progress",
+      "node_pending": "{behoerde}: pending",
+      "node_failed": "{behoerde}: failed"
+    },
+    "rail": {
+      "title": "What needs attention now?",
+      "offene_vorgaenge": "Open cases",
+      "offene_vorgaenge_count": "{count, plural, =1 {1 open case} other {# open cases}}",
+      "frist_naht": "Deadline approaching",
+      "frist_naht_days": "Deadline in {tage, plural, =1 {1 day} other {# days}}",
+      "warten_bestaetigung": "Waiting for confirmation",
+      "warten_bestaetigung_count": "{count, plural, =1 {1 step open} other {# steps open}}",
+      "cta_ansehen": "View",
+      "alle_ansehen": "View all cases",
+      "empty": "Nothing urgent right now."
+    },
+    "empty": {
+      "title": "No cases in this view",
+      "body": "There are currently no cases in this view.",
+      "cta_umzug": "Start a move"
+    },
+    "typ": {
+      "umzug": "Change of address",
+      "kindergeburt": "Birth",
+      "aufenthaltstitel-verlaengerung": "Extend residence permit",
+      "eheschliessung": "Marriage",
+      "gewerbeanmeldung": "Business registration",
+      "anmeldung": "Registration",
+      "sonstige": "Case"
+    }
+  },
   "stammdaten": {
     "page": {
       "title": "Personal data (Stammdaten)",
@@ -791,7 +1088,8 @@
       "sperre_error": "Could not activate the block.",
       "iban_push_error": "Could not simulate the IBAN push.",
       "beschaeftigung_heading": "Employment (read-only aggregation)",
-      "beschaeftigung_helper": "These fields are kept outside the registration register (DRV, health insurer, tax office) and are shown here only as an aggregate."
+      "beschaeftigung_helper": "These fields are kept outside the registration register (DRV, health insurer, tax office) and are shown here only as an aggregate.",
+      "subtitle": "Personal data, contacts and proofs in one place."
     },
     "tab": {
       "aria_label": "Personal-data sections",
@@ -873,7 +1171,9 @@
       "korrekturweg_label": "Correction path",
       "familie_preview": "{partner} partner / {kinder} child(ren)",
       "sperre_aktivieren": "Activate block (demo)",
-      "iban_push_trigger": "Simulate IBAN push"
+      "iban_push_trigger": "Simulate IBAN push",
+      "bearbeiten": "Edit",
+      "verwalten": "Manage"
     },
     "field": {
       "familienname": { "label": "Family name" },
@@ -1293,6 +1593,414 @@
         "familienkasse_followup": "Follow-up decision now in your inbox (demo)",
         "familienkasse_angebunden": "Familienkasse Berlin-Brandenburg is connected to BundID — preference applied (demo)"
       }
+    },
+    "chip": {
+      "adresse_bestaetigt": "Address confirmed",
+      "wallet_verbunden": "Wallet connected",
+      "aufenthalt_gueltig": "Residence valid",
+      "aufenthalt_ablauf_bald": "Residence permit expiring soon"
+    },
+    "aenderungsprotokoll": {
+      "title": "Change log",
+      "show_all": "Show all changes"
+    },
+    "hoheit": {
+      "title": "You are in control of your data",
+      "cta": "Manage settings"
+    },
+    "card": {
+      "persoenliches_profil": "Personal profile",
+      "versicherung_vorsorge": "Insurance & provision",
+      "identitaetsdokumente": "Identity documents",
+      "familie_bezugspersonen": "Family & dependants"
+    },
+    "cross_link": {
+      "familie": "Go to Family"
+    }
+  },
+  "dokumente": {
+    "title": "Documents",
+    "subtitle": "Your personal document store with proofs and official decisions.",
+    "search": {
+      "placeholder": "Search for documents",
+      "aria_label": "Search documents"
+    },
+    "kategorie": {
+      "ausweise": "ID documents",
+      "bescheide": "Official notices",
+      "familie": "Family",
+      "vertraege": "Contracts"
+    },
+    "col": {
+      "dokument": "Document",
+      "kategorie": "Category",
+      "status": "Status",
+      "daten": "Issued / Valid until",
+      "aktionen": "Actions",
+      "nr_prefix": "No. "
+    },
+    "daten": {
+      "ausgestellt": "Issued {datum}",
+      "gueltig_bis": "Valid until {datum}",
+      "unbefristet": "no expiry"
+    },
+    "action": {
+      "ansehen": "View {name}",
+      "herunterladen": "Download {name}",
+      "mehr": "More actions for {name}",
+      "menu_ansehen": "View",
+      "menu_teilen": "Share & use"
+    },
+    "schnellzugriff": {
+      "title": "Quick access",
+      "upload": "Upload document",
+      "ordner": "New folder",
+      "vorlagen": "Templates",
+      "papier": "Submit paper document"
+    },
+    "zuletzt": {
+      "title": "Recently added"
+    },
+    "teilen": {
+      "title": "Share & use",
+      "hint": "Documents can be verified by QR code and exported to the EUDI Wallet.",
+      "cta": "Use document"
+    },
+    "preview": {
+      "title": "Document preview",
+      "qr_label": "QR verification code",
+      "eudi_yes": "Can be exported to the EUDI Wallet",
+      "eudi_no": "Cannot be exported to EUDI",
+      "aussteller": "Issuing authority",
+      "nr_label": "Document number",
+      "ausgestellt_label": "Issued on",
+      "gueltig_bis_label": "Valid until"
+    },
+    "empty": {
+      "title": "No documents yet",
+      "filter_title": "No documents for this filter",
+      "filter_description": "Choose a different category or search term."
+    },
+    "error": "Documents could not be loaded.",
+    "demo_action_toast": "Demo feature — not implemented in this prototype.",
+    "filter": {
+      "sort_label": "Sort by",
+      "sort_name": "Name (A–Z)",
+      "sort_ausgestellt": "Issue date (newest first)",
+      "sort_gueltig": "Validity (expiring soon first)",
+      "status_label": "Status"
+    }
+  },
+  "termine": {
+    "title": "Appointments",
+    "subtitle": "Authority appointments, reminders and bookings in one place.",
+    "calendar": {
+      "prev": "Previous month",
+      "next": "Next month",
+      "today": "Today",
+      "label": "Monthly calendar",
+      "weekday_long": {
+        "mo": "Monday",
+        "di": "Tuesday",
+        "mi": "Wednesday",
+        "do": "Thursday",
+        "fr": "Friday",
+        "sa": "Saturday",
+        "so": "Sunday"
+      },
+      "weekday_short": {
+        "mo": "Mon",
+        "di": "Tue",
+        "mi": "Wed",
+        "do": "Thu",
+        "fr": "Fri",
+        "sa": "Sat",
+        "so": "Sun"
+      },
+      "has_events": "{count, plural, =1 {1 appointment} other {# appointments}}",
+      "day_aria": "{datum}{events}",
+      "day_events_suffix": " — {count, plural, =1 {1 appointment} other {# appointments}}"
+    },
+    "filter": {
+      "title": "Filter",
+      "behoerdentermine": "Authority appointments",
+      "erinnerungen": "Reminders & deadlines",
+      "buchungen": "Bookings",
+      "abgeschlossen": "Completed"
+    },
+    "naechste": {
+      "title": "Upcoming appointments"
+    },
+    "weitere": {
+      "title": "More appointments & reminders"
+    },
+    "card": {
+      "buchungsreferenz": "Booking reference {ref}",
+      "ics": "Export ICS",
+      "ics_aria": "Export appointment {betreff} as ICS",
+      "details": "Details",
+      "details_anzeigen": "Show details"
+    },
+    "naechster_schritt": {
+      "title": "Next step"
+    },
+    "vorbereitung": {
+      "title": "Well prepared for your appointment",
+      "reisepass": "Bring your passport",
+      "alter_titel": "Bring your old residence permit (Aufenthaltstitel)",
+      "biometrie": "Bring a biometric passport photo",
+      "gebuehr": "Have the processing fee ready",
+      "meldung": "Bring the landlord confirmation (Wohnungsgeberbestätigung)"
+    },
+    "fristen": {
+      "title": "Deadlines at a glance",
+      "in_tagen": "In {count, plural, =0 {due today} =1 {1 day} other {# days}}",
+      "ueberfaellig": "overdue"
+    },
+    "ort": {
+      "video": "Video appointment",
+      "telefon": "Phone appointment",
+      "praesenz": "In person"
+    },
+    "empty": {
+      "title": "No appointments",
+      "description": "You currently have no upcoming appointments.",
+      "filter_title": "No appointments for this selection",
+      "naechster_schritt": "Select an appointment to see the details."
+    },
+    "error": "Appointments could not be loaded."
+  },
+  "steuer": {
+    "title": "Taxes",
+    "subtitle": "Pre-filled tax return based on data already on record.",
+    "hero": {
+      "steuerjahr": "Tax year {jahr}",
+      "entwurf_badge": "Draft",
+      "erstattung_label": "Estimated refund",
+      "erstattung_aria": "Estimated refund {betrag}",
+      "nachzahlung_label": "Estimated amount due",
+      "nachzahlung_aria": "Estimated amount due {betrag}",
+      "datenquellen_label": "Data sources"
+    },
+    "quelle": {
+      "lohnsteuer": "Wage tax",
+      "kind": "Child",
+      "krankenkasse": "Health insurer (Krankenkasse)",
+      "bekannt": "Data already on record",
+      "herkunft": "from {herkunft}"
+    },
+    "fortschritt": {
+      "title": "Progress",
+      "geprueft": "Data checked",
+      "ergaenzen": "Add supporting documents",
+      "abgabe": "Ready to submit",
+      "schritt_aria": "Step {n} of 3: {label}",
+      "status_done": "completed",
+      "status_active": "active",
+      "status_pending": "open"
+    },
+    "bereiche": {
+      "title": "Overview of tax categories"
+    },
+    "col": {
+      "bereich": "Category",
+      "betrag": "Amount",
+      "status": "Status",
+      "aktion": "Action"
+    },
+    "status": {
+      "geprueft": "Checked",
+      "ergaenzen": "To complete",
+      "nicht_vorhanden": "Not present"
+    },
+    "aktion": {
+      "ansehen": "View",
+      "ergaenzen": "Complete",
+      "hinzufuegen": "Add",
+      "ansehen_aria": "View {bereich}",
+      "ergaenzen_aria": "Add supporting documents for {bereich}",
+      "hinzufuegen_aria": "Add {bereich}"
+    },
+    "bereich": {
+      "einkommen": "Income from employment",
+      "werbungskosten": "Work-related expenses (Werbungskosten)",
+      "vorsorge": "Provision expenses (Vorsorgeaufwendungen)",
+      "kinder": "Children",
+      "aussergewoehnlich": "Extraordinary burdens (außergewöhnliche Belastungen)",
+      "sonderausgaben": "Special expenses (Sonderausgaben)"
+    },
+    "fristen": {
+      "title": "Important deadlines"
+    },
+    "frist": {
+      "abgabe": "Filing deadline for tax return {jahr}",
+      "einspruch": "Objection deadline for last assessment",
+      "in_tagen": "In {count, plural, =0 {today} =1 {1 day} other {# days}}",
+      "ueberfaellig": "overdue"
+    },
+    "nachweise": {
+      "title": "Supporting documents used"
+    },
+    "datenschutz": {
+      "title": "Data protection notice",
+      "verarbeitet_label": "Data processed",
+      "daten": {
+        "lohn": "Wage and salary data",
+        "kv": "Health insurance contributions",
+        "kind": "Data about children (child benefit)"
+      },
+      "rechtsgrundlage_label": "Legal basis",
+      "empfaenger_label": "Recipient",
+      "minimierung_hint": "Only the data required for the tax return is processed.",
+      "mehr": "More about data protection"
+    },
+    "empty": {
+      "title": "No tax draft available",
+      "description": "No pre-filled data is available yet for this tax year."
+    },
+    "error": "The tax overview could not be loaded.",
+    "retry": "Try again",
+    "demo_action_toast": "Demo feature — adding supporting documents is not set up in this prototype.",
+    "alle_bereiche": "Show all categories",
+    "weniger_bereiche": "Show fewer"
+  },
+  "datenschutz": {
+    "page": {
+      "title": "Data protection",
+      "subtitle": "Insight into data access, consents and administrative cases"
+    },
+    "vision_banner": {
+      "heading": "2027 vision",
+      "title": "2027 vision",
+      "body": "This cockpit brings together your data-protection transparency and control. In the real world today, these functions are still spread across several offices.",
+      "dismiss": "Close 2027 vision notice"
+    },
+    "aktivitaet": {
+      "title": "Recent activity",
+      "show_all": "Show all activity",
+      "show_less": "Show less",
+      "empty": "No activity recorded yet."
+    },
+    "activity": {
+      "typ": {
+        "uebermittlung": "Transfer",
+        "eingang": "Incoming",
+        "app": "App activity",
+        "vision": "Vision"
+      },
+      "brief_geoeffnet": "Letter opened",
+      "ki_zusammenfassung": "AI summary created",
+      "adresse_uebermittelt": "Address transferred to authority",
+      "dokument_geladen": "Document downloaded",
+      "einwilligung_erteilt": "Consent given"
+    },
+    "einwilligungen": {
+      "title": "Consents",
+      "subtitle": "You decide which offices may access your data",
+      "krankenkasse": "Health insurer (Krankenkasse)",
+      "bank": "Bank",
+      "arbeitgeber": "Employer",
+      "weitere_dienste": "Other services",
+      "ein": "On",
+      "aus": "Off",
+      "rechtsgrundlage_label": "Legal basis",
+      "switch_aria": "Consent {empfaenger}",
+      "announce_ein": "Consent {empfaenger} switched on",
+      "announce_aus": "Consent {empfaenger} switched off"
+    },
+    "quellen": {
+      "title": "Data sources & recipients",
+      "col_stelle": "Office",
+      "col_zugriffsart": "Access type",
+      "col_aktualitaet": "Last updated",
+      "automatisch": "automatically synchronised",
+      "einwilligungsbasiert": "consent-based",
+      "aktuell": "up to date",
+      "show_all": "Show all recipients"
+    },
+    "kontrolle": {
+      "title": "Your data-protection controls",
+      "zugriffsprotokoll": "Access log",
+      "zugriffsprotokoll_desc": "Trace all data access",
+      "datenexport": "Data export",
+      "datenexport_desc": "Take your data with you under Art. 20 GDPR (DSGVO)",
+      "einstellungen": "Settings",
+      "einstellungen_desc": "Manage preferences and blocks",
+      "vision_hint": "This function is part of this demo's 2027 vision."
+    },
+    "log": {
+      "einwilligung_geaendert": "Consent changed"
+    },
+    "toast": {
+      "einwilligung_error": "The consent could not be saved."
+    },
+    "empty": {
+      "title": "No activity yet",
+      "description": "As soon as data is processed, it will appear here."
+    },
+    "error": "The data-protection information could not be loaded.",
+    "retry": "Try again"
+  },
+  "familie": {
+    "page": {
+      "title": "Family",
+      "subtitle": "Your household, dependants and shared cases at a glance"
+    },
+    "haushalt": {
+      "title": "My household",
+      "count": "{count} people"
+    },
+    "rolle": {
+      "mutter": "Mother",
+      "vater": "Father",
+      "partner": "Partner",
+      "kind": "Child",
+      "hauptperson": "Main person"
+    },
+    "cta": {
+      "haushalt_verwalten": "Manage household"
+    },
+    "verwalten_dialog": {
+      "title": "Manage household",
+      "body": "Managing household members and powers of representation (Vertretungsrechte) is a 2027 vision of this demo. The feature is coming soon.",
+      "close": "Close"
+    },
+    "vertretung_banner": {
+      "title": "Representation",
+      "body": "You can handle cases on behalf of members of your household (Vertretung)."
+    },
+    "vorgaenge": {
+      "title": "Shared cases",
+      "kindergeld": "Child benefit (Kindergeld)",
+      "krankenkasse": "Health insurance",
+      "kita": "Daycare place (Kita)",
+      "kita_traeger": "Daycare provider (Kita-Träger)",
+      "betrifft": "Concerns: {names}",
+      "show_all": "Show all shared cases"
+    },
+    "nachweise": {
+      "title": "Proofs & authorisations",
+      "geburtsurkunde": "Birth certificate (Geburtsurkunde)",
+      "sorge_vollmacht": "Custody authorisation (Sorge-Vollmacht)",
+      "vertretungsrechte": "Powers of representation (Vertretungsrechte)",
+      "verknuepfungen": "Links"
+    },
+    "was_betrifft_wen": {
+      "title": "Who is concerned by what?",
+      "subtitle": "Overview per person",
+      "vorgaenge": "Cases",
+      "dokumente": "Documents",
+      "nachweise": "Proofs",
+      "vertretungen": "Representations"
+    },
+    "sicher": {
+      "title": "Safe & protected",
+      "body": "Family data is processed only to the extent required. Powers of representation (Vertretungsrechte) are a 2027 vision of this demo.",
+      "more": "More about data protection"
+    },
+    "empty": {
+      "title": "No household on file",
+      "body": "No household members are recorded for this profile."
     }
   }
 }

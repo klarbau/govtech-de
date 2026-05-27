@@ -31,6 +31,11 @@ import type Anthropic from '@anthropic-ai/sdk';
  */
 export const TOOL_NAMES = [
   'starte_umzug',
+  // Read-only Vorschau-Tool (redesign-assistent.md §7.2). Ermittelt die je
+  // Block (A/B/C/D) zu informierenden Behörden für eine Adresse + Stichtag,
+  // OHNE etwas auszulösen. Speist `<UmzugConfirmCard>` BEVOR `starte_umzug`
+  // läuft (propose-before-act). Braucht KEINE Bestätigung.
+  'preview_umzug',
   'lese_posteingang',
   'hole_vorgang',
   'hole_profil',
@@ -105,6 +110,50 @@ export const tools: Anthropic.Tool[] = [
         },
       },
       required: ['neue_adresse', 'stichtag_iso', 'block_b_consent'],
+    },
+  },
+
+  /* ───────────────────────────── preview_umzug ──────────────────────────── */
+  {
+    name: 'preview_umzug',
+    description: [
+      'Ermittelt, welche Behörden bei einem Umzug informiert würden (Block A automatisch nach §§ 33/34/36 BMG, Block B mit Einwilligung, Block C selbst, Block D mit eID), OHNE etwas auszulösen.',
+      '',
+      'Nutze dieses Werkzeug, um der Nutzerin VOR der Bestätigung eine Vorschau zu zeigen. Aus dem Ergebnis baut die UI eine Bestätigungskarte; erst nach dem ausdrücklichen Klick „Umzug starten" wird "starte_umzug" ausgeführt.',
+      '',
+      'Es ist read-only und braucht keine Bestätigung. Rufe es auf, sobald du Adresse + Stichtag von der Nutzerin hast — auch wenn die Block-B-Einwilligung noch offen ist (die Block-B-Liste wird in der Karte angezeigt und dort bestätigt).',
+    ].join('\n'),
+    input_schema: {
+      type: 'object',
+      properties: {
+        neue_adresse: {
+          type: 'object',
+          description: 'Die neue Wohnanschrift in Deutschland (Auslandsumzug ist nicht im Scope).',
+          properties: {
+            strasse: { type: 'string', description: 'Straßenname ohne Hausnummer.' },
+            hausnummer: { type: 'string', description: 'Hausnummer inkl. eventueller Zusatzbuchstaben (z. B. „142a").' },
+            zusatz: { type: 'string', description: 'Optionaler Adresszusatz (z. B. „c/o", „2. OG").' },
+            plz: {
+              type: 'string',
+              pattern: '^\\d{5}$',
+              description: 'Fünfstellige deutsche Postleitzahl.',
+            },
+            ort: { type: 'string', description: 'Stadt bzw. Gemeinde.' },
+            land: {
+              type: 'string',
+              enum: ['DE'],
+              description: 'Muss „DE" sein — Auslandsumzug ist out-of-scope.',
+            },
+          },
+          required: ['strasse', 'hausnummer', 'plz', 'ort', 'land'],
+        },
+        stichtag_iso: {
+          type: 'string',
+          format: 'date',
+          description: 'Einzugsdatum als ISO-Datum (YYYY-MM-DD).',
+        },
+      },
+      required: ['neue_adresse', 'stichtag_iso'],
     },
   },
 
@@ -336,4 +385,34 @@ export function isKnownTool(name: string): name is ToolName {
  * Latency expectation (per spec §12 review-checklist, also wired in
  * mock-backend latency.ts): `extrahiereAktion` simulates 1.5–3.5 s on the
  * first call per letter; cached subsequent calls ~200 ms.
+ * ───────────────────────────────────────────────────────────────────────── */
+
+/* ─────────────── Client-side tool dispatch contract (§7.3) ──────────────────
+ * The chat client (`<AssistentView>`) owns a dispatch table that maps each
+ * `tool_use.name` → an `api.*` call, serialises the result into a
+ * `tool_result` block, and POSTs the next turn. Source-of-truth for that
+ * mapping is `TOOL_DISPATCH` in `tool-schemas.ts` (machine-readable so the
+ * frontend can drive its dispatcher off it). The table below is the
+ * human-readable contract — keep both in lockstep with redesign-assistent.md
+ * §7.3.
+ *
+ *   tool name                    → api method                        | confirm?
+ *   ─────────────────────────────────────────────────────────────────────────
+ *   lese_posteingang             → api.getLetters(filterMap)         | no
+ *   hole_vorgang                 → api.getVorgang(vorgang_id)        | no
+ *   hole_profil                  → api.getProfile()                  | no
+ *   liste_termine                → api.getTermine() (+client-filter) | no
+ *   erklaere_brief               → api.extrahiereAktion(letterId)    | no
+ *   extrahiere_frist             → api.extrahiereAktion(id).fristen  | no
+ *   vorschlage_naechsten_schritt → api.extrahiereAktion(id).options  | no
+ *   preview_umzug                → api.previewUmzug({adresse,stichtag})| no  → renders <UmzugConfirmCard>
+ *   starte_umzug                 → api.startUmzug({…})               | YES → gated by <UmzugConfirmCard> click
+ *
+ * CRITICAL GATING RULE (§7.3 + §9): `starte_umzug` MUST NOT be dispatched
+ * automatically when the model streams the block. The system prompt tells the
+ * model to call `preview_umzug` first and wait for confirmation — but the
+ * client enforces this STRUCTURALLY, not just by prompt: a `starte_umzug`
+ * tool_use block is HELD (never dispatched) until the citizen clicks
+ * „Umzug starten" in the confirm card. `requiresConfirmation('starte_umzug')`
+ * (see tool-schemas.ts) is the single source of truth the dispatcher checks.
  * ───────────────────────────────────────────────────────────────────────── */
