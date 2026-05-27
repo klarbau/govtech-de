@@ -226,6 +226,37 @@ type Termin = {
 };
 ```
 
+## Redesign data-model additions (2026-05-27)
+
+The full-sweep redesign kept the runtime flow above unchanged (RSC/client → `api.ts` → persistence/autopilot; assistant via the SSE route, Approach B confirmed and in use). It added screen-specific read models and a few additive fields. New type files: `src/types/{dashboard,steuer,familie,datenschutz}.ts`. Additive fields: `Document.kategorie?`/`dokument_nr?` (+ `DocumentKategorie`); `Termin.buchungsreferenz?`/`vorbereitung?`/`kategorie?` (+ new `Reminder`, `ReminderKategorie`, `TerminVorbereitungItem`).
+
+New `api` read/write methods (all `withLatency`, dispatched through `api.ts`):
+
+```ts
+// Dashboard
+getDashboard(personaId, opts?): Promise<DashboardSnapshot>;   // resolves last_seen from bucket if omitted
+getLastSeen(personaId): Promise<string | null>;
+setLastSeen(personaId, iso): Promise<void>;                   // called by UI AFTER snapshot, never zeroes the diff
+getCandidatesForTopActions(personaId): Promise<TopActionCandidateInput[]>;
+getDsc(personaId): Promise<DscSnapshot>;
+getLebenslagenHinweise(personaId): Promise<LebenslagenHinweis[]>;
+getDashboardSortMode(personaId): Promise<DashboardSortMode>;  // default 'ki'
+setDashboardSortMode(personaId, mode): Promise<void>;
+// Reminders / Steuer / Familie / Datenschutz
+getReminders(): Promise<Reminder[]>;                          // seed + derived from Vorgang.fristen[]
+getSteuerUebersicht(personaId, steuerjahr): Promise<SteuerUebersicht>;
+getFamilie(personaId): Promise<HaushaltView>;                 // read-only, derived from Persona
+getDatenschutzEinwilligungen(personaId): Promise<DatenschutzEinwilligung[]>;
+setDatenschutzEinwilligung(personaId, empfaenger, erteilt): Promise<void>; // persists + emits a UebermittlungsLogEntry (Art. 6/7 DSGVO)
+getDatenquellen(personaId): Promise<DatenquellenEintrag[]>;
+isVisionBannerDismissed(personaId): Promise<boolean>;
+dismissVisionBanner(personaId): Promise<void>;
+```
+
+New persistence keys under `govtech-de:v1:`: `reminders`, `steuer`, `datenschutz:einwilligungen`, `datenschutz:vision-banner-dismissed`, `dashboard:last-seen`, `dashboard:sort-mode`. The Datenschutz activity timeline reuses the existing `stammdaten:uebermittlungs-log` bucket (no parallel log).
+
+AI additions: read-only tool `preview_umzug` (proposes Umzug params without writing) feeding a confirm-gated UI flow — `starte_umzug` (irreversible) fires only after the user clicks; the gate is structural (`requiresConfirmation()` in `lib/ai/tool-schemas.ts`), not prompt-only. Separate one-shot surface `POST /api/dashboard/top-actions` (`prioritize_top_actions`) ranks the dashboard "Heute zu tun" list, with a deterministic Frist-fallback when no API key is present.
+
 ## Update protocol
 
 When any of the following change, this file must be updated by the responsible agent in the same review pass:
