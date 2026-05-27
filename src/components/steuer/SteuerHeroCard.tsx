@@ -71,7 +71,7 @@ export function SteuerHeroCard({ uebersicht, behoerdeName }: SteuerHeroCardProps
         <p className="text-sm text-text-secondary">{label}</p>
         <p
           aria-label={ariaLabel}
-          className={cn_amount(isErstattung)}
+          className={amountClassName(isErstattung)}
         >
           {isErstattung ? '' : '−'}
           {betragText}
@@ -97,7 +97,7 @@ export function SteuerHeroCard({ uebersicht, behoerdeName }: SteuerHeroCardProps
   );
 }
 
-function cn_amount(isErstattung: boolean): string {
+function amountClassName(isErstattung: boolean): string {
   return [
     'mt-1 text-3xl font-bold tabular-nums md:text-4xl',
     isErstattung ? 'text-success' : 'text-danger',
