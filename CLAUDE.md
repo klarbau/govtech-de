@@ -160,6 +160,8 @@ Full schemas live in `src/types/`. Any agent extending the model must update bot
 
 Every new feature passes through this pipeline. The main thread does NOT write code directly — it orchestrates agents.
 
+**Stage 0 first**: before any feature enters the pipeline, the orchestrator runs the Demo-Spine gate against [`docs/demo-spine.md`](docs/demo-spine.md) — the single source of truth for the headline wow and the Loom path. A feature only enters the pipeline if it advances the spine (or the spine is already complete). Specs carry a `track: spine | supporting` field that sets the rigor tier; supporting surfaces get DE-source i18n + a11y PASS, not full six-locale ceremony. See WORKFLOW.md → "Stage 0", "Rigor tiers", "Two definitions of shipped".
+
 ```
                       ┌──────────────────┐
   user idea / gap ──▶ │  research-scout  │  (web research, prior art, references)
