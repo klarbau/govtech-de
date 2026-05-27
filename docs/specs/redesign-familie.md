@@ -1,7 +1,7 @@
 ---
 feature: redesign-familie
 title: Familie — „Mein Haushalt" (Redesign, NEW screen)
-status: spec
+status: shipped
 track: supporting
 date: 2026-05-27
 author: product-architect
@@ -428,3 +428,12 @@ Status-Labels (`Laufend`/`Genehmigt`/`Warten auf Sie`/`Abgeschlossen`/`Verifizie
 - AR RTL: dir flip is layout-owned (`app/layout.tsx` per locale). Latin tokens (Wallet, BundID, Kindergeld, Kita, Geburtsurkunde, Sorge-Vollmacht, Vertretungsrechte) + `{names}`/`{count}` render LTR within RTL via Unicode bidi; no manual markup needed. Monogram avatars are LTR-neutral per spec § 9.
 - JSON: all 5 files structurally validated (balanced braces, no trailing commas, familie block closes into root at line 1998; edits anchored on unique sibling strings). JSON.parse gate to be run by main thread (this agent has no Bash) per the V1.5 lesson.
 - _status.json updated.
+
+---
+## Code review — redesign-familie
+- reviewer: code-reviewer
+- date: 2026-05-27
+- verdict: **APPROVE**
+- gates: tsc --noEmit pass; unit 639/639; next build pass; de/en/ru/uk/ar/tr JSON.parse OK; i18n parity 0 missing.
+- summary: Renders from seed (Tobias Becker = partner, Lev Petrov-Becker geb.2024 = kind), NOT PNG labels; getFamilie read-only, emits no log; speculative dialog is a no-op.
+- full report: docs/reviews/2026-05-27-redesign-supporting-six-code.md

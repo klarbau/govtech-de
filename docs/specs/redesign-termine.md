@@ -1,7 +1,7 @@
 ---
 feature: redesign-termine
 title: Termine — Behördentermine, Erinnerungen & Buchungen (Redesign aus Prototyp 03)
-status: spec
+status: shipped
 track: supporting
 date: 2026-05-27
 author: product-architect
@@ -318,3 +318,12 @@ Alle Keys unter `termine.*` neu; `track: supporting` → DE-Source + 6 Locales `
 - AR RTL: all strings RTL-safe. "Aufenthaltstitel"/"Wohnungsgeberbestätigung"/"ICS"/"EUDI" Latin runs embedded; § 9 already specifies `dir="ltr"` on times/Buchungsreferenz `tabular-nums`. Calendar week-start + arrow mirroring handled in component (§ 9), not in strings.
 - JSON validation: all 5 files structurally balanced (block inserted before final root `}`; trailing `}` verified). Awaiting main-thread JSON.parse gate (i18n agent has no Bash).
 - known gaps: none for this block. Status labels (Bestätigt/Gebucht/Erinnerung/Abgeschlossen) reuse `common.status.*` per spec § 8 — not duplicated here.
+
+---
+## Code review — redesign-termine
+- reviewer: code-reviewer
+- date: 2026-05-27
+- verdict: **APPROVE**
+- gates: tsc --noEmit pass; unit 639/639; next build pass; de/en/ru/uk/ar/tr JSON.parse OK; i18n parity 0 missing.
+- summary: MonthCalendar WAI-ARIA grid solid; buildIcs valid RFC-5545 + [MOCK]; cross-spec frist lock honoured. NIT: TermineView.tsx:256 statusLabel hardcoded bestaetigt (unreachable mismatch).
+- full report: docs/reviews/2026-05-27-redesign-supporting-six-code.md
