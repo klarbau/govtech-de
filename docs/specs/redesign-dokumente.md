@@ -1,7 +1,7 @@
 ---
 feature: redesign-dokumente
 title: Dokumente — Dokumenten-Vault (Redesign aus Prototyp 02)
-status: spec
+status: shipped
 track: supporting
 date: 2026-05-27
 author: product-architect
@@ -317,3 +317,12 @@ Alle Keys unter `dokumente.*` neu; `track: supporting` → DE-Source + schnell-�
 - AR RTL: all strings RTL-safe; Latin terms (BundID, EUDI Wallet, Bescheid, Wohnungsgeberbestätigung) embedded in RTL run — frontend `dir="rtl"` on page + `dir="ltr"` already specified on Nr./Datum `tabular-nums` spans (§ 9). No hardcoded directional punctuation introduced.
 - JSON validation: all 5 files structurally balanced (each new block inserted before final root `}`; trailing `}` of each block verified). Awaiting main-thread JSON.parse gate (i18n agent has no Bash).
 - known gaps: none for this block. Status labels intentionally NOT translated here — reuse `common.status.*` (already localized) per spec § 8.
+
+---
+## Code review — redesign-dokumente
+- reviewer: code-reviewer
+- date: 2026-05-27
+- verdict: **APPROVE**
+- gates: tsc --noEmit pass; unit 639/639; next build pass; de/en/ru/uk/ar/tr JSON.parse OK; i18n parity 0 missing.
+- summary: DataTable / deriveDocumentStatus / preview-dialog / pagination sound; backend enriches kategorie; 19 docs real behoerden + [MOCK]. NIT: DokumenteView.tsx:125 dead kategorie fallback.
+- full report: docs/reviews/2026-05-27-redesign-supporting-six-code.md

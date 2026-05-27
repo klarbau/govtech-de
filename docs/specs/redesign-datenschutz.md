@@ -1,7 +1,7 @@
 ---
 feature: redesign-datenschutz
 title: Datenschutz — Datenschutz-Cockpit (Redesign, NEW screen)
-status: spec
+status: shipped
 track: supporting
 date: 2026-05-27
 author: product-architect
@@ -416,3 +416,12 @@ Relative Zeit / „pro Seite" reused aus `common.*`.
   - Length flags (tight UI): toggle labels `einwilligungen.ein`/`aus` ("On/Off") — ru "Вкл./Выкл.", uk "Увімк./Вимк.", ar "تشغيل/إيقاف", tr "Açık/Kapalı" all short and fit a switch label. Table headers `quellen.col_*` (Office/Access type/Last updated) — ar "نوع الوصول"/"آخر تحديث" and uk "Тип доступу" are within +40%; "automatically synchronised"/"automatisch synchronisiert"→ru "автоматическая синхронизация" is long but lives in a wider Zugriffsart cell, not a header. No hard overflow expected; flag to frontend-coder if the Zugriffsart badge clips on narrow mobile.
   - AR RTL-safe: switch position + table mirror handled by layout (logical props per spec § 4.1/§ 9); §-citations + dates stay LTR; Latin "DSGVO"/"GDPR"/"AOK" + `{placeholder}` render LTR via bidi isolation.
   - VALIDATION: structural review PASS for all 5 files (balanced braces, no trailing commas, key order mirrors de.json, each file 1911 lines). JSON.parse NOT runnable in this agent (no Bash) — main-thread JSON.parse gate recommended per V1.5 ship lesson.
+
+---
+## Code review — redesign-datenschutz
+- reviewer: code-reviewer
+- date: 2026-05-27
+- verdict: **APPROVE**
+- gates: tsc --noEmit pass; unit 639/639; next build pass; de/en/ru/uk/ar/tr JSON.parse OK; i18n parity 0 missing.
+- summary: Consent persists via api.setDatenschutzEinwilligung (persistence write, not direct localStorage); correct app_aktivitaet log Art.6/Art.7 DSGVO into existing bucket; live timeline; no real PII. NIT: api.ts:156-160 tautological ternary; ActivityTimelineRow.tsx:80 unused nowIso.
+- full report: docs/reviews/2026-05-27-redesign-supporting-six-code.md

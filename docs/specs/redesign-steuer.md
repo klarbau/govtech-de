@@ -1,7 +1,7 @@
 ---
 feature: redesign-steuer
 title: Steuer — Vorausgefüllte Steuererklärung aus bekannten Daten (Redesign aus Prototyp 04)
-status: spec
+status: shipped
 track: supporting
 date: 2026-05-27
 author: product-architect
@@ -354,3 +354,12 @@ Alle Keys unter `steuer.*` neu; `track: supporting` → DE-Source + 6 Locales `n
   - Length flags (tight cells): table headers `col.*` (Category/Amount/Status/Action), tile labels `quelle.*`, status `status.*` and action `aktion.*` links — all within +40% of DE source in all 5 locales; AR/RU "Nicht vorhanden"→"غير متوفّر"/"Отсутствует" and "Voraussichtliche Erstattung"→longer but fit hero (not a tight cell). No hard overflow expected; flag to frontend-coder if `status.ergaenzen` ("To complete"/"Bحاجة إلى استكمال") wraps a narrow status column on mobile.
   - AR RTL-safe: Latin Behörden-Begriffe + `{placeholder}` tokens render LTR via bidi isolation; betrag/jahr already `dir="ltr"` tabular-nums spans per spec § 4.1/§ 9.
   - VALIDATION: structural review PASS for all 5 files (balanced braces, no trailing commas, key order mirrors de.json, each file 1911 lines). JSON.parse NOT runnable in this agent (no Bash) — main-thread JSON.parse gate recommended per V1.5 ship lesson.
+
+---
+## Code review — redesign-steuer
+- reviewer: code-reviewer
+- date: 2026-05-27
+- verdict: **APPROVE**
+- gates: tsc --noEmit pass; unit 639/639; next build pass; de/en/ru/uk/ar/tr JSON.parse OK; i18n parity 0 missing.
+- summary: Pre-fill hero + stepper <ol>/aria-current + privacy-by-design rail; demo CTAs are toasts; abgabefrist date-locked to reminders.json. NIT: SteuerHeroCard.tsx:100 snake_case helper cn_amount.
+- full report: docs/reviews/2026-05-27-redesign-supporting-six-code.md

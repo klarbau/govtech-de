@@ -1,7 +1,7 @@
 ---
 feature: redesign-stammdaten
 title: Stammdaten — Re-Skin auf Prototyp (visuelle Reorganisation, NICHT Feature-Change)
-status: spec
+status: shipped
 track: supporting
 date: 2026-05-27
 author: product-architect
@@ -379,3 +379,12 @@ Unverändert (V-Hook wie in V1-Spec). Keine Tools jetzt.
 - AR RTL: dir flip layout-owned; identifiers (Steuer-ID/AZR/FE-Nr/IBAN/KVNR) keep `dir="ltr"` per the V1.3 followup convention — none of the 13 chrome keys carry an identifier, so no inline dir needed here.
 - JSON: all 5 files structurally validated (balanced braces, no trailing commas; chrome block inserted before the stammdaten namespace close, page.subtitle into page{}, cta keys into cta{}). JSON.parse gate to be run by main thread (no Bash in this agent) per V1.5 lesson.
 - _status.json updated.
+
+---
+## Code review — redesign-stammdaten
+- reviewer: code-reviewer
+- date: 2026-05-27
+- verdict: **APPROVE**
+- gates: tsc --noEmit pass; unit 639/639; next build pass; de/en/ru/uk/ar/tr JSON.parse OK; i18n parity 0 missing.
+- summary: RE-SKIN preserved: modal state machine (religion/sperren/iban/pflegegrad) + all data-testids + Sektion components + Mobilitaet/Sperren/Cascade + Wallet sub-tab; vitest 639/639 incl. all stammdaten suites; no type/API/bucket change.
+- full report: docs/reviews/2026-05-27-redesign-supporting-six-code.md
