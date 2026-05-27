@@ -1,59 +1,199 @@
-# GovTech DE — Concept Demo
+# GovTech DE — Verwaltung neu gedacht
 
-> Speculative-design prototype: how a citizen-first interaction layer for German public administration could feel in 2027, built on top of DeutschlandID + EUDI Wallet + Deutschland-Stack.
+> **Ein:e Bürger:in sagt einmal „ich ziehe um" — und das System informiert jede zuständige Behörde.**
 >
-> **All data is mocked. No real Behörden are integrated.**
+> Speculative-Design-Prototyp einer bürgerzentrierten Interaktionsschicht für die deutsche Verwaltung, gedacht für ~2027 auf Basis von DeutschlandID + EUDI Wallet + Deutschland-Stack.
+>
+> **Alle Daten sind erfunden. Keine echte Behörde ist angebunden.**
 
-This repository is structured for autonomous development by specialized Claude Code subagents. See `CLAUDE.md` for project context, `docs/WORKFLOW.md` for the agent pipeline, and `.claude/agents/` for the agent definitions.
+<!-- LIVE DEMO: TBD -->
+<!-- LOOM: TBD -->
 
-## Quick start (developer)
+---
+
+## Das Problem
+
+Ein Umzug in Deutschland ist kein Vorgang — er sind sechs. Die Bürger:in meldet sich beim **Einwohnermeldeamt** um, informiert das **Finanzamt**, ändert die Halterdaten bei der **KFZ-Zulassungsstelle**, meldet die neue Adresse der **Krankenkasse**, korrigiert den **Rundfunkbeitrag** und sagt der/dem **Arbeitgeber:in** Bescheid. Sechs Stellen, sechs Formate, sechs Wartezeiten — für ein einziges Lebensereignis, das der Staat ohnehin schon kennt.
+
+Das ist kein Formular-Problem, sondern ein Koordinations-Problem. Schnellere Formulare lösen es nicht. Die eigentliche Frage lautet: Warum muss die Bürger:in die Behörden koordinieren — und nicht umgekehrt?
+
+## Der Wow-Moment
+
+Die Bürger:in sagt dem Assistenten **einmal** in natürlicher Sprache: **„leite meinen Umzug ein"**.
+
+Der Assistent fragt das Nötige nach — neue Adresse, Stichtag, für welche Empfänger eine Einwilligung erteilt wird —, zeigt eine **Bestätigungskarte**, und löst **erst nach ausdrücklichem „Umzug starten"** die Kaskade aus. Dann sieht die Bürger:in zu, wie die Bestätigungen eintreffen:
+
+```
+Einwohnermeldeamt   ✓ informiert
+Finanzamt           ✓ informiert
+KFZ-Zulassungsstelle ✓ informiert
+Krankenkasse        ✓ informiert  (mit Einwilligung)
+Rundfunkbeitrag     ✓ informiert
+Arbeitgeber         ✓ informiert  (mit Einwilligung)
+```
+
+Aus **sechs separaten Meldungen** wird **ein Satz**. Die Behörden werden nach Rechtsgrundlage gestaffelt — automatisch nach Bundesmeldegesetz (Block A), mit Einwilligung nach Art. 6 Abs. 1 lit. a DSGVO (Block B), selbst zu erledigen (Block C), mit eID-Bestätigung (Block D) —, und die Bestätigungsschreiben landen anschließend im Posteingang, jedes mit einer verständlichen KI-Zusammenfassung.
+
+**Der Autopilot ist der Held.** Nicht das schnellere Formular, sondern das, was das System *für* die Bürger:in erledigt.
+
+## Was es ist (und was nicht)
+
+Dies ist ein **Speculative-Design-Prototyp** — ein portfolio-reifer Entwurf davon, wie sich eine bürgerzentrierte Verwaltungs-Oberfläche im Jahr ~2027 anfühlen *könnte*, aufgesetzt auf die bereits beschlossenen Bausteine DeutschlandID, EUDI Wallet und Deutschland-Stack.
+
+**Ehrlicher Disclaimer:**
+
+- **Alle Daten sind erfunden** — Personas, Briefe, Aktenzeichen und Behörden-Antworten sind Mock-Daten. Sie sehen realistisch aus (echte Behörden-Bezeichnungen, reale PLZ, korrekte Aktenzeichen-Formate), sind aber synthetisch.
+- **Keine echte Behörde ist angebunden.** Es gibt keine Integration mit realen Fachverfahren. Das Mock-Backend simuliert REST-Antworten und persistiert lokal im Browser.
+- Es ist eine **Vision, kein Produkt** — ein Gesprächsangebot über das, was möglich wäre, nicht eine Behauptung, dass es das bereits gibt.
+
+## Die Oberflächen
+
+Diese Screenshots zeigen das **tatsächlich umgesetzte Design** der zehn Oberflächen, funktionsfähig auf dem Mock-Backend.
+
+### Dashboard — „heute zu tun"
+
+![Dashboard](docs/design-prototype/09-dashboard.png)
+
+*Persönlicher Überblick: offene Briefe, Fristen, der Umzug-Anstoß. Eine KI-gestützte Priorisierung sortiert, was heute wirklich wichtig ist.*
+
+### Assistent — der Held
+
+![Assistent](docs/design-prototype/06-assistent.png)
+
+*Konversationelle KI mit Tool-Use. „leite meinen Umzug ein" → Rückfragen → Bestätigungskarte → echte Autopilot-Kaskade. Rechts: der Kontext, auf den sich der Assistent bezieht, plus „Ihre Daten sind geschützt".*
+
+### Posteingang
+
+![Posteingang](docs/design-prototype/08-posteingang.png)
+
+*Gebündelter Eingang aller Behörden-Briefe mit KI-Zusammenfassung in Klartext, Echtheits-Hinweis und der einen erforderlichen Handlung — statt Amtsdeutsch.*
+
+### Stammdaten
+
+![Stammdaten](docs/design-prototype/10-stammdaten.png)
+
+*Single Source of Truth: persönliche Daten, Kontakt, Identitätsdokumente — einmal gepflegt, überall genutzt. Jede Sektion zeigt, wer wann zugegriffen hat.*
+
+### Vorgänge
+
+![Vorgänge](docs/design-prototype/01-vorgaenge.png)
+
+*Laufende und abgeschlossene Verwaltungsprozesse in Übersicht — inklusive der Umzug-Autopilot-Timeline, in der jede Behörde nacheinander „empfängt".*
+
+### Dokumente
+
+![Dokumente](docs/design-prototype/02-dokumente.png)
+
+*QR-verifizierbarer Dokumenten-Tresor mit EUDI-Wallet-Export. Nachweise teilen, ohne das Original aus der Hand zu geben.*
+
+### Termine
+
+![Termine](docs/design-prototype/03-termine.png)
+
+*Alle Behörden-Termine an einem Ort, mit Kalender-Integration und dem jeweils nächsten Schritt. Vor-Ort oder Video.*
+
+### Steuer
+
+![Steuer](docs/design-prototype/04-steuer.png)
+
+*Vorausgefüllte Steuererklärung aus bereits bekannten Daten: voraussichtliche Erstattung, Bereichs-Übersicht, wichtige Fristen — Pre-Fill statt leerem Formular.*
+
+### Familie
+
+![Familie](docs/design-prototype/05-familie.png)
+
+*Gemeinsamer Haushalt, geteilte Vorgänge, Berechtigungen pro Person — wer welche Daten sehen und welche Vorgänge mitverwalten darf.*
+
+### Datenschutz
+
+![Datenschutz](docs/design-prototype/07-datenschutz.png)
+
+*Granulare Einwilligungs-Steuerung: wer welche Datenart auf welcher Rechtsgrundlage sieht, mit nachvollziehbarem Aktivitätsprotokoll und jederzeit widerruflicher Einwilligung.*
+
+---
+
+### Die zehn Oberflächen auf einen Blick
+
+| Oberfläche | Was sie tut | Der Autopilot-/KI-Hebel |
+|---|---|---|
+| **Dashboard** | Persönlicher Überblick: offene Briefe, Fristen, „heute zu tun" | KI-Priorisierung sortiert die heutigen Aufgaben nach Dringlichkeit |
+| **Assistent** | Konversationelle KI mit Tool-Use | **Der Held** — „ich ziehe um" → Bestätigung → echte Behörden-Kaskade |
+| **Posteingang** | Gebündelter Eingang aller Behörden-Briefe | KI-Zusammenfassung in Klartext + die *eine* erforderliche Handlung |
+| **Stammdaten** | Single Source of Truth für persönliche Daten | Einmal gepflegt, von jedem Vorgang automatisch genutzt |
+| **Vorgänge** | Laufende & abgeschlossene Prozesse | Autopilot-Timeline: jede Behörde „empfängt" nacheinander |
+| **Dokumente** | QR-verifizierbarer Tresor, EUDI-Export | Nachweise teilen ohne Herausgabe des Originals |
+| **Termine** | Alle Behörden-Termine, Kalender-Integration | Nächster-Schritt-Empfehlung pro Termin |
+| **Steuer** | Vorausgefüllte Steuererklärung | Pre-Fill aus bekannten Daten statt leerem Formular |
+| **Familie** | Gemeinsamer Haushalt, geteilte Vorgänge | Berechtigungen pro Person, Vorgänge gemeinsam verwalten |
+| **Datenschutz** | Granulare Einwilligungs-Steuerung | Wer sieht was, auf welcher Rechtsgrundlage — jederzeit widerruflich |
+
+## Glaubwürdigkeit (kein Nachgedanke)
+
+Diese Eigenschaften sind im Prototyp erstklassig behandelt, nicht aufgeklebt:
+
+- **Barrierefreiheit** — WCAG 2.1 AA + BITV 2.0 sind verpflichtend, nicht optional. Jeder Screen ist mit axe-core auditiert (0 kritische Verstöße) und Lighthouse-a11y > 95. Touch-Targets ≥ 44px, sichtbarer Fokus, `prefers-reduced-motion` respektiert, echte Landmarks und Heading-Hierarchie.
+- **Mehrsprachigkeit** — sechs Sprachen: Deutsch (Quelle, Sie-Form), Englisch, Russisch, Ukrainisch, **Arabisch (mit RTL-Audit)** und Türkisch. Strings nie hartkodiert, alle über `next-intl`.
+- **Privacy by Design** — jeder Screen mit personenbezogenen Daten zeigt, *was* verarbeitet wird, *durch wen* und *auf welcher Rechtsgrundlage*. Datenminimierung ist sichtbar: der Block-B-Versand beim Umzug läuft nur mit Einwilligung (Art. 6 Abs. 1 lit. a DSGVO) und ist jederzeit widerruflich.
+- **Realismus** — echte Behörden-Bezeichnungen, reale PLZ, korrekte Aktenzeichen- und Norm-Zitat-Formate. Wo hilfreich mit `[MOCK]` gekennzeichnet.
+
+## Tech-Stack
+
+| Schicht | Wahl |
+|---|---|
+| Framework | Next.js 15 (App Router) |
+| Sprache | TypeScript (strict) |
+| UI | Tailwind v4 + shadcn/ui + lucide-react |
+| Animation | framer-motion (sparsam) |
+| State | React Server Components + `useState`/`useReducer` |
+| Mock-Backend | TypeScript-Modul, simuliert REST, persistiert in `localStorage` |
+| KI-Assistent | `@anthropic-ai/sdk` + Claude Haiku 4.5, Prompt-Caching aktiv, Tool-Use für die Autopilot-Aktionen |
+| i18n | `next-intl` (6 Sprachen, inkl. AR-RTL) |
+| Testing | Playwright (e2e + a11y via `@axe-core/playwright`) |
+| Deployment | Vercel |
+
+## Für wen das ist — und die Bitte
+
+Dieser Prototyp richtet sich an Menschen, die die deutsche Verwaltung bürgerzentriert weiterdenken: **DigitalService**, **BMDS**, **Tech4Germany**, **GovTech Deutschland**, **GovStart** — und alle, die an der Schnittstelle von Verwaltung, UX und KI arbeiten.
+
+**Die Bitte:** Ich suche Rollen und Programme im deutschen GovTech-Ökosystem, in denen genau diese Art von bürgerzentriertem, glaubwürdigem Produkt-Denken gebraucht wird. Wenn dieser Entwurf eine Tür öffnet — lassen Sie uns sprechen.
+
+## Lokal starten
 
 ```bash
 pnpm install
-cp .env.example .env.local   # add ANTHROPIC_API_KEY
+cp .env.example .env.local   # ANTHROPIC_API_KEY ist OPTIONAL — siehe unten
 pnpm dev
 ```
 
-Open http://localhost:3000.
+Öffnen Sie http://localhost:3000 und melden Sie sich als eine der drei Personas an (Anna, Familie Schmidt, Mehmet).
 
-## Quick start (Claude Code orchestrator)
+**Zwei Hinweise für eine reibungslose Vorführung:**
 
-When you (the human) ask Claude to add or change something, the main thread routes the work through the agent pipeline:
+- **`ANTHROPIC_API_KEY` ist optional.** Ohne Key degradiert der Assistent würdevoll: statische Refusal-Texte und die Datenschutz-Hinweise funktionieren weiter; ein normaler KI-Turn zeigt sauber „Antwort konnte nicht geladen werden" statt abzustürzen. Für die volle Wow-Demo (natürlichsprachiger Umzug → Bestätigungskarte → Kaskade) wird ein gültiger Key benötigt.
+- **`?reliable=1`** an die URL hängen schaltet die simulierten Backend-Fehler (5%-Fehlerquote, künstliche Latenz) ab — empfohlen für Screencasts und Loom-Aufnahmen.
 
-```
-research-scout → domain-expert → concept-verifier → product-architect
-                                                          │
-                            ┌─────────────────────────────┤
-                            ▼                             ▼
-                   frontend-coder        mock-backend-coder        assistant-engineer
-                            │                             │                    │
-                            └──────────────┬──────────────┴────────────────────┘
-                                           ▼
-                              i18n-localizer + a11y-tester
-                                           │
-                                           ▼
-                                     code-reviewer
-```
+---
 
-Each agent runs on Claude Opus 4.7 and has scoped tools + a detailed role definition in `.claude/agents/<name>.md`.
+## In English (condensed)
 
-## Project layout
+**GovTech DE — public administration, rethought.**
 
-See `CLAUDE.md` for the full folder map.
+A citizen says **„ich ziehe um"** (*I'm moving*) **once**, and the system notifies every competent authority for them — registration office, tax office, vehicle registration, health insurer, broadcasting fee, employer — while they watch the confirmations arrive. **The autopilot is the hero**, not a faster form.
 
-## Documentation
+This is a **speculative-design prototype** for ~2027, built on Germany's planned DeutschlandID + EUDI Wallet + Deutschland-Stack. **All data is mocked; no real authority is integrated.** It looks realistic (real authority names, real postal codes, correct file-reference formats) but is entirely synthetic — a vision, not a product.
 
-- `CLAUDE.md` — project mission, stack, conventions (loaded into every agent's context)
-- `docs/PRD.md` — living product requirements
-- `docs/architecture.md` — runtime data flow, mock-backend contract, AI assistant execution model
-- `docs/personas.md` — Anna, Familie Schmidt, Mehmet Yıldız
-- `docs/WORKFLOW.md` — autonomous agent pipeline + escalation rules
-- `docs/research/` — research-scout outputs (one MD per topic)
-- `docs/domain/` — domain-expert outputs (Behörden process notes)
-- `docs/specs/` — product-architect outputs (one MD per feature)
-- `docs/reviews/` — concept-verifier + code-reviewer verdicts
-- `docs/a11y-reports/` — a11y-tester outputs
+**Ten surfaces, functional on a mock backend:** Dashboard (AI-prioritised „today's tasks"), **Assistent** (the conversational hero with tool use), Posteingang (unified authority inbox with plain-language AI summaries), Stammdaten (single source of truth), Vorgänge (process tracker + autopilot timeline), Dokumente (QR-verifiable vault + EUDI export), Termine (appointments), Steuer (pre-filled tax return), Familie (shared household), Datenschutz (granular consent control).
 
-## License
+**Credibility as a first-class concern:** WCAG 2.1 AA + BITV 2.0 (axe 0 critical, Lighthouse a11y > 95), six languages incl. **Arabic with RTL audit**, privacy-by-design (every personal-data screen shows what is processed, by whom, on what legal basis), and realistic German authority data throughout.
 
-MIT (to be added once first build lands).
+**Stack:** Next.js 15 (App Router) · TypeScript strict · Tailwind v4 + shadcn/ui · framer-motion · next-intl · `@anthropic-ai/sdk` + Claude Haiku 4.5 (prompt caching + tool use) · Playwright + axe.
+
+**Run it:** `pnpm install && pnpm dev`, open http://localhost:3000. `ANTHROPIC_API_KEY` is optional — the assistant degrades gracefully without it; append `?reliable=1` to disable simulated errors for screencasts.
+
+**Who it's for & the ask:** built for people rethinking German public administration around the citizen — DigitalService, BMDS, Tech4Germany, GovTech Deutschland, GovStart. I'm looking for roles and programs in the German GovTech ecosystem where this kind of citizen-first product thinking is needed. If this opens a door, let's talk.
+
+---
+
+## Lizenz
+
+MIT.
