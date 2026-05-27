@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { formatDistanceToNow, parseISO } from 'date-fns';
+import { formatDistance, parseISO } from 'date-fns';
 import { de as deLocale } from 'date-fns/locale';
 import {
   ArrowLeftRight,
@@ -73,11 +73,10 @@ export function ActivityTimelineRow({
 
   let relative = '';
   try {
-    relative = formatDistanceToNow(parseISO(entry.timestamp), {
+    relative = formatDistance(parseISO(entry.timestamp), parseISO(nowIso), {
       locale: deLocale,
       addSuffix: true,
     });
-    void nowIso;
   } catch {
     relative = formatDateDe(entry.timestamp);
   }

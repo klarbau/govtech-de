@@ -154,10 +154,7 @@ function buildDatenquellen(
   // Krankenkasse: einwilligungsbasiert, gekoppelt an Einwilligungs-Toggle.
   if (persona.krankenversicherung) {
     out.push({
-      behoerde_id:
-        persona.krankenversicherung.traeger === 'AOK Nordost'
-          ? 'aok-nordost'
-          : 'aok-nordost',
+      behoerde_id: 'aok-nordost',
       zugriffsart: 'einwilligungsbasiert',
       rechtsgrundlage: 'Art. 6 Abs. 1 lit. a DSGVO',
       aktualitaet: krankenkasseErteilt ? 'aktuell' : '—',
