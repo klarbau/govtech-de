@@ -9,32 +9,98 @@
     'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     'Segoe UI', Roboto, sans-serif;
 
-  --color-brand-50: oklch(0.98 0.01 250);
-  --color-brand-500: oklch(0.55 0.18 255);
-  --color-brand-600: oklch(0.5 0.2 255);
-  --color-brand-700: oklch(0.42 0.21 255);
+  --color-brand-50: oklch(0.96 0.02 262);
+  --color-brand-500: oklch(0.55 0.21 262);
+  --color-brand-600: oklch(0.51 0.21 262);
+  --color-brand-700: oklch(0.47 0.20 262);
 }
 
-/* design-system-v2 Phase 5a — additive design tokens.
-   Declared in :root (not @theme) so Tailwind v4 does not prune them; they are
-   consumed by CSS-Vars and Tailwind arbitrary-value syntax in Phase 5b/5c/5d/6a/6b/6c.
-   No existing token is renamed or overridden. */
+/* ─────────────────────────────────────────────────────────────────────────
+   redesign-foundation (2026-05-27) — ONE consolidated token set.
+
+   Supersedes the colour/surface/radius decisions of design-system-v2: the
+   warm-neutral `--ds-color-*` layer is replaced by the cool-neutral,
+   white-surface, single-cobalt-blue prototype system. Tokens are declared as
+   plain CSS variables in :root / .dark, then aliased onto the shadcn tokens
+   (--background/--foreground/--primary/--border/...) so existing utility
+   classes (bg-background, text-foreground, border-border, ...) inherit the new
+   system without a per-site flag-day.
+
+   Behavioural hard-lines from design-system-v2 (reduced-motion, touch targets,
+   no-glassmorphism, tabular-nums, print stylesheet, high-contrast) REMAIN in
+   force and live further down this file.
+   ───────────────────────────────────────────────────────────────────────── */
 :root {
-  /* Type-scale (premium-minimal, 5-px-rhythm line-heights) */
-  --ds-text-h1: 3rem;
-  --ds-text-h2: 2.25rem;
-  --ds-text-h3: 1.5rem;
-  --ds-text-h4: 1.1875rem;
+  /* ── Neutral scale (LIGHT) ──────────────────────────────────────────── */
+  --color-surface: #FFFFFF;            /* page + card body */
+  --color-surface-page: #F7F8FA;       /* page bg behind white cards */
+  --color-surface-raised: #FFFFFF;     /* raised card == white */
+  --color-surface-muted: #EEF1F5;      /* hover fills, tinted rows, inactive pills */
+  --color-border: #E3E7ED;             /* 1px hairlines */
+  --color-border-strong: #C7CDD6;      /* input border, emphasised dividers */
+  --color-text-primary: #1A1F2A;       /* headings, body (>= 14:1) */
+  --color-text-secondary: #4B5563;     /* secondary text, table headers (>= 7:1) */
+  --color-text-muted: #545C69;         /* captions, meta — HL-DS-7: 6.75:1 vs #FFF, 5.96:1 vs surface-muted */
+
+  /* ── Cobalt primary + states (LIGHT) ────────────────────────────────── */
+  --color-primary: #2563EB;
+  --color-primary-hover: #1D4FD8;
+  --color-primary-active: #1A45BE;
+  --color-primary-foreground: #FFFFFF;
+  --color-accent-soft: #EAF1FE;        /* active-nav pill, AI bubble bg, info chip */
+
+  /* ── Semantic (LIGHT) ───────────────────────────────────────────────── */
+  --color-success: #137034;            /* text/icon — 5.54:1 vs success-soft (was #15803D 4.49) */
+  --color-success-soft: #E7F6EC;
+  --color-warning: #B45309;
+  --color-warning-soft: #FEF3DA;
+  --color-warning-strong: #B45309;
+  --color-danger: #B91C1C;             /* text/icon — 5.50:1 vs danger-soft (was #DC2626 4.10) */
+  --color-danger-soft: #FCE8E8;
+  --color-info: #2563EB;
+  --color-info-soft: #EAF1FE;
+
+  /* ── Compatibility aliases for the retired --ds-color-* layer ────────── */
+  --ds-color-surface: var(--color-surface);
+  --ds-color-surface-raised: var(--color-surface-raised);
+  --ds-color-surface-muted: var(--color-surface-muted);
+  --ds-color-border: var(--color-border);
+  --ds-color-border-strong: var(--color-border-strong);
+  --ds-color-text-primary: var(--color-text-primary);
+  --ds-color-text-secondary: var(--color-text-secondary);
+  --ds-color-text-muted: var(--color-text-muted);
+  --ds-color-accent: var(--color-primary);
+  --ds-color-accent-soft: var(--color-accent-soft);
+  --ds-color-accent-foreground: var(--color-primary-foreground);
+  --ds-color-warning: var(--color-warning);
+  --ds-color-warning-soft: var(--color-warning-soft);
+  --ds-color-warning-strong: var(--color-warning-strong);
+  --ds-color-danger: var(--color-danger);
+  --ds-color-danger-soft: var(--color-danger-soft);
+  --ds-color-success: var(--color-success);
+  --ds-color-success-soft: var(--color-success-soft);
+  --ds-color-info-soft: var(--color-info-soft);
+
+  /* ── Radius ─────────────────────────────────────────────────────────── */
+  --radius: 0.75rem;        /* 12px — Card default */
+  --radius-card: 0.875rem;  /* 14px — Wallet/mDL card */
+
+  /* ── Shadow (near-flat, border-first) ───────────────────────────────── */
+  --shadow-none: none;
+  --shadow-card: 0 1px 2px 0 rgb(16 24 40 / 0.04);
+  --shadow-popover: 0 4px 12px -2px rgb(16 24 40 / 0.08);
+  --shadow-modal: 0 12px 32px -8px rgb(16 24 40 / 0.14);
+
+  /* design-system-v2 type-scale + spacing + motion tokens kept additively
+     (harmless; not prescribed for new screens). */
+  --ds-text-h1: 1.875rem;
+  --ds-text-h2: 1.125rem;
+  --ds-text-h3: 1rem;
   --ds-text-body: 1rem;
   --ds-text-small: 0.875rem;
-  --ds-line-h1: 1.083;
-  --ds-line-h2: 1.111;
-  --ds-line-h3: 1.25;
-  --ds-line-h4: 1.316;
-  --ds-line-body: 1.5;
-  --ds-line-small: 1.429;
+  --ds-line-body: 1.6;
+  --ds-line-small: 1.5;
 
-  /* Fixed 5-px-rhythm spacing (additive; Tailwind 4-pt default untouched) */
   --ds-space-fixed-5: 0.3125rem;
   --ds-space-fixed-10: 0.625rem;
   --ds-space-fixed-15: 0.9375rem;
@@ -45,7 +111,6 @@
   --ds-space-fixed-50: 3.125rem;
   --ds-space-fixed-60: 3.75rem;
 
-  /* Motion curves + durations */
   --ds-ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
   --ds-ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
   --ds-ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
@@ -55,162 +120,35 @@
   --ds-duration-base-plus: 400ms;
   --ds-duration-slow: 600ms;
   --ds-duration-page: 800ms;
-
-  /* design-system-v2 Phase 5b — OKLCH color tokens (additive, parallel to
-     shadcn-defaults). Values verbatim from spec § 3.3.
-     Hue 80° (warm-neutral) for Surface/Border; Hue 250° for cool text & accent.
-     Chroma <= 0.005 on Surface/Border (HL-DS-3). Single chromatic accent family
-     (Trust-Blau 252°), plus 3 status families (warning 80°, danger 27°, success
-     152°) and info-soft (245°) for V1.2 Föderalismus-Disclaimer (HL-DS-14).
-     Existing shadcn tokens (--background, --foreground, --muted-foreground,
-     --primary, etc.) are NOT renamed or overridden. */
-
-  /* Surface (warm-neutral, Chroma <= 0.004) */
-  --ds-color-surface: oklch(100% 0 0);
-  --ds-color-surface-raised: oklch(98% 0.002 80);
-  --ds-color-surface-muted: oklch(95% 0.003 80);
-
-  /* Border (warm-neutral) */
-  --ds-color-border: oklch(86% 0.004 80);
-  --ds-color-border-strong: oklch(65% 0.005 80);
-
-  /* Text (cool-neutral, Hue 250° for crisp legibility on warm-surface).
-     text-secondary L=0.45 matches the V1.5.1 --muted-foreground hardening
-     (5.63:1 light contrast floor against surface) — NOT to be relaxed (HL-DS-7).
-     text-muted L=0.55 is Spec § 3.3 verbatim, intended for disabled-state /
-     low-stakes captions; its 4.84:1 contrast meets BITV AA but NOT the V1.5.1
-     floor, so it MUST NOT be used for body or essential captions. */
-  --ds-color-text-primary: oklch(20% 0.005 250);
-  --ds-color-text-secondary: oklch(45% 0.005 250);
-  --ds-color-text-muted: oklch(55% 0.015 250);
-
-  /* Accent — Trust-Blau, single chromatic family (HL-DS-3) */
-  --ds-color-accent: oklch(40% 0.12 252);
-  --ds-color-accent-soft: oklch(95% 0.025 252);
-  --ds-color-accent-foreground: oklch(100% 0 0);
-
-  /* Status families (3 — HL-DS-3) */
-  --ds-color-warning: oklch(55% 0.13 80);
-  --ds-color-warning-soft: oklch(97% 0.04 90);
-  --ds-color-danger: oklch(48% 0.18 27);
-  --ds-color-success: oklch(45% 0.12 152);
-
-  /* Föderalismus-Info (V1.2 pattern — HL-DS-14) */
-  --ds-color-info-soft: oklch(94% 0.018 245);
 }
 
-/* design-system-v2 Phase 5b — Dark-Mode OKLCH tokens.
-   Activated via `prefers-color-scheme: dark` (Research § "Dark Mode — Option B")
-   AND via `.dark` class (compatibility with next-themes ThemeToggle).
-   V1.5.1 floor for --ds-color-text-muted on dark: 5.53:1 against --ds-color-surface. */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --ds-color-surface: oklch(15% 0.004 250);
-    --ds-color-surface-raised: oklch(20% 0.005 250);
-    --ds-color-surface-muted: oklch(24% 0.006 250);
-    --ds-color-border: oklch(32% 0.008 250);
-    --ds-color-border-strong: oklch(45% 0.01 250);
-    --ds-color-text-primary: oklch(94% 0.004 250);
-    --ds-color-text-secondary: oklch(78% 0.005 250);
-    --ds-color-text-muted: oklch(64% 0.012 250);
-    --ds-color-accent: oklch(72% 0.13 252);
-    --ds-color-accent-soft: oklch(32% 0.05 252);
-    --ds-color-accent-foreground: oklch(15% 0.004 250);
-    --ds-color-warning: oklch(78% 0.13 80);
-    --ds-color-warning-soft: oklch(28% 0.05 80);
-    --ds-color-danger: oklch(72% 0.13 27);
-    --ds-color-success: oklch(76% 0.11 152);
-    --ds-color-info-soft: oklch(28% 0.04 245);
-  }
-}
-
+/* ── Neutral scale + cobalt + semantic (DARK) ───────────────────────────── */
 .dark {
-  --ds-color-surface: oklch(15% 0.004 250);
-  --ds-color-surface-raised: oklch(20% 0.005 250);
-  --ds-color-surface-muted: oklch(24% 0.006 250);
-  --ds-color-border: oklch(32% 0.008 250);
-  --ds-color-border-strong: oklch(45% 0.01 250);
-  --ds-color-text-primary: oklch(94% 0.004 250);
-  --ds-color-text-secondary: oklch(78% 0.005 250);
-  --ds-color-text-muted: oklch(64% 0.012 250);
-  --ds-color-accent: oklch(72% 0.13 252);
-  --ds-color-accent-soft: oklch(32% 0.05 252);
-  --ds-color-accent-foreground: oklch(15% 0.004 250);
-  --ds-color-warning: oklch(78% 0.13 80);
-  --ds-color-warning-soft: oklch(28% 0.05 80);
-  --ds-color-danger: oklch(72% 0.13 27);
-  --ds-color-success: oklch(76% 0.11 152);
-  --ds-color-info-soft: oklch(28% 0.04 245);
-}
+  --color-surface: #1A1E27;
+  --color-surface-page: #13161D;
+  --color-surface-raised: #1A1E27;
+  --color-surface-muted: #242935;
+  --color-border: #2C3340;
+  --color-border-strong: #404A5B;
+  --color-text-primary: #ECEFF4;
+  --color-text-secondary: #B6BDC9;
+  --color-text-muted: #9AA2B0;          /* HL-DS-7: 6.49:1 vs surface, 5.66:1 vs surface-muted */
 
-/* design-system-v2 Phase 5b — OKLCH browser-fallback (HEX approximation).
-   Manual @supports block (no PostCSS plugin — keeps build-setup simple and
-   reviewable per Phase 5b plan). Triggered on Chromium <= 108, Edge Legacy and
-   institutional browsers that cannot parse oklch(). HEX values verbatim from
-   spec § 3.3 "Light hex" / "Dark hex" columns.
+  --color-primary: #5B8DEF;
+  --color-primary-hover: #4F82EC;
+  --color-primary-active: #3F74E6;
+  --color-primary-foreground: #0E1117;
+  --color-accent-soft: #152038;         /* primary-on-soft 5.02:1 (was #1C2C4A 4.31) */
 
-   Limitation: this is an approximation — modern browsers (>= 99% of users) get
-   the OKLCH path with perceptually-uniform tokens. The fallback ensures no
-   `transparent` / `unset` color renders on legacy chassis. */
-@supports not (color: oklch(0% 0 0)) {
-  :root {
-    --ds-color-surface: #FFFFFF;
-    --ds-color-surface-raised: #FAFAF8;
-    --ds-color-surface-muted: #F2F1ED;
-    --ds-color-border: #DCDAD3;
-    --ds-color-border-strong: #9F998D;
-    --ds-color-text-primary: #1A1D23;
-    --ds-color-text-secondary: #4A5060;
-    --ds-color-text-muted: #6B7280;
-    --ds-color-accent: #1A4D8F;
-    --ds-color-accent-soft: #E8F0FA;
-    --ds-color-accent-foreground: #FFFFFF;
-    --ds-color-warning: #946400;
-    --ds-color-warning-soft: #FFF8E1;
-    --ds-color-danger: #B3261E;
-    --ds-color-success: #2D6B3F;
-    --ds-color-info-soft: #E6EEF7;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --ds-color-surface: #0F1115;
-      --ds-color-surface-raised: #161A20;
-      --ds-color-surface-muted: #1C2128;
-      --ds-color-border: #2B2F38;
-      --ds-color-border-strong: #4A5060;
-      --ds-color-text-primary: #ECEEF2;
-      --ds-color-text-secondary: #B4BAC4;
-      --ds-color-text-muted: #8A93A0;
-      --ds-color-accent: #6FA8FF;
-      --ds-color-accent-soft: #1F3A5C;
-      --ds-color-accent-foreground: #0F1115;
-      --ds-color-warning: #E5B547;
-      --ds-color-warning-soft: #3A2D0E;
-      --ds-color-danger: #F2837C;
-      --ds-color-success: #6FCB8B;
-      --ds-color-info-soft: #1F2C3E;
-    }
-  }
-
-  .dark {
-    --ds-color-surface: #0F1115;
-    --ds-color-surface-raised: #161A20;
-    --ds-color-surface-muted: #1C2128;
-    --ds-color-border: #2B2F38;
-    --ds-color-border-strong: #4A5060;
-    --ds-color-text-primary: #ECEEF2;
-    --ds-color-text-secondary: #B4BAC4;
-    --ds-color-text-muted: #8A93A0;
-    --ds-color-accent: #6FA8FF;
-    --ds-color-accent-soft: #1F3A5C;
-    --ds-color-accent-foreground: #0F1115;
-    --ds-color-warning: #E5B547;
-    --ds-color-warning-soft: #3A2D0E;
-    --ds-color-danger: #F2837C;
-    --ds-color-success: #6FCB8B;
-    --ds-color-info-soft: #1F2C3E;
-  }
+  --color-success: #5CC98A;
+  --color-success-soft: #13351F;
+  --color-warning: #E3B341;
+  --color-warning-soft: #3A2C0E;
+  --color-warning-strong: #E3B341;
+  --color-danger: #F2837C;
+  --color-danger-soft: #3A1714;
+  --color-info: #5B8DEF;
+  --color-info-soft: #152038;
 }
 
 @layer base {
@@ -219,7 +157,7 @@
   }
 
   *:focus-visible {
-    outline: 2px solid var(--color-brand-600);
+    outline: 2px solid var(--color-primary);
     outline-offset: 2px;
   }
 
@@ -244,9 +182,8 @@
   }
 }
 
-/* design-system-v2 Phase 5a — tabular-nums utility for monospaced digits.
-   HL-DS-6 consumer sites (Aktenzeichen, FE-Nr, IBAN, AZR-ID, Renten-Nr, Frist-Daten,
-   Kfz-Kennzeichen) will apply this class in Phase 5b+; declared here for early availability. */
+/* HL-DS-6 — tabular figures for Aktenzeichen / Fristen / IBAN / AZR / FE-Nr /
+   Kennzeichen / Renten-Nr / Pagination-Zahlen. */
 .tabular-nums {
   font-variant-numeric: tabular-nums;
 }
@@ -256,6 +193,51 @@
     var(--font-sans);
   --font-sans:
     var(--font-sans);
+
+  /* Semantic colour tokens exposed as Tailwind utilities (bg-surface,
+     text-text-primary, border-border-strong, bg-accent-soft, text-success, …). */
+  --color-surface:
+    var(--color-surface);
+  --color-surface-page:
+    var(--color-surface-page);
+  --color-surface-raised:
+    var(--color-surface-raised);
+  --color-surface-muted:
+    var(--color-surface-muted);
+  --color-border-strong:
+    var(--color-border-strong);
+  --color-text-primary:
+    var(--color-text-primary);
+  --color-text-secondary:
+    var(--color-text-secondary);
+  --color-text-muted:
+    var(--color-text-muted);
+  --color-primary-hover:
+    var(--color-primary-hover);
+  --color-primary-active:
+    var(--color-primary-active);
+  --color-accent-soft:
+    var(--color-accent-soft);
+  --color-success:
+    var(--color-success);
+  --color-success-soft:
+    var(--color-success-soft);
+  --color-warning:
+    var(--color-warning);
+  --color-warning-soft:
+    var(--color-warning-soft);
+  --color-warning-strong:
+    var(--color-warning-strong);
+  --color-danger:
+    var(--color-danger);
+  --color-danger-soft:
+    var(--color-danger-soft);
+  --color-info:
+    var(--color-info);
+  --color-info-soft:
+    var(--color-info-soft);
+
+  /* shadcn alias bridge */
   --color-sidebar-ring:
     var(--sidebar-ring);
   --color-sidebar-border:
@@ -320,215 +302,219 @@
     var(--foreground);
   --color-background:
     var(--background);
+
   --radius-sm:
-    calc(var(--radius) * 0.6);
+    0.375rem;   /* 6px */
   --radius-md:
-    calc(var(--radius) * 0.8);
+    0.5rem;     /* 8px */
   --radius-lg:
-    var(--radius);
+    0.75rem;    /* 12px — standard card */
   --radius-xl:
-    calc(var(--radius) * 1.4);
+    var(--radius-card);  /* 14px — wallet card */
   --radius-2xl:
-    calc(var(--radius) * 1.8);
+    1rem;
   --radius-3xl:
-    calc(var(--radius) * 2.2);
+    1.25rem;
   --radius-4xl:
-    calc(var(--radius) * 2.6);
+    1.5rem;
+
+  --radius-full:
+    9999px;
+
+  --shadow-card:
+    var(--shadow-card);
+  --shadow-popover:
+    var(--shadow-popover);
+  --shadow-modal:
+    var(--shadow-modal);
 }
 
+/* ─────────────────────────────────────────────────────────────────────────
+   shadcn alias values — re-pointed at the consolidated --color-* token set.
+   LIGHT.
+   ───────────────────────────────────────────────────────────────────────── */
 :root {
   --background:
-    oklch(1 0 0);
+    var(--color-surface-page);
   --foreground:
-    oklch(0.145 0 0);
+    var(--color-text-primary);
   --card:
-    oklch(1 0 0);
+    var(--color-surface);
   --card-foreground:
-    oklch(0.145 0 0);
+    var(--color-text-primary);
   --popover:
-    oklch(1 0 0);
+    var(--color-surface);
   --popover-foreground:
-    oklch(0.145 0 0);
+    var(--color-text-primary);
   --primary:
-    oklch(0.205 0 0);
+    var(--color-primary);
   --primary-foreground:
-    oklch(0.985 0 0);
+    var(--color-primary-foreground);
   --secondary:
-    oklch(0.97 0 0);
+    var(--color-surface-muted);
   --secondary-foreground:
-    oklch(0.205 0 0);
+    var(--color-text-primary);
   --muted:
-    oklch(0.97 0 0);
+    var(--color-surface-muted);
   --muted-foreground:
-    oklch(0.45 0 0);
+    var(--color-text-muted);
   --accent:
-    oklch(0.97 0 0);
+    var(--color-surface-muted);
   --accent-foreground:
-    oklch(0.205 0 0);
+    var(--color-text-primary);
   --destructive:
-    oklch(0.577 0.245 27.325);
+    var(--color-danger);
   --destructive-foreground:
-    oklch(0.985 0 0);
+    #FFFFFF;
   --border:
-    oklch(0.922 0 0);
+    var(--color-border);
   --input:
-    oklch(0.922 0 0);
+    var(--color-border-strong);
   --ring:
-    oklch(0.708 0 0);
+    var(--color-primary);
   --chart-1:
-    oklch(0.87 0 0);
+    var(--color-primary);
   --chart-2:
-    oklch(0.556 0 0);
+    var(--color-success);
   --chart-3:
-    oklch(0.439 0 0);
+    var(--color-warning);
   --chart-4:
-    oklch(0.371 0 0);
+    var(--color-danger);
   --chart-5:
-    oklch(0.269 0 0);
-  --radius:
-    0.625rem;
+    var(--color-text-secondary);
   --sidebar:
-    oklch(0.985 0 0);
+    var(--color-surface);
   --sidebar-foreground:
-    oklch(0.145 0 0);
+    var(--color-text-primary);
   --sidebar-primary:
-    oklch(0.205 0 0);
+    var(--color-primary);
   --sidebar-primary-foreground:
-    oklch(0.985 0 0);
+    var(--color-primary-foreground);
   --sidebar-accent:
-    oklch(0.97 0 0);
+    var(--color-surface-muted);
   --sidebar-accent-foreground:
-    oklch(0.205 0 0);
+    var(--color-text-primary);
   --sidebar-border:
-    oklch(0.922 0 0);
+    var(--color-border);
   --sidebar-ring:
-    oklch(0.708 0 0);
+    var(--color-primary);
 }
 
+/* DARK — shadcn aliases inherit the .dark --color-* values declared above. */
 .dark {
   --background:
-    oklch(0.145 0 0);
+    var(--color-surface-page);
   --foreground:
-    oklch(0.985 0 0);
+    var(--color-text-primary);
   --card:
-    oklch(0.205 0 0);
+    var(--color-surface);
   --card-foreground:
-    oklch(0.985 0 0);
+    var(--color-text-primary);
   --popover:
-    oklch(0.205 0 0);
+    var(--color-surface);
   --popover-foreground:
-    oklch(0.985 0 0);
+    var(--color-text-primary);
   --primary:
-    oklch(0.922 0 0);
+    var(--color-primary);
   --primary-foreground:
-    oklch(0.205 0 0);
+    var(--color-primary-foreground);
   --secondary:
-    oklch(0.269 0 0);
+    var(--color-surface-muted);
   --secondary-foreground:
-    oklch(0.985 0 0);
+    var(--color-text-primary);
   --muted:
-    oklch(0.269 0 0);
+    var(--color-surface-muted);
   --muted-foreground:
-    oklch(0.78 0 0);
+    var(--color-text-muted);
   --accent:
-    oklch(0.269 0 0);
+    var(--color-surface-muted);
   --accent-foreground:
-    oklch(0.985 0 0);
+    var(--color-text-primary);
   --destructive:
-    oklch(0.704 0.191 22.216);
+    var(--color-danger);
   --destructive-foreground:
-    oklch(0.145 0 0);
+    #0E1117;
   --border:
-    oklch(1 0 0 / 10%);
+    var(--color-border);
   --input:
-    oklch(1 0 0 / 15%);
+    var(--color-border-strong);
   --ring:
-    oklch(0.556 0 0);
+    var(--color-primary);
   --chart-1:
-    oklch(0.87 0 0);
+    var(--color-primary);
   --chart-2:
-    oklch(0.556 0 0);
+    var(--color-success);
   --chart-3:
-    oklch(0.439 0 0);
+    var(--color-warning);
   --chart-4:
-    oklch(0.371 0 0);
+    var(--color-danger);
   --chart-5:
-    oklch(0.269 0 0);
+    var(--color-text-secondary);
   --sidebar:
-    oklch(0.205 0 0);
+    var(--color-surface);
   --sidebar-foreground:
-    oklch(0.985 0 0);
+    var(--color-text-primary);
   --sidebar-primary:
-    oklch(0.488 0.243 264.376);
+    var(--color-primary);
   --sidebar-primary-foreground:
-    oklch(0.985 0 0);
+    var(--color-primary-foreground);
   --sidebar-accent:
-    oklch(0.269 0 0);
+    var(--color-surface-muted);
   --sidebar-accent-foreground:
-    oklch(0.985 0 0);
+    var(--color-text-primary);
   --sidebar-border:
-    oklch(1 0 0 / 10%);
+    var(--color-border);
   --sidebar-ring:
-    oklch(0.556 0 0);
+    var(--color-primary);
 }
 
-/* design-system-v2 Phase 5e — Hochkontrast-Layer (BITV 2.0 § 1.4.6 AAA, ≥ 7:1).
-   Additiv; greift nur wenn das OS `prefers-contrast: more` signalisiert. Kein
-   UI-Toggle in V1. Greift sowohl auf shadcn-Tokens (`--foreground`,
-   `--border`, `--muted-foreground`, `--ring`) als auch auf Phase-5b-Aliase
-   (sobald gesetzt) ein. Quelle: Spec § 8 (verbatim aus Research). */
+/* design-system-v2 Phase 5e — High-contrast layer (BITV 2.0 § 1.4.6 AAA, >= 7:1).
+   Additive; only engages when the OS signals `prefers-contrast: more`. */
 @media (prefers-contrast: more) {
   :root {
-    /* shadcn-legacy tokens */
-    --foreground: oklch(0 0 0);
-    --card-foreground: oklch(0 0 0);
-    --popover-foreground: oklch(0 0 0);
-    --primary: oklch(0 0 0);
-    --secondary-foreground: oklch(0 0 0);
-    --accent-foreground: oklch(0 0 0);
-    --muted-foreground: oklch(0.30 0 0);
-    --border: oklch(0.40 0 0);
-    --input: oklch(0.40 0 0);
-    --ring: oklch(0.20 0 0);
-    --sidebar-foreground: oklch(0 0 0);
-    --sidebar-border: oklch(0.40 0 0);
-    --sidebar-ring: oklch(0.20 0 0);
+    --foreground: #000000;
+    --card-foreground: #000000;
+    --popover-foreground: #000000;
+    --primary: #0B3FB0;
+    --secondary-foreground: #000000;
+    --accent-foreground: #000000;
+    --muted-foreground: #2A2F38;
+    --border: #5B6472;
+    --input: #5B6472;
+    --ring: #0B3FB0;
+    --sidebar-foreground: #000000;
+    --sidebar-border: #5B6472;
+    --sidebar-ring: #0B3FB0;
 
-    /* Phase-5b --ds-color-* tokens (additive) */
-    --ds-color-text-primary: oklch(0% 0 0);
-    --ds-color-text-secondary: oklch(15% 0 0);
-    --ds-color-text-muted: oklch(30% 0 0);
-    --ds-color-border: oklch(40% 0 0);
-    --ds-color-border-strong: oklch(20% 0 0);
-    --ds-color-accent: oklch(28% 0.18 252);
-    --ds-color-warning: oklch(30% 0.15 80);
-    --ds-color-danger: oklch(30% 0.20 27);
-    --ds-color-success: oklch(30% 0.13 152);
+    --color-text-primary: #000000;
+    --color-text-secondary: #1A1F2A;
+    --color-text-muted: #2A2F38;
+    --color-border: #5B6472;
+    --color-border-strong: #2A2F38;
+    --color-primary: #0B3FB0;
   }
 
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --foreground: oklch(1 0 0);
-      --card-foreground: oklch(1 0 0);
-      --popover-foreground: oklch(1 0 0);
-      --primary: oklch(1 0 0);
-      --secondary-foreground: oklch(1 0 0);
-      --accent-foreground: oklch(1 0 0);
-      --muted-foreground: oklch(0.80 0 0);
-      --border: oklch(0.70 0 0);
-      --input: oklch(0.70 0 0);
-      --ring: oklch(0.85 0 0);
-      --sidebar-foreground: oklch(1 0 0);
-      --sidebar-border: oklch(0.70 0 0);
-      --sidebar-ring: oklch(0.85 0 0);
+  .dark {
+    --foreground: #FFFFFF;
+    --card-foreground: #FFFFFF;
+    --popover-foreground: #FFFFFF;
+    --primary: #9DBBFF;
+    --secondary-foreground: #FFFFFF;
+    --accent-foreground: #FFFFFF;
+    --muted-foreground: #D5DAE2;
+    --border: #8E97A6;
+    --input: #8E97A6;
+    --ring: #9DBBFF;
+    --sidebar-foreground: #FFFFFF;
+    --sidebar-border: #8E97A6;
+    --sidebar-ring: #9DBBFF;
 
-      --ds-color-text-primary: oklch(100% 0 0);
-      --ds-color-text-secondary: oklch(92% 0 0);
-      --ds-color-text-muted: oklch(80% 0 0);
-      --ds-color-border: oklch(70% 0 0);
-      --ds-color-border-strong: oklch(85% 0 0);
-      --ds-color-accent: oklch(85% 0.13 252);
-    }
+    --color-text-primary: #FFFFFF;
+    --color-text-secondary: #ECEFF4;
+    --color-text-muted: #D5DAE2;
+    --color-border: #8E97A6;
+    --color-border-strong: #D5DAE2;
+    --color-primary: #9DBBFF;
   }
 
   *:focus-visible {
@@ -538,14 +524,11 @@
 }
 
 /* design-system-v2 Phase 5e — Print-Stylesheet (HL-DS-13).
-   A4 portrait, monochrom, Geist (Hauptfont), tabular-nums für Aktenzeichen
-   / Fristen / IBAN, page-break-hygiene, URL-Anhängung an Links. Sidebar, Topbar,
-   StickyFristAction, Modals, Popover werden aus dem Print-Flow entfernt; der
-   Brief-Body und die AI-Zusammenfassung bleiben. Quelle: Spec § 7 (verbatim aus
-   Research § "Print-Stylesheet"). */
+   A4 portrait, monochrome, tabular-nums for Aktenzeichen / Fristen / IBAN,
+   page-break-hygiene, URL-appending on links. Sidebar, Topbar, StickyFristAction,
+   Modals, Popover removed from print flow; Brief-Body + AI-Summary remain. */
 @media print {
   :root {
-    /* shadcn-legacy tokens — monochrom */
     --background: #ffffff;
     --foreground: #000000;
     --card: #ffffff;
@@ -570,23 +553,27 @@
     --sidebar-border: #000000;
     --sidebar-ring: #000000;
 
-    /* Phase-5b --ds-color-* tokens — monochrom */
-    --ds-color-surface: #ffffff;
-    --ds-color-surface-raised: #ffffff;
-    --ds-color-surface-muted: #ffffff;
-    --ds-color-text-primary: #000000;
-    --ds-color-text-secondary: #000000;
-    --ds-color-text-muted: #444444;
-    --ds-color-border: #000000;
-    --ds-color-border-strong: #000000;
-    --ds-color-accent: #000000;
-    --ds-color-accent-soft: #ffffff;
-    --ds-color-accent-foreground: #ffffff;
-    --ds-color-warning: #000000;
-    --ds-color-warning-soft: #ffffff;
-    --ds-color-danger: #000000;
-    --ds-color-success: #000000;
-    --ds-color-info-soft: #ffffff;
+    --color-surface: #ffffff;
+    --color-surface-page: #ffffff;
+    --color-surface-raised: #ffffff;
+    --color-surface-muted: #ffffff;
+    --color-text-primary: #000000;
+    --color-text-secondary: #000000;
+    --color-text-muted: #444444;
+    --color-border: #000000;
+    --color-border-strong: #000000;
+    --color-primary: #000000;
+    --color-accent-soft: #ffffff;
+    --color-primary-foreground: #ffffff;
+    --color-warning: #000000;
+    --color-warning-soft: #ffffff;
+    --color-warning-strong: #000000;
+    --color-danger: #000000;
+    --color-danger-soft: #ffffff;
+    --color-success: #000000;
+    --color-success-soft: #ffffff;
+    --color-info: #000000;
+    --color-info-soft: #ffffff;
   }
 
   @page {
@@ -620,8 +607,6 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* Layout-Shell + Interaktionsflächen aus dem Print-Flow entfernen.
-     Brief-Body, AI-Summary, Frist-Chips und der Bescheid-Inhalt bleiben sichtbar. */
   nav,
   aside,
   [role="navigation"],
@@ -638,7 +623,6 @@
     display: block !important;
   }
 
-  /* Page-Break-Hygiene */
   .letter-card,
   .bescheid-section,
   .vorgang-step,
@@ -660,8 +644,6 @@
     widows: 3;
   }
 
-  /* Print-Footer (QR + Verify-URL) für die 3 Print-Routes; wird in
-     späteren Iterationen durch <PrintFooter /> Component bestückt. */
   .print-footer {
     position: fixed;
     bottom: 10mm;
@@ -679,7 +661,6 @@
     height: 22mm;
   }
 
-  /* Links: URL anhängen (außer für interne Anker und JS-Pseudo-Links). */
   a[href]::after {
     content: " (" attr(href) ")";
     font-size: 9pt;

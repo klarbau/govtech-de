@@ -79,13 +79,7 @@ export function EidConfirmDialog({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             {t('cta_cancel')}
           </Button>
-          {/* design-system-v2 Phase 5b — single canary call-site for the
-              new OKLCH-backed `ds-primary` accent variant + 44 px touch-target
-              floor (HL-DS-8). All other Buttons keep the default variant until
-              Phase 5d. */}
           <Button
-            variant="ds-primary"
-            size="ds"
             onClick={handleConfirm}
             disabled={pulsing}
           >

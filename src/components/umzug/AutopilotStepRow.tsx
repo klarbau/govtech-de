@@ -12,6 +12,8 @@ import {
 import type { ReactNode } from 'react';
 
 import { BehoerdenBadge } from '@/components/shared/BehoerdenBadge';
+import { IconCircle } from '@/components/shared/IconCircle';
+import { StatusBadge, type StatusVariant } from '@/components/shared/StatusBadge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type {
@@ -30,20 +32,27 @@ interface AutopilotStepRowProps {
   trailing?: ReactNode;
 }
 
+type IconCircleTone = 'neutral' | 'primary' | 'success' | 'warning' | 'danger';
+
 interface StatusViz {
   Icon: typeof CheckCircle2;
-  tone: string;
+  tone: IconCircleTone;
+  badge: StatusVariant;
   spin?: boolean;
 }
 
 const statusViz: Record<AutopilotStepStatus, StatusViz> = {
-  pending: { Icon: Clock, tone: 'text-muted-foreground' },
-  in_progress: { Icon: Loader2, tone: 'text-sky-600', spin: true },
-  needs_eid: { Icon: Fingerprint, tone: 'text-sky-600' },
-  pending_eid_confirmation: { Icon: Fingerprint, tone: 'text-sky-600' },
-  self_assigned: { Icon: Clock, tone: 'text-muted-foreground' },
-  confirmed: { Icon: CheckCircle2, tone: 'text-emerald-600' },
-  failed: { Icon: AlertCircle, tone: 'text-destructive' },
+  pending: { Icon: Clock, tone: 'neutral', badge: 'in_bearbeitung' },
+  in_progress: { Icon: Loader2, tone: 'primary', badge: 'laufend', spin: true },
+  needs_eid: { Icon: Fingerprint, tone: 'primary', badge: 'warten' },
+  pending_eid_confirmation: {
+    Icon: Fingerprint,
+    tone: 'primary',
+    badge: 'warten',
+  },
+  self_assigned: { Icon: Clock, tone: 'neutral', badge: 'in_bearbeitung' },
+  confirmed: { Icon: CheckCircle2, tone: 'success', badge: 'abgeschlossen' },
+  failed: { Icon: AlertCircle, tone: 'danger', badge: 'abgelaufen' },
 };
 
 export function AutopilotStepRow({
@@ -77,38 +86,37 @@ export function AutopilotStepRow({
       initial={reducedMotion ? false : { opacity: 0, y: 4 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: reducedMotion ? 0 : 0.25 }}
-      className="grid grid-cols-[24px_1fr_auto] items-start gap-3 border-b border-border/60 py-3 last:border-b-0"
+      className="grid grid-cols-[auto_1fr_auto] items-start gap-3 border-b border-border py-3 last:border-b-0"
     >
-      <span
-        className={cn('mt-0.5 flex size-6 items-center justify-center', viz.tone)}
-        aria-hidden="true"
-      >
-        <viz.Icon className={cn('size-4', viz.spin && 'animate-spin')} />
-      </span>
+      <IconCircle
+        icon={
+          <viz.Icon className={cn('size-4', viz.spin && 'animate-spin motion-reduce:animate-none')} />
+        }
+        tone={viz.tone}
+        size="md"
+        className="mt-0.5"
+      />
       <div className="flex flex-col gap-1">
         <BehoerdenBadge
           name={behoerde?.name_de ?? step.behoerde_id}
           kategorie={behoerde?.kategorie}
         />
-        <p className="ml-9 text-xs text-muted-foreground">{step.aktion}</p>
+        <p className="ml-9 text-xs text-text-secondary">{step.aktion}</p>
         {letter?.aktenzeichen ? (
-          <p className="ml-9 font-mono text-[11px] text-muted-foreground">
+          <p className="ml-9 font-mono text-[11px] text-text-muted tabular-nums">
             {t('aktenzeichen_label')}: {letter.aktenzeichen}
           </p>
         ) : null}
         {step.failure_reason ? (
-          <p className="ml-9 text-xs text-destructive" role="alert">
+          <p className="ml-9 text-xs text-danger" role="alert">
             {step.failure_reason}
           </p>
         ) : null}
       </div>
       <div className="flex flex-col items-end gap-1.5">
-        <span
-          className={cn('text-xs font-medium', viz.tone)}
-          aria-live="polite"
-        >
+        <span aria-live="polite">
           <span className="sr-only">Status: </span>
-          {t(`status.${statusKey}`)}
+          <StatusBadge variant={viz.badge}>{t(`status.${statusKey}`)}</StatusBadge>
         </span>
         {showEidCta ? (
           <Button size="sm" variant="default" onClick={onConfirmEid}>

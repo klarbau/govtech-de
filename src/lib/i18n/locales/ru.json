@@ -28,6 +28,37 @@
     "privacy": "Конфиденциальность",
     "accessibility": "Доступность"
   },
+  "error": {
+    "not_found": {
+      "code": "Ошибка 404",
+      "title": "Страница не найдена",
+      "description": "Эта страница не существует или была перемещена. Вернитесь на Dashboard, чтобы продолжить.",
+      "cta": "На Dashboard"
+    }
+  },
+  "shell": {
+    "sidebar": {
+      "authority": "Федеративная Республика Германия",
+      "help": "Помощь и контакты",
+      "logout": "Выйти",
+      "open": "Открыть навигацию",
+      "close": "Закрыть навигацию",
+      "nav_label": "Основная навигация"
+    },
+    "user": {
+      "menu_label": "Открыть меню пользователя",
+      "demo_name": "Анна Петрова",
+      "profile": "Профиль",
+      "switch_persona": "Сменить персону",
+      "logout": "Выйти"
+    },
+    "footer": {
+      "landmark": "Нижний колонтитул"
+    },
+    "sheet": {
+      "close": "Закрыть"
+    }
+  },
   "landing": {
     "eyebrow": "GovTech DE — концепт-демо",
     "title": "Госуслуги — переосмыслены",
@@ -39,6 +70,83 @@
     "persona_mehmet": "Мехмет Йылдыз, 34 года — Кёльн, планирует открыть дело",
     "cta_continue": "Открыть демо"
   },
+  "dashboard": {
+    "title": "Панель",
+    "subtitle": "Ваш личный обзор писем, сроков и процессов",
+    "greeting": {
+      "frau": "Здравствуйте, г-жа {nachname}",
+      "herr": "Здравствуйте, г-н {nachname}",
+      "neutral": "Здравствуйте, {vorname} {nachname}"
+    },
+    "demo_banner": {
+      "text": "Демо-режим · демо-данные. Вход через BundID бывает редко, поэтому Вам поможет обзор изменений.",
+      "disclaimer_link": "Показать примечание"
+    },
+    "diff": {
+      "title": "С момента Вашего последнего входа",
+      "neue_briefe": "новых писем",
+      "frist_naeher": "срок ближе",
+      "vorgang_abgeschlossen": "процесс завершён",
+      "last_login_tooltip": "На этом устройстве последний раз {datum}",
+      "first_login": "Первый вход на этом устройстве",
+      "no_changes": "Изменений с момента Вашего последнего входа нет"
+    },
+    "heute_zu_tun": {
+      "title": "Сегодня нужно сделать",
+      "sort_aria": "Сортировка рекомендованных действий",
+      "sort": {
+        "ki": "ИИ",
+        "frist": "Срок",
+        "behoerde": "Ведомство",
+        "vorgang": "Процесс"
+      },
+      "empty_title": "Всё сделано",
+      "empty_description": "В {jahr} году Вы завершили процессов: {count}.",
+      "sort_disabled_tooltip": "Нет действий для сортировки"
+    },
+    "priority": {
+      "fristnaehe": "Срок близко",
+      "folgevorgang": "Связанный процесс",
+      "manuell": "Приоритет вручную",
+      "termin": "Назначена встреча"
+    },
+    "tile": {
+      "fristen": {
+        "title": "Сроки",
+        "next": "Ближайший срок: {datum}",
+        "none": "Открытых сроков нет"
+      },
+      "posteingang": {
+        "title": "Входящие",
+        "value": "{ungelesen} непрочитано · {gesamt} всего"
+      },
+      "vorgaenge": {
+        "title": "Процессы",
+        "value": "{laufend} в работе"
+      },
+      "termine": {
+        "title": "Встречи",
+        "next": "Ближайшая встреча: {datum}",
+        "none": "Встреч не запланировано"
+      },
+      "datenschutz": {
+        "title": "Центр конфиденциальности",
+        "value": "{count} действий / 30 дней"
+      },
+      "stammdaten": {
+        "title": "Статус анкетных данных",
+        "value": "Проверить адрес",
+        "last_confirmed": "Последнее подтверждение: {datum}",
+        "never_confirmed": "Ещё не подтверждено"
+      },
+      "cta_ansehen": "Посмотреть",
+      "cta_oeffnen": "Открыть"
+    },
+    "error": {
+      "load": "Не удалось загрузить панель."
+    },
+    "loading": "Панель загружается"
+  },
   "common": {
     "cta": {
       "zurueck": "Назад",
@@ -46,6 +154,48 @@
       "bestaetigen": "Подтвердить",
       "abbrechen": "Отмена",
       "erneut_versuchen": "Повторить"
+    },
+    "filter": "Фильтр",
+    "filter_active": "Фильтров активно: {count}",
+    "search": "Поиск",
+    "all": "Все",
+    "show_all": "Показать все",
+    "actions": {
+      "close": "Закрыть"
+    },
+    "pagination": {
+      "label": "Навигация по страницам",
+      "range": "{from}–{to} из {total}",
+      "per_page": "{count} на странице",
+      "prev": "Предыдущая страница",
+      "next": "Следующая страница",
+      "page": "Страница {page}"
+    },
+    "context_chip": {
+      "prototype": "Прототип · демо-данные",
+      "speculative": "Перспективная демо-функция"
+    },
+    "empty": {
+      "default_title": "Нет записей",
+      "default_description": "Здесь пока ничего нет."
+    },
+    "status": {
+      "laufend": "В работе",
+      "neu": "Новое",
+      "verifiziert": "Верифицировано",
+      "bestaetigt": "Подтверждено",
+      "aktiv": "Активно",
+      "geprueft": "Проверено",
+      "erledigt": "Готово",
+      "abgeschlossen": "Завершено",
+      "eingereicht": "Подано",
+      "warten": "Ждёт Вас",
+      "in_bearbeitung": "В обработке",
+      "wird_geprueft": "На проверке",
+      "manuell": "Проверить вручную",
+      "vorlage": "Черновик",
+      "ablauf_bald": "Скоро истекает",
+      "abgelaufen": "Истекло"
     },
     "frist": {
       "gesetzlich": "законный срок",
@@ -214,6 +364,94 @@
       "open_cta": "Показать правовое основание"
     }
   },
+  "assistent": {
+    "title": "Ассистент",
+    "subtitle": "Задавайте вопросы, разбирайтесь в письмах и узнавайте следующие шаги",
+    "quick": {
+      "label": "Подсказки",
+      "erklaere_brief": "Объясните моё письмо",
+      "naechster_schritt": "Что делать дальше?",
+      "fehlende_unterlagen": "Каких документов не хватает?"
+    },
+    "log_label": "Разговор с ассистентом",
+    "composer": {
+      "label": "Сообщение ассистенту",
+      "placeholder": "Напишите сообщение …",
+      "send": "Отправить",
+      "attach": "Прикрепить файл",
+      "attach_disabled": "Прикрепление файлов в этой демоверсии отключено."
+    },
+    "message": {
+      "user_sent": "Отправлено",
+      "assistant_label": "Ассистент"
+    },
+    "empty": {
+      "title": "Чем я могу Вам помочь?",
+      "description": "Задайте вопрос или выберите подсказку."
+    },
+    "streaming": {
+      "typing": "Ассистент печатает …"
+    },
+    "error": {
+      "stream": "Не удалось загрузить ответ. Попробуйте ещё раз."
+    },
+    "greeting": {
+      "intro": "Здравствуйте, {vorname}, вот обзор Вашей текущей ситуации:",
+      "bullet_briefe": "{count, plural, =1 {1 непрочитанное письмо} other {# непрочитанных писем}} в почте.",
+      "bullet_frist": "Ближайший срок: {betreff} — {datum}.",
+      "bullet_keine": "Сейчас ничего срочного нет.",
+      "cta": "Чем я могу Вам помочь?"
+    },
+    "tool": {
+      "reading": "Ассистент работает …",
+      "running": "Выполняется …",
+      "done": "Готово",
+      "failed": "Не удалось",
+      "umzug_started": "Переезд запущен — ведомства сейчас оповещаются.",
+      "cta_kaskade": "Посмотреть каскад",
+      "label": {
+        "starte_umzug": "Запустить переезд",
+        "preview_umzug": "Подготовить переезд",
+        "lese_posteingang": "Прочитать почту",
+        "hole_vorgang": "Получить дело",
+        "hole_profil": "Получить основные данные",
+        "liste_termine": "Получить записи на приём",
+        "erklaere_brief": "Объяснить письмо",
+        "extrahiere_frist": "Извлечь срок",
+        "vorschlage_naechsten_schritt": "Предложить следующий шаг"
+      }
+    },
+    "umzug_confirm": {
+      "title": "Подтвердите переезд",
+      "subtitle": "Проверьте, пожалуйста, данные. Ведомства оповещаются только после Вашего подтверждения.",
+      "neue_adresse": "Новый адрес",
+      "stichtag": "Дата заселения",
+      "empfaenger_a": "Автоматически (закон о регистрации)",
+      "empfaenger_b": "С Вашего согласия",
+      "empfaenger_c": "Сделать самостоятельно",
+      "empfaenger_d": "С подтверждением через eID",
+      "empfaenger_leer": "—",
+      "cta_start": "Запустить переезд",
+      "cta_cancel": "Отмена",
+      "cancelled": "Отменено.",
+      "consent_note": "Получатели блока B оповещаются только с Вашего согласия (ст. 6 ч. 1 п. a GDPR / Art. 6 Abs. 1 lit. a DSGVO); согласие можно отозвать в любой момент."
+    },
+    "kontext": {
+      "title": "Контекст",
+      "subtitle": "Я опираюсь на:",
+      "posteingang": "Почта",
+      "posteingang_value": "{ungelesen, plural, =0 {нет непрочитанных} =1 {1 непрочитанное} other {# непрочитанных}}",
+      "dokumente": "Документы",
+      "dokumente_value": "{count, plural, =1 {1 в хранилище} other {# в хранилище}}",
+      "termine": "Записи на приём",
+      "termine_value": "{count, plural, =0 {ничего не запланировано} =1 {1 запланирована} other {# запланировано}}",
+      "stammdaten": "Основные данные",
+      "stammdaten_value": "Актуальны",
+      "datenschutz_title": "Ваши данные защищены",
+      "datenschutz_body": "Обрабатываются только данные, нужные для Вашего вопроса. Оригиналы остаются в официальных почтовых ящиках.",
+      "datenschutz_link": "Подробнее о защите данных"
+    }
+  },
   "placeholder": {
     "section_title": "{section}",
     "wip": "Этот раздел в подготовке.",
@@ -360,6 +598,11 @@
       "zurueck": "Назад во входящие",
       "not_found_title": "Письмо не найдено",
       "not_found_body": "Это письмо не существует или было удалено.",
+      "empty_select_title": "Выберите письмо из списка.",
+      "empty_select_body": "Слева — Ваши письма от ведомств. Выберите одно, чтобы увидеть разбор от ИИ, сроки и возможные шаги.",
+      "auth_badge": "Подлинность проверена",
+      "originaltext_auszug_title": "Фрагмент оригинального текста",
+      "originaltext_mehr": "Показать ещё",
       "originaltext_heading": "Оригинальный текст",
       "originaltext_authoritative_label": "юридически обязателен",
       "summary_heading": "Краткий разбор (ИИ)",
@@ -780,6 +1023,60 @@
       "renten_toast_error": "Не удалось перенести данные — пожалуйста, попробуйте ещё раз."
     }
   },
+  "vorgaenge": {
+    "title": "Дела",
+    "subtitle": "Текущие и завершённые дела с ведомствами — кратко",
+    "filter": {
+      "alle": "Все",
+      "laufend": "В процессе",
+      "warten": "Ждут Вас",
+      "abgeschlossen": "Завершены"
+    },
+    "filter_aria": "Фильтровать дела по статусу",
+    "card": {
+      "progress": "Готово {erledigt} из {gesamt}",
+      "progress_label": "Прогресс",
+      "cta_weiter": "Продолжить",
+      "cta_kaskade": "Посмотреть цепочку",
+      "cta_unterlagen": "Загрузить документы",
+      "cta_ansehen": "Открыть дело",
+      "unterlagen_fehlen": "Не хватает документов",
+      "umzug_subtitle": "Все ответственные ведомства уведомляются автоматически."
+    },
+    "stepper": {
+      "aria": "Ход дела «{titel}»",
+      "node_done": "{behoerde}: завершено",
+      "node_active": "{behoerde}: в обработке",
+      "node_pending": "{behoerde}: ожидает",
+      "node_failed": "{behoerde}: ошибка"
+    },
+    "rail": {
+      "title": "Что важно сейчас?",
+      "offene_vorgaenge": "Открытые дела",
+      "offene_vorgaenge_count": "{count, plural, =1 {1 открытое дело} few {# открытых дела} other {# открытых дел}}",
+      "frist_naht": "Приближается срок",
+      "frist_naht_days": "Срок через {tage, plural, =1 {1 день} few {# дня} other {# дней}}",
+      "warten_bestaetigung": "Ожидают подтверждения",
+      "warten_bestaetigung_count": "{count, plural, =1 {1 шаг открыт} few {# шага открыто} other {# шагов открыто}}",
+      "cta_ansehen": "Открыть",
+      "alle_ansehen": "Посмотреть все дела",
+      "empty": "Сейчас ничего срочного."
+    },
+    "empty": {
+      "title": "В этом разделе нет дел",
+      "body": "Сейчас в этом разделе нет дел.",
+      "cta_umzug": "Начать переезд"
+    },
+    "typ": {
+      "umzug": "Переезд",
+      "kindergeburt": "Рождение ребёнка",
+      "aufenthaltstitel-verlaengerung": "Продление вида на жительство",
+      "eheschliessung": "Заключение брака",
+      "gewerbeanmeldung": "Регистрация бизнеса",
+      "anmeldung": "Регистрация",
+      "sonstige": "Дело"
+    }
+  },
   "stammdaten": {
     "page": {
       "title": "Личные данные (Stammdaten)",
@@ -791,7 +1088,8 @@
       "sperre_error": "Не удалось активировать блокировку.",
       "iban_push_error": "Не удалось смоделировать IBAN-передачу.",
       "beschaeftigung_heading": "Занятость (агрегация только для чтения)",
-      "beschaeftigung_helper": "Эти поля ведутся вне реестра регистрации (DRV, больничная касса, налоговое управление) и отображаются здесь только в виде агрегата."
+      "beschaeftigung_helper": "Эти поля ведутся вне реестра регистрации (DRV, больничная касса, налоговое управление) и отображаются здесь только в виде агрегата.",
+      "subtitle": "Личные данные, контакты и подтверждения в одном месте."
     },
     "tab": {
       "aria_label": "Разделы личных данных",
@@ -873,7 +1171,9 @@
       "korrekturweg_label": "Путь исправления",
       "familie_preview": "{partner} партнёр(ов) / {kinder} ребёнок(детей)",
       "sperre_aktivieren": "Активировать блокировку (демо)",
-      "iban_push_trigger": "Смоделировать IBAN-передачу"
+      "iban_push_trigger": "Смоделировать IBAN-передачу",
+      "bearbeiten": "Изменить",
+      "verwalten": "Управлять"
     },
     "field": {
       "familienname": { "label": "Фамилия" },
@@ -1293,6 +1593,414 @@
         "familienkasse_followup": "Последующее решение теперь в почтовом ящике (демо)",
         "familienkasse_angebunden": "Familienkasse Berlin-Brandenburg подключена к BundID — настройка применена (демо)"
       }
+    },
+    "chip": {
+      "adresse_bestaetigt": "Адрес подтверждён",
+      "wallet_verbunden": "Wallet подключён",
+      "aufenthalt_gueltig": "Вид на жительство действителен",
+      "aufenthalt_ablauf_bald": "Срок ВНЖ скоро истекает"
+    },
+    "aenderungsprotokoll": {
+      "title": "Журнал изменений",
+      "show_all": "Показать все изменения"
+    },
+    "hoheit": {
+      "title": "Вы распоряжаетесь своими данными",
+      "cta": "Управлять настройками"
+    },
+    "card": {
+      "persoenliches_profil": "Личный профиль",
+      "versicherung_vorsorge": "Страхование и обеспечение",
+      "identitaetsdokumente": "Документы, удостоверяющие личность",
+      "familie_bezugspersonen": "Семья и близкие"
+    },
+    "cross_link": {
+      "familie": "К разделу «Семья»"
+    }
+  },
+  "dokumente": {
+    "title": "Документы",
+    "subtitle": "Ваше личное хранилище документов со справками и решениями ведомств.",
+    "search": {
+      "placeholder": "Поиск документов",
+      "aria_label": "Искать документы"
+    },
+    "kategorie": {
+      "ausweise": "Удостоверения",
+      "bescheide": "Решения ведомств (Bescheide)",
+      "familie": "Семья",
+      "vertraege": "Договоры"
+    },
+    "col": {
+      "dokument": "Документ",
+      "kategorie": "Категория",
+      "status": "Статус",
+      "daten": "Выдан / Действует до",
+      "aktionen": "Действия",
+      "nr_prefix": "№ "
+    },
+    "daten": {
+      "ausgestellt": "Выдан {datum}",
+      "gueltig_bis": "Действует до {datum}",
+      "unbefristet": "бессрочно"
+    },
+    "action": {
+      "ansehen": "Открыть «{name}»",
+      "herunterladen": "Скачать «{name}»",
+      "mehr": "Другие действия для «{name}»",
+      "menu_ansehen": "Открыть",
+      "menu_teilen": "Поделиться и использовать"
+    },
+    "schnellzugriff": {
+      "title": "Быстрый доступ",
+      "upload": "Загрузить документ",
+      "ordner": "Новая папка",
+      "vorlagen": "Шаблоны",
+      "papier": "Подать бумажный документ"
+    },
+    "zuletzt": {
+      "title": "Недавно добавленные"
+    },
+    "teilen": {
+      "title": "Поделиться и использовать",
+      "hint": "Документы можно проверить по QR-коду и экспортировать в кошелёк EUDI (EUDI Wallet).",
+      "cta": "Использовать документ"
+    },
+    "preview": {
+      "title": "Предпросмотр документа",
+      "qr_label": "QR-код для проверки",
+      "eudi_yes": "Можно экспортировать в кошелёк EUDI (EUDI Wallet)",
+      "eudi_no": "Экспорт в EUDI недоступен",
+      "aussteller": "Выдавшее ведомство",
+      "nr_label": "Номер документа",
+      "ausgestellt_label": "Дата выдачи",
+      "gueltig_bis_label": "Действует до"
+    },
+    "empty": {
+      "title": "Пока нет документов",
+      "filter_title": "Нет документов для этого фильтра",
+      "filter_description": "Выберите другую категорию или поисковый запрос."
+    },
+    "error": "Не удалось загрузить документы.",
+    "demo_action_toast": "Демо-функция — в этом прототипе не реализована.",
+    "filter": {
+      "sort_label": "Сортировать по",
+      "sort_name": "Имя (А–Я)",
+      "sort_ausgestellt": "Дата выдачи (сначала новые)",
+      "sort_gueltig": "Срок действия (сначала истекающие)",
+      "status_label": "Статус"
+    }
+  },
+  "termine": {
+    "title": "Приёмы и сроки",
+    "subtitle": "Приёмы в ведомствах, напоминания и записи — в одном месте.",
+    "calendar": {
+      "prev": "Предыдущий месяц",
+      "next": "Следующий месяц",
+      "today": "Сегодня",
+      "label": "Календарь на месяц",
+      "weekday_long": {
+        "mo": "Понедельник",
+        "di": "Вторник",
+        "mi": "Среда",
+        "do": "Четверг",
+        "fr": "Пятница",
+        "sa": "Суббота",
+        "so": "Воскресенье"
+      },
+      "weekday_short": {
+        "mo": "Пн",
+        "di": "Вт",
+        "mi": "Ср",
+        "do": "Чт",
+        "fr": "Пт",
+        "sa": "Сб",
+        "so": "Вс"
+      },
+      "has_events": "{count, plural, =1 {1 приём} few {# приёма} many {# приёмов} other {# приёма}}",
+      "day_aria": "{datum}{events}",
+      "day_events_suffix": " — {count, plural, =1 {1 приём} few {# приёма} many {# приёмов} other {# приёма}}"
+    },
+    "filter": {
+      "title": "Фильтр",
+      "behoerdentermine": "Приёмы в ведомствах",
+      "erinnerungen": "Напоминания и сроки",
+      "buchungen": "Записи",
+      "abgeschlossen": "Завершённые"
+    },
+    "naechste": {
+      "title": "Ближайшие приёмы"
+    },
+    "weitere": {
+      "title": "Другие приёмы и напоминания"
+    },
+    "card": {
+      "buchungsreferenz": "Номер записи {ref}",
+      "ics": "Экспорт ICS",
+      "ics_aria": "Экспортировать приём «{betreff}» в ICS",
+      "details": "Подробности",
+      "details_anzeigen": "Показать подробности"
+    },
+    "naechster_schritt": {
+      "title": "Следующий шаг"
+    },
+    "vorbereitung": {
+      "title": "Хорошо подготовьтесь к приёму",
+      "reisepass": "Возьмите загранпаспорт",
+      "alter_titel": "Возьмите прежний вид на жительство (Aufenthaltstitel)",
+      "biometrie": "Возьмите биометрическое фото на паспорт",
+      "gebuehr": "Подготовьте сбор за оформление",
+      "meldung": "Возьмите подтверждение от арендодателя (Wohnungsgeberbestätigung)"
+    },
+    "fristen": {
+      "title": "Сроки — кратко",
+      "in_tagen": "Через {count, plural, =0 {срок сегодня} =1 {1 день} few {# дня} many {# дней} other {# дня}}",
+      "ueberfaellig": "просрочено"
+    },
+    "ort": {
+      "video": "Приём по видео",
+      "telefon": "Приём по телефону",
+      "praesenz": "Лично"
+    },
+    "empty": {
+      "title": "Нет приёмов",
+      "description": "У Вас сейчас нет предстоящих приёмов.",
+      "filter_title": "Нет приёмов по этому выбору",
+      "naechster_schritt": "Выберите приём, чтобы увидеть подробности."
+    },
+    "error": "Не удалось загрузить приёмы."
+  },
+  "steuer": {
+    "title": "Налоги",
+    "subtitle": "Предзаполненная налоговая декларация на основе уже известных данных.",
+    "hero": {
+      "steuerjahr": "Налоговый год {jahr}",
+      "entwurf_badge": "Черновик",
+      "erstattung_label": "Ожидаемый возврат",
+      "erstattung_aria": "Ожидаемый возврат {betrag}",
+      "nachzahlung_label": "Ожидаемая доплата",
+      "nachzahlung_aria": "Ожидаемая доплата {betrag}",
+      "datenquellen_label": "Источники данных"
+    },
+    "quelle": {
+      "lohnsteuer": "Подоходный налог с зарплаты (Lohnsteuer)",
+      "kind": "Ребёнок",
+      "krankenkasse": "Больничная касса (Krankenkasse)",
+      "bekannt": "Уже известные данные",
+      "herkunft": "от {herkunft}"
+    },
+    "fortschritt": {
+      "title": "Ход выполнения",
+      "geprueft": "Данные проверены",
+      "ergaenzen": "Добавить подтверждающие документы",
+      "abgabe": "Готово к подаче",
+      "schritt_aria": "Шаг {n} из 3: {label}",
+      "status_done": "завершено",
+      "status_active": "активно",
+      "status_pending": "не начато"
+    },
+    "bereiche": {
+      "title": "Обзор налоговых разделов"
+    },
+    "col": {
+      "bereich": "Раздел",
+      "betrag": "Сумма",
+      "status": "Статус",
+      "aktion": "Действие"
+    },
+    "status": {
+      "geprueft": "Проверено",
+      "ergaenzen": "Дополнить",
+      "nicht_vorhanden": "Отсутствует"
+    },
+    "aktion": {
+      "ansehen": "Просмотреть",
+      "ergaenzen": "Дополнить",
+      "hinzufuegen": "Добавить",
+      "ansehen_aria": "Просмотреть раздел «{bereich}»",
+      "ergaenzen_aria": "Добавить документы для раздела «{bereich}»",
+      "hinzufuegen_aria": "Добавить раздел «{bereich}»"
+    },
+    "bereich": {
+      "einkommen": "Доходы от работы по найму",
+      "werbungskosten": "Расходы, связанные с работой (Werbungskosten)",
+      "vorsorge": "Расходы на социальное обеспечение (Vorsorgeaufwendungen)",
+      "kinder": "Дети",
+      "aussergewoehnlich": "Чрезвычайные расходы (außergewöhnliche Belastungen)",
+      "sonderausgaben": "Особые расходы (Sonderausgaben)"
+    },
+    "fristen": {
+      "title": "Важные сроки"
+    },
+    "frist": {
+      "abgabe": "Срок подачи декларации за {jahr}",
+      "einspruch": "Срок возражения по последнему уведомлению",
+      "in_tagen": "Через {count, plural, =0 {сегодня} one {# день} few {# дня} many {# дней} other {# дня}}",
+      "ueberfaellig": "просрочено"
+    },
+    "nachweise": {
+      "title": "Использованные документы"
+    },
+    "datenschutz": {
+      "title": "Уведомление о защите данных",
+      "verarbeitet_label": "Обрабатываемые данные",
+      "daten": {
+        "lohn": "Данные о зарплате и доходах",
+        "kv": "Взносы на медицинское страхование",
+        "kind": "Данные о детях (пособие на детей)"
+      },
+      "rechtsgrundlage_label": "Правовое основание",
+      "empfaenger_label": "Получатель",
+      "minimierung_hint": "Обрабатываются только те данные, которые необходимы для налоговой декларации.",
+      "mehr": "Подробнее о защите данных"
+    },
+    "empty": {
+      "title": "Черновик декларации отсутствует",
+      "description": "За этот налоговый год предзаполненных данных пока нет."
+    },
+    "error": "Не удалось загрузить обзор налогов.",
+    "retry": "Повторить",
+    "demo_action_toast": "Демо-функция — добавление документов в этом прототипе не предусмотрено.",
+    "alle_bereiche": "Показать все разделы",
+    "weniger_bereiche": "Показать меньше"
+  },
+  "datenschutz": {
+    "page": {
+      "title": "Защита данных",
+      "subtitle": "Обзор обращений к данным, согласий и административных дел"
+    },
+    "vision_banner": {
+      "heading": "Видение 2027",
+      "title": "Видение 2027",
+      "body": "Эта панель объединяет прозрачность и управление защитой Ваших данных. В реальном мире сегодня эти функции пока распределены между несколькими ведомствами.",
+      "dismiss": "Закрыть уведомление о видении 2027"
+    },
+    "aktivitaet": {
+      "title": "Последние действия",
+      "show_all": "Показать все действия",
+      "show_less": "Показать меньше",
+      "empty": "Действий пока не зафиксировано."
+    },
+    "activity": {
+      "typ": {
+        "uebermittlung": "Передача",
+        "eingang": "Поступление",
+        "app": "Действие в приложении",
+        "vision": "Видение"
+      },
+      "brief_geoeffnet": "Письмо открыто",
+      "ki_zusammenfassung": "Создана ИИ-сводка",
+      "adresse_uebermittelt": "Адрес передан в ведомство",
+      "dokument_geladen": "Документ скачан",
+      "einwilligung_erteilt": "Согласие предоставлено"
+    },
+    "einwilligungen": {
+      "title": "Согласия",
+      "subtitle": "Вы решаете, каким ведомствам разрешён доступ к Вашим данным",
+      "krankenkasse": "Больничная касса (Krankenkasse)",
+      "bank": "Банк",
+      "arbeitgeber": "Работодатель",
+      "weitere_dienste": "Прочие службы",
+      "ein": "Вкл.",
+      "aus": "Выкл.",
+      "rechtsgrundlage_label": "Правовое основание",
+      "switch_aria": "Согласие: {empfaenger}",
+      "announce_ein": "Согласие «{empfaenger}» включено",
+      "announce_aus": "Согласие «{empfaenger}» выключено"
+    },
+    "quellen": {
+      "title": "Источники данных и получатели",
+      "col_stelle": "Ведомство",
+      "col_zugriffsart": "Тип доступа",
+      "col_aktualitaet": "Актуальность",
+      "automatisch": "автоматическая синхронизация",
+      "einwilligungsbasiert": "на основе согласия",
+      "aktuell": "актуально",
+      "show_all": "Показать всех получателей"
+    },
+    "kontrolle": {
+      "title": "Ваш контроль защиты данных",
+      "zugriffsprotokoll": "Журнал доступа",
+      "zugriffsprotokoll_desc": "Отследить все обращения к данным",
+      "datenexport": "Экспорт данных",
+      "datenexport_desc": "Заберите свои данные согласно ст. 20 GDPR (DSGVO)",
+      "einstellungen": "Настройки",
+      "einstellungen_desc": "Управление предпочтениями и блокировками",
+      "vision_hint": "Эта функция входит в видение 2027 данной демонстрации."
+    },
+    "log": {
+      "einwilligung_geaendert": "Согласие изменено"
+    },
+    "toast": {
+      "einwilligung_error": "Не удалось сохранить согласие."
+    },
+    "empty": {
+      "title": "Действий пока нет",
+      "description": "Как только данные будут обработаны, они появятся здесь."
+    },
+    "error": "Не удалось загрузить данные о защите данных.",
+    "retry": "Повторить"
+  },
+  "familie": {
+    "page": {
+      "title": "Семья",
+      "subtitle": "Домохозяйство, близкие люди и общие дела — на одном экране"
+    },
+    "haushalt": {
+      "title": "Моё домохозяйство",
+      "count": "{count} чел."
+    },
+    "rolle": {
+      "mutter": "Мать",
+      "vater": "Отец",
+      "partner": "Партнёр",
+      "kind": "Ребёнок",
+      "hauptperson": "Главное лицо"
+    },
+    "cta": {
+      "haushalt_verwalten": "Управлять домохозяйством"
+    },
+    "verwalten_dialog": {
+      "title": "Управлять домохозяйством",
+      "body": "Управление членами домохозяйства и правами представительства (Vertretungsrechte) — это видение этой демоверсии на 2027 год. Функция появится позже.",
+      "close": "Закрыть"
+    },
+    "vertretung_banner": {
+      "title": "Представительство",
+      "body": "Вы можете вести дела за членов своего домохозяйства как их представитель (Vertretung)."
+    },
+    "vorgaenge": {
+      "title": "Общие дела",
+      "kindergeld": "Пособие на детей (Kindergeld)",
+      "krankenkasse": "Медицинское страхование",
+      "kita": "Место в детском саду (Kita)",
+      "kita_traeger": "Учредитель детского сада (Kita-Träger)",
+      "betrifft": "Касается: {names}",
+      "show_all": "Показать все общие дела"
+    },
+    "nachweise": {
+      "title": "Подтверждения и полномочия",
+      "geburtsurkunde": "Свидетельство о рождении (Geburtsurkunde)",
+      "sorge_vollmacht": "Доверенность на опеку (Sorge-Vollmacht)",
+      "vertretungsrechte": "Права представительства (Vertretungsrechte)",
+      "verknuepfungen": "Связи"
+    },
+    "was_betrifft_wen": {
+      "title": "Кого что касается?",
+      "subtitle": "Обзор по каждому человеку",
+      "vorgaenge": "Дела",
+      "dokumente": "Документы",
+      "nachweise": "Подтверждения",
+      "vertretungen": "Представительства"
+    },
+    "sicher": {
+      "title": "Надёжно и защищённо",
+      "body": "Данные семьи обрабатываются только в необходимом объёме. Права представительства (Vertretungsrechte) — это видение этой демоверсии на 2027 год.",
+      "more": "Подробнее о защите данных"
+    },
+    "empty": {
+      "title": "Домохозяйство не указано",
+      "body": "Для этого профиля члены домохозяйства не зарегистрированы."
     }
   }
 }

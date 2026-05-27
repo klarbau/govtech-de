@@ -3,7 +3,6 @@
 import { useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 
-import { cn } from '@/lib/utils';
 import type {
   AutopilotStep,
   Behoerde,
@@ -29,13 +28,6 @@ const blockHeadingKey: Record<BlockTyp, string> = {
   B: 'umzug.preview.block_b.title',
   C: 'umzug.preview.block_c.title',
   D: 'umzug.preview.block_d.title',
-};
-
-const blockAccent: Record<BlockTyp, string> = {
-  A: 'border-l-emerald-500/60',
-  B: 'border-l-violet-500/60',
-  C: 'border-l-zinc-400/60',
-  D: 'border-l-sky-500/60',
 };
 
 export function AutopilotTimeline({
@@ -66,11 +58,11 @@ export function AutopilotTimeline({
           <section
             key={block}
             aria-labelledby={`run-block-${block}-title`}
-            className={cn('border-l-2 pl-4', blockAccent[block])}
+            className="border-l border-border pl-4"
           >
             <h2
               id={`run-block-${block}-title`}
-              className="pb-2 text-sm font-semibold uppercase tracking-wide text-foreground"
+              className="pb-2 text-sm font-semibold tracking-wide text-text-secondary"
             >
               {t(blockHeadingKey[block])}
             </h2>

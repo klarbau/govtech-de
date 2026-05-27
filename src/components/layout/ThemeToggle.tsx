@@ -29,7 +29,7 @@ export function ThemeToggle() {
   return (
     <Button
       variant="ghost"
-      size="icon-sm"
+      size="icon"
       onClick={() => setTheme(next)}
       aria-label={labels[next]}
       title={labels[current]}

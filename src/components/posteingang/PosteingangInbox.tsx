@@ -8,6 +8,7 @@ import { Inbox, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
+import { PageHeader } from '@/components/shared/PageHeader';
 import { PrototypeDisclaimer } from '@/components/shared/PrototypeDisclaimer';
 import { api } from '@/lib/mock-backend';
 import type { Behoerde, Letter, Vorgang } from '@/types';
@@ -20,6 +21,7 @@ import {
   type FilterKategorie,
 } from './FilterPopover';
 import { FilterSheet } from './FilterSheet';
+import { InlineLetterReader } from './InlineLetterReader';
 import { LetterCard } from './LetterCard';
 import { LetterListGroup } from './LetterListGroup';
 import { LetterListHeader } from './LetterListHeader';
@@ -95,6 +97,7 @@ export function PosteingangInbox({ initial }: PosteingangInboxProps) {
   const t = useTranslations('posteingang');
   const tInbox = useTranslations('posteingang.inbox');
   const tCommon = useTranslations('common.cta');
+  const tChip = useTranslations('common.context_chip');
   const searchParams = useSearchParams();
 
   const [letters, setLetters] = React.useState<Letter[]>(initial.letters);
@@ -109,7 +112,7 @@ export function PosteingangInbox({ initial }: PosteingangInboxProps) {
 
   const initialKategorien = React.useMemo(
     () =>
-      (parseListParam(searchParams.get(KATEGORIEN_PARAM)) as FilterKategorie[])
+      (parseListParam(searchParams?.get(KATEGORIEN_PARAM) ?? null) as FilterKategorie[])
         .map<FilterKategorie | null>((k) => {
           if (k === 'bund' || k === 'land' || k === 'kommunal' || k === 'sonstige') {
             return k;
@@ -124,7 +127,7 @@ export function PosteingangInbox({ initial }: PosteingangInboxProps) {
     [searchParams],
   );
 
-  const initialTab = (searchParams.get(TAB_PARAM) as View) ?? 'chronologisch';
+  const initialTab = (searchParams?.get(TAB_PARAM) as View | null) ?? 'chronologisch';
 
   const [kategorien, setKategorien] =
     React.useState<FilterKategorie[]>(initialKategorien);
@@ -135,6 +138,30 @@ export function PosteingangInbox({ initial }: PosteingangInboxProps) {
 
   const [vorgangModalLetter, setVorgangModalLetter] =
     React.useState<Letter | null>(null);
+
+  // 3-Pane (≥ lg): inline-Reader-Auswahl. < lg navigiert zu /posteingang/[id].
+  const [selectedLetterId, setSelectedLetterId] = React.useState<string | null>(
+    null,
+  );
+  const [selectionKey, setSelectionKey] = React.useState(0);
+  const [isWide, setIsWide] = React.useState(false);
+
+  React.useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const mq = window.matchMedia('(min-width: 1024px)');
+    const apply = () => setIsWide(mq.matches);
+    apply();
+    mq.addEventListener('change', apply);
+    return () => mq.removeEventListener('change', apply);
+  }, []);
+
+  const handleSelectLetter = React.useCallback((letter: Letter) => {
+    setSelectedLetterId(letter.id);
+    setSelectionKey((k) => k + 1);
+  }, []);
+
+  // Inline-Auswahl nur auf ≥ lg; sonst navigiert der Link zu /posteingang/[id].
+  const onSelectIfWide = isWide ? handleSelectLetter : undefined;
 
   // URL-Sync (kategorien, tab) — pushState ohne Scroll-Reset.
   React.useEffect(() => {
@@ -276,16 +303,17 @@ export function PosteingangInbox({ initial }: PosteingangInboxProps) {
       >
         {t('skip_link.zur_brief_liste')}
       </a>
-      <header className="flex flex-col gap-2">
-        <h1
-          id="posteingang-hero-title"
-          className="text-3xl font-semibold tracking-tight text-foreground"
-        >
-          {t('hero.title')}
-        </h1>
-        <p className="text-muted-foreground">{t('hero.subtitle')}</p>
+      <div className="flex flex-col gap-2">
+        <PageHeader
+          title={
+            <span id="posteingang-hero-title">{t('hero.title')}</span>
+          }
+          subtitle={t('hero.subtitle')}
+          contextChip={{ label: tChip('prototype') }}
+          className="mb-0"
+        />
         <RechtlicheHinweiseDetails />
-      </header>
+      </div>
 
       <div className="flex flex-col gap-5">
         <div className="flex flex-col gap-3">
@@ -358,6 +386,7 @@ export function PosteingangInbox({ initial }: PosteingangInboxProps) {
           </div>
         )}
 
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,400px)_1fr] lg:items-start">
         <div
           id="letter-list"
           role="region"
@@ -419,6 +448,9 @@ export function PosteingangInbox({ initial }: PosteingangInboxProps) {
                       {arr.map((l) => (
                         <LetterCard
                           key={l.id}
+                          variant="row"
+                          selected={selectedLetterId === l.id}
+                          onSelect={onSelectIfWide}
                           letter={l}
                           absender={behoerdenById[l.absender_behoerde_id]}
                           vorgangTitle={
@@ -444,6 +476,9 @@ export function PosteingangInbox({ initial }: PosteingangInboxProps) {
                   {grouped.andere.map((l) => (
                     <LetterCard
                       key={l.id}
+                      variant="row"
+                      selected={selectedLetterId === l.id}
+                      onSelect={onSelectIfWide}
                       letter={l}
                       absender={behoerdenById[l.absender_behoerde_id]}
                       vorgangTitle={
@@ -502,6 +537,19 @@ export function PosteingangInbox({ initial }: PosteingangInboxProps) {
               )}
             </div>
           )}
+        </div>
+
+        {/* Reader-Pane (≥ lg): Inline-Reader des gewählten Briefs. */}
+        <section
+          aria-label={t('list.region_label')}
+          className="hidden lg:block lg:sticky lg:top-20"
+        >
+          <InlineLetterReader
+            letterId={selectedLetterId}
+            selectionKey={selectionKey}
+            nowIso={nowIso}
+          />
+        </section>
         </div>
 
         <p className="rounded-lg border border-border bg-muted/40 px-3 py-2 text-xs leading-relaxed text-muted-foreground">

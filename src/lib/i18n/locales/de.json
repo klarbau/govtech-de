@@ -28,6 +28,37 @@
     "privacy": "Datenschutz",
     "accessibility": "Barrierefreiheit"
   },
+  "error": {
+    "not_found": {
+      "code": "Fehler 404",
+      "title": "Seite nicht gefunden",
+      "description": "Diese Seite existiert nicht oder wurde verschoben. Kehren Sie zum Dashboard zurück, um fortzufahren.",
+      "cta": "Zum Dashboard"
+    }
+  },
+  "shell": {
+    "sidebar": {
+      "authority": "Bundesrepublik Deutschland",
+      "help": "Hilfe & Kontakt",
+      "logout": "Abmelden",
+      "open": "Navigation öffnen",
+      "close": "Navigation schließen",
+      "nav_label": "Hauptnavigation"
+    },
+    "user": {
+      "menu_label": "Benutzermenü öffnen",
+      "demo_name": "Anna Petrov",
+      "profile": "Profil",
+      "switch_persona": "Persona wechseln",
+      "logout": "Abmelden"
+    },
+    "footer": {
+      "landmark": "Fußbereich"
+    },
+    "sheet": {
+      "close": "Schließen"
+    }
+  },
   "landing": {
     "eyebrow": "GovTech DE — Konzept-Demo",
     "title": "Verwaltung neu gedacht",
@@ -39,6 +70,83 @@
     "persona_mehmet": "Mehmet Yıldız, 34 — Köln, Gewerbe geplant",
     "cta_continue": "Demo öffnen"
   },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Ihr persönlicher Überblick über Briefe, Fristen und Vorgänge",
+    "greeting": {
+      "frau": "Guten Tag, Frau {nachname}",
+      "herr": "Guten Tag, Herr {nachname}",
+      "neutral": "Guten Tag, {vorname} {nachname}"
+    },
+    "demo_banner": {
+      "text": "Demo-Modus · Mock-Daten. Da ein BundID-Login selten vorkommt, hilft Ihnen die Diff-Ansicht.",
+      "disclaimer_link": "Disclaimer ansehen"
+    },
+    "diff": {
+      "title": "Seit Ihrem letzten Login",
+      "neue_briefe": "neue Briefe",
+      "frist_naeher": "Frist näher",
+      "vorgang_abgeschlossen": "Vorgang abgeschlossen",
+      "last_login_tooltip": "Auf diesem Gerät zuletzt am {datum}",
+      "first_login": "Erster Login auf diesem Gerät",
+      "no_changes": "Keine Änderungen seit Ihrem letzten Login"
+    },
+    "heute_zu_tun": {
+      "title": "Heute zu tun",
+      "sort_aria": "Sortierung der Aktionsempfehlungen",
+      "sort": {
+        "ki": "KI",
+        "frist": "Frist",
+        "behoerde": "Behörde",
+        "vorgang": "Vorgang"
+      },
+      "empty_title": "Alles erledigt",
+      "empty_description": "Sie haben {count} Vorgänge in {jahr} abgeschlossen.",
+      "sort_disabled_tooltip": "Keine Aktionen zum Sortieren"
+    },
+    "priority": {
+      "fristnaehe": "Fristnähe",
+      "folgevorgang": "Folgevorgang",
+      "manuell": "Manuell priorisiert",
+      "termin": "Termin steht"
+    },
+    "tile": {
+      "fristen": {
+        "title": "Fristen",
+        "next": "Nächste Frist: {datum}",
+        "none": "Keine offenen Fristen"
+      },
+      "posteingang": {
+        "title": "Posteingang",
+        "value": "{ungelesen} ungelesen · {gesamt} gesamt"
+      },
+      "vorgaenge": {
+        "title": "Vorgänge",
+        "value": "{laufend} laufend"
+      },
+      "termine": {
+        "title": "Termine",
+        "next": "Nächster Termin: {datum}",
+        "none": "Kein Termin geplant"
+      },
+      "datenschutz": {
+        "title": "Datenschutz-Cockpit",
+        "value": "{count} Aktivitäten / 30 Tage"
+      },
+      "stammdaten": {
+        "title": "Stammdaten-Status",
+        "value": "Adresse prüfen",
+        "last_confirmed": "Letzte Bestätigung: {datum}",
+        "never_confirmed": "Noch nicht bestätigt"
+      },
+      "cta_ansehen": "Ansehen",
+      "cta_oeffnen": "Öffnen"
+    },
+    "error": {
+      "load": "Das Dashboard konnte nicht geladen werden."
+    },
+    "loading": "Dashboard wird geladen"
+  },
   "common": {
     "cta": {
       "zurueck": "Zurück",
@@ -46,6 +154,48 @@
       "bestaetigen": "Bestätigen",
       "abbrechen": "Abbrechen",
       "erneut_versuchen": "Erneut versuchen"
+    },
+    "filter": "Filter",
+    "filter_active": "{count} Filter aktiv",
+    "search": "Suchen",
+    "all": "Alle",
+    "show_all": "Alle anzeigen",
+    "actions": {
+      "close": "Schließen"
+    },
+    "pagination": {
+      "label": "Seitennavigation",
+      "range": "{from}–{to} von {total}",
+      "per_page": "{count} pro Seite",
+      "prev": "Vorherige Seite",
+      "next": "Nächste Seite",
+      "page": "Seite {page}"
+    },
+    "context_chip": {
+      "prototype": "Prototyp · Mock-Daten",
+      "speculative": "Spekulatives Demo-Feature"
+    },
+    "empty": {
+      "default_title": "Keine Einträge",
+      "default_description": "Hier ist aktuell nichts vorhanden."
+    },
+    "status": {
+      "laufend": "Laufend",
+      "neu": "Neu",
+      "verifiziert": "Verifiziert",
+      "bestaetigt": "Bestätigt",
+      "aktiv": "Aktiv",
+      "geprueft": "Geprüft",
+      "erledigt": "Erledigt",
+      "abgeschlossen": "Abgeschlossen",
+      "eingereicht": "Eingereicht",
+      "warten": "Warten auf Sie",
+      "in_bearbeitung": "In Bearbeitung",
+      "wird_geprueft": "Wird geprüft",
+      "manuell": "Manuell prüfen",
+      "vorlage": "Vorlage",
+      "ablauf_bald": "Ablauf bald",
+      "abgelaufen": "Abgelaufen"
     },
     "frist": {
       "gesetzlich": "gesetzliche Frist",
@@ -217,6 +367,94 @@
       "open_cta": "Rechtsgrundlage anzeigen"
     }
   },
+  "assistent": {
+    "title": "Assistent",
+    "subtitle": "Fragen stellen, Briefe verstehen und nächste Schritte erkennen",
+    "quick": {
+      "label": "Vorschläge",
+      "erklaere_brief": "Erkläre meinen Brief",
+      "naechster_schritt": "Was ist als Nächstes zu tun?",
+      "fehlende_unterlagen": "Welche Unterlagen fehlen?"
+    },
+    "log_label": "Unterhaltung mit dem Assistenten",
+    "composer": {
+      "label": "Nachricht an den Assistenten",
+      "placeholder": "Schreiben Sie eine Nachricht …",
+      "send": "Senden",
+      "attach": "Datei anhängen",
+      "attach_disabled": "Datei-Anhang ist in dieser Demo deaktiviert."
+    },
+    "message": {
+      "user_sent": "Gesendet",
+      "assistant_label": "Assistent"
+    },
+    "empty": {
+      "title": "Wie kann ich Ihnen helfen?",
+      "description": "Stellen Sie eine Frage oder wählen Sie einen Vorschlag."
+    },
+    "streaming": {
+      "typing": "Assistent schreibt …"
+    },
+    "error": {
+      "stream": "Die Antwort konnte nicht geladen werden. Bitte erneut versuchen."
+    },
+    "greeting": {
+      "intro": "Hallo {vorname}, hier ein Überblick über Ihre aktuelle Situation:",
+      "bullet_briefe": "{count, plural, =1 {1 ungelesener Brief} other {# ungelesene Briefe}} im Posteingang.",
+      "bullet_frist": "Nächste Frist: {betreff} am {datum}.",
+      "bullet_keine": "Aktuell ist nichts Dringendes offen.",
+      "cta": "Womit kann ich Ihnen helfen?"
+    },
+    "tool": {
+      "reading": "Assistent arbeitet …",
+      "running": "Wird ausgeführt …",
+      "done": "Fertig",
+      "failed": "Fehlgeschlagen",
+      "umzug_started": "Umzug gestartet — die Behörden werden jetzt informiert.",
+      "cta_kaskade": "Kaskade ansehen",
+      "label": {
+        "starte_umzug": "Umzug starten",
+        "preview_umzug": "Umzug vorbereiten",
+        "lese_posteingang": "Posteingang lesen",
+        "hole_vorgang": "Vorgang abrufen",
+        "hole_profil": "Stammdaten abrufen",
+        "liste_termine": "Termine abrufen",
+        "erklaere_brief": "Brief erklären",
+        "extrahiere_frist": "Frist extrahieren",
+        "vorschlage_naechsten_schritt": "Nächsten Schritt vorschlagen"
+      }
+    },
+    "umzug_confirm": {
+      "title": "Umzug bestätigen",
+      "subtitle": "Bitte prüfen Sie die Angaben. Erst nach Ihrer Bestätigung werden Behörden informiert.",
+      "neue_adresse": "Neue Adresse",
+      "stichtag": "Einzugsdatum",
+      "empfaenger_a": "Automatisch (Meldegesetz)",
+      "empfaenger_b": "Mit Ihrer Einwilligung",
+      "empfaenger_c": "Von Ihnen selbst zu erledigen",
+      "empfaenger_d": "Mit eID-Bestätigung",
+      "empfaenger_leer": "—",
+      "cta_start": "Umzug starten",
+      "cta_cancel": "Abbrechen",
+      "cancelled": "Abgebrochen.",
+      "consent_note": "Block-B-Empfänger werden nur mit Ihrer Einwilligung informiert (Art. 6 Abs. 1 lit. a DSGVO); jederzeit widerruflich."
+    },
+    "kontext": {
+      "title": "Kontext",
+      "subtitle": "Ich beziehe mich auf:",
+      "posteingang": "Posteingang",
+      "posteingang_value": "{ungelesen, plural, =0 {keine ungelesen} =1 {1 ungelesen} other {# ungelesen}}",
+      "dokumente": "Dokumente",
+      "dokumente_value": "{count, plural, =1 {1 im Tresor} other {# im Tresor}}",
+      "termine": "Termine",
+      "termine_value": "{count, plural, =0 {keine geplant} =1 {1 geplant} other {# geplant}}",
+      "stammdaten": "Stammdaten",
+      "stammdaten_value": "Aktuell",
+      "datenschutz_title": "Ihre Daten sind geschützt",
+      "datenschutz_body": "Es werden nur die für Ihre Frage nötigen Daten verarbeitet. Originale bleiben in den amtlichen Postfächern.",
+      "datenschutz_link": "Mehr zu Datenschutz"
+    }
+  },
   "placeholder": {
     "section_title": "{section}",
     "wip": "Diese Sektion ist in Vorbereitung.",
@@ -363,6 +601,11 @@
       "zurueck": "Zurück zum Posteingang",
       "not_found_title": "Brief nicht gefunden",
       "not_found_body": "Dieser Brief existiert nicht oder wurde gelöscht.",
+      "empty_select_title": "Wählen Sie einen Brief aus der Liste.",
+      "empty_select_body": "Links sehen Sie Ihre Behörden-Briefe. Wählen Sie einen aus, um die KI-Erklärung, Fristen und mögliche Schritte zu sehen.",
+      "auth_badge": "Authentisch geprüft",
+      "originaltext_auszug_title": "Originaltext-Auszug",
+      "originaltext_mehr": "Mehr anzeigen",
       "originaltext_heading": "Originaltext",
       "originaltext_authoritative_label": "rechtsverbindlich",
       "summary_heading": "Zusammenfassung (KI)",
@@ -792,6 +1035,60 @@
       "renten_toast_error": "Übernahme fehlgeschlagen — bitte erneut versuchen."
     }
   },
+  "vorgaenge": {
+    "title": "Vorgänge",
+    "subtitle": "Laufende und abgeschlossene Behördenprozesse im Überblick",
+    "filter": {
+      "alle": "Alle",
+      "laufend": "Laufend",
+      "warten": "Warten auf Sie",
+      "abgeschlossen": "Abgeschlossen"
+    },
+    "filter_aria": "Vorgänge nach Status filtern",
+    "card": {
+      "progress": "{erledigt} von {gesamt} erledigt",
+      "progress_label": "Fortschritt",
+      "cta_weiter": "Weiter bearbeiten",
+      "cta_kaskade": "Kaskade ansehen",
+      "cta_unterlagen": "Unterlagen hochladen",
+      "cta_ansehen": "Vorgang ansehen",
+      "unterlagen_fehlen": "Unterlagen fehlen",
+      "umzug_subtitle": "Alle zuständigen Behörden werden automatisch informiert."
+    },
+    "stepper": {
+      "aria": "Fortschritt des Vorgangs {titel}",
+      "node_done": "{behoerde}: abgeschlossen",
+      "node_active": "{behoerde}: in Bearbeitung",
+      "node_pending": "{behoerde}: ausstehend",
+      "node_failed": "{behoerde}: fehlgeschlagen"
+    },
+    "rail": {
+      "title": "Was ist gerade wichtig?",
+      "offene_vorgaenge": "Offene Vorgänge",
+      "offene_vorgaenge_count": "{count, plural, =1 {1 offener Vorgang} other {# offene Vorgänge}}",
+      "frist_naht": "Frist nähert sich",
+      "frist_naht_days": "Frist in {tage, plural, =1 {1 Tag} other {# Tagen}}",
+      "warten_bestaetigung": "Warten auf Bestätigung",
+      "warten_bestaetigung_count": "{count, plural, =1 {1 Schritt offen} other {# Schritte offen}}",
+      "cta_ansehen": "Ansehen",
+      "alle_ansehen": "Alle Vorgänge ansehen",
+      "empty": "Aktuell ist nichts dringend."
+    },
+    "empty": {
+      "title": "Keine Vorgänge in dieser Ansicht",
+      "body": "In dieser Ansicht sind aktuell keine Vorgänge vorhanden.",
+      "cta_umzug": "Umzug starten"
+    },
+    "typ": {
+      "umzug": "Umzug",
+      "kindergeburt": "Geburt",
+      "aufenthaltstitel-verlaengerung": "Aufenthaltstitel verlängern",
+      "eheschliessung": "Eheschließung",
+      "gewerbeanmeldung": "Gewerbeanmeldung",
+      "anmeldung": "Anmeldung",
+      "sonstige": "Vorgang"
+    }
+  },
   "stammdaten": {
     "page": {
       "title": "Stammdaten",
@@ -803,7 +1100,8 @@
       "sperre_error": "Sperre konnte nicht aktiviert werden.",
       "iban_push_error": "IBAN-Push konnte nicht simuliert werden.",
       "beschaeftigung_heading": "Beschäftigung (Read-only-Aggregation)",
-      "beschaeftigung_helper": "Diese Felder werden außerhalb des Melderegisters geführt (DRV, Krankenkasse, Finanzamt) und sind hier nur als Aggregat sichtbar."
+      "beschaeftigung_helper": "Diese Felder werden außerhalb des Melderegisters geführt (DRV, Krankenkasse, Finanzamt) und sind hier nur als Aggregat sichtbar.",
+      "subtitle": "Persönliche Daten, Kontakte und Nachweise an einem Ort."
     },
     "tab": {
       "aria_label": "Stammdaten-Bereiche",
@@ -913,7 +1211,9 @@
       "korrekturweg_label": "Korrekturweg",
       "familie_preview": "{partner} Partner:in / {kinder} Kind(er)",
       "sperre_aktivieren": "Sperre aktivieren (Demo)",
-      "iban_push_trigger": "IBAN-Push simulieren"
+      "iban_push_trigger": "IBAN-Push simulieren",
+      "bearbeiten": "Bearbeiten",
+      "verwalten": "Verwalten"
     },
     "field": {
       "familienname": {
@@ -1697,6 +1997,414 @@
           }
         }
       }
+    },
+    "chip": {
+      "adresse_bestaetigt": "Adresse bestätigt",
+      "wallet_verbunden": "Wallet verbunden",
+      "aufenthalt_gueltig": "Aufenthalt gültig",
+      "aufenthalt_ablauf_bald": "Aufenthalt läuft bald ab"
+    },
+    "aenderungsprotokoll": {
+      "title": "Änderungsprotokoll",
+      "show_all": "Alle Änderungen anzeigen"
+    },
+    "hoheit": {
+      "title": "Sie haben die Hoheit über Ihre Daten",
+      "cta": "Einstellungen verwalten"
+    },
+    "card": {
+      "persoenliches_profil": "Persönliches Profil",
+      "versicherung_vorsorge": "Versicherung & Vorsorge",
+      "identitaetsdokumente": "Identitätsdokumente",
+      "familie_bezugspersonen": "Familie & Bezugspersonen"
+    },
+    "cross_link": {
+      "familie": "Zu Familie"
+    }
+  },
+  "dokumente": {
+    "title": "Dokumente",
+    "subtitle": "Ihr persönlicher Dokumentenspeicher mit Nachweisen und Bescheiden.",
+    "search": {
+      "placeholder": "Suche nach Dokumenten",
+      "aria_label": "Dokumente durchsuchen"
+    },
+    "kategorie": {
+      "ausweise": "Ausweise",
+      "bescheide": "Bescheide",
+      "familie": "Familie",
+      "vertraege": "Verträge"
+    },
+    "col": {
+      "dokument": "Dokument",
+      "kategorie": "Kategorie",
+      "status": "Status",
+      "daten": "Ausgestellt / Gültig bis",
+      "aktionen": "Aktionen",
+      "nr_prefix": "Nr. "
+    },
+    "daten": {
+      "ausgestellt": "Ausgestellt {datum}",
+      "gueltig_bis": "Gültig bis {datum}",
+      "unbefristet": "unbefristet"
+    },
+    "action": {
+      "ansehen": "{name} ansehen",
+      "herunterladen": "{name} herunterladen",
+      "mehr": "Weitere Aktionen für {name}",
+      "menu_ansehen": "Ansehen",
+      "menu_teilen": "Teilen & verwenden"
+    },
+    "schnellzugriff": {
+      "title": "Schnellzugriff",
+      "upload": "Dokument hochladen",
+      "ordner": "Neuer Ordner",
+      "vorlagen": "Vorlagen",
+      "papier": "Papierdokument einreichen"
+    },
+    "zuletzt": {
+      "title": "Zuletzt hinzugefügt"
+    },
+    "teilen": {
+      "title": "Teilen & verwenden",
+      "hint": "Dokumente lassen sich per QR-Code prüfen und ins EUDI-Wallet exportieren.",
+      "cta": "Dokument verwenden"
+    },
+    "preview": {
+      "title": "Dokumentvorschau",
+      "qr_label": "QR-Prüfcode",
+      "eudi_yes": "Für EUDI-Wallet exportierbar",
+      "eudi_no": "Nicht EUDI-exportierbar",
+      "aussteller": "Ausstellende Behörde",
+      "nr_label": "Dokumentnummer",
+      "ausgestellt_label": "Ausgestellt am",
+      "gueltig_bis_label": "Gültig bis"
+    },
+    "empty": {
+      "title": "Noch keine Dokumente",
+      "filter_title": "Keine Dokumente für diesen Filter",
+      "filter_description": "Wählen Sie eine andere Kategorie oder einen anderen Suchbegriff."
+    },
+    "error": "Dokumente konnten nicht geladen werden.",
+    "demo_action_toast": "Demo-Funktion — in diesem Prototyp nicht hinterlegt.",
+    "filter": {
+      "sort_label": "Sortieren nach",
+      "sort_name": "Name (A–Z)",
+      "sort_ausgestellt": "Ausgestellt (neueste zuerst)",
+      "sort_gueltig": "Gültigkeit (bald ablaufend zuerst)",
+      "status_label": "Status"
+    }
+  },
+  "termine": {
+    "title": "Termine",
+    "subtitle": "Behördentermine, Erinnerungen und Buchungen an einem Ort.",
+    "calendar": {
+      "prev": "Vorheriger Monat",
+      "next": "Nächster Monat",
+      "today": "Heute",
+      "label": "Monatskalender",
+      "weekday_long": {
+        "mo": "Montag",
+        "di": "Dienstag",
+        "mi": "Mittwoch",
+        "do": "Donnerstag",
+        "fr": "Freitag",
+        "sa": "Samstag",
+        "so": "Sonntag"
+      },
+      "weekday_short": {
+        "mo": "Mo",
+        "di": "Di",
+        "mi": "Mi",
+        "do": "Do",
+        "fr": "Fr",
+        "sa": "Sa",
+        "so": "So"
+      },
+      "has_events": "{count, plural, =1 {1 Termin} other {# Termine}}",
+      "day_aria": "{datum}{events}",
+      "day_events_suffix": " — {count, plural, =1 {1 Termin} other {# Termine}}"
+    },
+    "filter": {
+      "title": "Filter",
+      "behoerdentermine": "Behördentermine",
+      "erinnerungen": "Erinnerungen & Fristen",
+      "buchungen": "Buchungen",
+      "abgeschlossen": "Abgeschlossen"
+    },
+    "naechste": {
+      "title": "Nächste Termine"
+    },
+    "weitere": {
+      "title": "Weitere Termine & Erinnerungen"
+    },
+    "card": {
+      "buchungsreferenz": "Buchungsreferenz {ref}",
+      "ics": "ICS exportieren",
+      "ics_aria": "Termin {betreff} als ICS exportieren",
+      "details": "Details",
+      "details_anzeigen": "Details anzeigen"
+    },
+    "naechster_schritt": {
+      "title": "Nächster Schritt"
+    },
+    "vorbereitung": {
+      "title": "Gut vorbereitet zum Termin",
+      "reisepass": "Reisepass mitbringen",
+      "alter_titel": "Alten Aufenthaltstitel mitbringen",
+      "biometrie": "Biometrisches Passfoto mitbringen",
+      "gebuehr": "Bearbeitungsgebühr bereithalten",
+      "meldung": "Wohnungsgeberbestätigung mitbringen"
+    },
+    "fristen": {
+      "title": "Fristen im Überblick",
+      "in_tagen": "In {count, plural, =0 {heute fällig} =1 {1 Tag} other {# Tagen}}",
+      "ueberfaellig": "überfällig"
+    },
+    "ort": {
+      "video": "Video-Termin",
+      "telefon": "Telefontermin",
+      "praesenz": "Vor Ort"
+    },
+    "empty": {
+      "title": "Keine Termine",
+      "description": "Sie haben aktuell keine anstehenden Termine.",
+      "filter_title": "Keine Termine für diese Auswahl",
+      "naechster_schritt": "Wählen Sie einen Termin, um die Details zu sehen."
+    },
+    "error": "Termine konnten nicht geladen werden."
+  },
+  "steuer": {
+    "title": "Steuer",
+    "subtitle": "Vorausgefüllte Steuererklärung aus bereits vorhandenen Daten.",
+    "hero": {
+      "steuerjahr": "Steuerjahr {jahr}",
+      "entwurf_badge": "Entwurf",
+      "erstattung_label": "Voraussichtliche Erstattung",
+      "erstattung_aria": "Voraussichtliche Erstattung {betrag}",
+      "nachzahlung_label": "Voraussichtliche Nachzahlung",
+      "nachzahlung_aria": "Voraussichtliche Nachzahlung {betrag}",
+      "datenquellen_label": "Datenquellen"
+    },
+    "quelle": {
+      "lohnsteuer": "Lohnsteuer",
+      "kind": "Kind",
+      "krankenkasse": "Krankenkasse",
+      "bekannt": "Bereits bekannte Daten",
+      "herkunft": "von {herkunft}"
+    },
+    "fortschritt": {
+      "title": "Fortschritt",
+      "geprueft": "Daten geprüft",
+      "ergaenzen": "Belege ergänzen",
+      "abgabe": "Zur Abgabe bereit",
+      "schritt_aria": "Schritt {n} von 3: {label}",
+      "status_done": "abgeschlossen",
+      "status_active": "aktiv",
+      "status_pending": "offen"
+    },
+    "bereiche": {
+      "title": "Übersicht der Steuerbereiche"
+    },
+    "col": {
+      "bereich": "Bereich",
+      "betrag": "Betrag",
+      "status": "Status",
+      "aktion": "Aktion"
+    },
+    "status": {
+      "geprueft": "Geprüft",
+      "ergaenzen": "Ergänzen",
+      "nicht_vorhanden": "Nicht vorhanden"
+    },
+    "aktion": {
+      "ansehen": "Ansehen",
+      "ergaenzen": "Ergänzen",
+      "hinzufuegen": "Hinzufügen",
+      "ansehen_aria": "{bereich} ansehen",
+      "ergaenzen_aria": "Belege für {bereich} ergänzen",
+      "hinzufuegen_aria": "{bereich} hinzufügen"
+    },
+    "bereich": {
+      "einkommen": "Einkünfte aus nichtselbständiger Arbeit",
+      "werbungskosten": "Werbungskosten",
+      "vorsorge": "Vorsorgeaufwendungen",
+      "kinder": "Kinder",
+      "aussergewoehnlich": "Außergewöhnliche Belastungen",
+      "sonderausgaben": "Sonderausgaben"
+    },
+    "fristen": {
+      "title": "Wichtige Fristen"
+    },
+    "frist": {
+      "abgabe": "Abgabefrist Steuererklärung {jahr}",
+      "einspruch": "Einspruchsfrist letzter Bescheid",
+      "in_tagen": "In {count, plural, =0 {heute} =1 {1 Tag} other {# Tagen}}",
+      "ueberfaellig": "überfällig"
+    },
+    "nachweise": {
+      "title": "Verwendete Nachweise"
+    },
+    "datenschutz": {
+      "title": "Datenschutz-Hinweis",
+      "verarbeitet_label": "Verarbeitete Daten",
+      "daten": {
+        "lohn": "Lohn- und Gehaltsdaten",
+        "kv": "Krankenversicherungsbeiträge",
+        "kind": "Daten zu Kindern (Kindergeld)"
+      },
+      "rechtsgrundlage_label": "Rechtsgrundlage",
+      "empfaenger_label": "Empfänger",
+      "minimierung_hint": "Es werden nur die für die Steuererklärung erforderlichen Daten verarbeitet.",
+      "mehr": "Mehr zu Datenschutz"
+    },
+    "empty": {
+      "title": "Kein Steuer-Entwurf vorhanden",
+      "description": "Für dieses Steuerjahr liegen noch keine vorausgefüllten Daten vor."
+    },
+    "error": "Steuer-Übersicht konnte nicht geladen werden.",
+    "retry": "Erneut versuchen",
+    "demo_action_toast": "Demo-Funktion — Beleg-Ergänzung in diesem Prototyp nicht hinterlegt.",
+    "alle_bereiche": "Alle Bereiche anzeigen",
+    "weniger_bereiche": "Weniger anzeigen"
+  },
+  "datenschutz": {
+    "page": {
+      "title": "Datenschutz",
+      "subtitle": "Einblick in Datenzugriffe, Einwilligungen und Verwaltungsvorgänge"
+    },
+    "vision_banner": {
+      "heading": "2027-Vision",
+      "title": "2027-Vision",
+      "body": "Dieses Cockpit bündelt Ihre Datenschutz-Transparenz und -Kontrolle. In der echten Welt sind diese Funktionen heute noch über mehrere Stellen verteilt.",
+      "dismiss": "2027-Vision-Hinweis schließen"
+    },
+    "aktivitaet": {
+      "title": "Letzte Aktivitäten",
+      "show_all": "Alle Aktivitäten anzeigen",
+      "show_less": "Weniger anzeigen",
+      "empty": "Noch keine Aktivitäten erfasst."
+    },
+    "activity": {
+      "typ": {
+        "uebermittlung": "Übermittlung",
+        "eingang": "Eingang",
+        "app": "App-Aktivität",
+        "vision": "Vision"
+      },
+      "brief_geoeffnet": "Brief geöffnet",
+      "ki_zusammenfassung": "KI-Zusammenfassung erstellt",
+      "adresse_uebermittelt": "Adresse an Behörde übermittelt",
+      "dokument_geladen": "Dokument heruntergeladen",
+      "einwilligung_erteilt": "Einwilligung erteilt"
+    },
+    "einwilligungen": {
+      "title": "Einwilligungen",
+      "subtitle": "Sie entscheiden, welche Stellen auf Ihre Daten zugreifen dürfen",
+      "krankenkasse": "Krankenkasse",
+      "bank": "Bank",
+      "arbeitgeber": "Arbeitgeber",
+      "weitere_dienste": "Weitere Dienste",
+      "ein": "Ein",
+      "aus": "Aus",
+      "rechtsgrundlage_label": "Rechtsgrundlage",
+      "switch_aria": "Einwilligung {empfaenger}",
+      "announce_ein": "Einwilligung {empfaenger} eingeschaltet",
+      "announce_aus": "Einwilligung {empfaenger} ausgeschaltet"
+    },
+    "quellen": {
+      "title": "Datenquellen & Empfänger",
+      "col_stelle": "Stelle",
+      "col_zugriffsart": "Zugriffsart",
+      "col_aktualitaet": "Aktualität",
+      "automatisch": "automatisch synchronisiert",
+      "einwilligungsbasiert": "einwilligungsbasiert",
+      "aktuell": "aktuell",
+      "show_all": "Alle Empfänger anzeigen"
+    },
+    "kontrolle": {
+      "title": "Ihre Datenschutz-Kontrolle",
+      "zugriffsprotokoll": "Zugriffsprotokoll",
+      "zugriffsprotokoll_desc": "Alle Datenzugriffe nachvollziehen",
+      "datenexport": "Datenexport",
+      "datenexport_desc": "Ihre Daten nach Art. 20 DSGVO mitnehmen",
+      "einstellungen": "Einstellungen",
+      "einstellungen_desc": "Präferenzen und Sperren verwalten",
+      "vision_hint": "Diese Funktion ist Teil der 2027-Vision dieser Demo."
+    },
+    "log": {
+      "einwilligung_geaendert": "Einwilligung geändert"
+    },
+    "toast": {
+      "einwilligung_error": "Einwilligung konnte nicht gespeichert werden."
+    },
+    "empty": {
+      "title": "Noch keine Aktivitäten",
+      "description": "Sobald Daten verarbeitet werden, erscheinen sie hier."
+    },
+    "error": "Datenschutz-Daten konnten nicht geladen werden.",
+    "retry": "Erneut versuchen"
+  },
+  "familie": {
+    "page": {
+      "title": "Familie",
+      "subtitle": "Haushalt, Bezugspersonen und gemeinsame Vorgänge auf einen Blick"
+    },
+    "haushalt": {
+      "title": "Mein Haushalt",
+      "count": "{count} Personen"
+    },
+    "rolle": {
+      "mutter": "Mutter",
+      "vater": "Vater",
+      "partner": "Partner:in",
+      "kind": "Kind",
+      "hauptperson": "Hauptperson"
+    },
+    "cta": {
+      "haushalt_verwalten": "Haushalt verwalten"
+    },
+    "verwalten_dialog": {
+      "title": "Haushalt verwalten",
+      "body": "Das Verwalten von Haushaltsmitgliedern und Vertretungsrechten ist eine 2027-Vision dieser Demo. Die Funktion folgt.",
+      "close": "Schließen"
+    },
+    "vertretung_banner": {
+      "title": "Vertretung",
+      "body": "Sie können Vorgänge für Mitglieder Ihres Haushalts vertretungsweise bearbeiten."
+    },
+    "vorgaenge": {
+      "title": "Gemeinsame Vorgänge",
+      "kindergeld": "Kindergeld",
+      "krankenkasse": "Krankenversicherung",
+      "kita": "Kita-Platz",
+      "kita_traeger": "Kita-Träger",
+      "betrifft": "Betrifft: {names}",
+      "show_all": "Alle gemeinsamen Vorgänge anzeigen"
+    },
+    "nachweise": {
+      "title": "Nachweise & Berechtigungen",
+      "geburtsurkunde": "Geburtsurkunde",
+      "sorge_vollmacht": "Sorge-Vollmacht",
+      "vertretungsrechte": "Vertretungsrechte",
+      "verknuepfungen": "Verknüpfungen"
+    },
+    "was_betrifft_wen": {
+      "title": "Was betrifft wen?",
+      "subtitle": "Übersicht pro Person",
+      "vorgaenge": "Vorgänge",
+      "dokumente": "Dokumente",
+      "nachweise": "Nachweise",
+      "vertretungen": "Vertretungen"
+    },
+    "sicher": {
+      "title": "Sicher & geschützt",
+      "body": "Familiendaten werden nur im erforderlichen Umfang verarbeitet. Vertretungsrechte sind eine 2027-Vision dieser Demo.",
+      "more": "Mehr zu Datenschutz"
+    },
+    "empty": {
+      "title": "Kein Haushalt hinterlegt",
+      "body": "Für dieses Profil sind keine Haushaltsmitglieder erfasst."
     }
   }
 }

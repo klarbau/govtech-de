@@ -145,7 +145,7 @@ export function AktenzeichenSearch({
       onBlur={onBlur}
     >
       <Search
-        className="pointer-events-none absolute left-2.5 top-2.5 size-4 text-muted-foreground"
+        className="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-text-muted"
         aria-hidden="true"
       />
       <input
@@ -166,7 +166,7 @@ export function AktenzeichenSearch({
         }}
         onFocus={() => setOpen(true)}
         onKeyDown={onKeyDown}
-        className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 pl-8 text-sm shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-50"
+        className="flex min-h-[48px] w-full rounded-md border border-border-strong bg-surface px-3 py-2 ps-9 text-base text-text-primary transition-colors placeholder:text-text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-50"
       />
       <ul
         id={listboxDomId}

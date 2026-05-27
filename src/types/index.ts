@@ -59,8 +59,17 @@ export type {
   ReplyTerminMode,
 } from './letter';
 export { LETTER_ATTACHMENT_LIMITS } from './letter';
-export type { Document, DocumentTyp } from './document';
-export type { Termin, TerminStatus, TerminOrt, TerminOrtTyp } from './termin';
+export type { Document, DocumentTyp, DocumentKategorie } from './document';
+export type {
+  Termin,
+  TerminStatus,
+  TerminOrt,
+  TerminOrtTyp,
+  TerminKategorie,
+  TerminVorbereitungItem,
+  Reminder,
+  ReminderKategorie,
+} from './termin';
 export type {
   AutopilotStep,
   AutopilotStepStatus,
@@ -78,6 +87,47 @@ export type {
   SelfTask,
 } from './umzug';
 export type { MockBackendEvent, MockBackendEventListener } from './mock-event';
+// Redesign — Dashboard (read-model + AI-Top-3 candidates).
+export type {
+  DashboardSnapshot,
+  DashboardSortMode,
+  DiffBlock,
+  DscAppActivitySummary,
+  DscSnapshot,
+  DscSpeculativeAggregate,
+  LebenslagenHinweis,
+  PrioritizedTopAction,
+  TopActionCandidateInput,
+  TopActionItem,
+  TopActionReasonToken,
+  Vollmacht,
+} from './dashboard';
+// Redesign — Steuer (vorausgefüllte Steuererklärung).
+export type {
+  SteuerBereich,
+  SteuerBereichStatus,
+  SteuerDatenquelle,
+  SteuerDatenschutz,
+  SteuerFrist,
+  SteuerUebersicht,
+} from './steuer';
+// Redesign — Familie (Mein Haushalt).
+export type {
+  FamilieNachweis,
+  GemeinsamerVorgang,
+  HaushaltMitglied,
+  HaushaltRolle,
+  HaushaltView,
+  NachweisTyp,
+} from './familie';
+// Redesign — Datenschutz-Cockpit.
+export type {
+  DatenquellenEintrag,
+  DatenschutzCockpit,
+  DatenschutzEinwilligung,
+  DatenZugriffsart,
+  EinwilligungEmpfaenger,
+} from './datenschutz';
 // V1.1 — Renten/KV-Erweiterung (Spec § 4.2).
 export type {
   AnrechnungszeitPflege,

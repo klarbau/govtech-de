@@ -111,12 +111,15 @@ export function StammdatenHero({
         <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
           {tHero('eyebrow')}
         </span>
-        <h1
+        {/* Demoted to <h2>: the page-level <h1> now lives in `PageHeader`
+            (redesign-stammdaten § 4.5 — exactly one <h1> per screen). The
+            id is preserved so the StammdatenView aria-labelledby still resolves. */}
+        <h2
           id="stammdaten-hero-title"
-          className="text-2xl font-semibold tracking-tight text-foreground"
+          className="text-xl font-semibold tracking-tight text-foreground"
         >
           {tHero('title_with_name', { name: personaName })}
-        </h1>
+        </h2>
       </header>
 
       <div className="flex flex-col gap-4 rounded-xl border border-border bg-card p-5 shadow-sm sm:p-6">

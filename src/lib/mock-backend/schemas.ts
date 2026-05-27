@@ -1175,3 +1175,149 @@ const _mobilitaetDriftGuard: _AssertEq<
   _SchemaMobilitaet,
   _MobilitaetTs
 > = true;
+
+// ---------------------------------------------------------------------------
+// Redesign-Termine — Reminder-Bucket (`redesign-termine.md` § 6)
+// ---------------------------------------------------------------------------
+
+export const reminderKategorieSchema = z.enum(['frist', 'erinnerung']);
+
+export const reminderSchema = z
+  .object({
+    id: z.string().min(1),
+    behoerde_id: z.string().optional(),
+    vorgang_id: z.string().optional(),
+    titel: z.string().min(1),
+    datum: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'ISO-Datum YYYY-MM-DD'),
+    kategorie: reminderKategorieSchema,
+    frist_typ: z.string().optional(),
+  })
+  .passthrough();
+
+export const remindersArraySchema = z.array(reminderSchema);
+
+// ---------------------------------------------------------------------------
+// Redesign-Steuer — Steuer-Übersicht-Bucket (`redesign-steuer.md` § 6)
+// Shape: Record<personaId, Record<steuerjahr, SteuerUebersicht>>.
+// ---------------------------------------------------------------------------
+
+export const steuerBereichStatusSchema = z.enum([
+  'geprueft',
+  'ergaenzen',
+  'nicht_vorhanden',
+]);
+
+export const steuerBereichSchema = z
+  .object({
+    id: z.string().min(1),
+    name_i18n_key: z.string().min(1),
+    betrag_cent: z.number().int().optional(),
+    status: steuerBereichStatusSchema,
+  })
+  .passthrough();
+
+export const steuerDatenquelleSchema = z
+  .object({
+    id: z.string().min(1),
+    label_i18n_key: z.string().min(1),
+    herkunft: z.string().min(1),
+    document_id: z.string().optional(),
+  })
+  .passthrough();
+
+export const steuerFristSchema = z
+  .object({
+    label_i18n_key: z.string().min(1),
+    datum: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'ISO-Datum YYYY-MM-DD'),
+  })
+  .passthrough();
+
+export const steuerDatenschutzSchema = z
+  .object({
+    verarbeitete_daten_i18n_keys: z.array(z.string()),
+    rechtsgrundlage: z.string().min(1),
+    empfaenger_behoerde_id: z.string().min(1),
+  })
+  .passthrough();
+
+export const steuerUebersichtSchema = z
+  .object({
+    steuerjahr: z.number().int(),
+    status: z.enum(['entwurf', 'eingereicht']),
+    voraussichtliche_erstattung_cent: z.number().int(),
+    datenquellen: z.array(steuerDatenquelleSchema),
+    fortschritt_aktiver_schritt: z.union([
+      z.literal(0),
+      z.literal(1),
+      z.literal(2),
+    ]),
+    bereiche: z.array(steuerBereichSchema),
+    fristen: z.array(steuerFristSchema),
+    verwendete_nachweise_document_ids: z.array(z.string()),
+    datenschutz: steuerDatenschutzSchema,
+    watermark: z.literal('[MOCK]'),
+  })
+  .passthrough();
+
+/** Bucket `govtech-de:v1:steuer` — Record<personaId, Record<jahr, SteuerUebersicht>>. */
+export const steuerBucketSchema = z.record(
+  z.record(steuerUebersichtSchema),
+);
+
+// ---------------------------------------------------------------------------
+// Redesign-Datenschutz — Einwilligungen + Banner-Dismissed-Buckets
+// (`redesign-datenschutz.md` § 6)
+// ---------------------------------------------------------------------------
+
+export const einwilligungEmpfaengerSchema = z.enum([
+  'krankenkasse',
+  'bank',
+  'arbeitgeber',
+  'weitere_dienste',
+]);
+
+export const datenschutzEinwilligungSchema = z
+  .object({
+    empfaenger: einwilligungEmpfaengerSchema,
+    erteilt: z.boolean(),
+    rechtsgrundlage: z.string().min(1),
+    geaendert_am: z.string().optional(),
+  })
+  .passthrough();
+
+/** Bucket `govtech-de:v1:datenschutz:einwilligungen` — Record<PersonaId, DatenschutzEinwilligung[]>. */
+export const datenschutzEinwilligungenBucketSchema = z.record(
+  z.array(datenschutzEinwilligungSchema),
+);
+
+/** Bucket `govtech-de:v1:datenschutz:vision-banner-dismissed` — Record<PersonaId, boolean>. */
+export const datenschutzVisionBannerDismissedBucketSchema = z.record(
+  z.boolean(),
+);
+
+// ---------------------------------------------------------------------------
+// Redesign-Dashboard — last-seen + sort-mode + ai-log Buckets
+// (`dashboard.md` § 5.4)
+// ---------------------------------------------------------------------------
+
+/** Bucket `govtech-de:v1:dashboard:last-seen` — Record<PersonaId, ISO-Timestamp>. */
+export const dashboardLastSeenBucketSchema = z.record(z.string());
+
+export const dashboardSortModeSchema = z.enum([
+  'ki',
+  'frist',
+  'behoerde',
+  'vorgang',
+]);
+
+/** Bucket `govtech-de:v1:dashboard:sort-mode` — Record<PersonaId, DashboardSortMode>. */
+export const dashboardSortModeBucketSchema = z.record(dashboardSortModeSchema);
+
+// Compile-time guard: zod-Enum und TS-Union (`DashboardSortMode`) identisch.
+import type { DashboardSortMode as _DashboardSortModeTs } from '@/types/dashboard';
+type _SchemaDashboardSortMode = z.infer<typeof dashboardSortModeSchema>;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _dashboardSortModeDriftGuard: _AssertEq<
+  _SchemaDashboardSortMode,
+  _DashboardSortModeTs
+> = true;

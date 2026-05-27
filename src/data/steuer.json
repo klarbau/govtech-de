@@ -1,0 +1,98 @@
+{
+  "anna-petrov": {
+    "2024": {
+      "steuerjahr": 2024,
+      "status": "entwurf",
+      "voraussichtliche_erstattung_cent": 37100,
+      "fortschritt_aktiver_schritt": 1,
+      "datenquellen": [
+        {
+          "id": "quelle-lohnsteuer",
+          "label_i18n_key": "steuer.quelle.lohnsteuer",
+          "herkunft": "Mittelstand Software GmbH",
+          "document_id": "doc-anna-lohnsteuerbescheinigung-2025"
+        },
+        {
+          "id": "quelle-kind",
+          "label_i18n_key": "steuer.quelle.kind",
+          "herkunft": "familienkasse-berlin-brandenburg",
+          "document_id": "doc-anna-kindergeldbescheid-lev"
+        },
+        {
+          "id": "quelle-krankenkasse",
+          "label_i18n_key": "steuer.quelle.krankenkasse",
+          "herkunft": "aok-nordost",
+          "document_id": "doc-anna-kv-beitragsbescheinigung-2024"
+        },
+        {
+          "id": "quelle-bekannt",
+          "label_i18n_key": "steuer.quelle.bekannt",
+          "herkunft": "finanzamt-koerperschaften-i-berlin"
+        }
+      ],
+      "bereiche": [
+        {
+          "id": "bereich-einkommen",
+          "name_i18n_key": "steuer.bereich.einkommen",
+          "betrag_cent": 3240000,
+          "status": "geprueft"
+        },
+        {
+          "id": "bereich-werbungskosten",
+          "name_i18n_key": "steuer.bereich.werbungskosten",
+          "betrag_cent": 123000,
+          "status": "ergaenzen"
+        },
+        {
+          "id": "bereich-vorsorge",
+          "name_i18n_key": "steuer.bereich.vorsorge",
+          "betrag_cent": 487000,
+          "status": "geprueft"
+        },
+        {
+          "id": "bereich-kinder",
+          "name_i18n_key": "steuer.bereich.kinder",
+          "betrag_cent": 250200,
+          "status": "geprueft"
+        },
+        {
+          "id": "bereich-aussergewoehnlich",
+          "name_i18n_key": "steuer.bereich.aussergewoehnlich",
+          "status": "nicht_vorhanden"
+        },
+        {
+          "id": "bereich-sonderausgaben",
+          "name_i18n_key": "steuer.bereich.sonderausgaben",
+          "betrag_cent": 36000,
+          "status": "geprueft"
+        }
+      ],
+      "fristen": [
+        {
+          "label_i18n_key": "steuer.frist.abgabe",
+          "datum": "2025-07-31"
+        },
+        {
+          "label_i18n_key": "steuer.frist.einspruch",
+          "datum": "2026-04-15"
+        }
+      ],
+      "verwendete_nachweise_document_ids": [
+        "doc-anna-lohnsteuerbescheinigung-2025",
+        "doc-anna-kindergeldbescheid-lev",
+        "doc-anna-kv-beitragsbescheinigung-2024",
+        "doc-anna-meldebestaetigung-2024"
+      ],
+      "datenschutz": {
+        "verarbeitete_daten_i18n_keys": [
+          "steuer.datenschutz.daten.lohn",
+          "steuer.datenschutz.daten.kv",
+          "steuer.datenschutz.daten.kind"
+        ],
+        "rechtsgrundlage": "§ 150 AO i.V.m. § 31 EStG",
+        "empfaenger_behoerde_id": "finanzamt-koerperschaften-i-berlin"
+      },
+      "watermark": "[MOCK]"
+    }
+  }
+}

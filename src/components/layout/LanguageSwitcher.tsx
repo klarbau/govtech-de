@@ -2,7 +2,6 @@
 
 import { useTransition } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { Globe } from 'lucide-react';
 
 import { setLocaleCookie } from '@/app/actions/locale';
 import { locales, type Locale } from '@/i18n/routing';
@@ -40,10 +39,9 @@ export function LanguageSwitcher() {
       <SelectTrigger
         size="sm"
         aria-label={t('language_label')}
-        className="gap-2"
+        className="px-3 font-medium"
       >
-        <Globe className="size-3.5 text-muted-foreground" aria-hidden="true" />
-        <SelectValue />
+        <SelectValue>{(value) => (value as string).toUpperCase()}</SelectValue>
       </SelectTrigger>
       <SelectContent align="end">
         {locales.map((code) => (

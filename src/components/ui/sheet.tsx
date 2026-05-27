@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { Dialog as DialogPrimitive } from '@base-ui/react/dialog';
 import { XIcon } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -53,41 +54,54 @@ function SheetOverlay({
 }
 
 interface SheetContentProps extends DialogPrimitive.Popup.Props {
-  side?: 'right' | 'left';
+  /**
+   * Logical anchor edge.
+   * - `inline-end` (default) — trailing edge (right in LTR), the standard detail sheet.
+   * - `inline-start` — leading edge (left in LTR), used by the mobile navigation drawer.
+   * `right`/`left` kept as physical aliases for backward compatibility.
+   */
+  side?: 'inline-start' | 'inline-end' | 'right' | 'left';
   showCloseButton?: boolean;
   closeAriaLabel?: string;
+  /** Drawer width preset. `nav` is a slimmer column for the mobile sidebar. */
+  width?: 'default' | 'nav';
 }
 
 function SheetContent({
   className,
   children,
-  side = 'right',
+  side = 'inline-end',
+  width = 'default',
   showCloseButton = true,
-  closeAriaLabel = 'Sheet schließen',
+  closeAriaLabel,
   ...props
 }: SheetContentProps) {
   useStripBaseUiFocusGuardAriaHidden(true);
+  const t = useTranslations('shell.sheet');
+  const resolvedCloseAriaLabel = closeAriaLabel ?? t('close');
+  const startSide = side === 'inline-start' || side === 'left';
   return (
     <SheetPortal>
       <SheetOverlay />
       <DialogPrimitive.Popup
         data-slot="sheet-content"
-        data-side={side}
+        data-side={startSide ? 'inline-start' : 'inline-end'}
         aria-modal="true"
         className={cn(
           // Mobile = fullscreen.
-          'fixed inset-0 z-50 flex flex-col bg-background text-foreground shadow-2xl outline-none',
-          // Desktop ≥ md = 480 px Side-Sheet.
-          'md:inset-y-0 md:w-[480px] md:max-w-[100vw]',
-          // Positioning per side. RTL flips automatically on `rtl:` variant.
-          side === 'right' &&
-            'md:right-0 md:left-auto rtl:md:right-auto rtl:md:left-0',
-          side === 'left' &&
-            'md:left-0 md:right-auto rtl:md:left-auto rtl:md:right-0',
-          // Animation
-          'data-open:animate-in data-open:fade-in-0 data-open:slide-in-from-right-4',
-          'data-closed:animate-out data-closed:fade-out-0 data-closed:slide-out-to-right-4',
-          'rtl:data-open:slide-in-from-left-4 rtl:data-closed:slide-out-to-left-4',
+          'fixed inset-0 z-50 flex flex-col bg-surface text-text-primary shadow-[var(--shadow-modal)] outline-none',
+          // Desktop ≥ md = side sheet.
+          width === 'nav'
+            ? 'md:inset-y-0 md:w-72 md:max-w-[100vw]'
+            : 'md:inset-y-0 md:w-[480px] md:max-w-[100vw]',
+          // Logical positioning. `inline-start` anchors to the leading edge.
+          startSide
+            ? 'md:left-0 md:right-auto rtl:md:left-auto rtl:md:right-0'
+            : 'md:right-0 md:left-auto rtl:md:right-auto rtl:md:left-0',
+          // Animation (crossfade-forward; reduced-motion collapses globally).
+          startSide
+            ? 'data-open:animate-in data-open:fade-in-0 data-open:slide-in-from-left-4 data-closed:animate-out data-closed:fade-out-0 data-closed:slide-out-to-left-4 rtl:data-open:slide-in-from-right-4 rtl:data-closed:slide-out-to-right-4'
+            : 'data-open:animate-in data-open:fade-in-0 data-open:slide-in-from-right-4 data-closed:animate-out data-closed:fade-out-0 data-closed:slide-out-to-right-4 rtl:data-open:slide-in-from-left-4 rtl:data-closed:slide-out-to-left-4',
           className,
         )}
         {...props}
@@ -98,9 +112,9 @@ function SheetContent({
             render={
               <Button
                 variant="ghost"
-                size="icon-sm"
+                size="icon"
                 className="absolute top-3 right-3 rtl:right-auto rtl:left-3"
-                aria-label={closeAriaLabel}
+                aria-label={resolvedCloseAriaLabel}
               />
             }
           >
@@ -130,7 +144,7 @@ function SheetFooter({ className, ...props }: React.ComponentProps<'div'>) {
     <div
       data-slot="sheet-footer"
       className={cn(
-        'flex flex-col gap-2 border-t border-border bg-muted/30 px-5 py-4',
+        'flex flex-col gap-2 border-t border-border bg-surface-muted/40 px-5 py-4',
         className,
       )}
       {...props}
@@ -142,7 +156,7 @@ function SheetTitle({ className, ...props }: DialogPrimitive.Title.Props) {
   return (
     <DialogPrimitive.Title
       data-slot="sheet-title"
-      className={cn('text-base font-semibold tracking-tight', className)}
+      className={cn('text-lg font-semibold text-text-primary', className)}
       {...props}
     />
   );
@@ -155,7 +169,7 @@ function SheetDescription({
   return (
     <DialogPrimitive.Description
       data-slot="sheet-description"
-      className={cn('text-xs text-muted-foreground', className)}
+      className={cn('text-sm text-text-secondary', className)}
       {...props}
     />
   );

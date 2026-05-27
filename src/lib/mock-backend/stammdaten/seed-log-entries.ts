@@ -170,6 +170,49 @@ const ANNA_ENTRIES: SeedEntryDraft[] = [
     rechtsgrundlage: '§ 28a SGB IV (DEÜV)',
     note: 'persona_id:anna-petrov; field_id:kvnr; quelle:deuv_push; mock:true',
   },
+  // -------------------------------------------------------------------------
+  // Redesign-Datenschutz — App-Aktivitäts-Timeline-Seed (`redesign-datenschutz.md`
+  // § 6 „Timeline-Realismus"). Damit das Cockpit ohne vorherigen Umzug-Lauf
+  // gefüllt ist: Brief geöffnet / KI-Zusammenfassung / Dokument geladen /
+  // Einwilligung erteilt (Adresse-übermittelt wird oben bereits abgedeckt).
+  // -------------------------------------------------------------------------
+  {
+    timestamp: isoMinutesAgo(120, annaSeedTime),
+    kategorie: 'app_aktivitaet',
+    field_id: 'letter',
+    sektion: 'dokumente',
+    zweck_i18n_key: 'datenschutz.activity.brief_geoeffnet',
+    rechtsgrundlage: 'Art. 6 Abs. 1 lit. b DSGVO',
+    note: 'persona_id:anna-petrov; field_id:letter; quelle:user_self_view; mock:true',
+  },
+  {
+    timestamp: isoMinutesAgo(118, annaSeedTime),
+    kategorie: 'app_aktivitaet',
+    field_id: 'letter',
+    sektion: 'dokumente',
+    zweck_i18n_key: 'datenschutz.activity.ki_zusammenfassung',
+    rechtsgrundlage: 'Art. 6 Abs. 1 lit. a DSGVO i.V.m. Art. 28 DSGVO (AVV Anthropic)',
+    note: 'persona_id:anna-petrov; field_id:letter; quelle:ki_summary; mock:true',
+  },
+  {
+    timestamp: isoMinutesAgo(90, annaSeedTime),
+    kategorie: 'app_aktivitaet',
+    field_id: 'dokument',
+    sektion: 'dokumente',
+    zweck_i18n_key: 'datenschutz.activity.dokument_geladen',
+    rechtsgrundlage: 'Art. 6 Abs. 1 lit. b DSGVO',
+    note: 'persona_id:anna-petrov; field_id:dokument; quelle:user_self_view; mock:true',
+  },
+  {
+    timestamp: isoMinutesAgo(60, annaSeedTime),
+    kategorie: 'app_aktivitaet',
+    field_id: 'datenschutz_einwilligung',
+    sektion: 'sperren_einstellungen',
+    empfaenger_id: 'krankenkasse',
+    zweck_i18n_key: 'datenschutz.activity.einwilligung_erteilt',
+    rechtsgrundlage: 'Art. 6 Abs. 1 lit. a DSGVO',
+    note: 'persona_id:anna-petrov; empfaenger:krankenkasse; erteilt:true; mock:true',
+  },
 ];
 
 // ---------------------------------------------------------------------------

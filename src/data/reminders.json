@@ -1,0 +1,33 @@
+[
+  {
+    "id": "reminder-anna-kindergeld-nachweis",
+    "behoerde_id": "familienkasse-berlin-brandenburg",
+    "titel": "Kindergeld-Nachweis fällig",
+    "datum": "2026-06-16",
+    "kategorie": "frist",
+    "frist_typ": "nachweis"
+  },
+  {
+    "id": "reminder-anna-aufenthaltstitel-unterlagen",
+    "behoerde_id": "abh-berlin-lea",
+    "titel": "Unterlagen Aufenthaltstitel-Verlängerung einreichen",
+    "datum": "2026-06-02",
+    "kategorie": "frist",
+    "frist_typ": "antragstellung"
+  },
+  {
+    "id": "reminder-anna-steuererklaerung-2024",
+    "behoerde_id": "finanzamt-koerperschaften-i-berlin",
+    "titel": "Steuererklärung 2024 abgeben",
+    "datum": "2025-07-31",
+    "kategorie": "frist",
+    "frist_typ": "antragstellung"
+  },
+  {
+    "id": "reminder-anna-rundfunkbeitrag",
+    "behoerde_id": "beitragsservice-koeln",
+    "titel": "Rundfunkbeitrag — Abbuchung Q2 2026",
+    "datum": "2026-07-15",
+    "kategorie": "erinnerung"
+  }
+]

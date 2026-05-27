@@ -101,5 +101,32 @@
     ],
     "angelegt_am": "2026-04-29T09:20:00.000Z",
     "persona_id": "anna-petrov"
+  },
+  {
+    "id": "vorgang-anna-kindergeld-aktualisierung-2026",
+    "typ": "familienkasse",
+    "titel": "Kindergeld aktualisieren",
+    "status": "in_pruefung",
+    "beteiligte_behoerden_ids": ["familienkasse-berlin-brandenburg"],
+    "schritte": [
+      {
+        "id": "step-kindergeld-2026-nachweis-schulbescheinigung",
+        "behoerde_id": "familienkasse-berlin-brandenburg",
+        "block": "C",
+        "aktion": "Nachweis zur Fortzahlung einreichen (aktuelle Meldebestätigung Lev + Betreuungsnachweis Kita)",
+        "rechtsgrundlage": "§ 68 Abs. 1 EStG",
+        "status": "self_assigned",
+        "started_at": "2026-05-12T09:05:00.000Z"
+      }
+    ],
+    "fristen": [{ "typ": "nachweis", "datum": "2026-06-25" }],
+    "angelegt_am": "2026-05-12T09:05:00.000Z",
+    "persona_id": "anna-petrov",
+    "context": {
+      "unterlagen_fehlen": true,
+      "kindergeldnummer": "[MOCK] 115FK668412",
+      "mock": true,
+      "note": "[MOCK – Verwaltungsdemo, keine echten Daten] Warten auf Sie: angeforderte Nachweise stehen noch aus."
+    }
   }
 ]

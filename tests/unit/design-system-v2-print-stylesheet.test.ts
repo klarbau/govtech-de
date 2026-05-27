@@ -36,7 +36,7 @@ describe('design-system-v2 Phase 5e — Print + Hochkontrast', () => {
       expect(GLOBALS_CSS).toMatch(/\[data-print="show"\]/);
     });
 
-    test('uses --font-sans (Geist) as print font-family', () => {
+    test('uses --font-sans (Inter) as print font-family', () => {
       const printBlockMatch = GLOBALS_CSS.match(
         /@media\s+print\s*\{[\s\S]*?\n\}\s*$/m,
       );
@@ -68,26 +68,50 @@ describe('design-system-v2 Phase 5e — Print + Hochkontrast', () => {
       expect(block).toMatch(/outline-width:\s*3px\s*!important/);
     });
 
-    test('nests a prefers-color-scheme: dark override for high-contrast dark theme', () => {
-      const hcMatch = GLOBALS_CSS.match(
-        /@media\s*\(\s*prefers-contrast:\s*more\s*\)\s*\{[\s\S]*?\n\}\s*\n/,
+    test('carries a .dark override for the high-contrast dark theme', () => {
+      // next-themes uses the class strategy (`.dark`), not `prefers-color-scheme`,
+      // throughout globals.css — so the high-contrast layer nests a `.dark { … }`
+      // override rather than a nested `@media (prefers-color-scheme: dark)`.
+      // Walk the brace tree to capture the full prefers-contrast block.
+      const opener = /@media\s*\(\s*prefers-contrast:\s*more\s*\)\s*\{/.exec(
+        GLOBALS_CSS,
       );
-      expect(hcMatch).not.toBeNull();
-      expect(hcMatch![0]).toMatch(/@media\s*\(\s*prefers-color-scheme:\s*dark\s*\)/);
+      expect(opener).not.toBeNull();
+      let depth = 1;
+      let end = opener!.index + opener![0].length;
+      while (end < GLOBALS_CSS.length && depth > 0) {
+        end++;
+        if (GLOBALS_CSS[end] === '{') depth++;
+        else if (GLOBALS_CSS[end] === '}') depth--;
+      }
+      const block = GLOBALS_CSS.slice(opener!.index, end + 1);
+      expect(block).toMatch(/\.dark\s*\{/);
+      // The dark override must lift primary to a light, high-chroma blue.
+      expect(block).toMatch(/--color-primary:\s*#9DBBFF/i);
     });
   });
 
-  describe('Additive guarantee — no clobbering of existing tokens', () => {
-    test('Phase-5a tokens (--ds-text-h1, --ds-ease-standard) remain in :root', () => {
-      expect(GLOBALS_CSS).toMatch(/--ds-text-h1:\s*3rem/);
+  describe('Additive guarantee — foundation token set + behavioural layers coexist', () => {
+    // redesign-foundation (2026-05-27) replaced the warm-neutral OKLCH token
+    // layer with the consolidated cool-neutral `--color-*: #hex` set, and
+    // re-pointed the shadcn aliases (--background/--foreground) onto it. The
+    // motion/type tokens from design-system-v2 remain additively. We pin to
+    // the NEW contract: behavioural ease token survives, and the aliases now
+    // reference the consolidated --color-* variables (not bare oklch()).
+    test('design-system-v2 motion token --ds-ease-standard remains in :root', () => {
       expect(GLOBALS_CSS).toMatch(/--ds-ease-standard/);
     });
 
-    test('shadcn :root tokens (--background, --foreground) remain unchanged at default declaration', () => {
+    test('shadcn aliases are re-pointed at the consolidated --color-* token set', () => {
       // The default :root declarations live BEFORE the @media print / @media
-      // (prefers-contrast: more) overrides; assert their presence.
-      expect(GLOBALS_CSS).toMatch(/--background:\s*\n?\s*oklch\(1 0 0\)/);
-      expect(GLOBALS_CSS).toMatch(/--foreground:\s*\n?\s*oklch\(0\.145 0 0\)/);
+      // (prefers-contrast: more) overrides; assert the new aliasing contract.
+      expect(GLOBALS_CSS).toMatch(/--background:\s*\n?\s*var\(--color-surface-page\)/);
+      expect(GLOBALS_CSS).toMatch(/--foreground:\s*\n?\s*var\(--color-text-primary\)/);
+    });
+
+    test('foundation neutral scale is declared as --color-* hex tokens', () => {
+      expect(GLOBALS_CSS).toMatch(/--color-surface:\s*#FFFFFF/);
+      expect(GLOBALS_CSS).toMatch(/--color-text-primary:\s*#1A1F2A/);
     });
   });
 });

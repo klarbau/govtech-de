@@ -13,12 +13,16 @@ import behoerdenFixture from '@/data/behoerden.json';
 import documentsFixture from '@/data/documents.json';
 import lettersFixture from '@/data/letters.json';
 import personasFixture from '@/data/personas.json';
+import remindersFixture from '@/data/reminders.json';
+import steuerFixture from '@/data/steuer.json';
 import termineFixture from '@/data/termine.json';
 import vorgaengeFixture from '@/data/vorgaenge.json';
 import type { Behoerde } from '@/types/behoerde';
 import type { Document } from '@/types/document';
 import type { Letter } from '@/types/letter';
 import type { Persona } from '@/types/persona';
+import type { Reminder } from '@/types/termin';
+import type { SteuerUebersicht } from '@/types/steuer';
 import type { Termin } from '@/types/termin';
 import type { Vorgang } from '@/types/vorgang';
 import {
@@ -32,6 +36,8 @@ import { SEED_MOBILITAET } from './mobilitaet/seed-mobilitaet';
 import {
   behoerdenArraySchema,
   consentSchema,
+  datenschutzEinwilligungenBucketSchema,
+  datenschutzVisionBannerDismissedBucketSchema,
   documentsArraySchema,
   letterActivityLogSchema,
   letterRepliesMapSchema,
@@ -39,12 +45,14 @@ import {
   metaSchema,
   personasArraySchema,
   personaSchema,
+  remindersArraySchema,
   stammdatenIbanSpeculativeBucketSchema,
   stammdatenKontaktBucketSchema,
   stammdatenKontaktV2BucketSchema,
   stammdatenMobilitaetBucketSchema,
   stammdatenSperrenBucketSchema,
   stammdatenUebermittlungsLogBucketSchema,
+  steuerBucketSchema,
   termineArraySchema,
   vorgaengeArraySchema,
 } from './schemas';
@@ -62,6 +70,11 @@ const fixtures = {
   vorgaenge: vorgaengeFixture as unknown as Vorgang[],
   documents: documentsFixture as unknown as Document[],
   termine: termineFixture as unknown as Termin[],
+  reminders: remindersFixture as unknown as Reminder[],
+  steuer: steuerFixture as unknown as Record<
+    string,
+    Record<string, SteuerUebersicht>
+  >,
 };
 
 /**
@@ -118,8 +131,16 @@ export function seedIfEmpty(): void {
     vorgaengeArraySchema as unknown as import('zod').ZodType<Vorgang[]>,
     filterVorgaengeByPersona(fixtures.vorgaenge, personaId),
   );
-  readOrInit('documents' as CollectionKey, documentsArraySchema, fixtures.documents);
-  readOrInit('termine' as CollectionKey, termineArraySchema, fixtures.termine);
+  readOrInit<Document[]>(
+    'documents' as CollectionKey,
+    documentsArraySchema as unknown as import('zod').ZodType<Document[]>,
+    fixtures.documents,
+  );
+  readOrInit<Termin[]>(
+    'termine' as CollectionKey,
+    termineArraySchema as unknown as import('zod').ZodType<Termin[]>,
+    fixtures.termine,
+  );
   readOrInit('consent' as CollectionKey, consentSchema, {});
   readOrInit('letter-activity-log' as CollectionKey, letterActivityLogSchema, {});
   // V1.5 — Reply-Bucket: leer initialisieren, wenn nicht vorhanden.
@@ -153,6 +174,28 @@ export function seedIfEmpty(): void {
     stammdatenMobilitaetBucketSchema,
     SEED_MOBILITAET,
   );
+  // Redesign-Termine — Reminder-Bucket aus Fixture (idempotent).
+  readOrInit('reminders' as CollectionKey, remindersArraySchema, fixtures.reminders);
+  // Redesign-Steuer — Steuer-Übersicht-Bucket aus Fixture (idempotent).
+  readOrInit(
+    'steuer' as CollectionKey,
+    steuerBucketSchema as unknown as import('zod').ZodType<
+      Record<string, Record<string, SteuerUebersicht>>
+    >,
+    fixtures.steuer,
+  );
+  // Redesign-Datenschutz — Einwilligungen lazy-init (api leitet Defaults ab);
+  // hier nur Empty-State-Init + Banner-Dismiss-Bucket.
+  readOrInit(
+    'datenschutz:einwilligungen' as CollectionKey,
+    datenschutzEinwilligungenBucketSchema,
+    {},
+  );
+  readOrInit(
+    'datenschutz:vision-banner-dismissed' as CollectionKey,
+    datenschutzVisionBannerDismissedBucketSchema,
+    {},
+  );
   // Per-Persona-Initial-Seed (idempotent — überschreibt bestehende Einträge nicht).
   try {
     seedStammdatenForPersona(personaId);
@@ -181,8 +224,14 @@ function seedForPersona(personaId: string): void {
   );
   write('documents' as CollectionKey, fixtures.documents);
   write('termine' as CollectionKey, fixtures.termine);
+  write('reminders' as CollectionKey, fixtures.reminders);
+  write('steuer' as CollectionKey, fixtures.steuer);
   write('consent' as CollectionKey, {});
   write('letter-activity-log' as CollectionKey, {});
+  // Redesign-Datenschutz — Einwilligungen + Banner-Dismiss bei Persona-Switch
+  // zurücksetzen (lazy-init Defaults greifen beim nächsten Read).
+  write('datenschutz:einwilligungen' as CollectionKey, {});
+  write('datenschutz:vision-banner-dismissed' as CollectionKey, {});
   // V1.5 — Reply-Bucket: bei jedem Persona-Wechsel leer.
   write('letter-replies' as CollectionKey, {});
   // V1 Stammdaten — Persona-Reseed (Sperren / IBAN / Kontakt / Initial-Log

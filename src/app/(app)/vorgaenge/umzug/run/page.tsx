@@ -33,7 +33,7 @@ import type {
 function UmzugRunInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const vorgangId = searchParams.get('vorgangId');
+  const vorgangId = searchParams?.get('vorgangId') ?? null;
   const t = useTranslations('umzug.run');
 
   const [vorgang, setVorgang] = useState<Vorgang | null>(null);

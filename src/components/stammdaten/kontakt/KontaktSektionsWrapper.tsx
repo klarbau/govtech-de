@@ -18,7 +18,7 @@ import { NotificationPraeferenzenSektion } from './NotificationPraeferenzenSekti
  */
 export function KontaktSektionsWrapper() {
   const searchParams = useSearchParams();
-  const tab = searchParams.get('tab') === 'wallet' ? 'wallet' : 'profil';
+  const tab = searchParams?.get('tab') === 'wallet' ? 'wallet' : 'profil';
   const [persona, setPersona] = React.useState<Persona | null>(null);
 
   React.useEffect(() => {

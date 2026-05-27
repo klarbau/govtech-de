@@ -1012,7 +1012,7 @@ export function ReplySheet({
                     <Button
                       type="button"
                       variant="outline"
-                      size="xs"
+                      size="sm"
                       onClick={() => void persistDraft()}
                     >
                       {t('draft_save_error_retry')}

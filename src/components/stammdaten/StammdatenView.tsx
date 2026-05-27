@@ -30,10 +30,6 @@ import { ReligionConsentModal } from './ReligionConsentModal';
 import { SperrenAktivierenConfirmDialog } from './SperrenAktivierenConfirmDialog';
 import { StammdatenFieldCard } from './StammdatenFieldCard';
 import { StammdatenHero } from './StammdatenHero';
-import {
-  StammdatenSectionNav,
-  type StammdatenSectionNavKey,
-} from './StammdatenSectionNav';
 import { StammdatenSektion } from './StammdatenSektion';
 import {
   UebermittlungsLogList,
@@ -57,6 +53,10 @@ import type { RentenEckdatenView } from './YellowLetterEchoCard';
 import { MobilitaetSektion } from './mobilitaet/MobilitaetSektion';
 import type { PunkteResultView } from './mobilitaet/PunkteResultCard';
 import { Button } from '@/components/ui/button';
+import { PageHeader } from '@/components/shared/PageHeader';
+import { RightRailCard } from '@/components/shared/RightRailCard';
+import { StatusChipRow } from './StatusChipRow';
+import { HoheitFooterBanner } from './HoheitFooterBanner';
 
 interface StammdatenViewProps {
   nowIso: string;
@@ -89,7 +89,7 @@ export function StammdatenView({ nowIso }: StammdatenViewProps) {
   const tPage = useTranslations('stammdaten.page');
   const tTab = useTranslations('stammdaten.tab');
   const searchParams = useSearchParams();
-  const tab: Tab = searchParams.get('tab') === 'wallet' ? 'wallet' : 'profil';
+  const tab: Tab = searchParams?.get('tab') === 'wallet' ? 'wallet' : 'profil';
 
   const [data, setData] = React.useState<Loaded | null>(null);
   const [loadError, setLoadError] = React.useState<string | null>(null);
@@ -241,6 +241,7 @@ export function StammdatenView({ nowIso }: StammdatenViewProps) {
           kvPflegeData={kvPflegeData}
           mobilitaet={mobilitaet}
           mdl={mdl}
+          walletVerbunden={walletAttestations.length > 0 || mdl !== null}
           onOpenReligion={() => setReligionModalOpen(true)}
           onOpenIban={() => setIbanModalOpen(true)}
           onOpenSperre={(variante, sperreId, label) =>
@@ -412,6 +413,7 @@ interface ProfilTabProps {
   kvPflegeData: KvPflegeSektionData | null;
   mobilitaet: Mobilitaet | null;
   mdl: MdlAttestationMock | null;
+  walletVerbunden: boolean;
   onOpenReligion: () => void;
   onOpenIban: () => void;
   onOpenSperre: (
@@ -433,6 +435,7 @@ function ProfilTab({
   kvPflegeData,
   mobilitaet,
   mdl,
+  walletVerbunden,
   onOpenReligion,
   onOpenIban,
   onOpenSperre,
@@ -443,6 +446,22 @@ function ProfilTab({
   const tField = useTranslations('stammdaten.field');
   const tCta = useTranslations('stammdaten.cta');
   const tLog = useTranslations('stammdaten.aktivitaet');
+  const tProto = useTranslations('stammdaten');
+  const tRoot = useTranslations();
+
+  // Status-Chips: nur rendern, was für die Persona zutrifft (Spec § 4.1).
+  const aufenthaltChip: 'gueltig' | 'ablauf_bald' | undefined = (() => {
+    if (!persona.aufenthaltstitel) return undefined;
+    try {
+      const validUntil = parseISO(persona.aufenthaltstitel.valid_until);
+      const now = parseISO(nowIso);
+      const days =
+        (validUntil.getTime() - now.getTime()) / (1000 * 60 * 60 * 24);
+      return days <= 90 ? 'ablauf_bald' : 'gueltig';
+    } catch {
+      return 'gueltig';
+    }
+  })();
 
   const personaName = `${stammdaten.identitaet.vornamen} ${stammdaten.identitaet.familienname}`.trim();
   const registerCount = countRegisters(stammdaten);
@@ -456,58 +475,44 @@ function ProfilTab({
   const filterLog = (sektion: StammdatenSektionId) =>
     log.filter((e) => e.sektion === sektion).slice(0, 5);
 
-  // Phase-6c — In-Page-ToC: nur Sektionen aufnehmen, die tatsächlich gerendert
-  // werden. Render-Order entspricht der JSX-Reihenfolge unten.
-  const sectionNavKeys: StammdatenSectionNavKey[] = [
-    'identitaet',
-    'anschrift',
-    'familie',
-  ];
-  if (altersvorsorgeData) sectionNavKeys.push('altersvorsorge');
-  if (kvPflegeData) sectionNavKeys.push('krankenversicherung_pflege');
-  if (mobilitaet) sectionNavKeys.push('mobilitaet');
-  sectionNavKeys.push('dokumente', 'sperren_einstellungen');
+  // Redesign: die In-Page-Sektion-Nav wird im Card-Grid nicht mehr gerendert
+  // (Spec § 4.2 — „bevorzugt entfernen, da das Grid scanbar ist"). Die Sektionen
+  // behalten ihre Anker-`id`s; `StammdatenSectionNav` bleibt als Komponente
+  // erhalten, wird hier aber nicht eingebunden.
 
   return (
-    <div className="flex flex-col gap-5">
-      <StammdatenHero
-        personaName={personaName}
-        registerCount={registerCount}
-        letzteUebermittlung={letzteUebermittlung}
-        behoerdenById={behoerdenById}
-        disclaimerMeta={stammdaten.disclaimer_meta}
-        nowIso={nowIso}
+    <div className="flex flex-col gap-6">
+      <PageHeader
+        title={tProto('page.title')}
+        subtitle={tProto('page.subtitle')}
+        contextChip={{
+          label: tRoot('common.context_chip.prototype'),
+          tone: 'prototype',
+        }}
       />
 
-      {/* Phase-6c — mDL-Teaser, nur wenn Persona eine mDL-Attestation hat. */}
-      {mdl && <MdlTeaserCard />}
+      <StatusChipRow
+        adresseBestaetigt
+        walletVerbunden={walletVerbunden}
+        aufenthalt={aufenthaltChip}
+      />
 
-      {/* Phase-6c — In-Page-Section-Navigation (Audit-Finding #2). */}
-      <StammdatenSectionNav sections={sectionNavKeys} />
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[2fr_1fr]">
+        {/* Hauptspalte: Profil-Card-Grid */}
+        <div className="flex flex-col gap-5">
+          {/* Disclaimer-Meta / Pilot-Phase / 2027-Vision bleiben im Hero
+              sichtbar (Spec § 4.2 „Disclaimer-Meta bleibt sichtbar"). */}
+          <StammdatenHero
+            personaName={personaName}
+            registerCount={registerCount}
+            letzteUebermittlung={letzteUebermittlung}
+            behoerdenById={behoerdenById}
+            disclaimerMeta={stammdaten.disclaimer_meta}
+            nowIso={nowIso}
+          />
 
-      {/* V1.2 — page-level Aktivitätsprotokoll mit Richtung-Filter
-          (Spec § 6.11 / Hard-Line § 11.40). */}
-      <section
-        aria-labelledby="page-aktivitaet-heading"
-        className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4"
-        data-testid="page-aktivitaet-section"
-      >
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2
-            id="page-aktivitaet-heading"
-            className="text-base font-semibold tracking-tight text-foreground"
-          >
-            {tLog('list_heading')}
-          </h2>
-          <RichtungSwitch value={richtung} onChange={setRichtung} />
-        </div>
-        <UebermittlungsLogList
-          entries={log}
-          behoerdenById={behoerdenById}
-          richtung={richtung}
-          limit={10}
-        />
-      </section>
+          {/* Phase-6c — mDL-Teaser, nur wenn Persona eine mDL-Attestation hat. */}
+          {mdl && <MdlTeaserCard />}
 
       {/* Sektion: Identität */}
       <StammdatenSektion
@@ -1091,6 +1096,42 @@ function ProfilTab({
           </dl>
         </section>
       )}
+        </div>
+
+        {/* Rechte Rail: Änderungsprotokoll (Spec § 4.1 / Hard-Line § 11.40).
+            Verschiebt das page-level Aktivitätsprotokoll + Richtungs-Filter
+            in die Rail. */}
+        <aside
+          aria-labelledby="page-aktivitaet-heading"
+          className="flex flex-col gap-4"
+          data-testid="page-aktivitaet-section"
+        >
+          <RightRailCard
+            title={tProto('aenderungsprotokoll.title')}
+            as="h2"
+            footerLink={{
+              label: tProto('aenderungsprotokoll.show_all'),
+              href: '/datenschutz',
+            }}
+          >
+            <h2 id="page-aktivitaet-heading" className="sr-only">
+              {tLog('list_heading')}
+            </h2>
+            <div className="mb-3 flex flex-wrap items-center justify-end gap-2">
+              <RichtungSwitch value={richtung} onChange={setRichtung} />
+            </div>
+            <UebermittlungsLogList
+              entries={log}
+              behoerdenById={behoerdenById}
+              richtung={richtung}
+              limit={10}
+            />
+          </RightRailCard>
+        </aside>
+      </div>
+
+      {/* Footer-Banner „Sie haben die Hoheit über Ihre Daten" (Spec § 4.1). */}
+      <HoheitFooterBanner />
     </div>
   );
 }

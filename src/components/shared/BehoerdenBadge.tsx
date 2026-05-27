@@ -3,7 +3,15 @@ import type { BehoerdeKategorie } from '@/types';
 
 interface BehoerdenBadgeProps {
   name: string;
+  /**
+   * Kategorie is rendered as a neutral text label only — never as colour.
+   * HL-DS-10: the computed monogram background/border/text must be identical
+   * across bund/land/kommune/sozialversicherung/privat.
+   */
   kategorie?: BehoerdeKategorie;
+  /** Show the kategorie as a secondary text label below the name. */
+  showKategorie?: boolean;
+  kategorieLabel?: string;
   className?: string;
 }
 
@@ -17,34 +25,28 @@ function monogram(name: string): string {
   return (first + second).toUpperCase();
 }
 
-const kategorieClasses: Record<BehoerdeKategorie, string> = {
-  bund: 'bg-zinc-200 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300',
-  land: 'bg-sky-100 text-sky-800 dark:bg-sky-900/40 dark:text-sky-200',
-  kommune: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200',
-  sozialversicherung: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200',
-  privat: 'bg-violet-100 text-violet-800 dark:bg-violet-900/40 dark:text-violet-200',
-};
-
 export function BehoerdenBadge({
   name,
-  kategorie,
+  showKategorie = false,
+  kategorieLabel,
   className,
 }: BehoerdenBadgeProps) {
   const initials = monogram(name);
-  const tone = kategorie ? kategorieClasses[kategorie] : kategorieClasses.bund;
 
   return (
     <div className={cn('flex items-center gap-2', className)}>
       <span
         aria-hidden="true"
-        className={cn(
-          'inline-flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold',
-          tone,
-        )}
+        className="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-surface-muted text-xs font-semibold text-text-secondary"
       >
         {initials}
       </span>
-      <span className="text-sm font-medium text-foreground">{name}</span>
+      <span className="flex flex-col leading-tight">
+        <span className="text-sm font-medium text-text-primary">{name}</span>
+        {showKategorie && kategorieLabel ? (
+          <span className="text-xs text-text-muted">{kategorieLabel}</span>
+        ) : null}
+      </span>
     </div>
   );
 }

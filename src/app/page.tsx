@@ -7,6 +7,10 @@ import { PrototypeDisclaimer } from '@/components/shared/PrototypeDisclaimer';
 import { PrototypeDisclaimerBanner } from '@/components/shared/PrototypeDisclaimerBanner';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
+// Rendered at request time: see (app)/layout.tsx — the next-intl@3 + Next 15.5
+// client IntlProvider is not statically prerenderable in this setup.
+export const dynamic = 'force-dynamic';
+
 export default async function HomePage() {
   const t = await getTranslations('landing');
 
