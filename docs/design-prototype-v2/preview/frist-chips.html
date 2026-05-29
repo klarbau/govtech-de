@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><link rel="stylesheet" href="_preview.css">
+<style>
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px;
+    border-radius: var(--ds-radius-full);
+    font-size: 12px; font-weight: 500;
+    box-shadow: inset 0 0 0 1px transparent;
+  }
+  .ic { width: 12px; height: 12px; display: inline-flex; }
+  .ic svg { width: 12px; height: 12px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .normal { background: var(--ds-color-surface-muted); color: var(--ds-color-text-secondary); box-shadow: inset 0 0 0 1px var(--ds-color-border); }
+  .urgent { background: var(--ds-color-warning-soft); color: #4a2e00; box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--ds-color-warning) 40%, transparent); }
+  .very-urgent { background: color-mix(in oklch, var(--ds-color-danger) 12%, var(--ds-color-surface)); color: var(--ds-color-danger); box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--ds-color-danger) 40%, transparent); }
+  .overdue { background: var(--ds-color-danger); color: var(--ds-color-surface); }
+</style></head>
+<body>
+  <div class="row">
+    <span class="chip normal"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg></span>Antwortfrist · in 14 Tagen</span>
+    <span class="chip urgent"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg></span>Frist · in 5 Tagen</span>
+    <span class="chip very-urgent"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 2 L22 20 H2 Z"/><line x1="12" y1="10" x2="12" y2="14"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/></svg></span>Frist · in 2 Tagen</span>
+    <span class="chip overdue"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 2 L22 20 H2 Z"/><line x1="12" y1="10" x2="12" y2="14"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/></svg></span>Frist · 3 Tage abgelaufen</span>
+  </div>
+  <p class="ds-caption" style="margin: 4px 0 0; font-size: 12px;">Palette steps with days-remaining: ≥ 7 d neutral · &lt; 7 d warning · &lt; 3 d danger-soft · overdue danger-solid.</p>
+</body></html>

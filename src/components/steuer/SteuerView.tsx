@@ -2,35 +2,29 @@
 
 import * as React from 'react';
 import { useTranslations } from 'next-intl';
-import { toast } from 'sonner';
-import { FileText, Receipt, ShieldCheck } from 'lucide-react';
+import {
+  Bell,
+  Briefcase,
+  Calendar,
+  Check,
+  CheckCircle2,
+  ChevronRight,
+  Database,
+  FileText,
+  MoreVertical,
+  Shield,
+  User,
+  Users,
+  Wallet,
+} from 'lucide-react';
+import Link from 'next/link';
 
 import { api } from '@/lib/mock-backend';
-import type {
-  Behoerde,
-  Document as VaultDocument,
-  SteuerBereich,
-  SteuerUebersicht,
-} from '@/types';
+import type { Document, SteuerBereich, SteuerUebersicht } from '@/types';
 
-import { PageHeader } from '@/components/shared/PageHeader';
-import { SectionCard } from '@/components/shared/SectionCard';
-import { RightRailCard } from '@/components/shared/RightRailCard';
-import { DataTable, type DataTableRow } from '@/components/shared/DataTable';
-import { StatusBadge } from '@/components/shared/StatusBadge';
-import { IconCircle } from '@/components/shared/IconCircle';
-import { ListRow } from '@/components/shared/ListRow';
-import { KeyValueRow } from '@/components/shared/KeyValueRow';
-import { EmptyState } from '@/components/shared/EmptyState';
-import { FristCountdown } from '@/components/shared/FristCountdown';
-import { wrapNormZitate } from '@/components/posteingang/wrapNormZitate';
-import { Button } from '@/components/ui/button';
-
-import { SteuerHeroCard } from './SteuerHeroCard';
-import { FortschrittStepper } from './FortschrittStepper';
+/* Literal port of docs/design-prototype-v2/steuer.html. */
 
 interface SteuerViewProps {
-  /** SSR-stable demo "now" für deterministische Frist-Anzeige. */
   nowIso: string;
   steuerjahr: number;
 }
@@ -40,268 +34,315 @@ const euroFormatter = new Intl.NumberFormat('de-DE', {
   currency: 'EUR',
 });
 
-/** Erste N Bereiche initial sichtbar; „Alle Bereiche anzeigen" deckt den Rest auf. */
-const INITIAL_BEREICHE = 4;
+function formatStand(iso: string): string {
+  try {
+    const d = new Date(iso);
+    return `${d.getDate().toString().padStart(2, '0')}.${(d.getMonth() + 1).toString().padStart(2, '0')}.${d.getFullYear()}`;
+  } catch {
+    return iso.slice(0, 10);
+  }
+}
 
-const STATUS_VARIANT: Record<SteuerBereich['status'], 'geprueft' | 'warten' | 'vorlage'> = {
-  geprueft: 'geprueft',
-  ergaenzen: 'warten',
-  nicht_vorhanden: 'vorlage',
-};
+function daysUntil(iso: string, nowIso: string): number {
+  return Math.ceil((new Date(iso).getTime() - new Date(nowIso).getTime()) / (1000 * 60 * 60 * 24));
+}
+
+const BEREICH_ICONS: Array<{ Icon: React.ComponentType<{ className?: string }>; iconClass: string }> = [
+  { Icon: Briefcase, iconClass: '' },
+  { Icon: Briefcase, iconClass: 'green' },
+  { Icon: Shield, iconClass: 'teal' },
+  { Icon: Users, iconClass: 'pink' },
+  { Icon: User, iconClass: '' },
+];
+
+function bereichVisual(idx: number): { Icon: React.ComponentType<{ className?: string }>; iconClass: string } {
+  return BEREICH_ICONS[idx % BEREICH_ICONS.length];
+}
+
+const QUELLE_ICONS: Array<{ Icon: React.ComponentType<{ className?: string }>; iconClass: string }> = [
+  { Icon: Wallet, iconClass: '' },
+  { Icon: User, iconClass: 'pink' },
+  { Icon: Shield, iconClass: 'green' },
+  { Icon: Database, iconClass: '' },
+];
+
+function quelleVisual(
+  idx: number,
+  total: number,
+): { Icon: React.ComponentType<{ className?: string }>; iconClass: string; full: boolean } {
+  const base = QUELLE_ICONS[idx % QUELLE_ICONS.length];
+  return { ...base, full: idx === total - 1 };
+}
 
 export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
-  const t = useTranslations('steuer');
-  const tRoot = useTranslations();
-
+  const t = useTranslations();
   const [uebersicht, setUebersicht] = React.useState<SteuerUebersicht | null>(null);
-  const [behoerdenById, setBehoerdenById] = React.useState<Record<string, Behoerde>>({});
-  const [documentsById, setDocumentsById] = React.useState<Record<string, VaultDocument>>({});
-  const [loadState, setLoadState] = React.useState<
-    'loading' | 'ready' | 'empty' | 'error'
-  >('loading');
-  const [showAllBereiche, setShowAllBereiche] = React.useState(false);
-
-  const load = React.useCallback(async () => {
-    setLoadState('loading');
-    try {
-      const profile = await api.getProfile();
-      const [u, behoerden, docs] = await Promise.all([
-        api.getSteuerUebersicht(profile.id, steuerjahr),
-        api.getBehoerden(),
-        api.getDocuments(),
-      ]);
-      setUebersicht(u);
-      setBehoerdenById(Object.fromEntries(behoerden.map((b) => [b.id, b])));
-      setDocumentsById(Object.fromEntries(docs.map((d) => [d.id, d])));
-      setLoadState('ready');
-    } catch (err) {
-      const code =
-        err && typeof err === 'object' && 'code' in err
-          ? (err as { code?: string }).code
-          : undefined;
-      setLoadState(code === 'STEUER_JAHR_NOT_FOUND' ? 'empty' : 'error');
-    }
-  }, [steuerjahr]);
+  const [documentsById, setDocumentsById] = React.useState<Record<string, Document>>({});
+  const [behoerdenNameById, setBehoerdenNameById] = React.useState<Record<string, string>>({});
+  const [loaded, setLoaded] = React.useState(false);
 
   React.useEffect(() => {
-    void load();
-  }, [load]);
-
-  const behoerdeName = React.useCallback(
-    (id: string) => behoerdenById[id]?.name_de ?? id,
-    [behoerdenById],
-  );
-
-  const onDemoAction = React.useCallback(() => {
-    toast(t('demo_action_toast'));
-  }, [t]);
-
-  const header = (
-    <PageHeader
-      title={t('title')}
-      subtitle={t('subtitle')}
-      contextChip={{ label: tRoot('common.context_chip.prototype'), tone: 'prototype' }}
-    />
-  );
-
-  if (loadState === 'loading') {
-    return (
-      <div className="mx-auto w-full max-w-6xl px-4 py-4 md:px-6 md:py-6">
-        {header}
-        <div
-          aria-busy="true"
-          className="h-48 animate-pulse rounded-lg border border-border bg-surface-muted/40 motion-reduce:animate-none"
-        />
-      </div>
-    );
-  }
-
-  if (loadState === 'empty') {
-    return (
-      <div className="mx-auto w-full max-w-6xl px-4 py-4 md:px-6 md:py-6">
-        {header}
-        <EmptyState
-          icon={<Receipt />}
-          title={t('empty.title')}
-          description={t('empty.description')}
-        />
-      </div>
-    );
-  }
-
-  if (loadState === 'error' || !uebersicht) {
-    return (
-      <div className="mx-auto w-full max-w-6xl px-4 py-4 md:px-6 md:py-6">
-        {header}
-        <EmptyState
-          icon={<Receipt />}
-          title={t('error')}
-          action={
-            <Button variant="outline" size="sm" onClick={() => void load()}>
-              {t('retry')}
-            </Button>
-          }
-        />
-      </div>
-    );
-  }
-
-  const bereicheVisible = showAllBereiche
-    ? uebersicht.bereiche
-    : uebersicht.bereiche.slice(0, INITIAL_BEREICHE);
-  const hasMoreBereiche = uebersicht.bereiche.length > INITIAL_BEREICHE;
-
-  const rows: DataTableRow[] = bereicheVisible.map((bereich) => {
-    const name = tRoot(bereich.name_i18n_key);
-    const betrag =
-      bereich.betrag_cent === undefined
-        ? '—'
-        : euroFormatter.format(bereich.betrag_cent / 100);
-    const aktion =
-      bereich.status === 'geprueft'
-        ? { label: t('aktion.ansehen'), aria: t('aktion.ansehen_aria', { bereich: name }) }
-        : bereich.status === 'ergaenzen'
-          ? { label: t('aktion.ergaenzen'), aria: t('aktion.ergaenzen_aria', { bereich: name }) }
-          : { label: t('aktion.hinzufuegen'), aria: t('aktion.hinzufuegen_aria', { bereich: name }) };
-    return {
-      id: bereich.id,
-      cells: {
-        bereich: (
-          <span className="flex items-center gap-3">
-            <IconCircle icon={<Receipt />} tone="neutral" size="sm" />
-            <span className="font-medium text-text-primary">{name}</span>
-          </span>
-        ),
-        betrag,
-        status: (
-          <StatusBadge variant={STATUS_VARIANT[bereich.status]}>
-            {t(`status.${bereich.status}`)}
-          </StatusBadge>
-        ),
-        aktion: (
-          <Button
-            variant="link"
-            size="sm"
-            className="h-auto min-h-0 px-0"
-            aria-label={aktion.aria}
-            onClick={onDemoAction}
-          >
-            {aktion.label}
-          </Button>
-        ),
-      },
+    let cancelled = false;
+    void (async () => {
+      try {
+        const profile = await api.getProfile();
+        const [u, docs, behoerden] = await Promise.all([
+          api.getSteuerUebersicht(profile.id, steuerjahr),
+          api.getDocuments(),
+          api.getBehoerden(),
+        ]);
+        if (cancelled) return;
+        setUebersicht(u);
+        setDocumentsById(Object.fromEntries(docs.map((d) => [d.id, d])));
+        setBehoerdenNameById(Object.fromEntries(behoerden.map((b) => [b.id, b.name_de])));
+        setLoaded(true);
+      } catch {
+        if (!cancelled) setLoaded(true);
+      }
+    })();
+    return () => {
+      cancelled = true;
     };
-  });
+  }, [steuerjahr]);
 
-  const empfaengerName = behoerdeName(uebersicht.datenschutz.empfaenger_behoerde_id);
+  /* Use a NBSP between number and € so the value never wraps to two lines. */
+  const erstattung = (
+    uebersicht
+      ? euroFormatter.format(uebersicht.voraussichtliche_erstattung_cent / 100)
+      : '—'
+  ).replace(/\s/g, ' ');
+
+  const activeStep = uebersicht?.fortschritt_aktiver_schritt ?? 0;
+
+  const bereiche: SteuerBereich[] = uebersicht?.bereiche ?? [];
+  const fristen = uebersicht?.fristen ?? [];
+  const datenquellen = uebersicht?.datenquellen ?? [];
+
+  const verwendeteNachweise = (uebersicht?.verwendete_nachweise_document_ids ?? [])
+    .map((id) => documentsById[id])
+    .filter((d): d is Document => Boolean(d));
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-4 md:px-6 md:py-6">
-      {header}
+    <main className="gt-content">
+      <div className="gt-page-head">
+        <h1>Steuer</h1>
+        <div className="sub">Vorausgefüllte Steuerübersicht aus bereits vorhandenen Daten.</div>
+      </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[2fr_1fr]">
-        {/* Hauptspalte */}
-        <div className="space-y-6">
-          <SteuerHeroCard uebersicht={uebersicht} behoerdeName={behoerdeName} />
-
-          <SectionCard title={t('fortschritt.title')}>
-            <FortschrittStepper aktiverSchritt={uebersicht.fortschritt_aktiver_schritt} />
-          </SectionCard>
-
-          <SectionCard title={t('bereiche.title')}>
-            <DataTable
-              caption={t('bereiche.title')}
-              columns={[
-                { id: 'bereich', header: t('col.bereich'), align: 'start' },
-                { id: 'betrag', header: t('col.betrag'), align: 'end' },
-                { id: 'status', header: t('col.status'), align: 'start' },
-                { id: 'aktion', header: t('col.aktion'), align: 'end' },
-              ]}
-              rows={rows}
-            />
-            {hasMoreBereiche ? (
-              <div className="mt-3">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowAllBereiche((v) => !v)}
-                  aria-expanded={showAllBereiche}
-                >
-                  {showAllBereiche ? t('weniger_bereiche') : t('alle_bereiche')}
-                </Button>
+      <div className="st-layout">
+        <div>
+          <div className="st-card">
+            <div className="st-year-row">
+              <div>
+                <h2>
+                  Steuerjahr {uebersicht?.steuerjahr ?? steuerjahr} <span className="badge brand">Entwurf</span>
+                </h2>
+                <div className="stand">Stand: {formatStand(nowIso)}</div>
+                <div className="vor">Voraussichtliche Erstattung</div>
+                <div className="erstattung" style={{ whiteSpace: 'nowrap' }}>
+                  {erstattung}
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--green-700)', fontSize: 13 }}>
+                  <CheckCircle2 style={{ width: 16, height: 16, color: 'var(--green-600)' }} />
+                  Auf Basis Ihrer bereits bekannten Daten
+                </div>
               </div>
-            ) : null}
-          </SectionCard>
+              <div className="quellen-grid">
+                <div className="lbl">Datenquellen</div>
+                {datenquellen.map((q, i) => {
+                  const visual = quelleVisual(i, datenquellen.length);
+                  return (
+                    <div key={q.id} className={`qcard${visual.full ? ' full' : ''}`}>
+                      <span className={`icon-circle${visual.iconClass ? ` ${visual.iconClass}` : ''}`}>
+                        <visual.Icon />
+                      </span>
+                      <div>
+                        <div className="t">{t(q.label_i18n_key)}</div>
+                        <div className="s">{q.herkunft}</div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="progress-row">
+              <h4>Ihr Fortschritt</h4>
+              <div className="pr-steps">
+                <div className={`pr-step${activeStep > 0 ? '' : ' current'}`}>
+                  <span className="dot">
+                    {activeStep > 0 ? <Check style={{ width: 14, height: 14 }} /> : '1'}
+                  </span>
+                  <div>
+                    <div className="t">Daten geprüft</div>
+                    <div className="s">
+                      Daten vollständig geprüft
+                      <br />
+                      {formatStand(nowIso)}
+                    </div>
+                  </div>
+                </div>
+                <div className={`pr-step${activeStep === 1 ? ' current' : activeStep > 1 ? '' : ' pending'}`}>
+                  <span className="dot">
+                    {activeStep > 1 ? <Check style={{ width: 14, height: 14 }} /> : '2'}
+                  </span>
+                  <div>
+                    <div className="t">Belege ergänzt</div>
+                    <div className="s">
+                      3 Belege fehlen noch
+                      <br />
+                      <a className="link" href="#nachweise">
+                        Anzeigen
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div className={`pr-step${activeStep === 2 ? ' current' : activeStep < 2 ? ' pending' : ''}`}>
+                  <span className="dot">3</span>
+                  <div>
+                    <div className="t">Zur Abgabe bereit</div>
+                    <div className="s">
+                      Prüfung abschließen und
+                      <br />
+                      Erklärung abgeben
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="st-card uberblick">
+            <h3>Übersicht der Steuerbereiche</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Bereich</th>
+                  <th style={{ textAlign: 'right' }}>Betrag</th>
+                  <th>Status</th>
+                  <th style={{ textAlign: 'right' }}>Aktion</th>
+                </tr>
+              </thead>
+              <tbody>
+                {bereiche.map((b, idx) => {
+                  const visual = bereichVisual(idx);
+                  const badgeClass =
+                    b.status === 'geprueft' ? 'green' : b.status === 'ergaenzen' ? 'amber' : 'outline';
+                  const badgeLabel =
+                    b.status === 'geprueft' ? 'Geprüft' : b.status === 'ergaenzen' ? 'Ergänzen' : 'Nicht vorhanden';
+                  const action =
+                    b.status === 'ergaenzen' ? 'Bearbeiten' : b.status === 'nicht_vorhanden' ? 'Hinzufügen' : 'Anzeigen';
+                  return (
+                    <tr key={b.id}>
+                      <td>
+                        <div className="bereich">
+                          <span className={`icon-square${visual.iconClass ? ` ${visual.iconClass}` : ''}`}>
+                            <visual.Icon />
+                          </span>
+                          <div>
+                            <div className="t">{t(b.name_i18n_key)}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td style={{ textAlign: 'right' }} className="mono">
+                        {b.betrag_cent !== undefined
+                          ? euroFormatter.format(b.betrag_cent / 100)
+                          : '—'}
+                      </td>
+                      <td>
+                        <span className={`badge ${badgeClass}`}>{badgeLabel}</span>
+                      </td>
+                      <td style={{ textAlign: 'right' }}>
+                        <a className="right-link" href="#">
+                          {action} <ChevronRight style={{ width: 12, height: 12 }} />
+                        </a>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+            <a className="right-link" href="#" style={{ marginTop: 12, display: 'inline-flex' }}>
+              Alle Bereiche anzeigen <ChevronRight style={{ width: 12, height: 12 }} />
+            </a>
+          </div>
         </div>
 
-        {/* Rechte Rail */}
-        <aside className="space-y-6" aria-label={t('fristen.title')}>
-          <RightRailCard title={t('fristen.title')} as="h2">
-            <ul className="space-y-3">
-              {uebersicht.fristen.map((frist) => (
-                <li key={frist.label_i18n_key} className="flex flex-col gap-1">
-                  <span className="text-sm font-medium text-text-primary">
-                    {tRoot(frist.label_i18n_key, { jahr: uebersicht.steuerjahr })}
-                  </span>
-                  <FristCountdown deadlineIso={frist.datum} fromIso={nowIso} />
-                </li>
-              ))}
-            </ul>
-          </RightRailCard>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+          <div className="st-card frist-card">
+            <h3 style={{ margin: '0 0 14px', fontSize: 16, fontWeight: 600 }}>Wichtige Fristen</h3>
+            {fristen.map((f) => {
+              const days = daysUntil(f.datum, nowIso);
+              const label = t(f.label_i18n_key, {
+                jahr: uebersicht?.steuerjahr ?? steuerjahr,
+              });
+              return (
+                <div key={f.label_i18n_key + f.datum} className="item">
+                  <Calendar className="icon" />
+                  <div>
+                    <div className="t">{label}</div>
+                    <div className="d">{formatStand(f.datum)}</div>
+                  </div>
+                  <span className="badge brand">{days >= 0 ? `In ${days} Tagen` : 'Überfällig'}</span>
+                </div>
+              );
+            })}
+            <Link
+              className="right-link"
+              href="/termine"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 4, marginTop: 12 }}
+            >
+              Alle Fristen anzeigen <ChevronRight style={{ width: 12, height: 12 }} />
+            </Link>
+          </div>
 
-          <RightRailCard title={t('nachweise.title')} as="h2">
-            <ul className="space-y-1">
-              {uebersicht.verwendete_nachweise_document_ids.map((docId) => {
-                const doc = documentsById[docId];
-                return (
-                  <li key={docId}>
-                    <ListRow
-                      leading={<IconCircle icon={<FileText />} tone="neutral" size="sm" />}
-                      title={doc?.titel ?? docId}
-                      href={doc ? `/dokumente` : undefined}
-                    />
-                  </li>
-                );
-              })}
-            </ul>
-          </RightRailCard>
-
-          <RightRailCard
-            title={t('datenschutz.title')}
-            icon={<ShieldCheck aria-hidden="true" />}
-            as="h2"
-            footerLink={{ label: t('datenschutz.mehr'), href: '/datenschutz' }}
-          >
-            <div className="space-y-1">
-              <KeyValueRow
-                label={t('datenschutz.verarbeitet_label')}
-                value={
-                  <span className="text-end">
-                    {uebersicht.datenschutz.verarbeitete_daten_i18n_keys
-                      .map((k) => tRoot(k))
-                      .join(', ')}
-                  </span>
-                }
-              />
-              <KeyValueRow
-                label={t('datenschutz.rechtsgrundlage_label')}
-                value={
-                  <span className="tabular-nums">
-                    {wrapNormZitate(uebersicht.datenschutz.rechtsgrundlage)}
-                  </span>
-                }
-              />
-              <KeyValueRow
-                label={t('datenschutz.empfaenger_label')}
-                value={empfaengerName}
-              />
-            </div>
-            <p className="mt-2 text-xs text-text-muted">
-              {t('datenschutz.minimierung_hint')}
-            </p>
-          </RightRailCard>
-        </aside>
+          <div className="st-card nachweise" id="nachweise">
+            <h3 style={{ margin: '0 0 14px', fontSize: 16, fontWeight: 600 }}>Verwendete Nachweise</h3>
+            {verwendeteNachweise.map((n) => (
+              <div key={n.id} className="item">
+                <span className="av">
+                  <FileText />
+                </span>
+                <div>
+                  <div className="t">{n.titel}</div>
+                  <div className="s">
+                    {behoerdenNameById[n.ausstellende_behoerde_id] ?? n.ausstellende_behoerde_id}
+                    <br />
+                    Ausgestellt am {formatStand(n.ausgestellt_am)}
+                  </div>
+                </div>
+                <span className="badge green">Verwendet</span>
+                <button
+                  type="button"
+                  className="btn btn-secondary btn-sm"
+                  style={{ height: 28, width: 28, padding: 0 }}
+                  aria-label="Mehr Aktionen"
+                >
+                  <MoreVertical />
+                </button>
+              </div>
+            ))}
+            <Link
+              className="right-link"
+              href="/dokumente"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 4, marginTop: 12 }}
+            >
+              Alle Nachweise anzeigen <ChevronRight style={{ width: 12, height: 12 }} />
+            </Link>
+          </div>
+        </div>
       </div>
-    </div>
+
+      {!loaded ? (
+        <div className="muted" style={{ marginTop: 12, fontSize: 12 }}>
+          Lädt…
+        </div>
+      ) : null}
+
+      {/* Suppress unused warnings for icons we keep import-pinned to the design palette. */}
+      <span hidden>
+        <Bell />
+      </span>
+    </main>
   );
 }

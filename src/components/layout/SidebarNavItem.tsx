@@ -3,8 +3,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { cn } from '@/lib/utils';
-
 import type { ReactNode } from 'react';
 
 interface SidebarNavItemProps {
@@ -12,19 +10,22 @@ interface SidebarNavItemProps {
   label: string;
   /**
    * Icon is rendered in the parent server component and passed as a ReactNode.
-   * Server components cannot pass function references (lucide-react icons are
-   * forwardRef components) into a client component. The parent renders the
-   * Icon JSX so we receive it as a serialized element.
+   * (lucide-react icons are forwardRef components that cannot cross the
+   * server→client boundary as function references.)
    */
   icon: ReactNode;
 }
 
 function isActive(pathname: string | null, href: string): boolean {
   if (!pathname) return false;
-  if (href === '/') return pathname === '/';
+  if (href === '/' || href === '#') return false;
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
+/**
+ * One `<a class="gt-nav a">…</a>` row inside `.gt-nav`. Toggles the literal
+ * `active` class from the prototype's CSS via `usePathname()`.
+ */
 export function SidebarNavItem({ href, label, icon }: SidebarNavItemProps) {
   const pathname = usePathname();
   const active = isActive(pathname, href);
@@ -32,26 +33,10 @@ export function SidebarNavItem({ href, label, icon }: SidebarNavItemProps) {
   return (
     <Link
       href={href}
+      className={active ? 'active' : ''}
       aria-current={active ? 'page' : undefined}
-      data-active={active || undefined}
-      className={cn(
-        'group relative flex min-h-[44px] items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors',
-        active
-          ? 'bg-accent-soft font-medium text-primary'
-          : 'text-text-secondary hover:bg-surface-muted hover:text-text-primary focus-visible:bg-surface-muted focus-visible:text-text-primary',
-      )}
     >
-      <span
-        className={cn(
-          'inline-flex shrink-0',
-          active
-            ? '[&_svg]:text-primary'
-            : '[&_svg]:text-text-secondary group-hover:[&_svg]:text-text-primary',
-        )}
-        aria-hidden="true"
-      >
-        {icon}
-      </span>
+      {icon}
       <span>{label}</span>
     </Link>
   );

@@ -1,20 +1,32 @@
 'use client';
 
 import * as React from 'react';
-import { useFormatter, useLocale, useTranslations } from 'next-intl';
+import Link from 'next/link';
+import { useLocale, useTranslations } from 'next-intl';
 import type Anthropic from '@anthropic-ai/sdk';
+import {
+  Calendar,
+  ChevronRight,
+  ExternalLink,
+  FileText,
+  FolderOpen,
+  ListChecks,
+  Mail,
+  Shield,
+  User,
+} from 'lucide-react';
 
 import { api } from '@/lib/mock-backend';
+import { formatDateDe } from '@/lib/utils';
 import { requiresConfirmation } from '@/lib/ai/tool-schemas';
 import type { AssistantStreamEvent } from '@/lib/ai/stream';
 import type { PersonaContextInput } from '@/lib/ai/system-prompt';
-import { PageHeader } from '@/components/shared/PageHeader';
-import type { Behoerde, Letter, Persona } from '@/types';
+import type { Behoerde, Persona } from '@/types';
 
 import { ChatComposer } from './ChatComposer';
-import { ChatPanel } from './ChatPanel';
-import { KontextRail, type KontextCounts } from './KontextRail';
-import { QuickActionChips } from './QuickActionChips';
+import { MessageBubble } from './MessageBubble';
+import { ToolCallCard } from './ToolCallCard';
+import { UmzugConfirmCard } from './UmzugConfirmCard';
 import {
   dispatchReadTool,
   dispatchStarteUmzug,
@@ -28,7 +40,6 @@ function makeId(prefix: string): string {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
 }
 
-/** Build the cached PersonaContextInput sent to /api/assistant. */
 function toPersonaContext(
   persona: Persona,
   locale: string,
@@ -55,31 +66,30 @@ function toPersonaContext(
   };
 }
 
-/** Anthropic content block helpers. */
 type ContentBlock =
   | Anthropic.TextBlockParam
   | Anthropic.ToolUseBlockParam
   | Anthropic.ToolResultBlockParam;
 
+interface KontextCounts {
+  ungeleseneBriefe: number;
+  dokumente: number;
+  termine: number;
+}
+
 export function AssistentView() {
-  const t = useTranslations('assistent');
-  const tCommon = useTranslations('common');
-  const format = useFormatter();
   const locale = useLocale();
+  const tGreeting = useTranslations('assistent.greeting');
 
   const [persona, setPersona] = React.useState<Persona | null>(null);
   const [counts, setCounts] = React.useState<KontextCounts | null>(null);
-  const [behoerdenById, setBehoerdenById] = React.useState<
-    Record<string, Behoerde>
-  >({});
+  const [behoerdenById, setBehoerdenById] = React.useState<Record<string, Behoerde>>({});
 
   const [messages, setMessages] = React.useState<ChatMessage[]>([]);
   const [streaming, setStreaming] = React.useState(false);
   const [confirmBusyId, setConfirmBusyId] = React.useState<string | null>(null);
   const [liveAnnouncement, setLiveAnnouncement] = React.useState('');
 
-  // The LLM conversation (excludes UI-only greeting). Kept in a ref so the
-  // streaming loop reads the latest without re-subscribing.
   const apiMessagesRef = React.useRef<Anthropic.MessageParam[]>([]);
   const personaCtxRef = React.useRef<PersonaContextInput | null>(null);
 
@@ -88,45 +98,61 @@ export function AssistentView() {
     [behoerdenById],
   );
 
-  /* ───────────────────────── bootstrap (mount) ─────────────────────────── */
   React.useEffect(() => {
     let cancelled = false;
-    (async () => {
-      try {
-        const [p, letters, documents, termine, behoerden] = await Promise.all([
-          api.getProfile(),
-          api.getLetters({ status: ['ungelesen'] }),
-          api.getDocuments(),
-          api.getTermine(),
-          api.getBehoerden(),
-        ]);
-        if (cancelled) return;
-        setPersona(p);
-        personaCtxRef.current = toPersonaContext(p, locale);
-        setCounts({
-          ungeleseneBriefe: letters.length,
-          dokumente: documents.length,
-          termine: termine.length,
-        });
-        setBehoerdenById(
-          Object.fromEntries(behoerden.map((b) => [b.id, b])),
-        );
-        setMessages([buildGreeting(p, letters, t, format)]);
-      } catch {
-        if (!cancelled) setMessages([]);
+    void (async () => {
+      for (let attempt = 0; attempt < 3 && !cancelled; attempt++) {
+        try {
+          const [p, letters, documents, termine, behoerden, steuerLetters] =
+            await Promise.all([
+              api.getProfile(),
+              api.getLetters({ status: ['ungelesen'] }),
+              api.getDocuments(),
+              api.getTermine(),
+              api.getBehoerden(),
+              api.getLetters({ archetype: 'steuerbescheid' }),
+            ]);
+          if (cancelled) return;
+          setPersona(p);
+          personaCtxRef.current = toPersonaContext(p, locale);
+          setCounts({
+            ungeleseneBriefe: letters.length,
+            dokumente: documents.length,
+            termine: termine.length,
+          });
+          const behoerdenMap = Object.fromEntries(
+            behoerden.map((b) => [b.id, b]),
+          );
+          setBehoerdenById(behoerdenMap);
+
+          const steuerbescheid = steuerLetters[0];
+          const einspruchFrist = steuerbescheid?.fristen?.find(
+            (f) => f.typ === 'einspruch',
+          );
+          const facts: GreetingFacts = {
+            steuerbescheidBehoerde: steuerbescheid
+              ? behoerdenMap[steuerbescheid.absender_behoerde_id]?.name_de
+              : undefined,
+            einspruchFristIso: einspruchFrist?.datum,
+            aufenthaltstitelBisIso: p.aufenthaltstitel?.valid_until,
+            steuerBetragCent: steuerbescheid?.betrag_cent,
+            steuerBetragRichtung: steuerbescheid?.betrag_richtung,
+          };
+
+          setMessages([buildGreeting(tGreeting, p, facts)]);
+          return;
+        } catch {
+          await new Promise((r) => setTimeout(r, 200));
+        }
       }
+      if (!cancelled) setMessages([buildStaticGreeting(tGreeting)]);
     })();
     return () => {
       cancelled = true;
     };
-    // Re-bootstrap on locale/persona change resets the thread (spec §9).
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [locale]);
 
-  /* ──────────────────────────── streaming ──────────────────────────────── */
-
-  // Mutual recursion (runTurn ↔ handleToolUses) routed through a ref so the
-  // tool-result round-trip can re-enter the stream without a declaration cycle.
   const handleToolUsesRef = React.useRef<
     (
       assistantId: string,
@@ -219,7 +245,6 @@ export function AssistentView() {
         streamError = true;
       }
 
-      // Persist the assistant turn into the LLM message history.
       const assistantContent: ContentBlock[] = [];
       if (accText) assistantContent.push({ type: 'text', text: accText });
       for (const tu of toolUses) {
@@ -251,7 +276,11 @@ export function AssistentView() {
         setMessages((prev) =>
           prev.map((m) =>
             m.id === assistantId && !m.text
-              ? { ...m, text: t('error.stream'), error: true }
+              ? {
+                  ...m,
+                  text: 'Der Assistent ist gerade nicht erreichbar. Bitte versuchen Sie es erneut.',
+                  error: true,
+                }
               : m,
           ),
         );
@@ -263,7 +292,7 @@ export function AssistentView() {
 
       await handleToolUsesRef.current(assistantId, toolUses, round);
     },
-    [locale, t],
+    [locale],
   );
 
   const handleToolUses = React.useCallback(
@@ -277,7 +306,6 @@ export function AssistentView() {
       let heldUmzugToolUseId: string | undefined;
 
       for (const tu of toolUses) {
-        // THE confirm gate: never auto-dispatch starte_umzug.
         if (requiresConfirmation(tu.name)) {
           heldUmzugToolUseId = tu.id;
           const input = (tu.input ?? {}) as Record<string, unknown>;
@@ -290,7 +318,13 @@ export function AssistentView() {
         setMessages((prev) =>
           prev.map((m) =>
             m.id === assistantId
-              ? { ...m, toolCalls: [...(m.toolCalls ?? []), { id: callId, name: tu.name, status: 'running' }] }
+              ? {
+                  ...m,
+                  toolCalls: [
+                    ...(m.toolCalls ?? []),
+                    { id: callId, name: tu.name, status: 'running' },
+                  ],
+                }
               : m,
           ),
         );
@@ -298,7 +332,6 @@ export function AssistentView() {
         const outcome = await dispatchReadTool(tu.name, tu.input, tu.id);
         toolResults.push(outcome.toolResult);
 
-        // preview_umzug → surface the confirm card.
         if (tu.name === 'preview_umzug' && outcome.preview) {
           heldUmzug = proposalFromPreview(outcome.preview);
         }
@@ -323,7 +356,6 @@ export function AssistentView() {
         );
       }
 
-      // Attach the held Umzug proposal to the assistant message → confirm card.
       if (heldUmzug) {
         const finalProposal: UmzugProposal = {
           ...heldUmzug,
@@ -336,9 +368,6 @@ export function AssistentView() {
         );
       }
 
-      // If the model emitted starte_umzug directly, we held it — we must still
-      // satisfy the tool_use with a tool_result so the conversation stays valid.
-      // We answer it as "awaiting user confirmation" so the model doesn't retry.
       if (heldUmzugToolUseId) {
         toolResults.push({
           type: 'tool_result',
@@ -357,7 +386,6 @@ export function AssistentView() {
         { role: 'user', content: toolResults },
       ];
 
-      // Only continue the loop if there was no held write awaiting confirm.
       if (!heldUmzugToolUseId) {
         await runTurn(round + 1);
       }
@@ -387,8 +415,6 @@ export function AssistentView() {
     },
     [streaming, confirmBusyId, runTurn],
   );
-
-  /* ───────────────────── confirm-gate handlers ─────────────────────────── */
 
   const onConfirmUmzug = React.useCallback(
     async (messageId: string) => {
@@ -440,77 +466,172 @@ export function AssistentView() {
         ),
       );
       setConfirmBusyId(null);
-      if (outcome.ok) setLiveAnnouncement(t('tool.umzug_started'));
+      if (outcome.ok) setLiveAnnouncement('Umzug gestartet.');
     },
-    [messages, persona, t],
+    [messages, persona],
   );
 
-  const onCancelUmzug = React.useCallback(
-    (messageId: string) => {
-      setMessages((prev) =>
-        prev.map((m) =>
-          m.id === messageId && m.umzugProposal
-            ? {
-                ...m,
-                umzugProposal: { ...m.umzugProposal, resolution: 'cancelled' },
-              }
-            : m,
-        ),
-      );
-      apiMessagesRef.current = [
-        ...apiMessagesRef.current,
-        { role: 'user', content: t('umzug_confirm.cancelled') },
-      ];
-    },
-    [t],
-  );
-
-  /* ──────────────────────────── render ─────────────────────────────────── */
+  const onCancelUmzug = React.useCallback((messageId: string) => {
+    setMessages((prev) =>
+      prev.map((m) =>
+        m.id === messageId && m.umzugProposal
+          ? {
+              ...m,
+              umzugProposal: { ...m.umzugProposal, resolution: 'cancelled' },
+            }
+          : m,
+      ),
+    );
+    apiMessagesRef.current = [
+      ...apiMessagesRef.current,
+      {
+        role: 'user',
+        content: 'Bitte den Umzug jetzt nicht starten.',
+      },
+    ];
+  }, []);
 
   const interactionDisabled = streaming || confirmBusyId !== null;
 
+  const threadEndRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    threadEndRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' });
+  }, [messages, streaming]);
+
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-6 md:px-6">
-      <PageHeader
-        title={t('title')}
-        subtitle={t('subtitle')}
-        contextChip={{ label: tCommon('context_chip.prototype') }}
-      />
-
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
-        <section className="flex min-w-0 flex-col gap-4" aria-label={t('title')}>
-          <QuickActionChips
-            onSelect={sendUserMessage}
-            disabled={interactionDisabled}
-          />
-
-          <ChatPanel
-            messages={messages}
-            streaming={streaming}
-            behoerdeName={behoerdeName}
-            onConfirmUmzug={onConfirmUmzug}
-            onCancelUmzug={onCancelUmzug}
-            confirmBusyMessageId={confirmBusyId}
-            liveAnnouncement={liveAnnouncement}
-          />
-
-          <div className="sticky bottom-4 mt-auto">
-            <ChatComposer
-              onSend={sendUserMessage}
-              disabled={interactionDisabled}
-            />
-          </div>
-        </section>
-
-        <div className="lg:sticky lg:top-20 lg:self-start">
-          <KontextRail counts={counts} />
+    <>
+      <div className="gt-page-head">
+        <h1>Assistent</h1>
+        <div className="sub">
+          Fragen stellen, Briefe verstehen und nächste Schritte finden.
         </div>
       </div>
-    </div>
+
+      <div className="quick-chips" role="group" aria-label="Vorgeschlagene Fragen">
+        <button
+          type="button"
+          className="chip"
+          disabled={interactionDisabled}
+          onClick={() => void sendUserMessage('Erkläre meinen Brief.')}
+        >
+          <FileText />
+          Erkläre meinen Brief
+        </button>
+        <button
+          type="button"
+          className="chip"
+          disabled={interactionDisabled}
+          onClick={() => void sendUserMessage('Was ist als Nächstes zu tun?')}
+        >
+          <ListChecks />
+          Was ist als Nächstes zu tun?
+        </button>
+        <button
+          type="button"
+          className="chip"
+          disabled={interactionDisabled}
+          onClick={() => void sendUserMessage('Welche Unterlagen fehlen?')}
+        >
+          <FolderOpen />
+          Welche Unterlagen fehlen?
+        </button>
+      </div>
+
+      <div className="as-layout">
+        <div className="chat-card">
+          <ol className="chat-thread" aria-label="Konversation mit dem Assistenten">
+            {messages.map((message) => (
+              <li key={message.id} style={{ display: 'contents' }}>
+                <MessageBubble message={message} />
+                {message.toolCalls?.map((call) => (
+                  <ToolCallCard key={call.id} call={call} />
+                ))}
+                {message.umzugProposal ? (
+                  <UmzugConfirmCard
+                    proposal={message.umzugProposal}
+                    behoerdeName={behoerdeName}
+                    busy={confirmBusyId === message.id}
+                    onConfirm={() => void onConfirmUmzug(message.id)}
+                    onCancel={() => onCancelUmzug(message.id)}
+                  />
+                ) : null}
+              </li>
+            ))}
+            <div ref={threadEndRef} />
+          </ol>
+          <div className="sr-only" role="status" aria-live="polite">
+            {liveAnnouncement}
+          </div>
+
+          <ChatComposer onSend={sendUserMessage} disabled={interactionDisabled} />
+        </div>
+
+        <div className="ctx-card">
+          <h3>Kontext</h3>
+          <div className="sub">Ich beziehe mich auf:</div>
+          <Link className="ctx-row" href="/posteingang">
+            <span className="icon-circle">
+              <Mail />
+            </span>
+            <div className="grow">
+              <div className="t">Posteingang</div>
+              <div className="s">
+                {counts ? `${counts.ungeleseneBriefe} ungelesen` : '—'}
+              </div>
+            </div>
+            <ChevronRight />
+          </Link>
+          <Link className="ctx-row" href="/dokumente">
+            <span className="icon-circle">
+              <FileText />
+            </span>
+            <div className="grow">
+              <div className="t">Dokumente</div>
+              <div className="s">{counts ? `${counts.dokumente} Dokumente` : '—'}</div>
+            </div>
+            <ChevronRight />
+          </Link>
+          <Link className="ctx-row" href="/termine">
+            <span className="icon-circle">
+              <Calendar />
+            </span>
+            <div className="grow">
+              <div className="t">Termine</div>
+              <div className="s">{counts ? `${counts.termine} anstehend` : '—'}</div>
+            </div>
+            <ChevronRight />
+          </Link>
+          <Link className="ctx-row" href="/stammdaten">
+            <span className="icon-circle">
+              <User />
+            </span>
+            <div className="grow">
+              <div className="t">Stammdaten</div>
+              <div className="s">Aktuell</div>
+            </div>
+            <ChevronRight />
+          </Link>
+
+          <div className="ctx-foot">
+            <div className="row">
+              <Shield />
+              <div>
+                <div className="t">Ihre Daten sind geschützt.</div>
+                <div className="s">
+                  Der Assistent verarbeitet Ihre Daten vertraulich und sicher.
+                </div>
+                <Link href="/datenschutz">
+                  Mehr zum Datenschutz{' '}
+                  <ExternalLink style={{ width: 11, height: 11 }} />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
-
-/* ─────────────────────────── helpers (module) ──────────────────────────── */
 
 function proposalFromPreview(preview: PreviewResult): UmzugProposal {
   return {
@@ -521,20 +642,12 @@ function proposalFromPreview(preview: PreviewResult): UmzugProposal {
   };
 }
 
-/**
- * Fallback (§7.4 b): the model streamed `starte_umzug` directly. We do NOT
- * dispatch it; instead we run `previewUmzug` now to populate the confirm card.
- */
 async function buildProposalFromStarteUmzug(
   input: Record<string, unknown>,
 ): Promise<UmzugProposal | null> {
   const adresse = input.neue_adresse;
   const stichtag = input.stichtag_iso;
-  if (
-    !adresse ||
-    typeof adresse !== 'object' ||
-    typeof stichtag !== 'string'
-  ) {
+  if (!adresse || typeof adresse !== 'object' || typeof stichtag !== 'string') {
     return null;
   }
   const neue_adresse = adresse as UmzugProposal['neue_adresse'];
@@ -543,75 +656,93 @@ async function buildProposalFromStarteUmzug(
     ? consentRaw.filter((v): v is string => typeof v === 'string')
     : [];
   try {
-    const umzugPreview = await api.previewUmzug({
-      neue_adresse,
-      stichtag,
-    });
+    const umzugPreview = await api.previewUmzug({ neue_adresse, stichtag });
     return { neue_adresse, stichtag, blockBConsent, preview: umzugPreview };
   } catch {
     return null;
   }
 }
 
-/** Client-composed greeting — UI-only, never sent to the LLM (spec §4.2). */
+type GreetingTranslator = (
+  key: string,
+  values?: Record<string, string | number>,
+) => string;
+
+interface GreetingFacts {
+  /** Name der absendenden Behörde des Steuerbescheids (aus getBehoerden-Lookup). */
+  steuerbescheidBehoerde?: string;
+  /** ISO-Datum der Einspruchs-Frist des Steuerbescheids. */
+  einspruchFristIso?: string;
+  /** ISO-Datum, bis zu dem der Aufenthaltstitel gültig ist. */
+  aufenthaltstitelBisIso?: string;
+  /** Betrag des Steuerbescheids in Euro-Cent (Erstattung oder Nachzahlung). */
+  steuerBetragCent?: number;
+  /** Richtung des Steuer-Betrags: Geld an den/die Bürger:in oder ans Finanzamt. */
+  steuerBetragRichtung?: 'erstattung' | 'nachzahlung';
+}
+
+const euroFormatter = new Intl.NumberFormat('de-DE', {
+  style: 'currency',
+  currency: 'EUR',
+});
+
+/**
+ * Baut die Begrüßung ausschließlich aus realen, strukturierten API-Daten. Fehlt
+ * eine Tatsache (kein Steuerbescheid, kein Aufenthaltstitel), entfällt der
+ * jeweilige Punkt, statt eine veraltete Konstante anzuzeigen.
+ */
+function buildGreetingText(
+  t: GreetingTranslator,
+  vorname: string | null,
+  facts: GreetingFacts,
+): string {
+  const lines: string[] = [
+    vorname ? t('intro_named', { vorname }) : t('intro'),
+  ];
+
+  if (facts.steuerbescheidBehoerde) {
+    lines.push(`- ${t('bullet_steuerbescheid', { behoerde: facts.steuerbescheidBehoerde })}`);
+  }
+  if (facts.steuerBetragCent != null && facts.steuerBetragRichtung) {
+    const betrag = euroFormatter.format(facts.steuerBetragCent / 100);
+    const key =
+      facts.steuerBetragRichtung === 'erstattung'
+        ? 'bullet_erstattung'
+        : 'bullet_nachzahlung';
+    lines.push(`- ${t(key, { betrag })}`);
+  }
+  if (facts.aufenthaltstitelBisIso) {
+    lines.push(`- ${t('bullet_aufenthalt', { datum: formatDateDe(facts.aufenthaltstitelBisIso) })}`);
+  }
+  if (facts.einspruchFristIso) {
+    lines.push(`- ${t('bullet_einspruch', { datum: formatDateDe(facts.einspruchFristIso) })}`);
+  }
+
+  lines.push('', t('cta'));
+  return lines.join('\n');
+}
+
 function buildGreeting(
+  t: GreetingTranslator,
   persona: Persona,
-  unreadLetters: Letter[],
-  t: ReturnType<typeof useTranslations>,
-  format: ReturnType<typeof useFormatter>,
+  facts: GreetingFacts,
 ): ChatMessage {
-  const bullets: string[] = [];
-  if (unreadLetters.length > 0) {
-    bullets.push(t('greeting.bullet_briefe', { count: unreadLetters.length }));
-  }
-  const nextFrist = pickNextFrist(unreadLetters);
-  if (nextFrist) {
-    const fristDate = new Date(nextFrist.datum);
-    const fristLabel = Number.isNaN(fristDate.getTime())
-      ? nextFrist.datum
-      : format.dateTime(fristDate, {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-        });
-    bullets.push(
-      t('greeting.bullet_frist', {
-        betreff: nextFrist.betreff,
-        datum: fristLabel,
-      }),
-    );
-  }
-  if (bullets.length === 0) {
-    bullets.push(t('greeting.bullet_keine'));
-  }
-
-  const text = [
-    t('greeting.intro', { vorname: persona.vorname }),
-    ...bullets.map((b) => `- ${b}`),
-    '',
-    t('greeting.cta'),
-  ].join('\n');
-
   return {
     id: 'greeting',
     role: 'assistant',
-    text,
+    text: buildGreetingText(t, persona.vorname, facts),
     at: new Date().toISOString(),
     uiOnly: true,
   };
 }
 
-function pickNextFrist(
-  letters: Letter[],
-): { betreff: string; datum: string } | null {
-  let best: { betreff: string; datum: string } | null = null;
-  for (const letter of letters) {
-    for (const frist of letter.fristen ?? []) {
-      if (!frist.datum) continue;
-      if (!best || frist.datum < best.datum) {
-        best = { betreff: letter.betreff, datum: frist.datum };
-      }
-    }
-  }
-  return best;
+function buildStaticGreeting(t: GreetingTranslator): ChatMessage {
+  return {
+    id: 'greeting',
+    role: 'assistant',
+    text: buildGreetingText(t, null, {}),
+    at: new Date().toISOString(),
+    uiOnly: true,
+  };
 }
+

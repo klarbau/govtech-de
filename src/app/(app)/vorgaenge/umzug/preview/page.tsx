@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { CascadePreview } from '@/components/umzug/CascadePreview';
 import { WizardProgress } from '@/components/umzug/WizardProgress';
-import { api } from '@/lib/mock-backend/api';
+import { api } from '@/lib/mock-backend';
 import { useUmzugDraft } from '@/stores/umzugDraft';
 import type {
   Behoerde,

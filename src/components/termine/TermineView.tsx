@@ -1,467 +1,543 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { differenceInCalendarDays, format, parseISO } from 'date-fns';
 import {
   Bell,
-  CalendarDays,
+  Bookmark,
+  Calendar,
+  CalendarPlus,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  Euro,
+  FileText,
+  Info,
   Landmark,
   MapPin,
-  Video,
+  ReceiptText,
+  Stethoscope,
 } from 'lucide-react';
 
-import { cn } from '@/lib/utils';
-import { formatDateDe, formatTimeDe } from '@/lib/utils';
 import { api } from '@/lib/mock-backend';
 import type { Behoerde, Reminder, Termin } from '@/types';
 
-import { PageHeader } from '@/components/shared/PageHeader';
-import { SectionCard } from '@/components/shared/SectionCard';
-import { RightRailCard } from '@/components/shared/RightRailCard';
-import { ListRow } from '@/components/shared/ListRow';
-import { IconCircle } from '@/components/shared/IconCircle';
-import { StatusBadge } from '@/components/shared/StatusBadge';
-import { EmptyState } from '@/components/shared/EmptyState';
-import { Button } from '@/components/ui/button';
-
-import { MonthCalendar } from './MonthCalendar';
-import {
-  TermineFilter,
-  type TermineFilterKey,
-} from './TermineFilter';
-import { NaechsterTerminCard } from './NaechsterTerminCard';
-import { TerminVorbereitungChecklist } from './TerminVorbereitungChecklist';
-import { downloadIcs } from './buildIcs';
+/* Literal port of docs/design-prototype-v2/termine.html. */
 
 interface TermineViewProps {
-  /** SSR-stable demo "now". */
   nowIso: string;
 }
 
-type TerminItem =
-  | { kind: 'termin'; id: string; datum: string; data: Termin }
-  | { kind: 'reminder'; id: string; datum: string; data: Reminder };
+type FilterKey = 'behoerden' | 'erinnerungen' | 'buchungen' | 'abgeschlossen';
 
-function terminFilterKey(termin: Termin, nowIso: string): TermineFilterKey {
-  if (differenceInCalendarDays(parseISO(termin.datum), parseISO(nowIso)) < 0) {
-    return 'abgeschlossen';
+const MONTH_LABELS = [
+  'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
+  'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember',
+] as const;
+
+const WEEKDAY_DE = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'] as const;
+
+function formatDate(iso: string): string {
+  try {
+    const d = new Date(iso);
+    return `${WEEKDAY_DE[d.getDay()] === 'So' ? 'Sonntag' :
+      d.getDay() === 1 ? 'Montag' :
+      d.getDay() === 2 ? 'Dienstag' :
+      d.getDay() === 3 ? 'Mittwoch' :
+      d.getDay() === 4 ? 'Donnerstag' :
+      d.getDay() === 5 ? 'Freitag' : 'Samstag'}, ${d.getDate().toString().padStart(2, '0')}. ${MONTH_LABELS[d.getMonth()]} ${d.getFullYear()}`;
+  } catch {
+    return iso.slice(0, 10);
   }
-  if (termin.kategorie === 'buchung') return 'buchungen';
-  return 'behoerdentermine';
+}
+
+function formatTimeRange(iso: string, durationMinutes = 45): string {
+  try {
+    const d = new Date(iso);
+    const hh = d.getHours().toString().padStart(2, '0');
+    const mm = d.getMinutes().toString().padStart(2, '0');
+    const end = new Date(d.getTime() + durationMinutes * 60 * 1000);
+    const eh = end.getHours().toString().padStart(2, '0');
+    const em = end.getMinutes().toString().padStart(2, '0');
+    return `${hh}:${mm} – ${eh}:${em} Uhr`;
+  } catch {
+    return '';
+  }
 }
 
 export function TermineView({ nowIso }: TermineViewProps) {
-  const t = useTranslations('termine');
-  const tCommon = useTranslations('common');
-  const tStatus = useTranslations('common.status');
-
+  const t = useTranslations();
   const [termine, setTermine] = React.useState<Termin[]>([]);
   const [reminders, setReminders] = React.useState<Reminder[]>([]);
-  const [behoerdenById, setBehoerdenById] = React.useState<
-    Record<string, Behoerde>
-  >({});
-  const [loadState, setLoadState] = React.useState<'loading' | 'ready' | 'error'>(
-    'loading',
-  );
-
-  const [selectedIso, setSelectedIso] = React.useState<string | null>(null);
-  const [activeFilters, setActiveFilters] = React.useState<TermineFilterKey[]>([
-    'behoerdentermine',
-    'erinnerungen',
-    'buchungen',
-  ]);
-  const [detailTerminId, setDetailTerminId] = React.useState<string | null>(null);
-
-  const load = React.useCallback(async () => {
-    setLoadState('loading');
-    try {
-      const [terms, rems, behoerden] = await Promise.all([
-        api.getTermine(),
-        api.getReminders(),
-        api.getBehoerden(),
-      ]);
-      setTermine(terms);
-      setReminders(rems);
-      setBehoerdenById(Object.fromEntries(behoerden.map((b) => [b.id, b])));
-      setLoadState('ready');
-    } catch {
-      setLoadState('error');
-    }
-  }, []);
+  const [behoerdenById, setBehoerdenById] = React.useState<Record<string, Behoerde>>({});
+  const [filters, setFilters] = React.useState<Record<FilterKey, boolean>>({
+    behoerden: true,
+    erinnerungen: true,
+    buchungen: true,
+    abgeschlossen: false,
+  });
+  const [loaded, setLoaded] = React.useState(false);
 
   React.useEffect(() => {
-    void load();
-  }, [load]);
+    let cancelled = false;
+    void (async () => {
+      for (let attempt = 0; attempt < 3 && !cancelled; attempt++) {
+        try {
+          const [terms, rems, behoerden] = await Promise.all([
+            api.getTermine(),
+            api.getReminders(),
+            api.getBehoerden(),
+          ]);
+          if (cancelled) return;
+          setTermine(terms);
+          setReminders(rems);
+          setBehoerdenById(Object.fromEntries(behoerden.map((b) => [b.id, b])));
+          setLoaded(true);
+          return;
+        } catch {
+          await new Promise((r) => setTimeout(r, 200));
+        }
+      }
+      if (!cancelled) setLoaded(true);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const behoerdeName = React.useCallback(
-    (id?: string) => (id ? behoerdenById[id]?.name_de ?? id : ''),
+    (id?: string) => {
+      if (!id) return '';
+      return behoerdenById[id]?.name_de ?? id;
+    },
     [behoerdenById],
   );
 
-  const toggleFilter = React.useCallback((key: TermineFilterKey) => {
-    setActiveFilters((prev) =>
-      prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key],
-    );
-  }, []);
+  const now = React.useMemo(() => new Date(nowIso), [nowIso]);
+  const monthLabel = `${MONTH_LABELS[now.getMonth()]} ${now.getFullYear()}`;
 
-  // Event-count map for the calendar (termine + reminders by yyyy-MM-dd).
-  const eventCounts = React.useMemo(() => {
-    const map: Record<string, number> = {};
-    const add = (iso: string) => {
-      const key = format(parseISO(iso), 'yyyy-MM-dd');
-      map[key] = (map[key] ?? 0) + 1;
-    };
-    termine.forEach((x) => add(x.datum));
-    reminders.forEach((x) => add(x.datum));
-    return map;
-  }, [termine, reminders]);
+  /* Build calendar grid: Mon–Sun rows. */
+  const calendarCells = React.useMemo(() => {
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    const firstOfMonth = new Date(year, month, 1);
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    // Monday-first weekday index of day 1 (0 = Mon).
+    const dow = (firstOfMonth.getDay() + 6) % 7;
+    const cells: Array<{ key: string; label: number; date: Date; mute: boolean; today: boolean; hasEvent: boolean }> = [];
 
-  // The chronologically next future, non-cancelled termin.
-  const naechsterTermin = React.useMemo(() => {
-    const future = termine
-      .filter(
-        (x) =>
-          x.status !== 'abgesagt' &&
-          differenceInCalendarDays(parseISO(x.datum), parseISO(nowIso)) >= 0,
-      )
-      .sort((a, b) => a.datum.localeCompare(b.datum));
-    return future[0] ?? null;
-  }, [termine, nowIso]);
-
-  // Combined + filtered list for "Weitere Termine & Erinnerungen".
-  const combinedItems = React.useMemo<TerminItem[]>(() => {
-    const items: TerminItem[] = [];
-
-    for (const termin of termine) {
-      const cat = terminFilterKey(termin, nowIso);
-      if (!activeFilters.includes(cat)) continue;
-      items.push({ kind: 'termin', id: termin.id, datum: termin.datum, data: termin });
+    // Trailing days of previous month.
+    const prevMonthDays = new Date(year, month, 0).getDate();
+    for (let i = dow - 1; i >= 0; i--) {
+      const d = new Date(year, month - 1, prevMonthDays - i);
+      cells.push({ key: `p-${d.getTime()}`, label: d.getDate(), date: d, mute: true, today: false, hasEvent: false });
     }
-
-    if (activeFilters.includes('erinnerungen')) {
-      for (const reminder of reminders) {
-        items.push({
-          kind: 'reminder',
-          id: reminder.id,
-          datum: reminder.datum,
-          data: reminder,
-        });
-      }
+    // Current month.
+    const todayKey = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}`;
+    const eventKeys = new Set<string>();
+    [...termine, ...reminders].forEach((x) => {
+      const d = new Date(x.datum);
+      eventKeys.add(`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`);
+    });
+    for (let day = 1; day <= daysInMonth; day++) {
+      const d = new Date(year, month, day);
+      const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+      cells.push({
+        key: `c-${d.getTime()}`,
+        label: day,
+        date: d,
+        mute: false,
+        today: key === todayKey,
+        hasEvent: eventKeys.has(key),
+      });
     }
+    // Leading days of next month to round to 6 weeks (42 cells max).
+    while (cells.length % 7 !== 0) {
+      const last = cells[cells.length - 1].date;
+      const d = new Date(last.getFullYear(), last.getMonth(), last.getDate() + 1);
+      cells.push({ key: `n-${d.getTime()}`, label: d.getDate(), date: d, mute: true, today: false, hasEvent: false });
+    }
+    return cells;
+  }, [now, termine, reminders]);
 
-    const dayFiltered = selectedIso
-      ? items.filter(
-          (x) => format(parseISO(x.datum), 'yyyy-MM-dd') === selectedIso,
-        )
-      : items;
+  const futureTermine = React.useMemo(
+    () =>
+      [...termine]
+        .filter((t) => t.status !== 'abgesagt' && new Date(t.datum).getTime() >= now.getTime() - 24 * 3600 * 1000)
+        .sort((a, b) => a.datum.localeCompare(b.datum)),
+    [termine, now],
+  );
 
-    return dayFiltered.sort((a, b) => a.datum.localeCompare(b.datum));
-  }, [termine, reminders, activeFilters, selectedIso, nowIso]);
+  const naechster = futureTermine[0] ?? null;
+  const weitere = futureTermine.slice(1);
 
-  // "Weitere" excludes the highlighted next termin (unless a day is selected).
-  const weitereItems = React.useMemo(() => {
-    if (selectedIso) return combinedItems;
-    return combinedItems.filter(
-      (x) => !(x.kind === 'termin' && x.id === naechsterTermin?.id),
-    );
-  }, [combinedItems, naechsterTermin, selectedIso]);
-
-  const fristen = React.useMemo(
+  const futureFristen = React.useMemo(
     () =>
       reminders
-        .filter((r) => r.kategorie === 'frist')
+        .filter((r) => new Date(r.datum).getTime() >= now.getTime() - 24 * 3600 * 1000)
         .sort((a, b) => a.datum.localeCompare(b.datum)),
-    [reminders],
+    [reminders, now],
   );
 
-  const detailTermin = React.useMemo(() => {
-    const id = detailTerminId ?? naechsterTermin?.id ?? null;
-    return termine.find((x) => x.id === id) ?? naechsterTermin;
-  }, [detailTerminId, naechsterTermin, termine]);
-
-  function exportIcs(termin: Termin) {
-    downloadIcs(termin, behoerdeName(termin.behoerde_id));
+  function toggleFilter(key: FilterKey) {
+    setFilters((prev) => ({ ...prev, [key]: !prev[key] }));
   }
 
-  function fristTone(datumIso: string): 'warn' | 'danger' | undefined {
-    const days = differenceInCalendarDays(parseISO(datumIso), parseISO(nowIso));
-    if (days <= 7) return 'danger';
-    if (days <= 30) return 'warn';
-    return undefined;
-  }
-
-  function fristLabel(datumIso: string): string {
-    const days = differenceInCalendarDays(parseISO(datumIso), parseISO(nowIso));
-    if (days < 0) return t('fristen.ueberfaellig');
-    return t('fristen.in_tagen', { count: days });
+  function termineIconTone(t: Termin): { tone: string; Icon: React.ComponentType<{ className?: string }> } {
+    const lower = (behoerdeName(t.behoerde_id) || t.betreff || '').toLowerCase();
+    if (lower.includes('kinderarzt') || lower.includes('arzt')) return { tone: 'violet', Icon: Stethoscope };
+    if (lower.includes('finanz') || lower.includes('steuer')) return { tone: 'green', Icon: ReceiptText };
+    if (lower.includes('beitragsservice') || lower.includes('rundfunk')) return { tone: 'green', Icon: Euro };
+    return { tone: '', Icon: Landmark };
   }
 
   return (
-    <div className="px-4 py-4 md:px-6 md:py-6">
-      <PageHeader
-        title={t('title')}
-        subtitle={t('subtitle')}
-        contextChip={{
-          label: tCommon('context_chip.speculative'),
-          tone: 'speculative',
-        }}
-      />
+    <main className="gt-content">
+      <div className="gt-page-head">
+        <h1>Termine</h1>
+        <div className="sub">Behördentermine, Erinnerungen und Buchungen an einem Ort.</div>
+      </div>
 
-      {loadState === 'error' ? (
-        <EmptyState
-          icon={<CalendarDays aria-hidden="true" />}
-          title={t('error')}
-          action={
-            <Button type="button" variant="outline" onClick={() => void load()}>
-              {tCommon('cta.erneut_versuchen')}
-            </Button>
-          }
-        />
-      ) : (
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[18rem_minmax(0,1fr)_20rem]">
-          {/* Left column: calendar + filter */}
-          <div className="space-y-6">
-            <SectionCard padding="md">
-              <MonthCalendar
-                selectedIso={selectedIso}
-                todayIso={nowIso}
-                eventCounts={eventCounts}
-                onSelect={setSelectedIso}
-              />
-            </SectionCard>
-            <SectionCard padding="md">
-              <TermineFilter active={activeFilters} onToggle={toggleFilter} />
-            </SectionCard>
+      <div className="tm-layout">
+        {/* Left: calendar + filter */}
+        <div>
+          <div className="tm-card">
+            <div className="cal-head">
+              <div className="m">{monthLabel}</div>
+              <div className="nav">
+                <button type="button" aria-label="Vorheriger Monat">
+                  <ChevronLeft />
+                </button>
+                <button type="button" aria-label="Nächster Monat">
+                  <ChevronRight />
+                </button>
+              </div>
+            </div>
+            <div className="cal">
+              <div className="h">Mo</div>
+              <div className="h">Di</div>
+              <div className="h">Mi</div>
+              <div className="h">Do</div>
+              <div className="h">Fr</div>
+              <div className="h">Sa</div>
+              <div className="h">So</div>
+              {calendarCells.map((c) => {
+                const classes = ['d'];
+                if (c.mute) classes.push('mute');
+                if (c.today) classes.push('today');
+                if (c.hasEvent && !c.today) classes.push('has-event');
+                return (
+                  <div key={c.key} className={classes.join(' ')}>
+                    {c.today ? <span>{c.label}</span> : c.label}
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
-          {/* Center column: next termin + further list */}
-          <div className="space-y-6">
-            <section aria-labelledby="termine-naechste">
-              <h2
-                id="termine-naechste"
-                className="mb-3 text-lg font-semibold text-text-primary"
-              >
-                {t('naechste.title')}
-              </h2>
-              {loadState === 'loading' ? (
-                <div
-                  className="h-40 animate-pulse rounded-xl bg-surface-muted motion-reduce:animate-none"
-                  aria-hidden="true"
-                />
-              ) : naechsterTermin ? (
-                <NaechsterTerminCard
-                  termin={naechsterTermin}
-                  behoerdeName={behoerdeName(naechsterTermin.behoerde_id)}
-                  statusLabel={tStatus('bestaetigt')}
-                  onIcsExport={() => exportIcs(naechsterTermin)}
-                  onDetails={() => setDetailTerminId(naechsterTermin.id)}
-                />
-              ) : (
-                <EmptyState
-                  icon={<CalendarDays aria-hidden="true" />}
-                  title={t('empty.title')}
-                  description={t('empty.description')}
-                />
-              )}
-            </section>
-
-            <section aria-labelledby="termine-weitere">
-              <h2
-                id="termine-weitere"
-                className="mb-3 text-lg font-semibold text-text-primary"
-              >
-                {t('weitere.title')}
-              </h2>
-              {loadState === 'loading' ? (
-                <div className="space-y-2" aria-hidden="true">
-                  {Array.from({ length: 3 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="h-14 animate-pulse rounded-md bg-surface-muted motion-reduce:animate-none"
-                    />
-                  ))}
-                </div>
-              ) : weitereItems.length === 0 ? (
-                <EmptyState
-                  icon={<CalendarDays aria-hidden="true" />}
-                  title={t('empty.filter_title')}
-                />
-              ) : (
-                <ul className="divide-y divide-border">
-                  {weitereItems.map((item) => (
-                    <li key={`${item.kind}-${item.id}`}>
-                      {item.kind === 'termin' ? (
-                        <TerminListRow
-                          termin={item.data}
-                          behoerdeName={behoerdeName(item.data.behoerde_id)}
-                          ortLabel={t(`ort.${item.data.ort.typ}`)}
-                          detailsLabel={t('card.details')}
-                          onDetails={() => setDetailTerminId(item.data.id)}
-                        />
-                      ) : (
-                        <ReminderListRow
-                          reminder={item.data}
-                          behoerdeName={behoerdeName(item.data.behoerde_id)}
-                          fristLabel={fristLabel(item.data.datum)}
-                          fristTone={fristTone(item.data.datum)}
-                        />
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </section>
+          <div className="tm-card filter-card">
+            <h4>Filter</h4>
+            <button
+              type="button"
+              className="filter-row"
+              onClick={() => toggleFilter('behoerden')}
+              style={{ background: 'none', border: 0, padding: '6px 0', width: '100%', textAlign: 'left' }}
+            >
+              <span className={`cb${filters.behoerden ? ' on' : ''}`}>
+                {filters.behoerden ? <CheckCircle2 /> : null}
+              </span>
+              <span className="dot" style={{ background: 'var(--brand-500)' }} />
+              Behördentermine
+            </button>
+            <button
+              type="button"
+              className="filter-row"
+              onClick={() => toggleFilter('erinnerungen')}
+              style={{ background: 'none', border: 0, padding: '6px 0', width: '100%', textAlign: 'left' }}
+            >
+              <span className={`cb${filters.erinnerungen ? ' on' : ''}`}>
+                {filters.erinnerungen ? <CheckCircle2 /> : null}
+              </span>
+              <span className="dot" style={{ background: 'var(--green-500)' }} />
+              Erinnerungen / Fristen
+            </button>
+            <button
+              type="button"
+              className="filter-row"
+              onClick={() => toggleFilter('buchungen')}
+              style={{ background: 'none', border: 0, padding: '6px 0', width: '100%', textAlign: 'left' }}
+            >
+              <span className={`cb${filters.buchungen ? ' on' : ''}`}>
+                {filters.buchungen ? <CheckCircle2 /> : null}
+              </span>
+              <span className="dot" style={{ background: 'var(--violet-500)' }} />
+              Buchungen
+            </button>
+            <button
+              type="button"
+              className="filter-row"
+              onClick={() => toggleFilter('abgeschlossen')}
+              style={{ background: 'none', border: 0, padding: '6px 0', width: '100%', textAlign: 'left' }}
+            >
+              <span className={`cb${filters.abgeschlossen ? ' on' : ''}`}>
+                {filters.abgeschlossen ? <CheckCircle2 /> : null}
+              </span>
+              <span className="dot" style={{ background: 'var(--border-strong)', border: '1px solid var(--ink-4)' }} />
+              Abgeschlossen
+            </button>
           </div>
-
-          {/* Right column: detail + checklist + fristen */}
-          <aside className="space-y-6" aria-label={t('naechster_schritt.title')}>
-            <RightRailCard title={t('naechster_schritt.title')} as="h2">
-              {detailTermin ? (
-                <div className="space-y-2">
-                  <p className="font-medium text-text-primary">
-                    {detailTermin.betreff}
-                  </p>
-                  <p>{behoerdeName(detailTermin.behoerde_id)}</p>
-                  <p className="tabular-nums text-text-primary" dir="ltr">
-                    {formatDateDe(detailTermin.datum)} ·{' '}
-                    {formatTimeDe(detailTermin.datum)}
-                  </p>
-                  <p className="flex items-start gap-1.5">
-                    <MapPin
-                      className="mt-0.5 size-4 shrink-0 text-text-secondary"
-                      aria-hidden="true"
-                    />
-                    {detailTermin.ort.details}
-                  </p>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="mt-1 w-full"
-                    onClick={() => exportIcs(detailTermin)}
-                    aria-label={t('card.ics_aria', { betreff: detailTermin.betreff })}
-                  >
-                    {t('card.ics')}
-                  </Button>
-                </div>
-              ) : (
-                <p>{t('empty.naechster_schritt')}</p>
-              )}
-            </RightRailCard>
-
-            {detailTermin?.vorbereitung && detailTermin.vorbereitung.length > 0 ? (
-              <SectionCard title={t('vorbereitung.title')} padding="md">
-                <TerminVorbereitungChecklist items={detailTermin.vorbereitung} />
-              </SectionCard>
-            ) : null}
-
-            <SectionCard title={t('fristen.title')} padding="md">
-              {fristen.length === 0 ? (
-                <p className="text-sm text-text-secondary">
-                  {t('empty.description')}
-                </p>
-              ) : (
-                <ul className="space-y-2">
-                  {fristen.map((frist) => (
-                    <li
-                      key={frist.id}
-                      className="flex items-center justify-between gap-2 text-sm"
-                    >
-                      <span className="min-w-0 truncate text-text-primary">
-                        {frist.titel}
-                      </span>
-                      <StatusBadge
-                        variant="ablauf_bald"
-                        urgency={fristTone(frist.datum) === 'danger' ? 'danger' : 'warn'}
-                      >
-                        {fristLabel(frist.datum)}
-                      </StatusBadge>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </SectionCard>
-          </aside>
         </div>
-      )}
-    </div>
-  );
-}
 
-function TerminListRow({
-  termin,
-  behoerdeName,
-  ortLabel,
-  detailsLabel,
-  onDetails,
-}: {
-  termin: Termin;
-  behoerdeName: string;
-  ortLabel: string;
-  detailsLabel: string;
-  onDetails: () => void;
-}) {
-  const icon =
-    termin.ort.typ === 'video' ? (
-      <Video aria-hidden="true" />
-    ) : (
-      <Landmark aria-hidden="true" />
-    );
-  return (
-    <ListRow
-      leading={<IconCircle icon={icon} tone="primary" />}
-      title={termin.betreff}
-      subtitle={
-        <span className="tabular-nums" dir="ltr">
-          {formatDateDe(termin.datum)} · {formatTimeDe(termin.datum)} · {behoerdeName}
-        </span>
-      }
-      meta={<span>{ortLabel}</span>}
-      actions={
-        <Button type="button" variant="ghost" size="sm" onClick={onDetails}>
-          {detailsLabel}
-        </Button>
-      }
-    />
-  );
-}
+        {/* Middle: next termin + further list */}
+        <div>
+          <div className="text-md fw-600" style={{ marginBottom: 12 }}>
+            Nächste Termine
+          </div>
+          {naechster ? (
+            <div className="tm-next">
+              <div className="row1">
+                <span className="icon-circle">
+                  <Calendar />
+                </span>
+                <div className="grow">
+                  <div className="t">
+                    {behoerdeName(naechster.behoerde_id)} — {naechster.betreff}
+                  </div>
+                  <div className="meta">
+                    <span>
+                      <Calendar style={{ width: 14, height: 14 }} />
+                      {formatDate(naechster.datum)} &nbsp;
+                      <Clock style={{ width: 14, height: 14 }} />
+                      {formatTimeRange(naechster.datum)}
+                    </span>
+                    <span>
+                      <MapPin style={{ width: 14, height: 14 }} />
+                      {naechster.ort.details}
+                    </span>
+                    {naechster.buchungsreferenz ? (
+                      <span>Buchungsreferenz: {naechster.buchungsreferenz}</span>
+                    ) : null}
+                  </div>
+                </div>
+                <span className="badge green">
+                  {naechster.status === 'bestaetigt' ? 'Bestätigt' : 'Gebucht'}
+                </span>
+              </div>
+              <div className="actions">
+                <button type="button" className="btn btn-secondary">
+                  <CalendarPlus />
+                  ICS exportieren
+                </button>
+                <button type="button" className="btn btn-primary">
+                  Details <ChevronRight />
+                </button>
+              </div>
+            </div>
+          ) : !loaded ? (
+            <div className="tm-next" aria-busy="true" style={{ minHeight: 120 }} />
+          ) : (
+            <div className="tm-card">Keine bevorstehenden Termine.</div>
+          )}
 
-function ReminderListRow({
-  reminder,
-  behoerdeName,
-  fristLabel,
-  fristTone,
-}: {
-  reminder: Reminder;
-  behoerdeName: string;
-  fristLabel: string;
-  fristTone: 'warn' | 'danger' | undefined;
-}) {
-  return (
-    <ListRow
-      leading={
-        <IconCircle
-          icon={<Bell aria-hidden="true" />}
-          tone={reminder.kategorie === 'frist' ? 'warning' : 'neutral'}
-        />
-      }
-      title={reminder.titel}
-      subtitle={
-        <span className={cn('tabular-nums')} dir="ltr">
-          {formatDateDe(reminder.datum)}
-          {behoerdeName ? ` · ${behoerdeName}` : ''}
-        </span>
-      }
-      status={
-        reminder.kategorie === 'frist' ? (
-          <StatusBadge
-            variant="ablauf_bald"
-            urgency={fristTone === 'danger' ? 'danger' : 'warn'}
-          >
-            {fristLabel}
-          </StatusBadge>
-        ) : undefined
-      }
-    />
+          <div className="text-md fw-600" style={{ margin: '22px 0 12px' }}>
+            Weitere Termine und Erinnerungen
+          </div>
+
+          {weitere.map((t) => {
+            const { tone, Icon } = termineIconTone(t);
+            return (
+              <div key={t.id} className="tm-list-item">
+                <span className={`icon-circle${tone ? ` ${tone}` : ''}`}>
+                  <Icon />
+                </span>
+                <div>
+                  <div className="t">
+                    {behoerdeName(t.behoerde_id)} — {t.betreff}
+                  </div>
+                  <div className="meta">
+                    <span>
+                      <Calendar style={{ width: 14, height: 14 }} />
+                      {formatDate(t.datum)}
+                    </span>{' '}
+                    <span>
+                      <Clock style={{ width: 14, height: 14 }} />
+                      {formatTimeRange(t.datum)}
+                    </span>
+                  </div>
+                  <div className="meta">
+                    <span>
+                      <MapPin style={{ width: 14, height: 14 }} />
+                      {t.ort.details}
+                    </span>
+                  </div>
+                </div>
+                <span className={`badge ${tone === 'violet' ? 'violet' : 'brand'}`}>Gebucht</span>
+                <ChevronRight style={{ color: 'var(--ink-4)' }} />
+              </div>
+            );
+          })}
+
+          {futureFristen.slice(0, 2).map((r) => {
+            const lower = (r.titel || '').toLowerCase();
+            const Icon = lower.includes('steuer') ? ReceiptText : lower.includes('rundfunk') || lower.includes('beitrag') ? Euro : Bell;
+            return (
+              <div key={r.id} className="tm-list-item">
+                <span className="icon-circle green">
+                  <Icon />
+                </span>
+                <div>
+                  <div className="t">{r.titel}</div>
+                  <div className="meta">
+                    <span>
+                      <Calendar style={{ width: 14, height: 14 }} />
+                      {r.kategorie === 'frist' ? 'Frist: ' : 'Fällig: '}
+                      {formatDate(r.datum)}
+                    </span>
+                  </div>
+                  <div className="meta">{behoerdeName(r.behoerde_id)}</div>
+                </div>
+                <span className="badge green">Erinnerung</span>
+                <ChevronRight style={{ color: 'var(--ink-4)' }} />
+              </div>
+            );
+          })}
+
+          <button type="button" className="btn btn-secondary" style={{ marginTop: 14 }}>
+            <Calendar />
+            Alle Termine anzeigen
+          </button>
+        </div>
+
+        {/* Right: detail + prep + fristen */}
+        <div>
+          <div className="text-md fw-600" style={{ marginBottom: 12 }}>
+            Nächster Schritt
+          </div>
+          <div className="tm-card ns-card">
+            <div className="heading">
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <span className="icon-circle">
+                  <Calendar />
+                </span>
+                <div className="t">
+                  {naechster
+                    ? `${behoerdeName(naechster.behoerde_id)} — ${naechster.betreff}`
+                    : 'Kein offener Termin'}
+                </div>
+              </div>
+              <span className="badge green">
+                {naechster?.status === 'bestaetigt' ? 'Bestätigt' : 'Gebucht'}
+              </span>
+            </div>
+
+            <div className="ns-info">
+              <div className="row">
+                <Calendar />
+                {naechster ? formatDate(naechster.datum) : '—'}
+              </div>
+              <div className="row">
+                <Clock />
+                {naechster ? `${formatTimeRange(naechster.datum)} (45 Min.)` : '—'}
+              </div>
+              <div className="row">
+                <MapPin />
+                <div>
+                  <span className="link">{behoerdeName(naechster?.behoerde_id)}</span>
+                  <br />
+                  {naechster?.ort.details ?? ''}
+                </div>
+              </div>
+              {naechster?.buchungsreferenz ? (
+                <div className="row" style={{ marginTop: 6 }}>
+                  <Bookmark style={{ opacity: 0 }} />
+                  <div>
+                    Buchungsreferenz
+                    <br />
+                    <span className="mono">{naechster.buchungsreferenz}</span>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              <button type="button" className="btn btn-secondary">
+                <CalendarPlus />
+                ICS exportieren
+              </button>
+              <button type="button" className="btn btn-secondary">
+                Details anzeigen <ChevronRight />
+              </button>
+            </div>
+
+            <div className="prep-card">
+              <h4>{t('termine.vorbereitung.title')}</h4>
+              {naechster?.vorbereitung && naechster.vorbereitung.length > 0 ? (
+                naechster.vorbereitung.map((item) => (
+                  <div key={item.label_i18n_key} className="prep-row">
+                    <FileText className="icon" />
+                    <div>
+                      <div className="t">{t(item.label_i18n_key)}</div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="prep-row">
+                  <FileText className="icon" />
+                  <div>
+                    <div className="s">
+                      {t('termine.empty.naechster_schritt')}
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div className="prep-row">
+                <Clock className="icon" />
+                <div>
+                  <div className="t">Planen Sie genug Zeit ein</div>
+                  <div className="s">Bitte erscheinen Sie 10–15 Minuten vor Ihrem Termin.</div>
+                </div>
+              </div>
+              <div className="prep-row">
+                <Info className="icon" />
+                <div>
+                  <div className="t">Nicht wahrnehmen?</div>
+                  <div className="s">
+                    Sie können Ihren Termin bis 48 Stunden vorher online stornieren oder verschieben.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginTop: 16,
+                padding: 14,
+                background: 'var(--green-50)',
+                borderRadius: 'var(--r-md)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <CheckCircle2 style={{ color: 'var(--green-600)', width: 18, height: 18 }} />
+                <div>
+                  <div className="fw-600">Fristen im Überblick</div>
+                  <div className="text-xs muted">{futureFristen.length} offene Fristen</div>
+                </div>
+              </div>
+              <Link
+                href="#fristen"
+                style={{ color: 'var(--brand-600)', fontWeight: 500, fontSize: 13 }}
+              >
+                Fristen anzeigen <ChevronRight style={{ width: 12, height: 12 }} />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }

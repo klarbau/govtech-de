@@ -4,10 +4,22 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Landmark, LifeBuoy, LogOut, Menu } from 'lucide-react';
+import {
+  Calendar,
+  Euro,
+  FileText,
+  Folder,
+  HelpCircle,
+  Home,
+  LogOut,
+  Mail,
+  Menu,
+  MessageCircle,
+  Shield,
+  User,
+  Users,
+} from 'lucide-react';
 
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
 import {
   Sheet,
   SheetBody,
@@ -16,28 +28,45 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { navItems } from './Sidebar';
+
+import { ParthenonCrest } from './ParthenonCrest';
+
+const NAV_MAIN = [
+  { href: '/dashboard', i18nKey: 'dashboard', icon: Home },
+  { href: '/posteingang', i18nKey: 'posteingang', icon: Mail },
+  { href: '/stammdaten', i18nKey: 'stammdaten', icon: User },
+  { href: '/vorgaenge', i18nKey: 'vorgaenge', icon: Folder },
+  { href: '/dokumente', i18nKey: 'dokumente', icon: FileText },
+  { href: '/termine', i18nKey: 'termine', icon: Calendar },
+  { href: '/steuer', i18nKey: 'steuer', icon: Euro },
+  { href: '/familie', i18nKey: 'familie', icon: Users },
+  { href: '/assistent', i18nKey: 'assistent', icon: MessageCircle },
+  { href: '/datenschutz', i18nKey: 'datenschutz', icon: Shield },
+] as const;
 
 function isActive(pathname: string | null, href: string): boolean {
   if (!pathname) return false;
-  if (href === '/') return pathname === '/';
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
+/**
+ * Drawer variant of the sidebar for < md viewports. The prototype HTML
+ * targets desktop only (viewport width=1440) — to stay usable on mobile we
+ * mirror the same `.gt-nav` markup inside a shadcn Sheet, swapping the
+ * trigger for an icon-only `.gt-header-btn`.
+ */
 export function MobileNav() {
   const t = useTranslations('nav');
   const tShell = useTranslations('shell');
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
-  // Close the drawer when the route changes (post-navigation) and when the
-  // viewport crosses the md breakpoint (desktop sidebar takes over).
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
 
   useEffect(() => {
-    const mql = window.matchMedia('(min-width: 768px)');
+    const mql = window.matchMedia('(min-width: 1024px)');
     const handle = (event: MediaQueryListEvent) => {
       if (event.matches) setOpen(false);
     };
@@ -49,10 +78,9 @@ export function MobileNav() {
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger
         render={
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
+          <button
+            type="button"
+            className="gt-header-btn icon lg:hidden"
             aria-label={tShell('sidebar.open')}
           />
         }
@@ -65,75 +93,46 @@ export function MobileNav() {
         closeAriaLabel={tShell('sidebar.close')}
       >
         <SheetHeader>
-          <SheetTitle className="flex items-center gap-2 text-sm">
-            <Landmark
-              className="size-5 text-text-secondary"
-              aria-hidden="true"
-            />
-            {tShell('sidebar.authority')}
+          <SheetTitle className="gt-sidebar-brand" style={{ padding: 0 }}>
+            <div className="crest">
+              <ParthenonCrest />
+            </div>
+            <div className="label">
+              Bundesrepublik
+              <br />
+              Deutschland
+            </div>
           </SheetTitle>
         </SheetHeader>
-        <SheetBody className="gap-2">
-          <nav aria-label={tShell('sidebar.nav_label')}>
-            <ul className="flex flex-col gap-1">
-              {navItems.map(({ href, i18nKey, icon: Icon }) => {
-                const active = isActive(pathname, href);
-                return (
-                  <li key={href}>
-                    <Link
-                      href={href}
-                      aria-current={active ? 'page' : undefined}
-                      className={cn(
-                        'group flex min-h-[44px] items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors',
-                        active
-                          ? 'bg-accent-soft font-medium text-primary'
-                          : 'text-text-secondary hover:bg-surface-muted hover:text-text-primary',
-                      )}
-                    >
-                      <Icon
-                        className={cn(
-                          'size-4 shrink-0',
-                          active
-                            ? 'text-primary'
-                            : 'text-text-secondary group-hover:text-text-primary',
-                        )}
-                        aria-hidden="true"
-                      />
-                      <span>{t(i18nKey)}</span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
+        <SheetBody>
+          <nav className="gt-nav" aria-label={tShell('sidebar.nav_label')}>
+            {NAV_MAIN.map(({ href, i18nKey, icon: Icon }) => {
+              const active = isActive(pathname, href);
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className={active ? 'active' : ''}
+                  aria-current={active ? 'page' : undefined}
+                >
+                  <Icon aria-hidden="true" />
+                  <span>{t(i18nKey)}</span>
+                </Link>
+              );
+            })}
           </nav>
-
-          <div className="mt-auto border-t border-border pt-3">
-            <ul className="flex flex-col gap-1">
-              <li>
-                <Link
-                  href="#"
-                  className="group flex min-h-[44px] items-center gap-2 rounded-md px-3 py-2 text-sm text-text-secondary transition-colors hover:bg-surface-muted hover:text-text-primary"
-                >
-                  <LifeBuoy
-                    className="size-4 shrink-0 text-text-secondary group-hover:text-text-primary"
-                    aria-hidden="true"
-                  />
-                  <span>{tShell('sidebar.help')}</span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/"
-                  className="group flex min-h-[44px] items-center gap-2 rounded-md px-3 py-2 text-sm text-text-secondary transition-colors hover:bg-surface-muted hover:text-text-primary"
-                >
-                  <LogOut
-                    className="size-4 shrink-0 text-text-secondary group-hover:text-text-primary"
-                    aria-hidden="true"
-                  />
-                  <span>{tShell('sidebar.logout')}</span>
-                </Link>
-              </li>
-            </ul>
+          <div className="gt-sidebar-bottom">
+            <div className="gt-nav-divider" />
+            <nav className="gt-nav">
+              <Link href="#">
+                <HelpCircle aria-hidden="true" />
+                <span>{tShell('sidebar.help')}</span>
+              </Link>
+              <Link href="/">
+                <LogOut aria-hidden="true" />
+                <span>{tShell('sidebar.logout')}</span>
+              </Link>
+            </nav>
           </div>
         </SheetBody>
       </SheetContent>

@@ -10,8 +10,9 @@
  *      + `route.ts` produce, then a closing turn.
  *   4. Click "Umzug starten" → `api.startUmzug` fires (confirm-gate releases) and
  *      the Umzug autopilot run begins (`runAutopilotInBackground` in api.ts).
- *   5. Navigate to the cascade ("Kaskade ansehen") → the AutopilotTimeline steps
- *      move in_progress → confirmed for the beteiligte Behörden (Block A).
+ *   5. Navigate to the cascade ("Kaskade ansehen") → the redesigned cascade cards
+ *      (`.cascade-cards .cas-card`) move to "Abgeschlossen" (confirmed) for the
+ *      four beteiligte Block-A Behörden.
  *   6. Navigate to /posteingang → the synthetic Bestätigungsschreiben from the
  *      autopilot now appear in the inbox (letter count grows; the autopilot
  *      Bundesdruckerei "— Auftrag …" confirmation is visible).
@@ -243,32 +244,40 @@ test.describe('SPINE — assistant → autopilot → posteingang (demo-shipped g
     await kaskadeLink.click();
     await page.waitForURL('**/vorgaenge/umzug/run**');
 
-    // Block A heading appears (the timeline is grouped by block). The run page
-    // hydrates `getVorgang(vorgangId)` from localStorage, which already holds
-    // the cascade steps persisted by the in-process autopilot. A reload clears
-    // a dev cold-compile of this route without losing persisted state.
+    // The redesigned run page renders a flat cascade: `.cascade` → `.cascade-cards`
+    // → one `.cas-card` per step (A→D→B sorted, block-C filtered, sliced to 5).
+    // The page hydrates `getVorgang(vorgangId)` from localStorage, which already
+    // holds the cascade steps persisted by the in-process autopilot. A reload
+    // clears a dev cold-compile of this route without losing persisted state.
+    const cascadeCards = page.locator('.cascade-cards .cas-card');
     try {
-      await expect(page.locator('#run-block-A-title')).toBeVisible({
+      await expect(cascadeCards.first().locator('.t')).toBeVisible({
         timeout: 20_000,
       });
     } catch {
       await page.reload({ waitUntil: 'domcontentloaded' });
-      await expect(page.locator('#run-block-A-title')).toBeVisible({
+      await expect(cascadeCards.first().locator('.t')).toBeVisible({
         timeout: 20_000,
       });
     }
 
-    // The four Block-A Behörden steps progress to "bestätigt" (confirmed; the
-    // AutopilotStepRow renders umzug.run.status.confirmed = "bestätigt").
-    // Reliable mode guarantees no random failure, so all four resolve.
-    const blockA = page.locator('section[aria-labelledby="run-block-A-title"]');
+    // The four Block-A Behörden cascade cards progress to "Abgeschlossen" — the
+    // redesign's `statusLabel('confirmed')` label, the equivalent of the old
+    // "bestätigt". Reliable mode guarantees no random failure, so all four
+    // resolve. Scope strictly to `.cascade-cards .cas-card .badge`: "Abgeschlossen"
+    // ALSO appears in the hero badge and the Live-Aktivitäten feed rows, so a
+    // page-wide matcher would over-count. The 5th card (first Block-D step) may
+    // remain in_progress/pending, so we assert exactly 4 confirmed.
     await expect(
-      blockA.getByText('bestätigt', { exact: true }),
+      page.locator('.cascade-cards .cas-card .badge', {
+        hasText: 'Abgeschlossen',
+      }),
     ).toHaveCount(4, { timeout: 30_000 });
 
-    // The Bürgeramt + Finanzamt + Beitragsservice + Bundesdruckerei rows render.
-    await expect(blockA.getByText(/Finanzamt/i).first()).toBeVisible();
-    await expect(blockA.getByText(/Beitragsservice/i).first()).toBeVisible();
+    // The Finanzamt + Beitragsservice cards render (scoped to the cascade so the
+    // Übersicht auth-list / Live-feed copies don't satisfy the assertion).
+    await expect(cascadeCards.getByText(/Finanzamt/i).first()).toBeVisible();
+    await expect(cascadeCards.getByText(/Beitragsservice/i).first()).toBeVisible();
 
     /* ── Step 6: confirmations land in the Posteingang ──────────────────── */
     const letterLinks = page.locator('a[href^="/posteingang/letter-"]');

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="GovTech DE Marke">
+  <title>GovTech DE Marke</title>
+  
+  <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="3" y1="22" x2="21" y2="22"></line>
+    <polyline points="5,22 5,38 19,38 19,22"></polyline>
+    <line x1="3" y1="38" x2="21" y2="38"></line>
+    <line x1="3" y1="42" x2="21" y2="42"></line>
+    <line x1="9" y1="26" x2="9" y2="34"></line>
+    <line x1="15" y1="26" x2="15" y2="34"></line>
+    <path d="M2 18 L12 8 L22 18"></path>
+    <circle cx="12" cy="14" r="1.5" fill="currentColor"></circle>
+  </g>
+  
+</svg>

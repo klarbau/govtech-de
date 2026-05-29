@@ -2,16 +2,15 @@
 
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import { FileText } from 'lucide-react';
+import { differenceInCalendarDays, parseISO } from 'date-fns';
 
 import { DatenschutzCockpitLink } from '@/components/shared/DatenschutzCockpitLink';
-import { IconCircle } from '@/components/shared/IconCircle';
-import { StatusBadge, type StatusVariant } from '@/components/shared/StatusBadge';
 import { cn } from '@/lib/utils';
 import type { Behoerde, Letter } from '@/types';
 
 import { ARCHETYPE_TO_VORGANG_TYP } from './letter-archetype-actions';
 import { AuthentizitaetsBadge, DEFAULT_AUTH_CHANNEL } from './AuthentizitaetsBadge';
+import { BehoerdenAvatarV2 } from './BehoerdenAvatarV2';
 import { FristChip } from './FristChip';
 import {
   VorgangsBuendelTagExisting,
@@ -119,19 +118,53 @@ export function LetterCard({
       [behoerdeName, brieftyp, t('frist_pre_open_template', { datum: fristDatum })].join(' · ')
     : t('cta_open') + ': ' + [behoerdeName, brieftyp, t('frist_keine')].join(' · ');
 
-  const statusVariant: StatusVariant = isErledigt
-    ? 'erledigt'
-    : isUngelesen
-      ? 'neu'
-      : 'warten';
   const statusLabel = isErledigt
     ? t('status.erledigt')
     : isUngelesen
       ? t('status.ungelesen')
       : actionHint;
 
-  // ── ROW VARIANT (3-Pane) ──────────────────────────────────────────────
+  // ── ROW VARIANT (3-Pane, design-prototype-v2) ────────────────────────
+  // Grid: 44 px avatar | 1fr body | auto meta. Active row picks up the
+  // brand-50 wash from the prototype; the colored avatar replaces the
+  // generic IconCircle and acts as the recognition aid.
   if (variant === 'row') {
+    const tRel = (key: 'heute' | 'gestern') => t(`relative.${key}`);
+
+    const relativeDate = (() => {
+      if (!nowIso) return empfangenDatum;
+      try {
+        const days = differenceInCalendarDays(
+          parseISO(nowIso),
+          parseISO(letter.empfangen_am),
+        );
+        if (days <= 0) return tRel('heute');
+        if (days === 1) return tRel('gestern');
+        return empfangenDatum;
+      } catch {
+        return empfangenDatum;
+      }
+    })();
+
+    // No `erledigt_am` is tracked on `Letter` (only `status`); fall back to
+    // the empfangen date for the second meta-line in the prototype design.
+    const erledigtDatum = isErledigt ? empfangenDatum : null;
+
+    const hasFrist = fristen.length > 0 && !isErledigt;
+    const fristTage = (() => {
+      if (!hasFrist || !nowIso) return null;
+      try {
+        return differenceInCalendarDays(
+          parseISO(fristen[0]!.datum),
+          parseISO(nowIso),
+        );
+      } catch {
+        return null;
+      }
+    })();
+    const fristIsUrgent = fristTage !== null && fristTage <= 7;
+    const showUnreadDot = isUngelesen && !isErledigt;
+
     return (
       <li className={cn('list-none', className)}>
         <Link
@@ -148,46 +181,81 @@ export function LetterCard({
             }
           }}
           className={cn(
-            'flex min-h-[44px] items-start gap-3 rounded-lg border p-3 transition-colors',
-            'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
-            selected
-              ? 'border-primary bg-accent-soft'
-              : 'border-border hover:bg-surface-muted',
+            'grid grid-cols-[44px_minmax(0,1fr)_auto] items-center gap-3.5 border-t border-border px-4 py-3.5 transition-colors',
+            'focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring',
+            selected ? 'bg-accent-soft' : 'hover:bg-surface-soft',
           )}
         >
-          <IconCircle icon={<FileText aria-hidden="true" />} tone="primary" size="md" />
-          <span className="min-w-0 flex-1">
-            <span className="flex items-center gap-2">
-              {isUngelesen && (
-                <span
-                  aria-hidden="true"
-                  className="inline-block size-2 shrink-0 rounded-full bg-primary"
-                />
+          <BehoerdenAvatarV2
+            absenderId={letter.absender_behoerde_id}
+            name={behoerdeName}
+            size="lg"
+          />
+          <span className="min-w-0">
+            <span
+              className={cn(
+                'block truncate text-[14px] leading-snug text-text-primary',
+                isUngelesen ? 'font-semibold' : 'font-medium',
               )}
-              <span
-                className={cn(
-                  'truncate text-sm text-text-primary',
-                  isUngelesen ? 'font-semibold' : 'font-medium',
-                )}
-              >
-                {behoerdeName}
-              </span>
+            >
+              {behoerdeName}
+              <span className="text-text-muted"> — </span>
+              <span className="font-medium">{letter.betreff}</span>
             </span>
-            <span className="mt-0.5 block truncate text-sm text-text-secondary">
-              {letter.betreff}
+            <span className="mt-0.5 block truncate text-[12.5px] leading-snug text-text-secondary">
+              {brieftyp}
             </span>
-            <span className="mt-1 flex items-center gap-2">
-              <span className="text-xs text-text-muted tabular-nums">
-                {empfangenDatum}
-              </span>
-              {fristen.length > 0 && !isErledigt ? (
-                <FristChip frist={fristen[0]!} fromIso={nowIso} className="text-[11px]" />
-              ) : null}
+            <span className="mt-0.5 block truncate font-mono text-[11.5px] leading-snug text-text-muted">
+              {t('aktenzeichen_label')}: {letter.aktenzeichen}
             </span>
           </span>
-          <StatusBadge variant={statusVariant} className="mt-0.5 shrink-0">
-            {statusLabel}
-          </StatusBadge>
+          <span className="flex shrink-0 flex-col items-end gap-1 text-right text-[12.5px] leading-snug">
+            {isErledigt ? (
+              <>
+                <span className="font-medium text-text-secondary">
+                  {t('status.erledigt')}
+                </span>
+                {erledigtDatum ? (
+                  <span className="text-text-muted tabular-nums">
+                    {erledigtDatum}
+                  </span>
+                ) : null}
+              </>
+            ) : hasFrist ? (
+              <>
+                <span
+                  className={cn(
+                    'font-semibold tabular-nums',
+                    fristIsUrgent ? 'text-red-600' : 'text-text-secondary',
+                  )}
+                >
+                  {t('frist_pre_open_template', { datum: fristDatum })}
+                </span>
+                {showUnreadDot ? (
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      'inline-block size-2 rounded-full',
+                      fristIsUrgent ? 'bg-red-500' : 'bg-primary',
+                    )}
+                  />
+                ) : null}
+              </>
+            ) : (
+              <span className="flex items-center gap-1.5">
+                <span className="text-text-muted tabular-nums">
+                  {relativeDate}
+                </span>
+                {showUnreadDot ? (
+                  <span
+                    aria-hidden="true"
+                    className="inline-block size-2 rounded-full bg-primary"
+                  />
+                ) : null}
+              </span>
+            )}
+          </span>
+          <span className="sr-only">{statusLabel}</span>
         </Link>
       </li>
     );

@@ -28,3 +28,7 @@ posteingang-*.html
 .lh-persona-runner*.mjs
 layout.css
 response.html
+
+# Local generated artifacts (do not commit)
+.codegraph/
+.audit-shots/

@@ -57,5 +57,18 @@
     },
     "status": "bestaetigt",
     "betreff": "ELSTER-Unterstützung Steuererklärung 2025"
+  },
+  {
+    "id": "termin-anna-kinderarzt-u7",
+    "behoerde_id": "kinderarzt-prenzlauer-berg",
+    "datum": "2026-06-09T14:30:00.000Z",
+    "ort": {
+      "typ": "praesenz",
+      "details": "Kinderarztpraxis am Park, Winsstraße 12, 10405 Berlin"
+    },
+    "status": "gebucht",
+    "betreff": "Vorsorgeuntersuchung U7 (Lev)",
+    "buchungsreferenz": "[MOCK] KAP-2026-U7-0412",
+    "kategorie": "buchung"
   }
 ]

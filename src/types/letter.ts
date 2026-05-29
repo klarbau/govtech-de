@@ -209,6 +209,17 @@ export interface Letter {
    * (zur Laufzeit erzeugt) trägt `kanal: 'postfach'` für die Nachher-Frame-Animation.
    */
   kanal?: 'brief' | 'postfach' | 'email_pilot';
+  /**
+   * Strukturierter monetärer Ausgang eines Bescheids (z. B. Steuerbescheid-
+   * Erstattung oder -Nachzahlung), in Euro-Cent. Optional — nur bei Briefen mit
+   * Geldbetrag gepflegt; existing letters bleiben unverändert. Der Wert spiegelt
+   * den im `body_de`-Freitext genannten Betrag strukturiert wider, damit
+   * Frontend/Assistent ihn lokalisiert formatieren können (statt aus dem Text
+   * zu parsen). `betrag_richtung` gibt an, ob der Betrag an den/die Bürger:in
+   * fließt (`erstattung`) oder zu zahlen ist (`nachzahlung`).
+   */
+  betrag_cent?: number;
+  betrag_richtung?: 'erstattung' | 'nachzahlung';
 }
 
 /** Status-Filter inkl. abgeleiteter Frist-Buckets. */

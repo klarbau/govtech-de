@@ -63,6 +63,18 @@ const personaSchemaBase = z.object({
   nachname: z.string(),
   geburtsdatum: z.string(),
   staatsangehoerigkeit: z.string(),
+  // Familienstand (§ 3 Abs. 1 Nr. 8 BMG). Optional — additiv; alte localStorage-
+  // Buckets ohne den Wert werden durch `migrateFamilienstandDefault` bei der
+  // Migration aus familie/eheschliessung abgeleitet.
+  familienstand: z
+    .enum([
+      'ledig',
+      'verheiratet',
+      'geschieden',
+      'verwitwet',
+      'eingetragene_lebenspartnerschaft',
+    ])
+    .optional(),
   adresse: adresseSchema,
   steuer_id: z.string().optional(),
   rentenversicherungsnummer: z.string().optional(),
@@ -466,6 +478,10 @@ export const letterSchema = z
     // V1.2 — Kanal (brief / postfach / email_pilot). Optional; existing letters
     // bleiben kompatibel (Default-Render = brief). Spec § 9.
     kanal: z.enum(['brief', 'postfach', 'email_pilot']).optional(),
+    // Strukturierter monetärer Bescheid-Ausgang (Erstattung/Nachzahlung) in
+    // Euro-Cent. Optional; additiv — existing letters bleiben kompatibel.
+    betrag_cent: z.number().int().optional(),
+    betrag_richtung: z.enum(['erstattung', 'nachzahlung']).optional(),
   })
   .passthrough();
 

@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><link rel="stylesheet" href="_preview.css">
+<style>
+  .track { position: relative; height: 22px; background: var(--ds-color-surface-muted); border-radius: var(--ds-radius-full); overflow: hidden; }
+  .ball { position: absolute; top: 3px; height: 16px; width: 16px; border-radius: 50%; background: var(--ds-color-accent); left: 4px; }
+  .b1 { animation: slide 2s var(--ds-ease-out) infinite alternate; }
+  .b2 { animation: slide 2s var(--ds-ease-in) infinite alternate; }
+  .b3 { animation: slide 2s var(--ds-ease-in-out) infinite alternate; }
+  .b4 { animation: slide 2s var(--ds-ease-handoff) infinite alternate; animation-duration: 2.6s; }
+  @keyframes slide { from { left: 4px; } to { left: calc(100% - 20px); } }
+</style></head>
+<body>
+  <div style="display: grid; grid-template-columns: 130px 1fr 110px; gap: 8px 14px; align-items: center; font-size: 12px;">
+    <span class="ds-eyebrow">ease-out</span><div class="track"><div class="ball b1"></div></div><span class="ds-tabular" style="color: var(--ds-color-text-muted);">180 ms · enter</span>
+    <span class="ds-eyebrow">ease-in</span><div class="track"><div class="ball b2"></div></div><span class="ds-tabular" style="color: var(--ds-color-text-muted);">140 ms · exit</span>
+    <span class="ds-eyebrow">ease-in-out</span><div class="track"><div class="ball b3"></div></div><span class="ds-tabular" style="color: var(--ds-color-text-muted);">240 ms · shifts</span>
+    <span class="ds-eyebrow">handoff</span><div class="track"><div class="ball b4"></div></div><span class="ds-tabular" style="color: var(--ds-color-text-muted);">400 ms · AI hand-off</span>
+  </div>
+  <p class="ds-caption" style="margin: 6px 0 0; font-size: 12px;">No bounce. No spring. No overshoot. Animations ≥ 400 ms collapse to ≤ 200 ms opacity fade under prefers-reduced-motion (HL-DS-4).</p>
+</body></html>

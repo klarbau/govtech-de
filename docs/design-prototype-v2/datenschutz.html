@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>Datenschutz — GovTech DE</title>
+<link rel="stylesheet" href="assets/govtech.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  .ds-vision {
+    margin-top: 16px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+    padding: 16px 22px;
+    display: flex; align-items: flex-start; gap: 14px;
+  }
+  .ds-vision .icon-circle { background: var(--brand-50); color: var(--brand-600); }
+  .ds-vision .icon-circle svg { width: 18px; height: 18px; }
+  .ds-vision .body { flex: 1; }
+  .ds-vision .body .t { font-weight: 600; }
+  .ds-vision .body .s { color: var(--ink-3); font-size: 13px; line-height: 1.55; }
+  .ds-vision .close { color: var(--ink-4); background: none; border: 0; }
+
+  .ds-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 18px; align-items: start; margin-top: 18px; }
+  .ds-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 22px 24px; box-shadow: var(--shadow-1); }
+  .ds-card h3 { margin: 0 0 4px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+  .ds-card h3 svg { color: var(--ink-3); width: 18px; height: 18px; }
+  .ds-card .sub { color: var(--ink-3); font-size: 13px; margin-bottom: 14px; }
+
+  .act .item { display: grid; grid-template-columns: 40px 1fr auto; gap: 14px; padding: 14px 0; border-top: 1px solid var(--border); align-items: center; }
+  .act .item:first-of-type { border-top: 0; }
+  .act .item .t { font-weight: 600; font-size: 14px; }
+  .act .item .s { color: var(--ink-3); font-size: 12.5px; }
+  .act .item .meta { text-align: right; }
+  .act .item .when { color: var(--ink-3); font-size: 12.5px; margin-bottom: 4px; }
+
+  /* Einwilligungen */
+  .ew-item { display: grid; grid-template-columns: 40px 1fr 90px 16px; gap: 14px; padding: 14px 0; border-top: 1px solid var(--border); align-items: center; }
+  .ew-item:first-of-type { border-top: 0; }
+  .ew-item .t { font-weight: 600; font-size: 14px; }
+  .ew-item .s { color: var(--ink-3); font-size: 12.5px; }
+  .ew-item .toggle {
+    width: 36px; height: 20px; border-radius: 999px;
+    background: var(--surface-muted); position: relative; cursor: pointer;
+  }
+  .ew-item .toggle::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 16px; height: 16px; border-radius: 50%; background: #fff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    transition: left .2s ease;
+  }
+  .ew-item .toggle.on { background: var(--brand-600); }
+  .ew-item .toggle.on::after { left: 18px; }
+  .ew-item .state { font-size: 13px; font-weight: 500; text-align: right; color: var(--ink-3); }
+  .ew-item .state.on { color: var(--brand-700); }
+  .ew-item .chev { color: var(--ink-4); }
+
+  .ds-bottom { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 18px; align-items: start; margin-top: 18px; }
+
+  .ds-control .actions { display: flex; gap: 10px; }
+  .ds-control .actions .btn { flex: 1; justify-content: center; }
+
+  .ds-quellen table { width: 100%; border-collapse: collapse; }
+  .ds-quellen th { text-align: left; font-weight: 500; color: var(--ink-3); font-size: 12.5px; padding: 12px 10px; border-bottom: 1px solid var(--border); }
+  .ds-quellen td { padding: 14px 10px; border-bottom: 1px solid var(--border); font-size: 13.5px; vertical-align: middle; }
+  .ds-quellen tr:last-child td { border-bottom: 0; }
+  .ds-quellen .org { display: flex; align-items: center; gap: 10px; }
+  .ds-quellen .org .av {
+    width: 30px; height: 30px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700;
+    background: var(--surface-muted); color: var(--ink-2);
+  }
+  .ds-quellen .org .av.eagle { background: #0E1A36; color: #fff; }
+  .ds-quellen .org .av.ard { background: #1B47C2; color: #fff; font-size: 8px; line-height: 1.05; padding: 2px; text-align: center; }
+  .ds-quellen .org .av.aok { background: var(--green-600); color: #fff; }
+  .ds-quellen .zugriff { display: inline-flex; align-items: center; gap: 6px; color: var(--green-700); font-weight: 500; font-size: 13px; }
+  .ds-quellen .zugriff svg { width: 14px; height: 14px; }
+  .ds-quellen .zugriff.eink { color: var(--brand-700); }
+</style>
+</head>
+<body>
+
+<div data-gt-header></div>
+<div class="gt-shell">
+  <div data-gt-sidebar></div>
+  <main class="gt-content">
+    <div class="gt-page-head">
+      <h1>Datenschutz</h1>
+      <div class="sub">Einblick in Datenzugriffe, Einwilligungen und Verwendungszwecke.</div>
+      <span class="gt-page-tag">Spekulatives Demo-Feature</span>
+    </div>
+
+    <div class="ds-vision">
+      <span class="icon-circle"><i data-lucide="info"></i></span>
+      <div class="body">
+        <div class="t">2027-Vision</div>
+        <div class="s">Diese Funktionen sind Teil unserer Vision für mehr Transparenz und Selbstbestimmung über Ihre Daten.<br/>Verfügbarkeit und Inhalte können sich bis zur Einführung ändern.</div>
+      </div>
+      <button class="close"><i data-lucide="x"></i></button>
+    </div>
+
+    <div class="ds-grid">
+      <div class="ds-card act">
+        <h3><i data-lucide="clock"></i>Letzte Aktivitäten</h3>
+        <div class="item">
+          <span class="icon-circle"><i data-lucide="mail"></i></span>
+          <div><div class="t">Brief geöffnet</div><div class="s">Steuerbescheid 2024 vom Finanzamt Berlin</div></div>
+          <div class="meta"><div class="when">Heute, 10:24</div><span class="badge brand">Posteingang</span></div>
+        </div>
+        <div class="item">
+          <span class="icon-circle"><i data-lucide="sparkles"></i></span>
+          <div><div class="t">KI-Zusammenfassung erstellt</div><div class="s">Steuerbescheid 2024</div></div>
+          <div class="meta"><div class="when">Heute, 10:24</div><span class="badge brand">KI-Funktion</span></div>
+        </div>
+        <div class="item">
+          <span class="icon-circle teal"><i data-lucide="users"></i></span>
+          <div><div class="t">Adresse an Beitragsservice übermittelt</div><div class="s">ARD ZDF Deutschlandradio Beitragsservice –<br/>Festsetzungsbescheid</div></div>
+          <div class="meta"><div class="when">05.04.2026, 09:12</div><span class="badge green">Übermittlung</span></div>
+        </div>
+        <div class="item">
+          <span class="icon-circle"><i data-lucide="file"></i></span>
+          <div><div class="t">Dokument heruntergeladen</div><div class="s">Bescheid über Weiterbewilligung</div></div>
+          <div class="meta"><div class="when">03.04.2026, 16:45</div><span class="badge brand">Download</span></div>
+        </div>
+        <div class="item">
+          <span class="icon-circle"><i data-lucide="shield"></i></span>
+          <div><div class="t">Einwilligung erteilt</div><div class="s">Datenfreigabe an Finanzamt</div></div>
+          <div class="meta"><div class="when">30.03.2026, 11:08</div><span class="badge brand">Einwilligung</span></div>
+        </div>
+        <a href="#" class="all-link" style="color: var(--brand-600); font-weight: 500; font-size: 13.5px; display: inline-flex; align-items: center; gap: 4px; margin-top: 14px;">Alle Aktivitäten anzeigen <i data-lucide="chevron-right" style="width:12px;height:12px;"></i></a>
+      </div>
+
+      <div class="ds-card">
+        <h3><i data-lucide="shield"></i>Einwilligungen</h3>
+        <div class="sub">Steuern Sie, welche Stellen und Dienste auf Ihre Daten zugreifen dürfen.</div>
+        <div class="ew-item">
+          <span class="icon-circle pink"><i data-lucide="heart"></i></span>
+          <div><div class="t">Krankenkasse</div><div class="s">Datenübermittlung für Abrechnungen und Leistungen</div></div>
+          <div style="display: flex; align-items: center; gap: 10px; justify-content: flex-end;"><span class="state on">Ein</span><span class="toggle on"></span></div>
+          <i data-lucide="chevron-right" class="chev"></i>
+        </div>
+        <div class="ew-item">
+          <span class="icon-circle"><i data-lucide="landmark"></i></span>
+          <div><div class="t">Bank</div><div class="s">Kontodatenprüfung für Erstattungen</div></div>
+          <div style="display: flex; align-items: center; gap: 10px; justify-content: flex-end;"><span class="state">Aus</span><span class="toggle"></span></div>
+          <i data-lucide="chevron-right" class="chev"></i>
+        </div>
+        <div class="ew-item">
+          <span class="icon-circle amber"><i data-lucide="briefcase"></i></span>
+          <div><div class="t">Arbeitgeber</div><div class="s">Datenweitergabe für Lohnsteuer und Bescheinigungen</div></div>
+          <div style="display: flex; align-items: center; gap: 10px; justify-content: flex-end;"><span class="state">Aus</span><span class="toggle"></span></div>
+          <i data-lucide="chevron-right" class="chev"></i>
+        </div>
+        <div class="ew-item">
+          <span class="icon-circle"><i data-lucide="more-horizontal"></i></span>
+          <div><div class="t">Weitere Dienste</div><div class="s">Weitere Behörden und Organisationen</div></div>
+          <div style="text-align: right;"><a href="#" class="state on" style="color: var(--brand-600);">Verwalten</a></div>
+          <i data-lucide="chevron-right" class="chev"></i>
+        </div>
+        <a href="#" style="color: var(--brand-600); font-weight: 500; font-size: 13.5px; display: inline-flex; align-items: center; gap: 4px; margin-top: 12px;">Einwilligungshistorie anzeigen <i data-lucide="chevron-right" style="width:12px;height:12px;"></i></a>
+      </div>
+    </div>
+
+    <div class="ds-bottom">
+      <div class="ds-card ds-control">
+        <h3><i data-lucide="shield"></i>Ihre Datenschutz-Kontrolle</h3>
+        <div class="sub">Sie entscheiden, wer Ihre Daten wie verwenden darf.</div>
+        <div class="actions">
+          <button class="btn btn-secondary"><i data-lucide="file-text"></i>Zugriffsprotokoll</button>
+          <button class="btn btn-secondary"><i data-lucide="download"></i>Datenexport</button>
+          <button class="btn btn-secondary"><i data-lucide="settings"></i>Einstellungen</button>
+        </div>
+      </div>
+
+      <div class="ds-card ds-quellen">
+        <h3>Datenquellen &amp; Empfänger</h3>
+        <div class="sub">Übersicht darüber, welche Stellen auf Ihre Daten zugreifen und wie.</div>
+        <table>
+          <thead><tr><th>Stelle / Dienst</th><th>Zugriffsart</th><th>Aktualität</th><th></th></tr></thead>
+          <tbody>
+            <tr>
+              <td><div class="org"><span class="av"><i data-lucide="landmark"></i></span>Bürgeramt Berlin</div></td>
+              <td><span class="zugriff"><i data-lucide="refresh-cw" style="color: var(--green-600);"></i>Automatisch synchronisiert</span></td>
+              <td class="muted">Heute, 08:15</td>
+              <td><i data-lucide="chevron-right" style="color: var(--ink-4);"></i></td>
+            </tr>
+            <tr>
+              <td><div class="org"><span class="av eagle"><i data-lucide="landmark"></i></span>Finanzamt Berlin</div></td>
+              <td><span class="zugriff eink"><i data-lucide="shield-check" style="color: var(--brand-500);"></i>Einwilligungsbasiert</span></td>
+              <td class="muted">Heute, 07:40</td>
+              <td><i data-lucide="chevron-right" style="color: var(--ink-4);"></i></td>
+            </tr>
+            <tr>
+              <td><div class="org"><span class="av ard">ARD<br/>ZDF</span>ARD ZDF Deutschlandradio Beitragsservice</div></td>
+              <td><span class="zugriff eink"><i data-lucide="shield-check" style="color: var(--brand-500);"></i>Einwilligungsbasiert</span></td>
+              <td class="muted">05.04.2026, 09:12</td>
+              <td><i data-lucide="chevron-right" style="color: var(--ink-4);"></i></td>
+            </tr>
+            <tr>
+              <td><div class="org"><span class="av aok">AOK</span>AOK Nordost</div></td>
+              <td><span class="zugriff eink"><i data-lucide="shield-check" style="color: var(--brand-500);"></i>Einwilligungsbasiert</span></td>
+              <td class="muted">01.04.2026, 14:22</td>
+              <td><i data-lucide="chevron-right" style="color: var(--ink-4);"></i></td>
+            </tr>
+          </tbody>
+        </table>
+        <a href="#" style="color: var(--brand-600); font-weight: 500; font-size: 13.5px; display: inline-flex; align-items: center; gap: 4px; margin-top: 12px;">Alle Datenquellen anzeigen <i data-lucide="chevron-right" style="width:12px;height:12px;"></i></a>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>window.GT_ACTIVE='datenschutz';</script>
+<script src="assets/govtech.js"></script>
+</body>
+</html>

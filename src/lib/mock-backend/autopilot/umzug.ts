@@ -31,6 +31,7 @@ import type {
 import { aktenzeichenForBehoerde } from '../id';
 import { uuid } from '../id';
 import { wait } from '../latency';
+import { getRequestContext } from '../store-context';
 import { appendLogEntry } from '../stammdaten/api';
 import type { UebermittlungsLogEntry } from '@/types';
 
@@ -379,6 +380,9 @@ function emitStammdatenLogForCascadeStep(opts: {
 
 const FAILURE_RATE = 0.05;
 const isReliable = (): boolean => {
+  // Stage 2: per-Request-Reliable-Flag hat Vorrang (Server-HTTP-Pfad).
+  const reqCtx = getRequestContext();
+  if (reqCtx) return reqCtx.reliable;
   if (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_RELIABLE === '1') return true;
   if (typeof window !== 'undefined') {
     try {

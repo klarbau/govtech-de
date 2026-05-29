@@ -51,11 +51,11 @@ beforeAll(() => {
   });
 });
 
-let api: typeof import('@/lib/mock-backend').api;
-let reseedForActivePersona: typeof import('@/lib/mock-backend').reseedForActivePersona;
+let api: typeof import('@/lib/mock-backend/test-core').api;
+let reseedForActivePersona: typeof import('@/lib/mock-backend/test-core').reseedForActivePersona;
 
 beforeAll(async () => {
-  const mod = await import('@/lib/mock-backend');
+  const mod = await import('@/lib/mock-backend/test-core');
   api = mod.api;
   reseedForActivePersona = mod.reseedForActivePersona;
 });

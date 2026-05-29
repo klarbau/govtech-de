@@ -28,7 +28,9 @@
     ],
     "status": "gelesen",
     "empfangen_am": "2026-03-12T08:14:00.000Z",
-    "bescheid_dated_at": "2026-03-09"
+    "bescheid_dated_at": "2026-03-09",
+    "betrag_cent": 37100,
+    "betrag_richtung": "erstattung"
   },
   {
     "id": "letter-aok-rechnung-zuzahlung",

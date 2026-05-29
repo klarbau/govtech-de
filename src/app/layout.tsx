@@ -8,6 +8,7 @@ import { rtlLocales, type Locale } from '@/i18n/routing';
 import { cn } from '@/lib/utils';
 
 import './globals.css';
+import './prototype-v2.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 

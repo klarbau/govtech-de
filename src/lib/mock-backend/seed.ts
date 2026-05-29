@@ -2,9 +2,15 @@
  * Initial-State der Mock-Backend-Schicht.
  *
  * Wird beim ersten App-Boot ausgeführt (kein `meta`-Key vorhanden) und schreibt
- * die Fixtures aus `src/data/*.json` in localStorage. Bei Schema-Mismatch
- * (siehe persistence.read) wird der jeweilige Bucket gelöscht und beim nächsten
+ * die Fixtures aus `src/data/*.json` in den *aktuell gültigen Store* (Browser:
+ * localStorage; Server-Session: In-Memory). Bei Schema-Mismatch (siehe
+ * persistence.read) wird der jeweilige Bucket gelöscht und beim nächsten
  * `seedIfEmpty()`-Aufruf re-seeded.
+ *
+ * Store-Agnostik: alle Schreibvorgänge laufen über `persistence.*`, das den
+ * Store via `getCurrentStore()` auflöst. Um eine *konkrete* Store-Instanz zu
+ * seeden (z. B. eine frische Server-Session), `seedStore(store)` aufrufen — es
+ * führt `seedIfEmpty()` im Kontext dieses Stores aus.
  *
  * Aktive Persona ist standardmäßig 'anna-petrov'. Ein Persona-Switch (Onboarding)
  * schreibt `meta.active_persona_id` neu und ruft `reseedForActivePersona()`.
@@ -32,6 +38,8 @@ import {
   type CollectionKey,
 } from './persistence';
 import { runStorageMigrations } from './persistence-migrations';
+import { runWithStore } from './store-context';
+import type { MockStore } from './store';
 import { SEED_MOBILITAET } from './mobilitaet/seed-mobilitaet';
 import {
   behoerdenArraySchema,
@@ -204,6 +212,23 @@ export function seedIfEmpty(): void {
       console.warn('[mock-backend/seed] stammdaten seed failed', err);
     }
   }
+}
+
+/**
+ * Seedet eine *konkrete* Store-Instanz vollständig (Migrationen + Fixtures +
+ * Persona-Buckets) — analog `seedIfEmpty()`, aber im async-Kontext des
+ * übergebenen Stores. Stage-2-Route-Handler nutzen das, um eine frische
+ * Server-Session zu befüllen:
+ *
+ *   getOrCreateSessionStore(sessionId, (store) => seedStore(store));
+ *
+ * Identisches Ergebnis wie der Browser-Boot, da `seedIfEmpty()` ausschließlich
+ * über die store-agnostische `persistence.*`-Schicht schreibt.
+ */
+export function seedStore(store: MockStore): void {
+  runWithStore(store, () => {
+    seedIfEmpty();
+  });
 }
 
 function filterByPersona(letters: Letter[], personaId: string): Letter[] {

@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>Vorgänge — GovTech DE</title>
+<link rel="stylesheet" href="assets/govtech.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  .vg-layout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 24px; align-items: start; margin-top: 18px; }
+  .vg-toolbar { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+  .vg-toolbar .tab-chips { flex: 1; }
+  .vg-toolbar .filter { margin-left: auto; }
+
+  .vg-big { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 22px 24px; box-shadow: var(--shadow-1); }
+  .vg-big-head { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 18px; }
+  .vg-big-head .icon-circle { width: 48px; height: 48px; }
+  .vg-big-head .icon-circle svg { width: 22px; height: 22px; }
+  .vg-big-head .title { font-size: 19px; font-weight: 700; letter-spacing: -0.01em; }
+  .vg-big-head .sub { color: var(--ink-3); font-size: 13px; margin-top: 2px; }
+
+  .fortschritt-card { background: var(--surface-soft); border: 1px solid var(--border); border-radius: var(--r-md); padding: 18px 18px 22px; }
+  .fortschritt-head { display: flex; justify-content: space-between; margin-bottom: 18px; color: var(--ink-3); font-size: 13px; font-weight: 500; }
+  .fortschritt-head .lbl { color: var(--ink-2); }
+
+  .steps {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 0;
+    position: relative; padding: 0 10px;
+  }
+  .steps .step {
+    text-align: center; position: relative;
+  }
+  .steps .step .dot {
+    width: 36px; height: 36px; border-radius: 50%;
+    margin: 0 auto 10px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--green-600); color: #fff; font-weight: 700;
+    position: relative; z-index: 1;
+  }
+  .steps .step.pending .dot { background: var(--surface); color: var(--ink-4); border: 1.5px solid var(--border-strong); }
+  .steps .step.current .dot {
+    background: var(--surface); color: var(--brand-600);
+    border: 2px solid var(--brand-500);
+  }
+  .steps .step .t { font-weight: 600; font-size: 13.5px; line-height: 1.3; }
+  .steps .step.current .t { color: var(--brand-700); }
+  .steps .step .s { color: var(--ink-3); font-size: 12px; margin-top: 2px; line-height: 1.4; }
+  .steps .step .date { font-size: 12px; color: var(--ink-3); margin-top: 6px; }
+  .steps .step.current .date { color: var(--brand-600); font-weight: 600; }
+  .steps .step::before {
+    content: ''; position: absolute; top: 18px; left: -50%; right: 50%; height: 2px;
+    background: var(--green-600);
+  }
+  .steps .step:first-child::before { display: none; }
+  .steps .step.pending::before { background: var(--border-strong); }
+  .steps .step.current::before { background: var(--green-600); }
+  .steps .step.pending + .step.pending::before, .steps .step:last-child.pending::before { background: var(--border-strong); }
+
+  .vg-big-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 18px; }
+  .vg-big-foot .left { display: inline-flex; align-items: center; gap: 8px; color: var(--ink-3); font-size: 13px; }
+
+  .vg-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
+  .vg-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 22px; box-shadow: var(--shadow-1); }
+  .vg-card-head { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+  .vg-card-head .title { font-weight: 600; flex: 1; }
+  .vg-card-head .sub { color: var(--ink-3); font-size: 12.5px; }
+
+  .frist-box {
+    border: 1px solid var(--brand-100); background: var(--brand-50); color: var(--brand-700);
+    padding: 14px 16px; border-radius: var(--r-md);
+  }
+  .frist-box .t { font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .frist-box .t svg { width: 16px; height: 16px; }
+  .frist-box .s { color: var(--brand-700); opacity: .85; font-size: 13px; margin-top: 2px; }
+
+  .frist-box.warn { background: var(--amber-50); border-color: var(--amber-100); color: var(--amber-600); }
+  .frist-box.warn .s { color: var(--amber-600); }
+
+  .vg-card-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; }
+
+  /* Right rail */
+  .rail-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 22px; box-shadow: var(--shadow-1); }
+  .rail-card h3 { margin: 0 0 4px; font-size: 16px; font-weight: 600; }
+  .rail-card .sub { color: var(--ink-3); font-size: 13px; margin-bottom: 14px; }
+  .rail-item { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-top: 1px solid var(--border); }
+  .rail-item:first-of-type { border-top: 0; }
+  .rail-item .icon-circle { width: 40px; height: 40px; }
+  .rail-item .n { font-size: 28px; font-weight: 700; letter-spacing: -0.01em; }
+  .rail-item .lbl { color: var(--ink-2); font-size: 13px; line-height: 1.35; }
+  .rail-item .link { color: var(--brand-600); font-weight: 500; font-size: 13px; display: inline-flex; align-items: center; gap: 4px; }
+</style>
+</head>
+<body>
+
+<div data-gt-header></div>
+<div class="gt-shell">
+  <div data-gt-sidebar></div>
+  <main class="gt-content">
+    <div class="gt-page-head">
+      <h1>Vorgänge</h1>
+      <div class="sub">Laufende und abgeschlossene Verwaltungsprozesse im Überblick.</div>
+    </div>
+
+    <div class="vg-toolbar">
+      <div class="tab-chips">
+        <button class="chip active">Alle <span class="count">6</span></button>
+        <button class="chip">Laufend <span class="count">3</span></button>
+        <button class="chip">Warten auf Sie <span class="count">2</span></button>
+        <button class="chip">Abgeschlossen <span class="count">1</span></button>
+      </div>
+      <button class="btn btn-secondary filter"><i data-lucide="filter"></i>Filter</button>
+    </div>
+
+    <div class="vg-layout">
+      <div>
+        <div class="vg-big">
+          <div class="vg-big-head">
+            <span class="icon-circle"><i data-lucide="home"></i></span>
+            <div class="grow">
+              <div class="title">Umzug</div>
+              <div class="sub">Ihre Behörden werden automatisch informiert.</div>
+            </div>
+            <div style="text-align: right;">
+              <span class="badge brand"><span class="dot" style="background: var(--brand-500);"></span>Laufend</span>
+              <div class="muted text-xs" style="margin-top: 6px;">Verantwortlich: Sie</div>
+            </div>
+          </div>
+
+          <div class="fortschritt-card">
+            <div class="fortschritt-head">
+              <div class="lbl">Fortschritt</div>
+              <div>4 von 5 abgeschlossen</div>
+            </div>
+            <div class="steps">
+              <div class="step"><div class="dot"><i data-lucide="check" style="width:18px;height:18px;"></i></div><div class="t">Bürgeramt</div><div class="s">Anmeldung<br/>abgeschlossen</div><div class="date">28.05.2025</div></div>
+              <div class="step"><div class="dot"><i data-lucide="check" style="width:18px;height:18px;"></i></div><div class="t">Finanzamt</div><div class="s">Adressänderung<br/>übermittelt</div><div class="date">28.05.2025</div></div>
+              <div class="step"><div class="dot"><i data-lucide="check" style="width:18px;height:18px;"></i></div><div class="t">Beitragsservice</div><div class="s">Daten aktualisiert</div><div class="date">28.05.2025</div></div>
+              <div class="step current"><div class="dot"><i data-lucide="more-horizontal" style="width:18px;height:18px;"></i></div><div class="t">Bundesdruckerei</div><div class="s">Ausweis ändern<br/>in Bearbeitung</div><div class="date">Verifizierung läuft</div></div>
+              <div class="step pending"><div class="dot"></div><div class="t">AOK</div><div class="s">Krankenkasse<br/>informieren</div><div class="date">Ausstehend</div></div>
+            </div>
+          </div>
+
+          <div class="vg-big-foot">
+            <span class="left"><i data-lucide="clock" style="width: 14px; height: 14px;"></i>Gestartet: 27.05.2025</span>
+            <a href="umzug.html" class="btn btn-secondary">Vorgang öffnen <i data-lucide="chevron-right"></i></a>
+          </div>
+        </div>
+
+        <div class="vg-row">
+          <div class="vg-card">
+            <div class="vg-card-head">
+              <span class="icon-circle violet"><i data-lucide="id-card"></i></span>
+              <div class="grow">
+                <div class="title">Aufenthaltstitel verlängern</div>
+                <div class="sub">Landesamt für Einwanderung Berlin</div>
+              </div>
+              <div style="text-align: right;">
+                <span class="badge brand"><span class="dot" style="background: var(--brand-500);"></span>Laufend</span>
+                <div class="muted text-xs" style="margin-top: 6px;">Verantwortlich: Sie</div>
+              </div>
+            </div>
+            <div class="frist-box">
+              <div class="t"><i data-lucide="calendar"></i>Frist in 14 Tagen</div>
+              <div class="s">Fällig am 12.06.2025</div>
+            </div>
+            <div class="vg-card-actions">
+              <button class="btn btn-secondary">Weiter bearbeiten</button>
+              <button class="btn btn-secondary btn-sm" style="height: 32px; width: 32px; padding: 0;"><i data-lucide="more-vertical"></i></button>
+            </div>
+          </div>
+
+          <div class="vg-card">
+            <div class="vg-card-head">
+              <span class="icon-circle pink"><i data-lucide="users"></i></span>
+              <div class="grow">
+                <div class="title">Kindergeld aktualisieren</div>
+                <div class="sub">Familienkasse</div>
+              </div>
+              <div style="text-align: right;">
+                <span class="badge amber"><span class="dot" style="background: var(--amber-500);"></span>Warten auf Sie</span>
+                <div class="muted text-xs" style="margin-top: 6px;">Verantwortlich: Sie</div>
+              </div>
+            </div>
+            <div class="frist-box warn">
+              <div class="t"><i data-lucide="alert-triangle"></i>Unterlagen fehlen</div>
+              <div class="s">Bitte laden Sie die fehlenden Dokumente hoch.<br/><span style="font-weight: 600;">Seit 2 Tagen offen</span></div>
+            </div>
+            <div class="vg-card-actions">
+              <button class="btn btn-secondary">Unterlagen hochladen</button>
+              <button class="btn btn-secondary btn-sm" style="height: 32px; width: 32px; padding: 0;"><i data-lucide="more-vertical"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rail-card">
+        <h3>Was ist gerade wichtig?</h3>
+        <div class="rail-item">
+          <span class="icon-circle"><i data-lucide="clipboard-list"></i></span>
+          <div class="grow"><div class="n">3</div><div class="lbl">offene Vorgänge</div><a class="link" href="#">Ansehen <i data-lucide="chevron-right" style="width:12px;height:12px;"></i></a></div>
+        </div>
+        <div class="rail-item">
+          <span class="icon-circle"><i data-lucide="calendar"></i></span>
+          <div class="grow"><div class="n">1</div><div class="lbl">Frist in den nächsten 14 Tagen</div><a class="link" href="termine.html">Fristen ansehen <i data-lucide="chevron-right" style="width:12px;height:12px;"></i></a></div>
+        </div>
+        <div class="rail-item">
+          <span class="icon-circle amber"><i data-lucide="alert-circle"></i></span>
+          <div class="grow"><div class="n">2</div><div class="lbl">Warten auf Ihre Bestätigung</div><a class="link" href="#">Ansehen <i data-lucide="chevron-right" style="width:12px;height:12px;"></i></a></div>
+        </div>
+        <a class="link" href="#" style="display: inline-flex; align-items: center; gap: 6px; margin-top: 12px;">Alle Vorgänge ansehen <i data-lucide="chevron-right" style="width:12px;height:12px;"></i></a>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>window.GT_ACTIVE='vorgaenge';</script>
+<script src="assets/govtech.js"></script>
+</body>
+</html>

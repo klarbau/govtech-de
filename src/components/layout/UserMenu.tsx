@@ -3,20 +3,21 @@
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { Menu as MenuPrimitive } from '@base-ui/react/menu';
-import { ChevronDown, LogOut, UserRound, Users } from 'lucide-react';
+import { ChevronDown, LogOut, User, UserRound, Users } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
-import { Avatar } from '@/components/shared/Avatar';
 import { useStripBaseUiFocusGuardAriaHidden } from '@/components/ui/use-strip-base-ui-focus-guard-aria-hidden';
 
 interface UserMenuProps {
-  /**
-   * Active persona name. Foundation default sourced from i18n
-   * (`shell.user.demo_name`) when no persona context supplies a name.
-   */
+  /** Active persona name. Falls back to the i18n demo name. */
   personaName?: string;
 }
 
+/**
+ * Literal `.gt-user-pill` from the HTML prototype: an outlined pill holding
+ * the avatar circle (`.av`), the persona name, and a chevron. Opens the
+ * existing profile / switch-persona / logout menu on click.
+ */
 export function UserMenu({ personaName }: UserMenuProps) {
   const t = useTranslations('shell.user');
   const name = personaName ?? t('demo_name');
@@ -24,21 +25,14 @@ export function UserMenu({ personaName }: UserMenuProps) {
   return (
     <MenuPrimitive.Root>
       <MenuPrimitive.Trigger
-        className={cn(
-          'flex min-h-[44px] items-center gap-2 rounded-md px-2 text-sm transition-colors',
-          'text-text-primary hover:bg-surface-muted',
-          'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
-        )}
+        className="gt-user-pill"
         aria-label={t('menu_label')}
       >
-        <Avatar name={name} size="sm" tone="primary" />
-        <span className="hidden max-w-[10rem] truncate font-medium md:inline-block">
-          {name}
+        <span className="av">
+          <User aria-hidden="true" />
         </span>
-        <ChevronDown
-          className="size-4 shrink-0 text-text-muted rtl:-scale-x-100"
-          aria-hidden="true"
-        />
+        {name}
+        <ChevronDown aria-hidden="true" />
       </MenuPrimitive.Trigger>
       <MenuContent />
     </MenuPrimitive.Root>

@@ -2,8 +2,24 @@
 
 import * as React from 'react';
 import { useTranslations } from 'next-intl';
-import { toast } from 'sonner';
-import { Download, ScrollText, Settings, ShieldCheck } from 'lucide-react';
+import {
+  Briefcase,
+  ChevronRight,
+  Clock,
+  Download,
+  FileText,
+  Heart,
+  Info,
+  Landmark,
+  Mail,
+  MoreHorizontal,
+  RefreshCw,
+  Settings,
+  Shield,
+  ShieldCheck,
+  Users,
+  X,
+} from 'lucide-react';
 
 import { api } from '@/lib/mock-backend';
 import type {
@@ -15,26 +31,66 @@ import type {
   UebermittlungsLogEntry,
 } from '@/types';
 
-import { PageHeader } from '@/components/shared/PageHeader';
-import { SectionCard } from '@/components/shared/SectionCard';
-import { RightRailCard } from '@/components/shared/RightRailCard';
-import { DataTable, type DataTableRow } from '@/components/shared/DataTable';
-import { StatusBadge } from '@/components/shared/StatusBadge';
-import { BehoerdenBadge } from '@/components/shared/BehoerdenBadge';
-import { EmptyState } from '@/components/shared/EmptyState';
-import { Button } from '@/components/ui/button';
-
-import { DatenschutzVisionBanner } from './VisionBanner';
-import { ActivityTimelineRow } from './ActivityTimelineRow';
-import { ConsentToggleRow } from './ConsentToggleRow';
-import { KontrollAktionTile } from './KontrollAktionTile';
-
 interface DatenschutzViewProps {
-  /** SSR-stable demo "now" für deterministische Relativ-Zeit in der Timeline. */
   nowIso: string;
 }
 
-const TIMELINE_INITIAL = 5;
+function formatActivityWhen(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const hh = String(d.getHours()).padStart(2, '0');
+  const mm = String(d.getMinutes()).padStart(2, '0');
+  return `${day}.${month}.${d.getFullYear()}, ${hh}:${mm}`;
+}
+
+function activityBadgeFor(
+  kategorie: UebermittlungsLogEntry['kategorie'],
+): { cls: string; label: string } {
+  switch (kategorie) {
+    case 'behoerde_zu_behoerde':
+      return { cls: 'green', label: 'Übermittlung' };
+    case 'speculative_2027':
+      return { cls: 'brand', label: 'Spekulativ 2027' };
+    case 'behoerde_zu_buerger':
+      return { cls: 'brand', label: 'Posteingang' };
+    case 'app_aktivitaet':
+    default:
+      return { cls: 'brand', label: 'App-Aktivität' };
+  }
+}
+
+const EMPFAENGER_ICONS: Record<
+  EinwilligungEmpfaenger,
+  { Icon: React.ComponentType<{ className?: string }>; iconCls: string; label: string; sub: string }
+> = {
+  krankenkasse: {
+    Icon: Heart,
+    iconCls: 'pink',
+    label: 'Krankenkasse',
+    sub: 'Datenübermittlung für Abrechnungen und Leistungen',
+  },
+  bank: {
+    Icon: Landmark,
+    iconCls: '',
+    label: 'Bank',
+    sub: 'Kontodatenprüfung für Erstattungen',
+  },
+  arbeitgeber: {
+    Icon: Briefcase,
+    iconCls: 'amber',
+    label: 'Arbeitgeber',
+    sub: 'Datenweitergabe für Lohnsteuer und Bescheinigungen',
+  },
+  weitere_dienste: {
+    Icon: MoreHorizontal,
+    iconCls: '',
+    label: 'Weitere Dienste',
+    sub: 'Weitere Behörden und Organisationen',
+  },
+};
+
 const EMPFAENGER_ORDER: EinwilligungEmpfaenger[] = [
   'krankenkasse',
   'bank',
@@ -42,340 +98,371 @@ const EMPFAENGER_ORDER: EinwilligungEmpfaenger[] = [
   'weitere_dienste',
 ];
 
-export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
-  const t = useTranslations('datenschutz');
-  const tEinw = useTranslations('datenschutz.einwilligungen');
-  const tQuellen = useTranslations('datenschutz.quellen');
-  const tKontrolle = useTranslations('datenschutz.kontrolle');
-  const tRoot = useTranslations();
+function quellenAvatar(behoerdeId: string, name: string): React.ReactNode {
+  if (behoerdeId.includes('finanzamt')) {
+    return (
+      <span className="av eagle">
+        <Landmark />
+      </span>
+    );
+  }
+  if (behoerdeId.includes('beitragsservice') || behoerdeId.includes('rundfunk')) {
+    return (
+      <span className="av ard">
+        ARD
+        <br />
+        ZDF
+      </span>
+    );
+  }
+  if (behoerdeId.includes('aok') || behoerdeId.includes('krankenkasse')) {
+    return <span className="av aok">AOK</span>;
+  }
+  return (
+    <span className="av">
+      <Landmark />
+    </span>
+  );
+}
 
+export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
+  const t = useTranslations();
   const [personaId, setPersonaId] = React.useState<PersonaId | null>(null);
-  const [log, setLog] = React.useState<UebermittlungsLogEntry[]>([]);
+  const [bannerOpen, setBannerOpen] = React.useState(true);
+  const [activities, setActivities] = React.useState<UebermittlungsLogEntry[]>([]);
   const [behoerdenById, setBehoerdenById] = React.useState<Record<string, Behoerde>>({});
   const [einwilligungen, setEinwilligungen] = React.useState<DatenschutzEinwilligung[]>([]);
-  const [datenquellen, setDatenquellen] = React.useState<DatenquellenEintrag[]>([]);
-  const [bannerDismissed, setBannerDismissed] = React.useState(true);
-  const [loadState, setLoadState] = React.useState<'loading' | 'ready' | 'error'>(
-    'loading',
-  );
-  const [showAllActivity, setShowAllActivity] = React.useState(false);
-  const [pendingEmpfaenger, setPendingEmpfaenger] =
-    React.useState<EinwilligungEmpfaenger | null>(null);
-  const [announce, setAnnounce] = React.useState('');
+  const [quellen, setQuellen] = React.useState<DatenquellenEintrag[]>([]);
 
-  const dismissBtnRef = React.useRef<HTMLButtonElement>(null);
-  const aktivitaetHeadingRef = React.useRef<HTMLHeadingElement>(null);
-
-  const load = React.useCallback(async () => {
-    setLoadState('loading');
-    try {
-      const profile = await api.getProfile();
-      const [logEntries, behoerden, einw, quellen, dismissed] = await Promise.all([
-        api.getUebermittlungsLog(profile.id, { limit: 20 }),
-        api.getBehoerden(),
-        api.getDatenschutzEinwilligungen(profile.id),
-        api.getDatenquellen(profile.id),
-        api.isVisionBannerDismissed(profile.id),
-      ]);
-      setPersonaId(profile.id);
-      setLog(logEntries);
-      setBehoerdenById(Object.fromEntries(behoerden.map((b) => [b.id, b])));
-      setEinwilligungen(einw);
-      setDatenquellen(quellen);
-      setBannerDismissed(dismissed);
-      setLoadState('ready');
-    } catch {
-      setLoadState('error');
-    }
-  }, []);
+  void nowIso;
 
   React.useEffect(() => {
-    void load();
-  }, [load]);
-
-  // Live-Aktualisierung der Timeline, wenn ein Log-Eintrag emittiert wird
-  // (z. B. durch einen Einwilligungs-Toggle). Re-fetch hält die Reihenfolge
-  // konsistent mit dem Backend-Sort.
-  React.useEffect(() => {
-    if (!personaId) return;
-    const unsubscribe = api.subscribe((event) => {
-      if (
-        event.type === 'stammdaten/log-entry-appended' &&
-        event.persona_id === personaId
-      ) {
-        void api
-          .getUebermittlungsLog(personaId, { limit: 20 })
-          .then(setLog)
-          .catch(() => {
-            /* nicht blockierend — der nächste Load gleicht ab */
-          });
+    let cancelled = false;
+    void (async () => {
+      try {
+        const profile = await api.getProfile();
+        const [log, behoerden, einw, qs] = await Promise.all([
+          api.getUebermittlungsLog(profile.id, { limit: 8 }),
+          api.getBehoerden(),
+          api.getDatenschutzEinwilligungen(profile.id),
+          api.getDatenquellen(profile.id),
+        ]);
+        if (cancelled) return;
+        setPersonaId(profile.id);
+        setActivities(log);
+        setBehoerdenById(Object.fromEntries(behoerden.map((b) => [b.id, b])));
+        setEinwilligungen(einw);
+        setQuellen(qs);
+      } catch {
+        if (!cancelled) setActivities([]);
       }
-    });
-    return unsubscribe;
-  }, [personaId]);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleToggle = React.useCallback(
     async (empfaenger: EinwilligungEmpfaenger, next: boolean) => {
       if (!personaId) return;
-      const empfaengerLabel = tEinw(empfaenger);
-      // Optimistic update.
       setEinwilligungen((prev) =>
-        prev.map((e) => (e.empfaenger === empfaenger ? { ...e, erteilt: next } : e)),
+        prev.map((e) =>
+          e.empfaenger === empfaenger ? { ...e, erteilt: next } : e,
+        ),
       );
-      setPendingEmpfaenger(empfaenger);
       try {
         await api.setDatenschutzEinwilligung(personaId, empfaenger, next);
-        setAnnounce(
-          next
-            ? tEinw('announce_ein', { empfaenger: empfaengerLabel })
-            : tEinw('announce_aus', { empfaenger: empfaengerLabel }),
-        );
-        // Datenquellen-Aktualität ist an die Krankenkasse-Einwilligung gekoppelt.
-        const quellen = await api.getDatenquellen(personaId);
-        setDatenquellen(quellen);
       } catch {
-        // Revert + Fehler-Toast.
+        // Revert silently — demo grade.
         setEinwilligungen((prev) =>
           prev.map((e) =>
             e.empfaenger === empfaenger ? { ...e, erteilt: !next } : e,
           ),
         );
-        toast.error(t('toast.einwilligung_error'));
-      } finally {
-        setPendingEmpfaenger(null);
       }
     },
-    [personaId, t, tEinw],
+    [personaId],
   );
 
-  const handleDismissBanner = React.useCallback(async () => {
-    if (!personaId) return;
-    setBannerDismissed(true);
-    // Fokus sinnvoll auf die nachfolgende Sektions-Überschrift setzen.
-    aktivitaetHeadingRef.current?.focus();
-    try {
-      await api.dismissVisionBanner(personaId);
-    } catch {
-      /* Dismiss ist nicht kritisch — UI-State bleibt geschlossen. */
-    }
-  }, [personaId]);
-
-  const handleVisionAction = React.useCallback(() => {
-    toast(tKontrolle('vision_hint'));
-  }, [tKontrolle]);
-
-  const handleZugriffsprotokoll = React.useCallback(() => {
-    aktivitaetHeadingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    aktivitaetHeadingRef.current?.focus();
-  }, []);
-
-  const header = (
-    <PageHeader
-      title={t('page.title')}
-      subtitle={t('page.subtitle')}
-      contextChip={{
-        label: tRoot('common.context_chip.speculative'),
-        tone: 'speculative',
-      }}
-    />
-  );
-
-  if (loadState === 'loading') {
-    return (
-      <div className="mx-auto w-full max-w-6xl px-4 py-4 md:px-6 md:py-6">
-        {header}
-        <div
-          aria-busy="true"
-          className="h-64 animate-pulse rounded-lg border border-border bg-surface-muted/40 motion-reduce:animate-none"
-        />
-      </div>
-    );
-  }
-
-  if (loadState === 'error') {
-    return (
-      <div className="mx-auto w-full max-w-6xl px-4 py-4 md:px-6 md:py-6">
-        {header}
-        <EmptyState
-          icon={<ShieldCheck />}
-          title={t('error')}
-          action={
-            <Button variant="outline" size="sm" onClick={() => void load()}>
-              {t('retry')}
-            </Button>
-          }
-        />
-      </div>
-    );
-  }
-
-  const sortedEinwilligungen = EMPFAENGER_ORDER.map((empf) =>
-    einwilligungen.find((e) => e.empfaenger === empf),
+  const sortedEinw = EMPFAENGER_ORDER.map((emp) =>
+    einwilligungen.find((e) => e.empfaenger === emp),
   ).filter((e): e is DatenschutzEinwilligung => Boolean(e));
 
-  const visibleLog = showAllActivity ? log : log.slice(0, TIMELINE_INITIAL);
-
-  const quellenRows: DataTableRow[] = datenquellen.map((q, i) => {
-    const behoerde = behoerdenById[q.behoerde_id];
-    const zugriffsartLabel =
-      q.zugriffsart === 'automatisch_synchronisiert'
-        ? tQuellen('automatisch')
-        : tQuellen('einwilligungsbasiert');
-    const aktualitaet =
-      q.aktualitaet === 'aktuell'
-        ? tQuellen('aktuell')
-        : q.aktualitaet === '—'
-          ? '—'
-          : q.aktualitaet;
+  // Build activity rows purely from the backend uebermittlungs-log.
+  const activityRows = activities.slice(0, 5).map((entry) => {
+    const senderName = entry.absender_behoerde_id
+      ? behoerdenById[entry.absender_behoerde_id]?.name_de ?? entry.absender_behoerde_id
+      : undefined;
     return {
-      id: `${q.behoerde_id}-${i}`,
-      cells: {
-        stelle: (
-          <BehoerdenBadge
-            name={behoerde?.name_de ?? q.behoerde_id}
-            kategorie={behoerde?.kategorie}
-          />
+      id: entry.id,
+      icon:
+        entry.kategorie === 'behoerde_zu_behoerde' ? (
+          <Users />
+        ) : entry.kategorie === 'behoerde_zu_buerger' ? (
+          <Mail />
+        ) : (
+          <Shield />
         ),
-        zugriffsart: (
-          <StatusBadge
-            variant={q.zugriffsart === 'automatisch_synchronisiert' ? 'laufend' : 'aktiv'}
-          >
-            {zugriffsartLabel}
-          </StatusBadge>
-        ),
-        aktualitaet: <span className="tabular-nums">{aktualitaet}</span>,
-      },
+      iconCls:
+        entry.kategorie === 'behoerde_zu_behoerde' ? 'teal' : undefined,
+      title: t.has(entry.zweck_i18n_key)
+        ? t(entry.zweck_i18n_key)
+        : entry.zweck_i18n_key.split('.').pop() ?? 'Aktivität',
+      sub: senderName ?? entry.rechtsgrundlage,
+      when: formatActivityWhen(entry.timestamp),
+      badge: activityBadgeFor(entry.kategorie),
     };
   });
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-4 md:px-6 md:py-6">
-      {header}
-
-      {/* Live-Region für Toggle-Zustands-Ansagen. */}
-      <div aria-live="polite" className="sr-only">
-        {announce}
+    <>
+      <div className="gt-page-head">
+        <h1>Datenschutz</h1>
+        <div className="sub">
+          Einblick in Datenzugriffe, Einwilligungen und Verwendungszwecke.
+        </div>
+        <span className="gt-page-tag">Spekulatives Demo-Feature</span>
       </div>
 
-      {!bannerDismissed ? (
-        <div className="mb-6">
-          <DatenschutzVisionBanner
-            onDismiss={() => void handleDismissBanner()}
-            dismissButtonRef={dismissBtnRef}
-          />
+      {bannerOpen ? (
+        <div className="ds-vision">
+          <span className="icon-circle">
+            <Info />
+          </span>
+          <div className="body">
+            <div className="t">2027-Vision</div>
+            <div className="s">
+              Diese Funktionen sind Teil unserer Vision für mehr Transparenz und
+              Selbstbestimmung über Ihre Daten.
+              <br />
+              Verfügbarkeit und Inhalte können sich bis zur Einführung ändern.
+            </div>
+          </div>
+          <button
+            type="button"
+            className="close"
+            aria-label="Hinweis schließen"
+            onClick={() => setBannerOpen(false)}
+          >
+            <X />
+          </button>
         </div>
       ) : null}
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[2fr_1fr]">
-        {/* Hauptspalte */}
-        <div className="space-y-6">
-          <SectionCard title={undefined}>
-            <h2
-              ref={aktivitaetHeadingRef}
-              tabIndex={-1}
-              className="mb-3 text-base font-semibold text-text-primary outline-none"
-            >
-              {t('aktivitaet.title')}
-            </h2>
-            {log.length === 0 ? (
-              <EmptyState
-                icon={<ScrollText />}
-                title={t('empty.title')}
-                description={t('empty.description')}
-              />
-            ) : (
-              <>
-                <ul className="divide-y divide-border">
-                  {visibleLog.map((entry) => (
-                    <ActivityTimelineRow
-                      key={entry.id}
-                      entry={entry}
-                      behoerdenById={behoerdenById}
-                      nowIso={nowIso}
-                    />
-                  ))}
-                </ul>
-                {log.length > TIMELINE_INITIAL ? (
-                  <div className="mt-3">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      aria-expanded={showAllActivity}
-                      onClick={() => setShowAllActivity((v) => !v)}
-                    >
-                      {showAllActivity
-                        ? t('aktivitaet.show_less')
-                        : t('aktivitaet.show_all')}
-                    </Button>
-                  </div>
-                ) : null}
-              </>
-            )}
-          </SectionCard>
-
-          <SectionCard title={tQuellen('title')}>
-            <DataTable
-              caption={tQuellen('title')}
-              columns={[
-                { id: 'stelle', header: tQuellen('col_stelle'), align: 'start' },
-                {
-                  id: 'zugriffsart',
-                  header: tQuellen('col_zugriffsart'),
-                  align: 'start',
-                },
-                {
-                  id: 'aktualitaet',
-                  header: tQuellen('col_aktualitaet'),
-                  align: 'end',
-                },
-              ]}
-              rows={quellenRows}
-            />
-          </SectionCard>
-
-          <SectionCard title={tKontrolle('title')}>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-              <KontrollAktionTile
-                icon={<ScrollText />}
-                label={tKontrolle('zugriffsprotokoll')}
-                description={tKontrolle('zugriffsprotokoll_desc')}
-                onClick={handleZugriffsprotokoll}
-              />
-              <KontrollAktionTile
-                icon={<Download />}
-                label={tKontrolle('datenexport')}
-                description={tKontrolle('datenexport_desc')}
-                onClick={handleVisionAction}
-              />
-              <KontrollAktionTile
-                icon={<Settings />}
-                label={tKontrolle('einstellungen')}
-                description={tKontrolle('einstellungen_desc')}
-                onClick={handleVisionAction}
-              />
+      <div className="ds-grid">
+        <div className="ds-card act">
+          <h3>
+            <Clock />
+            Letzte Aktivitäten
+          </h3>
+          {activityRows.map((row) => (
+            <div key={row.id} className="item">
+              <span className={`icon-circle${row.iconCls ? ` ${row.iconCls}` : ''}`}>
+                {row.icon}
+              </span>
+              <div>
+                <div className="t">{row.title}</div>
+                <div className="s">{row.sub}</div>
+              </div>
+              <div className="meta">
+                <div className="when">{row.when}</div>
+                <span className={`badge ${row.badge.cls}`}>{row.badge.label}</span>
+              </div>
             </div>
-          </SectionCard>
+          ))}
+          <a
+            href="#"
+            className="all-link"
+            style={{
+              color: 'var(--brand-600)',
+              fontWeight: 500,
+              fontSize: 13.5,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 4,
+              marginTop: 14,
+            }}
+          >
+            Alle Aktivitäten anzeigen{' '}
+            <ChevronRight style={{ width: 12, height: 12 }} />
+          </a>
         </div>
 
-        {/* Rechte Rail — Einwilligungen */}
-        <aside className="space-y-6" aria-label={tEinw('title')}>
-          <RightRailCard title={tEinw('title')} as="h2">
-            <p className="mb-1 text-sm text-text-secondary">{tEinw('subtitle')}</p>
-            <div className="divide-y divide-border">
-              {sortedEinwilligungen.map((e) => (
-                <ConsentToggleRow
-                  key={e.empfaenger}
-                  label={tEinw(e.empfaenger)}
-                  checked={e.erteilt}
-                  rechtsgrundlage={e.rechtsgrundlage}
-                  pending={pendingEmpfaenger === e.empfaenger}
-                  onToggle={(next) => void handleToggle(e.empfaenger, next)}
-                />
-              ))}
-            </div>
-          </RightRailCard>
-        </aside>
+        <div className="ds-card">
+          <h3>
+            <Shield />
+            Einwilligungen
+          </h3>
+          <div className="sub">
+            Steuern Sie, welche Stellen und Dienste auf Ihre Daten zugreifen
+            dürfen.
+          </div>
+          {sortedEinw.map((e) => {
+            const meta = EMPFAENGER_ICONS[e.empfaenger];
+            if (e.empfaenger === 'weitere_dienste') {
+              return (
+                <div key={e.empfaenger} className="ew-item">
+                  <span className="icon-circle">
+                    <meta.Icon />
+                  </span>
+                  <div>
+                    <div className="t">{meta.label}</div>
+                    <div className="s">{meta.sub}</div>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <a
+                      href="#"
+                      className="state on"
+                      style={{ color: 'var(--brand-600)' }}
+                    >
+                      Verwalten
+                    </a>
+                  </div>
+                  <ChevronRight className="chev" />
+                </div>
+              );
+            }
+            return (
+              <div key={e.empfaenger} className="ew-item">
+                <span className={`icon-circle${meta.iconCls ? ` ${meta.iconCls}` : ''}`}>
+                  <meta.Icon />
+                </span>
+                <div>
+                  <div className="t">{meta.label}</div>
+                  <div className="s">{meta.sub}</div>
+                </div>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 10,
+                    justifyContent: 'flex-end',
+                  }}
+                >
+                  <span className={`state${e.erteilt ? ' on' : ''}`}>
+                    {e.erteilt ? 'Ein' : 'Aus'}
+                  </span>
+                  <button
+                    type="button"
+                    className={`toggle${e.erteilt ? ' on' : ''}`}
+                    role="switch"
+                    aria-checked={e.erteilt}
+                    aria-label={`${meta.label} ${e.erteilt ? 'aus' : 'ein'}schalten`}
+                    onClick={() => void handleToggle(e.empfaenger, !e.erteilt)}
+                  />
+                </div>
+                <ChevronRight className="chev" />
+              </div>
+            );
+          })}
+          <a
+            href="#"
+            style={{
+              color: 'var(--brand-600)',
+              fontWeight: 500,
+              fontSize: 13.5,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 4,
+              marginTop: 12,
+            }}
+          >
+            Einwilligungshistorie anzeigen{' '}
+            <ChevronRight style={{ width: 12, height: 12 }} />
+          </a>
+        </div>
       </div>
-    </div>
+
+      <div className="ds-bottom">
+        <div className="ds-card ds-control">
+          <h3>
+            <Shield />
+            Ihre Datenschutz-Kontrolle
+          </h3>
+          <div className="sub">
+            Sie entscheiden, wer Ihre Daten wie verwenden darf.
+          </div>
+          <div className="actions">
+            <button type="button" className="btn btn-secondary">
+              <FileText />
+              Zugriffsprotokoll
+            </button>
+            <button type="button" className="btn btn-secondary">
+              <Download />
+              Datenexport
+            </button>
+            <button type="button" className="btn btn-secondary">
+              <Settings />
+              Einstellungen
+            </button>
+          </div>
+        </div>
+
+        <div className="ds-card ds-quellen">
+          <h3>Datenquellen &amp; Empfänger</h3>
+          <div className="sub">
+            Übersicht darüber, welche Stellen auf Ihre Daten zugreifen und wie.
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Stelle / Dienst</th>
+                <th>Zugriffsart</th>
+                <th>Aktualität</th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              {quellen.map((q, i) => {
+                const name = behoerdenById[q.behoerde_id]?.name_de ?? q.behoerde_id;
+                const auto = q.zugriffsart === 'automatisch_synchronisiert';
+                return (
+                  <tr key={`${q.behoerde_id}-${i}`}>
+                    <td>
+                      <div className="org">
+                        {quellenAvatar(q.behoerde_id, name)}
+                        {name}
+                      </div>
+                    </td>
+                    <td>
+                      {auto ? (
+                        <span className="zugriff">
+                          <RefreshCw style={{ color: 'var(--green-600)' }} />
+                          Automatisch synchronisiert
+                        </span>
+                      ) : (
+                        <span className="zugriff eink">
+                          <ShieldCheck style={{ color: 'var(--brand-500)' }} />
+                          Einwilligungsbasiert
+                        </span>
+                      )}
+                    </td>
+                    <td className="muted">{q.aktualitaet}</td>
+                    <td>
+                      <ChevronRight style={{ color: 'var(--ink-4)' }} />
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          <a
+            href="#"
+            style={{
+              color: 'var(--brand-600)',
+              fontWeight: 500,
+              fontSize: 13.5,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 4,
+              marginTop: 12,
+            }}
+          >
+            Alle Datenquellen anzeigen{' '}
+            <ChevronRight style={{ width: 12, height: 12 }} />
+          </a>
+        </div>
+      </div>
+    </>
   );
 }

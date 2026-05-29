@@ -1,627 +1,467 @@
 'use client';
 
 import * as React from 'react';
-import { useTranslations } from 'next-intl';
-import { toast } from 'sonner';
-import { Popover as PopoverPrimitive } from '@base-ui/react/popover';
+import Link from 'next/link';
 import {
-  FileSignature,
+  BookUser,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsUpDown,
+  Clock,
+  Download,
+  Eye,
+  File,
   FileText,
-  FolderOpen,
   FolderPlus,
+  Home,
   IdCard,
-  Inbox,
-  LayoutTemplate,
+  Landmark,
+  Mail,
+  MoreVertical,
+  Search,
+  ShieldCheck,
+  SquareArrowRight,
   Upload,
   Users,
+  type LucideIcon,
 } from 'lucide-react';
 
-import { cn } from '@/lib/utils';
-import { formatDateDe } from '@/lib/utils';
 import { api } from '@/lib/mock-backend';
-import type { Behoerde, Document, DocumentKategorie } from '@/types';
+import type { Document, DocumentKategorie, DocumentTyp } from '@/types';
 
-import { PageHeader } from '@/components/shared/PageHeader';
-import { SearchInput } from '@/components/shared/SearchInput';
-import { FilterTabs } from '@/components/shared/FilterTabs';
-import { FilterButton } from '@/components/shared/FilterButton';
-import { DataTable, type DataTableRow } from '@/components/shared/DataTable';
-import { IconCircle } from '@/components/shared/IconCircle';
-import { StatusBadge } from '@/components/shared/StatusBadge';
-import { Pagination } from '@/components/shared/Pagination';
-import { RightRailCard } from '@/components/shared/RightRailCard';
-import { SectionCard } from '@/components/shared/SectionCard';
-import { EmptyState } from '@/components/shared/EmptyState';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { useStripBaseUiFocusGuardAriaHidden } from '@/components/ui/use-strip-base-ui-focus-guard-aria-hidden';
-import type { LucideIcon } from 'lucide-react';
+interface DocAvatar {
+  cls: string; // empty string = default brand av (no extra class)
+  Icon: LucideIcon;
+}
 
-import { deriveDocumentStatus, type DocumentStatus } from './deriveDocumentStatus';
-import { DokumentRowActions } from './DokumentRowActions';
-import { DokumentPreviewDialog } from './DokumentPreviewDialog';
+function avatarFor(typ: DocumentTyp): DocAvatar {
+  switch (typ) {
+    case 'reisepass':
+      return { cls: 'pink', Icon: BookUser };
+    case 'aufenthaltstitel':
+      return { cls: 'violet', Icon: IdCard };
+    case 'meldebestaetigung':
+      return { cls: 'teal', Icon: Home };
+    case 'steuerbescheid':
+      return { cls: 'eagle', Icon: Landmark };
+    case 'geburtsurkunde':
+      return { cls: 'pink', Icon: Users };
+    case 'mietvertrag':
+      return { cls: '', Icon: FileText };
+    default:
+      return { cls: '', Icon: FileText };
+  }
+}
 
-interface DokumenteViewProps {
-  /** SSR-stable demo "now" for deterministic status derivation. */
-  nowIso: string;
+interface KategorieBadge {
+  cls: string;
+  label: string;
+}
+
+function kategorieBadge(k: DocumentKategorie | undefined): KategorieBadge {
+  switch (k) {
+    case 'ausweise':
+      return { cls: 'violet', label: 'Ausweise' };
+    case 'familie':
+      return { cls: 'pink', label: 'Familie' };
+    case 'vertraege':
+      return { cls: 'amber', label: 'Verträge' };
+    case 'bescheide':
+    default:
+      return { cls: 'brand', label: 'Bescheide' };
+  }
+}
+
+type DocStatusKind = 'verifiziert' | 'neu' | 'ablauf_bald' | 'abgelaufen';
+
+function deriveStatus(doc: Document, now: Date): DocStatusKind {
+  if (doc.gueltig_bis) {
+    const bis = new Date(doc.gueltig_bis);
+    const diffDays = Math.floor((bis.getTime() - now.getTime()) / 86400000);
+    if (diffDays < 0) return 'abgelaufen';
+    if (diffDays <= 90) return 'ablauf_bald';
+  }
+  const ausgestellt = new Date(doc.ausgestellt_am);
+  const alterTage = Math.floor((now.getTime() - ausgestellt.getTime()) / 86400000);
+  if (alterTage >= 0 && alterTage <= 30) return 'neu';
+  return 'verifiziert';
+}
+
+function formatDe(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  return `${day}.${month}.${d.getFullYear()}`;
 }
 
 type TabId = 'alle' | DocumentKategorie;
-type SortKey = 'name' | 'ausgestellt' | 'gueltig';
-type StatusFilter = DocumentStatus;
 
-const PAGE_SIZE_DEFAULT = 10;
+const TABS: Array<{ id: TabId; label: string }> = [
+  { id: 'alle', label: 'Alle' },
+  { id: 'ausweise', label: 'Ausweise' },
+  { id: 'bescheide', label: 'Bescheide' },
+  { id: 'familie', label: 'Familie' },
+  { id: 'vertraege', label: 'Verträge' },
+];
 
-const KATEGORIE_ICON: Record<DocumentKategorie, LucideIcon> = {
-  ausweise: IdCard,
-  bescheide: FileText,
-  familie: Users,
-  vertraege: FileSignature,
-};
+const PAGE_SIZE = 10;
 
-const STATUS_ORDER: Record<DocumentStatus, number> = {
-  abgelaufen: 0,
-  ablauf_bald: 1,
-  neu: 2,
-  verifiziert: 3,
-};
-
-export function DokumenteView({ nowIso }: DokumenteViewProps) {
-  const t = useTranslations('dokumente');
-  const tStatus = useTranslations('common.status');
-  const tCommon = useTranslations('common');
-
-  const [documents, setDocuments] = React.useState<Document[]>([]);
-  const [behoerdenById, setBehoerdenById] = React.useState<
-    Record<string, Behoerde>
-  >({});
-  const [loadState, setLoadState] = React.useState<'loading' | 'ready' | 'error'>(
-    'loading',
-  );
-
+export function DokumenteView({ nowIso }: { nowIso: string }) {
+  const [docs, setDocs] = React.useState<Document[]>([]);
   const [search, setSearch] = React.useState('');
   const [activeTab, setActiveTab] = React.useState<TabId>('alle');
-  const [sort, setSort] = React.useState<SortKey>('ausgestellt');
-  const [statusFilters, setStatusFilters] = React.useState<StatusFilter[]>([]);
-  const [filterOpen, setFilterOpen] = React.useState(false);
   const [page, setPage] = React.useState(1);
-  const [pageSize, setPageSize] = React.useState(PAGE_SIZE_DEFAULT);
 
-  const [previewDoc, setPreviewDoc] = React.useState<Document | null>(null);
-  const [previewOpen, setPreviewOpen] = React.useState(false);
-
-  const load = React.useCallback(async () => {
-    setLoadState('loading');
-    try {
-      const [docs, behoerden] = await Promise.all([
-        api.getDocuments(),
-        api.getBehoerden(),
-      ]);
-      setDocuments(docs);
-      setBehoerdenById(
-        Object.fromEntries(behoerden.map((b) => [b.id, b])),
-      );
-      setLoadState('ready');
-    } catch {
-      setLoadState('error');
-    }
-  }, []);
+  const now = React.useMemo(() => new Date(nowIso), [nowIso]);
 
   React.useEffect(() => {
-    void load();
-  }, [load]);
+    let cancelled = false;
+    void (async () => {
+      try {
+        const data = await api.getDocuments();
+        if (!cancelled) setDocs(data);
+      } catch {
+        if (!cancelled) setDocs([]);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
-  const behoerdeName = React.useCallback(
-    (id: string) => behoerdenById[id]?.name_de ?? id,
-    [behoerdenById],
-  );
+  const kategorieOf = (d: Document): DocumentKategorie =>
+    d.kategorie ?? 'bescheide';
 
-  const statusOf = React.useCallback(
-    (doc: Document): DocumentStatus => deriveDocumentStatus(doc, nowIso),
-    [nowIso],
-  );
-
-  const kategorieOf = React.useCallback(
-    (doc: Document): DocumentKategorie => doc.kategorie ?? 'bescheide',
-    [],
-  );
-
-  // Category counts over the full (search-and-status-unfiltered) set, so the
-  // tab counts stay stable as the prototype shows.
   const counts = React.useMemo(() => {
-    const map: Record<TabId, number> = {
-      alle: documents.length,
+    const c: Record<TabId, number> = {
+      alle: docs.length,
       ausweise: 0,
       bescheide: 0,
       familie: 0,
       vertraege: 0,
     };
-    for (const doc of documents) map[kategorieOf(doc)] += 1;
-    return map;
-  }, [documents, kategorieOf]);
+    for (const d of docs) c[kategorieOf(d)] += 1;
+    return c;
+  }, [docs]);
 
   const filtered = React.useMemo(() => {
-    const query = search.trim().toLowerCase();
-    const result = documents.filter((doc) => {
-      if (activeTab !== 'alle' && kategorieOf(doc) !== activeTab) return false;
-      if (
-        statusFilters.length > 0 &&
-        !statusFilters.includes(statusOf(doc))
-      ) {
-        return false;
-      }
-      if (query) {
-        const haystack = [
-          doc.titel,
-          doc.dokument_nr ?? '',
-          behoerdeName(doc.ausstellende_behoerde_id),
-        ]
-          .join(' ')
-          .toLowerCase();
-        if (!haystack.includes(query)) return false;
-      }
-      return true;
+    const q = search.trim().toLowerCase();
+    return docs.filter((d) => {
+      if (activeTab !== 'alle' && kategorieOf(d) !== activeTab) return false;
+      if (!q) return true;
+      const hay = `${d.titel} ${d.dokument_nr ?? ''}`.toLowerCase();
+      return hay.includes(q);
     });
+  }, [docs, search, activeTab]);
 
-    const sorted = [...result].sort((a, b) => {
-      if (sort === 'name') return a.titel.localeCompare(b.titel, 'de');
-      if (sort === 'gueltig') {
-        const av = a.gueltig_bis ?? '9999-12-31';
-        const bv = b.gueltig_bis ?? '9999-12-31';
-        return av.localeCompare(bv);
-      }
-      return b.ausgestellt_am.localeCompare(a.ausgestellt_am);
-    });
-    return sorted;
-  }, [
-    documents,
-    activeTab,
-    statusFilters,
-    search,
-    sort,
-    kategorieOf,
-    statusOf,
-    behoerdeName,
-  ]);
-
-  // Reset to page 1 whenever the result set shrinks below the current page.
-  React.useEffect(() => {
-    const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
-    if (page > totalPages) setPage(1);
-  }, [filtered.length, pageSize, page]);
-
-  const pageItems = React.useMemo(
-    () => filtered.slice((page - 1) * pageSize, page * pageSize),
-    [filtered, page, pageSize],
-  );
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const pageStart = (safePage - 1) * PAGE_SIZE;
+  const pageItems = filtered.slice(pageStart, pageStart + PAGE_SIZE);
 
   const recentlyAdded = React.useMemo(
     () =>
-      [...documents]
+      [...docs]
         .sort((a, b) => b.ausgestellt_am.localeCompare(a.ausgestellt_am))
         .slice(0, 3),
-    [documents],
+    [docs],
   );
 
-  function openPreview(doc: Document) {
-    setPreviewDoc(doc);
-    setPreviewOpen(true);
-  }
-
-  function demoToast() {
-    toast(t('demo_action_toast'));
-  }
-
-  const tabs = [
-    { id: 'alle' as const, label: tCommon('all'), count: counts.alle },
-    {
-      id: 'ausweise' as const,
-      label: t('kategorie.ausweise'),
-      count: counts.ausweise,
-    },
-    {
-      id: 'bescheide' as const,
-      label: t('kategorie.bescheide'),
-      count: counts.bescheide,
-    },
-    {
-      id: 'familie' as const,
-      label: t('kategorie.familie'),
-      count: counts.familie,
-    },
-    {
-      id: 'vertraege' as const,
-      label: t('kategorie.vertraege'),
-      count: counts.vertraege,
-    },
-  ];
-
-  const columns = [
-    { id: 'dokument', header: t('col.dokument'), align: 'start' as const, sortable: true },
-    { id: 'kategorie', header: t('col.kategorie'), align: 'start' as const },
-    { id: 'status', header: t('col.status'), align: 'start' as const, sortable: true },
-    { id: 'daten', header: t('col.daten'), align: 'start' as const, sortable: true },
-    { id: 'aktionen', header: t('col.aktionen'), align: 'end' as const },
-  ];
-
-  const tableSort: { columnId: string; direction: 'asc' | 'desc' } | undefined =
-    sort === 'name'
-      ? { columnId: 'dokument', direction: 'asc' }
-      : sort === 'gueltig'
-        ? { columnId: 'daten', direction: 'asc' }
-        : { columnId: 'daten', direction: 'desc' };
-
-  function onSort(columnId: string) {
-    if (columnId === 'dokument') setSort('name');
-    else if (columnId === 'daten') {
-      setSort((prev) => (prev === 'ausgestellt' ? 'gueltig' : 'ausgestellt'));
-    } else if (columnId === 'status') {
-      setSort('ausgestellt');
-    }
-  }
-
-  const rows: DataTableRow[] = pageItems.map((doc) => {
-    const kategorie = kategorieOf(doc);
-    const Icon = KATEGORIE_ICON[kategorie];
-    const status = statusOf(doc);
-    return {
-      id: doc.id,
-      cells: {
-        dokument: (
-          <div className="flex items-center gap-3">
-            <IconCircle icon={<Icon aria-hidden="true" />} tone="primary" size="md" />
-            <div className="min-w-0">
-              <div className="truncate font-medium text-text-primary" title={doc.titel}>
-                {doc.titel}
-              </div>
-              {doc.dokument_nr ? (
-                <div className="truncate text-xs text-text-muted tabular-nums" dir="ltr">
-                  {t('col.nr_prefix')}
-                  {doc.dokument_nr}
-                </div>
-              ) : null}
-            </div>
-          </div>
-        ),
-        kategorie: (
-          <span className="text-sm text-text-secondary">
-            {t(`kategorie.${kategorie}`)}
-          </span>
-        ),
-        status: (
-          <StatusBadge variant={status}>{tStatus(status)}</StatusBadge>
-        ),
-        daten: (
-          <div className="text-sm text-text-secondary tabular-nums" dir="ltr">
-            <div>{t('daten.ausgestellt', { datum: formatDateDe(doc.ausgestellt_am) })}</div>
-            <div>
-              {doc.gueltig_bis
-                ? t('daten.gueltig_bis', { datum: formatDateDe(doc.gueltig_bis) })
-                : t('daten.unbefristet')}
-            </div>
-          </div>
-        ),
-        aktionen: (
-          <DokumentRowActions
-            documentName={doc.titel}
-            onView={() => openPreview(doc)}
-            onDownload={demoToast}
-            onShare={() => openPreview(doc)}
-          />
-        ),
-      },
-    };
-  });
-
-  const sortOptions: { key: SortKey; label: string }[] = [
-    { key: 'name', label: t('filter.sort_name') },
-    { key: 'ausgestellt', label: t('filter.sort_ausgestellt') },
-    { key: 'gueltig', label: t('filter.sort_gueltig') },
-  ];
-  const statusOptions: { key: StatusFilter; label: string }[] = (
-    ['verifiziert', 'neu', 'ablauf_bald', 'abgelaufen'] as StatusFilter[]
-  )
-    .sort((a, b) => STATUS_ORDER[a] - STATUS_ORDER[b])
-    .map((key) => ({ key, label: tStatus(key) }));
-
-  const activeFilterCount =
-    statusFilters.length + (sort !== 'ausgestellt' ? 1 : 0);
-
-  function toggleStatus(key: StatusFilter) {
-    setStatusFilters((prev) =>
-      prev.includes(key) ? prev.filter((s) => s !== key) : [...prev, key],
-    );
-    setPage(1);
-  }
-
   return (
-    <div className="px-4 py-4 md:px-6 md:py-6">
-      <PageHeader
-        title={t('title')}
-        subtitle={t('subtitle')}
-        contextChip={{ label: tCommon('context_chip.prototype'), tone: 'prototype' }}
-      />
-
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <section className="space-y-4 lg:col-span-2" aria-label={t('title')}>
-          <SearchInput
-            value={search}
-            onChange={(value) => {
-              setSearch(value);
-              setPage(1);
-            }}
-            placeholder={t('search.placeholder')}
-            ariaLabel={t('search.aria_label')}
-          />
-
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <FilterTabs
-              tabs={tabs}
-              activeId={activeTab}
-              onChange={(id) => {
-                setActiveTab(id as TabId);
-                setPage(1);
-              }}
-              ariaLabel={t('col.kategorie')}
-            />
-            <SortFilterPopover
-              open={filterOpen}
-              onOpenChange={setFilterOpen}
-              activeCount={activeFilterCount}
-              sort={sort}
-              sortOptions={sortOptions}
-              onSortChange={(key) => {
-                setSort(key);
-                setPage(1);
-              }}
-              statusOptions={statusOptions}
-              statusFilters={statusFilters}
-              onToggleStatus={toggleStatus}
-            />
-          </div>
-
-          {loadState === 'loading' ? (
-            <DokumenteSkeleton />
-          ) : loadState === 'error' ? (
-            <EmptyState
-              icon={<FolderOpen aria-hidden="true" />}
-              title={t('error')}
-              action={
-                <Button type="button" variant="outline" onClick={() => void load()}>
-                  {tCommon('cta.erneut_versuchen')}
-                </Button>
-              }
-            />
-          ) : documents.length === 0 ? (
-            <EmptyState
-              icon={<FolderOpen aria-hidden="true" />}
-              title={t('empty.title')}
-              action={
-                <Button type="button" onClick={demoToast}>
-                  {t('schnellzugriff.upload')}
-                </Button>
-              }
-            />
-          ) : filtered.length === 0 ? (
-            <EmptyState
-              icon={<FolderOpen aria-hidden="true" />}
-              title={t('empty.filter_title')}
-              description={t('empty.filter_description')}
-            />
-          ) : (
-            <>
-              <DataTable
-                columns={columns}
-                rows={rows}
-                sort={tableSort}
-                onSort={onSort}
-                caption={t('title')}
-              />
-              <Pagination
-                page={page}
-                pageSize={pageSize}
-                total={filtered.length}
-                onPageChange={setPage}
-                onPageSizeChange={(size) => {
-                  setPageSize(size);
-                  setPage(1);
-                }}
-              />
-            </>
-          )}
-        </section>
-
-        <aside className="space-y-4" aria-label={t('schnellzugriff.title')}>
-          <SectionCard title={t('schnellzugriff.title')} padding="md">
-            <div className="flex flex-col gap-1">
-              <QuickAction icon={Upload} label={t('schnellzugriff.upload')} onClick={demoToast} />
-              <QuickAction icon={FolderPlus} label={t('schnellzugriff.ordner')} onClick={demoToast} />
-              <QuickAction icon={LayoutTemplate} label={t('schnellzugriff.vorlagen')} onClick={demoToast} />
-              <QuickAction icon={Inbox} label={t('schnellzugriff.papier')} onClick={demoToast} />
-            </div>
-          </SectionCard>
-
-          <SectionCard title={t('zuletzt.title')} padding="md">
-            <ul className="space-y-1">
-              {recentlyAdded.map((doc) => {
-                const Icon = KATEGORIE_ICON[kategorieOf(doc)];
-                return (
-                  <li key={doc.id}>
-                    <button
-                      type="button"
-                      onClick={() => openPreview(doc)}
-                      className="flex w-full min-h-[44px] items-center gap-3 rounded-md px-2 text-start transition-colors hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-                    >
-                      <IconCircle icon={<Icon aria-hidden="true" />} size="sm" tone="primary" />
-                      <span className="min-w-0 flex-1 truncate text-sm text-text-primary">
-                        {doc.titel}
-                      </span>
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          </SectionCard>
-
-          <RightRailCard title={t('teilen.title')} variant="soft">
-            <p className="mb-3">{t('teilen.hint')}</p>
-            <Button
-              type="button"
-              className="w-full"
-              onClick={() => {
-                if (recentlyAdded[0]) openPreview(recentlyAdded[0]);
-              }}
-            >
-              {t('teilen.cta')}
-            </Button>
-          </RightRailCard>
-        </aside>
+    <>
+      <div className="gt-page-head">
+        <h1>Dokumente</h1>
+        <div className="sub">
+          Ihr persönlicher Dokumentenordner mit Nachweisen und Bescheiden.
+        </div>
       </div>
 
-      <DokumentPreviewDialog
-        open={previewOpen}
-        onOpenChange={setPreviewOpen}
-        document={previewDoc}
-        behoerdeName={previewDoc ? behoerdeName(previewDoc.ausstellende_behoerde_id) : ''}
-        status={previewDoc ? statusOf(previewDoc) : 'verifiziert'}
-        statusLabel={previewDoc ? tStatus(statusOf(previewDoc)) : ''}
-      />
-    </div>
-  );
-}
+      <div className="dk-layout">
+        <div>
+          <div className="dk-search">
+            <div className="input-icon">
+              <Search />
+              <input
+                className="input"
+                placeholder="Suche nach Dokumenten"
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setPage(1);
+                }}
+                aria-label="Suche nach Dokumenten"
+              />
+            </div>
+            <div className="tab-chips">
+              {TABS.map((t) => {
+                const isActive = t.id === activeTab;
+                return (
+                  <button
+                    key={t.id}
+                    type="button"
+                    className={`chip${isActive ? ' active' : ''}`}
+                    onClick={() => {
+                      setActiveTab(t.id);
+                      setPage(1);
+                    }}
+                  >
+                    {t.label} <span className="count">{counts[t.id]}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
-function QuickAction({
-  icon: Icon,
-  label,
-  onClick,
-}: {
-  icon: LucideIcon;
-  label: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="flex min-h-[44px] items-center gap-3 rounded-md px-2 text-start text-sm text-text-primary transition-colors hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-    >
-      <IconCircle icon={<Icon aria-hidden="true" />} size="sm" tone="primary" />
-      <span>{label}</span>
-    </button>
-  );
-}
+          <div className="dk-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>
+                    <span className="sort">
+                      Dokument <ChevronsUpDown style={{ width: 12, height: 12 }} />
+                    </span>
+                  </th>
+                  <th>
+                    <span className="sort">
+                      Kategorie <ChevronsUpDown style={{ width: 12, height: 12 }} />
+                    </span>
+                  </th>
+                  <th>
+                    <span className="sort">
+                      Status <ChevronsUpDown style={{ width: 12, height: 12 }} />
+                    </span>
+                  </th>
+                  <th>
+                    <span className="sort">
+                      Ausgestellt / Gültig bis{' '}
+                      <ChevronsUpDown style={{ width: 12, height: 12 }} />
+                    </span>
+                  </th>
+                  <th>Aktionen</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pageItems.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} style={{ color: 'var(--ink-3)', textAlign: 'center' }}>
+                      Keine Dokumente gefunden.
+                    </td>
+                  </tr>
+                ) : (
+                  pageItems.map((doc) => {
+                    const av = avatarFor(doc.typ);
+                    const kat = kategorieBadge(doc.kategorie);
+                    const status = deriveStatus(doc, now);
+                    return (
+                      <tr key={doc.id}>
+                        <td>
+                          <div className="dk-doc">
+                            <span className={`av${av.cls ? ` ${av.cls}` : ''}`}>
+                              <av.Icon />
+                            </span>
+                            <div>
+                              <div className="t">{doc.titel}</div>
+                              {doc.dokument_nr ? (
+                                <div className="s">{doc.dokument_nr}</div>
+                              ) : null}
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <span className={`badge ${kat.cls}`}>{kat.label}</span>
+                        </td>
+                        <td>
+                          {status === 'verifiziert' ? (
+                            <span className="badge green">
+                              <ShieldCheck style={{ width: 12, height: 12 }} />
+                              Verifiziert
+                            </span>
+                          ) : status === 'neu' ? (
+                            <span className="badge brand">
+                              <span
+                                className="dot"
+                                style={{ background: 'var(--brand-500)' }}
+                              />
+                              Neu
+                            </span>
+                          ) : status === 'ablauf_bald' ? (
+                            <span className="badge amber">
+                              <Clock style={{ width: 12, height: 12 }} />
+                              Ablauf bald
+                            </span>
+                          ) : (
+                            <span className="badge red">
+                              <Clock style={{ width: 12, height: 12 }} />
+                              Abgelaufen
+                            </span>
+                          )}
+                        </td>
+                        <td>
+                          <div>Ausgestellt &nbsp;&nbsp; {formatDe(doc.ausgestellt_am)}</div>
+                          {doc.gueltig_bis ? (
+                            <div>Gültig bis &nbsp;&nbsp;&nbsp;&nbsp; {formatDe(doc.gueltig_bis)}</div>
+                          ) : null}
+                        </td>
+                        <td>
+                          <div className="dk-actions">
+                            <button type="button" aria-label="Ansehen">
+                              <Eye />
+                            </button>
+                            <button type="button" aria-label="Herunterladen">
+                              <Download />
+                            </button>
+                            <button type="button" aria-label="Mehr">
+                              <MoreVertical />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
 
-function DokumenteSkeleton() {
-  return (
-    <div className="space-y-px" aria-hidden="true">
-      {Array.from({ length: 6 }).map((_, i) => (
-        <div
-          key={i}
-          className="flex items-center gap-3 border-b border-border px-3 py-3"
-        >
-          <span className="size-9 shrink-0 animate-pulse rounded-full bg-surface-muted motion-reduce:animate-none" />
-          <span className="h-4 flex-1 animate-pulse rounded bg-surface-muted motion-reduce:animate-none" />
+            <div className="pagination">
+              <div className="muted text-sm">
+                {filtered.length === 0
+                  ? '0 Dokumente'
+                  : `${pageStart + 1}–${Math.min(
+                      pageStart + PAGE_SIZE,
+                      filtered.length,
+                    )} von ${filtered.length} Dokumenten`}
+              </div>
+              <div className="pgs">
+                <button
+                  type="button"
+                  className="pg"
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  aria-label="Vorherige Seite"
+                >
+                  <ChevronLeft style={{ width: 14, height: 14 }} />
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+                  <button
+                    key={n}
+                    type="button"
+                    className={`pg${n === safePage ? ' active' : ''}`}
+                    onClick={() => setPage(n)}
+                    aria-current={n === safePage ? 'page' : undefined}
+                  >
+                    {n}
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  className="pg"
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  aria-label="Nächste Seite"
+                >
+                  <ChevronRight style={{ width: 14, height: 14 }} />
+                </button>
+              </div>
+              <div className="per-page">
+                10 pro Seite <ChevronDown />
+              </div>
+            </div>
+          </div>
         </div>
-      ))}
-    </div>
-  );
-}
 
-interface SortFilterPopoverProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  activeCount: number;
-  sort: SortKey;
-  sortOptions: { key: SortKey; label: string }[];
-  onSortChange: (key: SortKey) => void;
-  statusOptions: { key: StatusFilter; label: string }[];
-  statusFilters: StatusFilter[];
-  onToggleStatus: (key: StatusFilter) => void;
-}
-
-function SortFilterPopover({
-  open,
-  onOpenChange,
-  activeCount,
-  sort,
-  sortOptions,
-  onSortChange,
-  statusOptions,
-  statusFilters,
-  onToggleStatus,
-}: SortFilterPopoverProps) {
-  const t = useTranslations('dokumente.filter');
-  useStripBaseUiFocusGuardAriaHidden(open);
-  const sortGroupId = React.useId();
-
-  return (
-    <PopoverPrimitive.Root open={open} onOpenChange={onOpenChange}>
-      <PopoverPrimitive.Trigger
-        render={<FilterButton activeCount={activeCount} />}
-      />
-      <PopoverPrimitive.Portal>
-        <PopoverPrimitive.Positioner sideOffset={6} align="end">
-          <PopoverPrimitive.Popup
-            className={cn(
-              'z-50 w-72 rounded-lg border border-border bg-popover p-4 text-sm text-popover-foreground shadow-[var(--shadow-popover)] outline-none',
-              'data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0',
-            )}
-          >
-            <fieldset className="mb-4">
-              <legend className="mb-2 text-xs font-medium uppercase tracking-wide text-text-muted">
-                {t('sort_label')}
-              </legend>
-              <div className="flex flex-col gap-1" role="radiogroup" aria-label={t('sort_label')}>
-                {sortOptions.map((opt) => {
-                  const id = `${sortGroupId}-${opt.key}`;
-                  return (
-                    <label
-                      key={opt.key}
-                      htmlFor={id}
-                      className="flex min-h-[36px] cursor-pointer items-center gap-2"
-                    >
-                      <input
-                        id={id}
-                        type="radio"
-                        name={`${sortGroupId}-sort`}
-                        checked={sort === opt.key}
-                        onChange={() => onSortChange(opt.key)}
-                        className="size-4 accent-primary"
-                      />
-                      <span>{opt.label}</span>
-                    </label>
-                  );
-                })}
+        <div className="rail">
+          <div className="card">
+            <h4>Schnellzugriff</h4>
+            <div className="qa-row">
+              <span className="icon-circle">
+                <Upload />
+              </span>
+              <div>
+                <div className="t">Dokument hochladen</div>
+                <div className="s">Aus Datei oder Scan hinzufügen</div>
               </div>
-            </fieldset>
-
-            <fieldset>
-              <legend className="mb-2 text-xs font-medium uppercase tracking-wide text-text-muted">
-                {t('status_label')}
-              </legend>
-              <div className="flex flex-col gap-2">
-                {statusOptions.map((opt) => {
-                  const id = `${sortGroupId}-status-${opt.key}`;
-                  return (
-                    <label
-                      key={opt.key}
-                      htmlFor={id}
-                      className="flex min-h-[36px] cursor-pointer items-center gap-2"
-                    >
-                      <Checkbox
-                        id={id}
-                        checked={statusFilters.includes(opt.key)}
-                        onCheckedChange={() => onToggleStatus(opt.key)}
-                      />
-                      <span>{opt.label}</span>
-                    </label>
-                  );
-                })}
+            </div>
+            <div className="qa-row">
+              <span className="icon-circle">
+                <FolderPlus />
+              </span>
+              <div>
+                <div className="t">Neuer Ordner</div>
+                <div className="s">Dokumente organisieren</div>
               </div>
-            </fieldset>
-          </PopoverPrimitive.Popup>
-        </PopoverPrimitive.Positioner>
-      </PopoverPrimitive.Portal>
-    </PopoverPrimitive.Root>
+            </div>
+            <div className="qa-row">
+              <span className="icon-circle">
+                <File />
+              </span>
+              <div>
+                <div className="t">Vorlagen &amp; Formulare</div>
+                <div className="s">Offizielle Formulare nutzen</div>
+              </div>
+            </div>
+            <div className="qa-row">
+              <span className="icon-circle">
+                <Mail />
+              </span>
+              <div>
+                <div className="t">Papierdokument einreichen</div>
+                <div className="s">Per Post an Behörde senden</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="card">
+            <h4>Zuletzt hinzugefügt</h4>
+            {recentlyAdded.map((doc) => {
+              const av = avatarFor(doc.typ);
+              const recCls =
+                doc.typ === 'steuerbescheid'
+                  ? 'eagle'
+                  : doc.typ === 'meldebestaetigung'
+                    ? 'home'
+                    : doc.typ === 'aufenthaltstitel'
+                      ? 'id'
+                      : '';
+              return (
+                <div key={doc.id} className="rec-row">
+                  <span className={`av${recCls ? ` ${recCls}` : ''}`}>
+                    <av.Icon />
+                  </span>
+                  <span className="t">{doc.titel}</span>
+                  <span className="d">{formatDe(doc.ausgestellt_am)}</span>
+                </div>
+              );
+            })}
+            <Link
+              className="link"
+              href="/dokumente"
+              style={{
+                color: 'var(--brand-600)',
+                fontWeight: 500,
+                fontSize: 13,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 4,
+                marginTop: 10,
+              }}
+            >
+              Alle anzeigen <ChevronRight style={{ width: 12, height: 12 }} />
+            </Link>
+          </div>
+
+          <div className="card">
+            <h4>Teilen &amp; verwenden</h4>
+            <div className="muted text-sm" style={{ marginBottom: 14 }}>
+              Sie können ausgewählte Dokumente sicher mit Behörden teilen oder
+              als Anlage in Vorgängen verwenden.
+            </div>
+            <button type="button" className="btn btn-primary" style={{ width: '100%' }}>
+              <SquareArrowRight />
+              Dokument verwenden
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }

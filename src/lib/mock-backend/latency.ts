@@ -1,4 +1,5 @@
 import { MockBackendError } from './errors';
+import { getRequestContext } from './store-context';
 
 export interface LatencyOptions {
   /** Untergrenze in ms. Default 300. */
@@ -18,6 +19,13 @@ const randomBetween = (min: number, max: number): number =>
   min + Math.random() * (max - min);
 
 const isReliableMode = (): boolean => {
+  // Stage 2 (HTTP-Server-Pfad): der Request-Kontext trägt das per-Request
+  // aufgelöste Reliable-Flag (aus dem `x-mock-reliable`-Header bzw.
+  // `reliable`-Body-Feld des RPC-Dispatchers). Hat Vorrang vor allem anderen,
+  // weil es die einzige Quelle ist, die der Server pro Request kennt.
+  const reqCtx = getRequestContext();
+  if (reqCtx) return reqCtx.reliable;
+
   // Erlaubt das Abschalten der Fehler-Injektion für Loom-Aufzeichnungen.
   // Server- und Client-seitig auswertbar (Next.js inlined NEXT_PUBLIC_*).
   if (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_RELIABLE === '1') {

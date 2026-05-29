@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>GovTech DE — Behörden, aber auf Autopilot</title>
+<link rel="stylesheet" href="assets/govtech.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  .landing-header {
+    display: flex; align-items: center; gap: 36px;
+    padding: 18px 56px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .landing-header .gt-brand-logo svg { width: 26px; height: 26px; color: var(--brand-700); }
+  .landing-header .gt-brand-logo { font-size: 18px; }
+  .landing-nav { display: flex; gap: 28px; flex: 1; margin-left: 18px; }
+  .landing-nav a, .landing-nav .menu {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--ink-2); font-size: 14px; font-weight: 500;
+  }
+  .landing-nav a:hover { color: var(--ink); }
+  .landing-nav .menu svg { width: 14px; height: 14px; color: var(--ink-3); }
+
+  .landing-page {
+    padding: 56px 56px 80px;
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: 56px;
+    align-items: center;
+    margin-bottom: 64px;
+  }
+  .hero .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 12px; background: var(--brand-50); color: var(--brand-700);
+    border: 1px solid var(--brand-100); border-radius: var(--r-pill);
+    font-size: 13px; font-weight: 500;
+    margin-bottom: 22px;
+  }
+  .hero .eyebrow svg { width: 14px; height: 14px; }
+  .hero h1 {
+    font-size: 64px; font-weight: 700; letter-spacing: -0.03em;
+    line-height: 1.02; margin: 0 0 24px;
+    color: var(--ink);
+  }
+  .hero p.lede {
+    font-size: 17px; color: var(--ink-2); line-height: 1.55;
+    max-width: 520px; margin: 0 0 28px;
+  }
+  .hero .cta { display: flex; gap: 12px; margin-bottom: 18px; }
+  .hero .trust {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--ink-3); font-size: 13px;
+  }
+  .hero .trust svg { width: 16px; height: 16px; }
+
+  .flow-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-xl);
+    padding: 28px 32px 24px;
+    box-shadow: var(--shadow-2);
+  }
+  .flow-grid {
+    display: grid; grid-template-columns: 1fr 120px 1fr;
+    align-items: center; gap: 24px;
+    position: relative;
+  }
+  .flow-grid > .col-head { grid-column: span 1; color: var(--ink-3); font-size: 13px; text-align: left; }
+  .flow-grid > .col-head.r { text-align: right; }
+  .flow-col-citizen, .flow-col-auto, .flow-col-orgs {
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .flow-pill {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px;
+    background: var(--brand-50);
+    border: 1px solid var(--brand-100);
+    border-radius: var(--r-md);
+  }
+  .flow-pill .icon-circle { background: rgba(255,255,255,0.7); }
+  .flow-pill .t { font-weight: 600; }
+  .flow-pill .s { font-size: 12px; color: var(--ink-3); }
+  .flow-org {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    background: var(--surface);
+  }
+  .flow-auto {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    text-align: center;
+  }
+  .flow-auto .icon-square { width: 56px; height: 56px; border-radius: 50%; background: var(--brand-600); }
+  .flow-auto .icon-square svg { width: 28px; height: 28px; }
+  .flow-auto .name { font-weight: 700; color: var(--brand-700); font-size: 14px; }
+  .flow-auto .desc { color: var(--ink-3); font-size: 11.5px; line-height: 1.45; max-width: 130px; }
+  .flow-foot {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 16px;
+    padding: 12px 14px;
+    background: var(--green-50);
+    border-radius: var(--r-md);
+    color: var(--green-700);
+    font-size: 13px;
+  }
+  .flow-arrow {
+    height: 1px; flex: 1;
+    border-top: 1.5px dashed var(--brand-200);
+    position: relative;
+  }
+  .flow-arrow::after {
+    content: ''; position: absolute; right: -2px; top: -5px;
+    width: 0; height: 0;
+    border-top: 5px solid transparent; border-bottom: 5px solid transparent;
+    border-left: 8px solid var(--brand-200);
+  }
+
+  .feature-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 18px; }
+  .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 20px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    transition: border-color .15s ease, transform .15s ease;
+  }
+  .feature-card:hover { border-color: var(--border-strong); transform: translateY(-1px); }
+  .feature-card .body { display: flex; align-items: center; gap: 16px; }
+  .feature-card .title { font-weight: 600; color: var(--ink); }
+  .feature-card .sub { font-size: 12.5px; color: var(--ink-3); margin-top: 2px; max-width: 220px; }
+  .feature-card .chev { color: var(--ink-4); }
+
+  .feature-row.muted .feature-card { background: var(--surface-soft); }
+
+  .screens-section { margin-top: 80px; }
+  .screens-section h2 { font-size: 22px; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .screens-section p.sub { color: var(--ink-3); margin: 0 0 24px; }
+  .screens-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+  }
+  .screen-link {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 16px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md);
+    color: var(--ink);
+  }
+  .screen-link:hover { border-color: var(--brand-200); background: var(--brand-50); }
+  .screen-link .n { color: var(--ink-4); font-size: 12px; font-variant-numeric: tabular-nums; width: 22px; }
+  .screen-link .lbl { font-weight: 600; }
+  .screen-link .desc { font-size: 12px; color: var(--ink-3); }
+</style>
+</head>
+<body>
+
+<header class="landing-header">
+  <a href="index.html" class="gt-brand">
+    <div class="gt-brand-logo">
+      <svg viewBox="0 0 32 32" fill="none"><path d="M16 3.5 3.5 9.5h25L16 3.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M5 11.5V23M11 11.5V23M16 11.5V23M21 11.5V23M27 11.5V23" stroke="currentColor" stroke-width="1.6"/><path d="M3 23.5h26M2 27h28" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <span>GovTech DE</span>
+    </div>
+    <span class="gt-tagline">Verwaltung neu gedacht.</span>
+  </a>
+  <nav class="landing-nav">
+    <span class="menu">Leistungen <i data-lucide="chevron-down"></i></span>
+    <a href="#">Für Bürger:innen</a>
+    <a href="#">Für Behörden</a>
+    <a href="#">Sicherheit &amp; Datenschutz</a>
+    <a href="#">Über uns</a>
+  </nav>
+  <button class="gt-header-btn icon"><i data-lucide="sun"></i></button>
+  <a href="login.html" class="gt-user-pill"><i data-lucide="user"></i>Anmelden</a>
+</header>
+
+<main class="landing-page">
+
+  <section class="hero">
+    <div>
+      <span class="eyebrow"><i data-lucide="sparkles"></i> Die Verwaltung, die mitdenkt.</span>
+      <h1>Behörden, aber<br/>auf Autopilot.</h1>
+      <p class="lede">Ein Bürgerportal für Deutschland, das Vorgänge vorbereitet, Daten vorausfüllt und den nächsten Schritt erklärt.</p>
+      <div class="cta">
+        <a href="dashboard.html" class="btn btn-primary btn-lg">Demo starten <i data-lucide="arrow-right"></i></a>
+        <a href="#screens" class="btn btn-secondary btn-lg">Mehr erfahren <i data-lucide="arrow-right"></i></a>
+      </div>
+      <span class="trust"><i data-lucide="shield"></i> Sicher. Vertrauenswürdig. Deutschlandweit.</span>
+    </div>
+
+    <div class="flow-card">
+      <div class="flow-grid">
+        <div class="col-head">Sie als Bürger:in</div>
+        <div class="col-head" style="text-align:center;"></div>
+        <div class="col-head r">Ihre Behörden</div>
+
+        <div class="flow-col-citizen">
+          <div class="flow-pill">
+            <span class="icon-circle"><i data-lucide="user"></i></span>
+            <div>
+              <div class="t">Einmal angeben</div>
+              <div class="s">Wir verstehen Ihr Anliegen<br/>und bereiten alles vor.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flow-auto">
+          <div class="icon-square"><i data-lucide="sparkles"></i></div>
+          <div class="name">Autopilot</div>
+          <div class="desc">Vorgang vorbereiten<br/>Daten vorausfüllen<br/>Nächsten Schritt erklären</div>
+        </div>
+
+        <div class="flow-col-orgs">
+          <div class="flow-org"><span class="icon-circle"><i data-lucide="landmark"></i></span><div><div class="t">Einwohnermeldeamt</div><div class="s">Daten prüfen</div></div></div>
+          <div class="flow-org"><span class="icon-circle"><i data-lucide="landmark"></i></span><div><div class="t">Ausländerbehörde</div><div class="s">Antrag bearbeiten</div></div></div>
+          <div class="flow-org"><span class="icon-circle"><i data-lucide="landmark"></i></span><div><div class="t">Finanzamt</div><div class="s">Bescheid erhalten</div></div></div>
+        </div>
+      </div>
+      <div class="flow-foot">
+        <i data-lucide="check-circle-2"></i> Sie behalten jederzeit den Überblick und die Kontrolle.
+      </div>
+    </div>
+  </section>
+
+  <div class="feature-row">
+    <a href="umzug.html" class="feature-card">
+      <div class="body">
+        <span class="icon-circle"><i data-lucide="home"></i></span>
+        <div><div class="title">Umzug</div><div class="sub">Wir melden Ihre neue Adresse bei allen relevanten Stellen.</div></div>
+      </div>
+      <i data-lucide="chevron-right" class="chev"></i>
+    </a>
+    <a href="dashboard.html" class="feature-card">
+      <div class="body">
+        <span class="icon-circle amber"><i data-lucide="lightbulb"></i></span>
+        <div><div class="title">Kindergeburt</div><div class="sub">Anmeldung im Rathaus, GEMA &amp; mehr – in Minuten.</div></div>
+      </div>
+      <i data-lucide="chevron-right" class="chev"></i>
+    </a>
+    <a href="vorgaenge.html" class="feature-card">
+      <div class="body">
+        <span class="icon-circle violet"><i data-lucide="id-card"></i></span>
+        <div><div class="title">Aufenthaltstitel verlängern</div><div class="sub">Antrag vorbereiten, Dokumente prüfen, Termin buchen.</div></div>
+      </div>
+      <i data-lucide="chevron-right" class="chev"></i>
+    </a>
+    <a href="posteingang.html" class="feature-card">
+      <div class="body">
+        <span class="icon-circle"><i data-lucide="sparkles"></i></span>
+        <div><div class="title">Posteingang mit KI-Erklärer</div><div class="sub">Verstehen statt verzweifeln – klärt, fasst zusammen, hilft.</div></div>
+      </div>
+      <i data-lucide="chevron-right" class="chev"></i>
+    </a>
+  </div>
+
+  <div class="feature-row muted" style="margin-top: 12px;">
+    <a href="identitaet.html" class="feature-card">
+      <div class="body">
+        <span class="icon-circle"><i data-lucide="lock"></i></span>
+        <div><div class="title">DeutschlandID</div><div class="sub">Sicher anmelden mit Ihrer digitalen Identität.</div></div>
+      </div>
+      <i data-lucide="chevron-right" class="chev"></i>
+    </a>
+    <a href="identitaet.html" class="feature-card">
+      <div class="body">
+        <span class="icon-circle"><i data-lucide="wallet"></i></span>
+        <div><div class="title">EUDI Wallet</div><div class="sub">EU-weit anerkannt und zukunftssicher.</div></div>
+      </div>
+      <i data-lucide="chevron-right" class="chev"></i>
+    </a>
+    <a href="#" class="feature-card">
+      <div class="body">
+        <span class="icon-circle"><i data-lucide="accessibility"></i></span>
+        <div><div class="title">BITV-konform</div><div class="sub">Barrierefrei, verständlich und für alle zugänglich.</div></div>
+      </div>
+      <i data-lucide="chevron-right" class="chev"></i>
+    </a>
+    <a href="#" class="feature-card">
+      <div class="body">
+        <span class="icon-circle"><i data-lucide="box"></i></span>
+        <div><div class="title">Mock-Demo 2027-Vision</div><div class="sub">Ein Blick in die Zukunft der Verwaltung in Deutschland.</div></div>
+      </div>
+      <i data-lucide="chevron-right" class="chev"></i>
+    </a>
+  </div>
+
+  <section class="screens-section" id="screens">
+    <h2>Alle Screens dieses Konzepts</h2>
+    <p class="sub">Spekulativer Demo-Prototyp · 14 Screens · Mock-Daten</p>
+    <div class="screens-grid">
+      <a class="screen-link" href="index.html"><span class="n">01</span><div><div class="lbl">Startseite</div><div class="desc">Hero · Leistungen</div></div></a>
+      <a class="screen-link" href="login.html"><span class="n">02</span><div><div class="lbl">Anmeldung</div><div class="desc">DeutschlandID · EUDI · Demo</div></div></a>
+      <a class="screen-link" href="dashboard.html"><span class="n">03</span><div><div class="lbl">Dashboard</div><div class="desc">Heute zu tun · Übersicht</div></div></a>
+      <a class="screen-link" href="posteingang.html"><span class="n">04</span><div><div class="lbl">Posteingang</div><div class="desc">Briefe mit KI-Erklärer</div></div></a>
+      <a class="screen-link" href="stammdaten.html"><span class="n">05</span><div><div class="lbl">Stammdaten</div><div class="desc">Profil · Kontakt · Identität</div></div></a>
+      <a class="screen-link" href="vorgaenge.html"><span class="n">06</span><div><div class="lbl">Vorgänge</div><div class="desc">Laufende Prozesse</div></div></a>
+      <a class="screen-link" href="dokumente.html"><span class="n">07</span><div><div class="lbl">Dokumente</div><div class="desc">Persönlicher Ordner</div></div></a>
+      <a class="screen-link" href="termine.html"><span class="n">08</span><div><div class="lbl">Termine</div><div class="desc">Kalender · Fristen</div></div></a>
+      <a class="screen-link" href="steuer.html"><span class="n">09</span><div><div class="lbl">Steuer</div><div class="desc">Vorausgefüllte Erklärung</div></div></a>
+      <a class="screen-link" href="familie.html"><span class="n">10</span><div><div class="lbl">Familie</div><div class="desc">Haushalt · Vertretungen</div></div></a>
+      <a class="screen-link" href="assistent.html"><span class="n">11</span><div><div class="lbl">Assistent</div><div class="desc">KI-Chat mit Kontext</div></div></a>
+      <a class="screen-link" href="datenschutz.html"><span class="n">12</span><div><div class="lbl">Datenschutz</div><div class="desc">Einwilligungen · Audit</div></div></a>
+      <a class="screen-link" href="umzug.html"><span class="n">13</span><div><div class="lbl">Umzug auf Autopilot</div><div class="desc">Kaskade über 5 Behörden</div></div></a>
+      <a class="screen-link" href="identitaet.html"><span class="n">14</span><div><div class="lbl">Identität bestätigen</div><div class="desc">Freigaben pro Vorgang</div></div></a>
+    </div>
+  </section>
+</main>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>

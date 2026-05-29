@@ -152,6 +152,7 @@ type Persona = {
   nachname: string;
   geburtsdatum: string;        // ISO
   staatsangehoerigkeit: string;
+  familienstand?: 'ledig' | 'verheiratet' | 'geschieden' | 'verwitwet' | 'eingetragene_lebenspartnerschaft'; // § 3 Abs. 1 Nr. 8 BMG; surfaced on Stammdaten.familie.familienstand
   adresse: Adresse;
   steuer_id?: string;
   rentenversicherungsnummer?: string;
@@ -182,6 +183,8 @@ type Letter = {
   status: 'ungelesen' | 'gelesen' | 'erledigt';
   empfangen_am: string;
   vorgang_id?: string;
+  betrag_cent?: number;        // structured monetary outcome of a Bescheid (Euro-Cent)
+  betrag_richtung?: 'erstattung' | 'nachzahlung'; // refund to / payment by the citizen
 };
 
 type Vorgang = {
@@ -254,6 +257,8 @@ dismissVisionBanner(personaId): Promise<void>;
 ```
 
 New persistence keys under `govtech-de:v1:`: `reminders`, `steuer`, `datenschutz:einwilligungen`, `datenschutz:vision-banner-dismissed`, `dashboard:last-seen`, `dashboard:sort-mode`. The Datenschutz activity timeline reuses the existing `stammdaten:uebermittlungs-log` bucket (no parallel log).
+
+Seed-richness note (2026-05-28): the 6 redesign screens (Dashboard, Vorgänge, Termine, Steuer, Familie, Datenschutz) read all demo content through `api.ts`; no inline-hardcoded fallbacks are required for the active demo persona (Anna Petrov). To support this, the active persona's fixtures were enriched — `vorgaenge.json` carries a featured in-progress Umzug (`vg-anna-umzug-skalitzer-friedrichstr`, 6 steps: Bürgeramt/Finanzamt/Beitragsservice/KFZ confirmed → Bundesdruckerei in_progress → AOK pending), consistent with Anna's `mobilitaet.halter_adresse.via_umzug_vorgang_id` marker; `termine.json` adds the U7 Kinderarzt booking; `behoerden.json` adds `kinderarzt-prenzlauer-berg` (kategorie `privat`). No return TYPES changed — the `SteuerUebersicht`/`HaushaltView`/`DashboardSnapshot`/`Termin`/`Reminder` shapes already carried every field the screens need; the redesign components simply weren't reading them yet.
 
 AI additions: read-only tool `preview_umzug` (proposes Umzug params without writing) feeding a confirm-gated UI flow — `starte_umzug` (irreversible) fires only after the user clicks; the gate is structural (`requiresConfirmation()` in `lib/ai/tool-schemas.ts`), not prompt-only. Separate one-shot surface `POST /api/dashboard/top-actions` (`prioritize_top_actions`) ranks the dashboard "Heute zu tun" list, with a deterministic Frist-fallback when no API key is present.
 

@@ -1,0 +1,43 @@
+/* Preview-card base — applies the design tokens, normalises body, gives cards a tight padded canvas. */
+@import url('../colors_and_type.css');
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--ds-color-surface);
+  color: var(--ds-color-text-primary);
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: var(--ds-font-sans);
+}
+.card-grid { display: grid; gap: 12px; }
+.row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.swatch {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.swatch .chip {
+  height: 56px;
+  border-radius: var(--ds-radius-md);
+  border: 1px solid var(--ds-color-border);
+}
+.swatch .lbl {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--ds-color-text-secondary);
+  font-weight: 500;
+}
+.swatch .meta {
+  font-size: 10.5px;
+  color: var(--ds-color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+hr.div {
+  border: none;
+  border-top: 1px solid var(--ds-color-border);
+  margin: 6px 0;
+}

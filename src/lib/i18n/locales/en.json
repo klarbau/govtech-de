@@ -68,7 +68,182 @@
     "persona_anna": "Anna Petrov, 28 — Blue Card EU, Berlin",
     "persona_schmidt": "The Schmidt family — Hamburg, baby on the way",
     "persona_mehmet": "Mehmet Yıldız, 34 — Cologne, planning to register a business",
-    "cta_continue": "Open the demo"
+    "cta_continue": "Open the demo",
+    "nav": {
+      "aria_label": "Main navigation",
+      "leistungen": "Services",
+      "buerger": "For citizens",
+      "behoerden": "For authorities",
+      "sicherheit": "Security & data protection",
+      "ueber_uns": "About us",
+      "login": "Sign in"
+    },
+    "hero": {
+      "badge": "Public administration that thinks ahead.",
+      "title": "Public services, on autopilot.",
+      "subtitle": "A citizen portal for Germany that prepares your cases, pre-fills your data and explains the next step.",
+      "cta_primary": "Start the demo",
+      "cta_secondary": "Learn more",
+      "trust": "Secure. Trustworthy. Nationwide."
+    },
+    "diagram": {
+      "you_label": "You, the citizen",
+      "input_title": "Enter it once",
+      "input_body": "We understand your request and prepare everything.",
+      "autopilot_label": "Autopilot",
+      "autopilot_sub": "Prepare the case · pre-fill data · explain the next step",
+      "authorities_label": "Your authorities",
+      "behoerde1_name": "Residents' Registration Office (Einwohnermeldeamt)",
+      "behoerde1_status": "Verify data",
+      "behoerde2_name": "Immigration Office (Ausländerbehörde)",
+      "behoerde2_status": "Process application",
+      "behoerde3_name": "Tax Office (Finanzamt)",
+      "behoerde3_status": "Receive notice",
+      "control_bar": "You stay in the picture and in control at all times.",
+      "sr_summary": "Flow: you enter your request once, the autopilot prepares the case and notifies all responsible authorities — Residents' Registration Office (Einwohnermeldeamt), Immigration Office (Ausländerbehörde) and Tax Office (Finanzamt). You stay in the picture and in control at all times."
+    },
+    "features": {
+      "title": "What the demo shows"
+    },
+    "feature": {
+      "umzug": {
+        "title": "Moving home",
+        "desc": "We report your new address to all relevant offices."
+      },
+      "kindergeburt": {
+        "title": "Birth of a child",
+        "desc": "Registration at the town hall, GEMA and more – in minutes."
+      },
+      "aufenthalt": {
+        "title": "Extend residence permit",
+        "desc": "Prepare the application, check documents, book an appointment."
+      },
+      "posteingang": {
+        "title": "Inbox with AI explainer",
+        "desc": "Understand instead of despair – it clarifies, summarises and helps."
+      }
+    },
+    "trust": {
+      "title": "Built on a trustworthy foundation",
+      "deutschlandid": {
+        "title": "DeutschlandID",
+        "desc": "Sign in securely with your digital identity."
+      },
+      "eudi": {
+        "title": "EUDI Wallet",
+        "desc": "Recognised across the EU and future-proof."
+      },
+      "bitv": {
+        "title": "BITV-compliant",
+        "desc": "Accessible, understandable and open to everyone."
+      },
+      "mock": {
+        "title": "Mock demo, 2027 vision",
+        "desc": "A glimpse into the future of public administration in Germany."
+      }
+    }
+  },
+  "onboarding": {
+    "topbar": {
+      "login_label": "Sign in"
+    },
+    "welcome": {
+      "title": "Welcome to GovTech DE",
+      "subtitle": "Sign in or start the demo."
+    },
+    "method": {
+      "deutschlandid": {
+        "title": "Continue with DeutschlandID",
+        "helper": "Secure, simple and officially recognised."
+      },
+      "eudi": {
+        "title": "Continue with EUDI Wallet",
+        "helper": "Your digital wallet for Europe."
+      },
+      "demo": {
+        "title": "Demo mode with mock data",
+        "helper": "Try without signing in. No real connection to authorities."
+      }
+    },
+    "trust": {
+      "secure": "Secure sign-in",
+      "consent": "Only with your consent",
+      "no_real_connection": "No real connection to authorities"
+    },
+    "how": {
+      "title": "Here's how simple it is",
+      "step1": {
+        "title": "Choose your identity",
+        "desc": "Pick your preferred sign-in method: DeutschlandID or EUDI Wallet."
+      },
+      "step2": {
+        "title": "Review data sharing",
+        "desc": "Check the requested data and share only what is needed."
+      },
+      "step3": {
+        "title": "Start the autopilot",
+        "desc": "Your data is pre-filled, letters are explained and your cases start automatically."
+      }
+    },
+    "why": {
+      "title": "Why this sign-in?",
+      "prefill": "Pre-fill your data",
+      "explain": "Explain letters clearly",
+      "autopilot": "Autopilot for your cases"
+    },
+    "handshake": {
+      "connecting": "Connecting to {method} …",
+      "confirmed": "Identity confirmed",
+      "mock_note": "Simulated identity handshake · prototype, no real connection to authorities.",
+      "qr_label": "QR code for sign-in (mock)",
+      "cancel": "Cancel"
+    },
+    "persona": {
+      "title": "Choose an identity for the demo",
+      "subtitle": "You can change the identity later at any time.",
+      "anna": {
+        "name": "Anna Petrov",
+        "descriptor": "Berlin · employed · Russian"
+      },
+      "schmidt": {
+        "name": "The Schmidt family",
+        "descriptor": "Hamburg · family with a child · German"
+      },
+      "mehmet": {
+        "name": "Mehmet Yıldız",
+        "descriptor": "Cologne · self-employed · Turkish"
+      },
+      "back": "Back"
+    },
+    "transparency": {
+      "title": "This data is provided by your digital identity",
+      "subtitle": "You decide what is shared. Nothing without your consent.",
+      "required_group": "Required details — needed to sign in",
+      "optional_group": "Optional details — only when needed (data minimisation)",
+      "attr": {
+        "name": "Name",
+        "birthdate": "Date of birth",
+        "address": "Address",
+        "nationality": "Nationality",
+        "marital_status": "Marital status",
+        "tax_id": "Tax identification number"
+      },
+      "badge": {
+        "available": "Available",
+        "optional": "Optional"
+      },
+      "share_toggle": "Share",
+      "recipient": "Recipient: GovTech DE (demo) only — and only with your consent.",
+      "legal_basis": "Legal basis: eIDAS 2 / OZG · consent-based details: DSGVO Art. 6 (1) (a)",
+      "dsgvo_footer": "Your data is transmitted securely and processed in accordance with the DSGVO (GDPR).",
+      "mock_note": "Speculative demo feature · no real eID data transfer.",
+      "back": "Back",
+      "confirm": "Confirm sign-in",
+      "committing": "Preparing sign-in …"
+    },
+    "footer": {
+      "bsi": "This application meets the BSI baseline protection (Grundschutz) criteria."
+    }
   },
   "dashboard": {
     "title": "Dashboard",
@@ -76,10 +251,11 @@
     "greeting": {
       "frau": "Hello, Ms {nachname}",
       "herr": "Hello, Mr {nachname}",
-      "neutral": "Hello, {vorname} {nachname}"
+      "neutral": "Hello, {vorname} {nachname}",
+      "last_login_meta": "last login {days} days ago · on this device"
     },
     "demo_banner": {
-      "text": "Demo mode · mock data. Since you rarely log in with BundID, the changes view helps you catch up.",
+      "text": "Demo mode · mock data · originals stay in the official mailboxes",
       "disclaimer_link": "View disclaimer"
     },
     "diff": {
@@ -114,6 +290,7 @@
       "fristen": {
         "title": "Deadlines",
         "next": "Next deadline: {datum}",
+        "open_count": "{count} open",
         "none": "No open deadlines"
       },
       "posteingang": {
@@ -122,21 +299,22 @@
       },
       "vorgaenge": {
         "title": "Cases",
-        "value": "{laufend} in progress"
+        "value": "{laufend} in progress",
+        "value_running_done": "{laufend} running, {abgeschlossen} completed"
       },
       "termine": {
         "title": "Appointments",
-        "next": "Next appointment: {datum}",
+        "next": "Next appointment {datum}",
         "none": "No appointment scheduled"
       },
       "datenschutz": {
         "title": "Privacy cockpit",
-        "value": "{count} activities / 30 days"
+        "value": "{count} activities in 30 days"
       },
       "stammdaten": {
         "title": "Master-data status",
         "value": "Check address",
-        "last_confirmed": "Last confirmed: {datum}",
+        "last_confirmed": "Address last confirmed on {datum}",
         "never_confirmed": "Not yet confirmed"
       },
       "cta_ansehen": "View",
@@ -145,7 +323,13 @@
     "error": {
       "load": "The dashboard could not be loaded."
     },
-    "loading": "Loading dashboard"
+    "loading": "Loading dashboard",
+    "frist_inline": {
+      "in_one_day": "Deadline in 1 day",
+      "in_n_days": "Deadline in {days} days",
+      "on_date": "Deadline {datum}",
+      "overdue": "Deadline {datum} missed"
+    }
   },
   "common": {
     "cta": {
@@ -231,6 +415,58 @@
         "adresse": "Address",
         "vorschau": "Preview",
         "autopilot": "Autopilot running"
+      }
+    },
+    "identitaet": {
+      "daten": {
+        "title": "Your available data",
+        "empty": "No data could be loaded.",
+        "status": {
+          "bestaetigt": "Confirmed",
+          "verfuegbar": "Available",
+          "optional": "Optional"
+        },
+        "name": {
+          "label": "Name",
+          "body": "Source: DeutschlandID self-disclosure. Used unchanged by the move (Umzug) autopilot."
+        },
+        "geburtsdatum": {
+          "label": "Date of birth",
+          "body": "Source: DeutschlandID self-disclosure. Verified against the birth register (Geburtsregister)."
+        },
+        "anschrift": {
+          "label": "Current address",
+          "body": "Source: residents' register (Melderegister). Replaced by the new address by the move (Umzug) autopilot."
+        },
+        "familienstand": {
+          "label": "Marital status",
+          "value": {
+            "ledig": "single",
+            "verheiratet": "married",
+            "geschieden": "divorced",
+            "verwitwet": "widowed",
+            "eingetragene_lebenspartnerschaft": "registered civil partnership (eingetragene Lebenspartnerschaft)"
+          },
+          "body": "Source: registry office (Standesamt — civil status register, § 3 Abs. 1 Nr. 8 BMG). Used unchanged by the move (Umzug) autopilot."
+        },
+        "aufenthaltstitel": {
+          "label": "Residence permit (Aufenthaltstitel)",
+          "value": "{norm} · valid until {datum}",
+          "body": "Source: EUDI Wallet attestation from the responsible immigration office (Ausländerbehörde). Stored in: Wallet."
+        },
+        "staatsangehoerigkeit": {
+          "label": "Nationality",
+          "body": "Source: residents' register (Melderegister). Shared only when a case explicitly requires it."
+        },
+        "dokumente": {
+          "label": "Documents",
+          "value": "{count, plural, =0 {No proofs in the Wallet} =1 {1 proof in the Wallet} other {# proofs in the Wallet}}",
+          "body": "Proofs from your document vault. Shared only on request."
+        },
+        "dsgvo": {
+          "text": "Your data is transmitted securely and processed in line with the GDPR (DSGVO).",
+          "link": "Learn more"
+        }
       }
     },
     "start": {
@@ -396,7 +632,13 @@
       "stream": "The reply could not be loaded. Please try again."
     },
     "greeting": {
-      "intro": "Hello {vorname}, here is an overview of your current situation:",
+      "intro": "Hello, here is an overview of your current situation:",
+      "intro_named": "Hello {vorname}, here is an overview of your current situation:",
+      "bullet_steuerbescheid": "You have received a **tax assessment (Steuerbescheid)** from {behoerde}.",
+      "bullet_erstattung": "A **tax refund (Steuererstattung)** of {betrag} will be paid out to you.",
+      "bullet_nachzahlung": "A **tax back-payment (Steuernachzahlung)** of {betrag} is due.",
+      "bullet_aufenthalt": "Your **residence permit (Aufenthaltstitel)** is valid until {datum}.",
+      "bullet_einspruch": "You can file an **appeal (Einspruch)** against the tax assessment until {datum}.",
       "bullet_briefe": "{count, plural, =1 {1 unread letter} other {# unread letters}} in your inbox.",
       "bullet_frist": "Next deadline: {betreff} on {datum}.",
       "bullet_keine": "Nothing urgent is open right now.",
@@ -571,6 +813,10 @@
         "antwort_erforderlich": "Reply required",
         "zur_kenntnis": "For your information",
         "erledigt": "Done"
+      },
+      "relative": {
+        "heute": "Today",
+        "gestern": "Yesterday"
       }
     },
     "gruppe": {
@@ -601,6 +847,7 @@
       "empty_select_title": "Select a letter from the list.",
       "empty_select_body": "Your official letters are shown on the left. Select one to see the AI explanation, deadlines and possible next steps.",
       "auth_badge": "Authenticity verified",
+      "verifiziert_am_template": "Verified on {datum}",
       "originaltext_auszug_title": "Original text excerpt",
       "originaltext_mehr": "Show more",
       "originaltext_heading": "Original text",
@@ -632,6 +879,8 @@
         "kalender": "Add deadline to calendar (.ics)",
         "kalender_per_frist_template": "Add {typ} to calendar (.ics)",
         "originalbrief": "Show original text",
+        "antwort_vorbereiten": "Prepare reply",
+        "vorgang_erstellen": "Create case",
         "speichern": "Save letter (.txt)",
         "markiere_gelesen": "Mark this letter as read",
         "citation_mismatch_disabled_hint": "A deadline could not be unambiguously verified in the original. Calendar export is disabled — please check the date in the original text."
@@ -1036,29 +1285,45 @@
     "card": {
       "progress": "{erledigt} of {gesamt} done",
       "progress_label": "Progress",
+      "progress_count": "{erledigt} of {gesamt} completed",
       "cta_weiter": "Continue",
       "cta_kaskade": "View cascade",
       "cta_unterlagen": "Upload documents",
       "cta_ansehen": "View case",
+      "cta_oeffnen": "Open case",
       "unterlagen_fehlen": "Documents missing",
-      "umzug_subtitle": "All relevant authorities are notified automatically."
+      "unterlagen_helper": "Please upload the missing documents.",
+      "unterlagen_open_days": "Open for {tage, plural, =1 {1 day} other {# days}}",
+      "umzug_subtitle": "Your authorities are notified automatically.",
+      "responsible_self": "Responsible: You",
+      "frist_in_days": "Due in {tage, plural, =1 {1 day} other {# days}}",
+      "frist_due_on": "Due on {datum}",
+      "gestartet_label": "Started: {datum}",
+      "menu_aria": "More actions for {titel}"
     },
     "stepper": {
       "aria": "Progress of the case {titel}",
       "node_done": "{behoerde}: completed",
       "node_active": "{behoerde}: in progress",
       "node_pending": "{behoerde}: pending",
-      "node_failed": "{behoerde}: failed"
+      "node_failed": "{behoerde}: failed",
+      "date_running": "Verification in progress",
+      "date_pending": "Pending"
     },
     "rail": {
       "title": "What needs attention now?",
+      "subtitle": "Highlights from your ongoing cases",
       "offene_vorgaenge": "Open cases",
+      "offene_label": "{count, plural, =1 {1 open case} other {# open cases}}",
       "offene_vorgaenge_count": "{count, plural, =1 {1 open case} other {# open cases}}",
       "frist_naht": "Deadline approaching",
+      "frist_label": "{count, plural, =1 {1 deadline} other {# deadlines}} in the next 14 days",
       "frist_naht_days": "Deadline in {tage, plural, =1 {1 day} other {# days}}",
       "warten_bestaetigung": "Waiting for confirmation",
+      "warten_label": "{count, plural, =1 {1 awaits} other {# await}} your confirmation",
       "warten_bestaetigung_count": "{count, plural, =1 {1 step open} other {# steps open}}",
       "cta_ansehen": "View",
+      "cta_fristen": "View deadlines",
       "alle_ansehen": "View all cases",
       "empty": "Nothing urgent right now."
     },
@@ -1093,8 +1358,12 @@
     },
     "tab": {
       "aria_label": "Personal-data sections",
-      "profil": { "label": "My profile" },
-      "wallet": { "label": "Wallet & external recipients" }
+      "profil": {
+        "label": "My profile"
+      },
+      "wallet": {
+        "label": "Wallet & external recipients"
+      }
     },
     "hero": {
       "eyebrow": "Single source of truth",
@@ -1135,11 +1404,21 @@
       "vision_pill": "2029 vision"
     },
     "sektion": {
-      "identitaet": { "title": "Identity" },
-      "anschrift": { "title": "Address" },
-      "familie": { "title": "Family" },
-      "dokumente": { "title": "Documents" },
-      "sperren_einstellungen": { "title": "Restrictions & settings" },
+      "identitaet": {
+        "title": "Identity"
+      },
+      "anschrift": {
+        "title": "Address"
+      },
+      "familie": {
+        "title": "Family"
+      },
+      "dokumente": {
+        "title": "Documents"
+      },
+      "sperren_einstellungen": {
+        "title": "Restrictions & settings"
+      },
       "altersvorsorge": {
         "title": "Pension provision (Altersvorsorge)",
         "subtitle": "Statutory pension, professional pension funds and private provision at a glance"
@@ -1148,8 +1427,12 @@
         "title": "Health insurance & long-term care",
         "subtitle": "Health insurer, ePA, eRezept and long-term care"
       },
-      "kontakt_postfach": { "title": "Contact & inbox (Kontakt & Postfach)" },
-      "notification_praeferenzen": { "title": "Notification preferences (2027 vision)" },
+      "kontakt_postfach": {
+        "title": "Contact & inbox (Kontakt & Postfach)"
+      },
+      "notification_praeferenzen": {
+        "title": "Notification preferences (2027 vision)"
+      },
       "mobilitaet": {
         "preview_no_fe": "No driving entitlement (Fahrerlaubnis) registered",
         "preview_fe_classes": "Class {klassen}",
@@ -1176,33 +1459,87 @@
       "verwalten": "Manage"
     },
     "field": {
-      "familienname": { "label": "Family name" },
-      "fruehere_namen": { "label": "Previous names" },
-      "vornamen": { "label": "Given names" },
-      "doktorgrad": { "label": "Doctoral degree (Doktorgrad)" },
-      "geburtsdatum": { "label": "Date of birth" },
-      "geburtsort": { "label": "Place of birth" },
-      "staatsangehoerigkeit": { "label": "Nationality" },
-      "steuer_id": { "label": "Tax identification number (Steuer-IdNr)" },
-      "anschrift_aktuell": { "label": "Current main address" },
-      "anschriften_historisch": { "label": "Previous addresses" },
-      "familienstand": { "label": "Marital status" },
-      "partner": { "label": "Spouse / civil partner" },
-      "kinder": { "label": "Children" },
-      "eheschliessung": { "label": "Marriage / civil partnership" },
-      "personalausweis": { "label": "National ID card (Personalausweis)" },
-      "reisepass": { "label": "Passport (Reisepass)" },
-      "eat_can": { "label": "Electronic residence title (eAT) — CAN" },
-      "azr_nr": { "label": "AZR number (Ausländerzentralregister)" },
-      "religionszugehoerigkeit": { "label": "Religious affiliation" },
-      "kontakt_email": { "label": "Email address" },
-      "kontakt_mobil": { "label": "Mobile number" },
-      "sprachpraeferenz": { "label": "Language preference" },
-      "iban": { "label": "IBAN for refunds" },
-      "uebermittlungssperren": { "label": "Transmission blocks (Übermittlungssperren, §§ 42 (3), 50 (5) BMG)" },
-      "kvnr": { "label": "Health insurance number (KVNR)" },
-      "drv_versicherungsnummer": { "label": "Pension insurance number (DRV)" },
-      "elstam": { "label": "ELStAM (tax class, allowances)" },
+      "familienname": {
+        "label": "Family name"
+      },
+      "fruehere_namen": {
+        "label": "Previous names"
+      },
+      "vornamen": {
+        "label": "Given names"
+      },
+      "doktorgrad": {
+        "label": "Doctoral degree (Doktorgrad)"
+      },
+      "geburtsdatum": {
+        "label": "Date of birth"
+      },
+      "geburtsort": {
+        "label": "Place of birth"
+      },
+      "staatsangehoerigkeit": {
+        "label": "Nationality"
+      },
+      "steuer_id": {
+        "label": "Tax identification number (Steuer-IdNr)"
+      },
+      "anschrift_aktuell": {
+        "label": "Current main address"
+      },
+      "anschriften_historisch": {
+        "label": "Previous addresses"
+      },
+      "familienstand": {
+        "label": "Marital status"
+      },
+      "partner": {
+        "label": "Spouse / civil partner"
+      },
+      "kinder": {
+        "label": "Children"
+      },
+      "eheschliessung": {
+        "label": "Marriage / civil partnership"
+      },
+      "personalausweis": {
+        "label": "National ID card (Personalausweis)"
+      },
+      "reisepass": {
+        "label": "Passport (Reisepass)"
+      },
+      "eat_can": {
+        "label": "Electronic residence title (eAT) — CAN"
+      },
+      "azr_nr": {
+        "label": "AZR number (Ausländerzentralregister)"
+      },
+      "religionszugehoerigkeit": {
+        "label": "Religious affiliation"
+      },
+      "kontakt_email": {
+        "label": "Email address"
+      },
+      "kontakt_mobil": {
+        "label": "Mobile number"
+      },
+      "sprachpraeferenz": {
+        "label": "Language preference"
+      },
+      "iban": {
+        "label": "IBAN for refunds"
+      },
+      "uebermittlungssperren": {
+        "label": "Transmission blocks (Übermittlungssperren, §§ 42 (3), 50 (5) BMG)"
+      },
+      "kvnr": {
+        "label": "Health insurance number (KVNR)"
+      },
+      "drv_versicherungsnummer": {
+        "label": "Pension insurance number (DRV)"
+      },
+      "elstam": {
+        "label": "ELStAM (tax class, allowances)"
+      },
       "geschlecht": {
         "label": "Gender entry (Geschlechtseintrag)",
         "value": {
@@ -1238,42 +1575,108 @@
         "label": "Transmission block for religious communities (§ 42 (3) BMG)"
       },
       "beschaeftigung": {
-        "typ": { "label": "Employment type" },
-        "arbeitgeber": { "label": "Employer" },
-        "kvnr": { "label": "KVNR" },
-        "drv": { "label": "DRV no." }
+        "typ": {
+          "label": "Employment type"
+        },
+        "arbeitgeber": {
+          "label": "Employer"
+        },
+        "kvnr": {
+          "label": "KVNR"
+        },
+        "drv": {
+          "label": "DRV no."
+        }
       }
     },
     "korrekturweg": {
-      "familienname": { "pointer": "Correction at the registry office (Standesamt) under § 1355 BGB / § 45 PStG." },
-      "fruehere_namen": { "pointer": "Correction at the registry office (Standesamt) under § 45 PStG." },
-      "vornamen": { "pointer": "Correction at the registry office (Standesamt) under § 45 PStG." },
-      "doktorgrad": { "pointer": "Correction via the citizens' office (Bürgeramt) with proof upload (§ 3 (1) no. 6 BMG)." },
-      "geburtsdatum": { "pointer": "Correction at the registry office (Standesamt) of the place of birth." },
-      "geburtsort": { "pointer": "Correction at the registry office (Standesamt) of the place of birth." },
-      "geschlecht": { "pointer": "Declaration at the registry office (Standesamt) under § 4 SBGG (registration) and § 2 SBGG (in-person notarisation)." },
-      "staatsangehoerigkeit": { "pointer": "Correction via the naturalisation authority (Einbürgerungsbehörde) under StAG." },
-      "steuer_id": { "pointer": "Issued for life by the Federal Central Tax Office (Bundeszentralamt für Steuern) under § 139b AO — cannot be changed." },
-      "anschrift_aktuell": { "pointer": "Citizens' office (Bürgeramt) appointment or electronic registration (eWA) under § 17 BMG." },
-      "anschriften_historisch": { "pointer": "Updates are triggered by a new registration under § 17 BMG." },
-      "familienstand": { "pointer": "Correction at the registry office (Standesamt) under PStG." },
-      "partner": { "pointer": "Correction at the registry office (Standesamt) under PStG." },
-      "kinder": { "pointer": "Correction at the registry office (Standesamt) under § 21 PStG." },
-      "eheschliessung": { "pointer": "Correction at the registry office (Standesamt) where the marriage was registered." },
-      "personalausweis": { "pointer": "Reissue at the citizens' office (Bürgeramt) under PAuswG." },
-      "reisepass": { "pointer": "Reissue at the citizens' office (Bürgeramt) under PassG." },
-      "eat_can": { "pointer": "Correction via the immigration authority (Ausländerbehörde) under AufenthG." },
-      "azr_nr": { "pointer": "Correction via the immigration authority (Ausländerbehörde) under § 34 AZRG." },
-      "religionszugehoerigkeit": { "pointer": "Joining / leaving: registry office (Standesamt) or religious community; storage under § 3 (1) no. 11 BMG." },
-      "kontakt_email": { "pointer": "Edit directly in your BundID account (app setting)." },
-      "kontakt_mobil": { "pointer": "Edit directly in your BundID account (app setting)." },
-      "sprachpraeferenz": { "pointer": "App-internal setting — has no effect on authorities." },
-      "iban": { "pointer": "Today (May 2026) the IBAN must be filed separately with each authority — this app simulates a 2027 pattern." },
-      "auskunftssperre": { "pointer": "Application with reasons at the citizens' office (Bürgeramt) under § 51 (1) BMG." },
-      "uebermittlungssperren": { "pointer": "Application at the citizens' office (Bürgeramt) under §§ 42 (3), 50 (5) BMG (no reasons required)." },
-      "kvnr": { "pointer": "Update via your health insurer's member portal (§ 290 SGB V)." },
-      "drv_versicherungsnummer": { "pointer": "Update via your DRV pension account (§ 147 SGB VI)." },
-      "elstam": { "pointer": "Update via Mein ELSTER or the tax office (Finanzamt) under § 39 EStG." }
+      "familienname": {
+        "pointer": "Correction at the registry office (Standesamt) under § 1355 BGB / § 45 PStG."
+      },
+      "fruehere_namen": {
+        "pointer": "Correction at the registry office (Standesamt) under § 45 PStG."
+      },
+      "vornamen": {
+        "pointer": "Correction at the registry office (Standesamt) under § 45 PStG."
+      },
+      "doktorgrad": {
+        "pointer": "Correction via the citizens' office (Bürgeramt) with proof upload (§ 3 (1) no. 6 BMG)."
+      },
+      "geburtsdatum": {
+        "pointer": "Correction at the registry office (Standesamt) of the place of birth."
+      },
+      "geburtsort": {
+        "pointer": "Correction at the registry office (Standesamt) of the place of birth."
+      },
+      "geschlecht": {
+        "pointer": "Declaration at the registry office (Standesamt) under § 4 SBGG (registration) and § 2 SBGG (in-person notarisation)."
+      },
+      "staatsangehoerigkeit": {
+        "pointer": "Correction via the naturalisation authority (Einbürgerungsbehörde) under StAG."
+      },
+      "steuer_id": {
+        "pointer": "Issued for life by the Federal Central Tax Office (Bundeszentralamt für Steuern) under § 139b AO — cannot be changed."
+      },
+      "anschrift_aktuell": {
+        "pointer": "Citizens' office (Bürgeramt) appointment or electronic registration (eWA) under § 17 BMG."
+      },
+      "anschriften_historisch": {
+        "pointer": "Updates are triggered by a new registration under § 17 BMG."
+      },
+      "familienstand": {
+        "pointer": "Correction at the registry office (Standesamt) under PStG."
+      },
+      "partner": {
+        "pointer": "Correction at the registry office (Standesamt) under PStG."
+      },
+      "kinder": {
+        "pointer": "Correction at the registry office (Standesamt) under § 21 PStG."
+      },
+      "eheschliessung": {
+        "pointer": "Correction at the registry office (Standesamt) where the marriage was registered."
+      },
+      "personalausweis": {
+        "pointer": "Reissue at the citizens' office (Bürgeramt) under PAuswG."
+      },
+      "reisepass": {
+        "pointer": "Reissue at the citizens' office (Bürgeramt) under PassG."
+      },
+      "eat_can": {
+        "pointer": "Correction via the immigration authority (Ausländerbehörde) under AufenthG."
+      },
+      "azr_nr": {
+        "pointer": "Correction via the immigration authority (Ausländerbehörde) under § 34 AZRG."
+      },
+      "religionszugehoerigkeit": {
+        "pointer": "Joining / leaving: registry office (Standesamt) or religious community; storage under § 3 (1) no. 11 BMG."
+      },
+      "kontakt_email": {
+        "pointer": "Edit directly in your BundID account (app setting)."
+      },
+      "kontakt_mobil": {
+        "pointer": "Edit directly in your BundID account (app setting)."
+      },
+      "sprachpraeferenz": {
+        "pointer": "App-internal setting — has no effect on authorities."
+      },
+      "iban": {
+        "pointer": "Today (May 2026) the IBAN must be filed separately with each authority — this app simulates a 2027 pattern."
+      },
+      "auskunftssperre": {
+        "pointer": "Application with reasons at the citizens' office (Bürgeramt) under § 51 (1) BMG."
+      },
+      "uebermittlungssperren": {
+        "pointer": "Application at the citizens' office (Bürgeramt) under §§ 42 (3), 50 (5) BMG (no reasons required)."
+      },
+      "kvnr": {
+        "pointer": "Update via your health insurer's member portal (§ 290 SGB V)."
+      },
+      "drv_versicherungsnummer": {
+        "pointer": "Update via your DRV pension account (§ 147 SGB VI)."
+      },
+      "elstam": {
+        "pointer": "Update via Mein ELSTER or the tax office (Finanzamt) under § 39 EStG."
+      }
     },
     "disclaimer": {
       "lese_schicht": "This app is a **read-only signposting layer**. It does **not** make any changes to your data in the responsible registers itself. Corrections are made exclusively through the relevant authority's procedure — for example, at the citizens' office (Bürgeramt) under § 17 BMG for your address; at the registry office (Standesamt) under PStG for marital status and given names; at the registry office (Standesamt) under § 4 SBGG for the **registration** of a gender-entry change (orally or in writing, three months before the declaration) and under § 2 SBGG for the **in-person notarisation of the declaration** at the registry office; at the Federal Central Tax Office (Bundeszentralamt für Steuern) for the tax identification number (§ 139b AO). For each field we show you the right path.",
@@ -1331,18 +1734,35 @@
         "anrechnungszeit_pflege_offengelegt": "Care credit period (Anrechnungszeit Pflege) revealed (§ 3 SGB VI; coupled with care-level consent)"
       },
       "kategorie": {
-        "behoerde_zu_behoerde": { "label": "Authority-to-authority transmission" },
-        "app_aktivitaet": { "label": "App activity (not an official transmission log)" },
-        "speculative_2027": { "label": "2027 vision (demo)" },
-        "behoerde_zu_buerger": { "label": "Authority-to-citizen (notification / inbox delivery)" }
+        "behoerde_zu_behoerde": {
+          "label": "Authority-to-authority transmission"
+        },
+        "app_aktivitaet": {
+          "label": "App activity (not an official transmission log)"
+        },
+        "speculative_2027": {
+          "label": "2027 vision (demo)"
+        },
+        "behoerde_zu_buerger": {
+          "label": "Authority-to-citizen (notification / inbox delivery)"
+        }
       },
       "richtung": {
         "label": "Direction",
-        "alle": { "label": "All directions" },
-        "eingehend": { "label": "Incoming (authority to citizen)" },
-        "ausgehend": { "label": "Outgoing (citizen to authorities)" },
-        "intern": { "label": "Internal (app activity)" }
-      }
+        "alle": {
+          "label": "All directions"
+        },
+        "eingehend": {
+          "label": "Incoming (authority to citizen)"
+        },
+        "ausgehend": {
+          "label": "Outgoing (citizen to authorities)"
+        },
+        "intern": {
+          "label": "Internal (app activity)"
+        }
+      },
+      "via_app": "Via the GovTech DE app"
     },
     "modal": {
       "religion_consent": {
@@ -1553,17 +1973,35 @@
           "cta_cancel": "Cancel"
         },
         "kategorie": {
-          "steuer": { "label": "Tax (Finanzamt / BZSt)" },
-          "sozial": { "label": "Social benefits (DRV / GKV / Bürgergeld)" },
-          "familie": { "label": "Family (Familienkasse / Elterngeld)" },
-          "verkehr": { "label": "Traffic (vehicle / fines / driving licence)" },
-          "sonstige": { "label": "Other (Bürgeramt / residence / other)" }
+          "steuer": {
+            "label": "Tax (Finanzamt / BZSt)"
+          },
+          "sozial": {
+            "label": "Social benefits (DRV / GKV / Bürgergeld)"
+          },
+          "familie": {
+            "label": "Family (Familienkasse / Elterngeld)"
+          },
+          "verkehr": {
+            "label": "Traffic (vehicle / fines / driving licence)"
+          },
+          "sonstige": {
+            "label": "Other (Bürgeramt / residence / other)"
+          }
         },
         "kanal": {
-          "postfach": { "label": "BundID inbox (Postfach)" },
-          "email_pilot": { "label": "Email notification (pilot)" },
-          "sms_pilot": { "label": "SMS notification (pilot)" },
-          "brief": { "label": "Postal letter (default)" }
+          "postfach": {
+            "label": "BundID inbox (Postfach)"
+          },
+          "email_pilot": {
+            "label": "Email notification (pilot)"
+          },
+          "sms_pilot": {
+            "label": "SMS notification (pilot)"
+          },
+          "brief": {
+            "label": "Postal letter (default)"
+          }
         },
         "option": {
           "sms_pilot": {
@@ -1616,6 +2054,89 @@
     },
     "cross_link": {
       "familie": "Go to Family"
+    },
+    "v2": {
+      "profil": {
+        "card_title": "Personal profile",
+        "kv": {
+          "name": "Name",
+          "geburtsdatum": "Date of birth",
+          "staatsangehoerigkeit": "Nationality",
+          "familienstand": "Marital status"
+        },
+        "familienstand": {
+          "verheiratet": "married",
+          "ledig": "single",
+          "geschieden": "divorced",
+          "verwitwet": "widowed"
+        }
+      },
+      "kontakt": {
+        "card_title": "Contact",
+        "email": "Email",
+        "telefon": "Phone number",
+        "verifiziert": "Verified",
+        "email_keine": "No email on file",
+        "telefon_keine": "No phone number on file"
+      },
+      "familie": {
+        "card_title": "Family & dependents",
+        "kinder_eyebrow": "Children",
+        "partner_eyebrow": "Partner",
+        "row_geburtsdatum": "Date of birth",
+        "row_verwandtschaft": "Relation",
+        "kind": "Child",
+        "partner_label": "Partner",
+        "add_link": "Add another person"
+      },
+      "anschrift": {
+        "title": "Address",
+        "aktuell_label": "Current address",
+        "aendern": "Change",
+        "zuletzt_bestaetigt": "last confirmed on {datum}",
+        "zuletzt_bestaetigt_unbekannt": "not yet confirmed",
+        "bestaetigt": "Confirmed"
+      },
+      "dokumente": {
+        "title": "Identity documents",
+        "verwalten": "Manage",
+        "reisepass": "Passport",
+        "personalausweis": "National ID",
+        "aufenthaltstitel": "Residence permit",
+        "eat_can": "eAT CAN",
+        "gueltig": "Valid",
+        "nummer_template": "Number {nummer} · Valid until {gueltig_bis}",
+        "aufenthaltstitel_template": "{norm} · Valid until {gueltig_bis}",
+        "eat_can_template": "CAN {can}",
+        "add_link": "Add document",
+        "empty": "No documents registered."
+      },
+      "versicherung": {
+        "title": "Insurance & pension",
+        "krankenkasse": "Health insurance",
+        "altersvorsorge": "Pension",
+        "aktiv": "Active",
+        "versichertennummer": "Insurance number {nr}",
+        "versichert_seit": "Insured since {datum}",
+        "add_link": "Add another plan",
+        "empty": "No insurance data linked."
+      },
+      "protokoll": {
+        "title": "Change log",
+        "subtitle": "Recent changes to your master data",
+        "show_all": "Show full log",
+        "empty": "No changes recorded yet."
+      },
+      "datenhoheit": {
+        "title": "You are in control of your data",
+        "body_before_link": "Your master data is shared with authorities and services only with your consent. You decide who sees what.",
+        "body_link": "Learn more about your rights and how your data is used.",
+        "cta": "Manage data use"
+      },
+      "secondary": {
+        "heading": "Other areas",
+        "subtitle": "Pension, health insurance, mobility, notification preferences and blocks — secondary layer below the main grid."
+      }
     }
   },
   "dokumente": {
@@ -1971,19 +2492,36 @@
     },
     "vorgaenge": {
       "title": "Shared cases",
+      "subtitle": "Cases that concern people in your household.",
       "kindergeld": "Child benefit (Kindergeld)",
       "krankenkasse": "Health insurance",
       "kita": "Daycare place (Kita)",
       "kita_traeger": "Daycare provider (Kita-Träger)",
       "betrifft": "Concerns: {names}",
-      "show_all": "Show all shared cases"
+      "show_all": "Show all shared cases",
+      "empty": "No shared cases right now.",
+      "status": {
+        "laufend": "In progress",
+        "genehmigt": "Approved",
+        "warten": "Being processed",
+        "abgeschlossen": "Completed"
+      }
     },
     "nachweise": {
       "title": "Proofs & authorisations",
+      "subtitle": "Documents, proofs and powers of representation.",
       "geburtsurkunde": "Birth certificate (Geburtsurkunde)",
       "sorge_vollmacht": "Custody authorisation (Sorge-Vollmacht)",
       "vertretungsrechte": "Powers of representation (Vertretungsrechte)",
-      "verknuepfungen": "Links"
+      "verknuepfungen": "Links",
+      "show_all": "Show all proofs & authorisations",
+      "empty": "No proofs on file.",
+      "status": {
+        "vorhanden": "On file",
+        "verifiziert": "Verified",
+        "speculative": "2027 vision",
+        "fehlt": "Missing"
+      }
     },
     "was_betrifft_wen": {
       "title": "Who is concerned by what?",
@@ -2001,6 +2539,58 @@
     "empty": {
       "title": "No household on file",
       "body": "No household members are recorded for this profile."
+    }
+  },
+  "autopilotRun": {
+    "title": "Change of address on autopilot",
+    "subtitle": "You confirm once – the system coordinates the next steps.",
+    "banner": {
+      "running_title": "Running the cascade",
+      "running_subtitle": "Your details are being sent securely to the responsible authorities.",
+      "completed_title": "All authorities notified",
+      "completed_subtitle": "All {count, plural, =1 {responsible office has} other {# responsible offices have}} received your change of address.",
+      "partial_title": "Almost there",
+      "partial_subtitle": "Most offices have been notified. A few steps need to be retried.",
+      "status_partial": "Partly completed"
+    },
+    "cascade": {
+      "aria_label": "Progress of authority notifications"
+    },
+    "node": {
+      "status": {
+        "ausstehend": "Pending",
+        "eid_required": "Confirmation required",
+        "failed": "Failed"
+      },
+      "eid_cta": "Confirm with eID",
+      "timestamp_pending": "—",
+      "aktenzeichen_prefix": "Ref."
+    },
+    "action": {
+      "buergeramt": "Address sent",
+      "finanzamt": "Responsibility confirmed",
+      "beitragsservice": "Address updated",
+      "bundesdruckerei": "Sticker being issued",
+      "krankenkasse": "Transfer scheduled",
+      "kfz": "Verification in progress",
+      "familienkasse": "Responsibility being assumed",
+      "auslaenderbehoerde": "Update prepared",
+      "fallback": "Address sent"
+    },
+    "uebersicht": {
+      "title": "Your move – overview",
+      "neue_adresse_label": "New address",
+      "einzugsdatum_label": "Move-in date",
+      "autopilot_bereich_label": "Autopilot area",
+      "behoerden_count": "{count, plural, =1 {1 authority} other {# authorities}}",
+      "schutz_title": "Your data is protected",
+      "schutz_subtitle": "Transmission encrypted, only to the responsible offices.",
+      "schutz_link": "More about data protection"
+    },
+    "feed": {
+      "title": "Live activity",
+      "started_title": "Autopilot started",
+      "started_subtitle": "Your details were checked and the cascade was started."
     }
   }
 }

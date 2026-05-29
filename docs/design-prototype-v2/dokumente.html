@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>Dokumente — GovTech DE</title>
+<link rel="stylesheet" href="assets/govtech.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  .dk-layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; align-items: start; margin-top: 18px; }
+  .dk-search { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 22px; box-shadow: var(--shadow-1); }
+  .dk-search .input-icon { margin-bottom: 16px; }
+  .dk-table {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+    padding: 8px 0 12px; margin-top: 16px; box-shadow: var(--shadow-1);
+    overflow: hidden;
+  }
+  .dk-table table { width: 100%; border-collapse: collapse; }
+  .dk-table th {
+    text-align: left; font-weight: 500; color: var(--ink-3); font-size: 12.5px;
+    padding: 14px 20px; border-bottom: 1px solid var(--border);
+  }
+  .dk-table th .sort { display: inline-flex; align-items: center; gap: 4px; }
+  .dk-table td {
+    padding: 16px 20px; border-bottom: 1px solid var(--border);
+    vertical-align: middle; font-size: 13.5px;
+  }
+  .dk-table tr:last-child td { border-bottom: 0; }
+  .dk-doc { display: flex; align-items: center; gap: 14px; }
+  .dk-doc .av {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--brand-50); color: var(--brand-700);
+  }
+  .dk-doc .av.pink { background: var(--pink-50); color: var(--pink-500); }
+  .dk-doc .av.teal { background: var(--teal-50); color: var(--teal-500); }
+  .dk-doc .av.eagle { background: #0E1A36; color: #fff; }
+  .dk-doc .av.violet { background: var(--violet-50); color: var(--violet-500); }
+  .dk-doc .t { font-weight: 600; }
+  .dk-doc .s { color: var(--ink-3); font-size: 12.5px; }
+  .dk-actions { display: inline-flex; gap: 10px; color: var(--ink-3); }
+  .dk-actions button { background: none; border: 0; color: var(--ink-3); cursor: pointer; }
+  .dk-actions button:hover { color: var(--ink); }
+
+  .pagination { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; }
+  .pagination .pgs { display: inline-flex; gap: 6px; }
+  .pagination .pg {
+    width: 32px; height: 32px; border-radius: 6px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--surface); border: 1px solid var(--border); color: var(--ink-2);
+  }
+  .pagination .pg.active { background: var(--brand-600); color: #fff; border-color: var(--brand-600); }
+  .per-page { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; color: var(--ink-2); font-size: 13px; }
+  .per-page svg { width: 14px; height: 14px; color: var(--ink-3); }
+
+  .rail { display: flex; flex-direction: column; gap: 16px; }
+  .rail .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 20px; box-shadow: var(--shadow-1); }
+  .rail h4 { margin: 0 0 14px; font-size: 14px; font-weight: 600; }
+  .rail .qa-row { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; }
+  .rail .qa-row .icon-circle { width: 34px; height: 34px; }
+  .rail .qa-row .icon-circle svg { width: 16px; height: 16px; }
+  .rail .qa-row .t { color: var(--brand-600); font-weight: 600; font-size: 13.5px; }
+  .rail .qa-row .s { color: var(--ink-3); font-size: 12px; }
+  .rail .rec-row { display: flex; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid var(--border); }
+  .rail .rec-row:first-child { border-top: 0; }
+  .rail .rec-row .av {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--surface-muted); font-size: 10px; font-weight: 700;
+  }
+  .rail .rec-row .av.eagle { background: #0E1A36; color: #fff; }
+  .rail .rec-row .av.home { background: var(--brand-50); color: var(--brand-600); }
+  .rail .rec-row .av.id { background: var(--violet-50); color: var(--violet-500); }
+  .rail .rec-row .t { font-size: 13px; font-weight: 500; flex: 1; }
+  .rail .rec-row .d { color: var(--ink-3); font-size: 12px; }
+</style>
+</head>
+<body>
+
+<div data-gt-header></div>
+<div class="gt-shell">
+  <div data-gt-sidebar></div>
+  <main class="gt-content">
+    <div class="gt-page-head">
+      <h1>Dokumente</h1>
+      <div class="sub">Ihr persönlicher Dokumentenordner mit Nachweisen und Bescheiden.</div>
+    </div>
+
+    <div class="dk-layout">
+      <div>
+        <div class="dk-search">
+          <div class="input-icon">
+            <i data-lucide="search"></i>
+            <input class="input" placeholder="Suche nach Dokumenten" />
+          </div>
+          <div class="tab-chips">
+            <button class="chip active">Alle <span class="count">18</span></button>
+            <button class="chip">Ausweise <span class="count">4</span></button>
+            <button class="chip">Bescheide <span class="count">6</span></button>
+            <button class="chip">Familie <span class="count">3</span></button>
+            <button class="chip">Verträge <span class="count">2</span></button>
+          </div>
+        </div>
+
+        <div class="dk-table">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="sort">Dokument <i data-lucide="chevrons-up-down" style="width:12px;height:12px;"></i></span></th>
+                <th><span class="sort">Kategorie <i data-lucide="chevrons-up-down" style="width:12px;height:12px;"></i></span></th>
+                <th><span class="sort">Status <i data-lucide="chevrons-up-down" style="width:12px;height:12px;"></i></span></th>
+                <th><span class="sort">Ausgestellt / Gültig bis <i data-lucide="chevrons-up-down" style="width:12px;height:12px;"></i></span></th>
+                <th>Aktionen</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="dk-doc"><span class="av pink"><i data-lucide="book-user"></i></span><div><div class="t">Reisepass</div><div class="s">P. Nr. C01X12345</div></div></div></td>
+                <td><span class="badge violet">Ausweise</span></td>
+                <td><span class="badge green"><i data-lucide="shield-check" style="width:12px;height:12px;"></i>Verifiziert</span></td>
+                <td><div>Ausgestellt &nbsp;&nbsp; 12.03.2023</div><div>Gültig bis &nbsp;&nbsp;&nbsp;&nbsp; 11.03.2033</div></td>
+                <td><div class="dk-actions"><button><i data-lucide="eye"></i></button><button><i data-lucide="download"></i></button><button><i data-lucide="more-vertical"></i></button></div></td>
+              </tr>
+              <tr>
+                <td><div class="dk-doc"><span class="av violet"><i data-lucide="id-card"></i></span><div><div class="t">Aufenthaltstitel</div><div class="s">Nr. AT-123456789</div></div></div></td>
+                <td><span class="badge violet">Ausweise</span></td>
+                <td><span class="badge green"><i data-lucide="shield-check" style="width:12px;height:12px;"></i>Verifiziert</span></td>
+                <td><div>Ausgestellt &nbsp;&nbsp; 18.04.2022</div><div>Gültig bis &nbsp;&nbsp;&nbsp;&nbsp; 17.04.2027</div></td>
+                <td><div class="dk-actions"><button><i data-lucide="eye"></i></button><button><i data-lucide="download"></i></button><button><i data-lucide="more-vertical"></i></button></div></td>
+              </tr>
+              <tr>
+                <td><div class="dk-doc"><span class="av teal"><i data-lucide="home"></i></span><div><div class="t">Meldebescheinigung</div><div class="s">Nr. MB-2025-045678</div></div></div></td>
+                <td><span class="badge brand">Bescheide</span></td>
+                <td><span class="badge green"><i data-lucide="shield-check" style="width:12px;height:12px;"></i>Verifiziert</span></td>
+                <td>Ausgestellt &nbsp;&nbsp; 02.05.2025</td>
+                <td><div class="dk-actions"><button><i data-lucide="eye"></i></button><button><i data-lucide="download"></i></button><button><i data-lucide="more-vertical"></i></button></div></td>
+              </tr>
+              <tr>
+                <td><div class="dk-doc"><span class="av eagle"><i data-lucide="landmark"></i></span><div><div class="t">Steuerbescheid 2024</div><div class="s">Aktenzeichen: 24 123 456 789</div></div></div></td>
+                <td><span class="badge brand">Bescheide</span></td>
+                <td><span class="badge brand"><span class="dot" style="background: var(--brand-500);"></span>Neu</span></td>
+                <td>Ausgestellt &nbsp;&nbsp; 28.05.2025</td>
+                <td><div class="dk-actions"><button><i data-lucide="eye"></i></button><button><i data-lucide="download"></i></button><button><i data-lucide="more-vertical"></i></button></div></td>
+              </tr>
+              <tr>
+                <td><div class="dk-doc"><span class="av pink"><i data-lucide="users"></i></span><div><div class="t">Geburtsurkunde Lev Petrov</div><div class="s">Nr. GU-2006-123456</div></div></div></td>
+                <td><span class="badge pink">Familie</span></td>
+                <td><span class="badge green"><i data-lucide="shield-check" style="width:12px;height:12px;"></i>Verifiziert</span></td>
+                <td>Ausgestellt &nbsp;&nbsp; 15.06.2006</td>
+                <td><div class="dk-actions"><button><i data-lucide="eye"></i></button><button><i data-lucide="download"></i></button><button><i data-lucide="more-vertical"></i></button></div></td>
+              </tr>
+              <tr>
+                <td><div class="dk-doc"><span class="av"><i data-lucide="file-text"></i></span><div><div class="t">Mietvertrag</div><div class="s">Wohnung Müllerstraße 15</div></div></div></td>
+                <td><span class="badge amber">Verträge</span></td>
+                <td><span class="badge amber"><i data-lucide="clock" style="width:12px;height:12px;"></i>Ablauf bald</span></td>
+                <td>Gültig bis &nbsp;&nbsp;&nbsp;&nbsp; 31.07.2025</td>
+                <td><div class="dk-actions"><button><i data-lucide="eye"></i></button><button><i data-lucide="download"></i></button><button><i data-lucide="more-vertical"></i></button></div></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="pagination">
+            <div class="muted text-sm">1–6 von 18 Dokumenten</div>
+            <div class="pgs">
+              <span class="pg"><i data-lucide="chevron-left" style="width:14px;height:14px;"></i></span>
+              <span class="pg active">1</span>
+              <span class="pg">2</span>
+              <span class="pg">3</span>
+              <span class="pg"><i data-lucide="chevron-right" style="width:14px;height:14px;"></i></span>
+            </div>
+            <div class="per-page">10 pro Seite <i data-lucide="chevron-down"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rail">
+        <div class="card">
+          <h4>Schnellzugriff</h4>
+          <div class="qa-row"><span class="icon-circle"><i data-lucide="upload"></i></span><div><div class="t">Dokument hochladen</div><div class="s">Aus Datei oder Scan hinzufügen</div></div></div>
+          <div class="qa-row"><span class="icon-circle"><i data-lucide="folder-plus"></i></span><div><div class="t">Neuer Ordner</div><div class="s">Dokumente organisieren</div></div></div>
+          <div class="qa-row"><span class="icon-circle"><i data-lucide="file"></i></span><div><div class="t">Vorlagen &amp; Formulare</div><div class="s">Offizielle Formulare nutzen</div></div></div>
+          <div class="qa-row"><span class="icon-circle"><i data-lucide="mail"></i></span><div><div class="t">Papierdokument einreichen</div><div class="s">Per Post an Behörde senden</div></div></div>
+        </div>
+
+        <div class="card">
+          <h4>Zuletzt hinzugefügt</h4>
+          <div class="rec-row"><span class="av eagle"><i data-lucide="landmark"></i></span><span class="t">Steuerbescheid 2024</span><span class="d">28.05.2025</span></div>
+          <div class="rec-row"><span class="av home"><i data-lucide="home"></i></span><span class="t">Meldebescheinigung</span><span class="d">02.05.2025</span></div>
+          <div class="rec-row"><span class="av id"><i data-lucide="id-card"></i></span><span class="t">Aufenthaltstitel</span><span class="d">18.04.2022</span></div>
+          <a class="link" href="#" style="color: var(--brand-600); font-weight: 500; font-size: 13px; display: inline-flex; align-items: center; gap: 4px; margin-top: 10px;">Alle anzeigen <i data-lucide="chevron-right" style="width:12px;height:12px;"></i></a>
+        </div>
+
+        <div class="card">
+          <h4>Teilen &amp; verwenden</h4>
+          <div class="muted text-sm" style="margin-bottom: 14px;">Sie können ausgewählte Dokumente sicher mit Behörden teilen oder als Anlage in Vorgängen verwenden.</div>
+          <button class="btn btn-primary" style="width: 100%;"><i data-lucide="square-arrow-right"></i>Dokument verwenden</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>window.GT_ACTIVE='dokumente';</script>
+<script src="assets/govtech.js"></script>
+</body>
+</html>

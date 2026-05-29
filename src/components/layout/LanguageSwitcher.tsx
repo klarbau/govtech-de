@@ -2,6 +2,7 @@
 
 import { useTransition } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
+import { Globe } from 'lucide-react';
 
 import { setLocaleCookie } from '@/app/actions/locale';
 import { locales, type Locale } from '@/i18n/routing';
@@ -22,6 +23,12 @@ const localeLabels: Record<Locale, string> = {
   tr: 'Türkçe',
 };
 
+/**
+ * Language pill inside `.gt-header-actions`. The HTML markup is:
+ *   `<button class="gt-header-btn"><i>globe</i>DE<i>chevron-down</i></button>`
+ * We keep the existing Select widget for the dropdown (and its keyboard a11y)
+ * but stamp the prototype's `.gt-header-btn` class onto the trigger.
+ */
 export function LanguageSwitcher() {
   const locale = useLocale() as Locale;
   const t = useTranslations('topbar');
@@ -37,10 +44,11 @@ export function LanguageSwitcher() {
   return (
     <Select value={locale} onValueChange={handleChange}>
       <SelectTrigger
-        size="sm"
         aria-label={t('language_label')}
-        className="px-3 font-medium"
+        // Override the shadcn defaults: wear `.gt-header-btn` only.
+        className="gt-header-btn !min-h-0 !border-0 !bg-transparent !p-0 !text-[13px]"
       >
+        <Globe aria-hidden="true" />
         <SelectValue>{(value) => (value as string).toUpperCase()}</SelectValue>
       </SelectTrigger>
       <SelectContent align="end">

@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><link rel="stylesheet" href="_preview.css">
+<style>
+  .field { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
+  .field label { font-size: 11.5px; font-weight: 600; color: var(--ds-color-text-secondary); letter-spacing: 0.02em; }
+  .input { height: 40px; padding: 0 12px; border: 1px solid var(--ds-color-border); border-radius: var(--ds-radius-md); background: var(--ds-color-surface); color: var(--ds-color-text-primary); font: inherit; font-size: 14px; outline: none; }
+  .input::placeholder { color: var(--ds-color-text-muted); }
+  .input-focus { border-color: var(--ds-color-accent); box-shadow: 0 0 0 3px color-mix(in oklch, var(--ds-color-accent) 25%, transparent); }
+  .input-invalid { border-color: var(--ds-color-danger); box-shadow: 0 0 0 3px color-mix(in oklch, var(--ds-color-danger) 20%, transparent); }
+  .input-disabled { background: var(--ds-color-surface-muted); color: var(--ds-color-text-muted); cursor: not-allowed; }
+  .hint { font-size: 11.5px; color: var(--ds-color-text-muted); }
+  .err { font-size: 11.5px; color: var(--ds-color-danger); }
+</style></head>
+<body>
+  <div class="row">
+    <div class="field"><label>Aktenzeichen</label><input class="input ds-tabular" value="F-2026-04827-K"></div>
+    <div class="field"><label>Postleitzahl</label><input class="input input-focus" placeholder="z. B. 10117"><span class="hint">Wir lookup Behörde nach PLZ.</span></div>
+    <div class="field"><label>IBAN</label><input class="input input-invalid ds-tabular" value="DE89 3704 0044 0532 0130"><span class="err">Prüfsumme ungültig.</span></div>
+    <div class="field"><label>Vor­name (gesperrt)</label><input class="input input-disabled" value="Anna"></div>
+  </div>
+</body></html>
