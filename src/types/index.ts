@@ -12,6 +12,7 @@ export type {
 export type {
   Persona,
   PersonaId,
+  Familienstand,
   Aufenthaltstitel,
   Beschaeftigung,
   Krankenversicherung,

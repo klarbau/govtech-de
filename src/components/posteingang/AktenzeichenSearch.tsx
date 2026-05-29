@@ -166,7 +166,7 @@ export function AktenzeichenSearch({
         }}
         onFocus={() => setOpen(true)}
         onKeyDown={onKeyDown}
-        className="flex min-h-[48px] w-full rounded-md border border-border-strong bg-surface px-3 py-2 ps-9 text-base text-text-primary transition-colors placeholder:text-text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-50"
+        className="flex h-[42px] w-full rounded-md border border-border-strong bg-surface px-3 ps-10 text-sm text-text-primary transition-colors placeholder:text-text-muted focus-visible:border-primary focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-50"
       />
       <ul
         id={listboxDomId}

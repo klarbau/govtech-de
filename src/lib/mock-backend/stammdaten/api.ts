@@ -370,6 +370,7 @@ function buildStammdaten(personaId: PersonaId): Stammdaten {
     anschrift_aktuell: persona.adresse,
     anschriften_historisch: anschriftenHistorisch,
     familie: {
+      familienstand: persona.familienstand,
       partner: familiePartner,
       kinder: familieKinder,
       eheschliessung: persona.eheschliessung,

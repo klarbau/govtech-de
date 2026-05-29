@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>Stammdaten — GovTech DE</title>
+<link rel="stylesheet" href="assets/govtech.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  .verify-chips { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+  .verify-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-pill); color: var(--ink-2); font-size: 13px; font-weight: 500;
+  }
+  .verify-chip svg { color: var(--green-600); width: 14px; height: 14px; }
+
+  .sd-grid { display: grid; grid-template-columns: 1fr 1fr 1.05fr; gap: 18px; align-items: start; margin-top: 18px; }
+  .sd-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 20px 22px; box-shadow: var(--shadow-1); }
+  .sd-card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .sd-card-head .title { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+  .sd-card-head .title svg { color: var(--ink-3); width: 18px; height: 18px; }
+  .kv-row { display: grid; grid-template-columns: 130px 1fr; gap: 8px; padding: 8px 0; }
+  .kv-row .k { color: var(--ink-3); font-size: 13px; }
+  .kv-row .v { font-weight: 500; }
+  .doc-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px solid var(--border); }
+  .doc-row:first-child { border-top: 0; }
+  .doc-row .icon-square { width: 36px; height: 36px; background: var(--brand-50); color: var(--brand-700); }
+  .doc-row .icon-square svg { width: 18px; height: 18px; }
+  .doc-row .body { flex: 1; }
+  .doc-row .body .t { font-weight: 500; font-size: 13.5px; }
+  .doc-row .body .s { color: var(--ink-3); font-size: 12px; }
+  .add-link { color: var(--brand-600); font-weight: 500; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; }
+  .add-link svg { width: 14px; height: 14px; }
+
+  .timeline-card .item {
+    display: grid; grid-template-columns: 40px 1fr auto; gap: 12px;
+    padding: 14px 0; border-top: 1px solid var(--border);
+  }
+  .timeline-card .item:first-child { border-top: 0; }
+  .timeline-card .item .av { width: 36px; height: 36px; border-radius: 50%; background: var(--surface-muted); display: flex; align-items: center; justify-content: center; color: var(--ink-3); }
+  .timeline-card .item.ard .av { background: #1B47C2; color: #fff; font-size: 9px; font-weight: 700; line-height: 1; }
+  .timeline-card .item.aok .av { background: var(--green-600); color: #fff; font-size: 10px; font-weight: 700; }
+  .timeline-card .item .t { font-weight: 600; font-size: 13.5px; }
+  .timeline-card .item .s { color: var(--ink-3); font-size: 12px; }
+  .timeline-card .item .when { color: var(--ink-3); font-size: 12px; text-align: right; }
+
+  .sd-foot {
+    margin-top: 22px;
+    background: var(--brand-50); border: 1px solid var(--brand-100); border-radius: var(--r-lg);
+    padding: 18px 24px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .sd-foot .icon-circle { background: rgba(255,255,255,0.7); }
+  .sd-foot .body { flex: 1; }
+  .sd-foot .body .t { font-weight: 600; }
+  .sd-foot .body .s { font-size: 13px; color: var(--ink-2); line-height: 1.5; }
+  .sd-foot .body a { color: var(--brand-600); font-weight: 500; }
+</style>
+</head>
+<body>
+
+<div data-gt-header></div>
+<div class="gt-shell">
+  <div data-gt-sidebar></div>
+  <main class="gt-content">
+    <div class="gt-page-head">
+      <h1>Stammdaten</h1>
+      <div class="sub">Persönliche Daten, Kontakte und Nachweise an einem Ort.</div>
+      <div class="verify-chips" style="margin-top: 14px;">
+        <span class="verify-chip"><i data-lucide="check-circle-2"></i>Adresse bestätigt</span>
+        <span class="verify-chip"><i data-lucide="check-circle-2"></i>Wallet verbunden</span>
+        <span class="verify-chip"><i data-lucide="check-circle-2"></i>Aufenthalt gültig</span>
+      </div>
+    </div>
+
+    <div class="sd-grid">
+      <div style="display: flex; flex-direction: column; gap: 18px;">
+        <div class="sd-card">
+          <div class="sd-card-head">
+            <div class="title"><i data-lucide="user"></i>Persönliches Profil</div>
+            <button class="btn btn-secondary btn-sm"><i data-lucide="pencil"></i>Bearbeiten</button>
+          </div>
+          <div class="kv-row"><div class="k">Name</div><div class="v">Anna Petrov</div></div>
+          <div class="kv-row"><div class="k">Geburtsdatum</div><div class="v">12.04.1990</div></div>
+          <div class="kv-row"><div class="k">Staatsangehörigkeit</div><div class="v">Ukrainisch</div></div>
+          <div class="kv-row"><div class="k">Familienstand</div><div class="v">verheiratet</div></div>
+        </div>
+
+        <div class="sd-card">
+          <div class="sd-card-head">
+            <div class="title"><i data-lucide="phone"></i>Kontakt</div>
+            <button class="btn btn-secondary btn-sm"><i data-lucide="pencil"></i>Bearbeiten</button>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0;">
+            <div><div class="muted text-xs">E-Mail</div><div class="fw-500">anna.petrov@mail.de</div></div>
+            <span class="badge green"><i data-lucide="check-circle-2" style="width:12px;height:12px"></i>Verifiziert</span>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-top: 1px solid var(--border);">
+            <div><div class="muted text-xs">Telefonnummer</div><div class="fw-500">+49 170 1234567</div></div>
+            <span class="badge green"><i data-lucide="check-circle-2" style="width:12px;height:12px"></i>Verifiziert</span>
+          </div>
+        </div>
+
+        <div class="sd-card">
+          <div class="sd-card-head">
+            <div class="title"><i data-lucide="users"></i>Familie &amp; Bezugspersonen</div>
+            <button class="btn btn-secondary btn-sm"><i data-lucide="pencil"></i>Bearbeiten</button>
+          </div>
+          <div class="muted text-xs" style="margin-bottom: 8px;">Kinder</div>
+          <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid var(--border);">
+            <span class="avatar green">LP</span>
+            <div class="grow">
+              <div class="fw-600">Lev Petrov</div>
+              <div class="muted text-xs">Geburtsdatum &nbsp; 05.07.2018</div>
+            </div>
+            <div class="text-sm muted">Verwandtschaft<br/><span style="color: var(--ink);" class="fw-500">Kind</span></div>
+            <i data-lucide="chevron-right" style="color: var(--ink-4);"></i>
+          </div>
+          <a class="add-link" href="#"><i data-lucide="plus-circle"></i>Weitere Person hinzufügen</a>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 18px;">
+        <div class="sd-card">
+          <div class="sd-card-head">
+            <div class="title"><i data-lucide="home"></i>Anschrift</div>
+            <button class="btn btn-secondary btn-sm"><i data-lucide="pencil"></i>Ändern</button>
+          </div>
+          <div class="muted text-xs">Aktuelle Anschrift</div>
+          <div style="margin-top: 4px; font-weight: 500; line-height: 1.55;">
+            Musterstraße 12<br/>10115 Berlin<br/>Deutschland
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); margin-top: 14px; padding-top: 12px;">
+            <span class="muted text-xs">zuletzt bestätigt am 22.03.2026</span>
+            <span class="badge green">Bestätigt</span>
+          </div>
+        </div>
+
+        <div class="sd-card">
+          <div class="sd-card-head">
+            <div class="title"><i data-lucide="id-card"></i>Identitätsdokumente</div>
+            <button class="btn btn-secondary btn-sm"><i data-lucide="settings"></i>Verwalten</button>
+          </div>
+          <div class="doc-row">
+            <span class="icon-square"><i data-lucide="globe"></i></span>
+            <div class="body">
+              <div class="t">Reisepass</div>
+              <div class="s">Nummer X12345678 · Gültig bis 14.08.2030</div>
+            </div>
+            <span class="badge green">Gültig</span>
+            <i data-lucide="chevron-right" style="color: var(--ink-4); width: 14px; height: 14px;"></i>
+          </div>
+          <div class="doc-row">
+            <span class="icon-square"><i data-lucide="id-card"></i></span>
+            <div class="body">
+              <div class="t">Aufenthaltstitel</div>
+              <div class="s">Nummer Y987654321 · Gültig bis 14.08.2026</div>
+            </div>
+            <span class="badge green">Gültig</span>
+            <i data-lucide="chevron-right" style="color: var(--ink-4); width: 14px; height: 14px;"></i>
+          </div>
+          <a class="add-link" href="dokumente.html"><i data-lucide="plus-circle"></i>Dokument hinzufügen</a>
+        </div>
+
+        <div class="sd-card">
+          <div class="sd-card-head">
+            <div class="title"><i data-lucide="shield"></i>Versicherung &amp; Vorsorge</div>
+            <button class="btn btn-secondary btn-sm"><i data-lucide="pencil"></i>Bearbeiten</button>
+          </div>
+          <div class="doc-row">
+            <span class="avatar green" style="width:36px;height:36px;font-size:11px;">AOK</span>
+            <div class="body">
+              <div class="t">Krankenkasse</div>
+              <div class="s">AOK Nordost · Versichertennummer 109876543</div>
+            </div>
+            <span class="badge green">Aktiv</span>
+            <i data-lucide="chevron-right" style="color: var(--ink-4); width: 14px; height: 14px;"></i>
+          </div>
+          <div class="doc-row">
+            <span class="icon-square"><i data-lucide="piggy-bank"></i></span>
+            <div class="body">
+              <div class="t">Altersvorsorge</div>
+              <div class="s">Gesetzliche Rentenversicherung · Versichert seit 12.05.2015</div>
+            </div>
+            <span class="badge green">Aktiv</span>
+            <i data-lucide="chevron-right" style="color: var(--ink-4); width: 14px; height: 14px;"></i>
+          </div>
+          <a class="add-link" href="#"><i data-lucide="plus-circle"></i>Weitere Vorsorge hinzufügen</a>
+        </div>
+      </div>
+
+      <div class="sd-card timeline-card">
+        <div class="sd-card-head">
+          <div class="title"><i data-lucide="clock"></i>Änderungsprotokoll</div>
+        </div>
+        <div class="muted text-xs" style="margin-bottom: 12px;">Letzte Änderungen an Ihren Stammdaten</div>
+        <div class="item">
+          <span class="av"><i data-lucide="landmark"></i></span>
+          <div><div class="t">Adresse bestätigt</div><div class="s">Bürgeramt Mitte<br/>Musterstraße 12, 10115 Berlin</div></div>
+          <div class="when">22.03.2026<br/>09:41 Uhr</div>
+        </div>
+        <div class="item ard">
+          <span class="av">ARD<br/>ZDF</span>
+          <div><div class="t">Rundfunkbeitrag aktualisiert</div><div class="s">ARD ZDF Deutschlandradio Beitragsservice<br/>Beitragsnummer: 123 456 789</div></div>
+          <div class="when">18.03.2026<br/>14:22 Uhr</div>
+        </div>
+        <div class="item aok">
+          <span class="av">AOK</span>
+          <div><div class="t">Krankenkasse bestätigt</div><div class="s">AOK Nordost<br/>Versichertenstatus geprüft</div></div>
+          <div class="when">15.03.2026<br/>10:15 Uhr</div>
+        </div>
+        <div class="item">
+          <span class="av"><i data-lucide="user"></i></span>
+          <div><div class="t">E-Mail-Adresse geändert</div><div class="s">Über die GovTech DE App</div></div>
+          <div class="when">10.03.2026<br/>16:03 Uhr</div>
+        </div>
+        <div class="item">
+          <span class="av"><i data-lucide="user"></i></span>
+          <div><div class="t">Telefonnummer bestätigt</div><div class="s">Über die GovTech DE App</div></div>
+          <div class="when">10.03.2026<br/>16:03 Uhr</div>
+        </div>
+        <button class="btn btn-secondary" style="margin-top: 16px; width: 100%;"><i data-lucide="file-text"></i>Vollständiges Protokoll anzeigen</button>
+      </div>
+    </div>
+
+    <div class="sd-foot">
+      <span class="icon-circle"><i data-lucide="shield"></i></span>
+      <div class="body">
+        <div class="t">Sie haben die Hoheit über Ihre Daten</div>
+        <div class="s">Ihre Stammdaten werden nur mit Ihrer Zustimmung an Behörden und Dienste weitergegeben. Sie entscheiden, wer welche Informationen einsehen darf. <a href="datenschutz.html">Mehr zu Ihren Rechten und zur Datenverwendung.</a></div>
+      </div>
+      <button class="btn btn-secondary"><i data-lucide="lock"></i>Datennutzung verwalten</button>
+    </div>
+  </main>
+</div>
+
+<script>window.GT_ACTIVE='stammdaten';</script>
+<script src="assets/govtech.js"></script>
+</body>
+</html>

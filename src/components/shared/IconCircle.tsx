@@ -6,7 +6,10 @@ type IconCircleTone =
   | 'primary'
   | 'success'
   | 'warning'
-  | 'danger';
+  | 'danger'
+  | 'pink'
+  | 'violet'
+  | 'teal';
 type IconCircleSize = 'sm' | 'md' | 'lg';
 
 interface IconCircleProps {
@@ -30,6 +33,9 @@ const toneClasses: Record<IconCircleTone, string> = {
   success: 'bg-success-soft text-success',
   warning: 'bg-warning-soft text-warning',
   danger: 'bg-danger-soft text-danger',
+  pink: 'bg-pink-50 text-pink-500',
+  violet: 'bg-violet-50 text-violet-500',
+  teal: 'bg-teal-50 text-teal-500',
 };
 
 export function IconCircle({

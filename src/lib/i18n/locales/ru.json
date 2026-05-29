@@ -68,7 +68,182 @@
     "persona_anna": "Анна Петрова, 28 лет — Blue Card EU, Берлин",
     "persona_schmidt": "Семья Шмидт — Гамбург, ожидают рождения ребёнка",
     "persona_mehmet": "Мехмет Йылдыз, 34 года — Кёльн, планирует открыть дело",
-    "cta_continue": "Открыть демо"
+    "cta_continue": "Открыть демо",
+    "nav": {
+      "aria_label": "Главная навигация",
+      "leistungen": "Услуги",
+      "buerger": "Для граждан",
+      "behoerden": "Для ведомств",
+      "sicherheit": "Безопасность и защита данных",
+      "ueber_uns": "О нас",
+      "login": "Войти"
+    },
+    "hero": {
+      "badge": "Госуправление, которое думает за Вас.",
+      "title": "Госуслуги на автопилоте.",
+      "subtitle": "Портал для граждан Германии, который готовит дела, заранее заполняет данные и объясняет следующий шаг.",
+      "cta_primary": "Запустить демо",
+      "cta_secondary": "Узнать больше",
+      "trust": "Безопасно. Надёжно. По всей Германии."
+    },
+    "diagram": {
+      "you_label": "Вы как гражданин",
+      "input_title": "Указать один раз",
+      "input_body": "Мы понимаем Ваш запрос и подготавливаем всё необходимое.",
+      "autopilot_label": "Автопилот",
+      "autopilot_sub": "Подготовить дело · заранее заполнить данные · объяснить следующий шаг",
+      "authorities_label": "Ваши ведомства",
+      "behoerde1_name": "Бюро регистрации жителей (Einwohnermeldeamt)",
+      "behoerde1_status": "Проверить данные",
+      "behoerde2_name": "Ведомство по делам иностранцев (Ausländerbehörde)",
+      "behoerde2_status": "Обработать заявление",
+      "behoerde3_name": "Налоговая служба (Finanzamt)",
+      "behoerde3_status": "Получить решение",
+      "control_bar": "Вы в любой момент сохраняете обзор и контроль.",
+      "sr_summary": "Порядок действий: Вы один раз указываете свой запрос, автопилот готовит дело и уведомляет все ответственные ведомства — Бюро регистрации жителей (Einwohnermeldeamt), Ведомство по делам иностранцев (Ausländerbehörde) и Налоговую службу (Finanzamt). Вы в любой момент сохраняете обзор и контроль."
+    },
+    "features": {
+      "title": "Что показывает демо"
+    },
+    "feature": {
+      "umzug": {
+        "title": "Переезд",
+        "desc": "Мы сообщаем Ваш новый адрес во все нужные инстанции."
+      },
+      "kindergeburt": {
+        "title": "Рождение ребёнка",
+        "desc": "Регистрация в ратуше, GEMA и многое другое — за минуты."
+      },
+      "aufenthalt": {
+        "title": "Продление вида на жительство",
+        "desc": "Подготовить заявление, проверить документы, записаться на приём."
+      },
+      "posteingang": {
+        "title": "Входящие с ИИ-разъяснением",
+        "desc": "Понять, а не отчаяться — поясняет, обобщает и помогает."
+      }
+    },
+    "trust": {
+      "title": "На надёжной основе",
+      "deutschlandid": {
+        "title": "DeutschlandID",
+        "desc": "Безопасный вход с Вашей цифровой идентичностью."
+      },
+      "eudi": {
+        "title": "EUDI Wallet",
+        "desc": "Признаётся во всём ЕС и рассчитан на будущее."
+      },
+      "bitv": {
+        "title": "Соответствует BITV",
+        "desc": "Доступно, понятно и открыто для всех."
+      },
+      "mock": {
+        "title": "Демо-макет, видение 2027",
+        "desc": "Взгляд в будущее госуправления в Германии."
+      }
+    }
+  },
+  "onboarding": {
+    "topbar": {
+      "login_label": "Войти"
+    },
+    "welcome": {
+      "title": "Добро пожаловать в GovTech DE",
+      "subtitle": "Войдите или запустите демо."
+    },
+    "method": {
+      "deutschlandid": {
+        "title": "Продолжить с DeutschlandID",
+        "helper": "Безопасно, просто и официально признано."
+      },
+      "eudi": {
+        "title": "Продолжить с EUDI Wallet",
+        "helper": "Ваш цифровой кошелёк для Европы."
+      },
+      "demo": {
+        "title": "Демо-режим с тестовыми данными",
+        "helper": "Попробуйте без входа. Без реального подключения к ведомствам."
+      }
+    },
+    "trust": {
+      "secure": "Безопасный вход",
+      "consent": "Только с Вашего согласия",
+      "no_real_connection": "Без реального подключения к ведомствам"
+    },
+    "how": {
+      "title": "Вот как это просто",
+      "step1": {
+        "title": "Выбрать идентичность",
+        "desc": "Выберите предпочтительный способ входа: DeutschlandID или EUDI Wallet."
+      },
+      "step2": {
+        "title": "Проверить передачу данных",
+        "desc": "Проверьте запрошенные данные и передайте только необходимое."
+      },
+      "step3": {
+        "title": "Запустить автопилот",
+        "desc": "Ваши данные заполняются заранее, письма поясняются, а дела запускаются автоматически."
+      }
+    },
+    "why": {
+      "title": "Зачем этот вход?",
+      "prefill": "Заранее заполнить данные",
+      "explain": "Понятно пояснять письма",
+      "autopilot": "Автопилот для Ваших дел"
+    },
+    "handshake": {
+      "connecting": "Подключение к {method} …",
+      "confirmed": "Идентичность подтверждена",
+      "mock_note": "Имитация процедуры подтверждения идентичности · прототип, без реального подключения к ведомствам.",
+      "qr_label": "QR-код для входа (макет)",
+      "cancel": "Отмена"
+    },
+    "persona": {
+      "title": "Выберите идентичность для демо",
+      "subtitle": "Вы сможете сменить идентичность позже в любой момент.",
+      "anna": {
+        "name": "Анна Петрова",
+        "descriptor": "Берлин · по найму · русская"
+      },
+      "schmidt": {
+        "name": "Семья Шмидт",
+        "descriptor": "Гамбург · семья с ребёнком · немцы"
+      },
+      "mehmet": {
+        "name": "Мехмет Йылдыз",
+        "descriptor": "Кёльн · самозанятый · турок"
+      },
+      "back": "Назад"
+    },
+    "transparency": {
+      "title": "Эти данные предоставляет Ваша цифровая идентичность",
+      "subtitle": "Вы решаете, что передавать. Ничего без Вашего согласия.",
+      "required_group": "Обязательные данные — необходимы для входа",
+      "optional_group": "Дополнительные данные — только при необходимости (минимизация данных)",
+      "attr": {
+        "name": "Имя",
+        "birthdate": "Дата рождения",
+        "address": "Адрес",
+        "nationality": "Гражданство",
+        "marital_status": "Семейное положение",
+        "tax_id": "Идентификационный номер налогоплательщика"
+      },
+      "badge": {
+        "available": "Доступно",
+        "optional": "По выбору"
+      },
+      "share_toggle": "Передать",
+      "recipient": "Получатель: только GovTech DE (демо) — и только с Вашего согласия.",
+      "legal_basis": "Правовая основа: eIDAS 2 / OZG · данные на основе согласия: DSGVO Art. 6 Abs. 1 lit. a",
+      "dsgvo_footer": "Ваши данные передаются безопасно и обрабатываются в соответствии с DSGVO (GDPR).",
+      "mock_note": "Спекулятивная демонстрационная функция · без реальной передачи данных eID.",
+      "back": "Назад",
+      "confirm": "Подтвердить вход",
+      "committing": "Вход подготавливается …"
+    },
+    "footer": {
+      "bsi": "Это приложение соответствует критериям базовой защиты BSI (BSI-Grundschutz)."
+    }
   },
   "dashboard": {
     "title": "Панель",
@@ -76,16 +251,17 @@
     "greeting": {
       "frau": "Здравствуйте, г-жа {nachname}",
       "herr": "Здравствуйте, г-н {nachname}",
-      "neutral": "Здравствуйте, {vorname} {nachname}"
+      "neutral": "Здравствуйте, {vorname} {nachname}",
+      "last_login_meta": "последний вход {days} дн. назад · на этом устройстве"
     },
     "demo_banner": {
-      "text": "Демо-режим · демо-данные. Вход через BundID бывает редко, поэтому Вам поможет обзор изменений.",
+      "text": "Демо-режим · демо-данные · оригиналы остаются в официальных почтовых ящиках",
       "disclaimer_link": "Показать примечание"
     },
     "diff": {
       "title": "С момента Вашего последнего входа",
       "neue_briefe": "новых писем",
-      "frist_naeher": "срок ближе",
+      "frist_naeher": "срок приблизился",
       "vorgang_abgeschlossen": "процесс завершён",
       "last_login_tooltip": "На этом устройстве последний раз {datum}",
       "first_login": "Первый вход на этом устройстве",
@@ -114,7 +290,8 @@
       "fristen": {
         "title": "Сроки",
         "next": "Ближайший срок: {datum}",
-        "none": "Открытых сроков нет"
+        "none": "Открытых сроков нет",
+        "open_count": "{count} открыт."
       },
       "posteingang": {
         "title": "Входящие",
@@ -122,21 +299,22 @@
       },
       "vorgaenge": {
         "title": "Процессы",
-        "value": "{laufend} в работе"
+        "value": "{laufend} в работе",
+        "value_running_done": "{laufend} в работе, {abgeschlossen} завершено"
       },
       "termine": {
         "title": "Встречи",
-        "next": "Ближайшая встреча: {datum}",
+        "next": "Ближайшая встреча {datum}",
         "none": "Встреч не запланировано"
       },
       "datenschutz": {
         "title": "Центр конфиденциальности",
-        "value": "{count} действий / 30 дней"
+        "value": "{count} действий за 30 дней"
       },
       "stammdaten": {
         "title": "Статус анкетных данных",
         "value": "Проверить адрес",
-        "last_confirmed": "Последнее подтверждение: {datum}",
+        "last_confirmed": "Адрес последний раз подтверждён {datum}",
         "never_confirmed": "Ещё не подтверждено"
       },
       "cta_ansehen": "Посмотреть",
@@ -145,7 +323,13 @@
     "error": {
       "load": "Не удалось загрузить панель."
     },
-    "loading": "Панель загружается"
+    "loading": "Панель загружается",
+    "frist_inline": {
+      "in_one_day": "Срок через 1 день",
+      "in_n_days": "Срок через {days} дн.",
+      "on_date": "Срок {datum}",
+      "overdue": "Срок {datum} пропущен"
+    }
   },
   "common": {
     "cta": {
@@ -231,6 +415,58 @@
         "adresse": "Адрес",
         "vorschau": "Предпросмотр",
         "autopilot": "Автопилот выполняется"
+      }
+    },
+    "identitaet": {
+      "daten": {
+        "title": "Ваши доступные данные",
+        "empty": "Не удалось загрузить данные.",
+        "status": {
+          "bestaetigt": "Подтверждено",
+          "verfuegbar": "Доступно",
+          "optional": "По желанию"
+        },
+        "name": {
+          "label": "Имя",
+          "body": "Источник: самосправка DeutschlandID. При автопилоте переезда (Umzug) переносится без изменений."
+        },
+        "geburtsdatum": {
+          "label": "Дата рождения",
+          "body": "Источник: самосправка DeutschlandID. Проверено по реестру рождений (Geburtsregister)."
+        },
+        "anschrift": {
+          "label": "Текущий адрес",
+          "body": "Источник: реестр жителей (Melderegister). При автопилоте переезда (Umzug) заменяется новым адресом."
+        },
+        "familienstand": {
+          "label": "Семейное положение",
+          "value": {
+            "ledig": "холост / не замужем",
+            "verheiratet": "в браке",
+            "geschieden": "в разводе",
+            "verwitwet": "вдовец / вдова",
+            "eingetragene_lebenspartnerschaft": "зарегистрированное партнёрство (eingetragene Lebenspartnerschaft)"
+          },
+          "body": "Источник: ЗАГС (Standesamt — реестр актов гражданского состояния, § 3 Abs. 1 Nr. 8 BMG). При автопилоте переезда (Umzug) переносится без изменений."
+        },
+        "aufenthaltstitel": {
+          "label": "Вид на жительство (Aufenthaltstitel)",
+          "value": "{norm} · действителен до {datum}",
+          "body": "Источник: аттестация EUDI Wallet от компетентного ведомства по делам иностранцев (Ausländerbehörde). Хранится в: Wallet."
+        },
+        "staatsangehoerigkeit": {
+          "label": "Гражданство",
+          "body": "Источник: реестр жителей (Melderegister). Передаётся только если это явно требуется для дела."
+        },
+        "dokumente": {
+          "label": "Документы",
+          "value": "{count, plural, =0 {Нет подтверждений в Wallet} =1 {1 подтверждение в Wallet} other {# подтверждений в Wallet}}",
+          "body": "Подтверждения из Вашего хранилища документов. Передаются только по запросу."
+        },
+        "dsgvo": {
+          "text": "Ваши данные передаются безопасно и обрабатываются в соответствии с GDPR (DSGVO).",
+          "link": "Узнать больше"
+        }
       }
     },
     "start": {
@@ -396,7 +632,13 @@
       "stream": "Не удалось загрузить ответ. Попробуйте ещё раз."
     },
     "greeting": {
-      "intro": "Здравствуйте, {vorname}, вот обзор Вашей текущей ситуации:",
+      "intro": "Здравствуйте, вот обзор Вашей текущей ситуации:",
+      "intro_named": "Здравствуйте, {vorname}, вот обзор Вашей текущей ситуации:",
+      "bullet_steuerbescheid": "Вы получили **налоговое уведомление (Steuerbescheid)** от {behoerde}.",
+      "bullet_erstattung": "Вам будет выплачен **возврат налога (Steuererstattung)** в размере {betrag}.",
+      "bullet_nachzahlung": "Предстоит **доплата налога (Steuernachzahlung)** в размере {betrag}.",
+      "bullet_aufenthalt": "Ваш **вид на жительство (Aufenthaltstitel)** действителен до {datum}.",
+      "bullet_einspruch": "На налоговое уведомление можно подать **возражение (Einspruch)** до {datum}.",
       "bullet_briefe": "{count, plural, =1 {1 непрочитанное письмо} other {# непрочитанных писем}} в почте.",
       "bullet_frist": "Ближайший срок: {betreff} — {datum}.",
       "bullet_keine": "Сейчас ничего срочного нет.",
@@ -571,6 +813,10 @@
         "antwort_erforderlich": "Требуется ответ",
         "zur_kenntnis": "К сведению",
         "erledigt": "Готово"
+      },
+      "relative": {
+        "heute": "Сегодня",
+        "gestern": "Вчера"
       }
     },
     "gruppe": {
@@ -601,6 +847,7 @@
       "empty_select_title": "Выберите письмо из списка.",
       "empty_select_body": "Слева — Ваши письма от ведомств. Выберите одно, чтобы увидеть разбор от ИИ, сроки и возможные шаги.",
       "auth_badge": "Подлинность проверена",
+      "verifiziert_am_template": "Проверено {datum}",
       "originaltext_auszug_title": "Фрагмент оригинального текста",
       "originaltext_mehr": "Показать ещё",
       "originaltext_heading": "Оригинальный текст",
@@ -632,6 +879,8 @@
         "kalender": "Срок в календарь (.ics)",
         "kalender_per_frist_template": "{typ} в календарь (.ics)",
         "originalbrief": "Показать оригинальный текст",
+        "antwort_vorbereiten": "Подготовить ответ",
+        "vorgang_erstellen": "Создать дело",
         "speichern": "Сохранить письмо (.txt)",
         "markiere_gelesen": "Отметить это письмо как прочитанное",
         "citation_mismatch_disabled_hint": "Срок не подтверждается однозначно в оригинале. Экспорт в календарь отключён — пожалуйста, сверьте дату с оригинальным текстом."
@@ -1036,29 +1285,45 @@
     "card": {
       "progress": "Готово {erledigt} из {gesamt}",
       "progress_label": "Прогресс",
+      "progress_count": "{erledigt} из {gesamt} завершено",
       "cta_weiter": "Продолжить",
       "cta_kaskade": "Посмотреть цепочку",
       "cta_unterlagen": "Загрузить документы",
       "cta_ansehen": "Открыть дело",
+      "cta_oeffnen": "Открыть дело",
       "unterlagen_fehlen": "Не хватает документов",
-      "umzug_subtitle": "Все ответственные ведомства уведомляются автоматически."
+      "unterlagen_helper": "Пожалуйста, загрузите недостающие документы.",
+      "unterlagen_open_days": "Открыто уже {tage, plural, =1 {1 день} few {# дня} other {# дней}}",
+      "umzug_subtitle": "Ваши ведомства будут уведомлены автоматически.",
+      "responsible_self": "Ответственны: вы",
+      "frist_in_days": "Срок через {tage, plural, =1 {1 день} few {# дня} other {# дней}}",
+      "frist_due_on": "Срок до {datum}",
+      "gestartet_label": "Запущено: {datum}",
+      "menu_aria": "Дополнительные действия для «{titel}»"
     },
     "stepper": {
       "aria": "Ход дела «{titel}»",
       "node_done": "{behoerde}: завершено",
       "node_active": "{behoerde}: в обработке",
       "node_pending": "{behoerde}: ожидает",
-      "node_failed": "{behoerde}: ошибка"
+      "node_failed": "{behoerde}: ошибка",
+      "date_running": "Идёт проверка",
+      "date_pending": "Ожидает"
     },
     "rail": {
       "title": "Что важно сейчас?",
+      "subtitle": "Главное по вашим текущим делам",
       "offene_vorgaenge": "Открытые дела",
+      "offene_label": "{count, plural, =1 {1 открытое дело} few {# открытых дела} other {# открытых дел}}",
       "offene_vorgaenge_count": "{count, plural, =1 {1 открытое дело} few {# открытых дела} other {# открытых дел}}",
       "frist_naht": "Приближается срок",
+      "frist_label": "{count, plural, =1 {1 срок} few {# срока} other {# сроков}} в ближайшие 14 дней",
       "frist_naht_days": "Срок через {tage, plural, =1 {1 день} few {# дня} other {# дней}}",
       "warten_bestaetigung": "Ожидают подтверждения",
+      "warten_label": "{count, plural, =1 {1 ожидает} other {# ожидают}} вашего подтверждения",
       "warten_bestaetigung_count": "{count, plural, =1 {1 шаг открыт} few {# шага открыто} other {# шагов открыто}}",
       "cta_ansehen": "Открыть",
+      "cta_fristen": "Сроки",
       "alle_ansehen": "Посмотреть все дела",
       "empty": "Сейчас ничего срочного."
     },
@@ -1093,8 +1358,12 @@
     },
     "tab": {
       "aria_label": "Разделы личных данных",
-      "profil": { "label": "Мой профиль" },
-      "wallet": { "label": "Кошелёк и внешние получатели" }
+      "profil": {
+        "label": "Мой профиль"
+      },
+      "wallet": {
+        "label": "Кошелёк и внешние получатели"
+      }
     },
     "hero": {
       "eyebrow": "Единый источник данных",
@@ -1135,11 +1404,21 @@
       "vision_pill": "Видение 2029"
     },
     "sektion": {
-      "identitaet": { "title": "Личность" },
-      "anschrift": { "title": "Адрес" },
-      "familie": { "title": "Семья" },
-      "dokumente": { "title": "Документы" },
-      "sperren_einstellungen": { "title": "Блокировки и настройки" },
+      "identitaet": {
+        "title": "Личность"
+      },
+      "anschrift": {
+        "title": "Адрес"
+      },
+      "familie": {
+        "title": "Семья"
+      },
+      "dokumente": {
+        "title": "Документы"
+      },
+      "sperren_einstellungen": {
+        "title": "Блокировки и настройки"
+      },
       "altersvorsorge": {
         "title": "Пенсионное обеспечение (Altersvorsorge)",
         "subtitle": "Государственная пенсия, профессиональные пенсионные кассы и частные накопления — обзор"
@@ -1148,8 +1427,12 @@
         "title": "Медицинское страхование и уход",
         "subtitle": "Больничная касса, ePA, eRezept и страхование по уходу"
       },
-      "kontakt_postfach": { "title": "Контакт и почтовый ящик (Kontakt & Postfach)" },
-      "notification_praeferenzen": { "title": "Настройки уведомлений (Видение 2027)" },
+      "kontakt_postfach": {
+        "title": "Контакт и почтовый ящик (Kontakt & Postfach)"
+      },
+      "notification_praeferenzen": {
+        "title": "Настройки уведомлений (Видение 2027)"
+      },
       "mobilitaet": {
         "preview_no_fe": "Разрешение на управление транспортом (Fahrerlaubnis) не зарегистрировано",
         "preview_fe_classes": "Категория {klassen}",
@@ -1176,33 +1459,87 @@
       "verwalten": "Управлять"
     },
     "field": {
-      "familienname": { "label": "Фамилия" },
-      "fruehere_namen": { "label": "Прежние имена" },
-      "vornamen": { "label": "Имена" },
-      "doktorgrad": { "label": "Учёная степень доктора (Doktorgrad)" },
-      "geburtsdatum": { "label": "Дата рождения" },
-      "geburtsort": { "label": "Место рождения" },
-      "staatsangehoerigkeit": { "label": "Гражданство" },
-      "steuer_id": { "label": "Налоговый идентификационный номер (Steuer-IdNr)" },
-      "anschrift_aktuell": { "label": "Текущий основной адрес" },
-      "anschriften_historisch": { "label": "Прежние адреса" },
-      "familienstand": { "label": "Семейное положение" },
-      "partner": { "label": "Супруг(а) / зарегистрированный партнёр" },
-      "kinder": { "label": "Дети" },
-      "eheschliessung": { "label": "Брак / партнёрство" },
-      "personalausweis": { "label": "Удостоверение личности (Personalausweis)" },
-      "reisepass": { "label": "Загранпаспорт (Reisepass)" },
-      "eat_can": { "label": "Электронный вид на жительство (eAT) — CAN" },
-      "azr_nr": { "label": "Номер AZR (Ausländerzentralregister)" },
-      "religionszugehoerigkeit": { "label": "Религиозная принадлежность" },
-      "kontakt_email": { "label": "Адрес электронной почты" },
-      "kontakt_mobil": { "label": "Номер мобильного телефона" },
-      "sprachpraeferenz": { "label": "Языковые настройки" },
-      "iban": { "label": "IBAN для возвратов" },
-      "uebermittlungssperren": { "label": "Блокировки передачи (Übermittlungssperren, §§ 42 Abs. 3, 50 Abs. 5 BMG)" },
-      "kvnr": { "label": "Номер медицинского страхования (KVNR)" },
-      "drv_versicherungsnummer": { "label": "Номер пенсионного страхования (DRV)" },
-      "elstam": { "label": "ELStAM (налоговый класс, льготы)" },
+      "familienname": {
+        "label": "Фамилия"
+      },
+      "fruehere_namen": {
+        "label": "Прежние имена"
+      },
+      "vornamen": {
+        "label": "Имена"
+      },
+      "doktorgrad": {
+        "label": "Учёная степень доктора (Doktorgrad)"
+      },
+      "geburtsdatum": {
+        "label": "Дата рождения"
+      },
+      "geburtsort": {
+        "label": "Место рождения"
+      },
+      "staatsangehoerigkeit": {
+        "label": "Гражданство"
+      },
+      "steuer_id": {
+        "label": "Налоговый идентификационный номер (Steuer-IdNr)"
+      },
+      "anschrift_aktuell": {
+        "label": "Текущий основной адрес"
+      },
+      "anschriften_historisch": {
+        "label": "Прежние адреса"
+      },
+      "familienstand": {
+        "label": "Семейное положение"
+      },
+      "partner": {
+        "label": "Супруг(а) / зарегистрированный партнёр"
+      },
+      "kinder": {
+        "label": "Дети"
+      },
+      "eheschliessung": {
+        "label": "Брак / партнёрство"
+      },
+      "personalausweis": {
+        "label": "Удостоверение личности (Personalausweis)"
+      },
+      "reisepass": {
+        "label": "Загранпаспорт (Reisepass)"
+      },
+      "eat_can": {
+        "label": "Электронный вид на жительство (eAT) — CAN"
+      },
+      "azr_nr": {
+        "label": "Номер AZR (Ausländerzentralregister)"
+      },
+      "religionszugehoerigkeit": {
+        "label": "Религиозная принадлежность"
+      },
+      "kontakt_email": {
+        "label": "Адрес электронной почты"
+      },
+      "kontakt_mobil": {
+        "label": "Номер мобильного телефона"
+      },
+      "sprachpraeferenz": {
+        "label": "Языковые настройки"
+      },
+      "iban": {
+        "label": "IBAN для возвратов"
+      },
+      "uebermittlungssperren": {
+        "label": "Блокировки передачи (Übermittlungssperren, §§ 42 Abs. 3, 50 Abs. 5 BMG)"
+      },
+      "kvnr": {
+        "label": "Номер медицинского страхования (KVNR)"
+      },
+      "drv_versicherungsnummer": {
+        "label": "Номер пенсионного страхования (DRV)"
+      },
+      "elstam": {
+        "label": "ELStAM (налоговый класс, льготы)"
+      },
       "geschlecht": {
         "label": "Запись о поле (Geschlechtseintrag)",
         "value": {
@@ -1238,42 +1575,108 @@
         "label": "Блокировка передачи религиозным сообществам (§ 42 Abs. 3 BMG)"
       },
       "beschaeftigung": {
-        "typ": { "label": "Тип занятости" },
-        "arbeitgeber": { "label": "Работодатель" },
-        "kvnr": { "label": "KVNR" },
-        "drv": { "label": "Номер DRV" }
+        "typ": {
+          "label": "Тип занятости"
+        },
+        "arbeitgeber": {
+          "label": "Работодатель"
+        },
+        "kvnr": {
+          "label": "KVNR"
+        },
+        "drv": {
+          "label": "Номер DRV"
+        }
       }
     },
     "korrekturweg": {
-      "familienname": { "pointer": "Исправление в ЗАГСе (Standesamt) согласно § 1355 BGB / § 45 PStG." },
-      "fruehere_namen": { "pointer": "Исправление в ЗАГСе (Standesamt) согласно § 45 PStG." },
-      "vornamen": { "pointer": "Исправление в ЗАГСе (Standesamt) согласно § 45 PStG." },
-      "doktorgrad": { "pointer": "Исправление через бюро по делам граждан (Bürgeramt) с загрузкой подтверждающего документа (§ 3 Abs. 1 Nr. 6 BMG)." },
-      "geburtsdatum": { "pointer": "Исправление в ЗАГСе (Standesamt) места рождения." },
-      "geburtsort": { "pointer": "Исправление в ЗАГСе (Standesamt) места рождения." },
-      "geschlecht": { "pointer": "Заявление в ЗАГСе (Standesamt) согласно § 4 SBGG (регистрация) и § 2 SBGG (личное удостоверение)." },
-      "staatsangehoerigkeit": { "pointer": "Исправление через ведомство по натурализации (Einbürgerungsbehörde) согласно StAG." },
-      "steuer_id": { "pointer": "Присваивается пожизненно Федеральным центральным налоговым управлением (Bundeszentralamt für Steuern) согласно § 139b AO — изменению не подлежит." },
-      "anschrift_aktuell": { "pointer": "Запись в Bürgeramt или электронная регистрация по месту жительства (eWA) согласно § 17 BMG." },
-      "anschriften_historisch": { "pointer": "Изменения вносятся при новой регистрации согласно § 17 BMG." },
-      "familienstand": { "pointer": "Исправление в ЗАГСе (Standesamt) согласно PStG." },
-      "partner": { "pointer": "Исправление в ЗАГСе (Standesamt) согласно PStG." },
-      "kinder": { "pointer": "Исправление в ЗАГСе (Standesamt) согласно § 21 PStG." },
-      "eheschliessung": { "pointer": "Исправление в ЗАГСе (Standesamt), где был заключён брак." },
-      "personalausweis": { "pointer": "Перевыпуск в Bürgeramt согласно PAuswG." },
-      "reisepass": { "pointer": "Перевыпуск в Bürgeramt согласно PassG." },
-      "eat_can": { "pointer": "Исправление через ведомство по делам иностранцев (Ausländerbehörde) согласно AufenthG." },
-      "azr_nr": { "pointer": "Исправление через ведомство по делам иностранцев (Ausländerbehörde) согласно § 34 AZRG." },
-      "religionszugehoerigkeit": { "pointer": "Вступление / выход: ЗАГС (Standesamt) или религиозное сообщество; хранение согласно § 3 Abs. 1 Nr. 11 BMG." },
-      "kontakt_email": { "pointer": "Изменяется напрямую в учётной записи BundID (настройка приложения)." },
-      "kontakt_mobil": { "pointer": "Изменяется напрямую в учётной записи BundID (настройка приложения)." },
-      "sprachpraeferenz": { "pointer": "Внутренняя настройка приложения — на ведомства не влияет." },
-      "iban": { "pointer": "Сегодня (май 2026) IBAN регистрируется в каждом ведомстве отдельно — это приложение моделирует сценарий 2027 года." },
-      "auskunftssperre": { "pointer": "Заявление с обоснованием в Bürgeramt согласно § 51 Abs. 1 BMG." },
-      "uebermittlungssperren": { "pointer": "Заявление в Bürgeramt согласно §§ 42 Abs. 3, 50 Abs. 5 BMG (без обоснования)." },
-      "kvnr": { "pointer": "Изменение через личный кабинет Вашей больничной кассы (§ 290 SGB V)." },
-      "drv_versicherungsnummer": { "pointer": "Изменение через личный кабинет DRV (§ 147 SGB VI)." },
-      "elstam": { "pointer": "Изменение через Mein ELSTER или налоговое управление (Finanzamt) согласно § 39 EStG." }
+      "familienname": {
+        "pointer": "Исправление в ЗАГСе (Standesamt) согласно § 1355 BGB / § 45 PStG."
+      },
+      "fruehere_namen": {
+        "pointer": "Исправление в ЗАГСе (Standesamt) согласно § 45 PStG."
+      },
+      "vornamen": {
+        "pointer": "Исправление в ЗАГСе (Standesamt) согласно § 45 PStG."
+      },
+      "doktorgrad": {
+        "pointer": "Исправление через бюро по делам граждан (Bürgeramt) с загрузкой подтверждающего документа (§ 3 Abs. 1 Nr. 6 BMG)."
+      },
+      "geburtsdatum": {
+        "pointer": "Исправление в ЗАГСе (Standesamt) места рождения."
+      },
+      "geburtsort": {
+        "pointer": "Исправление в ЗАГСе (Standesamt) места рождения."
+      },
+      "geschlecht": {
+        "pointer": "Заявление в ЗАГСе (Standesamt) согласно § 4 SBGG (регистрация) и § 2 SBGG (личное удостоверение)."
+      },
+      "staatsangehoerigkeit": {
+        "pointer": "Исправление через ведомство по натурализации (Einbürgerungsbehörde) согласно StAG."
+      },
+      "steuer_id": {
+        "pointer": "Присваивается пожизненно Федеральным центральным налоговым управлением (Bundeszentralamt für Steuern) согласно § 139b AO — изменению не подлежит."
+      },
+      "anschrift_aktuell": {
+        "pointer": "Запись в Bürgeramt или электронная регистрация по месту жительства (eWA) согласно § 17 BMG."
+      },
+      "anschriften_historisch": {
+        "pointer": "Изменения вносятся при новой регистрации согласно § 17 BMG."
+      },
+      "familienstand": {
+        "pointer": "Исправление в ЗАГСе (Standesamt) согласно PStG."
+      },
+      "partner": {
+        "pointer": "Исправление в ЗАГСе (Standesamt) согласно PStG."
+      },
+      "kinder": {
+        "pointer": "Исправление в ЗАГСе (Standesamt) согласно § 21 PStG."
+      },
+      "eheschliessung": {
+        "pointer": "Исправление в ЗАГСе (Standesamt), где был заключён брак."
+      },
+      "personalausweis": {
+        "pointer": "Перевыпуск в Bürgeramt согласно PAuswG."
+      },
+      "reisepass": {
+        "pointer": "Перевыпуск в Bürgeramt согласно PassG."
+      },
+      "eat_can": {
+        "pointer": "Исправление через ведомство по делам иностранцев (Ausländerbehörde) согласно AufenthG."
+      },
+      "azr_nr": {
+        "pointer": "Исправление через ведомство по делам иностранцев (Ausländerbehörde) согласно § 34 AZRG."
+      },
+      "religionszugehoerigkeit": {
+        "pointer": "Вступление / выход: ЗАГС (Standesamt) или религиозное сообщество; хранение согласно § 3 Abs. 1 Nr. 11 BMG."
+      },
+      "kontakt_email": {
+        "pointer": "Изменяется напрямую в учётной записи BundID (настройка приложения)."
+      },
+      "kontakt_mobil": {
+        "pointer": "Изменяется напрямую в учётной записи BundID (настройка приложения)."
+      },
+      "sprachpraeferenz": {
+        "pointer": "Внутренняя настройка приложения — на ведомства не влияет."
+      },
+      "iban": {
+        "pointer": "Сегодня (май 2026) IBAN регистрируется в каждом ведомстве отдельно — это приложение моделирует сценарий 2027 года."
+      },
+      "auskunftssperre": {
+        "pointer": "Заявление с обоснованием в Bürgeramt согласно § 51 Abs. 1 BMG."
+      },
+      "uebermittlungssperren": {
+        "pointer": "Заявление в Bürgeramt согласно §§ 42 Abs. 3, 50 Abs. 5 BMG (без обоснования)."
+      },
+      "kvnr": {
+        "pointer": "Изменение через личный кабинет Вашей больничной кассы (§ 290 SGB V)."
+      },
+      "drv_versicherungsnummer": {
+        "pointer": "Изменение через личный кабинет DRV (§ 147 SGB VI)."
+      },
+      "elstam": {
+        "pointer": "Изменение через Mein ELSTER или налоговое управление (Finanzamt) согласно § 39 EStG."
+      }
     },
     "disclaimer": {
       "lese_schicht": "Это приложение является **слоем для чтения и навигации**. Само оно **не вносит** никаких изменений в Ваши данные в соответствующих реестрах. Изменения происходят исключительно через процедуру соответствующего ведомства — например, в Bürgeramt согласно § 17 BMG для адреса; в ЗАГСе (Standesamt) согласно PStG для семейного положения и имён; в ЗАГСе (Standesamt) согласно § 4 SBGG для **регистрации** изменения записи о поле (устно или письменно, за три месяца до заявления) и согласно § 2 SBGG для **личного удостоверения заявления** в ЗАГСе; в Федеральном центральном налоговом управлении (Bundeszentralamt für Steuern) для идентификационного номера налогоплательщика (§ 139b AO). По каждому полю мы показываем Вам правильный путь.",
@@ -1331,18 +1734,35 @@
         "anrechnungszeit_pflege_offengelegt": "Раскрыт зачётный период по уходу (Anrechnungszeit Pflege; § 3 SGB VI; связан с согласием на отображение степени)"
       },
       "kategorie": {
-        "behoerde_zu_behoerde": { "label": "Передача между ведомствами" },
-        "app_aktivitaet": { "label": "Активность приложения (не официальный журнал передачи)" },
-        "speculative_2027": { "label": "Видение 2027 (демо)" },
-        "behoerde_zu_buerger": { "label": "Ведомство — гражданину (уведомление / поступление в почтовый ящик)" }
+        "behoerde_zu_behoerde": {
+          "label": "Передача между ведомствами"
+        },
+        "app_aktivitaet": {
+          "label": "Активность приложения (не официальный журнал передачи)"
+        },
+        "speculative_2027": {
+          "label": "Видение 2027 (демо)"
+        },
+        "behoerde_zu_buerger": {
+          "label": "Ведомство — гражданину (уведомление / поступление в почтовый ящик)"
+        }
       },
       "richtung": {
         "label": "Направление",
-        "alle": { "label": "Все направления" },
-        "eingehend": { "label": "Входящие (ведомство → гражданин:ка)" },
-        "ausgehend": { "label": "Исходящие (гражданин:ка → ведомства)" },
-        "intern": { "label": "Внутренние (активность приложения)" }
-      }
+        "alle": {
+          "label": "Все направления"
+        },
+        "eingehend": {
+          "label": "Входящие (ведомство → гражданин:ка)"
+        },
+        "ausgehend": {
+          "label": "Исходящие (гражданин:ка → ведомства)"
+        },
+        "intern": {
+          "label": "Внутренние (активность приложения)"
+        }
+      },
+      "via_app": "Через приложение GovTech DE"
     },
     "modal": {
       "religion_consent": {
@@ -1553,17 +1973,35 @@
           "cta_cancel": "Отмена"
         },
         "kategorie": {
-          "steuer": { "label": "Налоги (Finanzamt / BZSt)" },
-          "sozial": { "label": "Социальные выплаты (DRV / GKV / Bürgergeld)" },
-          "familie": { "label": "Семья (Familienkasse / Elterngeld)" },
-          "verkehr": { "label": "Транспорт (KFZ / штрафы / водительские права)" },
-          "sonstige": { "label": "Прочее (Bürgeramt / пребывание / прочее)" }
+          "steuer": {
+            "label": "Налоги (Finanzamt / BZSt)"
+          },
+          "sozial": {
+            "label": "Социальные выплаты (DRV / GKV / Bürgergeld)"
+          },
+          "familie": {
+            "label": "Семья (Familienkasse / Elterngeld)"
+          },
+          "verkehr": {
+            "label": "Транспорт (KFZ / штрафы / водительские права)"
+          },
+          "sonstige": {
+            "label": "Прочее (Bürgeramt / пребывание / прочее)"
+          }
         },
         "kanal": {
-          "postfach": { "label": "Почтовый ящик BundID" },
-          "email_pilot": { "label": "Уведомление по e-mail (пилот)" },
-          "sms_pilot": { "label": "SMS-уведомление (пилот)" },
-          "brief": { "label": "Бумажное письмо (по умолчанию)" }
+          "postfach": {
+            "label": "Почтовый ящик BundID"
+          },
+          "email_pilot": {
+            "label": "Уведомление по e-mail (пилот)"
+          },
+          "sms_pilot": {
+            "label": "SMS-уведомление (пилот)"
+          },
+          "brief": {
+            "label": "Бумажное письмо (по умолчанию)"
+          }
         },
         "option": {
           "sms_pilot": {
@@ -1616,6 +2054,89 @@
     },
     "cross_link": {
       "familie": "К разделу «Семья»"
+    },
+    "v2": {
+      "profil": {
+        "card_title": "Личный профиль",
+        "kv": {
+          "name": "Имя",
+          "geburtsdatum": "Дата рождения",
+          "staatsangehoerigkeit": "Гражданство",
+          "familienstand": "Семейное положение"
+        },
+        "familienstand": {
+          "verheiratet": "в браке",
+          "ledig": "не в браке",
+          "geschieden": "в разводе",
+          "verwitwet": "вдовец/вдова"
+        }
+      },
+      "kontakt": {
+        "card_title": "Контакты",
+        "email": "Эл. почта",
+        "telefon": "Номер телефона",
+        "verifiziert": "Подтверждено",
+        "email_keine": "Эл. почта не указана",
+        "telefon_keine": "Номер телефона не указан"
+      },
+      "familie": {
+        "card_title": "Семья и близкие",
+        "kinder_eyebrow": "Дети",
+        "partner_eyebrow": "Партнёр",
+        "row_geburtsdatum": "Дата рождения",
+        "row_verwandtschaft": "Родство",
+        "kind": "Ребёнок",
+        "partner_label": "Партнёр",
+        "add_link": "Добавить человека"
+      },
+      "anschrift": {
+        "title": "Адрес",
+        "aktuell_label": "Текущий адрес",
+        "aendern": "Изменить",
+        "zuletzt_bestaetigt": "подтверждён {datum}",
+        "zuletzt_bestaetigt_unbekannt": "ещё не подтверждён",
+        "bestaetigt": "Подтверждён"
+      },
+      "dokumente": {
+        "title": "Документы",
+        "verwalten": "Управлять",
+        "reisepass": "Загранпаспорт",
+        "personalausweis": "Удостоверение личности",
+        "aufenthaltstitel": "Вид на жительство",
+        "eat_can": "eAT-CAN",
+        "gueltig": "Действителен",
+        "nummer_template": "№ {nummer} · действителен до {gueltig_bis}",
+        "aufenthaltstitel_template": "{norm} · действителен до {gueltig_bis}",
+        "eat_can_template": "CAN {can}",
+        "add_link": "Добавить документ",
+        "empty": "Документы не зарегистрированы."
+      },
+      "versicherung": {
+        "title": "Страхование и пенсия",
+        "krankenkasse": "Медицинская страховка",
+        "altersvorsorge": "Пенсионное обеспечение",
+        "aktiv": "Активно",
+        "versichertennummer": "№ застрахованного {nr}",
+        "versichert_seit": "Застрахован(а) с {datum}",
+        "add_link": "Добавить вид страхования",
+        "empty": "Данные о страховании отсутствуют."
+      },
+      "protokoll": {
+        "title": "Журнал изменений",
+        "subtitle": "Последние изменения ваших персональных данных",
+        "show_all": "Полный журнал",
+        "empty": "Записей пока нет."
+      },
+      "datenhoheit": {
+        "title": "Вашими данными управляете вы",
+        "body_before_link": "Ваши персональные данные передаются ведомствам и сервисам только с вашего согласия. Вы решаете, кто что видит.",
+        "body_link": "Подробнее о ваших правах и использовании данных.",
+        "cta": "Управление данными"
+      },
+      "secondary": {
+        "heading": "Другие разделы",
+        "subtitle": "Пенсия, медстрахование, мобильность, настройки уведомлений и блокировки — вспомогательный слой под основной сеткой."
+      }
     }
   },
   "dokumente": {
@@ -1971,19 +2492,36 @@
     },
     "vorgaenge": {
       "title": "Общие дела",
+      "subtitle": "Дела, которые касаются людей в Вашем домохозяйстве.",
       "kindergeld": "Пособие на детей (Kindergeld)",
       "krankenkasse": "Медицинское страхование",
       "kita": "Место в детском саду (Kita)",
       "kita_traeger": "Учредитель детского сада (Kita-Träger)",
       "betrifft": "Касается: {names}",
-      "show_all": "Показать все общие дела"
+      "show_all": "Показать все общие дела",
+      "empty": "Сейчас общих дел нет.",
+      "status": {
+        "laufend": "В процессе",
+        "genehmigt": "Одобрено",
+        "warten": "В обработке",
+        "abgeschlossen": "Завершено"
+      }
     },
     "nachweise": {
       "title": "Подтверждения и полномочия",
+      "subtitle": "Документы, подтверждения и права представительства.",
       "geburtsurkunde": "Свидетельство о рождении (Geburtsurkunde)",
       "sorge_vollmacht": "Доверенность на опеку (Sorge-Vollmacht)",
       "vertretungsrechte": "Права представительства (Vertretungsrechte)",
-      "verknuepfungen": "Связи"
+      "verknuepfungen": "Связи",
+      "show_all": "Показать все подтверждения и полномочия",
+      "empty": "Подтверждения не добавлены.",
+      "status": {
+        "vorhanden": "Добавлено",
+        "verifiziert": "Проверено",
+        "speculative": "Видение 2027",
+        "fehlt": "Отсутствует"
+      }
     },
     "was_betrifft_wen": {
       "title": "Кого что касается?",
@@ -2001,6 +2539,58 @@
     "empty": {
       "title": "Домохозяйство не указано",
       "body": "Для этого профиля члены домохозяйства не зарегистрированы."
+    }
+  },
+  "autopilotRun": {
+    "title": "Переезд на автопилоте",
+    "subtitle": "Вы подтверждаете один раз — система координирует следующие шаги.",
+    "banner": {
+      "running_title": "Каскад выполняется",
+      "running_subtitle": "Ваши данные безопасно передаются в компетентные ведомства.",
+      "completed_title": "Все ведомства уведомлены",
+      "completed_subtitle": "{count, plural, =1 {Компетентное ведомство получило} other {Все # компетентных ведомств получили}} Ваше изменение адреса.",
+      "partial_title": "Почти готово",
+      "partial_subtitle": "Большинство ведомств уведомлены. Для отдельных шагов нужна повторная попытка.",
+      "status_partial": "Частично завершено"
+    },
+    "cascade": {
+      "aria_label": "Ход уведомления ведомств"
+    },
+    "node": {
+      "status": {
+        "ausstehend": "Ожидает",
+        "eid_required": "Требуется подтверждение",
+        "failed": "Не удалось"
+      },
+      "eid_cta": "Подтвердить через eID",
+      "timestamp_pending": "—",
+      "aktenzeichen_prefix": "№"
+    },
+    "action": {
+      "buergeramt": "Адрес передан",
+      "finanzamt": "Компетенция подтверждена",
+      "beitragsservice": "Адрес обновлён",
+      "bundesdruckerei": "Готовится наклейка",
+      "krankenkasse": "Передача запланирована",
+      "kfz": "Идёт проверка",
+      "familienkasse": "Компетенция передаётся",
+      "auslaenderbehoerde": "Обновление подготовлено",
+      "fallback": "Адрес передан"
+    },
+    "uebersicht": {
+      "title": "Ваш переезд — обзор",
+      "neue_adresse_label": "Новый адрес",
+      "einzugsdatum_label": "Дата въезда",
+      "autopilot_bereich_label": "Зона автопилота",
+      "behoerden_count": "{count, plural, =1 {1 ведомство} few {# ведомства} other {# ведомств}}",
+      "schutz_title": "Ваши данные защищены",
+      "schutz_subtitle": "Передача зашифрована, только в компетентные ведомства.",
+      "schutz_link": "Подробнее о защите данных"
+    },
+    "feed": {
+      "title": "Активность в реальном времени",
+      "started_title": "Автопилот запущен",
+      "started_subtitle": "Ваши данные проверены, каскад запущен."
     }
   }
 }

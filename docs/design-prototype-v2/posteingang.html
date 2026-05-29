@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>Posteingang — GovTech DE</title>
+<link rel="stylesheet" href="assets/govtech.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  .post-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 24px; align-items: start; }
+  .post-toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .post-toolbar .input-icon { flex: 1; max-width: 480px; }
+  .post-toolbar .view-toggle {
+    display: inline-flex; border: 1px solid var(--border); border-radius: var(--r-md);
+    background: var(--surface); padding: 3px;
+  }
+  .post-toolbar .view-toggle button {
+    height: 32px; padding: 0 14px; border-radius: 7px; border: none; background: transparent;
+    color: var(--ink-2); font-weight: 500; font-size: 13px;
+  }
+  .post-toolbar .view-toggle button.active { background: var(--brand-50); color: var(--brand-700); }
+
+  .post-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); }
+  .post-section + .post-section { margin-top: 12px; }
+  .post-section-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px; cursor: pointer;
+  }
+  .post-section-head .label { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 13px; color: var(--ink-2); }
+  .post-section-head .label .count {
+    background: var(--brand-600); color: #fff;
+    padding: 0 8px; height: 20px; min-width: 20px; border-radius: var(--r-pill);
+    display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600;
+  }
+  .post-section-head svg { color: var(--ink-3); width: 16px; height: 16px; }
+  .post-section .items { padding: 0 0 8px; }
+  .post-item {
+    display: grid; grid-template-columns: 44px 1fr auto; gap: 14px; align-items: center;
+    padding: 14px 18px; cursor: pointer;
+    border-top: 1px solid var(--border);
+  }
+  .post-item:hover { background: var(--surface-soft); }
+  .post-item.active { background: var(--brand-50); }
+  .post-item .av {
+    width: 44px; height: 44px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--surface-muted); color: var(--ink-3);
+    font-size: 12px; font-weight: 600;
+  }
+  .post-item .av.eagle { background: #0E1A36; color: #fff; }
+  .post-item .av.aok { background: var(--green-600); color: #fff; }
+  .post-item .av.ard { background: #1B47C2; color: #fff; font-size: 9px; padding: 4px; line-height: 1.1; text-align: center; }
+  .post-item .av.lea { background: var(--ink); color: #fff; font-size: 9px; padding: 4px; line-height: 1.1; text-align: center; }
+  .post-item .av.jc { background: #C03B41; color: #fff; }
+  .post-item .body .t { font-weight: 600; color: var(--ink); }
+  .post-item .body .s { color: var(--ink-3); font-size: 12.5px; }
+  .post-item .meta { text-align: right; font-size: 12.5px; color: var(--ink-3); position: relative; min-width: 90px; }
+  .post-item .meta .un { width: 8px; height: 8px; border-radius: 50%; background: var(--brand-500); display: inline-block; margin-left: 6px; }
+  .post-item .meta .un.red { background: var(--red-500); }
+  .post-item .meta .frist { color: var(--red-600); font-weight: 600; }
+
+  /* Right detail */
+  .post-detail {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+    padding: 22px 24px;
+  }
+  .post-detail-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+  .post-detail-head .av { width: 40px; height: 40px; border-radius: 50%; background: var(--ink); color: #fff; display: flex; align-items: center; justify-content: center; }
+  .post-detail-head .who { font-weight: 600; color: var(--ink); }
+  .post-detail-head .what { color: var(--ink-3); font-size: 13px; }
+  .post-detail-head .verify { display: inline-flex; align-items: center; gap: 6px; color: var(--green-600); font-size: 13px; font-weight: 500; }
+  .post-detail h2 { margin: 6px 0 8px; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+  .post-detail .meta-row { display: flex; justify-content: space-between; color: var(--ink-3); font-size: 13px; margin-bottom: 14px; }
+
+  .ai-card {
+    background: var(--brand-50); border: 1px solid var(--brand-100); border-radius: var(--r-md);
+    padding: 18px 20px;
+    display: grid; grid-template-columns: 36px 1fr 100px; gap: 14px; align-items: start;
+  }
+  .ai-card .icon-circle { background: var(--brand-600); color: #fff; }
+  .ai-card .h { font-weight: 600; color: var(--brand-700); font-size: 13px; }
+  .ai-card h4 { margin: 4px 0 10px; font-size: 16px; font-weight: 600; }
+  .ai-card ul { margin: 0; padding-left: 18px; font-size: 13px; color: var(--ink-2); line-height: 1.7; }
+  .ai-card .illustration {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    height: 70px; display: flex; align-items: center; justify-content: center; color: var(--brand-600);
+  }
+  .ai-card .illustration svg { width: 28px; height: 28px; }
+
+  .frist-row {
+    margin-top: 14px;
+    padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--r-md);
+    display: flex; align-items: center; gap: 10px; color: var(--ink-2); font-size: 13.5px;
+  }
+  .post-actions { display: flex; gap: 10px; margin-top: 14px; }
+  .post-followups { margin-top: 18px; }
+  .post-followups .lbl { font-size: 13px; color: var(--ink-3); margin-bottom: 8px; }
+  .post-followups .chips { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .post-followups .chip-btn {
+    height: 34px; padding: 0 12px; display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface);
+    color: var(--ink-2); font-size: 13px;
+  }
+  .post-followups .chip-btn svg { width: 14px; height: 14px; }
+
+  .auszug {
+    margin-top: 18px;
+    padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--r-md);
+  }
+  .auszug .h { font-size: 12.5px; color: var(--ink-3); margin-bottom: 8px; font-weight: 500; }
+  .auszug .quote { color: var(--ink-2); font-size: 13px; line-height: 1.6; }
+  .auszug .more { float: right; color: var(--brand-600); font-size: 13px; font-weight: 500; display: inline-flex; align-items: center; gap: 4px; }
+</style>
+</head>
+<body>
+
+<div data-gt-header></div>
+<div class="gt-shell">
+  <div data-gt-sidebar></div>
+  <main class="gt-content">
+    <div class="gt-page-head">
+      <h1>Posteingang</h1>
+      <div class="sub">Alle Behörden-Briefe an einem Ort. Verstehen statt verzweifeln.</div>
+      <span class="gt-page-tag">Prototyp · Mock-Daten</span>
+    </div>
+
+    <div class="post-toolbar">
+      <div class="input-icon">
+        <i data-lucide="search"></i>
+        <input class="input" placeholder="Suche nach Aktenzeichen oder Behörde" />
+      </div>
+      <div style="flex:1"></div>
+      <div class="view-toggle">
+        <button class="active">Chronologisch</button>
+        <button>Nach Vorgang</button>
+      </div>
+      <button class="btn btn-secondary"><i data-lucide="filter"></i>Filter</button>
+    </div>
+
+    <div class="post-layout">
+      <div>
+        <div class="post-section">
+          <div class="post-section-head">
+            <span class="label">Neu <span class="count">2</span></span>
+            <i data-lucide="chevron-up"></i>
+          </div>
+          <div class="items">
+            <div class="post-item active">
+              <span class="av eagle"><i data-lucide="landmark"></i></span>
+              <div class="body">
+                <div class="t">Finanzamt Berlin — Steuerbescheid 2024</div>
+                <div class="s">Steuerbescheid<br/>Aktenzeichen: 24 123 456 789</div>
+              </div>
+              <div class="meta">Heute<span class="un"></span></div>
+            </div>
+            <div class="post-item">
+              <span class="av aok">AOK</span>
+              <div class="body">
+                <div class="t">AOK Nordost — Zuzahlungsabrechnung Quartal 4/2025</div>
+                <div class="s">Abrechnung<br/>Aktenzeichen: 50 987 654 321</div>
+              </div>
+              <div class="meta">Gestern<span class="un"></span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="post-section">
+          <div class="post-section-head">
+            <span class="label">Frist offen ≤ 7 Tagen <span class="count" style="background: var(--red-500);">1</span></span>
+            <i data-lucide="chevron-up"></i>
+          </div>
+          <div class="items">
+            <div class="post-item">
+              <span class="av ard">ARD ZDF deutschland radio beitragsservice</span>
+              <div class="body">
+                <div class="t">ARD ZDF Deutschlandradio Beitragsservice — Festsetzungsbescheid</div>
+                <div class="s">Beitragsbescheid<br/>Aktenzeichen: 12 345 678 901</div>
+              </div>
+              <div class="meta"><div class="frist">Frist: 05.04.2026</div><span class="un red"></span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="post-section">
+          <div class="post-section-head">
+            <span class="label">Erledigt <span class="count" style="background: var(--ink-4);">2</span></span>
+            <i data-lucide="chevron-up"></i>
+          </div>
+          <div class="items">
+            <div class="post-item">
+              <span class="av lea">LEA BERLIN</span>
+              <div class="body">
+                <div class="t">Landesamt für Einwanderung Berlin — Aufenthaltstitel Erinnerung</div>
+                <div class="s">Erinnerung<br/>Aktenzeichen: 30 246 810 121</div>
+              </div>
+              <div class="meta">Erledigt<br/>12.03.2026</div>
+            </div>
+            <div class="post-item">
+              <span class="av jc"><i data-lucide="briefcase"></i></span>
+              <div class="body">
+                <div class="t">Jobcenter Berlin — Bescheid über Weiterbewilligung</div>
+                <div class="s">Bewilligungsbescheid<br/>Aktenzeichen: 67 765 432 109</div>
+              </div>
+              <div class="meta">Erledigt<br/>03.03.2026</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="post-detail">
+        <div class="post-detail-head">
+          <span class="av"><i data-lucide="landmark"></i></span>
+          <div class="grow">
+            <div class="who">Finanzamt Berlin</div>
+            <div class="what">Behördenbrief · Steuerbescheid</div>
+          </div>
+          <div style="text-align: right;">
+            <div class="verify"><i data-lucide="shield-check"></i>Authentisch geprüft</div>
+            <div class="muted text-xs">Verifiziert am 28.05.2025</div>
+          </div>
+          <button class="btn btn-secondary btn-sm" style="height: 32px; width: 32px; padding: 0;"><i data-lucide="more-horizontal"></i></button>
+        </div>
+
+        <h2>Steuerbescheid 2024</h2>
+        <div class="meta-row">
+          <div>Aktenzeichen: 24 123 456 789</div>
+          <div>Eingegangen: 28.05.2025</div>
+        </div>
+
+        <div class="ai-card">
+          <span class="icon-circle"><i data-lucide="sparkles"></i></span>
+          <div>
+            <div class="h">AI-Brief-Erklärer</div>
+            <h4>Sie erhalten 371,00 € Erstattung. Keine Aktion erforderlich.</h4>
+            <ul>
+              <li>Der Betrag wird in den nächsten 14 Tagen überwiesen.</li>
+              <li>Einspruch ist innerhalb eines Monats möglich.</li>
+              <li>Maßgeblich bleibt der Originaltext.</li>
+            </ul>
+          </div>
+          <div class="illustration"><i data-lucide="file-text"></i></div>
+        </div>
+
+        <div class="frist-row">
+          <i data-lucide="clock" style="color: var(--ink-3); width: 16px; height: 16px;"></i>
+          <span>Frist: Einspruch bis 12.04.2026</span>
+        </div>
+
+        <div class="post-actions">
+          <button class="btn btn-primary"><i data-lucide="pen-square"></i>Antwort vorbereiten</button>
+          <button class="btn btn-secondary"><i data-lucide="folder-input"></i>Vorgang erstellen</button>
+          <button class="btn btn-secondary"><i data-lucide="file"></i>Originaltext anzeigen</button>
+        </div>
+
+        <div class="post-followups">
+          <div class="lbl">Was kann ich tun?</div>
+          <div class="chips">
+            <button class="chip-btn"><i data-lucide="scale"></i>Einspruch erklären</button>
+            <button class="chip-btn"><i data-lucide="euro"></i>Zahlung prüfen</button>
+            <button class="chip-btn"><i data-lucide="folder"></i>Dokument ablegen</button>
+            <span style="flex:1"></span>
+            <i data-lucide="chevron-right" style="color: var(--ink-4);"></i>
+          </div>
+        </div>
+
+        <div class="auszug">
+          <a class="more" href="#">Mehr anzeigen <i data-lucide="chevron-down" style="width:12px;height:12px;"></i></a>
+          <div class="h">Auszug aus dem Originaltext</div>
+          <div class="quote">„… aufgrund der Veranlagung zur Einkommensteuer für das Kalenderjahr 2024 wird festgesetzt, dass sich eine Erstattung in Höhe von 371,00 € ergibt. …"</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>window.GT_ACTIVE='posteingang';</script>
+<script src="assets/govtech.js"></script>
+</body>
+</html>

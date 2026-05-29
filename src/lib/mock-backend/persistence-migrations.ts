@@ -18,12 +18,14 @@
  *      zum Boot-Crash.
  */
 import { z } from 'zod';
+import { getCurrentStore } from './store-context';
 import {
   letterRepliesMapSchema,
   letterRepliesMapV150Schema,
 } from './schemas';
 import { SEED_MOBILITAET } from './mobilitaet/seed-mobilitaet';
 import type {
+  Familienstand,
   LetterReplyMap,
   Mobilitaet,
   PersonaId,
@@ -66,18 +68,30 @@ const ALL_MIGRATIONS = [
   // mit Vorgang-Ref. Schema-Version-Marker `'1.3'` setzen. Sicherheits-
   // Guard: kein `punkte`-Feld in `persona.mobilitaet` (VL-4 / HL-MOB-11).
   'v12-to-v13-mobilitaet',
+  // V1.3 → V1.3.x Familienstand-Default: Personas im localStorage ohne
+  // `familienstand` bekommen den Wert additiv — abgeleitet aus
+  // `eheschliessung` (→ `verheiratet`), sonst Default `ledig`. Idempotent —
+  // überschreibt vorhandene Werte nicht.
+  'v13-familienstand-default',
 ] as const;
 
 type MigrationId = (typeof ALL_MIGRATIONS)[number];
 
 const migrationsLogSchema = z.array(z.string());
 
-const isBrowser = (): boolean =>
-  typeof window !== 'undefined' && !!window.localStorage;
+/**
+ * Migrationen liefen früher nur im Browser (`window.localStorage`). Seit der
+ * Store-Abstraktion ist über `getCurrentStore()` IMMER ein Store auflösbar
+ * (Browser-localStorage, Server-Session-Memory oder Default-Memory), daher
+ * laufen Migrationen jetzt in jeder Umgebung. Der Helper bleibt als
+ * benannter Guard erhalten, gibt aber konstant `true` zurück — so bleibt jede
+ * Call-Site unverändert und die Diff minimal.
+ */
+const isBrowser = (): boolean => true;
 
 function readExecutedMigrations(): MigrationId[] {
   if (!isBrowser()) return [];
-  const raw = window.localStorage.getItem(MIGRATIONS_KEY);
+  const raw = getCurrentStore().getItem(MIGRATIONS_KEY);
   if (raw === null) return [];
   try {
     const parsed = migrationsLogSchema.safeParse(JSON.parse(raw));
@@ -96,7 +110,7 @@ function recordMigration(id: MigrationId): void {
   const existing = readExecutedMigrations();
   if (existing.includes(id)) return;
   const next = [...existing, id];
-  window.localStorage.setItem(MIGRATIONS_KEY, JSON.stringify(next));
+  getCurrentStore().setItem(MIGRATIONS_KEY, JSON.stringify(next));
 }
 
 /**
@@ -115,7 +129,7 @@ function recordMigration(id: MigrationId): void {
  */
 function migrateLetterRepliesArray(): void {
   if (!isBrowser()) return;
-  const raw = window.localStorage.getItem(REPLIES_KEY);
+  const raw = getCurrentStore().getItem(REPLIES_KEY);
   if (raw === null) return;
 
   let parsedJson: unknown;
@@ -145,7 +159,7 @@ function migrateLetterRepliesArray(): void {
   for (const [letterId, reply] of Object.entries(v150.data)) {
     migrated[letterId] = [reply as Reply];
   }
-  window.localStorage.setItem(REPLIES_KEY, JSON.stringify(migrated));
+  getCurrentStore().setItem(REPLIES_KEY, JSON.stringify(migrated));
 
   if (typeof console !== 'undefined') {
     // `warn` (not `info`) — project lint config restricts console to warn/error.
@@ -170,11 +184,11 @@ function migrateRentenKvBuckets(): void {
   const RENTEN_ECKDATEN_KEY = `${NAMESPACE}stammdaten:renten-eckdaten-v1-1`;
   const BRIDGE_APPLIED_KEY = `${NAMESPACE}stammdaten:yellow-letter-bridge-applied`;
 
-  if (window.localStorage.getItem(RENTEN_ECKDATEN_KEY) === null) {
-    window.localStorage.setItem(RENTEN_ECKDATEN_KEY, JSON.stringify({}));
+  if (getCurrentStore().getItem(RENTEN_ECKDATEN_KEY) === null) {
+    getCurrentStore().setItem(RENTEN_ECKDATEN_KEY, JSON.stringify({}));
   }
-  if (window.localStorage.getItem(BRIDGE_APPLIED_KEY) === null) {
-    window.localStorage.setItem(BRIDGE_APPLIED_KEY, JSON.stringify({}));
+  if (getCurrentStore().getItem(BRIDGE_APPLIED_KEY) === null) {
+    getCurrentStore().setItem(BRIDGE_APPLIED_KEY, JSON.stringify({}));
   }
 }
 
@@ -351,7 +365,7 @@ export function migrateKontaktV1ToV11(): void {
   if (!isBrowser()) return;
 
   // 1. Persona-Bucket lesen (raw).
-  const personasRaw = window.localStorage.getItem(PERSONAS_KEY);
+  const personasRaw = getCurrentStore().getItem(PERSONAS_KEY);
   const personasParsed: unknown = (() => {
     if (personasRaw === null) return undefined;
     try {
@@ -366,7 +380,7 @@ export function migrateKontaktV1ToV11(): void {
 
   if (Array.isArray(personasParsed)) {
     const newKontaktBucket: Record<string, PersonaKontakt> = (() => {
-      const existingRaw = window.localStorage.getItem(KONTAKT_V12_KEY);
+      const existingRaw = getCurrentStore().getItem(KONTAKT_V12_KEY);
       if (existingRaw === null) return {};
       try {
         const parsed: unknown = JSON.parse(existingRaw);
@@ -407,21 +421,21 @@ export function migrateKontaktV1ToV11(): void {
 
     // 2. Persona-Bucket zurückschreiben (in-place mutation OK).
     if (migrated) {
-      window.localStorage.setItem(
+      getCurrentStore().setItem(
         PERSONAS_KEY,
         JSON.stringify(personasParsed),
       );
     }
     // 3. V1.2-Bucket schreiben (auch wenn nichts neu zu migrieren war —
     //    Initial-Bestand für leere Buckets).
-    window.localStorage.setItem(
+    getCurrentStore().setItem(
       KONTAKT_V12_KEY,
       JSON.stringify(newKontaktBucket),
     );
   } else {
     // Kein Persona-Bucket vorhanden — nur den V1.2-Bucket initialisieren.
-    if (window.localStorage.getItem(KONTAKT_V12_KEY) === null) {
-      window.localStorage.setItem(KONTAKT_V12_KEY, JSON.stringify({}));
+    if (getCurrentStore().getItem(KONTAKT_V12_KEY) === null) {
+      getCurrentStore().setItem(KONTAKT_V12_KEY, JSON.stringify({}));
     }
   }
 
@@ -502,7 +516,7 @@ const BEHOERDE_ANBINDUNG_DEFAULTS: Record<string, 'angebunden' | 'in_pilotierung
  */
 export function migrateBehoerdenAnbindungDefault(): void {
   if (!isBrowser()) return;
-  const raw = window.localStorage.getItem(BEHOERDEN_KEY);
+  const raw = getCurrentStore().getItem(BEHOERDEN_KEY);
   if (raw === null) return;
 
   let parsed: unknown;
@@ -525,7 +539,7 @@ export function migrateBehoerdenAnbindungDefault(): void {
   }
 
   if (dirty) {
-    window.localStorage.setItem(BEHOERDEN_KEY, JSON.stringify(parsed));
+    getCurrentStore().setItem(BEHOERDEN_KEY, JSON.stringify(parsed));
     if (typeof console !== 'undefined') {
       console.warn(
         '[mock-backend/persistence-migrations] migrated behoerden bucket: added bundid_postfach_anbindung defaults.',
@@ -577,7 +591,7 @@ export function migratePersonaV12ToV13(): void {
   if (!isBrowser()) return;
 
   // 1. Idempotenz: schon migriert?
-  const versionRaw = window.localStorage.getItem(SCHEMA_VERSION_KEY);
+  const versionRaw = getCurrentStore().getItem(SCHEMA_VERSION_KEY);
   if (versionRaw !== null) {
     try {
       const parsed = JSON.parse(versionRaw) as { version?: string };
@@ -588,7 +602,7 @@ export function migratePersonaV12ToV13(): void {
   }
 
   // 2. Persona-Bucket-Mutation: mobilitaet additiv + Lena-Korrektur + punkte-Strip.
-  const personasRaw = window.localStorage.getItem(PERSONAS_KEY);
+  const personasRaw = getCurrentStore().getItem(PERSONAS_KEY);
   const personasParsed: unknown = (() => {
     if (personasRaw === null) return undefined;
     try {
@@ -628,12 +642,12 @@ export function migratePersonaV12ToV13(): void {
         persona.familie.partner.kfz_halter = false;
       }
     }
-    window.localStorage.setItem(PERSONAS_KEY, JSON.stringify(personasParsed));
+    getCurrentStore().setItem(PERSONAS_KEY, JSON.stringify(personasParsed));
   }
 
   // 3. Standalone-Bucket `stammdaten:mobilitaet` schreiben (idempotent —
   //    existierende Werte überschreiben wir NICHT, fehlende füllen wir).
-  const existingMobBucketRaw = window.localStorage.getItem(MOBILITAET_KEY);
+  const existingMobBucketRaw = getCurrentStore().getItem(MOBILITAET_KEY);
   const existingBucket: Record<PersonaId, Mobilitaet> = (() => {
     if (existingMobBucketRaw === null) return {};
     try {
@@ -654,10 +668,10 @@ export function migratePersonaV12ToV13(): void {
     // Defensive punkte-Strip.
     stripPunkteField(existingBucket[personaId]);
   }
-  window.localStorage.setItem(MOBILITAET_KEY, JSON.stringify(existingBucket));
+  getCurrentStore().setItem(MOBILITAET_KEY, JSON.stringify(existingBucket));
 
   // 4. Schema-Version-Marker.
-  window.localStorage.setItem(
+  getCurrentStore().setItem(
     SCHEMA_VERSION_KEY,
     JSON.stringify({ version: '1.3' }),
   );
@@ -671,6 +685,67 @@ export function migratePersonaV12ToV13(): void {
 
 /** Alias für Tests, die den Mobilität-zentrischen Namen erwarten. */
 export const migrateMobilitaetV12ToV13 = migratePersonaV12ToV13;
+
+// ---------------------------------------------------------------------------
+// V1.3.x Familienstand-Default-Migration
+// ---------------------------------------------------------------------------
+
+/**
+ * Leitet einen `Familienstand`-Wert aus dem vorhandenen Familien-Snapshot ab.
+ * Konservativ: ein `eheschliessung`-Block (Standesamt-Daten) impliziert
+ * `verheiratet`; ohne diesen Beleg fällt der Default auf `ledig` (häufigster
+ * Melderegister-Wert; kein Beleg für andere Stände im Persona-Seed).
+ */
+function deriveFamilienstand(persona: {
+  eheschliessung?: unknown;
+}): Familienstand {
+  return persona.eheschliessung ? 'verheiratet' : 'ledig';
+}
+
+/**
+ * V1.3.x Familienstand-Default-Migration.
+ *
+ * Personas im `personas`-Bucket ohne `familienstand` bekommen den Wert additiv:
+ * aus `eheschliessung` abgeleitet (→ `verheiratet`), sonst Default `ledig`.
+ *
+ * Idempotent: Personas mit bereits gesetztem `familienstand` bleiben
+ * unangetastet; Re-Run ohne Persona-Bucket ist ein No-op.
+ */
+export function migrateFamilienstandDefault(): void {
+  if (!isBrowser()) return;
+
+  const personasRaw = getCurrentStore().getItem(PERSONAS_KEY);
+  if (personasRaw === null) return;
+
+  let personasParsed: unknown;
+  try {
+    personasParsed = JSON.parse(personasRaw);
+  } catch {
+    return;
+  }
+  if (!Array.isArray(personasParsed)) return;
+
+  let dirty = false;
+  for (const p of personasParsed) {
+    if (!p || typeof p !== 'object') continue;
+    const persona = p as {
+      familienstand?: Familienstand;
+      eheschliessung?: unknown;
+    };
+    if (persona.familienstand) continue; // already set — idempotent
+    persona.familienstand = deriveFamilienstand(persona);
+    dirty = true;
+  }
+
+  if (dirty) {
+    getCurrentStore().setItem(PERSONAS_KEY, JSON.stringify(personasParsed));
+    if (typeof console !== 'undefined') {
+      console.warn(
+        '[mock-backend/persistence-migrations] migrated personas bucket: added familienstand defaults (derived from eheschliessung, fallback ledig).',
+      );
+    }
+  }
+}
 
 /**
  * Public Entry-Point: läuft idempotent alle ausstehenden Migrationen.
@@ -703,5 +778,10 @@ export function runStorageMigrations(): void {
   if (!executed.has('v12-to-v13-mobilitaet')) {
     migratePersonaV12ToV13();
     recordMigration('v12-to-v13-mobilitaet');
+  }
+
+  if (!executed.has('v13-familienstand-default')) {
+    migrateFamilienstandDefault();
+    recordMigration('v13-familienstand-default');
   }
 }

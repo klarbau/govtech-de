@@ -68,7 +68,182 @@
     "persona_anna": "Анна Петрова, 28 років — Blue Card EU, Берлін",
     "persona_schmidt": "Родина Шмідт — Гамбург, очікують народження дитини",
     "persona_mehmet": "Мехмет Йилдиз, 34 роки — Кельн, планує відкрити справу",
-    "cta_continue": "Відкрити демо"
+    "cta_continue": "Відкрити демо",
+    "nav": {
+      "aria_label": "Головна навігація",
+      "leistungen": "Послуги",
+      "buerger": "Для громадян",
+      "behoerden": "Для відомств",
+      "sicherheit": "Безпека та захист даних",
+      "ueber_uns": "Про нас",
+      "login": "Увійти"
+    },
+    "hero": {
+      "badge": "Адміністрування, яке думає за Вас.",
+      "title": "Державні послуги на автопілоті.",
+      "subtitle": "Портал для громадян Німеччини, який готує справи, заздалегідь заповнює дані та пояснює наступний крок.",
+      "cta_primary": "Запустити демо",
+      "cta_secondary": "Дізнатися більше",
+      "trust": "Безпечно. Надійно. По всій Німеччині."
+    },
+    "diagram": {
+      "you_label": "Ви як громадянин",
+      "input_title": "Вказати один раз",
+      "input_body": "Ми розуміємо Ваш запит і готуємо все потрібне.",
+      "autopilot_label": "Автопілот",
+      "autopilot_sub": "Підготувати справу · заздалегідь заповнити дані · пояснити наступний крок",
+      "authorities_label": "Ваші відомства",
+      "behoerde1_name": "Бюро реєстрації мешканців (Einwohnermeldeamt)",
+      "behoerde1_status": "Перевірити дані",
+      "behoerde2_name": "Відомство у справах іноземців (Ausländerbehörde)",
+      "behoerde2_status": "Опрацювати заяву",
+      "behoerde3_name": "Податкова служба (Finanzamt)",
+      "behoerde3_status": "Отримати рішення",
+      "control_bar": "Ви будь-коли зберігаєте огляд і контроль.",
+      "sr_summary": "Порядок дій: Ви один раз вказуєте свій запит, автопілот готує справу та повідомляє всі відповідальні відомства — Бюро реєстрації мешканців (Einwohnermeldeamt), Відомство у справах іноземців (Ausländerbehörde) і Податкову службу (Finanzamt). Ви будь-коли зберігаєте огляд і контроль."
+    },
+    "features": {
+      "title": "Що показує демо"
+    },
+    "feature": {
+      "umzug": {
+        "title": "Переїзд",
+        "desc": "Ми повідомляємо Вашу нову адресу до всіх потрібних інстанцій."
+      },
+      "kindergeburt": {
+        "title": "Народження дитини",
+        "desc": "Реєстрація в ратуші, GEMA та інше — за лічені хвилини."
+      },
+      "aufenthalt": {
+        "title": "Продовження посвідки на проживання",
+        "desc": "Підготувати заяву, перевірити документи, записатися на прийом."
+      },
+      "posteingang": {
+        "title": "Вхідні з ШІ-поясненням",
+        "desc": "Зрозуміти, а не впадати у відчай — пояснює, узагальнює та допомагає."
+      }
+    },
+    "trust": {
+      "title": "На надійній основі",
+      "deutschlandid": {
+        "title": "DeutschlandID",
+        "desc": "Безпечний вхід із Вашою цифровою ідентичністю."
+      },
+      "eudi": {
+        "title": "EUDI Wallet",
+        "desc": "Визнається в усьому ЄС і розрахований на майбутнє."
+      },
+      "bitv": {
+        "title": "Відповідає BITV",
+        "desc": "Доступно, зрозуміло й відкрито для всіх."
+      },
+      "mock": {
+        "title": "Демо-макет, бачення 2027",
+        "desc": "Погляд у майбутнє адміністрування в Німеччині."
+      }
+    }
+  },
+  "onboarding": {
+    "topbar": {
+      "login_label": "Увійти"
+    },
+    "welcome": {
+      "title": "Ласкаво просимо до GovTech DE",
+      "subtitle": "Увійдіть або запустіть демо."
+    },
+    "method": {
+      "deutschlandid": {
+        "title": "Продовжити з DeutschlandID",
+        "helper": "Безпечно, просто та офіційно визнано."
+      },
+      "eudi": {
+        "title": "Продовжити з EUDI Wallet",
+        "helper": "Ваш цифровий гаманець для Європи."
+      },
+      "demo": {
+        "title": "Демо-режим із тестовими даними",
+        "helper": "Спробуйте без входу. Без реального підключення до відомств."
+      }
+    },
+    "trust": {
+      "secure": "Безпечний вхід",
+      "consent": "Лише за Вашою згодою",
+      "no_real_connection": "Без реального підключення до відомств"
+    },
+    "how": {
+      "title": "Ось як це просто",
+      "step1": {
+        "title": "Обрати ідентичність",
+        "desc": "Оберіть бажаний спосіб входу: DeutschlandID або EUDI Wallet."
+      },
+      "step2": {
+        "title": "Перевірити передавання даних",
+        "desc": "Перевірте запитані дані та передайте лише необхідне."
+      },
+      "step3": {
+        "title": "Запустити автопілот",
+        "desc": "Ваші дані заповнюються заздалегідь, листи пояснюються, а справи запускаються автоматично."
+      }
+    },
+    "why": {
+      "title": "Навіщо цей вхід?",
+      "prefill": "Заздалегідь заповнити дані",
+      "explain": "Зрозуміло пояснювати листи",
+      "autopilot": "Автопілот для Ваших справ"
+    },
+    "handshake": {
+      "connecting": "Підключення до {method} …",
+      "confirmed": "Ідентичність підтверджено",
+      "mock_note": "Імітація процедури підтвердження ідентичності · прототип, без реального підключення до відомств.",
+      "qr_label": "QR-код для входу (макет)",
+      "cancel": "Скасувати"
+    },
+    "persona": {
+      "title": "Оберіть ідентичність для демо",
+      "subtitle": "Ви зможете змінити ідентичність пізніше будь-коли.",
+      "anna": {
+        "name": "Анна Петрова",
+        "descriptor": "Берлін · за наймом · росіянка"
+      },
+      "schmidt": {
+        "name": "Родина Шмідт",
+        "descriptor": "Гамбург · родина з дитиною · німці"
+      },
+      "mehmet": {
+        "name": "Мехмет Йилдиз",
+        "descriptor": "Кельн · самозайнятий · турок"
+      },
+      "back": "Назад"
+    },
+    "transparency": {
+      "title": "Ці дані надає Ваша цифрова ідентичність",
+      "subtitle": "Ви вирішуєте, що передавати. Нічого без Вашої згоди.",
+      "required_group": "Обов'язкові дані — потрібні для входу",
+      "optional_group": "Додаткові дані — лише за потреби (мінімізація даних)",
+      "attr": {
+        "name": "Ім'я",
+        "birthdate": "Дата народження",
+        "address": "Адреса",
+        "nationality": "Громадянство",
+        "marital_status": "Сімейний стан",
+        "tax_id": "Ідентифікаційний номер платника податків"
+      },
+      "badge": {
+        "available": "Доступно",
+        "optional": "За вибором"
+      },
+      "share_toggle": "Передати",
+      "recipient": "Отримувач: лише GovTech DE (демо) — і лише за Вашою згодою.",
+      "legal_basis": "Правова основа: eIDAS 2 / OZG · дані на основі згоди: DSGVO Art. 6 Abs. 1 lit. a",
+      "dsgvo_footer": "Ваші дані передаються безпечно й обробляються відповідно до DSGVO (GDPR).",
+      "mock_note": "Спекулятивна демонстраційна функція · без реального передавання даних eID.",
+      "back": "Назад",
+      "confirm": "Підтвердити вхід",
+      "committing": "Вхід готується …"
+    },
+    "footer": {
+      "bsi": "Цей застосунок відповідає критеріям базового захисту BSI (BSI-Grundschutz)."
+    }
   },
   "dashboard": {
     "title": "Панель",
@@ -76,16 +251,17 @@
     "greeting": {
       "frau": "Доброго дня, пані {nachname}",
       "herr": "Доброго дня, пане {nachname}",
-      "neutral": "Доброго дня, {vorname} {nachname}"
+      "neutral": "Доброго дня, {vorname} {nachname}",
+      "last_login_meta": "останній вхід {days} днів тому · на цьому пристрої"
     },
     "demo_banner": {
-      "text": "Демо-режим · демодані. Вхід через BundID трапляється рідко, тож Вам допоможе огляд змін.",
+      "text": "Демо-режим · демо-дані · оригінали залишаються в офіційних поштових скриньках",
       "disclaimer_link": "Показати примітку"
     },
     "diff": {
       "title": "Від Вашого останнього входу",
       "neue_briefe": "нових листів",
-      "frist_naeher": "термін ближче",
+      "frist_naeher": "термін наблизився",
       "vorgang_abgeschlossen": "справу завершено",
       "last_login_tooltip": "На цьому пристрої востаннє {datum}",
       "first_login": "Перший вхід на цьому пристрої",
@@ -114,7 +290,8 @@
       "fristen": {
         "title": "Терміни",
         "next": "Найближчий термін: {datum}",
-        "none": "Відкритих термінів немає"
+        "none": "Відкритих термінів немає",
+        "open_count": "{count} відкрит."
       },
       "posteingang": {
         "title": "Вхідні",
@@ -122,21 +299,22 @@
       },
       "vorgaenge": {
         "title": "Справи",
-        "value": "{laufend} у роботі"
+        "value": "{laufend} у роботі",
+        "value_running_done": "{laufend} у роботі, {abgeschlossen} завершено"
       },
       "termine": {
         "title": "Зустрічі",
-        "next": "Найближча зустріч: {datum}",
+        "next": "Найближча зустріч {datum}",
         "none": "Зустрічей не заплановано"
       },
       "datenschutz": {
         "title": "Центр конфіденційності",
-        "value": "{count} дій / 30 днів"
+        "value": "{count} дій за 30 днів"
       },
       "stammdaten": {
         "title": "Стан анкетних даних",
         "value": "Перевірити адресу",
-        "last_confirmed": "Останнє підтвердження: {datum}",
+        "last_confirmed": "Адресу востаннє підтверджено {datum}",
         "never_confirmed": "Ще не підтверджено"
       },
       "cta_ansehen": "Переглянути",
@@ -145,7 +323,13 @@
     "error": {
       "load": "Не вдалося завантажити панель."
     },
-    "loading": "Панель завантажується"
+    "loading": "Панель завантажується",
+    "frist_inline": {
+      "in_one_day": "Термін через 1 день",
+      "in_n_days": "Термін через {days} днів",
+      "on_date": "Термін {datum}",
+      "overdue": "Термін {datum} пропущено"
+    }
   },
   "common": {
     "cta": {
@@ -231,6 +415,58 @@
         "adresse": "Адреса",
         "vorschau": "Попередній перегляд",
         "autopilot": "Автопілот виконується"
+      }
+    },
+    "identitaet": {
+      "daten": {
+        "title": "Ваші доступні дані",
+        "empty": "Не вдалося завантажити дані.",
+        "status": {
+          "bestaetigt": "Підтверджено",
+          "verfuegbar": "Доступно",
+          "optional": "За бажанням"
+        },
+        "name": {
+          "label": "Ім’я",
+          "body": "Джерело: самодовідка DeutschlandID. Під час автопілота переїзду (Umzug) переноситься без змін."
+        },
+        "geburtsdatum": {
+          "label": "Дата народження",
+          "body": "Джерело: самодовідка DeutschlandID. Перевірено за реєстром народжень (Geburtsregister)."
+        },
+        "anschrift": {
+          "label": "Поточна адреса",
+          "body": "Джерело: реєстр мешканців (Melderegister). Під час автопілота переїзду (Umzug) замінюється новою адресою."
+        },
+        "familienstand": {
+          "label": "Сімейний стан",
+          "value": {
+            "ledig": "неодружений / незаміжня",
+            "verheiratet": "у шлюбі",
+            "geschieden": "розлучений / розлучена",
+            "verwitwet": "вдівець / вдова",
+            "eingetragene_lebenspartnerschaft": "зареєстроване партнерство (eingetragene Lebenspartnerschaft)"
+          },
+          "body": "Джерело: РАЦС (Standesamt — реєстр актів цивільного стану, § 3 Abs. 1 Nr. 8 BMG). Під час автопілота переїзду (Umzug) переноситься без змін."
+        },
+        "aufenthaltstitel": {
+          "label": "Посвідка на проживання (Aufenthaltstitel)",
+          "value": "{norm} · дійсна до {datum}",
+          "body": "Джерело: атестація EUDI Wallet від компетентного відомства у справах іноземців (Ausländerbehörde). Зберігається в: Wallet."
+        },
+        "staatsangehoerigkeit": {
+          "label": "Громадянство",
+          "body": "Джерело: реєстр мешканців (Melderegister). Передається лише тоді, коли цього явно потребує справа."
+        },
+        "dokumente": {
+          "label": "Документи",
+          "value": "{count, plural, =0 {Немає підтверджень у Wallet} =1 {1 підтвердження у Wallet} few {# підтвердження у Wallet} other {# підтверджень у Wallet}}",
+          "body": "Підтвердження з Вашого сховища документів. Передаються лише за запитом."
+        },
+        "dsgvo": {
+          "text": "Ваші дані передаються безпечно та обробляються відповідно до GDPR (DSGVO).",
+          "link": "Дізнатися більше"
+        }
       }
     },
     "start": {
@@ -396,7 +632,13 @@
       "stream": "Не вдалося завантажити відповідь. Спробуйте ще раз."
     },
     "greeting": {
-      "intro": "Вітаємо, {vorname}, ось огляд Вашої поточної ситуації:",
+      "intro": "Вітаємо, ось огляд Вашої поточної ситуації:",
+      "intro_named": "Вітаємо, {vorname}, ось огляд Вашої поточної ситуації:",
+      "bullet_steuerbescheid": "Ви отримали **податкове повідомлення (Steuerbescheid)** від {behoerde}.",
+      "bullet_erstattung": "Вам буде виплачено **повернення податку (Steuererstattung)** у розмірі {betrag}.",
+      "bullet_nachzahlung": "Належить **доплата податку (Steuernachzahlung)** у розмірі {betrag}.",
+      "bullet_aufenthalt": "Ваша **посвідка на проживання (Aufenthaltstitel)** дійсна до {datum}.",
+      "bullet_einspruch": "На податкове повідомлення можна подати **заперечення (Einspruch)** до {datum}.",
       "bullet_briefe": "{count, plural, =1 {1 непрочитаний лист} few {# непрочитані листи} other {# непрочитаних листів}} у пошті.",
       "bullet_frist": "Найближчий термін: {betreff} — {datum}.",
       "bullet_keine": "Наразі немає нічого термінового.",
@@ -571,6 +813,10 @@
         "antwort_erforderlich": "Потрібна відповідь",
         "zur_kenntnis": "До відома",
         "erledigt": "Виконано"
+      },
+      "relative": {
+        "heute": "Сьогодні",
+        "gestern": "Учора"
       }
     },
     "gruppe": {
@@ -601,6 +847,7 @@
       "empty_select_title": "Виберіть лист зі списку.",
       "empty_select_body": "Ліворуч — Ваші листи від відомств. Виберіть один, щоб побачити розбір від ШІ, строки та можливі кроки.",
       "auth_badge": "Справжність перевірено",
+      "verifiziert_am_template": "Перевірено {datum}",
       "originaltext_auszug_title": "Фрагмент оригінального тексту",
       "originaltext_mehr": "Показати більше",
       "originaltext_heading": "Оригінальний текст",
@@ -632,6 +879,8 @@
         "kalender": "Строк до календаря (.ics)",
         "kalender_per_frist_template": "{typ} до календаря (.ics)",
         "originalbrief": "Показати оригінальний текст",
+        "antwort_vorbereiten": "Підготувати відповідь",
+        "vorgang_erstellen": "Створити справу",
         "speichern": "Зберегти лист (.txt)",
         "markiere_gelesen": "Позначити цей лист як прочитаний",
         "citation_mismatch_disabled_hint": "Строк не вдається однозначно підтвердити в оригіналі. Експорт до календаря вимкнено — будь ласка, звірте дату з оригінальним текстом."
@@ -1036,29 +1285,45 @@
     "card": {
       "progress": "Готово {erledigt} з {gesamt}",
       "progress_label": "Поступ",
+      "progress_count": "{erledigt} з {gesamt} завершено",
       "cta_weiter": "Продовжити",
       "cta_kaskade": "Переглянути ланцюжок",
       "cta_unterlagen": "Завантажити документи",
       "cta_ansehen": "Відкрити справу",
+      "cta_oeffnen": "Відкрити справу",
       "unterlagen_fehlen": "Бракує документів",
-      "umzug_subtitle": "Усі відповідальні відомства сповіщаються автоматично."
+      "unterlagen_helper": "Будь ласка, завантажте відсутні документи.",
+      "unterlagen_open_days": "Відкрито вже {tage, plural, =1 {1 день} few {# дні} other {# днів}}",
+      "umzug_subtitle": "Ваші відомства будуть сповіщені автоматично.",
+      "responsible_self": "Відповідаєте: ви",
+      "frist_in_days": "Строк через {tage, plural, =1 {1 день} few {# дні} other {# днів}}",
+      "frist_due_on": "До {datum}",
+      "gestartet_label": "Розпочато: {datum}",
+      "menu_aria": "Більше дій для «{titel}»"
     },
     "stepper": {
       "aria": "Хід справи «{titel}»",
       "node_done": "{behoerde}: завершено",
       "node_active": "{behoerde}: в обробці",
       "node_pending": "{behoerde}: очікує",
-      "node_failed": "{behoerde}: помилка"
+      "node_failed": "{behoerde}: помилка",
+      "date_running": "Триває перевірка",
+      "date_pending": "Очікує"
     },
     "rail": {
       "title": "Що важливо зараз?",
+      "subtitle": "Головне у ваших поточних справах",
       "offene_vorgaenge": "Відкриті справи",
+      "offene_label": "{count, plural, =1 {1 відкрита справа} few {# відкриті справи} other {# відкритих справ}}",
       "offene_vorgaenge_count": "{count, plural, =1 {1 відкрита справа} few {# відкриті справи} other {# відкритих справ}}",
       "frist_naht": "Наближається строк",
+      "frist_label": "{count, plural, =1 {1 строк} few {# строки} other {# строків}} у найближчі 14 днів",
       "frist_naht_days": "Строк через {tage, plural, =1 {1 день} few {# дні} other {# днів}}",
       "warten_bestaetigung": "Очікують підтвердження",
+      "warten_label": "{count, plural, =1 {1 очікує} other {# очікують}} вашого підтвердження",
       "warten_bestaetigung_count": "{count, plural, =1 {1 крок відкритий} few {# кроки відкриті} other {# кроків відкрито}}",
       "cta_ansehen": "Відкрити",
+      "cta_fristen": "Строки",
       "alle_ansehen": "Переглянути всі справи",
       "empty": "Зараз нічого термінового."
     },
@@ -1093,8 +1358,12 @@
     },
     "tab": {
       "aria_label": "Розділи особистих даних",
-      "profil": { "label": "Мій профіль" },
-      "wallet": { "label": "Гаманець та зовнішні отримувачі" }
+      "profil": {
+        "label": "Мій профіль"
+      },
+      "wallet": {
+        "label": "Гаманець та зовнішні отримувачі"
+      }
     },
     "hero": {
       "eyebrow": "Єдине джерело даних",
@@ -1135,11 +1404,21 @@
       "vision_pill": "Візія 2029"
     },
     "sektion": {
-      "identitaet": { "title": "Особа" },
-      "anschrift": { "title": "Адреса" },
-      "familie": { "title": "Сім'я" },
-      "dokumente": { "title": "Документи" },
-      "sperren_einstellungen": { "title": "Блокування та налаштування" },
+      "identitaet": {
+        "title": "Особа"
+      },
+      "anschrift": {
+        "title": "Адреса"
+      },
+      "familie": {
+        "title": "Сім'я"
+      },
+      "dokumente": {
+        "title": "Документи"
+      },
+      "sperren_einstellungen": {
+        "title": "Блокування та налаштування"
+      },
       "altersvorsorge": {
         "title": "Пенсійне забезпечення (Altersvorsorge)",
         "subtitle": "Державна пенсія, професійні пенсійні каси та приватне забезпечення — огляд"
@@ -1148,8 +1427,12 @@
         "title": "Медичне страхування та догляд",
         "subtitle": "Лікарняна каса, ePA, eRezept і страхування на випадок потреби в догляді"
       },
-      "kontakt_postfach": { "title": "Контакт і поштова скринька (Kontakt & Postfach)" },
-      "notification_praeferenzen": { "title": "Налаштування сповіщень (Бачення 2027)" },
+      "kontakt_postfach": {
+        "title": "Контакт і поштова скринька (Kontakt & Postfach)"
+      },
+      "notification_praeferenzen": {
+        "title": "Налаштування сповіщень (Бачення 2027)"
+      },
       "mobilitaet": {
         "preview_no_fe": "Дозвіл на керування транспортом (Fahrerlaubnis) не зареєстровано",
         "preview_fe_classes": "Категорія {klassen}",
@@ -1176,33 +1459,87 @@
       "verwalten": "Керувати"
     },
     "field": {
-      "familienname": { "label": "Прізвище" },
-      "fruehere_namen": { "label": "Попередні імена" },
-      "vornamen": { "label": "Імена" },
-      "doktorgrad": { "label": "Науковий ступінь доктора (Doktorgrad)" },
-      "geburtsdatum": { "label": "Дата народження" },
-      "geburtsort": { "label": "Місце народження" },
-      "staatsangehoerigkeit": { "label": "Громадянство" },
-      "steuer_id": { "label": "Податковий ідентифікаційний номер (Steuer-IdNr)" },
-      "anschrift_aktuell": { "label": "Поточна основна адреса" },
-      "anschriften_historisch": { "label": "Попередні адреси" },
-      "familienstand": { "label": "Сімейний стан" },
-      "partner": { "label": "Чоловік / дружина / зареєстрований партнер" },
-      "kinder": { "label": "Діти" },
-      "eheschliessung": { "label": "Шлюб / партнерство" },
-      "personalausweis": { "label": "Посвідчення особи (Personalausweis)" },
-      "reisepass": { "label": "Закордонний паспорт (Reisepass)" },
-      "eat_can": { "label": "Електронний дозвіл на проживання (eAT) — CAN" },
-      "azr_nr": { "label": "Номер AZR (Ausländerzentralregister)" },
-      "religionszugehoerigkeit": { "label": "Релігійна належність" },
-      "kontakt_email": { "label": "Адреса електронної пошти" },
-      "kontakt_mobil": { "label": "Номер мобільного телефону" },
-      "sprachpraeferenz": { "label": "Мовні налаштування" },
-      "iban": { "label": "IBAN для повернень" },
-      "uebermittlungssperren": { "label": "Блокування передачі (Übermittlungssperren, §§ 42 Abs. 3, 50 Abs. 5 BMG)" },
-      "kvnr": { "label": "Номер медичного страхування (KVNR)" },
-      "drv_versicherungsnummer": { "label": "Номер пенсійного страхування (DRV)" },
-      "elstam": { "label": "ELStAM (податковий клас, пільги)" },
+      "familienname": {
+        "label": "Прізвище"
+      },
+      "fruehere_namen": {
+        "label": "Попередні імена"
+      },
+      "vornamen": {
+        "label": "Імена"
+      },
+      "doktorgrad": {
+        "label": "Науковий ступінь доктора (Doktorgrad)"
+      },
+      "geburtsdatum": {
+        "label": "Дата народження"
+      },
+      "geburtsort": {
+        "label": "Місце народження"
+      },
+      "staatsangehoerigkeit": {
+        "label": "Громадянство"
+      },
+      "steuer_id": {
+        "label": "Податковий ідентифікаційний номер (Steuer-IdNr)"
+      },
+      "anschrift_aktuell": {
+        "label": "Поточна основна адреса"
+      },
+      "anschriften_historisch": {
+        "label": "Попередні адреси"
+      },
+      "familienstand": {
+        "label": "Сімейний стан"
+      },
+      "partner": {
+        "label": "Чоловік / дружина / зареєстрований партнер"
+      },
+      "kinder": {
+        "label": "Діти"
+      },
+      "eheschliessung": {
+        "label": "Шлюб / партнерство"
+      },
+      "personalausweis": {
+        "label": "Посвідчення особи (Personalausweis)"
+      },
+      "reisepass": {
+        "label": "Закордонний паспорт (Reisepass)"
+      },
+      "eat_can": {
+        "label": "Електронний дозвіл на проживання (eAT) — CAN"
+      },
+      "azr_nr": {
+        "label": "Номер AZR (Ausländerzentralregister)"
+      },
+      "religionszugehoerigkeit": {
+        "label": "Релігійна належність"
+      },
+      "kontakt_email": {
+        "label": "Адреса електронної пошти"
+      },
+      "kontakt_mobil": {
+        "label": "Номер мобільного телефону"
+      },
+      "sprachpraeferenz": {
+        "label": "Мовні налаштування"
+      },
+      "iban": {
+        "label": "IBAN для повернень"
+      },
+      "uebermittlungssperren": {
+        "label": "Блокування передачі (Übermittlungssperren, §§ 42 Abs. 3, 50 Abs. 5 BMG)"
+      },
+      "kvnr": {
+        "label": "Номер медичного страхування (KVNR)"
+      },
+      "drv_versicherungsnummer": {
+        "label": "Номер пенсійного страхування (DRV)"
+      },
+      "elstam": {
+        "label": "ELStAM (податковий клас, пільги)"
+      },
       "geschlecht": {
         "label": "Запис про стать (Geschlechtseintrag)",
         "value": {
@@ -1238,42 +1575,108 @@
         "label": "Блокування передачі релігійним громадам (§ 42 Abs. 3 BMG)"
       },
       "beschaeftigung": {
-        "typ": { "label": "Тип зайнятості" },
-        "arbeitgeber": { "label": "Роботодавець" },
-        "kvnr": { "label": "KVNR" },
-        "drv": { "label": "Номер DRV" }
+        "typ": {
+          "label": "Тип зайнятості"
+        },
+        "arbeitgeber": {
+          "label": "Роботодавець"
+        },
+        "kvnr": {
+          "label": "KVNR"
+        },
+        "drv": {
+          "label": "Номер DRV"
+        }
       }
     },
     "korrekturweg": {
-      "familienname": { "pointer": "Виправлення у відділі РАЦС (Standesamt) згідно з § 1355 BGB / § 45 PStG." },
-      "fruehere_namen": { "pointer": "Виправлення у відділі РАЦС (Standesamt) згідно з § 45 PStG." },
-      "vornamen": { "pointer": "Виправлення у відділі РАЦС (Standesamt) згідно з § 45 PStG." },
-      "doktorgrad": { "pointer": "Виправлення через бюро у справах громадян (Bürgeramt) із завантаженням підтвердного документа (§ 3 Abs. 1 Nr. 6 BMG)." },
-      "geburtsdatum": { "pointer": "Виправлення у відділі РАЦС (Standesamt) місця народження." },
-      "geburtsort": { "pointer": "Виправлення у відділі РАЦС (Standesamt) місця народження." },
-      "geschlecht": { "pointer": "Заява у відділі РАЦС (Standesamt) згідно з § 4 SBGG (реєстрація) та § 2 SBGG (особисте посвідчення)." },
-      "staatsangehoerigkeit": { "pointer": "Виправлення через відомство з натуралізації (Einbürgerungsbehörde) згідно зі StAG." },
-      "steuer_id": { "pointer": "Призначається довічно Федеральним центральним податковим відомством (Bundeszentralamt für Steuern) згідно з § 139b AO — не підлягає зміні." },
-      "anschrift_aktuell": { "pointer": "Запис у Bürgeramt або електронна реєстрація місця проживання (eWA) згідно з § 17 BMG." },
-      "anschriften_historisch": { "pointer": "Зміни вносяться під час нової реєстрації згідно з § 17 BMG." },
-      "familienstand": { "pointer": "Виправлення у відділі РАЦС (Standesamt) згідно з PStG." },
-      "partner": { "pointer": "Виправлення у відділі РАЦС (Standesamt) згідно з PStG." },
-      "kinder": { "pointer": "Виправлення у відділі РАЦС (Standesamt) згідно з § 21 PStG." },
-      "eheschliessung": { "pointer": "Виправлення у відділі РАЦС (Standesamt), де було укладено шлюб." },
-      "personalausweis": { "pointer": "Перевипуск у Bürgeramt згідно з PAuswG." },
-      "reisepass": { "pointer": "Перевипуск у Bürgeramt згідно з PassG." },
-      "eat_can": { "pointer": "Виправлення через відомство у справах іноземців (Ausländerbehörde) згідно з AufenthG." },
-      "azr_nr": { "pointer": "Виправлення через відомство у справах іноземців (Ausländerbehörde) згідно з § 34 AZRG." },
-      "religionszugehoerigkeit": { "pointer": "Вступ / вихід: РАЦС (Standesamt) або релігійна громада; зберігання згідно з § 3 Abs. 1 Nr. 11 BMG." },
-      "kontakt_email": { "pointer": "Змінюється безпосередньо в обліковому записі BundID (налаштування застосунку)." },
-      "kontakt_mobil": { "pointer": "Змінюється безпосередньо в обліковому записі BundID (налаштування застосунку)." },
-      "sprachpraeferenz": { "pointer": "Внутрішнє налаштування застосунку — не впливає на відомства." },
-      "iban": { "pointer": "Сьогодні (травень 2026) IBAN треба подавати в кожне відомство окремо — цей застосунок моделює сценарій 2027 року." },
-      "auskunftssperre": { "pointer": "Заява з обґрунтуванням у Bürgeramt згідно з § 51 Abs. 1 BMG." },
-      "uebermittlungssperren": { "pointer": "Заява в Bürgeramt згідно з §§ 42 Abs. 3, 50 Abs. 5 BMG (без обґрунтування)." },
-      "kvnr": { "pointer": "Зміна через особистий кабінет Вашої лікарняної каси (§ 290 SGB V)." },
-      "drv_versicherungsnummer": { "pointer": "Зміна через особистий кабінет DRV (§ 147 SGB VI)." },
-      "elstam": { "pointer": "Зміна через Mein ELSTER або податкове управління (Finanzamt) згідно з § 39 EStG." }
+      "familienname": {
+        "pointer": "Виправлення у відділі РАЦС (Standesamt) згідно з § 1355 BGB / § 45 PStG."
+      },
+      "fruehere_namen": {
+        "pointer": "Виправлення у відділі РАЦС (Standesamt) згідно з § 45 PStG."
+      },
+      "vornamen": {
+        "pointer": "Виправлення у відділі РАЦС (Standesamt) згідно з § 45 PStG."
+      },
+      "doktorgrad": {
+        "pointer": "Виправлення через бюро у справах громадян (Bürgeramt) із завантаженням підтвердного документа (§ 3 Abs. 1 Nr. 6 BMG)."
+      },
+      "geburtsdatum": {
+        "pointer": "Виправлення у відділі РАЦС (Standesamt) місця народження."
+      },
+      "geburtsort": {
+        "pointer": "Виправлення у відділі РАЦС (Standesamt) місця народження."
+      },
+      "geschlecht": {
+        "pointer": "Заява у відділі РАЦС (Standesamt) згідно з § 4 SBGG (реєстрація) та § 2 SBGG (особисте посвідчення)."
+      },
+      "staatsangehoerigkeit": {
+        "pointer": "Виправлення через відомство з натуралізації (Einbürgerungsbehörde) згідно зі StAG."
+      },
+      "steuer_id": {
+        "pointer": "Призначається довічно Федеральним центральним податковим відомством (Bundeszentralamt für Steuern) згідно з § 139b AO — не підлягає зміні."
+      },
+      "anschrift_aktuell": {
+        "pointer": "Запис у Bürgeramt або електронна реєстрація місця проживання (eWA) згідно з § 17 BMG."
+      },
+      "anschriften_historisch": {
+        "pointer": "Зміни вносяться під час нової реєстрації згідно з § 17 BMG."
+      },
+      "familienstand": {
+        "pointer": "Виправлення у відділі РАЦС (Standesamt) згідно з PStG."
+      },
+      "partner": {
+        "pointer": "Виправлення у відділі РАЦС (Standesamt) згідно з PStG."
+      },
+      "kinder": {
+        "pointer": "Виправлення у відділі РАЦС (Standesamt) згідно з § 21 PStG."
+      },
+      "eheschliessung": {
+        "pointer": "Виправлення у відділі РАЦС (Standesamt), де було укладено шлюб."
+      },
+      "personalausweis": {
+        "pointer": "Перевипуск у Bürgeramt згідно з PAuswG."
+      },
+      "reisepass": {
+        "pointer": "Перевипуск у Bürgeramt згідно з PassG."
+      },
+      "eat_can": {
+        "pointer": "Виправлення через відомство у справах іноземців (Ausländerbehörde) згідно з AufenthG."
+      },
+      "azr_nr": {
+        "pointer": "Виправлення через відомство у справах іноземців (Ausländerbehörde) згідно з § 34 AZRG."
+      },
+      "religionszugehoerigkeit": {
+        "pointer": "Вступ / вихід: РАЦС (Standesamt) або релігійна громада; зберігання згідно з § 3 Abs. 1 Nr. 11 BMG."
+      },
+      "kontakt_email": {
+        "pointer": "Змінюється безпосередньо в обліковому записі BundID (налаштування застосунку)."
+      },
+      "kontakt_mobil": {
+        "pointer": "Змінюється безпосередньо в обліковому записі BundID (налаштування застосунку)."
+      },
+      "sprachpraeferenz": {
+        "pointer": "Внутрішнє налаштування застосунку — не впливає на відомства."
+      },
+      "iban": {
+        "pointer": "Сьогодні (травень 2026) IBAN треба подавати в кожне відомство окремо — цей застосунок моделює сценарій 2027 року."
+      },
+      "auskunftssperre": {
+        "pointer": "Заява з обґрунтуванням у Bürgeramt згідно з § 51 Abs. 1 BMG."
+      },
+      "uebermittlungssperren": {
+        "pointer": "Заява в Bürgeramt згідно з §§ 42 Abs. 3, 50 Abs. 5 BMG (без обґрунтування)."
+      },
+      "kvnr": {
+        "pointer": "Зміна через особистий кабінет Вашої лікарняної каси (§ 290 SGB V)."
+      },
+      "drv_versicherungsnummer": {
+        "pointer": "Зміна через особистий кабінет DRV (§ 147 SGB VI)."
+      },
+      "elstam": {
+        "pointer": "Зміна через Mein ELSTER або податкове управління (Finanzamt) згідно з § 39 EStG."
+      }
     },
     "disclaimer": {
       "lese_schicht": "Цей застосунок є **шаром для читання та навігації**. Він сам **не вносить** жодних змін до Ваших даних у відповідних реєстрах. Зміни здійснюються виключно через процедуру відповідного відомства — наприклад, у Bürgeramt згідно з § 17 BMG для адреси; у відділі РАЦС (Standesamt) згідно з PStG для сімейного стану та імен; у відділі РАЦС (Standesamt) згідно з § 4 SBGG для **реєстрації** зміни запису про стать (усно або письмово, за три місяці до заяви) та згідно з § 2 SBGG для **особистого посвідчення заяви** у відділі РАЦС; у Федеральному центральному податковому відомстві (Bundeszentralamt für Steuern) для ідентифікаційного номера платника податків (§ 139b AO). За кожним полем ми показуємо Вам правильний шлях.",
@@ -1331,18 +1734,35 @@
         "anrechnungszeit_pflege_offengelegt": "Розкрито зарахований період догляду (Anrechnungszeit Pflege; § 3 SGB VI; пов'язано зі згодою на відображення ступеня)"
       },
       "kategorie": {
-        "behoerde_zu_behoerde": { "label": "Передача між відомствами" },
-        "app_aktivitaet": { "label": "Активність застосунку (не офіційний журнал передачі)" },
-        "speculative_2027": { "label": "Бачення 2027 (демо)" },
-        "behoerde_zu_buerger": { "label": "Відомство — громадянину/громадянці (сповіщення / надходження в поштову скриньку)" }
+        "behoerde_zu_behoerde": {
+          "label": "Передача між відомствами"
+        },
+        "app_aktivitaet": {
+          "label": "Активність застосунку (не офіційний журнал передачі)"
+        },
+        "speculative_2027": {
+          "label": "Бачення 2027 (демо)"
+        },
+        "behoerde_zu_buerger": {
+          "label": "Відомство — громадянину/громадянці (сповіщення / надходження в поштову скриньку)"
+        }
       },
       "richtung": {
         "label": "Напрямок",
-        "alle": { "label": "Усі напрямки" },
-        "eingehend": { "label": "Вхідні (відомство → громадянин/громадянка)" },
-        "ausgehend": { "label": "Вихідні (громадянин/громадянка → відомства)" },
-        "intern": { "label": "Внутрішні (активність застосунку)" }
-      }
+        "alle": {
+          "label": "Усі напрямки"
+        },
+        "eingehend": {
+          "label": "Вхідні (відомство → громадянин/громадянка)"
+        },
+        "ausgehend": {
+          "label": "Вихідні (громадянин/громадянка → відомства)"
+        },
+        "intern": {
+          "label": "Внутрішні (активність застосунку)"
+        }
+      },
+      "via_app": "Через застосунок GovTech DE"
     },
     "modal": {
       "religion_consent": {
@@ -1553,17 +1973,35 @@
           "cta_cancel": "Скасувати"
         },
         "kategorie": {
-          "steuer": { "label": "Податки (Finanzamt / BZSt)" },
-          "sozial": { "label": "Соціальні виплати (DRV / GKV / Bürgergeld)" },
-          "familie": { "label": "Сім'я (Familienkasse / Elterngeld)" },
-          "verkehr": { "label": "Транспорт (KFZ / штрафи / водійські права)" },
-          "sonstige": { "label": "Інше (Bürgeramt / перебування / інше)" }
+          "steuer": {
+            "label": "Податки (Finanzamt / BZSt)"
+          },
+          "sozial": {
+            "label": "Соціальні виплати (DRV / GKV / Bürgergeld)"
+          },
+          "familie": {
+            "label": "Сім'я (Familienkasse / Elterngeld)"
+          },
+          "verkehr": {
+            "label": "Транспорт (KFZ / штрафи / водійські права)"
+          },
+          "sonstige": {
+            "label": "Інше (Bürgeramt / перебування / інше)"
+          }
         },
         "kanal": {
-          "postfach": { "label": "Поштова скринька BundID" },
-          "email_pilot": { "label": "Сповіщення електронною поштою (пілот)" },
-          "sms_pilot": { "label": "SMS-сповіщення (пілот)" },
-          "brief": { "label": "Паперовий лист (за замовчуванням)" }
+          "postfach": {
+            "label": "Поштова скринька BundID"
+          },
+          "email_pilot": {
+            "label": "Сповіщення електронною поштою (пілот)"
+          },
+          "sms_pilot": {
+            "label": "SMS-сповіщення (пілот)"
+          },
+          "brief": {
+            "label": "Паперовий лист (за замовчуванням)"
+          }
         },
         "option": {
           "sms_pilot": {
@@ -1616,6 +2054,89 @@
     },
     "cross_link": {
       "familie": "До розділу «Сім’я»"
+    },
+    "v2": {
+      "profil": {
+        "card_title": "Особистий профіль",
+        "kv": {
+          "name": "Імʼя",
+          "geburtsdatum": "Дата народження",
+          "staatsangehoerigkeit": "Громадянство",
+          "familienstand": "Сімейний стан"
+        },
+        "familienstand": {
+          "verheiratet": "у шлюбі",
+          "ledig": "не у шлюбі",
+          "geschieden": "у розлученні",
+          "verwitwet": "удівець/вдова"
+        }
+      },
+      "kontakt": {
+        "card_title": "Контакти",
+        "email": "Електронна пошта",
+        "telefon": "Номер телефону",
+        "verifiziert": "Підтверджено",
+        "email_keine": "Електронну пошту не вказано",
+        "telefon_keine": "Номер телефону не вказано"
+      },
+      "familie": {
+        "card_title": "Родина та близькі",
+        "kinder_eyebrow": "Діти",
+        "partner_eyebrow": "Партнер",
+        "row_geburtsdatum": "Дата народження",
+        "row_verwandtschaft": "Спорідненість",
+        "kind": "Дитина",
+        "partner_label": "Партнер",
+        "add_link": "Додати людину"
+      },
+      "anschrift": {
+        "title": "Адреса",
+        "aktuell_label": "Поточна адреса",
+        "aendern": "Змінити",
+        "zuletzt_bestaetigt": "підтверджено {datum}",
+        "zuletzt_bestaetigt_unbekannt": "ще не підтверджено",
+        "bestaetigt": "Підтверджено"
+      },
+      "dokumente": {
+        "title": "Документи",
+        "verwalten": "Керувати",
+        "reisepass": "Закордонний паспорт",
+        "personalausweis": "Посвідчення особи",
+        "aufenthaltstitel": "Дозвіл на проживання",
+        "eat_can": "eAT-CAN",
+        "gueltig": "Дійсний",
+        "nummer_template": "№ {nummer} · дійсний до {gueltig_bis}",
+        "aufenthaltstitel_template": "{norm} · дійсний до {gueltig_bis}",
+        "eat_can_template": "CAN {can}",
+        "add_link": "Додати документ",
+        "empty": "Документи не зареєстровано."
+      },
+      "versicherung": {
+        "title": "Страхування та пенсія",
+        "krankenkasse": "Медичне страхування",
+        "altersvorsorge": "Пенсійне забезпечення",
+        "aktiv": "Активно",
+        "versichertennummer": "№ застрахованого {nr}",
+        "versichert_seit": "Застрахований(а) з {datum}",
+        "add_link": "Додати ще одну страховку",
+        "empty": "Дані про страхування відсутні."
+      },
+      "protokoll": {
+        "title": "Журнал змін",
+        "subtitle": "Останні зміни ваших персональних даних",
+        "show_all": "Повний журнал",
+        "empty": "Записів поки немає."
+      },
+      "datenhoheit": {
+        "title": "Ви керуєте своїми даними",
+        "body_before_link": "Ваші персональні дані передаються відомствам і службам лише за вашою згодою. Ви вирішуєте, хто що бачить.",
+        "body_link": "Докладніше про ваші права та використання даних.",
+        "cta": "Керування даними"
+      },
+      "secondary": {
+        "heading": "Інші розділи",
+        "subtitle": "Пенсія, медстрахування, мобільність, налаштування сповіщень і блокування — допоміжний шар під основною сіткою."
+      }
     }
   },
   "dokumente": {
@@ -1971,19 +2492,36 @@
     },
     "vorgaenge": {
       "title": "Спільні справи",
+      "subtitle": "Справи, що стосуються людей у Вашому домогосподарстві.",
       "kindergeld": "Допомога на дітей (Kindergeld)",
       "krankenkasse": "Медичне страхування",
       "kita": "Місце в дитячому садку (Kita)",
       "kita_traeger": "Засновник дитячого садка (Kita-Träger)",
       "betrifft": "Стосується: {names}",
-      "show_all": "Показати всі спільні справи"
+      "show_all": "Показати всі спільні справи",
+      "empty": "Наразі спільних справ немає.",
+      "status": {
+        "laufend": "У процесі",
+        "genehmigt": "Схвалено",
+        "warten": "В обробці",
+        "abgeschlossen": "Завершено"
+      }
     },
     "nachweise": {
       "title": "Підтвердження та повноваження",
+      "subtitle": "Документи, підтвердження та права представництва.",
       "geburtsurkunde": "Свідоцтво про народження (Geburtsurkunde)",
       "sorge_vollmacht": "Довіреність на опіку (Sorge-Vollmacht)",
       "vertretungsrechte": "Права представництва (Vertretungsrechte)",
-      "verknuepfungen": "Зв’язки"
+      "verknuepfungen": "Зв’язки",
+      "show_all": "Показати всі підтвердження та повноваження",
+      "empty": "Підтвердження не додано.",
+      "status": {
+        "vorhanden": "Додано",
+        "verifiziert": "Перевірено",
+        "speculative": "Бачення 2027",
+        "fehlt": "Відсутнє"
+      }
     },
     "was_betrifft_wen": {
       "title": "Кого що стосується?",
@@ -2001,6 +2539,58 @@
     "empty": {
       "title": "Домогосподарство не вказано",
       "body": "Для цього профілю членів домогосподарства не зареєстровано."
+    }
+  },
+  "autopilotRun": {
+    "title": "Переїзд на автопілоті",
+    "subtitle": "Ви підтверджуєте один раз — система координує наступні кроки.",
+    "banner": {
+      "running_title": "Каскад виконується",
+      "running_subtitle": "Ваші дані безпечно передаються до компетентних відомств.",
+      "completed_title": "Усі відомства поінформовано",
+      "completed_subtitle": "{count, plural, =1 {Компетентне відомство отримало} few {# компетентних відомства отримали} other {# компетентних відомств отримали}} Вашу зміну адреси.",
+      "partial_title": "Майже готово",
+      "partial_subtitle": "Більшість відомств поінформовано. Для окремих кроків потрібна повторна спроба.",
+      "status_partial": "Частково завершено"
+    },
+    "cascade": {
+      "aria_label": "Перебіг інформування відомств"
+    },
+    "node": {
+      "status": {
+        "ausstehend": "Очікує",
+        "eid_required": "Потрібне підтвердження",
+        "failed": "Не вдалося"
+      },
+      "eid_cta": "Підтвердити через eID",
+      "timestamp_pending": "—",
+      "aktenzeichen_prefix": "№"
+    },
+    "action": {
+      "buergeramt": "Адресу передано",
+      "finanzamt": "Компетенцію підтверджено",
+      "beitragsservice": "Адресу оновлено",
+      "bundesdruckerei": "Готується наклейка",
+      "krankenkasse": "Передачу заплановано",
+      "kfz": "Триває перевірка",
+      "familienkasse": "Компетенцію передається",
+      "auslaenderbehoerde": "Оновлення підготовлено",
+      "fallback": "Адресу передано"
+    },
+    "uebersicht": {
+      "title": "Ваш переїзд — огляд",
+      "neue_adresse_label": "Нова адреса",
+      "einzugsdatum_label": "Дата вʼїзду",
+      "autopilot_bereich_label": "Зона автопілота",
+      "behoerden_count": "{count, plural, =1 {1 відомство} few {# відомства} other {# відомств}}",
+      "schutz_title": "Ваші дані захищені",
+      "schutz_subtitle": "Передача зашифрована, лише до компетентних відомств.",
+      "schutz_link": "Докладніше про захист даних"
+    },
+    "feed": {
+      "title": "Активність у реальному часі",
+      "started_title": "Автопілот запущено",
+      "started_subtitle": "Ваші дані перевірено, каскад запущено."
     }
   }
 }

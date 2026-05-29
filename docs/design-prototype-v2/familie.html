@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>Familie — GovTech DE</title>
+<link rel="stylesheet" href="assets/govtech.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  .fm-layout { display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr); gap: 18px; align-items: start; margin-top: 18px; }
+  .fm-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 22px 26px; box-shadow: var(--shadow-1); }
+
+  .hh-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .hh-head .ttl { font-size: 17px; font-weight: 600; }
+  .hh-head .sub { color: var(--ink-3); font-size: 13px; }
+  .hh-people { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .person { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--r-md); }
+  .person .avatar.lg { width: 48px; height: 48px; font-size: 14px; }
+  .person .name { font-weight: 700; font-size: 15px; }
+  .person .dob { color: var(--ink-3); font-size: 13px; }
+  .person .badge { margin-top: 4px; }
+
+  .hh-banner { margin-top: 16px; }
+
+  .row-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+  .fm-list .item {
+    display: grid; grid-template-columns: 40px 1fr auto auto; gap: 12px; align-items: center;
+    padding: 14px 0; border-top: 1px solid var(--border);
+  }
+  .fm-list .item:first-of-type { border-top: 0; }
+  .fm-list .item .icon-circle { width: 40px; height: 40px; }
+  .fm-list .item .t { font-weight: 600; font-size: 14px; }
+  .fm-list .item .s { color: var(--ink-3); font-size: 12.5px; }
+  .fm-list .avs { display: inline-flex; }
+  .fm-list .avs .avatar.sm { width: 26px; height: 26px; font-size: 11px; border: 2px solid var(--surface); }
+  .fm-list .avs .avatar.sm + .avatar.sm { margin-left: -10px; }
+
+  .nb-list .item {
+    display: grid; grid-template-columns: 36px 1fr auto; gap: 12px; align-items: center;
+    padding: 14px 0; border-top: 1px solid var(--border);
+  }
+  .nb-list .item:first-of-type { border-top: 0; }
+  .nb-list .item .icon-circle { width: 36px; height: 36px; }
+  .nb-list .item .icon-circle svg { width: 16px; height: 16px; }
+  .nb-list .item .t { font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; }
+  .nb-list .item .t svg { width: 14px; height: 14px; color: var(--green-600); }
+  .nb-list .item .s { color: var(--ink-3); font-size: 12.5px; }
+
+  .all-link { color: var(--brand-600); font-weight: 500; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; }
+
+  .rail h3 { margin: 0 0 4px; font-size: 16px; font-weight: 600; }
+  .rail .sub { color: var(--ink-3); font-size: 13px; margin-bottom: 16px; }
+  .rail .person-head { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
+  .rail .person-head .avatar.lg { width: 44px; height: 44px; font-size: 14px; }
+  .rail .person-head .name { font-weight: 700; font-size: 15px; }
+  .rail .kvs { display: flex; flex-direction: column; gap: 0; }
+  .rail .kvs .kv { display: grid; grid-template-columns: 26px 1fr auto; gap: 10px; padding: 10px 0; border-top: 1px solid var(--border); align-items: center; color: var(--ink-2); font-size: 13.5px; }
+  .rail .kvs .kv:first-child { border-top: 0; }
+  .rail .kvs .kv svg { color: var(--ink-3); width: 16px; height: 16px; }
+  .rail .kvs .kv .n { color: var(--ink-3); font-weight: 500; }
+
+  .rail-foot {
+    margin-top: 14px;
+    display: flex; align-items: center; gap: 12px;
+    background: var(--surface-soft); border: 1px solid var(--border); border-radius: var(--r-md);
+    padding: 12px 14px;
+  }
+  .rail-foot .icon-circle { width: 30px; height: 30px; }
+  .rail-foot .icon-circle svg { width: 14px; height: 14px; }
+  .rail-foot .t { font-weight: 600; font-size: 12.5px; }
+  .rail-foot .s { color: var(--ink-3); font-size: 12px; line-height: 1.4; }
+  .rail-foot .s a { color: var(--brand-600); font-weight: 500; }
+</style>
+</head>
+<body>
+
+<div data-gt-header></div>
+<div class="gt-shell">
+  <div data-gt-sidebar></div>
+  <main class="gt-content">
+    <div class="gt-page-head">
+      <h1>Familie</h1>
+      <div class="sub">Haushalt, Bezugspersonen und gemeinsame Vorgänge verwalten.</div>
+    </div>
+
+    <div class="fm-layout">
+      <div>
+        <div class="fm-card">
+          <div class="hh-head">
+            <div>
+              <div class="ttl">Mein Haushalt</div>
+              <div class="sub">2 Personen</div>
+            </div>
+            <button class="btn btn-secondary"><i data-lucide="users"></i>Haushalt verwalten</button>
+          </div>
+          <div class="hh-people">
+            <div class="person">
+              <span class="avatar lg">AP</span>
+              <div class="grow">
+                <div class="name">Anna Petrov (Sie)</div>
+                <div class="dob">Geb. 12.03.1986</div>
+                <span class="badge violet">Mutter</span>
+              </div>
+            </div>
+            <div class="person">
+              <span class="avatar lg green">LP</span>
+              <div class="grow">
+                <div class="name">Lev Petrov</div>
+                <div class="dob">Geb. 18.08.2019</div>
+                <span class="badge green">Kind</span>
+              </div>
+            </div>
+          </div>
+          <div class="hh-banner gt-banner">
+            <i data-lucide="info"></i>
+            <div><div style="font-weight: 600;">Sie sind berechtigte Vertretung für Lev Petrov.</div><div class="text-sm muted">Sie können Vorgänge für Lev einsehen und verwalten.</div></div>
+          </div>
+        </div>
+
+        <div class="row-pair" style="margin-top: 18px;">
+          <div class="fm-card fm-list">
+            <div style="margin-bottom: 16px;"><div class="text-md fw-600">Gemeinsame Vorgänge</div><div class="muted text-xs">Vorgänge, die Personen in Ihrem Haushalt betreffen.</div></div>
+            <div class="item">
+              <span class="icon-circle green"><i data-lucide="users"></i></span>
+              <div><div class="t">Kindergeld</div><div class="s">Antrag und Zahlung für Lev Petrov</div></div>
+              <div class="avs"><span class="avatar sm">AP</span><span class="avatar sm green">LP</span></div>
+              <a href="#" style="display: inline-flex; align-items: center; gap: 6px; color: var(--green-700); font-weight: 500;">Aktiv <i data-lucide="chevron-right" style="width: 14px; height: 14px; color: var(--ink-4);"></i></a>
+            </div>
+            <div class="item">
+              <span class="icon-circle teal"><i data-lucide="shield"></i></span>
+              <div><div class="t">Krankenkasse</div><div class="s">Familienversicherung über Anna Petrov</div></div>
+              <div class="avs"><span class="avatar sm">AP</span><span class="avatar sm green">LP</span></div>
+              <a href="#" style="display: inline-flex; align-items: center; gap: 6px; color: var(--green-700); font-weight: 500;">Aktiv <i data-lucide="chevron-right" style="width: 14px; height: 14px; color: var(--ink-4);"></i></a>
+            </div>
+            <div class="item">
+              <span class="icon-circle pink"><i data-lucide="users"></i></span>
+              <div><div class="t">Kita-Platz &amp; Beitragszuschuss</div><div class="s">Betreuung und Kostenübernahme für Lev Petrov</div></div>
+              <div class="avs"><span class="avatar sm">AP</span><span class="avatar sm green">LP</span></div>
+              <a href="#" style="display: inline-flex; align-items: center; gap: 6px;"><span class="badge amber">In Bearbeitung</span><i data-lucide="chevron-right" style="width: 14px; height: 14px; color: var(--ink-4);"></i></a>
+            </div>
+            <a class="all-link" href="#">Alle gemeinsamen Vorgänge anzeigen <i data-lucide="chevron-right" style="width:14px;height:14px;"></i></a>
+          </div>
+
+          <div class="fm-card nb-list">
+            <div style="margin-bottom: 16px;"><div class="text-md fw-600">Nachweise &amp; Berechtigungen</div><div class="muted text-xs">Dokumente, Nachweise und Vertretungsrechte.</div></div>
+            <div class="item">
+              <span class="icon-circle"><i data-lucide="file-text"></i></span>
+              <div><div class="t">Geburtsurkunde Lev Petrov</div><div class="s">Nachweis hinterlegt</div></div>
+              <i data-lucide="chevron-right" style="color: var(--ink-4);"></i>
+            </div>
+            <div class="item">
+              <span class="icon-circle"><i data-lucide="file-text"></i></span>
+              <div><div class="t">Sorge-/Vollmachtstatus <i data-lucide="check-circle-2"></i></div><div class="s">Sie sind sorgeberechtigt</div></div>
+              <i data-lucide="chevron-right" style="color: var(--ink-4);"></i>
+            </div>
+            <div class="item">
+              <span class="icon-circle"><i data-lucide="user"></i></span>
+              <div><div class="t">Vertretungsrechte</div><div class="s">Sie vertreten Lev Petrov</div></div>
+              <i data-lucide="chevron-right" style="color: var(--ink-4);"></i>
+            </div>
+            <div class="item">
+              <span class="icon-circle"><i data-lucide="link"></i></span>
+              <div><div class="t">Wer ist mit welchen Vorgängen verknüpft?</div><div class="s">Übersicht anzeigen</div></div>
+              <i data-lucide="chevron-right" style="color: var(--ink-4);"></i>
+            </div>
+            <a class="all-link" href="#">Alle Nachweise &amp; Berechtigungen anzeigen <i data-lucide="chevron-right" style="width:14px;height:14px;"></i></a>
+          </div>
+        </div>
+
+        <div class="fm-card" style="margin-top: 18px; display: flex; align-items: center; justify-content: space-between; padding: 18px 26px;">
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <span class="icon-circle"><i data-lucide="shield"></i></span>
+            <div>
+              <div class="text-md fw-600">Sicher &amp; geschützt</div>
+              <div class="muted text-sm">Ihre Daten und Nachweise werden sicher verwaltet. Nur Personen mit entsprechenden Berechtigungen können Einsicht nehmen.</div>
+            </div>
+          </div>
+          <a href="datenschutz.html" class="btn btn-secondary">Mehr zum Datenschutz</a>
+        </div>
+      </div>
+
+      <div class="fm-card rail">
+        <h3>Was betrifft wen?</h3>
+        <div class="sub">Übersicht der Zuständigkeiten.</div>
+
+        <div class="person-head">
+          <span class="avatar lg">AP</span>
+          <div><div class="name">Anna Petrov</div><span class="badge brand">Sie</span></div>
+        </div>
+        <div class="kvs">
+          <div class="kv"><i data-lucide="folder"></i>Vorgänge<span class="n">3</span></div>
+          <div class="kv"><i data-lucide="file-text"></i>Dokumente<span class="n">12</span></div>
+          <div class="kv"><i data-lucide="calendar"></i>Nachweise<span class="n">5</span></div>
+          <div class="kv"><i data-lucide="users"></i>Vertretungen<span class="n">1</span></div>
+        </div>
+
+        <div class="person-head" style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 14px;">
+          <span class="avatar lg green">LP</span>
+          <div><div class="name">Lev Petrov</div><span class="badge green">Kind</span></div>
+        </div>
+        <div class="kvs">
+          <div class="kv"><i data-lucide="folder"></i>Vorgänge<span class="n">3</span></div>
+          <div class="kv"><i data-lucide="file-text"></i>Dokumente<span class="n">4</span></div>
+          <div class="kv"><i data-lucide="calendar"></i>Nachweise<span class="n">3</span></div>
+          <div class="kv"><i data-lucide="users"></i>Vertretungen<span class="n">1</span></div>
+        </div>
+
+        <div class="rail-foot">
+          <span class="icon-circle"><i data-lucide="info"></i></span>
+          <div>
+            <div class="t">Änderungen im Haushalt oder bei Berechtigungen?</div>
+            <div class="s"><a href="#">Haushaltseinstellungen öffnen <i data-lucide="chevron-right" style="width:11px;height:11px;"></i></a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>window.GT_ACTIVE='familie';</script>
+<script src="assets/govtech.js"></script>
+</body>
+</html>

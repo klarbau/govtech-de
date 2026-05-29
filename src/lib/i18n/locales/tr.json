@@ -68,7 +68,182 @@
     "persona_anna": "Anna Petrov, 28 — Blue Card EU, Berlin",
     "persona_schmidt": "Schmidt ailesi — Hamburg, doğum bekleniyor",
     "persona_mehmet": "Mehmet Yıldız, 34 — Köln, işyeri kurmayı planlıyor",
-    "cta_continue": "Demoyu aç"
+    "cta_continue": "Demoyu aç",
+    "nav": {
+      "aria_label": "Ana gezinme",
+      "leistungen": "Hizmetler",
+      "buerger": "Vatandaşlar için",
+      "behoerden": "Kurumlar için",
+      "sicherheit": "Güvenlik ve veri koruması",
+      "ueber_uns": "Hakkımızda",
+      "login": "Giriş yap"
+    },
+    "hero": {
+      "badge": "Sizin yerinize düşünen kamu yönetimi.",
+      "title": "Resmi işlemler, otomatik pilotta.",
+      "subtitle": "İşlemlerinizi hazırlayan, verilerinizi önceden dolduran ve sonraki adımı açıklayan, Almanya için bir vatandaş portalı.",
+      "cta_primary": "Demoyu başlat",
+      "cta_secondary": "Daha fazla bilgi",
+      "trust": "Güvenli. Güvenilir. Almanya genelinde."
+    },
+    "diagram": {
+      "you_label": "Vatandaş olarak siz",
+      "input_title": "Bir kez belirtin",
+      "input_body": "Talebinizi anlıyor ve her şeyi hazırlıyoruz.",
+      "autopilot_label": "Otomatik pilot",
+      "autopilot_sub": "İşlemi hazırla · verileri önceden doldur · sonraki adımı açıkla",
+      "authorities_label": "Kurumlarınız",
+      "behoerde1_name": "Nüfus Kayıt Dairesi (Einwohnermeldeamt)",
+      "behoerde1_status": "Verileri doğrula",
+      "behoerde2_name": "Yabancılar Dairesi (Ausländerbehörde)",
+      "behoerde2_status": "Başvuruyu işle",
+      "behoerde3_name": "Vergi Dairesi (Finanzamt)",
+      "behoerde3_status": "Karar bildirimini al",
+      "control_bar": "Her an genel görünümü ve kontrolü elinizde tutarsınız.",
+      "sr_summary": "İşleyiş: Talebinizi bir kez belirtirsiniz, otomatik pilot işlemi hazırlar ve tüm yetkili kurumları bilgilendirir — Nüfus Kayıt Dairesi (Einwohnermeldeamt), Yabancılar Dairesi (Ausländerbehörde) ve Vergi Dairesi (Finanzamt). Her an genel görünümü ve kontrolü elinizde tutarsınız."
+    },
+    "features": {
+      "title": "Demonun gösterdikleri"
+    },
+    "feature": {
+      "umzug": {
+        "title": "Taşınma",
+        "desc": "Yeni adresinizi ilgili tüm mercilere biz bildiririz."
+      },
+      "kindergeburt": {
+        "title": "Çocuğun doğumu",
+        "desc": "Belediyede kayıt, GEMA ve dahası — dakikalar içinde."
+      },
+      "aufenthalt": {
+        "title": "Oturma izni uzatma",
+        "desc": "Başvuruyu hazırlayın, belgeleri kontrol edin, randevu alın."
+      },
+      "posteingang": {
+        "title": "Yapay zekâ açıklamalı gelen kutusu",
+        "desc": "Çaresizlik yerine anlamak — açıklar, özetler ve yardımcı olur."
+      }
+    },
+    "trust": {
+      "title": "Güvenilir bir temel üzerinde",
+      "deutschlandid": {
+        "title": "DeutschlandID",
+        "desc": "Dijital kimliğinizle güvenli giriş yapın."
+      },
+      "eudi": {
+        "title": "EUDI Wallet",
+        "desc": "AB genelinde tanınır ve geleceğe hazırdır."
+      },
+      "bitv": {
+        "title": "BITV uyumlu",
+        "desc": "Erişilebilir, anlaşılır ve herkese açık."
+      },
+      "mock": {
+        "title": "Demo · 2027 vizyonu",
+        "desc": "Almanya'da kamu yönetiminin geleceğine bir bakış."
+      }
+    }
+  },
+  "onboarding": {
+    "topbar": {
+      "login_label": "Giriş yap"
+    },
+    "welcome": {
+      "title": "GovTech DE'ye hoş geldiniz",
+      "subtitle": "Giriş yapın veya demoyu başlatın."
+    },
+    "method": {
+      "deutschlandid": {
+        "title": "DeutschlandID ile devam et",
+        "helper": "Güvenli, basit ve resmi olarak tanınır."
+      },
+      "eudi": {
+        "title": "EUDI Wallet ile devam et",
+        "helper": "Avrupa için dijital cüzdanınız."
+      },
+      "demo": {
+        "title": "Sahte verilerle demo modu",
+        "helper": "Giriş yapmadan deneyin. Kurumlara gerçek bağlantı yoktur."
+      }
+    },
+    "trust": {
+      "secure": "Güvenli giriş",
+      "consent": "Yalnızca sizin onayınızla",
+      "no_real_connection": "Kurumlara gerçek bağlantı yoktur"
+    },
+    "how": {
+      "title": "İşte bu kadar basit",
+      "step1": {
+        "title": "Kimliğinizi seçin",
+        "desc": "Tercih ettiğiniz giriş yöntemini seçin: DeutschlandID veya EUDI Wallet."
+      },
+      "step2": {
+        "title": "Veri paylaşımını gözden geçirin",
+        "desc": "İstenen verileri inceleyin ve yalnızca gerekeni paylaşın."
+      },
+      "step3": {
+        "title": "Otomatik pilotu başlatın",
+        "desc": "Verileriniz önceden doldurulur, mektuplar açıklanır ve işlemleriniz otomatik olarak başlar."
+      }
+    },
+    "why": {
+      "title": "Neden bu giriş?",
+      "prefill": "Verileri önceden doldurmak",
+      "explain": "Mektupları anlaşılır biçimde açıklamak",
+      "autopilot": "İşlemleriniz için otomatik pilot"
+    },
+    "handshake": {
+      "connecting": "{method} bağlantısı kuruluyor …",
+      "confirmed": "Kimlik doğrulandı",
+      "mock_note": "Simüle edilmiş kimlik doğrulama · prototip, kurumlara gerçek bağlantı yoktur.",
+      "qr_label": "Giriş için QR kodu (örnek)",
+      "cancel": "İptal"
+    },
+    "persona": {
+      "title": "Demo için bir kimlik seçin",
+      "subtitle": "Kimliği daha sonra istediğiniz zaman değiştirebilirsiniz.",
+      "anna": {
+        "name": "Anna Petrov",
+        "descriptor": "Berlin · ücretli çalışan · Rus"
+      },
+      "schmidt": {
+        "name": "Schmidt ailesi",
+        "descriptor": "Hamburg · çocuklu aile · Alman"
+      },
+      "mehmet": {
+        "name": "Mehmet Yıldız",
+        "descriptor": "Köln · serbest meslek · Türk"
+      },
+      "back": "Geri"
+    },
+    "transparency": {
+      "title": "Bu verileri dijital kimliğiniz sağlar",
+      "subtitle": "Neyin paylaşılacağına siz karar verirsiniz. Onayınız olmadan hiçbir şey paylaşılmaz.",
+      "required_group": "Zorunlu bilgiler — giriş için gereklidir",
+      "optional_group": "İsteğe bağlı bilgiler — yalnızca gerektiğinde (veri minimizasyonu)",
+      "attr": {
+        "name": "Ad",
+        "birthdate": "Doğum tarihi",
+        "address": "Adres",
+        "nationality": "Uyruk",
+        "marital_status": "Medeni durum",
+        "tax_id": "Vergi kimlik numarası"
+      },
+      "badge": {
+        "available": "Mevcut",
+        "optional": "İsteğe bağlı"
+      },
+      "share_toggle": "Paylaş",
+      "recipient": "Alıcı: yalnızca GovTech DE (demo) — ve yalnızca sizin onayınızla.",
+      "legal_basis": "Hukuki dayanak: eIDAS 2 / OZG · onaya dayalı bilgiler: DSGVO Art. 6 Abs. 1 lit. a",
+      "dsgvo_footer": "Verileriniz güvenli biçimde iletilir ve DSGVO (GDPR) uyarınca işlenir.",
+      "mock_note": "Spekülatif demo özelliği · gerçek eID veri aktarımı yoktur.",
+      "back": "Geri",
+      "confirm": "Girişi onayla",
+      "committing": "Giriş hazırlanıyor …"
+    },
+    "footer": {
+      "bsi": "Bu uygulama, BSI temel koruma (BSI-Grundschutz) kriterlerini karşılar."
+    }
   },
   "dashboard": {
     "title": "Panel",
@@ -76,10 +251,11 @@
     "greeting": {
       "frau": "İyi günler, Sayın {nachname}",
       "herr": "İyi günler, Sayın {nachname}",
-      "neutral": "İyi günler, {vorname} {nachname}"
+      "neutral": "İyi günler, {vorname} {nachname}",
+      "last_login_meta": "son giriş {days} gün önce · bu cihazda"
     },
     "demo_banner": {
-      "text": "Demo modu · örnek veri. BundID ile giriş seyrek olduğundan, değişiklik görünümü size yardımcı olur.",
+      "text": "Demo modu · örnek veri · orijinaller resmi posta kutularında kalır",
       "disclaimer_link": "Bilgilendirmeyi gör"
     },
     "diff": {
@@ -114,7 +290,8 @@
       "fristen": {
         "title": "Süreler",
         "next": "Sonraki süre: {datum}",
-        "none": "Açık süre yok"
+        "none": "Açık süre yok",
+        "open_count": "{count} açık"
       },
       "posteingang": {
         "title": "Gelen kutusu",
@@ -122,21 +299,22 @@
       },
       "vorgaenge": {
         "title": "İşlemler",
-        "value": "{laufend} sürüyor"
+        "value": "{laufend} sürüyor",
+        "value_running_done": "{laufend} sürüyor, {abgeschlossen} tamamlandı"
       },
       "termine": {
         "title": "Randevular",
-        "next": "Sonraki randevu: {datum}",
+        "next": "Sonraki randevu {datum}",
         "none": "Planlanmış randevu yok"
       },
       "datenschutz": {
         "title": "Gizlilik merkezi",
-        "value": "{count} etkinlik / 30 gün"
+        "value": "30 günde {count} etkinlik"
       },
       "stammdaten": {
         "title": "Temel veri durumu",
         "value": "Adresi kontrol et",
-        "last_confirmed": "Son onay: {datum}",
+        "last_confirmed": "Adres son olarak {datum} tarihinde onaylandı",
         "never_confirmed": "Henüz onaylanmadı"
       },
       "cta_ansehen": "Görüntüle",
@@ -145,7 +323,13 @@
     "error": {
       "load": "Panel yüklenemedi."
     },
-    "loading": "Panel yükleniyor"
+    "loading": "Panel yükleniyor",
+    "frist_inline": {
+      "in_one_day": "Süre 1 gün içinde",
+      "in_n_days": "Süre {days} gün içinde",
+      "on_date": "Süre {datum}",
+      "overdue": "Süre {datum} aşıldı"
+    }
   },
   "common": {
     "cta": {
@@ -231,6 +415,58 @@
         "adresse": "Adres",
         "vorschau": "Önizleme",
         "autopilot": "Otomatik pilot çalışıyor"
+      }
+    },
+    "identitaet": {
+      "daten": {
+        "title": "Mevcut verileriniz",
+        "empty": "Veriler yüklenemedi.",
+        "status": {
+          "bestaetigt": "Onaylandı",
+          "verfuegbar": "Mevcut",
+          "optional": "İsteğe bağlı"
+        },
+        "name": {
+          "label": "Ad",
+          "body": "Kaynak: DeutschlandID öz beyanı. Taşınma (Umzug) otomatik pilotunda değiştirilmeden aktarılır."
+        },
+        "geburtsdatum": {
+          "label": "Doğum tarihi",
+          "body": "Kaynak: DeutschlandID öz beyanı. Doğum sicili (Geburtsregister) ile doğrulanmıştır."
+        },
+        "anschrift": {
+          "label": "Mevcut adres",
+          "body": "Kaynak: nüfus sicili (Melderegister). Taşınma (Umzug) otomatik pilotunda yeni adresle değiştirilir."
+        },
+        "familienstand": {
+          "label": "Medeni durum",
+          "value": {
+            "ledig": "bekâr",
+            "verheiratet": "evli",
+            "geschieden": "boşanmış",
+            "verwitwet": "dul",
+            "eingetragene_lebenspartnerschaft": "tescilli yaşam ortaklığı (eingetragene Lebenspartnerschaft)"
+          },
+          "body": "Kaynak: nüfus dairesi (Standesamt — medeni hâl sicili, § 3 Abs. 1 Nr. 8 BMG). Taşınma (Umzug) otomatik pilotunda değiştirilmeden aktarılır."
+        },
+        "aufenthaltstitel": {
+          "label": "Oturma izni (Aufenthaltstitel)",
+          "value": "{norm} · {datum} tarihine kadar geçerli",
+          "body": "Kaynak: yetkili yabancılar dairesinin (Ausländerbehörde) EUDI Wallet tasdiki. Saklama yeri: Wallet."
+        },
+        "staatsangehoerigkeit": {
+          "label": "Vatandaşlık",
+          "body": "Kaynak: nüfus sicili (Melderegister). Yalnızca bir işlem açıkça gerektirdiğinde aktarılır."
+        },
+        "dokumente": {
+          "label": "Belgeler",
+          "value": "{count, plural, =0 {Wallet'te kanıt yok} =1 {Wallet'te 1 kanıt} other {Wallet'te # kanıt}}",
+          "body": "Belge kasanızdaki kanıtlar. Yalnızca talep üzerine aktarılır."
+        },
+        "dsgvo": {
+          "text": "Verileriniz güvenli biçimde aktarılır ve GDPR'ye (DSGVO) uygun olarak işlenir.",
+          "link": "Daha fazla bilgi"
+        }
       }
     },
     "start": {
@@ -396,7 +632,13 @@
       "stream": "Yanıt yüklenemedi. Lütfen tekrar deneyin."
     },
     "greeting": {
-      "intro": "Merhaba {vorname}, mevcut durumunuza genel bir bakış:",
+      "intro": "Merhaba, mevcut durumunuza genel bir bakış:",
+      "intro_named": "Merhaba {vorname}, mevcut durumunuza genel bir bakış:",
+      "bullet_steuerbescheid": "{behoerde} tarafından bir **vergi tahakkuku (Steuerbescheid)** aldınız.",
+      "bullet_erstattung": "Size {betrag} tutarında bir **vergi iadesi (Steuererstattung)** ödenecek.",
+      "bullet_nachzahlung": "{betrag} tutarında bir **ek vergi ödemesi (Steuernachzahlung)** bulunuyor.",
+      "bullet_aufenthalt": "**Oturma izniniz (Aufenthaltstitel)** {datum} tarihine kadar geçerli.",
+      "bullet_einspruch": "Vergi tahakkukuna karşı {datum} tarihine kadar **itiraz (Einspruch)** edilebilir.",
       "bullet_briefe": "Gelen kutunuzda {count, plural, =1 {1 okunmamış mektup} other {# okunmamış mektup}}.",
       "bullet_frist": "Sonraki süre: {datum} tarihinde {betreff}.",
       "bullet_keine": "Şu anda acil bir şey yok.",
@@ -571,6 +813,10 @@
         "antwort_erforderlich": "Yanıt gerekli",
         "zur_kenntnis": "Bilginize",
         "erledigt": "Tamamlandı"
+      },
+      "relative": {
+        "heute": "Bugün",
+        "gestern": "Dün"
       }
     },
     "gruppe": {
@@ -601,6 +847,7 @@
       "empty_select_title": "Listeden bir yazı seçin.",
       "empty_select_body": "Resmî yazılarınız solda görünür. Yapay zekâ açıklamasını, süreleri ve olası adımları görmek için birini seçin.",
       "auth_badge": "Gerçeklik doğrulandı",
+      "verifiziert_am_template": "{datum} tarihinde doğrulandı",
       "originaltext_auszug_title": "Orijinal metin alıntısı",
       "originaltext_mehr": "Daha fazla göster",
       "originaltext_heading": "Orijinal metin",
@@ -632,6 +879,8 @@
         "kalender": "Süreyi takvime ekle (.ics)",
         "kalender_per_frist_template": "{typ} takvime ekle (.ics)",
         "originalbrief": "Orijinal metni göster",
+        "antwort_vorbereiten": "Yanıt hazırla",
+        "vorgang_erstellen": "İşlem oluştur",
         "speichern": "Yazıyı kaydet (.txt)",
         "markiere_gelesen": "Bu yazıyı okundu olarak işaretle",
         "citation_mismatch_disabled_hint": "Süre orijinalde net olarak doğrulanamadı. Takvim dışa aktarımı devre dışı — lütfen tarihi orijinal metinden kontrol edin."
@@ -1036,29 +1285,45 @@
     "card": {
       "progress": "{gesamt} adımdan {erledigt} tamam",
       "progress_label": "İlerleme",
+      "progress_count": "{gesamt} adımdan {erledigt} tamamlandı",
       "cta_weiter": "Devam et",
       "cta_kaskade": "Zinciri görüntüle",
       "cta_unterlagen": "Belge yükle",
       "cta_ansehen": "İşlemi görüntüle",
+      "cta_oeffnen": "İşlemi aç",
       "unterlagen_fehlen": "Belge eksik",
-      "umzug_subtitle": "İlgili tüm makamlar otomatik olarak bilgilendirilir."
+      "unterlagen_helper": "Lütfen eksik belgeleri yükleyin.",
+      "unterlagen_open_days": "{tage, plural, =1 {1 gündür} other {# gündür}} açık",
+      "umzug_subtitle": "Makamlarınız otomatik olarak bilgilendirilir.",
+      "responsible_self": "Sorumlu: Siz",
+      "frist_in_days": "Süre {tage, plural, =1 {1 gün} other {# gün}} içinde",
+      "frist_due_on": "Son tarih {datum}",
+      "gestartet_label": "Başlangıç: {datum}",
+      "menu_aria": "«{titel}» için ek işlemler"
     },
     "stepper": {
       "aria": "{titel} işleminin ilerlemesi",
       "node_done": "{behoerde}: tamamlandı",
       "node_active": "{behoerde}: işlemde",
       "node_pending": "{behoerde}: beklemede",
-      "node_failed": "{behoerde}: başarısız"
+      "node_failed": "{behoerde}: başarısız",
+      "date_running": "Doğrulama sürüyor",
+      "date_pending": "Beklemede"
     },
     "rail": {
       "title": "Şu anda önemli olan ne?",
+      "subtitle": "Süren işlemlerinizdeki öne çıkanlar",
       "offene_vorgaenge": "Açık işlemler",
+      "offene_label": "{count, plural, =1 {1 açık işlem} other {# açık işlem}}",
       "offene_vorgaenge_count": "{count, plural, =1 {1 açık işlem} other {# açık işlem}}",
       "frist_naht": "Süre yaklaşıyor",
+      "frist_label": "Önümüzdeki 14 gün içinde {count, plural, =1 {1 son tarih} other {# son tarih}}",
       "frist_naht_days": "Süre {tage, plural, =1 {1 gün} other {# gün}} içinde",
       "warten_bestaetigung": "Onay bekleniyor",
+      "warten_label": "{count, plural, =1 {1 onayınızı bekliyor} other {# onayınızı bekliyor}}",
       "warten_bestaetigung_count": "{count, plural, =1 {1 adım açık} other {# adım açık}}",
       "cta_ansehen": "Görüntüle",
+      "cta_fristen": "Süreleri görüntüle",
       "alle_ansehen": "Tüm işlemleri görüntüle",
       "empty": "Şu anda acil bir şey yok."
     },
@@ -1093,8 +1358,12 @@
     },
     "tab": {
       "aria_label": "Kişisel veri bölümleri",
-      "profil": { "label": "Profilim" },
-      "wallet": { "label": "Cüzdan ve dış alıcılar" }
+      "profil": {
+        "label": "Profilim"
+      },
+      "wallet": {
+        "label": "Cüzdan ve dış alıcılar"
+      }
     },
     "hero": {
       "eyebrow": "Tek doğru kaynak",
@@ -1135,11 +1404,21 @@
       "vision_pill": "2029 vizyonu"
     },
     "sektion": {
-      "identitaet": { "title": "Kimlik" },
-      "anschrift": { "title": "Adres" },
-      "familie": { "title": "Aile" },
-      "dokumente": { "title": "Belgeler" },
-      "sperren_einstellungen": { "title": "Engeller ve ayarlar" },
+      "identitaet": {
+        "title": "Kimlik"
+      },
+      "anschrift": {
+        "title": "Adres"
+      },
+      "familie": {
+        "title": "Aile"
+      },
+      "dokumente": {
+        "title": "Belgeler"
+      },
+      "sperren_einstellungen": {
+        "title": "Engeller ve ayarlar"
+      },
       "altersvorsorge": {
         "title": "Yaşlılık güvencesi (Altersvorsorge)",
         "subtitle": "Yasal emeklilik, meslek emeklilik kurumları ve özel emeklilik genel bakışı"
@@ -1148,8 +1427,12 @@
         "title": "Sağlık sigortası ve bakım",
         "subtitle": "Sağlık sigortası kasası, ePA, eRezept ve bakım"
       },
-      "kontakt_postfach": { "title": "İletişim ve posta kutusu (Kontakt & Postfach)" },
-      "notification_praeferenzen": { "title": "Bildirim tercihleri (2027 vizyonu)" },
+      "kontakt_postfach": {
+        "title": "İletişim ve posta kutusu (Kontakt & Postfach)"
+      },
+      "notification_praeferenzen": {
+        "title": "Bildirim tercihleri (2027 vizyonu)"
+      },
       "mobilitaet": {
         "preview_no_fe": "Kayıtlı sürücü belgesi (Fahrerlaubnis) yok",
         "preview_fe_classes": "Sınıf {klassen}",
@@ -1176,33 +1459,87 @@
       "verwalten": "Yönet"
     },
     "field": {
-      "familienname": { "label": "Soyadı" },
-      "fruehere_namen": { "label": "Önceki adlar" },
-      "vornamen": { "label": "Adlar" },
-      "doktorgrad": { "label": "Doktora unvanı (Doktorgrad)" },
-      "geburtsdatum": { "label": "Doğum tarihi" },
-      "geburtsort": { "label": "Doğum yeri" },
-      "staatsangehoerigkeit": { "label": "Vatandaşlık" },
-      "steuer_id": { "label": "Vergi kimlik numarası (Steuer-IdNr)" },
-      "anschrift_aktuell": { "label": "Mevcut ana adres" },
-      "anschriften_historisch": { "label": "Önceki adresler" },
-      "familienstand": { "label": "Medeni durum" },
-      "partner": { "label": "Eş / hayat arkadaşı" },
-      "kinder": { "label": "Çocuklar" },
-      "eheschliessung": { "label": "Evlilik / hayat ortaklığı" },
-      "personalausweis": { "label": "Kimlik kartı (Personalausweis)" },
-      "reisepass": { "label": "Pasaport (Reisepass)" },
-      "eat_can": { "label": "Elektronik oturma izni (eAT) — CAN" },
-      "azr_nr": { "label": "AZR numarası (Ausländerzentralregister)" },
-      "religionszugehoerigkeit": { "label": "Dini aidiyet" },
-      "kontakt_email": { "label": "E-posta adresi" },
-      "kontakt_mobil": { "label": "Cep telefonu numarası" },
-      "sprachpraeferenz": { "label": "Dil tercihi" },
-      "iban": { "label": "İade için IBAN" },
-      "uebermittlungssperren": { "label": "Aktarım engelleri (Übermittlungssperren, §§ 42 Abs. 3, 50 Abs. 5 BMG)" },
-      "kvnr": { "label": "Sağlık sigortası numarası (KVNR)" },
-      "drv_versicherungsnummer": { "label": "Emeklilik sigortası numarası (DRV)" },
-      "elstam": { "label": "ELStAM (vergi sınıfı, muafiyetler)" },
+      "familienname": {
+        "label": "Soyadı"
+      },
+      "fruehere_namen": {
+        "label": "Önceki adlar"
+      },
+      "vornamen": {
+        "label": "Adlar"
+      },
+      "doktorgrad": {
+        "label": "Doktora unvanı (Doktorgrad)"
+      },
+      "geburtsdatum": {
+        "label": "Doğum tarihi"
+      },
+      "geburtsort": {
+        "label": "Doğum yeri"
+      },
+      "staatsangehoerigkeit": {
+        "label": "Vatandaşlık"
+      },
+      "steuer_id": {
+        "label": "Vergi kimlik numarası (Steuer-IdNr)"
+      },
+      "anschrift_aktuell": {
+        "label": "Mevcut ana adres"
+      },
+      "anschriften_historisch": {
+        "label": "Önceki adresler"
+      },
+      "familienstand": {
+        "label": "Medeni durum"
+      },
+      "partner": {
+        "label": "Eş / hayat arkadaşı"
+      },
+      "kinder": {
+        "label": "Çocuklar"
+      },
+      "eheschliessung": {
+        "label": "Evlilik / hayat ortaklığı"
+      },
+      "personalausweis": {
+        "label": "Kimlik kartı (Personalausweis)"
+      },
+      "reisepass": {
+        "label": "Pasaport (Reisepass)"
+      },
+      "eat_can": {
+        "label": "Elektronik oturma izni (eAT) — CAN"
+      },
+      "azr_nr": {
+        "label": "AZR numarası (Ausländerzentralregister)"
+      },
+      "religionszugehoerigkeit": {
+        "label": "Dini aidiyet"
+      },
+      "kontakt_email": {
+        "label": "E-posta adresi"
+      },
+      "kontakt_mobil": {
+        "label": "Cep telefonu numarası"
+      },
+      "sprachpraeferenz": {
+        "label": "Dil tercihi"
+      },
+      "iban": {
+        "label": "İade için IBAN"
+      },
+      "uebermittlungssperren": {
+        "label": "Aktarım engelleri (Übermittlungssperren, §§ 42 Abs. 3, 50 Abs. 5 BMG)"
+      },
+      "kvnr": {
+        "label": "Sağlık sigortası numarası (KVNR)"
+      },
+      "drv_versicherungsnummer": {
+        "label": "Emeklilik sigortası numarası (DRV)"
+      },
+      "elstam": {
+        "label": "ELStAM (vergi sınıfı, muafiyetler)"
+      },
       "geschlecht": {
         "label": "Cinsiyet kaydı (Geschlechtseintrag)",
         "value": {
@@ -1238,42 +1575,108 @@
         "label": "Dini topluluklara aktarım engeli (§ 42 Abs. 3 BMG)"
       },
       "beschaeftigung": {
-        "typ": { "label": "İstihdam türü" },
-        "arbeitgeber": { "label": "İşveren" },
-        "kvnr": { "label": "KVNR" },
-        "drv": { "label": "DRV no." }
+        "typ": {
+          "label": "İstihdam türü"
+        },
+        "arbeitgeber": {
+          "label": "İşveren"
+        },
+        "kvnr": {
+          "label": "KVNR"
+        },
+        "drv": {
+          "label": "DRV no."
+        }
       }
     },
     "korrekturweg": {
-      "familienname": { "pointer": "Düzeltme nüfus dairesinde (Standesamt) § 1355 BGB / § 45 PStG uyarınca yapılır." },
-      "fruehere_namen": { "pointer": "Düzeltme nüfus dairesinde (Standesamt) § 45 PStG uyarınca yapılır." },
-      "vornamen": { "pointer": "Düzeltme nüfus dairesinde (Standesamt) § 45 PStG uyarınca yapılır." },
-      "doktorgrad": { "pointer": "Düzeltme, vatandaş hizmetleri bürosunda (Bürgeramt) belge yüklemesiyle yapılır (§ 3 Abs. 1 Nr. 6 BMG)." },
-      "geburtsdatum": { "pointer": "Düzeltme doğum yerinin nüfus dairesinde (Standesamt) yapılır." },
-      "geburtsort": { "pointer": "Düzeltme doğum yerinin nüfus dairesinde (Standesamt) yapılır." },
-      "geschlecht": { "pointer": "Bildirim nüfus dairesinde (Standesamt) § 4 SBGG (kayıt) ve § 2 SBGG (şahsen tasdik) uyarınca yapılır." },
-      "staatsangehoerigkeit": { "pointer": "Düzeltme vatandaşlığa kabul makamı (Einbürgerungsbehörde) aracılığıyla StAG uyarınca yapılır." },
-      "steuer_id": { "pointer": "Federal Merkez Vergi Dairesi (Bundeszentralamt für Steuern) tarafından § 139b AO uyarınca ömür boyu verilir — değiştirilemez." },
-      "anschrift_aktuell": { "pointer": "Bürgeramt randevusu veya elektronik ikamet kaydı (Anmeldung — eWA) § 17 BMG uyarınca." },
-      "anschriften_historisch": { "pointer": "Güncellemeler § 17 BMG uyarınca yeni bir Anmeldung ile gerçekleşir." },
-      "familienstand": { "pointer": "Düzeltme nüfus dairesinde (Standesamt) PStG uyarınca yapılır." },
-      "partner": { "pointer": "Düzeltme nüfus dairesinde (Standesamt) PStG uyarınca yapılır." },
-      "kinder": { "pointer": "Düzeltme nüfus dairesinde (Standesamt) § 21 PStG uyarınca yapılır." },
-      "eheschliessung": { "pointer": "Düzeltme evliliğin kıyıldığı nüfus dairesinde (Standesamt) yapılır." },
-      "personalausweis": { "pointer": "Yeniden basım Bürgeramt'ta PAuswG uyarınca yapılır." },
-      "reisepass": { "pointer": "Yeniden basım Bürgeramt'ta PassG uyarınca yapılır." },
-      "eat_can": { "pointer": "Düzeltme yabancılar dairesi (Ausländerbehörde) aracılığıyla AufenthG uyarınca yapılır." },
-      "azr_nr": { "pointer": "Düzeltme yabancılar dairesi (Ausländerbehörde) aracılığıyla § 34 AZRG uyarınca yapılır." },
-      "religionszugehoerigkeit": { "pointer": "Giriş / çıkış: nüfus dairesi (Standesamt) veya dini topluluk; saklama § 3 Abs. 1 Nr. 11 BMG uyarınca." },
-      "kontakt_email": { "pointer": "BundID hesabınızda doğrudan değiştirilebilir (uygulama ayarı)." },
-      "kontakt_mobil": { "pointer": "BundID hesabınızda doğrudan değiştirilebilir (uygulama ayarı)." },
-      "sprachpraeferenz": { "pointer": "Uygulama içi ayar — kurumlara etkisi yoktur." },
-      "iban": { "pointer": "Bugün (Mayıs 2026) IBAN her kuruma ayrı ayrı verilmek zorundadır — bu uygulama 2027 senaryosunu simüle eder." },
-      "auskunftssperre": { "pointer": "Gerekçeli başvuru Bürgeramt'a § 51 Abs. 1 BMG uyarınca yapılır." },
-      "uebermittlungssperren": { "pointer": "Bürgeramt'a başvuru §§ 42 Abs. 3, 50 Abs. 5 BMG uyarınca (gerekçesiz)." },
-      "kvnr": { "pointer": "Sağlık sigortanızın üye portalı üzerinden güncelleyin (§ 290 SGB V)." },
-      "drv_versicherungsnummer": { "pointer": "DRV hesabınız üzerinden güncelleyin (§ 147 SGB VI)." },
-      "elstam": { "pointer": "Mein ELSTER veya vergi dairesi (Finanzamt) üzerinden § 39 EStG uyarınca güncelleyin." }
+      "familienname": {
+        "pointer": "Düzeltme nüfus dairesinde (Standesamt) § 1355 BGB / § 45 PStG uyarınca yapılır."
+      },
+      "fruehere_namen": {
+        "pointer": "Düzeltme nüfus dairesinde (Standesamt) § 45 PStG uyarınca yapılır."
+      },
+      "vornamen": {
+        "pointer": "Düzeltme nüfus dairesinde (Standesamt) § 45 PStG uyarınca yapılır."
+      },
+      "doktorgrad": {
+        "pointer": "Düzeltme, vatandaş hizmetleri bürosunda (Bürgeramt) belge yüklemesiyle yapılır (§ 3 Abs. 1 Nr. 6 BMG)."
+      },
+      "geburtsdatum": {
+        "pointer": "Düzeltme doğum yerinin nüfus dairesinde (Standesamt) yapılır."
+      },
+      "geburtsort": {
+        "pointer": "Düzeltme doğum yerinin nüfus dairesinde (Standesamt) yapılır."
+      },
+      "geschlecht": {
+        "pointer": "Bildirim nüfus dairesinde (Standesamt) § 4 SBGG (kayıt) ve § 2 SBGG (şahsen tasdik) uyarınca yapılır."
+      },
+      "staatsangehoerigkeit": {
+        "pointer": "Düzeltme vatandaşlığa kabul makamı (Einbürgerungsbehörde) aracılığıyla StAG uyarınca yapılır."
+      },
+      "steuer_id": {
+        "pointer": "Federal Merkez Vergi Dairesi (Bundeszentralamt für Steuern) tarafından § 139b AO uyarınca ömür boyu verilir — değiştirilemez."
+      },
+      "anschrift_aktuell": {
+        "pointer": "Bürgeramt randevusu veya elektronik ikamet kaydı (Anmeldung — eWA) § 17 BMG uyarınca."
+      },
+      "anschriften_historisch": {
+        "pointer": "Güncellemeler § 17 BMG uyarınca yeni bir Anmeldung ile gerçekleşir."
+      },
+      "familienstand": {
+        "pointer": "Düzeltme nüfus dairesinde (Standesamt) PStG uyarınca yapılır."
+      },
+      "partner": {
+        "pointer": "Düzeltme nüfus dairesinde (Standesamt) PStG uyarınca yapılır."
+      },
+      "kinder": {
+        "pointer": "Düzeltme nüfus dairesinde (Standesamt) § 21 PStG uyarınca yapılır."
+      },
+      "eheschliessung": {
+        "pointer": "Düzeltme evliliğin kıyıldığı nüfus dairesinde (Standesamt) yapılır."
+      },
+      "personalausweis": {
+        "pointer": "Yeniden basım Bürgeramt'ta PAuswG uyarınca yapılır."
+      },
+      "reisepass": {
+        "pointer": "Yeniden basım Bürgeramt'ta PassG uyarınca yapılır."
+      },
+      "eat_can": {
+        "pointer": "Düzeltme yabancılar dairesi (Ausländerbehörde) aracılığıyla AufenthG uyarınca yapılır."
+      },
+      "azr_nr": {
+        "pointer": "Düzeltme yabancılar dairesi (Ausländerbehörde) aracılığıyla § 34 AZRG uyarınca yapılır."
+      },
+      "religionszugehoerigkeit": {
+        "pointer": "Giriş / çıkış: nüfus dairesi (Standesamt) veya dini topluluk; saklama § 3 Abs. 1 Nr. 11 BMG uyarınca."
+      },
+      "kontakt_email": {
+        "pointer": "BundID hesabınızda doğrudan değiştirilebilir (uygulama ayarı)."
+      },
+      "kontakt_mobil": {
+        "pointer": "BundID hesabınızda doğrudan değiştirilebilir (uygulama ayarı)."
+      },
+      "sprachpraeferenz": {
+        "pointer": "Uygulama içi ayar — kurumlara etkisi yoktur."
+      },
+      "iban": {
+        "pointer": "Bugün (Mayıs 2026) IBAN her kuruma ayrı ayrı verilmek zorundadır — bu uygulama 2027 senaryosunu simüle eder."
+      },
+      "auskunftssperre": {
+        "pointer": "Gerekçeli başvuru Bürgeramt'a § 51 Abs. 1 BMG uyarınca yapılır."
+      },
+      "uebermittlungssperren": {
+        "pointer": "Bürgeramt'a başvuru §§ 42 Abs. 3, 50 Abs. 5 BMG uyarınca (gerekçesiz)."
+      },
+      "kvnr": {
+        "pointer": "Sağlık sigortanızın üye portalı üzerinden güncelleyin (§ 290 SGB V)."
+      },
+      "drv_versicherungsnummer": {
+        "pointer": "DRV hesabınız üzerinden güncelleyin (§ 147 SGB VI)."
+      },
+      "elstam": {
+        "pointer": "Mein ELSTER veya vergi dairesi (Finanzamt) üzerinden § 39 EStG uyarınca güncelleyin."
+      }
     },
     "disclaimer": {
       "lese_schicht": "Bu uygulama bir **okuma ve yönlendirme katmanıdır**. Yetkili sicillerdeki verilerinizde **kendi başına** hiçbir değişiklik yapmaz. Düzeltmeler yalnızca ilgili kurumun prosedürü üzerinden yapılır — örneğin adres için Bürgeramt'ta § 17 BMG uyarınca; medeni durum ve adlar için nüfus dairesinde (Standesamt) PStG uyarınca; cinsiyet kaydı değişikliğinin **kaydı** için nüfus dairesinde (Standesamt) § 4 SBGG uyarınca (sözlü veya yazılı, beyandan üç ay önce) ve **beyanın şahsen tasdiki** için § 2 SBGG uyarınca nüfus dairesinde; vergi kimlik numarası için Federal Merkez Vergi Dairesi'nde (Bundeszentralamt für Steuern) § 139b AO uyarınca. Her alan için size doğru yolu gösteriyoruz.",
@@ -1331,18 +1734,35 @@
         "anrechnungszeit_pflege_offengelegt": "Bakım sayım süresi (Anrechnungszeit Pflege) açıklandı (§ 3 SGB VI; bakım derecesi onayına bağlı)"
       },
       "kategorie": {
-        "behoerde_zu_behoerde": { "label": "Kurumdan kuruma aktarım" },
-        "app_aktivitaet": { "label": "Uygulama etkinliği (resmi aktarım günlüğü değildir)" },
-        "speculative_2027": { "label": "2027 vizyonu (demo)" },
-        "behoerde_zu_buerger": { "label": "Kurumdan vatandaşa (bildirim / posta kutusuna geliş)" }
+        "behoerde_zu_behoerde": {
+          "label": "Kurumdan kuruma aktarım"
+        },
+        "app_aktivitaet": {
+          "label": "Uygulama etkinliği (resmi aktarım günlüğü değildir)"
+        },
+        "speculative_2027": {
+          "label": "2027 vizyonu (demo)"
+        },
+        "behoerde_zu_buerger": {
+          "label": "Kurumdan vatandaşa (bildirim / posta kutusuna geliş)"
+        }
       },
       "richtung": {
         "label": "Yön",
-        "alle": { "label": "Tüm yönler" },
-        "eingehend": { "label": "Gelen (kurum → vatandaş)" },
-        "ausgehend": { "label": "Giden (vatandaş → kurumlar)" },
-        "intern": { "label": "Dahili (uygulama etkinliği)" }
-      }
+        "alle": {
+          "label": "Tüm yönler"
+        },
+        "eingehend": {
+          "label": "Gelen (kurum → vatandaş)"
+        },
+        "ausgehend": {
+          "label": "Giden (vatandaş → kurumlar)"
+        },
+        "intern": {
+          "label": "Dahili (uygulama etkinliği)"
+        }
+      },
+      "via_app": "GovTech DE uygulaması üzerinden"
     },
     "modal": {
       "religion_consent": {
@@ -1553,17 +1973,35 @@
           "cta_cancel": "İptal"
         },
         "kategorie": {
-          "steuer": { "label": "Vergi (Finanzamt / BZSt)" },
-          "sozial": { "label": "Sosyal yardımlar (DRV / GKV / Bürgergeld)" },
-          "familie": { "label": "Aile (Familienkasse / Elterngeld)" },
-          "verkehr": { "label": "Trafik (KFZ / cezalar / sürücü belgesi)" },
-          "sonstige": { "label": "Diğer (Bürgeramt / ikamet / diğer)" }
+          "steuer": {
+            "label": "Vergi (Finanzamt / BZSt)"
+          },
+          "sozial": {
+            "label": "Sosyal yardımlar (DRV / GKV / Bürgergeld)"
+          },
+          "familie": {
+            "label": "Aile (Familienkasse / Elterngeld)"
+          },
+          "verkehr": {
+            "label": "Trafik (KFZ / cezalar / sürücü belgesi)"
+          },
+          "sonstige": {
+            "label": "Diğer (Bürgeramt / ikamet / diğer)"
+          }
         },
         "kanal": {
-          "postfach": { "label": "BundID posta kutusu" },
-          "email_pilot": { "label": "E-posta bildirimi (pilot)" },
-          "sms_pilot": { "label": "SMS bildirimi (pilot)" },
-          "brief": { "label": "Kâğıt mektup (varsayılan)" }
+          "postfach": {
+            "label": "BundID posta kutusu"
+          },
+          "email_pilot": {
+            "label": "E-posta bildirimi (pilot)"
+          },
+          "sms_pilot": {
+            "label": "SMS bildirimi (pilot)"
+          },
+          "brief": {
+            "label": "Kâğıt mektup (varsayılan)"
+          }
         },
         "option": {
           "sms_pilot": {
@@ -1616,6 +2054,89 @@
     },
     "cross_link": {
       "familie": "Aile bölümüne git"
+    },
+    "v2": {
+      "profil": {
+        "card_title": "Kişisel profil",
+        "kv": {
+          "name": "Ad",
+          "geburtsdatum": "Doğum tarihi",
+          "staatsangehoerigkeit": "Uyruk",
+          "familienstand": "Medeni durum"
+        },
+        "familienstand": {
+          "verheiratet": "evli",
+          "ledig": "bekâr",
+          "geschieden": "boşanmış",
+          "verwitwet": "dul"
+        }
+      },
+      "kontakt": {
+        "card_title": "İletişim",
+        "email": "E-posta",
+        "telefon": "Telefon numarası",
+        "verifiziert": "Doğrulandı",
+        "email_keine": "Kayıtlı e-posta yok",
+        "telefon_keine": "Kayıtlı telefon numarası yok"
+      },
+      "familie": {
+        "card_title": "Aile ve yakınlar",
+        "kinder_eyebrow": "Çocuklar",
+        "partner_eyebrow": "Eş",
+        "row_geburtsdatum": "Doğum tarihi",
+        "row_verwandtschaft": "Yakınlık",
+        "kind": "Çocuk",
+        "partner_label": "Eş",
+        "add_link": "Başka kişi ekle"
+      },
+      "anschrift": {
+        "title": "Adres",
+        "aktuell_label": "Güncel adres",
+        "aendern": "Değiştir",
+        "zuletzt_bestaetigt": "son onay {datum}",
+        "zuletzt_bestaetigt_unbekannt": "henüz onaylanmadı",
+        "bestaetigt": "Onaylandı"
+      },
+      "dokumente": {
+        "title": "Kimlik belgeleri",
+        "verwalten": "Yönet",
+        "reisepass": "Pasaport",
+        "personalausweis": "Kimlik kartı",
+        "aufenthaltstitel": "Oturum izni",
+        "eat_can": "eAT-CAN",
+        "gueltig": "Geçerli",
+        "nummer_template": "Numara {nummer} · {gueltig_bis} tarihine kadar geçerli",
+        "aufenthaltstitel_template": "{norm} · {gueltig_bis} tarihine kadar geçerli",
+        "eat_can_template": "CAN {can}",
+        "add_link": "Belge ekle",
+        "empty": "Kayıtlı belge yok."
+      },
+      "versicherung": {
+        "title": "Sigorta ve emeklilik",
+        "krankenkasse": "Sağlık sigortası",
+        "altersvorsorge": "Emeklilik",
+        "aktiv": "Aktif",
+        "versichertennummer": "Sigorta numarası {nr}",
+        "versichert_seit": "{datum} tarihinden beri sigortalı",
+        "add_link": "Başka sigorta ekle",
+        "empty": "Bağlı sigorta verisi yok."
+      },
+      "protokoll": {
+        "title": "Değişiklik günlüğü",
+        "subtitle": "Ana verilerinizdeki son değişiklikler",
+        "show_all": "Tam günlüğü göster",
+        "empty": "Henüz kayıtlı değişiklik yok."
+      },
+      "datenhoheit": {
+        "title": "Verileriniz sizin kontrolünüzde",
+        "body_before_link": "Ana verileriniz yalnızca onayınızla makamlara ve hizmetlere iletilir. Kimin neyi göreceğine siz karar verirsiniz.",
+        "body_link": "Haklarınız ve veri kullanımı hakkında daha fazlası.",
+        "cta": "Veri kullanımını yönet"
+      },
+      "secondary": {
+        "heading": "Diğer alanlar",
+        "subtitle": "Emeklilik, sağlık sigortası, ulaşım, bildirim tercihleri ve bloklar — ana ızgaranın altındaki yardımcı katman."
+      }
     }
   },
   "dokumente": {
@@ -1971,19 +2492,36 @@
     },
     "vorgaenge": {
       "title": "Ortak işlemler",
+      "subtitle": "Hanenizdeki kişileri ilgilendiren işlemler.",
       "kindergeld": "Çocuk parası (Kindergeld)",
       "krankenkasse": "Sağlık sigortası",
       "kita": "Kreş yeri (Kita)",
       "kita_traeger": "Kreş işletmecisi (Kita-Träger)",
       "betrifft": "İlgili kişiler: {names}",
-      "show_all": "Tüm ortak işlemleri göster"
+      "show_all": "Tüm ortak işlemleri göster",
+      "empty": "Şu anda ortak işlem yok.",
+      "status": {
+        "laufend": "Devam ediyor",
+        "genehmigt": "Onaylandı",
+        "warten": "İşleniyor",
+        "abgeschlossen": "Tamamlandı"
+      }
     },
     "nachweise": {
       "title": "Belgeler ve yetkiler",
+      "subtitle": "Belgeler, kanıtlar ve temsil yetkileri.",
       "geburtsurkunde": "Doğum belgesi (Geburtsurkunde)",
       "sorge_vollmacht": "Velayet vekâleti (Sorge-Vollmacht)",
       "vertretungsrechte": "Temsil yetkileri (Vertretungsrechte)",
-      "verknuepfungen": "Bağlantılar"
+      "verknuepfungen": "Bağlantılar",
+      "show_all": "Tüm belge ve yetkileri göster",
+      "empty": "Kayıtlı belge yok.",
+      "status": {
+        "vorhanden": "Kayıtlı",
+        "verifiziert": "Doğrulandı",
+        "speculative": "2027 vizyonu",
+        "fehlt": "Eksik"
+      }
     },
     "was_betrifft_wen": {
       "title": "Kimi neyin ilgilendirdiği",
@@ -2001,6 +2539,58 @@
     "empty": {
       "title": "Kayıtlı hane yok",
       "body": "Bu profil için kayıtlı hane üyesi bulunmuyor."
+    }
+  },
+  "autopilotRun": {
+    "title": "Otomatik pilotla adres değişikliği",
+    "subtitle": "Bir kez onaylarsınız – sistem sonraki adımları koordine eder.",
+    "banner": {
+      "running_title": "Zincir yürütülüyor",
+      "running_subtitle": "Bilgileriniz yetkili kurumlara güvenli biçimde iletiliyor.",
+      "completed_title": "Tüm kurumlar bilgilendirildi",
+      "completed_subtitle": "{count, plural, =1 {1 yetkili kurum} other {# yetkili kurum}} adres değişikliğinizi aldı.",
+      "partial_title": "Neredeyse tamam",
+      "partial_subtitle": "Kurumların çoğu bilgilendirildi. Bazı adımların yeniden denenmesi gerekiyor.",
+      "status_partial": "Kısmen tamamlandı"
+    },
+    "cascade": {
+      "aria_label": "Kurum bilgilendirme ilerlemesi"
+    },
+    "node": {
+      "status": {
+        "ausstehend": "Bekliyor",
+        "eid_required": "Onay gerekli",
+        "failed": "Başarısız"
+      },
+      "eid_cta": "eID ile onayla",
+      "timestamp_pending": "—",
+      "aktenzeichen_prefix": "No."
+    },
+    "action": {
+      "buergeramt": "Adres iletildi",
+      "finanzamt": "Yetki onaylandı",
+      "beitragsservice": "Adres güncellendi",
+      "bundesdruckerei": "Etiket hazırlanıyor",
+      "krankenkasse": "İletim planlandı",
+      "kfz": "Doğrulama sürüyor",
+      "familienkasse": "Yetki devralınıyor",
+      "auslaenderbehoerde": "Güncelleme hazırlandı",
+      "fallback": "Adres iletildi"
+    },
+    "uebersicht": {
+      "title": "Taşınmanız – genel bakış",
+      "neue_adresse_label": "Yeni adres",
+      "einzugsdatum_label": "Taşınma tarihi",
+      "autopilot_bereich_label": "Otomatik pilot alanı",
+      "behoerden_count": "{count, plural, =1 {1 kurum} other {# kurum}}",
+      "schutz_title": "Verileriniz korunuyor",
+      "schutz_subtitle": "İletim şifreli, yalnızca yetkili kurumlara.",
+      "schutz_link": "Veri koruma hakkında daha fazlası"
+    },
+    "feed": {
+      "title": "Canlı etkinlik",
+      "started_title": "Otomatik pilot başlatıldı",
+      "started_subtitle": "Bilgileriniz kontrol edildi ve zincir başlatıldı."
     }
   }
 }

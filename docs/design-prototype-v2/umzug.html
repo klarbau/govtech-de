@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>Umzug auf Autopilot — GovTech DE</title>
+<link rel="stylesheet" href="assets/govtech.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  .umz-banner {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+    padding: 18px 22px;
+    display: flex; align-items: center; gap: 18px;
+    margin-top: 12px;
+    box-shadow: var(--shadow-1);
+  }
+  .umz-banner .icon-square { width: 56px; height: 56px; }
+  .umz-banner .icon-square svg { width: 28px; height: 28px; }
+  .umz-banner .body .t { font-size: 19px; font-weight: 700; letter-spacing: -0.01em; }
+  .umz-banner .body .s { color: var(--ink-3); font-size: 13.5px; margin-top: 2px; }
+
+  /* cascade */
+  .cascade { margin-top: 32px; }
+  .cascade-rail { position: relative; height: 80px; }
+  .cascade-track {
+    position: absolute; top: 38px; left: 6%; right: 6%; height: 2px;
+    background: repeating-linear-gradient(to right, var(--border-strong) 0 6px, transparent 6px 12px);
+  }
+  .cascade-track .filled {
+    position: absolute; top: 0; left: 0; height: 100%;
+    background: var(--green-500);
+    border-radius: 2px;
+    width: 50%;
+  }
+  .cascade-nodes {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px;
+    position: relative;
+    height: 80px;
+  }
+  .cas-node {
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .cas-node .ring {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--surface); border: 1.5px solid var(--border-strong);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; z-index: 1;
+  }
+  .cas-node.done .ring { background: var(--green-600); border-color: var(--green-600); color: #fff; }
+  .cas-node.current .ring { background: var(--surface); border: 2px solid var(--brand-500); }
+  .cas-node.current .ring::after {
+    content: ''; width: 14px; height: 14px; border-radius: 50%; background: var(--brand-500);
+  }
+  .cas-node .ring svg { width: 16px; height: 16px; }
+  .cas-node.current::before {
+    content: ''; position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 110px; height: 110px;
+    border: 1px solid var(--brand-100); border-radius: 50%; opacity: .9;
+  }
+
+  .cascade-cards {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px;
+    margin-top: -10px;
+  }
+  .cas-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 20px 16px;
+    text-align: center;
+    box-shadow: var(--shadow-1);
+  }
+  .cas-card.current { border: 1.5px solid var(--brand-500); box-shadow: 0 0 0 3px var(--brand-50), var(--shadow-1); }
+  .cas-card .icon-circle {
+    margin: 0 auto 14px;
+    width: 60px; height: 60px;
+  }
+  .cas-card .icon-circle svg { width: 26px; height: 26px; }
+  .cas-card .t { font-weight: 700; font-size: 15px; }
+  .cas-card .s { color: var(--ink-3); font-size: 12.5px; margin-top: 2px; min-height: 32px; }
+  .cas-card .time { color: var(--ink-3); font-size: 12.5px; margin: 10px 0; font-variant-numeric: tabular-nums; }
+  .cas-card .badge { font-size: 11.5px; }
+
+  .umz-bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 32px; }
+  .umz-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 22px 24px; box-shadow: var(--shadow-1); }
+  .umz-card h3 { margin: 0 0 16px; font-size: 16px; font-weight: 600; }
+
+  .uebersicht-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  .uebersicht-left { display: flex; gap: 14px; }
+  .uebersicht-left .icon-circle { width: 44px; height: 44px; }
+  .uebersicht-left .icon-circle svg { width: 20px; height: 20px; }
+  .uebersicht-left .lbl { color: var(--ink-3); font-size: 13px; }
+  .uebersicht-left .v { font-weight: 600; line-height: 1.45; margin-top: 2px; }
+  .uebersicht-left .v2 { color: var(--ink-3); font-size: 13px; }
+
+  .autopilot .head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .autopilot .head .t { font-weight: 600; }
+  .autopilot .head .badge { font-size: 11px; }
+  .autopilot .lbl { color: var(--ink-3); font-size: 13px; margin-bottom: 6px; }
+  .autopilot .auth-list { display: flex; flex-direction: column; gap: 8px; font-size: 13.5px; }
+  .autopilot .auth-list .row { display: flex; align-items: center; gap: 10px; }
+  .autopilot .auth-list svg { color: var(--green-600); width: 14px; height: 14px; }
+
+  .schutz {
+    margin-top: 18px;
+    background: var(--brand-50); border: 1px solid var(--brand-100); border-radius: var(--r-md);
+    padding: 14px 16px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .schutz .icon-circle { background: rgba(255,255,255,.7); }
+  .schutz .body { flex: 1; }
+  .schutz .body .t { color: var(--brand-700); font-weight: 600; }
+  .schutz .body .s { color: var(--ink-2); font-size: 12.5px; }
+
+  /* live */
+  .live .item {
+    display: grid; grid-template-columns: 56px 36px 1fr auto; gap: 12px; align-items: center;
+    padding: 14px 0; border-top: 1px solid var(--border);
+    position: relative;
+  }
+  .live .item:first-of-type { border-top: 0; }
+  .live .time { color: var(--ink-3); font-size: 13px; font-variant-numeric: tabular-nums; position: relative; padding-left: 10px; }
+  .live .time .pip {
+    position: absolute; left: -4px; top: 8px; width: 10px; height: 10px; border-radius: 50%;
+    background: var(--surface); border: 2px solid var(--green-500);
+  }
+  .live .time.brand .pip { border-color: var(--brand-500); background: var(--brand-500); }
+  .live .time.mute .pip { border-color: var(--ink-4); }
+  .live .icon-circle { width: 32px; height: 32px; }
+  .live .icon-circle svg { width: 14px; height: 14px; }
+  .live .t { font-weight: 600; font-size: 13.5px; }
+  .live .s { color: var(--ink-3); font-size: 12.5px; }
+  .live .vline {
+    position: absolute; left: 30px; top: 0; bottom: 0; width: 1.5px;
+    background: var(--border);
+    z-index: 0;
+  }
+</style>
+</head>
+<body>
+
+<div data-gt-header></div>
+<div class="gt-shell">
+  <div data-gt-sidebar></div>
+  <main class="gt-content">
+    <div class="gt-page-head">
+      <h1>Umzug auf Autopilot</h1>
+      <div class="sub">Sie bestätigen einmal – das System koordiniert die nächsten Schritte.</div>
+    </div>
+
+    <div class="umz-banner">
+      <span class="icon-square"><i data-lucide="sparkles"></i></span>
+      <div class="body grow">
+        <div class="t">Kaskade wird ausgeführt</div>
+        <div class="s">Ihre Angaben werden sicher an die zuständigen Behörden übermittelt.</div>
+      </div>
+      <span class="badge brand"><span class="dot" style="background: var(--brand-500);"></span>In Bearbeitung</span>
+    </div>
+
+    <div class="cascade">
+      <div class="cascade-rail">
+        <div class="cascade-track"><div class="filled"></div></div>
+        <div class="cascade-nodes">
+          <div class="cas-node done"><div class="ring"><i data-lucide="check"></i></div></div>
+          <div class="cas-node done"><div class="ring"><i data-lucide="check"></i></div></div>
+          <div class="cas-node current"><div class="ring"></div></div>
+          <div class="cas-node"><div class="ring"></div></div>
+          <div class="cas-node"><div class="ring"></div></div>
+        </div>
+      </div>
+
+      <div class="cascade-cards">
+        <div class="cas-card">
+          <span class="icon-circle green"><i data-lucide="landmark"></i></span>
+          <div class="t">Bürgeramt</div>
+          <div class="s">Adresse übermittelt</div>
+          <div class="time">10:24 Uhr</div>
+          <span class="badge green">Abgeschlossen</span>
+        </div>
+        <div class="cas-card">
+          <span class="icon-circle green"><i data-lucide="euro"></i></span>
+          <div class="t">Finanzamt</div>
+          <div class="s">Meldedaten bestätigt</div>
+          <div class="time">10:25 Uhr</div>
+          <span class="badge green">Abgeschlossen</span>
+        </div>
+        <div class="cas-card current">
+          <span class="icon-circle"><i data-lucide="landmark"></i></span>
+          <div class="t">Beitragsservice</div>
+          <div class="s">Aufkleber wird erstellt</div>
+          <div class="time">10:26 Uhr</div>
+          <span class="badge brand">In Bearbeitung</span>
+        </div>
+        <div class="cas-card">
+          <span class="icon-circle"><i data-lucide="shield"></i></span>
+          <div class="t">Bundesdruckerei</div>
+          <div class="s">Verifizierung läuft</div>
+          <div class="time">Wird gestartet</div>
+          <span class="badge outline">Ausstehend</span>
+        </div>
+        <div class="cas-card">
+          <span class="icon-circle pink"><i data-lucide="heart-pulse"></i></span>
+          <div class="t">AOK Nordost</div>
+          <div class="s">Übermittlung geplant</div>
+          <div class="time">Wird gestartet</div>
+          <span class="badge outline">Ausstehend</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="umz-bottom">
+      <div class="umz-card">
+        <h3>Ihr Umzug – Übersicht</h3>
+        <div class="uebersicht-grid">
+          <div class="uebersicht-left">
+            <span class="icon-circle"><i data-lucide="home"></i></span>
+            <div>
+              <div class="lbl">Neue Adresse</div>
+              <div class="v">Musterstraße 12<br/>10115 Berlin</div>
+              <div style="margin-top: 12px;">
+                <div class="lbl">Einzugsdatum</div>
+                <div class="v">01.06.2025</div>
+              </div>
+            </div>
+          </div>
+          <div class="autopilot">
+            <div class="head"><div class="t">Autopilot-Bereich</div><span class="badge brand">5 Behörden</span></div>
+            <div class="lbl">Umfasst</div>
+            <div class="auth-list">
+              <div class="row"><i data-lucide="check"></i>Meldebehörde (Bürgeramt)</div>
+              <div class="row"><i data-lucide="check"></i>Finanzamt</div>
+              <div class="row"><i data-lucide="check"></i>ARD ZDF Deutschlandradio Beitragsservice</div>
+              <div class="row"><i data-lucide="check"></i>Bundesdruckerei (eID/Adressverifizierung)</div>
+              <div class="row"><i data-lucide="check"></i>AOK Nordost</div>
+            </div>
+          </div>
+        </div>
+        <a href="datenschutz.html" class="schutz">
+          <span class="icon-circle"><i data-lucide="shield"></i></span>
+          <div class="body">
+            <div class="t">Ihre Daten sind geschützt</div>
+            <div class="s">Übermittlung verschlüsselt, nur an zuständige Stellen.</div>
+          </div>
+          <i data-lucide="chevron-right" style="color: var(--ink-4);"></i>
+        </a>
+      </div>
+
+      <div class="umz-card live" style="position: relative;">
+        <h3>Live-Aktivitäten</h3>
+        <div style="position: relative;">
+          <div class="vline"></div>
+          <div class="item">
+            <div class="time brand">10:26<span class="pip" style="background: var(--brand-500); border-color: var(--brand-500);"></span></div>
+            <span class="icon-circle"><i data-lucide="landmark"></i></span>
+            <div><div class="t">Beitragsservice</div><div class="s">Aufkleber wird erstellt und versendet.</div></div>
+            <span class="badge brand">In Bearbeitung</span>
+          </div>
+          <div class="item">
+            <div class="time">10:25<span class="pip" style="background: var(--green-500); border-color: var(--green-500);"></span></div>
+            <span class="icon-circle green"><i data-lucide="euro"></i></span>
+            <div><div class="t">Finanzamt</div><div class="s">Meldedaten bestätigt.</div></div>
+            <span class="badge green">Abgeschlossen</span>
+          </div>
+          <div class="item">
+            <div class="time">10:24<span class="pip" style="background: var(--green-500); border-color: var(--green-500);"></span></div>
+            <span class="icon-circle green"><i data-lucide="landmark"></i></span>
+            <div><div class="t">Bürgeramt</div><div class="s">Adresse übermittelt.</div></div>
+            <span class="badge green">Abgeschlossen</span>
+          </div>
+          <div class="item">
+            <div class="time mute">10:23<span class="pip"></span></div>
+            <span class="icon-circle"><i data-lucide="info"></i></span>
+            <div><div class="t">Autopilot gestartet</div><div class="s">Ihre Angaben wurden geprüft und die Kaskade gestartet.</div></div>
+            <span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>window.GT_ACTIVE='vorgaenge';</script>
+<script src="assets/govtech.js"></script>
+</body>
+</html>

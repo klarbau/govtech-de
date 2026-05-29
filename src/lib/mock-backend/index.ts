@@ -1,9 +1,18 @@
 /**
- * Barrel-Export der Mock-Backend-Schicht. Komponenten und Server-Routen
- * importieren ausschließlich `api` von hier; interne Module (persistence,
- * schemas, …) bleiben Implementierungs-Details.
+ * Barrel-Export der Mock-Backend-Schicht.
+ *
+ * Stage 3 (HTTP-Migration): `api` ist hier der **Fetch-Client** (`./client`),
+ * der jede Methode über `fetch('/api/mock')` / `EventSource('/api/mock/events')`
+ * an die Server-Route-Handler delegiert. Komponenten importieren `api` von hier
+ * und sprechen damit das echte HTTP-Backend an.
+ *
+ * WICHTIG: Server-Route-Handler (`src/app/api/mock/**`) und Unit-Tests dürfen
+ * NICHT den Fetch-Client verwenden — sie importieren die In-Process-Core-`api`
+ * direkt aus `./api` (bzw. spezifische Submodule). Dieser Index zeigt
+ * ausschließlich auf den Client.
  */
-export { api, getMockKanalForBehoerde, MockBackendError } from './api';
+export { apiClient as api } from './client';
+export { getMockKanalForBehoerde, MockBackendError } from './api';
 export type { MockBackendApi } from './api';
 export type { MockBackendEvent, MockBackendEventListener } from '@/types/mock-event';
 export { seedIfEmpty, reseedForActivePersona, getActivePersonaId } from './seed';

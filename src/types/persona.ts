@@ -45,6 +45,17 @@ export interface Aufenthaltstitel {
 export type PersonaId = string;
 
 /**
+ * Familienstand (Personenstand) nach deutschem Melderecht (§ 3 Abs. 1 Nr. 8 BMG).
+ * Geschlossene Enum analog der amtlichen Melderegister-Werte.
+ */
+export type Familienstand =
+  | 'ledig'
+  | 'verheiratet'
+  | 'geschieden'
+  | 'verwitwet'
+  | 'eingetragene_lebenspartnerschaft';
+
+/**
  * Stammdaten einer Person. Spiegelt die für die Demo benötigte Untermenge des
  * deutschen Melde- und Sozialversicherungs-Datenmodells wider. Verschachtelte
  * Familie referenziert vollständige Personas (für Ehegatten/Kinder).
@@ -56,6 +67,12 @@ export interface Persona {
   /** ISO-Datum (YYYY-MM-DD). */
   geburtsdatum: string;
   staatsangehoerigkeit: string;
+  /**
+   * Familienstand (Personenstand, § 3 Abs. 1 Nr. 8 BMG). Optional — Personas
+   * ohne expliziten Seed-Wert werden bei der Persistenz-Migration aus
+   * `familie`/`eheschliessung` abgeleitet (Default `ledig`).
+   */
+  familienstand?: Familienstand;
   adresse: Adresse;
   /** Steuer-Identifikationsnummer (AO §139b), 11 Ziffern, synthetisch. */
   steuer_id?: string;

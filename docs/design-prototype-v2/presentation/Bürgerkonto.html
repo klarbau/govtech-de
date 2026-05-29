@@ -1,0 +1,1715 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bürgerkonto · DigitalSouverän</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* From the design-system sketch */
+  --primary:        #003399;
+  --primary-700:    #002a7e;
+  --primary-800:    #001f60;
+  --primary-50:     #eef1fa;
+  --primary-100:    #dde4f3;
+  --primary-200:    #b9c6e6;
+
+  --secondary:      #5A5F6B;
+  --secondary-50:   #f1f1f3;
+
+  --tertiary:       #751D00;
+  --tertiary-50:    #fbeae3;
+  --tertiary-100:   #f6d8cb;
+
+  --neutral:        #76767E;
+
+  --surface:        #FFFFFF;
+  --surface-canvas: #F5F5F1;
+  --surface-raised: #FAFAF7;
+  --surface-muted:  #EFEFEA;
+
+  --border:         #E4E3DD;
+  --border-strong:  #CFCEC7;
+  --border-soft:    #EFEFEA;
+
+  --text:           #14161B;
+  --text-secondary: #41464F;
+  --text-muted:     #76767E;
+  --text-faint:     #9D9CA3;
+
+  --success:        #1F6B3E;
+  --success-50:     #E7F1EA;
+  --warning:        #8C5A00;
+  --warning-50:     #FCF1D6;
+  --danger:         #A21D1D;
+  --danger-50:      #FBEAEA;
+
+  --shadow-card:    0 1px 2px rgba(20, 22, 27, .04), 0 1px 1px rgba(20, 22, 27, .03);
+  --shadow-pop:     0 6px 16px -4px rgba(20, 22, 27, .08), 0 2px 6px -2px rgba(20, 22, 27, .06);
+
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 16px;
+
+  --font:  'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono:  'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--font);
+  color: var(--text);
+  background: var(--surface-canvas);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "ss01", "cv11";
+}
+.tabular { font-variant-numeric: tabular-nums; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+a { color: var(--primary); text-decoration: none; }
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 4px; }
+
+/* ─────────────────────────────────────────────────────────── shell ── */
+.app {
+  display: grid;
+  grid-template-columns: 264px 1fr;
+  min-height: 100vh;
+  max-width: 1440px;
+  margin: 0 auto;
+  background: var(--surface);
+  border-inline: 1px solid var(--border);
+}
+
+/* ───────────────────────────────────────────────────────── sidebar ── */
+.sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+.brand {
+  display: flex; align-items: center; gap: 12px;
+  padding: 20px 20px 22px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.brand .avatar {
+  width: 40px; height: 40px;
+  border-radius: 8px;
+  background: var(--primary);
+  color: #fff;
+  display: grid; place-items: center;
+  font-weight: 700; font-size: 13px;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.brand .who { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
+.brand .who .label { font-size: 11.5px; color: var(--text-muted); font-weight: 500; letter-spacing: 0.02em; }
+.brand .who .name { font-size: 14.5px; color: var(--text); font-weight: 600; letter-spacing: -0.005em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brand .switch { margin-left: auto; padding: 4px; border-radius: 6px; color: var(--text-muted); }
+.brand .switch:hover { background: var(--surface-muted); color: var(--text); }
+
+.nav {
+  flex: 1;
+  padding: 14px 12px 12px;
+  display: flex; flex-direction: column; gap: 1px;
+  overflow-y: auto;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 9px 12px;
+  border-radius: 7px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 100ms;
+}
+.nav-item:hover { background: var(--surface-muted); color: var(--text); }
+.nav-item .ic { width: 18px; height: 18px; flex-shrink: 0; color: var(--text-muted); }
+.nav-item:hover .ic { color: var(--text-secondary); }
+.nav-item.active {
+  background: var(--primary-50);
+  color: var(--primary);
+  font-weight: 600;
+}
+.nav-item.active .ic { color: var(--primary); }
+.nav-item.active::before {
+  content: "";
+  position: absolute; left: -12px; top: 6px; bottom: 6px;
+  width: 3px; border-radius: 0 3px 3px 0;
+  background: var(--primary);
+}
+.nav-section {
+  font-size: 10.5px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-faint);
+  padding: 14px 12px 6px;
+}
+
+.foot {
+  padding: 12px;
+  border-top: 1px solid var(--border-soft);
+  display: flex; flex-direction: column; gap: 1px;
+}
+.foot .nav-item { padding: 7px 12px; font-size: 13px; font-weight: 500; }
+.foot .nav-item .ic { width: 16px; height: 16px; }
+
+/* ─────────────────────────────────────────────────────────── topbar ── */
+.main { display: flex; flex-direction: column; }
+.topbar {
+  height: 60px;
+  padding: 0 32px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  display: flex; align-items: center; gap: 14px;
+  position: sticky; top: 0; z-index: 10;
+}
+.brand-mark {
+  display: flex; align-items: center; gap: 9px;
+  font-weight: 600; font-size: 14px;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+.brand-mark .logo {
+  width: 22px; height: 22px; border-radius: 5px;
+  background: var(--primary);
+  display: grid; place-items: center;
+  color: #fff;
+}
+.brand-mark .sub { color: var(--text-muted); font-weight: 500; }
+
+.search {
+  flex: 1; max-width: 480px;
+  margin-left: 8px;
+  position: relative;
+}
+.search input {
+  width: 100%;
+  height: 38px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0 14px 0 38px;
+  font: inherit;
+  background: var(--surface-canvas);
+  color: var(--text);
+}
+.search input::placeholder { color: var(--text-muted); }
+.search input:focus { background: var(--surface); border-color: var(--primary-200); outline: 2px solid var(--primary-50); outline-offset: 0; }
+.search .ic { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-muted); }
+.search kbd {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  font-family: var(--mono); font-size: 10.5px;
+  color: var(--text-muted);
+  padding: 2px 6px; border: 1px solid var(--border); border-radius: 4px;
+  background: var(--surface);
+}
+
+.top-right { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+.iconbtn {
+  width: 36px; height: 36px; border-radius: 8px;
+  display: grid; place-items: center;
+  color: var(--text-secondary);
+  border: 1px solid transparent;
+}
+.iconbtn:hover { background: var(--surface-muted); }
+.iconbtn .ic { width: 18px; height: 18px; }
+
+.lang-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 10px;
+  font-size: 13px; font-weight: 500;
+  color: var(--text-secondary);
+  border-radius: 8px;
+}
+.lang-pill:hover { background: var(--surface-muted); color: var(--text); }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 0 14px;
+  height: 36px;
+  border-radius: 8px;
+  font-size: 13.5px; font-weight: 600;
+  letter-spacing: -0.005em;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text);
+  transition: background-color 100ms, border-color 100ms;
+}
+.btn:hover { background: var(--surface-muted); }
+.btn.primary {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+.btn.primary:hover { background: var(--primary-700); border-color: var(--primary-700); }
+.btn.ghost {
+  border-color: transparent;
+  color: var(--text-secondary);
+}
+.btn.ghost:hover { background: var(--surface-muted); color: var(--text); }
+.btn.tertiary {
+  background: var(--tertiary);
+  border-color: var(--tertiary);
+  color: #fff;
+}
+.btn.sm { height: 32px; padding: 0 12px; font-size: 12.5px; border-radius: 7px; }
+.btn .ic { width: 16px; height: 16px; }
+
+.avatar-img {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, #c9b8a2 0%, #6e5945 100%);
+  display: grid; place-items: center;
+  color: #fff; font-weight: 600; font-size: 13px;
+  margin-left: 4px;
+}
+
+/* ───────────────────────────────────────────────────────── content ── */
+.content {
+  padding: 36px 40px 80px;
+  background: var(--surface-canvas);
+  flex: 1;
+  min-height: 0;
+}
+.page { max-width: 1120px; }
+.page.narrow { max-width: 920px; }
+
+.page-head {
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+.page-head .lede h1 {
+  margin: 0 0 6px;
+  font-size: 30px; font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+.page-head .lede p {
+  margin: 0;
+  font-size: 14.5px;
+  color: var(--text-secondary);
+  max-width: 56ch;
+}
+.page-head .lede .crumb {
+  font-size: 12px; color: var(--text-muted); font-weight: 500;
+  margin-bottom: 6px;
+  letter-spacing: 0.005em;
+}
+.page-head .actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+/* ────────────────────────────────────────────────────────── cards ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 20px;
+}
+.card.flat { box-shadow: var(--shadow-card); }
+.card h3 {
+  margin: 0 0 6px;
+  font-size: 16px; font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.card h2 {
+  margin: 0 0 4px;
+  font-size: 19px; font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.card .sub {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+.eyebrow.priority   { background: var(--tertiary-50); color: var(--tertiary); }
+.eyebrow.warn       { background: var(--warning-50); color: var(--warning); }
+.eyebrow.success    { background: var(--success-50); color: var(--success); }
+.eyebrow.info       { background: var(--primary-50); color: var(--primary); }
+.eyebrow.neutral    { background: var(--surface-muted); color: var(--text-secondary); }
+
+/* Section header */
+.section-h {
+  display: flex; align-items: center; gap: 10px;
+  margin: 26px 0 14px;
+  font-size: 13.5px; font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.005em;
+}
+.section-h.lg {
+  font-size: 17px; font-weight: 600; letter-spacing: -0.01em;
+  margin: 28px 0 16px;
+}
+.section-h .ic { width: 16px; height: 16px; color: var(--primary); }
+.section-h .count {
+  font-size: 11.5px; color: var(--text-muted); font-weight: 500; margin-left: 4px;
+}
+.section-h .right { margin-left: auto; }
+
+/* ─────────────────────────────────────────── Action cards (3-up) ── */
+.action-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.action {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 18px 18px 16px;
+  display: flex; flex-direction: column; gap: 10px;
+  min-height: 192px;
+  position: relative;
+  transition: border-color 120ms, box-shadow 120ms, transform 120ms;
+}
+.action:hover { box-shadow: var(--shadow-card); border-color: var(--border-strong); }
+.action .row1 { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.action .ic-wrap {
+  width: 28px; height: 28px; border-radius: 7px;
+  background: var(--surface-muted);
+  display: grid; place-items: center;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+.action.priority .ic-wrap { background: var(--tertiary-50); color: var(--tertiary); }
+.action.warn     .ic-wrap { background: var(--warning-50); color: var(--warning); }
+.action.info     .ic-wrap { background: var(--primary-50); color: var(--primary); }
+.action .ic-wrap .ic { width: 16px; height: 16px; }
+.action .title {
+  font-size: 15.5px; font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+.action .desc {
+  font-size: 13.5px; color: var(--text-secondary);
+  margin: -4px 0 0;
+  line-height: 1.5;
+  flex: 1;
+}
+.action .foot-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;
+  margin-top: 4px;
+}
+.action .meta {
+  font-size: 12px; color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ───────────────────────────────────────────── Widget grid (cards) ── */
+.widgets {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+.widgets .span-2 { grid-column: span 2; }
+.widget {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 18px 18px 16px;
+}
+.widget .w-head {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  margin-bottom: 14px;
+}
+.widget .w-head h3 {
+  margin: 0;
+  font-size: 15.5px; font-weight: 600;
+  letter-spacing: -0.005em;
+}
+.widget .w-head .ic-wrap {
+  width: 26px; height: 26px; border-radius: 6px;
+  background: var(--primary-50); color: var(--primary);
+  display: grid; place-items: center;
+}
+.widget .w-head .ic-wrap .ic { width: 15px; height: 15px; }
+.widget .link {
+  font-size: 12px; color: var(--primary); font-weight: 500;
+}
+.widget .link:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* inbox preview rows */
+.inbox-row {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-soft);
+}
+.inbox-row:last-child { border-bottom: none; padding-bottom: 0; }
+.inbox-row:first-of-type { padding-top: 0; }
+.inbox-row .icon {
+  width: 28px; height: 28px; border-radius: 7px;
+  background: var(--surface-muted);
+  display: grid; place-items: center;
+  flex-shrink: 0;
+  color: var(--text-secondary);
+}
+.inbox-row.priority .icon { background: var(--tertiary-50); color: var(--tertiary); }
+.inbox-row.info .icon { background: var(--primary-50); color: var(--primary); }
+.inbox-row .body { flex: 1; min-width: 0; }
+.inbox-row .body .t1 { font-size: 13.5px; font-weight: 600; color: var(--text); letter-spacing: -0.005em; }
+.inbox-row .body .t2 {
+  font-size: 12.5px; color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  margin-top: 2px;
+}
+.inbox-row .body .t2 .due { color: var(--tertiary); font-weight: 600; }
+
+/* progress */
+.progress-row {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 12.5px; color: var(--text-muted);
+  margin-bottom: 6px;
+  font-variant-numeric: tabular-nums;
+}
+.progress-row .label { color: var(--text-secondary); font-weight: 500; }
+.bar {
+  height: 6px;
+  background: var(--surface-muted);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.bar > span {
+  display: block; height: 100%;
+  background: var(--primary);
+  border-radius: 999px;
+}
+.tag-row {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--warning-50);
+  color: var(--warning);
+  font-size: 12.5px; font-weight: 500;
+  padding: 7px 10px;
+  border-radius: var(--r-md);
+  margin-top: 12px;
+  border: 1px solid color-mix(in oklab, var(--warning) 30%, transparent);
+}
+.tag-row .ic { width: 14px; height: 14px; }
+
+/* big number widget (Datenschutz Cockpit) */
+.kpi {
+  display: flex; align-items: center; gap: 16px;
+  padding: 6px 0 14px;
+}
+.kpi .num {
+  background: var(--primary-50);
+  color: var(--primary);
+  font-size: 36px; font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+  width: 64px; height: 64px;
+  display: grid; place-items: center;
+  border-radius: var(--r-md);
+}
+.kpi .ctx { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+.kpi .ctx strong { color: var(--text); font-weight: 600; }
+
+/* stammdaten status list */
+.kv {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border-soft);
+  font-size: 13px;
+}
+.kv:last-child { border-bottom: none; }
+.kv .k { color: var(--text-secondary); }
+.kv .v { color: var(--text); font-weight: 500; display: inline-flex; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; }
+.kv .v .check { width: 14px; height: 14px; color: var(--success); }
+.kv .v.muted { color: var(--text-muted); }
+
+/* ─────────────────────────────────────────────────────────── tabs ── */
+.tabs {
+  display: flex; gap: 4px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+.tab {
+  padding: 10px 14px 12px;
+  font-size: 13.5px; font-weight: 500;
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  display: inline-flex; align-items: center; gap: 7px;
+}
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 600; }
+.tab .ic { width: 14px; height: 14px; }
+
+/* ───────────────────────────────────────── Stammdaten cards layout ── */
+.stamm-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+}
+.stamm-grid .card { padding: 22px 22px 20px; }
+.field-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 20px;
+  margin-top: 14px;
+}
+.field { display: flex; flex-direction: column; gap: 3px; }
+.field .lbl {
+  font-size: 11.5px; color: var(--text-muted);
+  font-weight: 500; letter-spacing: 0.01em;
+}
+.field .val {
+  font-size: 14.5px; color: var(--text); font-weight: 500;
+  letter-spacing: -0.005em;
+}
+.field .val.tabular { font-variant-numeric: tabular-nums; letter-spacing: 0; }
+.field .val .reveal {
+  margin-left: 6px; color: var(--text-muted);
+  vertical-align: -2px;
+  cursor: pointer;
+}
+.field .val .reveal:hover { color: var(--text); }
+.field .val .reveal .ic { width: 14px; height: 14px; }
+
+.eid-card .id-meta { display: flex; flex-direction: column; gap: 14px; margin-top: 12px; }
+.eid-card .id-meta .field .val { font-size: 14px; }
+
+/* table */
+.table-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+table.dt {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+table.dt thead th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 12px 18px;
+  background: var(--surface-raised);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+table.dt tbody td {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-soft);
+  color: var(--text);
+  vertical-align: top;
+}
+table.dt tbody tr:last-child td { border-bottom: 0; }
+table.dt tbody tr:hover { background: var(--surface-raised); }
+table.dt .mono { font-family: var(--mono); font-size: 12.5px; color: var(--text-secondary); }
+table.dt .badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--success-50);
+  color: var(--success);
+}
+table.dt .behoerde { font-weight: 600; color: var(--text); }
+table.dt .behoerde-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+/* ──────────────────────────────────────────── Autopilot — stepper ── */
+.stepper {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: start;
+  gap: 0;
+  margin: 8px 0 28px;
+  position: relative;
+}
+.stepper .step {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 10px;
+  text-align: center;
+  position: relative;
+}
+.stepper .step .bubble {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  font-weight: 600; font-size: 13px;
+  background: var(--surface);
+  border: 1.5px solid var(--border-strong);
+  color: var(--text-muted);
+  z-index: 1;
+}
+.stepper .step.done .bubble {
+  background: var(--primary); border-color: var(--primary); color: #fff;
+}
+.stepper .step.active .bubble {
+  background: var(--primary); border-color: var(--primary); color: #fff;
+  box-shadow: 0 0 0 4px var(--primary-50);
+}
+.stepper .step .lbl {
+  font-size: 13px; font-weight: 600; color: var(--text);
+  letter-spacing: -0.005em;
+}
+.stepper .step.pending .lbl { color: var(--text-muted); font-weight: 500; }
+.stepper .step .desc { font-size: 11.5px; color: var(--text-muted); }
+.stepper .step + .step::before {
+  content: "";
+  position: absolute;
+  top: 18px; left: -50%; right: 50%;
+  height: 1.5px;
+  background: var(--border-strong);
+  z-index: 0;
+}
+.stepper .step.done + .step::before,
+.stepper .step.done + .step.done::before,
+.stepper .step.done + .step.active::before {
+  background: var(--primary);
+}
+
+/* Protocol blocks */
+.proto-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.proto-block.attention {
+  border-color: color-mix(in oklab, var(--primary) 35%, var(--border));
+  background: var(--surface);
+}
+.proto-block .block-head {
+  padding: 12px 18px;
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface-raised);
+  border-bottom: 1px solid var(--border);
+  font-size: 13px; font-weight: 600;
+  color: var(--text);
+}
+.proto-block.attention .block-head {
+  background: var(--primary-50);
+  color: var(--primary);
+  border-bottom-color: color-mix(in oklab, var(--primary) 25%, var(--border));
+}
+.proto-block .block-head .ic { width: 16px; height: 16px; color: currentColor; }
+.proto-block .block-head .right {
+  margin-left: auto;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--tertiary);
+  background: var(--tertiary-50);
+  padding: 3px 8px; border-radius: 4px;
+}
+.proto-row {
+  padding: 14px 18px;
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  gap: 14px;
+  align-items: start;
+  border-bottom: 1px solid var(--border-soft);
+}
+.proto-row:last-child { border-bottom: 0; }
+.proto-row .bubble {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: grid; place-items: center;
+  flex-shrink: 0; margin-top: 2px;
+}
+.proto-row.done .bubble { background: var(--primary); color: #fff; }
+.proto-row.done .bubble .ic { width: 12px; height: 12px; }
+.proto-row.pending .bubble {
+  background: var(--surface); border: 1.5px solid var(--primary); color: var(--primary);
+}
+.proto-row.pending .bubble .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); }
+.proto-row .title {
+  font-size: 14px; font-weight: 600; color: var(--text);
+  letter-spacing: -0.005em;
+}
+.proto-row .chips {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-top: 6px;
+}
+.proto-row .chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11.5px; font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--surface-muted);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+.proto-row .chip .ic { width: 12px; height: 12px; color: var(--text-muted); }
+.proto-row .chip .norm { font-family: var(--mono); color: var(--text); font-weight: 500; }
+.proto-row .time {
+  font-family: var(--mono); font-size: 11.5px;
+  color: var(--text-muted); white-space: nowrap;
+}
+.proto-row .info-box {
+  grid-column: 2 / 4;
+  margin-top: 10px;
+  padding: 12px 14px;
+  background: var(--primary-50);
+  border: 1px solid color-mix(in oklab, var(--primary) 20%, var(--border));
+  border-radius: var(--r-md);
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+.proto-row .info-box .norm { font-family: var(--mono); color: var(--primary); font-weight: 500; }
+.proto-row .actions {
+  grid-column: 2 / 4;
+  display: flex; justify-content: flex-end; gap: 10px;
+  margin-top: 6px;
+}
+
+/* MOCK watermark */
+.mock-stripe {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--mono); font-size: 10.5px;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  padding: 2px 7px;
+  border: 1px dashed var(--border-strong);
+  border-radius: 4px;
+  background: var(--surface);
+}
+
+/* ──────────────────────────────────────────── Zahlungen empty state ── */
+.empty {
+  display: grid; place-items: center;
+  padding: 80px 24px;
+}
+.empty .frame {
+  width: min(560px, 100%);
+  text-align: center;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  padding: 56px 40px;
+}
+.empty .icon-wrap {
+  width: 56px; height: 56px; border-radius: 12px;
+  background: var(--primary-50); color: var(--primary);
+  display: grid; place-items: center;
+  margin: 0 auto 22px;
+}
+.empty .icon-wrap .ic { width: 26px; height: 26px; }
+.empty h2 {
+  margin: 0 0 12px;
+  font-size: 22px; font-weight: 600;
+  letter-spacing: -0.015em;
+}
+.empty p {
+  margin: 0 0 24px;
+  color: var(--text-secondary);
+  font-size: 14.5px;
+  line-height: 1.55;
+  max-width: 44ch;
+  margin-inline: auto;
+}
+
+/* hidden by default */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* persona menu */
+.persona-menu {
+  position: absolute; left: 16px; right: 16px; top: 76px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-pop);
+  padding: 6px;
+  z-index: 30;
+  display: none;
+}
+.persona-menu.open { display: block; }
+.persona-menu .opt {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.persona-menu .opt:hover { background: var(--surface-muted); }
+.persona-menu .opt .av {
+  width: 28px; height: 28px; border-radius: 6px;
+  background: var(--primary); color: #fff;
+  display: grid; place-items: center;
+  font-weight: 700; font-size: 11px;
+  flex-shrink: 0;
+}
+.persona-menu .opt .desc { font-size: 11.5px; color: var(--text-muted); }
+
+/* footer disclaimer strip */
+.disclaim {
+  margin: 28px 0 0;
+  padding: 10px 14px;
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  color: var(--text-secondary);
+  font-size: 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.disclaim .ic { width: 14px; height: 14px; color: var(--text-muted); }
+
+/* tablets and below */
+@media (max-width: 1100px) {
+  .action-grid { grid-template-columns: 1fr 1fr; }
+  .widgets { grid-template-columns: 1fr 1fr; }
+  .widgets .span-2 { grid-column: span 2; }
+  .stamm-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .action-grid { grid-template-columns: 1fr; }
+  .widgets { grid-template-columns: 1fr; }
+  .widgets .span-2 { grid-column: span 1; }
+  .field-grid { grid-template-columns: 1fr; }
+  .content { padding: 24px 18px 60px; }
+  .topbar { padding: 0 16px; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ─────────────────────────────────── SIDEBAR ─────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="avatar" id="brandAv">AP</div>
+      <div class="who">
+        <span class="label">Bürgerkonto</span>
+        <span class="name" id="brandName">Anna Petrov</span>
+      </div>
+      <button class="switch" id="switchBtn" title="Persona wechseln" aria-label="Persona wechseln">
+        <svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
+      <div class="persona-menu" id="personaMenu">
+        <div class="opt" data-persona="ap">
+          <span class="av">AP</span>
+          <div>
+            <div style="font-weight: 600;">Anna Petrov</div>
+            <div class="desc">Blue Card EU · 1 Kind · Berlin</div>
+          </div>
+        </div>
+        <div class="opt" data-persona="fs">
+          <span class="av">FS</span>
+          <div>
+            <div style="font-weight: 600;">Familie Schmidt</div>
+            <div class="desc">2 Kinder · Hamburg-Eimsbüttel</div>
+          </div>
+        </div>
+        <div class="opt" data-persona="my">
+          <span class="av">MY</span>
+          <div>
+            <div style="font-weight: 600;">Mehmet Yıldız</div>
+            <div class="desc">Gewerbe geplant · Köln</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a class="nav-item active" data-screen="posteingang" href="#">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"></path><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
+        Posteingang
+      </a>
+      <a class="nav-item" data-screen="stammdaten" href="#">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="9" cy="10" r="2"></circle><path d="M15 8h2"></path><path d="M15 12h2"></path><path d="M7 16h10"></path></svg>
+        Stammdaten
+      </a>
+      <a class="nav-item" data-screen="autopilot" href="#">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="3"></circle><path d="M12 3v3"></path><path d="M12 18v3"></path><path d="M3 12h3"></path><path d="M18 12h3"></path></svg>
+        Autopilot
+      </a>
+      <a class="nav-item" data-screen="placeholder" data-title="Anträge" href="#">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="13" x2="15" y2="13"></line><line x1="9" y1="17" x2="13" y2="17"></line></svg>
+        Anträge
+      </a>
+      <a class="nav-item" data-screen="placeholder" data-title="Dokumente" href="#">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v4a1 1 0 0 0 1 1h4"></path><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"></path></svg>
+        Dokumente
+      </a>
+      <a class="nav-item" data-screen="placeholder" data-title="Termine" href="#">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        Termine
+      </a>
+      <a class="nav-item" data-screen="placeholder" data-title="Behörden" href="#">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21" y2="22"></line><line x1="6" y1="18" x2="6" y2="22"></line><line x1="10" y1="18" x2="10" y2="22"></line><line x1="14" y1="18" x2="14" y2="22"></line><line x1="18" y1="18" x2="18" y2="22"></line><polygon points="12 2 20 7 4 7 12 2"></polygon><line x1="3" y1="10" x2="21" y2="10"></line><line x1="3" y1="14" x2="21" y2="14"></line></svg>
+        Behörden
+      </a>
+      <a class="nav-item" data-screen="zahlungen" href="#">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"></rect><line x1="2" y1="11" x2="22" y2="11"></line><line x1="6" y1="15" x2="10" y2="15"></line></svg>
+        Zahlungen
+      </a>
+      <a class="nav-item" data-screen="placeholder" data-title="Sicherheit" href="#">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        Sicherheit
+      </a>
+      <a class="nav-item" data-screen="placeholder" data-title="Hilfe" href="#">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        Hilfe
+      </a>
+    </nav>
+
+    <div class="foot">
+      <a class="nav-item" href="#">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+        Impressum
+      </a>
+      <a class="nav-item" href="#">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        Datenschutz
+      </a>
+    </div>
+  </aside>
+
+  <!-- ─────────────────────────────────── MAIN ─────────────────────────────────── -->
+  <main class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="brand-mark">
+        <span class="logo">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 3 20 8 4 8 12 3"></polygon><line x1="3" y1="21" x2="21" y2="21"></line><line x1="6" y1="11" x2="6" y2="18"></line><line x1="12" y1="11" x2="12" y2="18"></line><line x1="18" y1="11" x2="18" y2="18"></line></svg>
+        </span>
+        <span>DigitalSouverän</span>
+        <span class="sub">· Bürgerkonto</span>
+      </div>
+
+      <div class="search">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+        <input type="text" placeholder="Suchen — Briefe, Behörden, Vorgänge, §-Zitate …">
+        <kbd>⌘ K</kbd>
+      </div>
+
+      <div class="top-right">
+        <button class="iconbtn" title="Datenschutzcockpit" aria-label="Datenschutzcockpit">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="m22 11-3 3-1.5-1.5"></path></svg>
+        </button>
+        <button class="iconbtn" title="Einstellungen" aria-label="Einstellungen">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </button>
+        <button class="lang-pill" title="Sprache wechseln">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+          Deutsch
+        </button>
+        <button class="btn primary sm">Abmelden</button>
+        <div class="avatar-img" id="topAv">AP</div>
+      </div>
+    </header>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- ═══════════════════════════════ POSTEINGANG (Dashboard) ═══════════════════════════════ -->
+      <section class="screen active page" id="posteingang">
+
+        <div class="page-head">
+          <div class="lede">
+            <div class="crumb">Übersicht</div>
+            <h1>Guten Tag, <span id="hiName">Anna Petrov</span>.</h1>
+            <p>Letzter Login: <span class="tabular">Gestern, 14:32 Uhr</span> · Berlin-Friedrichshain · BundID-verifiziert.</p>
+          </div>
+          <div class="actions">
+            <button class="btn">
+              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+              2 neue Nachrichten
+            </button>
+            <button class="btn">
+              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"></path><path d="M20.49 15A9 9 0 0 1 5.64 18.36L1 14"></path></svg>
+              1 Statusänderung (Umzug)
+            </button>
+          </div>
+        </div>
+
+        <div class="section-h lg">
+          <svg class="ic" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M13 2 3 14h7l-1 8 10-12h-7z"></path></svg>
+          Empfohlene Aktionen
+          <span class="mock-stripe" style="margin-left: auto;">MOCK — Synthetische Demo-Daten</span>
+        </div>
+
+        <div class="action-grid">
+
+          <article class="action priority">
+            <div class="row1">
+              <span class="eyebrow priority">Hohe Priorität</span>
+              <span class="ic-wrap">
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a2 2 0 0 0-1.8 1.1l-.8 1.63A6 6 0 0 0 2 12.42V16h2"></path><circle cx="6.5" cy="16.5" r="2.5"></circle><circle cx="16.5" cy="16.5" r="2.5"></circle></svg>
+              </span>
+            </div>
+            <div class="title">i-Kfz-Adressänderung bestätigen</div>
+            <p class="desc">Bestätigen Sie die Zulassungsbescheinigung Teil I mit eID, sonst greift die Versicherungspflicht-Frist am 28.11.</p>
+            <div class="foot-row">
+              <span class="meta">Frist · in 6 Tagen</span>
+            </div>
+            <button class="btn primary" style="width: 100%;">Jetzt mit eID bestätigen</button>
+          </article>
+
+          <article class="action warn">
+            <div class="row1">
+              <span class="eyebrow warn">Zahlung fällig</span>
+              <span class="ic-wrap">
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"></rect><line x1="2" y1="11" x2="22" y2="11"></line></svg>
+              </span>
+            </div>
+            <div class="title">Steuerbescheid 2023</div>
+            <p class="desc">Offener Betrag: <span class="tabular">452,30 €</span> bis zum 15. November begleichen. Finanzamt Berlin-Friedrichshain.</p>
+            <div class="foot-row">
+              <span class="meta">Fälligkeit · 15.11.2026</span>
+            </div>
+            <button class="btn" style="width: 100%;">Zahlung anweisen</button>
+          </article>
+
+          <article class="action info">
+            <div class="row1">
+              <span class="eyebrow info">Neu eingetroffen</span>
+              <span class="ic-wrap">
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+              </span>
+            </div>
+            <div class="title">Renteninformation prüfen</div>
+            <p class="desc">Ihre jährliche Renteninformation der Deutschen Rentenversicherung steht zur Durchsicht bereit.</p>
+            <div class="foot-row">
+              <span class="meta">Eingang · 10.11.2026</span>
+            </div>
+            <button class="btn" style="width: 100%;">Dokument öffnen</button>
+          </article>
+
+        </div>
+
+        <!-- Widgets -->
+        <div class="widgets">
+
+          <!-- Posteingang preview -->
+          <div class="widget">
+            <div class="w-head">
+              <h3>Posteingang</h3>
+              <a class="link" href="#">Alle ansehen →</a>
+            </div>
+            <div class="inbox-row priority">
+              <span class="icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+              </span>
+              <div class="body">
+                <div class="t1">Steuerbescheid 2023</div>
+                <div class="t2">Eingang: 02.11.2026 · <span class="due">Frist 15.11.2026</span></div>
+              </div>
+            </div>
+            <div class="inbox-row info">
+              <span class="icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"></path><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
+              </span>
+              <div class="body">
+                <div class="t1">Meldebestätigung Tempelhof-Schöneberg</div>
+                <div class="t2">Eingang: 28.10.2026 · Zur Kenntnis</div>
+              </div>
+            </div>
+            <div class="inbox-row">
+              <span class="icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+              </span>
+              <div class="body">
+                <div class="t1">Renteninformation 2026 (DRV Bund)</div>
+                <div class="t2">Eingang: 10.11.2026 · Zur Durchsicht</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Laufende Vorgänge -->
+          <div class="widget">
+            <div class="w-head">
+              <h3>Laufende Vorgänge</h3>
+              <span class="ic-wrap">
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"></path><path d="M20.49 15A9 9 0 0 1 5.64 18.36L1 14"></path></svg>
+              </span>
+            </div>
+            <div style="font-size: 13.5px; font-weight: 600; color: var(--text);">Umzug Berlin · Autopilot</div>
+            <div style="font-size: 12px; color: var(--text-muted); font-variant-numeric: tabular-nums; margin-bottom: 12px;">
+              Vorgangs-ID <span style="font-family: var(--mono);">DE-394-882</span>
+            </div>
+            <div class="progress-row">
+              <span class="label">Schritt 3 von 4</span>
+              <span class="tabular">75 %</span>
+            </div>
+            <div class="bar"><span style="width: 75%;"></span></div>
+            <div class="tag-row">
+              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              Warten auf Rückmeldung der Meldebehörde Berlin-Mitte.
+            </div>
+          </div>
+
+          <!-- Datenschutz Cockpit -->
+          <div class="widget">
+            <div class="w-head">
+              <h3>Datenschutz-Cockpit</h3>
+              <span class="ic-wrap">
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              </span>
+            </div>
+            <div class="kpi">
+              <div class="num">14</div>
+              <div class="ctx">
+                <strong>Aktive Registerabfragen</strong><br>
+                in den letzten 30&nbsp;Tagen, durch&nbsp;9&nbsp;Behörden.
+              </div>
+            </div>
+            <button class="btn sm" style="width: 100%;">Protokolle einsehen</button>
+          </div>
+
+          <!-- Nächste Termine -->
+          <div class="widget">
+            <div class="w-head">
+              <h3>Nächste Termine</h3>
+              <span class="ic-wrap">
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              </span>
+            </div>
+            <div class="inbox-row info">
+              <div style="width:40px; height:44px; background:var(--primary-50); color: var(--primary); border-radius: 7px; display:flex; flex-direction:column; align-items:center; justify-content:center; flex-shrink: 0;">
+                <span style="font-size:9.5px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase;">Mi</span>
+                <span style="font-size:15px; font-weight:700; line-height:1; font-variant-numeric: tabular-nums;">18</span>
+              </div>
+              <div class="body">
+                <div class="t1">Kfz-Zulassung · Adresse aktualisieren</div>
+                <div class="t2">LABO Berlin · <span class="tabular">14:00 – 14:20</span></div>
+              </div>
+            </div>
+            <div class="inbox-row">
+              <div style="width:40px; height:44px; background:var(--surface-muted); color: var(--text-secondary); border-radius: 7px; display:flex; flex-direction:column; align-items:center; justify-content:center; flex-shrink: 0;">
+                <span style="font-size:9.5px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase;">Mo</span>
+                <span style="font-size:15px; font-weight:700; line-height:1; font-variant-numeric: tabular-nums;">23</span>
+              </div>
+              <div class="body">
+                <div class="t1">Beratung Kindergeld &amp; Elterngeld</div>
+                <div class="t2">Familienkasse Brandenburg · digital</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stammdaten Status -->
+          <div class="widget">
+            <div class="w-head">
+              <h3>Stammdaten-Status</h3>
+              <span class="ic-wrap">
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"></path></svg>
+              </span>
+            </div>
+            <div class="kv">
+              <span class="k">Profilvollständigkeit</span>
+              <span class="v"><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> 100 %</span>
+            </div>
+            <div class="kv">
+              <span class="k">eID-Verknüpfung</span>
+              <span class="v" style="color: var(--success);">Aktiv</span>
+            </div>
+            <div class="kv">
+              <span class="k">Steuer-IdNr.</span>
+              <span class="v muted">Hinterlegt</span>
+            </div>
+            <div class="kv">
+              <span class="k">Wallet (EUDI)</span>
+              <span class="v" style="color: var(--text-muted);">Pilot — gekoppelt</span>
+            </div>
+          </div>
+
+          <!-- Föderalismus / Anbindung -->
+          <div class="widget">
+            <div class="w-head">
+              <h3>Behörden-Anbindung</h3>
+              <span class="ic-wrap">
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21" y2="22"></line><polygon points="12 2 20 7 4 7 12 2"></polygon><line x1="6" y1="7" x2="6" y2="22"></line><line x1="18" y1="7" x2="18" y2="22"></line><line x1="12" y1="7" x2="12" y2="22"></line></svg>
+              </span>
+            </div>
+            <div class="kv"><span class="k">Bürgeramt Mitte</span><span class="v" style="color: var(--success);">Angebunden · 01/2026</span></div>
+            <div class="kv"><span class="k">Familienkasse BRB</span><span class="v" style="color: var(--success);">Angebunden · 04/2026</span></div>
+            <div class="kv"><span class="k">ABH Köln</span><span class="v muted">Postalisch · noch nicht angebunden</span></div>
+          </div>
+
+        </div>
+
+        <div class="disclaim">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          Speculative Prototype — keine echte Behörde ist angebunden. Alle Daten sind synthetisch. Maßgeblich ist stets der Bescheid im Original.
+        </div>
+
+      </section>
+
+      <!-- ═══════════════════════════════ STAMMDATEN ═══════════════════════════════ -->
+      <section class="screen page" id="stammdaten">
+
+        <div class="page-head">
+          <div class="lede">
+            <div class="crumb">Profil</div>
+            <h1>Stammdaten · <span id="sdName">Anna Petrov</span></h1>
+            <p>Verwalten und überprüfen Sie Ihre zentral gespeicherten Identitätsdaten. Jede Übermittlung wird im Cockpit protokolliert.</p>
+          </div>
+          <div class="actions">
+            <span class="eyebrow info" style="padding: 7px 10px;">
+              <svg style="width: 13px; height: 13px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+              Pilot-Phase Datenschutzcockpit
+            </span>
+          </div>
+        </div>
+
+        <nav class="tabs">
+          <a class="tab active" href="#">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"></path></svg>
+            Identität
+          </a>
+          <a class="tab" href="#">Adresse</a>
+          <a class="tab" href="#">Familie</a>
+          <a class="tab" href="#">Mobilität</a>
+          <a class="tab" href="#">Finanzen</a>
+          <a class="tab" href="#">Wallet (EUDI)</a>
+        </nav>
+
+        <div class="stamm-grid">
+          <div class="card">
+            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;">
+              <div>
+                <h2>Personenstandsdaten</h2>
+                <p class="sub">Quelle: Melderegister Berlin · zuletzt synchronisiert vor 3 Stunden.</p>
+              </div>
+              <button class="iconbtn" title="Daten kopieren" aria-label="Daten kopieren" style="border: 1px solid var(--border);">
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              </button>
+            </div>
+            <div class="field-grid">
+              <div class="field"><span class="lbl">Vorname(n)</span><span class="val">Anna Maria</span></div>
+              <div class="field"><span class="lbl">Familienname</span><span class="val">Petrov</span></div>
+              <div class="field"><span class="lbl">Geburtsdatum</span><span class="val tabular">14.05.1985</span></div>
+              <div class="field"><span class="lbl">Geburtsort</span><span class="val">München</span></div>
+              <div class="field"><span class="lbl">Staatsangehörigkeit</span><span class="val">Deutsch (eingebürgert)</span></div>
+              <div class="field">
+                <span class="lbl">Steuer-IdNr.</span>
+                <span class="val tabular">83 ••• ••• ••42
+                  <span class="reveal" title="Mit eID enthüllen — 30 s sichtbar">
+                    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                  </span>
+                </span>
+              </div>
+              <div class="field"><span class="lbl">Renten-Versicherungs-Nr.</span><span class="val tabular">12 •••••• A •••</span></div>
+              <div class="field"><span class="lbl">eIDAS-Vertrauensniveau</span><span class="val" style="color: var(--success);">Hoch · eID</span></div>
+            </div>
+          </div>
+
+          <div class="card eid-card">
+            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;">
+              <div>
+                <h2>Elektronische Identität</h2>
+                <p class="sub">DeutschlandID · BundID-verifiziert</p>
+              </div>
+              <span class="ic-wrap" style="width: 32px; height: 32px; border-radius: 7px; background: var(--primary-50); color: var(--primary); display: grid; place-items: center;">
+                <svg style="width: 16px; height: 16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="9" cy="12" r="2.5"></circle><line x1="14" y1="10" x2="19" y2="10"></line><line x1="14" y1="14" x2="17" y2="14"></line></svg>
+              </span>
+            </div>
+            <div class="id-meta">
+              <div class="field">
+                <span class="lbl">Ausweisdokument</span>
+                <span class="val">Personalausweis (eID)</span>
+              </div>
+              <div class="field">
+                <span class="lbl">Dokumenten-Nr.</span>
+                <span class="val tabular">L512••••••</span>
+              </div>
+              <div class="field">
+                <span class="lbl">Gültig bis</span>
+                <span class="val tabular">22.10.2030</span>
+              </div>
+              <div class="field">
+                <span class="lbl">Letzte Authentifizierung</span>
+                <span class="val">Gestern, 14:32 Uhr</span>
+              </div>
+            </div>
+            <button class="btn" style="width: 100%; margin-top: 18px;">
+              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"></path><path d="M20.49 15A9 9 0 0 1 5.64 18.36L1 14"></path></svg>
+              Daten aktualisieren
+            </button>
+          </div>
+        </div>
+
+        <div class="section-h lg">
+          Aktivitätsprotokoll (Datenschutzcockpit)
+          <span class="count">14 Übermittlungen · letzte 30 Tage</span>
+          <span class="right" style="font-size: 12.5px; color: var(--text-muted);">Übersicht der behördlichen Datenabrufe gemäß <span style="font-family: var(--mono);">§ 9 LDSG</span>.</span>
+        </div>
+
+        <div class="table-wrap">
+          <table class="dt">
+            <thead>
+              <tr>
+                <th>Datum / Zeit</th>
+                <th>Abrufende Stelle</th>
+                <th>Datenkategorie</th>
+                <th>Rechtsgrundlage</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="mono">24.10.2026 · 14:32</td>
+                <td>
+                  <div class="behoerde">Finanzamt München</div>
+                  <div class="behoerde-sub">Bayerisches Landesamt für Steuern</div>
+                </td>
+                <td>Steuer-IdNr., Meldeadresse</td>
+                <td class="mono">§ 87b AO</td>
+                <td><span class="badge">Erfolgreich</span></td>
+              </tr>
+              <tr>
+                <td class="mono">12.09.2026 · 09:15</td>
+                <td>
+                  <div class="behoerde">Bürgeramt Mitte</div>
+                  <div class="behoerde-sub">Kreisverwaltungsreferat Berlin</div>
+                </td>
+                <td>Personenstandsdaten</td>
+                <td class="mono">§ 34 BMG</td>
+                <td><span class="badge">Erfolgreich</span></td>
+              </tr>
+              <tr>
+                <td class="mono">05.08.2026 · 11:45</td>
+                <td>
+                  <div class="behoerde">Kraftfahrt-Bundesamt</div>
+                  <div class="behoerde-sub">Flensburg</div>
+                </td>
+                <td>Meldeadresse</td>
+                <td class="mono">§ 35 StVG</td>
+                <td><span class="badge">Erfolgreich</span></td>
+              </tr>
+              <tr>
+                <td class="mono">20.07.2026 · 16:20</td>
+                <td>
+                  <div class="behoerde">Deutsche Rentenversicherung Bund</div>
+                  <div class="behoerde-sub">Berlin</div>
+                </td>
+                <td>Personenstandsdaten, SV-Nummer</td>
+                <td class="mono">§ 150 SGB VI</td>
+                <td><span class="badge">Erfolgreich</span></td>
+              </tr>
+              <tr>
+                <td class="mono">02.07.2026 · 08:10</td>
+                <td>
+                  <div class="behoerde">Techniker Krankenkasse</div>
+                  <div class="behoerde-sub">GKV-Spitzenverband</div>
+                </td>
+                <td>Meldeadresse, SV-Nummer</td>
+                <td class="mono">§ 284 SGB V</td>
+                <td><span class="badge">Erfolgreich</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="disclaim">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          Jede Übermittlung trägt ein Aktenzeichen und eine Rechtsgrundlage. Widerspruch gemäß <span style="font-family: var(--mono);">§ 21 BDSG</span> jederzeit möglich.
+        </div>
+
+      </section>
+
+      <!-- ═══════════════════════════════ AUTOPILOT · Umzug ═══════════════════════════════ -->
+      <section class="screen page" id="autopilot">
+
+        <div class="page-head">
+          <div class="lede">
+            <div class="crumb">Vorgang · DE-394-882</div>
+            <h1 style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+              Autopilot · Umzug Berlin
+              <span class="eyebrow info" style="font-size: 11px; padding: 5px 10px;">
+                <svg style="width: 13px; height: 13px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"></path></svg>
+                In Bearbeitung
+              </span>
+            </h1>
+            <p>Ihr Umzugsprozess wird automatisiert gesteuert. Bitte halten Sie Ihre eID für anstehende Bestätigungen bereit.</p>
+          </div>
+          <div class="actions">
+            <button class="btn ghost">
+              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+              Protokoll exportieren
+            </button>
+            <button class="btn">Vorgang pausieren</button>
+          </div>
+        </div>
+
+        <div class="stepper">
+          <div class="step done">
+            <div class="bubble">
+              <svg style="width: 16px; height: 16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <div class="lbl">Datenprüfung</div>
+            <div class="desc">02.11. · 08:12</div>
+          </div>
+          <div class="step active">
+            <div class="bubble">2</div>
+            <div class="lbl">Behörden-Routing</div>
+            <div class="desc">7 von 9 Stellen erledigt</div>
+          </div>
+          <div class="step pending">
+            <div class="bubble">3</div>
+            <div class="lbl">Abschluss</div>
+            <div class="desc">geschätzt 14.11.</div>
+          </div>
+        </div>
+
+        <div class="section-h lg">Protokoll &amp; Ausführung
+          <span class="count">3 Blöcke · 9 Stellen</span>
+        </div>
+
+        <!-- Block A -->
+        <div class="proto-block">
+          <div class="block-head">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21" y2="22"></line><polygon points="12 2 20 7 4 7 12 2"></polygon><line x1="6" y1="7" x2="6" y2="22"></line><line x1="18" y1="7" x2="18" y2="22"></line><line x1="12" y1="7" x2="12" y2="22"></line></svg>
+            Block A · Automatische Vorgänge
+            <span style="margin-left: auto; font-size: 11px; font-weight: 600; letter-spacing: 0.04em; color: var(--success);">2 / 2 erledigt</span>
+          </div>
+          <div class="proto-row done">
+            <span class="bubble">
+              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <div>
+              <div class="title">Anmeldung neuer Wohnort</div>
+              <div class="chips">
+                <span class="chip"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21" y2="22"></line><polygon points="12 2 20 7 4 7 12 2"></polygon><line x1="6" y1="7" x2="6" y2="22"></line><line x1="18" y1="7" x2="18" y2="22"></line><line x1="12" y1="7" x2="12" y2="22"></line></svg> Bürgeramt Mitte</span>
+                <span class="chip"><span class="norm">§ 17 BMG</span></span>
+              </div>
+            </div>
+            <span class="time">08:14:22</span>
+          </div>
+          <div class="proto-row done">
+            <span class="bubble">
+              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <div>
+              <div class="title">Rundfunkbeitrag — Adressabgleich</div>
+              <div class="chips">
+                <span class="chip"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21" y2="22"></line><polygon points="12 2 20 7 4 7 12 2"></polygon></svg> Beitragsservice ARD/ZDF</span>
+                <span class="chip"><span class="norm">§ 14 RBStV</span></span>
+              </div>
+            </div>
+            <span class="time">08:15:01</span>
+          </div>
+        </div>
+
+        <!-- Block B -->
+        <div class="proto-block">
+          <div class="block-head">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            Block B · Synchronisation (laufend)
+            <span style="margin-left: auto; font-size: 11px; font-weight: 600; letter-spacing: 0.04em; color: var(--text-muted);">3 / 4 erledigt</span>
+          </div>
+          <div class="proto-row done">
+            <span class="bubble">
+              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <div>
+              <div class="title">Finanzamt — Adresswechsel</div>
+              <div class="chips">
+                <span class="chip">Finanzamt Berlin-Friedrichshain</span>
+                <span class="chip"><span class="norm">§ 87b AO</span></span>
+              </div>
+            </div>
+            <span class="time">09:02:17</span>
+          </div>
+          <div class="proto-row done">
+            <span class="bubble">
+              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <div>
+              <div class="title">Krankenversicherung — Adressabgleich</div>
+              <div class="chips">
+                <span class="chip">Techniker Krankenkasse</span>
+                <span class="chip"><span class="norm">§ 284 SGB V</span></span>
+              </div>
+            </div>
+            <span class="time">09:04:48</span>
+          </div>
+          <div class="proto-row done">
+            <span class="bubble">
+              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <div>
+              <div class="title">Bundesagentur für Arbeit</div>
+              <div class="chips">
+                <span class="chip">Familienkasse Brandenburg</span>
+                <span class="chip"><span class="norm">§ 67 EStG</span></span>
+              </div>
+            </div>
+            <span class="time">09:07:31</span>
+          </div>
+        </div>
+
+        <!-- Block D -->
+        <div class="proto-block attention">
+          <div class="block-head">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            Block D · eID Autorisierung erforderlich
+            <span class="right">Aktion ausstehend</span>
+          </div>
+          <div class="proto-row pending">
+            <span class="bubble"><span class="dot"></span></span>
+            <div>
+              <div class="title">Kfz-Zulassungsbehörde · Adressänderung</div>
+              <div class="chips">
+                <span class="chip"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21" y2="22"></line><polygon points="12 2 20 7 4 7 12 2"></polygon></svg> LABO Berlin</span>
+                <span class="chip"><span class="norm">§ 15 FZV</span></span>
+                <span class="chip">FE-Nr. <span style="font-family: var(--mono);">B026F0Z4P</span></span>
+              </div>
+            </div>
+            <div class="info-box">
+              Pre-Fill der i-Kfz-Adressänderung gemäß <span class="norm">§ 15 FZV</span> — unverzüglich erforderlich.<br>
+              Die Fahrzeugdokumente werden zur Aktualisierung über die BundID-Schnittstelle vorbereitet. Bestätigen Sie mit Ihrer eID, damit die Zulassungsbescheinigung Teil I digital aktualisiert wird.
+            </div>
+            <div class="actions">
+              <button class="btn">Vorgang verschieben</button>
+              <button class="btn primary">
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                Mit eID bestätigen
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="disclaim">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          Föderalismus-Hinweis: LABO Berlin ist seit 04/2026 BundID-angebunden. Bürgeramt Tempelhof-Schöneberg seit 01/2026. Sie können den Vorgang jederzeit pausieren — die Fristen laufen weiter.
+        </div>
+
+      </section>
+
+      <!-- ═══════════════════════════════ ZAHLUNGEN (empty state) ═══════════════════════════════ -->
+      <section class="screen page" id="zahlungen">
+        <div class="page-head">
+          <div class="lede">
+            <div class="crumb">Finanzen</div>
+            <h1>Steuer &amp; Abgaben</h1>
+            <p>Übersicht über offene Forderungen, Zahlungsanweisungen, Bescheide und Steuererklärungen.</p>
+          </div>
+        </div>
+
+        <div class="empty">
+          <div class="frame">
+            <div class="icon-wrap">
+              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="13" x2="15" y2="13"></line><line x1="9" y1="17" x2="13" y2="17"></line></svg>
+            </div>
+            <h2>Diese Sektion ist in Vorbereitung.</h2>
+            <p>Geplant: nahtlose Integration mit Mein ELSTER und automatisierte Steuererklärung. Wir arbeiten daran, diesen Service bald für Sie verfügbar zu machen.</p>
+            <button class="btn" data-go="posteingang">Zurück zur Übersicht</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════ PLACEHOLDER (generic) ═══════════════════════════════ -->
+      <section class="screen page" id="placeholder">
+        <div class="page-head">
+          <div class="lede">
+            <div class="crumb">Bereich</div>
+            <h1 id="phTitle">Bereich</h1>
+            <p>Dieser Bereich ist Teil der Roadmap und wird in einer kommenden Iteration freigeschaltet.</p>
+          </div>
+        </div>
+
+        <div class="empty">
+          <div class="frame">
+            <div class="icon-wrap">
+              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </div>
+            <h2>In Vorbereitung.</h2>
+            <p>Sobald die Anbindung der zuständigen Stellen abgeschlossen ist, wird dieser Bereich aktiviert. Sie werden im Posteingang darüber informiert.</p>
+            <button class="btn" data-go="posteingang">Zurück zur Übersicht</button>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /content -->
+  </main>
+</div>
+
+<script>
+(function () {
+  // ─────────── Persona switching ───────────
+  const personas = {
+    ap: { name: 'Anna Petrov',    initials: 'AP' },
+    fs: { name: 'Familie Schmidt',initials: 'FS' },
+    my: { name: 'Mehmet Yıldız',  initials: 'MY' }
+  };
+  const brandAv   = document.getElementById('brandAv');
+  const brandName = document.getElementById('brandName');
+  const topAv     = document.getElementById('topAv');
+  const hiName    = document.getElementById('hiName');
+  const sdName    = document.getElementById('sdName');
+  const menu      = document.getElementById('personaMenu');
+  const switchBtn = document.getElementById('switchBtn');
+
+  switchBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    menu.classList.toggle('open');
+  });
+  document.addEventListener('click', () => menu.classList.remove('open'));
+
+  menu.querySelectorAll('.opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      const k = opt.dataset.persona;
+      const p = personas[k];
+      brandName.textContent = p.name;
+      brandAv.textContent   = p.initials;
+      topAv.textContent     = p.initials;
+      hiName.textContent    = p.name;
+      sdName.textContent    = p.name;
+      menu.classList.remove('open');
+    });
+  });
+
+  // ─────────── Screen navigation ───────────
+  const screens = document.querySelectorAll('.screen');
+  const navItems = document.querySelectorAll('.nav-item[data-screen]');
+
+  function go(id, title) {
+    screens.forEach(s => s.classList.toggle('active', s.id === id));
+    navItems.forEach(n => n.classList.toggle('active', n.dataset.screen === id && (!title || n.dataset.title === title)));
+    if (id === 'placeholder' && title) {
+      document.getElementById('phTitle').textContent = title;
+      document.querySelector('#placeholder .crumb').textContent = 'Bereich · ' + title;
+    }
+    // also de-activate other navItems with the same data-screen but different title
+    if (id === 'placeholder') {
+      navItems.forEach(n => {
+        if (n.dataset.screen === 'placeholder' && n.dataset.title !== title) n.classList.remove('active');
+      });
+    }
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+
+  navItems.forEach(n => {
+    n.addEventListener('click', (e) => {
+      e.preventDefault();
+      go(n.dataset.screen, n.dataset.title);
+    });
+  });
+
+  // "Zurück zur Übersicht" inside empty states
+  document.querySelectorAll('[data-go]').forEach(btn => {
+    btn.addEventListener('click', () => go(btn.dataset.go));
+  });
+})();
+</script>
+</body>
+</html>

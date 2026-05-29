@@ -1,71 +1,87 @@
 'use client';
 
 import * as React from 'react';
-import { useTranslations } from 'next-intl';
-import { FolderKanban, IdCard, Truck, type LucideIcon } from 'lucide-react';
-
-import { buttonVariants } from '@/components/ui/button';
-import { EmptyState } from '@/components/shared/EmptyState';
-import { FilterTabs } from '@/components/shared/FilterTabs';
-import { PageHeader } from '@/components/shared/PageHeader';
-import { PrototypeDisclaimer } from '@/components/shared/PrototypeDisclaimer';
-import { api } from '@/lib/mock-backend';
-import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import {
+  AlertCircle,
+  AlertTriangle,
+  Calendar,
+  Check,
+  ChevronRight,
+  ClipboardList,
+  Clock,
+  Filter,
+  Home,
+  IdCard,
+  MoreHorizontal,
+  MoreVertical,
+  Users,
+} from 'lucide-react';
+
+import { api } from '@/lib/mock-backend';
 import type { Behoerde, BehoerdeId, Vorgang } from '@/types';
 
-import { ProcessCard } from './ProcessCard';
-import { ProcessCardSmall } from './ProcessCardSmall';
-import { WasIstWichtigRail } from './WasIstWichtigRail';
-import {
-  buildVorgangUebersicht,
-  matchesFilter,
-  type FilterTabId,
-  type VorgangUebersicht,
-} from './vorgang-uebersicht';
+/* Literal port of docs/design-prototype-v2/vorgaenge.html. */
 
-const typIcon: Record<string, LucideIcon> = {
-  umzug: Truck,
-  'aufenthaltstitel-verlaengerung': IdCard,
-};
+type FilterId = 'alle' | 'laufend' | 'warten' | 'abgeschlossen';
 
-function detailHref(u: VorgangUebersicht): string {
-  if (u.typ === 'umzug') {
-    return `/vorgaenge/umzug/run?vorgangId=${encodeURIComponent(u.vorgang_id)}`;
-  }
-  return `/vorgaenge/${encodeURIComponent(u.vorgang_id)}`;
+function formatDateShort(iso?: string): string {
+  if (!iso) return '';
+  const datePart = iso.slice(0, 10);
+  const parts = datePart.split('-');
+  if (parts.length !== 3) return '';
+  const [y, m, d] = parts;
+  return `${d}.${m}.${y}`;
+}
+
+function daysUntil(iso: string | undefined, nowIso: string): number | null {
+  if (!iso) return null;
+  const a = new Date(iso).getTime();
+  const b = new Date(nowIso).getTime();
+  if (Number.isNaN(a) || Number.isNaN(b)) return null;
+  return Math.ceil((a - b) / (1000 * 60 * 60 * 24));
+}
+
+interface SmallVorgang {
+  id: string;
+  titel: string;
+  primaryBehoerde: string;
+  typ: string;
+  fristIso?: string;
+  unterlagenFehlen: boolean;
+  href: string;
+}
+
+interface BigVorgang {
+  id: string;
+  steps: Array<{ id: string; behoerde: string; aktion: string; date?: string; state: 'done' | 'current' | 'pending' }>;
+  doneCount: number;
+  totalCount: number;
+  angelegtAm: string;
+  href: string;
 }
 
 export function VorgaengeView() {
-  const t = useTranslations('vorgaenge');
-  const tStart = useTranslations('umzug.start');
-  const tChip = useTranslations('common.context_chip');
-
-  const [uebersichten, setUebersichten] = React.useState<VorgangUebersicht[]>(
-    [],
-  );
-  const [loaded, setLoaded] = React.useState(false);
-  const [error, setError] = React.useState(false);
-  const [activeTab, setActiveTab] = React.useState<FilterTabId>('alle');
+  const [vorgaenge, setVorgaenge] = React.useState<Vorgang[]>([]);
+  const [behoerdenById, setBehoerdenById] = React.useState<Record<BehoerdeId, Pick<Behoerde, 'name_de'>>>({});
+  const [activeTab, setActiveTab] = React.useState<FilterId>('alle');
   const [nowIso] = React.useState(() => new Date().toISOString());
 
   React.useEffect(() => {
     let cancelled = false;
     void (async () => {
-      try {
-        const [vorgaenge, behoerden] = await Promise.all([
-          api.getVorgaenge(),
-          api.getBehoerden(),
-        ]);
-        if (cancelled) return;
-        const map: Record<BehoerdeId, Pick<Behoerde, 'name_de'>> = {};
-        for (const b of behoerden) map[b.id] = { name_de: b.name_de };
-        setUebersichten(
-          vorgaenge.map((v: Vorgang) => buildVorgangUebersicht(v, map)),
-        );
-        setLoaded(true);
-      } catch {
-        if (!cancelled) setError(true);
+      for (let attempt = 0; attempt < 3 && !cancelled; attempt++) {
+        try {
+          const [v, b] = await Promise.all([api.getVorgaenge(), api.getBehoerden()]);
+          if (cancelled) return;
+          const map: Record<BehoerdeId, Pick<Behoerde, 'name_de'>> = {};
+          for (const x of b) map[x.id] = { name_de: x.name_de };
+          setBehoerdenById(map);
+          setVorgaenge(v);
+          return;
+        } catch {
+          await new Promise((r) => setTimeout(r, 200));
+        }
       }
     })();
     return () => {
@@ -73,131 +89,328 @@ export function VorgaengeView() {
     };
   }, []);
 
+  /* Counts for tab chips, derived purely from the API response. */
   const counts = React.useMemo(() => {
+    const isLaufend = (v: Vorgang) =>
+      v.status !== 'abgeschlossen' &&
+      v.status !== 'abgelehnt' &&
+      v.schritte.filter((s) => s.status === 'confirmed').length < v.schritte.length;
+    const isWarten = (v: Vorgang) =>
+      v.schritte.some(
+        (s) =>
+          s.status === 'needs_eid' ||
+          s.status === 'pending_eid_confirmation' ||
+          s.status === 'self_assigned',
+      ) || v.context?.unterlagen_fehlen === true;
     return {
-      alle: uebersichten.filter((u) => matchesFilter(u, 'alle')).length,
-      laufend: uebersichten.filter((u) => matchesFilter(u, 'laufend')).length,
-      warten: uebersichten.filter((u) => matchesFilter(u, 'warten')).length,
-      abgeschlossen: uebersichten.filter((u) =>
-        matchesFilter(u, 'abgeschlossen'),
-      ).length,
+      alle: vorgaenge.length,
+      laufend: vorgaenge.filter(isLaufend).length,
+      warten: vorgaenge.filter(isWarten).length,
+      abgeschlossen: vorgaenge.filter((v) => v.status === 'abgeschlossen').length,
     };
-  }, [uebersichten]);
+  }, [vorgaenge]);
 
-  const visible = React.useMemo(
-    () => uebersichten.filter((u) => matchesFilter(u, activeTab)),
-    [uebersichten, activeTab],
-  );
+  /* Pick the featured (umzug) Vorgang. */
+  const featuredUmzug = React.useMemo(() => {
+    const running = vorgaenge.find((v) => v.typ === 'umzug' && v.status !== 'abgeschlossen');
+    return running ?? vorgaenge.find((v) => v.typ === 'umzug') ?? null;
+  }, [vorgaenge]);
 
-  // The "big" process card is the first Umzug (most steps), the rest are small.
-  const bigCard = visible.find((u) => u.typ === 'umzug') ?? null;
-  const smallCards = visible.filter((u) => u !== bigCard);
+  const bigVorgang: BigVorgang | null = React.useMemo(() => {
+    if (!featuredUmzug) return null;
+    const seenBehoerden = new Set<string>();
+    const realSteps: BigVorgang['steps'] = [];
+    for (const step of featuredUmzug.schritte) {
+      if (step.block === 'C') continue;
+      const name = behoerdenById[step.behoerde_id]?.name_de ?? step.behoerde_id;
+      const key = name;
+      if (seenBehoerden.has(key)) continue;
+      seenBehoerden.add(key);
+      let state: 'done' | 'current' | 'pending' = 'pending';
+      if (step.status === 'confirmed') state = 'done';
+      else if (
+        step.status === 'in_progress' ||
+        step.status === 'needs_eid' ||
+        step.status === 'pending_eid_confirmation'
+      ) {
+        state = 'current';
+      }
+      realSteps.push({
+        id: step.id,
+        behoerde: name,
+        aktion: step.aktion,
+        date: state === 'pending' ? 'Ausstehend' : formatDateShort(step.completed_at ?? step.started_at) || undefined,
+        state,
+      });
+    }
+    const steps = realSteps.slice(0, 5);
+    const doneCount = steps.filter((s) => s.state === 'done').length;
+    return {
+      id: featuredUmzug.id,
+      steps,
+      doneCount,
+      totalCount: steps.length,
+      angelegtAm: formatDateShort(featuredUmzug.angelegt_am),
+      href: `/vorgaenge/umzug/run?vorgangId=${encodeURIComponent(featuredUmzug.id)}`,
+    };
+  }, [featuredUmzug, behoerdenById]);
 
-  const tabs = [
-    { id: 'alle', label: t('filter.alle'), count: counts.alle },
-    { id: 'laufend', label: t('filter.laufend'), count: counts.laufend },
-    { id: 'warten', label: t('filter.warten'), count: counts.warten },
-    {
-      id: 'abgeschlossen',
-      label: t('filter.abgeschlossen'),
-      count: counts.abgeschlossen,
-    },
-  ];
+  /* Two small cards: laufende (in_pruefung-ähnlich) Vorgänge ausser Umzug. */
+  const smallVorgaenge: SmallVorgang[] = React.useMemo(() => {
+    const filtered = vorgaenge.filter(
+      (v) => v.id !== featuredUmzug?.id && v.status !== 'abgeschlossen' && v.status !== 'abgelehnt',
+    );
+    return filtered.slice(0, 2).map<SmallVorgang>((v) => {
+      const primaryId = v.beteiligte_behoerden_ids?.[0];
+      const fristen = (v.fristen ?? []).map((f) => f.datum).sort();
+      return {
+        id: v.id,
+        titel: v.titel,
+        primaryBehoerde: primaryId ? behoerdenById[primaryId]?.name_de ?? primaryId : '',
+        typ: v.typ,
+        fristIso: fristen[0],
+        unterlagenFehlen: v.context?.unterlagen_fehlen === true,
+        href: `/vorgaenge/${encodeURIComponent(v.id)}`,
+      };
+    });
+  }, [vorgaenge, featuredUmzug, behoerdenById]);
+
+  /* Rail numbers — derived purely from the API response. */
+  const rail = React.useMemo(() => {
+    const offen = vorgaenge.filter((v) => v.status !== 'abgeschlossen' && v.status !== 'abgelehnt').length;
+    const fristen14 = vorgaenge.filter((v) =>
+      (v.fristen ?? []).some((f) => {
+        const d = daysUntil(f.datum, nowIso);
+        return d !== null && d >= 0 && d <= 14;
+      }),
+    ).length;
+    const warten = counts.warten;
+    return { offen, fristen14, warten };
+  }, [vorgaenge, nowIso, counts.warten]);
 
   return (
-    <div className="flex flex-col gap-6">
-      <PageHeader
-        title={t('title')}
-        subtitle={t('subtitle')}
-        contextChip={{ label: tChip('prototype') }}
-      />
+    <main className="gt-content">
+      <div className="gt-page-head">
+        <h1>Vorgänge</h1>
+        <div className="sub">Laufende und abgeschlossene Verwaltungsprozesse im Überblick.</div>
+      </div>
 
-      <FilterTabs
-        tabs={tabs}
-        activeId={activeTab}
-        onChange={(id) => setActiveTab(id as FilterTabId)}
-        ariaLabel={t('filter_aria')}
-      />
-
-      {!loaded && !error ? (
-        <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
-          <div className="flex flex-col gap-4" aria-busy="true">
-            {Array.from({ length: 2 }).map((_, i) => (
-              <div
-                key={i}
-                className="h-48 animate-pulse rounded-xl border border-border bg-surface-muted/40"
-              />
-            ))}
-          </div>
-          <div className="h-48 animate-pulse rounded-xl border border-border bg-surface-muted/40" />
+      <div className="vg-toolbar">
+        <div className="tab-chips">
+          {(
+            [
+              { id: 'alle', label: 'Alle', n: counts.alle },
+              { id: 'laufend', label: 'Laufend', n: counts.laufend },
+              { id: 'warten', label: 'Warten auf Sie', n: counts.warten },
+              { id: 'abgeschlossen', label: 'Abgeschlossen', n: counts.abgeschlossen },
+            ] as Array<{ id: FilterId; label: string; n: number }>
+          ).map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              className={`chip${activeTab === tab.id ? ' active' : ''}`}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              {tab.label} <span className="count">{tab.n}</span>
+            </button>
+          ))}
         </div>
-      ) : visible.length === 0 ? (
-        <EmptyState
-          icon={<FolderKanban aria-hidden="true" />}
-          title={t('empty.title')}
-          description={t('empty.body')}
-          action={
-            activeTab === 'alle' ? (
-              <Link
-                href="/vorgaenge/umzug/start"
-                className={cn(buttonVariants({ variant: 'default' }))}
-              >
-                {t('empty.cta_umzug')}
-              </Link>
-            ) : undefined
-          }
-        />
-      ) : (
-        <div
-          id="vorgaenge-liste"
-          className="grid gap-4 lg:grid-cols-[1fr_320px] lg:items-start"
-        >
-          <div className="flex flex-col gap-4">
-            {bigCard ? (
-              <ProcessCard
-                uebersicht={bigCard}
-                icon={typIcon[bigCard.typ] ?? Truck}
-                subtitle={
-                  bigCard.typ === 'umzug'
-                    ? t('card.umzug_subtitle')
-                    : undefined
-                }
-                href={detailHref(bigCard)}
-              />
-            ) : null}
-            {smallCards.length > 0 ? (
-              <div className="grid gap-4 sm:grid-cols-2">
-                {smallCards.map((u) => (
-                  <ProcessCardSmall
-                    key={u.vorgang_id}
-                    uebersicht={u}
-                    icon={typIcon[u.typ] ?? FolderKanban}
-                    href={detailHref(u)}
-                    nowIso={nowIso}
-                  />
-                ))}
+        <button type="button" className="btn btn-secondary filter">
+          <Filter />
+          Filter
+        </button>
+      </div>
+
+      <div className="vg-layout">
+        <div>
+            {bigVorgang ? (
+            <div className="vg-big">
+              <div className="vg-big-head">
+                <span className="icon-circle">
+                  <Home />
+                </span>
+                <div className="grow">
+                  <div className="title">Umzug</div>
+                  <div className="sub">Ihre Behörden werden automatisch informiert.</div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <span className="badge brand">
+                    <span className="dot" style={{ background: 'var(--brand-500)' }} />
+                    Laufend
+                  </span>
+                  <div className="muted text-xs" style={{ marginTop: 6 }}>
+                    Verantwortlich: Sie
+                  </div>
+                </div>
               </div>
+
+              <div className="fortschritt-card">
+                <div className="fortschritt-head">
+                  <div className="lbl">Fortschritt</div>
+                  <div>
+                    {bigVorgang.doneCount} von {bigVorgang.totalCount} abgeschlossen
+                  </div>
+                </div>
+                <div className="steps">
+                  {bigVorgang.steps.map((s) => (
+                    <div
+                      key={s.id}
+                      className={`step${s.state === 'current' ? ' current' : ''}${s.state === 'pending' ? ' pending' : ''}`}
+                    >
+                      <div className="dot">
+                        {s.state === 'done' ? (
+                          <Check style={{ width: 18, height: 18 }} />
+                        ) : s.state === 'current' ? (
+                          <MoreHorizontal style={{ width: 18, height: 18 }} />
+                        ) : null}
+                      </div>
+                      <div className="t">{s.behoerde}</div>
+                      <div className="s">
+                        {s.aktion.split('\n').map((line, i) => (
+                          <React.Fragment key={i}>
+                            {i > 0 ? <br /> : null}
+                            {line}
+                          </React.Fragment>
+                        ))}
+                      </div>
+                      {s.date ? <div className="date">{s.date}</div> : null}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="vg-big-foot">
+                <span className="left">
+                  <Clock style={{ width: 14, height: 14 }} />
+                  Gestartet: {bigVorgang.angelegtAm}
+                </span>
+                <Link href={bigVorgang.href} className="btn btn-secondary">
+                  Vorgang öffnen <ChevronRight />
+                </Link>
+              </div>
+            </div>
             ) : null}
+
+          <div className="vg-row">
+            {smallVorgaenge.length === 0
+              ? null
+              : smallVorgaenge.map((u, idx) => {
+                  const isWarten = u.unterlagenFehlen;
+                  const days = daysUntil(u.fristIso, nowIso);
+                  const Icon = u.typ === 'aufenthaltstitel-verlaengerung' ? IdCard : Users;
+                  const iconToneClass = idx === 0 ? 'violet' : 'pink';
+                  return (
+                    <div key={u.id} className="vg-card">
+                      <div className="vg-card-head">
+                        <span className={`icon-circle ${iconToneClass}`}>
+                          <Icon />
+                        </span>
+                        <div className="grow">
+                          <div className="title">{u.titel}</div>
+                          <div className="sub">{u.primaryBehoerde}</div>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                          <span className={`badge ${isWarten ? 'amber' : 'brand'}`}>
+                            <span
+                              className="dot"
+                              style={{ background: isWarten ? 'var(--amber-500)' : 'var(--brand-500)' }}
+                            />
+                            {isWarten ? 'Warten auf Sie' : 'Laufend'}
+                          </span>
+                          <div className="muted text-xs" style={{ marginTop: 6 }}>
+                            Verantwortlich: Sie
+                          </div>
+                        </div>
+                      </div>
+                      {isWarten ? (
+                        <div className="frist-box warn">
+                          <div className="t">
+                            <AlertTriangle />
+                            Unterlagen fehlen
+                          </div>
+                          <div className="s">
+                            Bitte laden Sie die fehlenden Dokumente hoch.
+                            <br />
+                            <span style={{ fontWeight: 600 }}>Seit 2 Tagen offen</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="frist-box">
+                          <div className="t">
+                            <Calendar />
+                            {days !== null && days >= 0 ? `Frist in ${days} Tagen` : 'Aktive Frist'}
+                          </div>
+                          <div className="s">
+                            {u.fristIso ? `Fällig am ${formatDateShort(u.fristIso)}` : 'Termin offen'}
+                          </div>
+                        </div>
+                      )}
+                      <div className="vg-card-actions">
+                        <Link href={u.href} className="btn btn-secondary">
+                          {isWarten ? 'Unterlagen hochladen' : 'Weiter bearbeiten'}
+                        </Link>
+                        <button
+                          type="button"
+                          className="btn btn-secondary btn-sm"
+                          style={{ height: 32, width: 32, padding: 0 }}
+                          aria-label="Mehr Aktionen"
+                        >
+                          <MoreVertical />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
           </div>
-
-          <aside aria-label={t('rail.title')}>
-            <WasIstWichtigRail uebersichten={uebersichten} nowIso={nowIso} />
-          </aside>
         </div>
-      )}
 
-      {error ? (
-        <div className="rounded-lg border border-border bg-surface-muted/40 p-4 text-sm text-text-secondary">
-          <Link
-            href="/vorgaenge/umzug/start"
-            className={cn(buttonVariants({ variant: 'outline', size: 'sm' }))}
+        <div className="rail-card">
+          <h3>Was ist gerade wichtig?</h3>
+          <div className="rail-item">
+            <span className="icon-circle">
+              <ClipboardList />
+            </span>
+            <div className="grow">
+              <div className="n">{rail.offen}</div>
+              <div className="lbl">offene Vorgänge</div>
+              <a className="link" href="#vorgaenge-liste">
+                Ansehen <ChevronRight style={{ width: 12, height: 12 }} />
+              </a>
+            </div>
+          </div>
+          <div className="rail-item">
+            <span className="icon-circle">
+              <Calendar />
+            </span>
+            <div className="grow">
+              <div className="n">{rail.fristen14}</div>
+              <div className="lbl">Frist in den nächsten 14 Tagen</div>
+              <Link className="link" href="/termine">
+                Fristen ansehen <ChevronRight style={{ width: 12, height: 12 }} />
+              </Link>
+            </div>
+          </div>
+          <div className="rail-item">
+            <span className="icon-circle amber">
+              <AlertCircle />
+            </span>
+            <div className="grow">
+              <div className="n">{rail.warten}</div>
+              <div className="lbl">Warten auf Ihre Bestätigung</div>
+              <a className="link" href="#vorgaenge-liste">
+                Ansehen <ChevronRight style={{ width: 12, height: 12 }} />
+              </a>
+            </div>
+          </div>
+          <a
+            className="link"
+            href="#vorgaenge-liste"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 12 }}
           >
-            {tStart('title')}
-          </Link>
+            Alle Vorgänge ansehen <ChevronRight style={{ width: 12, height: 12 }} />
+          </a>
         </div>
-      ) : null}
-
-      <PrototypeDisclaimer />
-    </div>
+      </div>
+    </main>
   );
 }

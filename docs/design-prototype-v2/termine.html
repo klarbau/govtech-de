@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>Termine — GovTech DE</title>
+<link rel="stylesheet" href="assets/govtech.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  .tm-layout { display: grid; grid-template-columns: 280px minmax(0, 1.2fr) minmax(0, 1fr); gap: 20px; align-items: start; margin-top: 18px; }
+  .tm-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 20px; box-shadow: var(--shadow-1); }
+
+  .cal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .cal-head .m { font-weight: 600; }
+  .cal-head .nav { display: inline-flex; gap: 4px; color: var(--ink-3); }
+  .cal-head .nav button { background: none; border: 0; padding: 4px; color: inherit; cursor: pointer; }
+  .cal {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    gap: 0; text-align: center;
+  }
+  .cal .h { color: var(--ink-3); font-size: 12px; font-weight: 500; padding: 6px 0; }
+  .cal .d { padding: 8px 0; font-size: 13px; color: var(--ink); position: relative; cursor: pointer; }
+  .cal .d.mute { color: var(--ink-4); }
+  .cal .d.today { color: #fff; }
+  .cal .d.today::before {
+    content: ''; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: 28px; height: 28px; border-radius: 50%; background: var(--brand-600); z-index: -1;
+  }
+  .cal .d.today span { position: relative; z-index: 1; }
+  .cal .d.has-event::after {
+    content: ''; position: absolute; left: 50%; transform: translateX(-50%); bottom: 4px;
+    width: 5px; height: 5px; border-radius: 50%; background: var(--green-600);
+  }
+
+  .filter-card { margin-top: 14px; }
+  .filter-card h4 { margin: 0 0 12px; font-size: 14px; font-weight: 600; }
+  .filter-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 13px; }
+  .filter-row .cb {
+    width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(--border-strong);
+    display: inline-flex; align-items: center; justify-content: center; color: #fff;
+    background: var(--surface);
+  }
+  .filter-row .cb.on { background: var(--brand-600); border-color: var(--brand-600); }
+  .filter-row .cb.on svg { width: 12px; height: 12px; }
+  .filter-row .dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* mid column */
+  .tm-next { background: var(--brand-50); border: 1.5px solid var(--brand-200); border-radius: var(--r-md); padding: 18px; }
+  .tm-next .row1 { display: flex; align-items: flex-start; gap: 14px; }
+  .tm-next .icon-circle { background: rgba(255,255,255,.7); }
+  .tm-next .t { font-weight: 600; }
+  .tm-next .meta { color: var(--ink-3); font-size: 13px; margin-top: 4px; display: flex; flex-direction: column; gap: 2px; }
+  .tm-next .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .tm-next .actions { display: flex; gap: 10px; margin-top: 14px; }
+
+  .tm-list-item {
+    display: grid; grid-template-columns: 44px 1fr auto auto; gap: 14px; align-items: center;
+    padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--r-md);
+    background: var(--surface);
+  }
+  .tm-list-item + .tm-list-item { margin-top: 10px; }
+  .tm-list-item .icon-circle { width: 40px; height: 40px; }
+  .tm-list-item .t { font-weight: 600; }
+  .tm-list-item .meta { color: var(--ink-3); font-size: 13px; }
+  .tm-list-item .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .tm-list-item .actions { display: inline-flex; align-items: center; gap: 8px; }
+
+  .ns-card .heading { display: flex; align-items: center; justify-content: space-between; }
+  .ns-card .t { font-weight: 600; }
+  .ns-info { display: flex; flex-direction: column; gap: 10px; margin: 14px 0 18px; color: var(--ink-2); font-size: 13.5px; }
+  .ns-info .row { display: flex; align-items: center; gap: 8px; }
+  .ns-info svg { color: var(--ink-3); width: 16px; height: 16px; }
+  .ns-info .link { color: var(--brand-600); font-weight: 500; }
+
+  .prep-card { background: var(--surface-soft); border: 1px solid var(--border); border-radius: var(--r-md); padding: 18px; margin-top: 12px; }
+  .prep-card h4 { margin: 0 0 14px; font-size: 14px; font-weight: 600; }
+  .prep-row { display: grid; grid-template-columns: 24px 1fr; gap: 12px; padding: 8px 0; align-items: start; }
+  .prep-row .icon { color: var(--ink-3); margin-top: 2px; }
+  .prep-row .t { font-weight: 600; font-size: 13.5px; }
+  .prep-row .s { color: var(--ink-3); font-size: 12.5px; line-height: 1.45; }
+</style>
+</head>
+<body>
+
+<div data-gt-header></div>
+<div class="gt-shell">
+  <div data-gt-sidebar></div>
+  <main class="gt-content">
+    <div class="gt-page-head">
+      <h1>Termine</h1>
+      <div class="sub">Behördentermine, Erinnerungen und Buchungen an einem Ort.</div>
+    </div>
+
+    <div class="tm-layout">
+      <div>
+        <div class="tm-card">
+          <div class="cal-head">
+            <div class="m">Mai 2025</div>
+            <div class="nav"><button><i data-lucide="chevron-left"></i></button><button><i data-lucide="chevron-right"></i></button></div>
+          </div>
+          <div class="cal">
+            <div class="h">Mo</div><div class="h">Di</div><div class="h">Mi</div><div class="h">Do</div><div class="h">Fr</div><div class="h">Sa</div><div class="h">So</div>
+            <div class="d mute">28</div><div class="d mute">29</div><div class="d mute">30</div><div class="d">1</div><div class="d">2</div><div class="d">3</div><div class="d">4</div>
+            <div class="d">5</div><div class="d">6</div><div class="d">7</div><div class="d">8</div><div class="d">9</div><div class="d">10</div><div class="d">11</div>
+            <div class="d">12</div><div class="d">13</div><div class="d">14</div><div class="d"><span>15</span><span style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;background: var(--brand-50);z-index:-1;"></span></div><div class="d">16</div><div class="d">17</div><div class="d">18</div>
+            <div class="d">19</div><div class="d">20</div><div class="d">21</div><div class="d">22</div><div class="d">23</div><div class="d">24</div><div class="d">25</div>
+            <div class="d">26</div><div class="d">27</div><div class="d today"><span>28</span></div><div class="d">29</div><div class="d has-event">30</div><div class="d">31</div><div class="d mute">1</div>
+          </div>
+        </div>
+
+        <div class="tm-card filter-card">
+          <h4>Filter</h4>
+          <div class="filter-row"><span class="cb on"><i data-lucide="check"></i></span><span class="dot" style="background: var(--brand-500);"></span>Behördentermine</div>
+          <div class="filter-row"><span class="cb on"><i data-lucide="check"></i></span><span class="dot" style="background: var(--green-500);"></span>Erinnerungen / Fristen</div>
+          <div class="filter-row"><span class="cb on"><i data-lucide="check"></i></span><span class="dot" style="background: var(--violet-500);"></span>Buchungen</div>
+          <div class="filter-row"><span class="cb"></span><span class="dot" style="background: var(--border-strong); border: 1px solid var(--ink-4);"></span>Abgeschlossen</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="text-md fw-600" style="margin-bottom: 12px;">Nächste Termine</div>
+        <div class="tm-next">
+          <div class="row1">
+            <span class="icon-circle"><i data-lucide="calendar"></i></span>
+            <div class="grow">
+              <div class="t">LEA Berlin — Aufenthaltstitel verlängern</div>
+              <div class="meta">
+                <span><i data-lucide="calendar" style="width:14px;height:14px;"></i>Donnerstag, 15. Mai 2025 &nbsp; <i data-lucide="clock" style="width:14px;height:14px;"></i>09:30 – 10:15 Uhr</span>
+                <span><i data-lucide="map-pin" style="width:14px;height:14px;"></i>LEA Berlin, Friedrich-Krause-Ufer 24, 13353 Berlin</span>
+                <span>Buchungsreferenz: LEA-BER-2025-05-15-0930</span>
+              </div>
+            </div>
+            <span class="badge green">Bestätigt</span>
+          </div>
+          <div class="actions">
+            <button class="btn btn-secondary"><i data-lucide="calendar-plus"></i>ICS exportieren</button>
+            <button class="btn btn-primary">Details <i data-lucide="chevron-right"></i></button>
+          </div>
+        </div>
+
+        <div class="text-md fw-600" style="margin: 22px 0 12px;">Weitere Termine und Erinnerungen</div>
+
+        <div class="tm-list-item">
+          <span class="icon-circle"><i data-lucide="landmark"></i></span>
+          <div>
+            <div class="t">Bürgeramt Mitte — An- / Ummeldung</div>
+            <div class="meta"><span><i data-lucide="calendar" style="width:14px;height:14px;"></i>Dienstag, 27. Mai 2025</span> <span><i data-lucide="clock" style="width:14px;height:14px;"></i>11:00 – 11:30 Uhr</span></div>
+            <div class="meta"><span><i data-lucide="map-pin" style="width:14px;height:14px;"></i>Bürgeramt Mitte, Karl-Marx-Allee 31, 10178 Berlin</span></div>
+          </div>
+          <span class="badge brand">Gebucht</span>
+          <i data-lucide="chevron-right" style="color: var(--ink-4);"></i>
+        </div>
+
+        <div class="tm-list-item">
+          <span class="icon-circle violet"><i data-lucide="stethoscope"></i></span>
+          <div>
+            <div class="t">Kinderarzt — Vorsorgeuntersuchung U7</div>
+            <div class="meta"><span><i data-lucide="calendar" style="width:14px;height:14px;"></i>Donnerstag, 29. Mai 2025</span> <span><i data-lucide="clock" style="width:14px;height:14px;"></i>14:30 – 15:00 Uhr</span></div>
+            <div class="meta"><span><i data-lucide="map-pin" style="width:14px;height:14px;"></i>Kinderarztpraxis am Park, Winsstraße 12, 10405 Berlin</span></div>
+          </div>
+          <span class="badge violet">Gebucht</span>
+          <i data-lucide="chevron-right" style="color: var(--ink-4);"></i>
+        </div>
+
+        <div class="tm-list-item">
+          <span class="icon-circle green"><i data-lucide="receipt-text"></i></span>
+          <div>
+            <div class="t">Steuererklärung 2024 abgeben</div>
+            <div class="meta"><span><i data-lucide="calendar" style="width:14px;height:14px;"></i>Frist: Freitag, 30. Mai 2025</span></div>
+            <div class="meta">Finanzamt Berlin</div>
+          </div>
+          <span class="badge green">Erinnerung</span>
+          <i data-lucide="chevron-right" style="color: var(--ink-4);"></i>
+        </div>
+
+        <div class="tm-list-item">
+          <span class="icon-circle green"><i data-lucide="euro"></i></span>
+          <div>
+            <div class="t">Rundfunkbeitrag Zahlung</div>
+            <div class="meta"><span><i data-lucide="calendar" style="width:14px;height:14px;"></i>Fällig: Sonntag, 01. Juni 2025</span></div>
+            <div class="meta">ARD ZDF Deutschlandradio Beitragsservice</div>
+          </div>
+          <span class="badge green">Erinnerung</span>
+          <i data-lucide="chevron-right" style="color: var(--ink-4);"></i>
+        </div>
+
+        <button class="btn btn-secondary" style="margin-top: 14px;"><i data-lucide="calendar"></i>Alle Termine anzeigen</button>
+      </div>
+
+      <div>
+        <div class="text-md fw-600" style="margin-bottom: 12px;">Nächster Schritt</div>
+        <div class="tm-card ns-card">
+          <div class="heading">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <span class="icon-circle"><i data-lucide="calendar"></i></span>
+              <div class="t">LEA Berlin — Aufenthaltstitel verlängern</div>
+            </div>
+            <span class="badge green">Bestätigt</span>
+          </div>
+
+          <div class="ns-info">
+            <div class="row"><i data-lucide="calendar"></i>Donnerstag, 15. Mai 2025</div>
+            <div class="row"><i data-lucide="clock"></i>09:30 – 10:15 Uhr (45 Min.)</div>
+            <div class="row"><i data-lucide="map-pin"></i><div><span class="link">LEA Berlin</span><br/>Friedrich-Krause-Ufer 24, 13353 Berlin</div></div>
+            <div class="row" style="margin-top: 6px;"><i data-lucide="bookmark" style="opacity:0;"></i><div>Buchungsreferenz<br/><span class="mono">LEA-BER-2025-05-15-0930</span></div></div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <button class="btn btn-secondary"><i data-lucide="calendar-plus"></i>ICS exportieren</button>
+            <button class="btn btn-secondary">Details anzeigen <i data-lucide="chevron-right"></i></button>
+          </div>
+
+          <div class="prep-card">
+            <h4>Gut vorbereitet zum Termin</h4>
+            <div class="prep-row"><i data-lucide="file-text" class="icon"></i><div><div class="t">Bringen Sie bitte mit</div><div class="s">Reisepass oder Personalausweis, aktuelles biometrisches Foto, Nachweise zu Einkommen und Wohnraum.</div></div></div>
+            <div class="prep-row"><i data-lucide="clock" class="icon"></i><div><div class="t">Planen Sie genug Zeit ein</div><div class="s">Bitte erscheinen Sie 10–15 Minuten vor Ihrem Termin.</div></div></div>
+            <div class="prep-row"><i data-lucide="info" class="icon"></i><div><div class="t">Nicht wahrnehmen?</div><div class="s">Sie können Ihren Termin bis 48 Stunden vorher online stornieren oder verschieben.</div></div></div>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 16px; padding: 14px; background: var(--green-50); border-radius: var(--r-md);">
+            <div style="display: flex; align-items: center; gap: 10px;"><i data-lucide="check-circle-2" style="color: var(--green-600); width:18px; height: 18px;"></i><div><div class="fw-600">Fristen im Überblick</div><div class="text-xs muted">2 offene Fristen</div></div></div>
+            <a href="#" style="color: var(--brand-600); font-weight: 500; font-size: 13px;">Fristen anzeigen <i data-lucide="chevron-right" style="width:12px;height:12px;"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>window.GT_ACTIVE='termine';</script>
+<script src="assets/govtech.js"></script>
+</body>
+</html>

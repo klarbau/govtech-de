@@ -1,23 +1,21 @@
 import { getTranslations } from 'next-intl/server';
-import Link from 'next/link';
 import {
-  CalendarDays,
+  Calendar,
+  Euro,
   FileText,
-  FolderKanban,
-  IdCard,
-  Inbox,
-  Landmark,
-  LayoutDashboard,
-  LifeBuoy,
+  Folder,
+  HelpCircle,
+  Home,
   LogOut,
+  Mail,
   MessageCircle,
-  Receipt,
-  ShieldCheck,
+  Shield,
+  User,
   Users,
+  type LucideIcon,
 } from 'lucide-react';
 
-import type { ComponentType, SVGProps } from 'react';
-
+import { ParthenonCrest } from './ParthenonCrest';
 import { SidebarNavItem } from './SidebarNavItem';
 
 export interface NavItem {
@@ -33,83 +31,71 @@ export interface NavItem {
     | 'familie'
     | 'assistent'
     | 'datenschutz';
-  icon: ComponentType<SVGProps<SVGSVGElement>>;
+  icon: LucideIcon;
 }
 
+// Ordered + iconed to match NAV_MAIN in `docs/design-prototype-v2/assets/govtech.js`.
 export const navItems: NavItem[] = [
-  { href: '/dashboard', i18nKey: 'dashboard', icon: LayoutDashboard },
-  { href: '/posteingang', i18nKey: 'posteingang', icon: Inbox },
-  { href: '/stammdaten', i18nKey: 'stammdaten', icon: IdCard },
-  { href: '/vorgaenge', i18nKey: 'vorgaenge', icon: FolderKanban },
+  { href: '/dashboard', i18nKey: 'dashboard', icon: Home },
+  { href: '/posteingang', i18nKey: 'posteingang', icon: Mail },
+  { href: '/stammdaten', i18nKey: 'stammdaten', icon: User },
+  { href: '/vorgaenge', i18nKey: 'vorgaenge', icon: Folder },
   { href: '/dokumente', i18nKey: 'dokumente', icon: FileText },
-  { href: '/termine', i18nKey: 'termine', icon: CalendarDays },
-  { href: '/steuer', i18nKey: 'steuer', icon: Receipt },
+  { href: '/termine', i18nKey: 'termine', icon: Calendar },
+  { href: '/steuer', i18nKey: 'steuer', icon: Euro },
   { href: '/familie', i18nKey: 'familie', icon: Users },
   { href: '/assistent', i18nKey: 'assistent', icon: MessageCircle },
-  { href: '/datenschutz', i18nKey: 'datenschutz', icon: ShieldCheck },
+  { href: '/datenschutz', i18nKey: 'datenschutz', icon: Shield },
 ];
 
+/**
+ * Literal port of SIDEBAR_HTML in `docs/design-prototype-v2/assets/govtech.js`.
+ * Renders the `<aside class="gt-sidebar">` with brand crest, primary `.gt-nav`,
+ * a `.gt-nav-divider` and the bottom `.gt-nav` (Hilfe & Kontakt + Abmelden).
+ *
+ * Active state on a `.gt-nav a` is set per-route via `usePathname()` inside
+ * the client child `SidebarNavItem`.
+ */
 export async function Sidebar() {
   const t = await getTranslations('nav');
   const tShell = await getTranslations('shell');
 
   return (
-    <aside
-      className="hidden w-60 shrink-0 flex-col border-e border-border bg-sidebar text-sidebar-foreground md:flex"
-      aria-label={tShell('sidebar.authority')}
-      data-print="hide"
-    >
-      <div className="flex h-14 items-center gap-2 border-b border-border px-4">
-        <Landmark className="size-5 text-text-secondary" aria-hidden="true" />
-        <span className="text-sm font-semibold text-text-primary">
-          {tShell('sidebar.authority')}
-        </span>
+    <aside className="gt-sidebar" aria-label={tShell('sidebar.authority')}>
+      <div className="gt-sidebar-brand">
+        <div className="crest">
+          <ParthenonCrest />
+        </div>
+        <div className="label">
+          Bundesrepublik
+          <br />
+          Deutschland
+        </div>
       </div>
-
-      <nav
-        className="flex-1 overflow-y-auto px-3 py-4"
-        aria-label={tShell('sidebar.nav_label')}
-      >
-        <ul className="flex flex-col gap-1">
-          {navItems.map(({ href, i18nKey, icon: Icon }) => (
-            <li key={href}>
-              <SidebarNavItem
-                href={href}
-                label={t(i18nKey)}
-                icon={<Icon className="size-4" aria-hidden="true" />}
-              />
-            </li>
-          ))}
-        </ul>
+      <nav className="gt-nav" aria-label={tShell('sidebar.nav_label')}>
+        {navItems.map(({ href, i18nKey, icon: Icon }) => (
+          <SidebarNavItem
+            key={href}
+            href={href}
+            label={t(i18nKey)}
+            icon={<Icon aria-hidden="true" />}
+          />
+        ))}
       </nav>
-
-      <div className="mt-auto border-t border-border px-3 py-3">
-        <ul className="flex flex-col gap-1">
-          <li>
-            <Link
-              href="#"
-              className="group flex min-h-[44px] items-center gap-2 rounded-md px-3 py-2 text-sm text-text-secondary transition-colors hover:bg-surface-muted hover:text-text-primary focus-visible:bg-surface-muted focus-visible:text-text-primary"
-            >
-              <LifeBuoy
-                className="size-4 shrink-0 text-text-secondary group-hover:text-text-primary"
-                aria-hidden="true"
-              />
-              <span>{tShell('sidebar.help')}</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/"
-              className="group flex min-h-[44px] items-center gap-2 rounded-md px-3 py-2 text-sm text-text-secondary transition-colors hover:bg-surface-muted hover:text-text-primary focus-visible:bg-surface-muted focus-visible:text-text-primary"
-            >
-              <LogOut
-                className="size-4 shrink-0 text-text-secondary group-hover:text-text-primary"
-                aria-hidden="true"
-              />
-              <span>{tShell('sidebar.logout')}</span>
-            </Link>
-          </li>
-        </ul>
+      <div className="gt-sidebar-bottom">
+        <div className="gt-nav-divider" />
+        <nav className="gt-nav">
+          <SidebarNavItem
+            href="#"
+            label={tShell('sidebar.help')}
+            icon={<HelpCircle aria-hidden="true" />}
+          />
+          <SidebarNavItem
+            href="/"
+            label={tShell('sidebar.logout')}
+            icon={<LogOut aria-hidden="true" />}
+          />
+        </nav>
       </div>
     </aside>
   );

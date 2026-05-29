@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>Anmeldung — GovTech DE</title>
+<link rel="stylesheet" href="assets/govtech.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  .auth-page { padding: 40px 56px 24px; max-width: 1320px; margin: 0 auto; }
+  .auth-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: var(--shadow-2);
+    padding: 56px 64px;
+    display: grid;
+    grid-template-columns: 1.1fr 1px 1fr;
+    gap: 56px;
+    align-items: start;
+  }
+  .auth-divider { background: var(--border); width: 1px; align-self: stretch; }
+  .auth-left { text-align: center; }
+  .auth-crest { color: var(--brand-700); margin-bottom: 8px; }
+  .auth-crest svg { width: 64px; height: 64px; }
+  .auth-left h1 {
+    font-size: 44px; font-weight: 700; letter-spacing: -0.025em;
+    margin: 12px 0 6px; color: var(--ink);
+    line-height: 1.1;
+  }
+  .auth-left .sub { color: var(--ink-3); margin-bottom: 28px; }
+  .auth-methods { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .auth-method {
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    padding: 28px 20px;
+    text-align: center;
+    cursor: pointer;
+  }
+  .auth-method:hover { border-color: var(--brand-200); background: var(--brand-50); }
+  .auth-method .icon-circle.lg { margin: 0 auto 14px; }
+  .auth-method .t { font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+  .auth-method .s { color: var(--ink-3); font-size: 13px; }
+
+  .auth-demo {
+    margin-top: 16px;
+    border: 1px solid var(--brand-100);
+    background: var(--brand-50);
+    border-radius: var(--r-lg);
+    padding: 18px 22px;
+    display: flex; align-items: center; gap: 14px;
+    cursor: pointer;
+  }
+  .auth-demo .icon-circle { background: rgba(255,255,255,0.7); }
+  .auth-demo .body { flex: 1; text-align: left; }
+  .auth-demo .body .t { font-weight: 600; color: var(--ink); }
+  .auth-demo .body .s { color: var(--ink-3); font-size: 13px; }
+
+  .auth-trust {
+    margin-top: 28px;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+    border-top: 1px solid var(--border);
+    padding-top: 28px;
+  }
+  .auth-trust .item { display: flex; gap: 10px; text-align: left; }
+  .auth-trust .item svg { color: var(--ink-3); width: 18px; height: 18px; margin-top: 2px; flex: none; }
+  .auth-trust .item .t { font-weight: 600; font-size: 13px; }
+  .auth-trust .item .s { color: var(--ink-3); font-size: 12px; line-height: 1.45; }
+
+  .auth-right h3 { margin: 0 0 18px; font-size: 18px; font-weight: 600; }
+  .step-list { display: flex; flex-direction: column; gap: 22px; position: relative; padding-left: 8px; }
+  .step-list .step { display: grid; grid-template-columns: 40px 1fr; gap: 14px; position: relative; }
+  .step-list .step .n {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--brand-600); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px; z-index: 1;
+  }
+  .step-list .step::before {
+    content: ''; position: absolute; left: 15px; top: 36px; bottom: -22px; width: 1px;
+    background: var(--border-strong);
+  }
+  .step-list .step:last-child::before { display: none; }
+  .step-list .step .t { font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+  .step-list .step .s { color: var(--ink-3); font-size: 13px; line-height: 1.5; }
+
+  .why-section { margin-top: 28px; padding-top: 28px; border-top: 1px solid var(--border); }
+  .why-section h3 { margin: 0 0 18px; font-size: 18px; font-weight: 600; }
+  .why-list { display: flex; flex-direction: column; gap: 18px; }
+  .why-list .item { display: grid; grid-template-columns: 32px 1fr; gap: 14px; }
+  .why-list .item .icon-circle { width: 32px; height: 32px; }
+  .why-list .item .icon-circle svg { width: 16px; height: 16px; }
+  .why-list .item .t { font-weight: 600; }
+  .why-list .item .s { color: var(--ink-3); font-size: 13px; line-height: 1.5; }
+
+  .auth-foot {
+    margin-top: 18px;
+    display: flex; align-items: center; justify-content: center; gap: 18px;
+    color: var(--ink-3); font-size: 13px;
+  }
+  .auth-foot svg { width: 14px; height: 14px; }
+  .auth-foot a { color: var(--brand-600); font-weight: 500; }
+</style>
+</head>
+<body>
+
+<header class="gt-header">
+  <a href="index.html" class="gt-brand">
+    <div class="gt-brand-logo">
+      <svg viewBox="0 0 32 32" fill="none"><path d="M16 3.5 3.5 9.5h25L16 3.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M5 11.5V23M11 11.5V23M16 11.5V23M21 11.5V23M27 11.5V23" stroke="currentColor" stroke-width="1.6"/><path d="M3 23.5h26M2 27h28" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <span>GovTech DE</span>
+    </div>
+    <span class="gt-tagline">Verwaltung neu gedacht.</span>
+  </a>
+  <div class="gt-header-spacer"></div>
+  <div class="gt-header-actions">
+    <button class="gt-header-btn"><i data-lucide="globe"></i>DE<i data-lucide="chevron-down"></i></button>
+    <button class="gt-header-btn icon"><i data-lucide="sun"></i></button>
+    <button class="gt-user-pill"><i data-lucide="user"></i>Anmelden<i data-lucide="chevron-down"></i></button>
+  </div>
+</header>
+
+<main class="auth-page">
+  <div class="auth-card">
+    <div class="auth-left">
+      <div class="auth-crest">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M16 3.5 3.5 9.5h25L16 3.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M5 11.5V23M11 11.5V23M16 11.5V23M21 11.5V23M27 11.5V23" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M3 23.5h26M2 27h28" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h1>Willkommen bei GovTech DE</h1>
+      <div class="sub">Melden Sie sich an oder starten Sie die Demo.</div>
+
+      <div class="auth-methods">
+        <a href="identitaet.html" class="auth-method">
+          <span class="icon-circle lg"><i data-lucide="id-card"></i></span>
+          <div class="t">Mit DeutschlandID fortfahren</div>
+          <div class="s">Sicher, einfach und behördlich anerkannt.</div>
+        </a>
+        <a href="identitaet.html" class="auth-method">
+          <span class="icon-circle lg"><i data-lucide="wallet"></i></span>
+          <div class="t">Mit EUDI Wallet fortfahren</div>
+          <div class="s">Ihre digitale Brieftasche für Europa.</div>
+        </a>
+      </div>
+
+      <a href="dashboard.html" class="auth-demo">
+        <span class="icon-circle"><i data-lucide="flask-conical"></i></span>
+        <div class="body">
+          <div class="t">Demo-Modus mit Mock-Daten</div>
+          <div class="s">Ohne Anmeldung testen. Keine echte Behördenanbindung.</div>
+        </div>
+        <i data-lucide="chevron-right" style="color:var(--ink-4)"></i>
+      </a>
+
+      <div class="auth-trust">
+        <div class="item"><i data-lucide="shield"></i><div><div class="t">Sichere Anmeldung</div><div class="s">Ihre Daten sind geschützt und werden verschlüsselt übertragen.</div></div></div>
+        <div class="item"><i data-lucide="check-circle-2"></i><div><div class="t">Nur mit Ihrer Zustimmung</div><div class="s">Sie entscheiden jederzeit, welche Daten geteilt werden.</div></div></div>
+        <div class="item"><i data-lucide="info"></i><div><div class="t">Keine echte Behördenanbindung</div><div class="s">In dieser Demo werden keine echten Behörden-Systeme verwendet.</div></div></div>
+      </div>
+    </div>
+
+    <div class="auth-divider"></div>
+
+    <div class="auth-right">
+      <h3>So einfach geht's</h3>
+      <div class="step-list">
+        <div class="step"><span class="n">1</span><div><div class="t">Identität wählen</div><div class="s">Wählen Sie Ihre bevorzugte Anmeldemethode:<br/>DeutschlandID oder EUDI Wallet.</div></div></div>
+        <div class="step"><span class="n">2</span><div><div class="t">Datenfreigabe prüfen</div><div class="s">Prüfen Sie die angeforderten Daten und geben Sie nur frei, was nötig ist.</div></div></div>
+        <div class="step"><span class="n">3</span><div><div class="t">Autopilot starten</div><div class="s">Ihre Daten werden vorausgefüllt, Briefe erklärt und Ihre Vorgänge automatisch gestartet.</div></div></div>
+      </div>
+
+      <div class="why-section">
+        <h3>Warum diese Anmeldung?</h3>
+        <div class="why-list">
+          <div class="item"><span class="icon-circle"><i data-lucide="user"></i></span><div><div class="t">Daten vorausfüllen</div><div class="s">Wir verwenden Ihre Daten, um Formulare automatisch auszufüllen – Sie sparen Zeit und Aufwand.</div></div></div>
+          <div class="item"><span class="icon-circle"><i data-lucide="file-text"></i></span><div><div class="t">Briefe verständlich erklären</div><div class="s">Sie erhalten klare Erklärungen zu Ihren Briefen und wissen genau, was zu tun ist.</div></div></div>
+          <div class="item"><span class="icon-circle"><i data-lucide="sparkles"></i></span><div><div class="t">Autopilot für Ihre Vorgänge</div><div class="s">Wir überwachen Fristen, erledigen Schritte für Sie und halten Sie auf dem Laufenden.</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="auth-foot">
+    <i data-lucide="lock"></i> Diese Anwendung entspricht den BSI-Grundschutz-Kriterien.
+    <a href="datenschutz.html">Datenschutz</a>
+    <a href="#">Impressum</a>
+  </div>
+</main>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>

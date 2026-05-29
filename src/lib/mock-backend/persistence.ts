@@ -1,13 +1,17 @@
 /**
- * localStorage-Wrapper.
+ * Persistenz-Wrapper über der Store-Abstraktion (`store.ts` / `store-context.ts`).
  *
  * - Single Namespace: `govtech-de:v1:`
  * - Eine Top-Level-Key pro Entity-Collection.
  * - JSON-encodiert; beim Lesen via zod validiert. Schlägt die Validierung fehl,
  *   wird der Bucket gelöscht und der nächste `seedIfEmpty()`-Aufruf re-seeded.
- * - Server-Rendering-Safe: alle Operationen no-op'en, wenn `window` undefined ist.
+ * - Store-agnostisch: der aktuell gültige Store wird über `getCurrentStore()`
+ *   aufgelöst — im Browser ein `LocalStorageStore` (bisheriges Verhalten),
+ *   serverseitig ein per-Session `InMemoryStore`, im Node-/Test-Fallback ein
+ *   Default-`InMemoryStore`. Kein Modul hier referenziert mehr direkt `window`.
  */
 import { z } from 'zod';
+import { getCurrentStore } from './store-context';
 
 const NAMESPACE = 'govtech-de:v1:';
 
@@ -69,17 +73,15 @@ export type CollectionKey =
 
 const fullKey = (key: CollectionKey): string => `${NAMESPACE}${key}`;
 
-const isBrowser = (): boolean => typeof window !== 'undefined' && !!window.localStorage;
-
 export function readRaw(key: CollectionKey): unknown {
-  if (!isBrowser()) return undefined;
-  const raw = window.localStorage.getItem(fullKey(key));
+  const store = getCurrentStore();
+  const raw = store.getItem(fullKey(key));
   if (raw === null) return undefined;
   try {
     return JSON.parse(raw);
   } catch {
     // Corrupt JSON → behandeln wie „nicht gesetzt".
-    window.localStorage.removeItem(fullKey(key));
+    store.removeItem(fullKey(key));
     return undefined;
   }
 }
@@ -94,9 +96,7 @@ export function read<T>(key: CollectionKey, schema: z.ZodType<T>): T | undefined
   if (raw === undefined) return undefined;
   const parsed = schema.safeParse(raw);
   if (!parsed.success) {
-    if (isBrowser()) {
-      window.localStorage.removeItem(fullKey(key));
-    }
+    getCurrentStore().removeItem(fullKey(key));
     if (typeof console !== 'undefined') {
       console.warn(
         `[mock-backend] Schema mismatch for "${key}", reseeding bucket.`,
@@ -109,24 +109,22 @@ export function read<T>(key: CollectionKey, schema: z.ZodType<T>): T | undefined
 }
 
 export function write<T>(key: CollectionKey, value: T): void {
-  if (!isBrowser()) return;
-  window.localStorage.setItem(fullKey(key), JSON.stringify(value));
+  getCurrentStore().setItem(fullKey(key), JSON.stringify(value));
 }
 
 export function clear(key: CollectionKey): void {
-  if (!isBrowser()) return;
-  window.localStorage.removeItem(fullKey(key));
+  getCurrentStore().removeItem(fullKey(key));
 }
 
 /** Löscht alle govtech-de:v1:*-Keys. Verwendet bei Version-Bump (v1 → v2). */
 export function purgeAll(): void {
-  if (!isBrowser()) return;
+  const store = getCurrentStore();
   const toRemove: string[] = [];
-  for (let i = 0; i < window.localStorage.length; i++) {
-    const k = window.localStorage.key(i);
+  for (let i = 0; i < store.length; i++) {
+    const k = store.key(i);
     if (k?.startsWith(NAMESPACE)) toRemove.push(k);
   }
-  toRemove.forEach((k) => window.localStorage.removeItem(k));
+  toRemove.forEach((k) => store.removeItem(k));
 }
 
 /** Liest oder initialisiert. Falls leer/invalid → schreibt `defaultValue` und gibt es zurück. */

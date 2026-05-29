@@ -1,33 +1,35 @@
 'use client';
 
 import * as React from 'react';
-import { useSearchParams } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
-import { Inbox, RefreshCw } from 'lucide-react';
+import {
+  Briefcase,
+  ChevronDown,
+  ChevronRight,
+  ChevronUp,
+  Clock,
+  Euro,
+  File as FileIcon,
+  FileText,
+  Filter,
+  FolderInput,
+  Landmark,
+  MoreHorizontal,
+  PenSquare,
+  Scale,
+  Search,
+  ShieldCheck,
+  Sparkles,
+} from 'lucide-react';
 import { toast } from 'sonner';
 
-import { Button } from '@/components/ui/button';
-import { PageHeader } from '@/components/shared/PageHeader';
-import { PrototypeDisclaimer } from '@/components/shared/PrototypeDisclaimer';
 import { api } from '@/lib/mock-backend';
 import type { Behoerde, Letter, Vorgang } from '@/types';
 
-import { ActiveFilterChips } from './ActiveFilterChips';
-import { FilterButton } from './FilterButton';
-import {
-  FilterPopover,
-  filterKategorieToInternal,
-  type FilterKategorie,
-} from './FilterPopover';
-import { FilterSheet } from './FilterSheet';
-import { InlineLetterReader } from './InlineLetterReader';
-import { LetterCard } from './LetterCard';
-import { LetterListGroup } from './LetterListGroup';
-import { LetterListHeader } from './LetterListHeader';
 import { NeuerVorgangAusBriefModal } from './NeuerVorgangAusBriefModal';
-import { RechtlicheHinweiseDetails } from './RechtlicheHinweiseDetails';
-import { VorgangsGruppe, SonstigeGruppe } from './VorgangsGruppe';
+import { ReplySheet } from './ReplySheet';
+import { OriginaltextBlock } from './OriginaltextBlock';
 
 interface InitialData {
   letters: Letter[];
@@ -40,527 +42,214 @@ interface PosteingangInboxProps {
   initial: InitialData;
 }
 
-type View = 'chronologisch' | 'nach-vorgang';
+type AvatarVariant = 'eagle' | 'aok' | 'ard' | 'lea' | 'jc' | 'default';
+type SectionKey = 'neu' | 'frist7' | 'erledigt';
 
-const KATEGORIEN_PARAM = 'kategorien';
-const TAB_PARAM = 'tab';
-
-type StatusGroupKey =
-  | 'neu'
-  | 'frist_unter_7d'
-  | 'frist_ueber_7d'
-  | 'erledigt'
-  | 'archiv';
-
-function parseListParam(raw: string | null): string[] {
-  if (!raw) return [];
-  return raw
-    .split(',')
-    .map((s) => s.trim())
-    .filter(Boolean);
-}
-
-function fristBucket(letter: Letter, nowIso: string): StatusGroupKey | null {
-  if (!letter.fristen || letter.fristen.length === 0) return null;
-  const earliest = letter.fristen
-    .map((f) => f.datum)
-    .sort((a, b) => a.localeCompare(b))[0];
-  if (!earliest) return null;
-  const days = differenceInCalendarDays(parseISO(earliest), parseISO(nowIso));
-  if (days < 0) return null;
-  return days <= 7 ? 'frist_unter_7d' : 'frist_ueber_7d';
-}
-
-function statusBucket(letter: Letter, nowIso: string): StatusGroupKey[] {
-  const out: StatusGroupKey[] = [];
-  if (letter.status === 'ungelesen') out.push('neu');
-  if (letter.status === 'erledigt') out.push('erledigt');
-  const fb = fristBucket(letter, nowIso);
-  if (fb) out.push(fb);
-  return out;
-}
-
-function applyKategorienFilter(
-  letters: Letter[],
-  kategorien: FilterKategorie[],
-  behoerdenById: Record<string, Behoerde>,
-): Letter[] {
-  if (kategorien.length === 0) return letters;
-  const allowed = new Set(kategorien.flatMap(filterKategorieToInternal));
-  return letters.filter((l) => {
-    const kat = behoerdenById[l.absender_behoerde_id]?.kategorie;
-    return kat ? allowed.has(kat) : false;
-  });
-}
-
+/**
+ * `<PosteingangInbox>` — literal port of `docs/design-prototype-v2/posteingang.html`.
+ * Same DOM (`post-toolbar`, `post-layout`, `post-section`, `post-item`,
+ * `post-detail`, `ai-card`, `frist-row`, `post-actions`, `post-followups`,
+ * `auszug`); list data is wired through `api.getLetters()` and grouped into
+ * Neu / Frist offen ≤ 7 Tagen / Erledigt. Detail panel renders the selected
+ * letter; actions reuse the existing ReplySheet + NeuerVorgangAusBriefModal +
+ * OriginaltextBlock helpers.
+ */
 export function PosteingangInbox({ initial }: PosteingangInboxProps) {
-  const t = useTranslations('posteingang');
-  const tInbox = useTranslations('posteingang.inbox');
-  const tCommon = useTranslations('common.cta');
-  const tChip = useTranslations('common.context_chip');
-  const searchParams = useSearchParams();
-
   const [letters, setLetters] = React.useState<Letter[]>(initial.letters);
   const [behoerdenById, setBehoerdenById] = React.useState(initial.behoerdenById);
-  const [vorgaengeById] = React.useState(initial.vorgaengeById);
-  const [error, setError] = React.useState<string | null>(null);
-  const [refreshing, setRefreshing] = React.useState(false);
-  const [hasLoadedOnce, setHasLoadedOnce] = React.useState(
-    initial.letters.length > 0,
-  );
+  const [hasLoaded, setHasLoaded] = React.useState(initial.letters.length > 0);
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const [view, setView] = React.useState<'chronologisch' | 'vorgang'>('chronologisch');
+  const [selectedLetterId, setSelectedLetterId] = React.useState<string | null>(null);
+
+  const [replyLetter, setReplyLetter] = React.useState<Letter | null>(null);
+  const [vorgangModalLetter, setVorgangModalLetter] = React.useState<Letter | null>(null);
+  const [originalTextOpen, setOriginalTextOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    if (hasLoaded) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const [next, behoerden] = await Promise.all([
+          api.getLetters(),
+          api.getBehoerden(),
+        ]);
+        if (cancelled) return;
+        const map: Record<string, Behoerde> = {};
+        for (const b of behoerden) map[b.id] = b;
+        setLetters(next);
+        setBehoerdenById(map);
+        setHasLoaded(true);
+      } catch {
+        // swallowed — UI shows an empty inbox.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [hasLoaded]);
+
   const nowIso = initial.nowIso;
 
-  const initialKategorien = React.useMemo(
-    () =>
-      (parseListParam(searchParams?.get(KATEGORIEN_PARAM) ?? null) as FilterKategorie[])
-        .map<FilterKategorie | null>((k) => {
-          if (k === 'bund' || k === 'land' || k === 'kommunal' || k === 'sonstige') {
-            return k;
-          }
-          // Legacy V1-URLs: selbstverwaltung + privatrechtl-behoerdenartig → sonstige.
-          if (k === 'selbstverwaltung' || k === 'privatrechtl-behoerdenartig') {
-            return 'sonstige';
-          }
-          return null;
-        })
-        .filter((k): k is FilterKategorie => k !== null),
-    [searchParams],
-  );
-
-  const initialTab = (searchParams?.get(TAB_PARAM) as View | null) ?? 'chronologisch';
-
-  const [kategorien, setKategorien] =
-    React.useState<FilterKategorie[]>(initialKategorien);
-  const [view, setView] = React.useState<View>(initialTab);
-  const [searchQuery, setSearchQuery] = React.useState('');
-  const [filterPopoverOpen, setFilterPopoverOpen] = React.useState(false);
-  const [filterSheetOpen, setFilterSheetOpen] = React.useState(false);
-
-  const [vorgangModalLetter, setVorgangModalLetter] =
-    React.useState<Letter | null>(null);
-
-  // 3-Pane (≥ lg): inline-Reader-Auswahl. < lg navigiert zu /posteingang/[id].
-  const [selectedLetterId, setSelectedLetterId] = React.useState<string | null>(
-    null,
-  );
-  const [selectionKey, setSelectionKey] = React.useState(0);
-  const [isWide, setIsWide] = React.useState(false);
-
-  React.useEffect(() => {
-    if (typeof window === 'undefined' || !window.matchMedia) return;
-    const mq = window.matchMedia('(min-width: 1024px)');
-    const apply = () => setIsWide(mq.matches);
-    apply();
-    mq.addEventListener('change', apply);
-    return () => mq.removeEventListener('change', apply);
-  }, []);
-
-  const handleSelectLetter = React.useCallback((letter: Letter) => {
-    setSelectedLetterId(letter.id);
-    setSelectionKey((k) => k + 1);
-  }, []);
-
-  // Inline-Auswahl nur auf ≥ lg; sonst navigiert der Link zu /posteingang/[id].
-  const onSelectIfWide = isWide ? handleSelectLetter : undefined;
-
-  // URL-Sync (kategorien, tab) — pushState ohne Scroll-Reset.
-  React.useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (kategorien.length > 0) {
-      params.set(KATEGORIEN_PARAM, [...new Set(kategorien)].join(','));
-    } else {
-      params.delete(KATEGORIEN_PARAM);
-    }
-    if (view !== 'chronologisch') params.set(TAB_PARAM, view);
-    else params.delete(TAB_PARAM);
-    // Clean V1.5: status-param is gelöscht.
-    params.delete('status');
-    const qs = params.toString();
-    const next = qs ? `?${qs}` : '';
-    window.history.replaceState(null, '', `${window.location.pathname}${next}`);
-  }, [kategorien, view]);
-
-  async function refresh() {
-    setRefreshing(true);
-    setError(null);
-    try {
-      const [nextLetters, behoerden] = await Promise.all([
-        api.getLetters(),
-        api.getBehoerden(),
-      ]);
-      const map: Record<string, Behoerde> = {};
-      for (const b of behoerden) map[b.id] = b;
-      setLetters(nextLetters);
-      setBehoerdenById(map);
-      setHasLoadedOnce(true);
-    } catch {
-      setError(t('list.error_load'));
-    } finally {
-      setRefreshing(false);
-    }
-  }
-
-  React.useEffect(() => {
-    if (hasLoadedOnce) return;
-    void refresh();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Letters with the search-query applied but BEFORE the kategorie-filter.
-  // Used to compute „n_gesamt" pro Vorgangs-Gruppe (Spec §A4).
-  const searchedLetters = React.useMemo(() => {
-    let out = [...letters];
-    if (searchQuery.trim().length >= 3) {
-      const q = searchQuery.trim().toLowerCase();
-      out = out.filter(
-        (l) =>
-          l.aktenzeichen.toLowerCase().includes(q) ||
-          (l.aktenzeichen_weitere ?? []).some((a) =>
-            a.toLowerCase().includes(q),
-          ) ||
-          (behoerdenById[l.absender_behoerde_id]?.name_de ?? '')
-            .toLowerCase()
-            .includes(q),
-      );
-    }
-    return out.sort((a, b) => b.empfangen_am.localeCompare(a.empfangen_am));
-  }, [letters, searchQuery, behoerdenById]);
-
-  // Visible letters (search + kategorie).
-  const visibleLetters = React.useMemo(
-    () => applyKategorienFilter(searchedLetters, kategorien, behoerdenById),
-    [searchedLetters, kategorien, behoerdenById],
-  );
-
-  // Status-Gruppierung für „chronologisch".
   const grouped = React.useMemo(() => {
-    const groups: Record<StatusGroupKey | 'andere', Letter[]> = {
-      neu: [],
-      frist_unter_7d: [],
-      frist_ueber_7d: [],
-      erledigt: [],
-      archiv: [],
-      andere: [],
-    };
-    for (const l of visibleLetters) {
-      const buckets = statusBucket(l, nowIso);
-      if (buckets.length === 0) groups.andere.push(l);
-      else groups[buckets[0]!].push(l);
-    }
-    return groups;
-  }, [visibleLetters, nowIso]);
+    const q = searchQuery.trim().toLowerCase();
+    const filtered = letters.filter((l) => {
+      if (q.length < 3) return true;
+      return (
+        l.aktenzeichen.toLowerCase().includes(q) ||
+        (behoerdenById[l.absender_behoerde_id]?.name_de ?? '')
+          .toLowerCase()
+          .includes(q)
+      );
+    });
 
-  // Vorgangs-Gruppierung für „nach-vorgang"-Tab.
-  // Wir berechnen sowohl die ungefilterten (vor Kategorie-Filter, inkl. Suche)
-  // als auch die gefilterten Mengen, damit die „(n gefiltert von m)"-Anzeige
-  // korrekt rendert und nicht auto-clearend ist.
-  const byVorgang = React.useMemo(() => {
-    const totalMap = new Map<string, Letter[]>();
-    const filteredMap = new Map<string, Letter[]>();
-    const sonstigeTotal: Letter[] = [];
-    const sonstigeFiltered: Letter[] = [];
-    const filteredSet = new Set(visibleLetters.map((l) => l.id));
-    for (const l of searchedLetters) {
-      if (!l.vorgang_id) {
-        sonstigeTotal.push(l);
-        if (filteredSet.has(l.id)) sonstigeFiltered.push(l);
-      } else {
-        const arr = totalMap.get(l.vorgang_id) ?? [];
-        arr.push(l);
-        totalMap.set(l.vorgang_id, arr);
-        if (filteredSet.has(l.id)) {
-          const farr = filteredMap.get(l.vorgang_id) ?? [];
-          farr.push(l);
-          filteredMap.set(l.vorgang_id, farr);
+    const neu: Letter[] = [];
+    const frist7: Letter[] = [];
+    const erledigt: Letter[] = [];
+    for (const l of filtered) {
+      if (l.status === 'erledigt') {
+        erledigt.push(l);
+        continue;
+      }
+      const earliest = (l.fristen ?? [])
+        .map((f) => f.datum)
+        .sort()[0];
+      if (earliest) {
+        const days = differenceInCalendarDays(parseISO(earliest), parseISO(nowIso));
+        if (days >= 0 && days <= 7) {
+          frist7.push(l);
+          continue;
         }
       }
+      if (l.status === 'ungelesen') {
+        neu.push(l);
+      } else {
+        neu.push(l);
+      }
     }
-    return { totalMap, filteredMap, sonstigeTotal, sonstigeFiltered };
-  }, [searchedLetters, visibleLetters]);
+    return { neu, frist7, erledigt };
+  }, [letters, behoerdenById, nowIso, searchQuery]);
 
-  function resetFilter() {
-    setKategorien([]);
-  }
+  const selectedLetter =
+    letters.find((l) => l.id === selectedLetterId) ?? letters[0] ?? null;
 
-  const behoerdenNameMap = React.useMemo(() => {
-    const out: Record<string, string> = {};
-    for (const [id, b] of Object.entries(behoerdenById)) {
-      out[id] = b.name_de;
-    }
-    return out;
-  }, [behoerdenById]);
-
-  const filterActive = kategorien.length > 0;
+  const selectedAbsender = selectedLetter
+    ? behoerdenById[selectedLetter.absender_behoerde_id] ?? null
+    : null;
 
   return (
-    <section
-      aria-labelledby="posteingang-hero-title"
-      className="flex flex-col gap-6"
-    >
-      <a
-        href="#letter-list"
-        className="sr-only rounded-md bg-foreground px-3 py-2 text-sm text-background focus-visible:not-sr-only focus-visible:absolute focus-visible:left-4 focus-visible:top-4 focus-visible:z-50"
-      >
-        {t('skip_link.zur_brief_liste')}
-      </a>
-      <div className="flex flex-col gap-2">
-        <PageHeader
-          title={
-            <span id="posteingang-hero-title">{t('hero.title')}</span>
-          }
-          subtitle={t('hero.subtitle')}
-          contextChip={{ label: tChip('prototype') }}
-          className="mb-0"
-        />
-        <RechtlicheHinweiseDetails />
+    <>
+      <div className="gt-page-head">
+        <h1>Posteingang</h1>
+        <div className="sub">Alle Behörden-Briefe an einem Ort. Verstehen statt verzweifeln.</div>
+        <span className="gt-page-tag">Prototyp · Mock-Daten</span>
       </div>
 
-      <div className="flex flex-col gap-5">
-        <div className="flex flex-col gap-3">
-          <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-3">
-            <div className="hidden md:block">
-              <FilterPopover
-                open={filterPopoverOpen}
-                onOpenChange={setFilterPopoverOpen}
-                selected={kategorien}
-                onChange={setKategorien}
-                trigger={
-                  <FilterButton
-                    count={kategorien.length}
-                    onClick={() => setFilterPopoverOpen((o) => !o)}
-                    expanded={filterPopoverOpen}
-                  />
-                }
-              />
-            </div>
-            <FilterButton
-              count={kategorien.length}
-              onClick={() => setFilterSheetOpen(true)}
-              hasPopup="dialog"
-              className="md:hidden"
-            />
-            <FilterSheet
-              open={filterSheetOpen}
-              onOpenChange={setFilterSheetOpen}
-              selected={kategorien}
-              onChange={setKategorien}
-            />
-            <LetterListHeader
-              view={view}
-              onViewChange={setView}
-              searchQuery={searchQuery}
-              onSearchChange={setSearchQuery}
-              behoerdenNameById={behoerdenNameMap}
-              filterCount={kategorien.length}
-              className="flex-1"
-            />
-          </div>
-
-          {/* Phase 6b (Audit #4) — ActiveFilterChips visuell prominenter:
-              eigene Surface mit Border, Padding und ausgeschriebenem Label. */}
-          {kategorien.length > 0 && (
-            <div className="rounded-md border border-[var(--ds-color-border)] bg-[var(--ds-color-surface-muted)] px-3 py-2">
-              <ActiveFilterChips
-                selected={kategorien}
-                onRemove={(k) =>
-                  setKategorien((prev) => prev.filter((x) => x !== k))
-                }
-                onClearAll={resetFilter}
-              />
-            </div>
-          )}
-        </div>
-
-        {error && (
-          <div className="flex flex-col gap-2 rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-900 dark:border-red-800 dark:bg-red-950 dark:text-red-100">
-            <p>{error}</p>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={refresh}
-              className="self-start"
-            >
-              <RefreshCw className="size-4" aria-hidden="true" />
-              {tCommon('erneut_versuchen')}
-            </Button>
-          </div>
-        )}
-
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,400px)_1fr] lg:items-start">
-        <div
-          id="letter-list"
-          role="region"
-          aria-labelledby="letter-list-heading"
-          aria-live="polite"
-          aria-relevant="additions removals"
-          aria-busy={!hasLoadedOnce && refreshing}
-          className="flex flex-col gap-6"
-        >
-          <h2 id="letter-list-heading" className="sr-only">
-            {t('list.region_label')}
-          </h2>
-          {!hasLoadedOnce && refreshing && !error && (
-            <ul className="flex flex-col gap-3">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <li
-                  key={`sk-${i}`}
-                  className="h-24 animate-pulse rounded-xl border border-border bg-muted/30"
-                />
-              ))}
-            </ul>
-          )}
-
-          {hasLoadedOnce && visibleLetters.length === 0 && !error && (
-            <div className="flex flex-col items-start gap-3 rounded-xl border border-dashed border-border bg-muted/40 p-8 text-sm text-muted-foreground">
-              <Inbox className="size-6 text-muted-foreground" aria-hidden="true" />
-              <p>
-                {filterActive || searchQuery.length > 0
-                  ? t('list.empty_filter')
-                  : t('list.empty_inbox')}
-              </p>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={refresh}
-                disabled={refreshing}
-              >
-                <RefreshCw
-                  className={refreshing ? 'size-4 animate-spin' : 'size-4'}
-                  aria-hidden="true"
-                />
-                {t('list.cta_refresh')}
-              </Button>
-            </div>
-          )}
-
-          {hasLoadedOnce && visibleLetters.length > 0 && view === 'chronologisch' && (
-            <div className="flex flex-col gap-6">
-              {(['neu', 'frist_unter_7d', 'frist_ueber_7d', 'erledigt', 'archiv'] as StatusGroupKey[]).map(
-                (key) => {
-                  const arr = grouped[key];
-                  if (!arr || arr.length === 0) return null;
-                  return (
-                    <LetterListGroup
-                      key={key}
-                      title={t(`list.group.${key}`)}
-                      count={arr.length}
-                    >
-                      {arr.map((l) => (
-                        <LetterCard
-                          key={l.id}
-                          variant="row"
-                          selected={selectedLetterId === l.id}
-                          onSelect={onSelectIfWide}
-                          letter={l}
-                          absender={behoerdenById[l.absender_behoerde_id]}
-                          vorgangTitle={
-                            l.vorgang_id
-                              ? vorgaengeById[l.vorgang_id]?.titel
-                              : undefined
-                          }
-                          nowIso={nowIso}
-                          onCreateVorgang={(letter) =>
-                            setVorgangModalLetter(letter)
-                          }
-                        />
-                      ))}
-                    </LetterListGroup>
-                  );
-                },
-              )}
-              {grouped.andere.length > 0 && (
-                <LetterListGroup
-                  title={t('list.group.andere')}
-                  count={grouped.andere.length}
-                >
-                  {grouped.andere.map((l) => (
-                    <LetterCard
-                      key={l.id}
-                      variant="row"
-                      selected={selectedLetterId === l.id}
-                      onSelect={onSelectIfWide}
-                      letter={l}
-                      absender={behoerdenById[l.absender_behoerde_id]}
-                      vorgangTitle={
-                        l.vorgang_id
-                          ? vorgaengeById[l.vorgang_id]?.titel
-                          : undefined
-                      }
-                      nowIso={nowIso}
-                      onCreateVorgang={(letter) =>
-                        setVorgangModalLetter(letter)
-                      }
-                    />
-                  ))}
-                </LetterListGroup>
-              )}
-            </div>
-          )}
-
-          {hasLoadedOnce && view === 'nach-vorgang' && (
-            <div className="flex flex-col gap-4">
-              {[...byVorgang.totalMap.entries()].map(([vorgangId, totalArr]) => {
-                const filteredArr = byVorgang.filteredMap.get(vorgangId) ?? [];
-                if (filterActive && filteredArr.length === 0) return null;
-                const titel = vorgaengeById[vorgangId]?.titel ?? vorgangId;
-                const titleSuffix = filterActive
-                  ? ' ' +
-                    tInbox('vorgang_gruppe_filtered_template', {
-                      gefiltert: filteredArr.length,
-                      gesamt: totalArr.length,
-                    })
-                  : '';
-                return (
-                  <VorgangsGruppe
-                    key={vorgangId}
-                    vorgangId={vorgangId}
-                    vorgangTitle={titel + titleSuffix}
-                    letters={filterActive ? filteredArr : totalArr}
-                    behoerdenById={behoerdenById}
-                    nowIso={nowIso}
-                    onCreateVorgang={setVorgangModalLetter}
-                    vorgaengeById={vorgaengeById}
-                  />
-                );
-              })}
-              {byVorgang.sonstigeTotal.length > 0 && (
-                <SonstigeGruppe
-                  letters={
-                    filterActive
-                      ? byVorgang.sonstigeFiltered
-                      : byVorgang.sonstigeTotal
-                  }
-                  behoerdenById={behoerdenById}
-                  nowIso={nowIso}
-                  onCreateVorgang={setVorgangModalLetter}
-                />
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Reader-Pane (≥ lg): Inline-Reader des gewählten Briefs. */}
-        <section
-          aria-label={t('list.region_label')}
-          className="hidden lg:block lg:sticky lg:top-20"
-        >
-          <InlineLetterReader
-            letterId={selectedLetterId}
-            selectionKey={selectionKey}
-            nowIso={nowIso}
+      <div className="post-toolbar">
+        <div className="input-icon">
+          <Search />
+          <input
+            className="input"
+            placeholder="Suche nach Aktenzeichen oder Behörde"
+            aria-label="Suche nach Aktenzeichen oder Behörde"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
-        </section>
+        </div>
+        <div style={{ flex: 1 }} />
+        <div className="view-toggle" role="tablist" aria-label="Ansicht">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={view === 'chronologisch'}
+            className={view === 'chronologisch' ? 'active' : ''}
+            onClick={() => setView('chronologisch')}
+          >
+            Chronologisch
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={view === 'vorgang'}
+            className={view === 'vorgang' ? 'active' : ''}
+            onClick={() => setView('vorgang')}
+          >
+            Nach Vorgang
+          </button>
+        </div>
+        <button type="button" className="btn btn-secondary">
+          <Filter />Filter
+        </button>
+      </div>
+
+      <div className="post-layout">
+        <div>
+          <PostSection
+            label="Neu"
+            count={grouped.neu.length}
+            countTone="brand"
+          >
+            {grouped.neu.map((l) => (
+              <PostItemRow
+                key={l.id}
+                letter={l}
+                behoerde={behoerdenById[l.absender_behoerde_id]}
+                active={selectedLetter?.id === l.id}
+                nowIso={nowIso}
+                section="neu"
+                onSelect={() => setSelectedLetterId(l.id)}
+              />
+            ))}
+          </PostSection>
+
+          <PostSection
+            label="Frist offen ≤ 7 Tagen"
+            count={grouped.frist7.length}
+            countTone="red"
+          >
+            {grouped.frist7.map((l) => (
+              <PostItemRow
+                key={l.id}
+                letter={l}
+                behoerde={behoerdenById[l.absender_behoerde_id]}
+                active={selectedLetter?.id === l.id}
+                nowIso={nowIso}
+                section="frist7"
+                onSelect={() => setSelectedLetterId(l.id)}
+              />
+            ))}
+          </PostSection>
+
+          <PostSection
+            label="Erledigt"
+            count={grouped.erledigt.length}
+            countTone="muted"
+          >
+            {grouped.erledigt.map((l) => (
+              <PostItemRow
+                key={l.id}
+                letter={l}
+                behoerde={behoerdenById[l.absender_behoerde_id]}
+                active={selectedLetter?.id === l.id}
+                nowIso={nowIso}
+                section="erledigt"
+                onSelect={() => setSelectedLetterId(l.id)}
+              />
+            ))}
+          </PostSection>
         </div>
 
-        <p className="rounded-lg border border-border bg-muted/40 px-3 py-2 text-xs leading-relaxed text-muted-foreground">
-          {t('hero.speculative_footer')}
-        </p>
-
-        <PrototypeDisclaimer
-          messageKey="posteingang.disclaimer.mock_data"
-          titleKey="posteingang.disclaimer.mock_data_title"
-          defaultOpen={false}
-        />
+        {selectedLetter && (
+          <PostDetail
+            letter={selectedLetter}
+            absender={selectedAbsender}
+            onAntwortVorbereiten={() => setReplyLetter(selectedLetter)}
+            onVorgangErstellen={() => setVorgangModalLetter(selectedLetter)}
+            onOriginaltextToggle={() => setOriginalTextOpen((v) => !v)}
+            originaltextOpen={originalTextOpen}
+          />
+        )}
       </div>
 
       <NeuerVorgangAusBriefModal
@@ -570,12 +259,406 @@ export function PosteingangInbox({ initial }: PosteingangInboxProps) {
           if (!o) setVorgangModalLetter(null);
         }}
         onCreated={() => {
-          toast.success(t('toast.refresh_after_vorgang_created'));
-          void refresh();
+          toast.success('Vorgang erstellt.');
+          setVorgangModalLetter(null);
         }}
       />
-    </section>
+
+      {replyLetter && (
+        <ReplySheet
+          letter={replyLetter}
+          empfaengerBehoerde={behoerdenById[replyLetter.absender_behoerde_id] ?? null}
+          existingReply={null}
+          open={replyLetter !== null}
+          onOpenChange={(o) => {
+            if (!o) setReplyLetter(null);
+          }}
+        />
+      )}
+    </>
   );
 }
 
 export type { InitialData };
+
+// ── PostSection ─────────────────────────────────────────────────────────────
+
+function PostSection({
+  label,
+  count,
+  countTone,
+  children,
+}: {
+  label: string;
+  count: number;
+  countTone: 'brand' | 'red' | 'muted';
+  children: React.ReactNode;
+}) {
+  const [open, setOpen] = React.useState(true);
+  const countStyle: React.CSSProperties =
+    countTone === 'red'
+      ? { background: 'var(--red-500)' }
+      : countTone === 'muted'
+        ? { background: 'var(--ink-4)' }
+        : {};
+
+  if (count === 0) return null;
+
+  return (
+    <div className="post-section">
+      <button
+        type="button"
+        className="post-section-head"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        style={{ width: '100%', border: 0, background: 'transparent' }}
+      >
+        <span className="label">
+          {label} <span className="count" style={countStyle}>{count}</span>
+        </span>
+        {open ? <ChevronUp /> : <ChevronDown />}
+      </button>
+      {open && <div className="items">{children}</div>}
+    </div>
+  );
+}
+
+// ── PostItemRow ─────────────────────────────────────────────────────────────
+
+function PostItemRow({
+  letter,
+  behoerde,
+  active,
+  nowIso,
+  section,
+  onSelect,
+}: {
+  letter: Letter;
+  behoerde: Behoerde | undefined;
+  active: boolean;
+  nowIso: string;
+  section: SectionKey;
+  onSelect: () => void;
+}) {
+  const variant = avatarVariant(letter.absender_behoerde_id);
+  const archetypeLabel = archetypeText(letter);
+  const earliestFrist = (letter.fristen ?? [])
+    .map((f) => f.datum)
+    .sort()[0];
+  const fristLabel = earliestFrist ? formatFristLabel(earliestFrist) : null;
+  const eingangLabel = formatEingangLabel(letter.empfangen_am, nowIso);
+  const behoerdeName = behoerde?.name_de ?? '';
+
+  return (
+    <Link
+      href={`/posteingang/${letter.id}`}
+      className={`post-item${active ? ' active' : ''}`}
+      onClick={(e) => {
+        // Inline preview on ≥ lg: prevent navigation when modifier-less click,
+        // so the right-pane detail updates without a full route change.
+        if (
+          typeof window !== 'undefined' &&
+          window.matchMedia('(min-width: 1024px)').matches &&
+          !e.metaKey &&
+          !e.ctrlKey &&
+          !e.shiftKey
+        ) {
+          e.preventDefault();
+          onSelect();
+        }
+      }}
+    >
+      <AvatarSquare variant={variant} />
+      <div className="body">
+        <div className="t">
+          {behoerdeName ? `${behoerdeName} — ` : ''}
+          {letter.betreff}
+        </div>
+        <div className="s">
+          {archetypeLabel}
+          <br />
+          Aktenzeichen: {letter.aktenzeichen}
+        </div>
+      </div>
+      <div className="meta">
+        {section === 'erledigt' ? (
+          <>
+            Erledigt
+            <br />
+            {formatDDMMYYYY(parseISO(letter.empfangen_am))}
+          </>
+        ) : section === 'frist7' ? (
+          <>
+            {fristLabel && <div className="frist">Frist: {fristLabel}</div>}
+            <span className="un red" />
+          </>
+        ) : (
+          <>
+            {eingangLabel}
+            {letter.status === 'ungelesen' && <span className="un" />}
+          </>
+        )}
+      </div>
+    </Link>
+  );
+}
+
+// ── PostDetail ──────────────────────────────────────────────────────────────
+
+function PostDetail({
+  letter,
+  absender,
+  onAntwortVorbereiten,
+  onVorgangErstellen,
+  onOriginaltextToggle,
+  originaltextOpen,
+}: {
+  letter: Letter;
+  absender: Behoerde | null;
+  onAntwortVorbereiten: () => void;
+  onVorgangErstellen: () => void;
+  onOriginaltextToggle: () => void;
+  originaltextOpen: boolean;
+}) {
+  const ai = letter.ai_summary?.post_open;
+  const bullets = ai?.bullets?.slice(0, 3).map((b) => b.text) ?? [
+    'Maßgeblich bleibt der Originaltext.',
+    'Aktion innerhalb der genannten Frist möglich.',
+    'Bei Rückfragen wenden Sie sich an die zuständige Behörde.',
+  ];
+  const headline =
+    bullets[0] ??
+    'Bitte den Originaltext prüfen.';
+  const earliestFrist = (letter.fristen ?? [])
+    .map((f) => f.datum)
+    .sort()[0];
+  const fristLabel = earliestFrist ? formatFristLabel(earliestFrist) : null;
+  const fristTyp = letter.fristen?.[0]?.typ ?? 'Aktion';
+  const bodyExcerpt = letter.body_de
+    ? letter.body_de.split('\n').filter(Boolean).slice(2, 5).join(' ').slice(0, 280)
+    : '';
+
+  return (
+    <div className="post-detail">
+      <div className="post-detail-head">
+        <span className="av">
+          <Landmark />
+        </span>
+        <div className="grow">
+          <div className="who">{absender?.name_de ?? 'Behörde'}</div>
+          <div className="what">Behördenbrief · {archetypeText(letter)}</div>
+        </div>
+        <div style={{ textAlign: 'right' }}>
+          <div className="verify">
+            <ShieldCheck />Authentisch geprüft
+          </div>
+          <div className="muted text-xs">
+            Verifiziert am {formatDDMMYYYY(parseISO(letter.empfangen_am))}
+          </div>
+        </div>
+        <button
+          type="button"
+          className="btn btn-secondary btn-sm"
+          style={{ height: '32px', width: '32px', padding: 0 }}
+          aria-label="Weitere Optionen"
+        >
+          <MoreHorizontal />
+        </button>
+      </div>
+
+      <h2>{letter.betreff}</h2>
+      <div className="meta-row">
+        <div>Aktenzeichen: {letter.aktenzeichen}</div>
+        <div>
+          Eingegangen: {formatDDMMYYYY(parseISO(letter.empfangen_am))}
+        </div>
+      </div>
+
+      <div className="ai-card">
+        <span className="icon-circle">
+          <Sparkles />
+        </span>
+        <div>
+          <div className="h">AI-Brief-Erklärer</div>
+          <h4>{headline}</h4>
+          <ul>
+            {bullets.slice(1).map((b, i) => (
+              <li key={i}>{b}</li>
+            ))}
+            {bullets.length <= 1 && (
+              <li>Maßgeblich bleibt der Originaltext.</li>
+            )}
+          </ul>
+        </div>
+        <div className="illustration">
+          <FileText />
+        </div>
+      </div>
+
+      {fristLabel && (
+        <div className="frist-row">
+          <Clock style={{ color: 'var(--ink-3)', width: '16px', height: '16px' }} />
+          <span>
+            Frist: {fristTyp.charAt(0).toUpperCase() + fristTyp.slice(1)} bis {fristLabel}
+          </span>
+        </div>
+      )}
+
+      <div className="post-actions">
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={onAntwortVorbereiten}
+        >
+          <PenSquare />Antwort vorbereiten
+        </button>
+        <button
+          type="button"
+          className="btn btn-secondary"
+          onClick={onVorgangErstellen}
+        >
+          <FolderInput />Vorgang erstellen
+        </button>
+        <button
+          type="button"
+          className="btn btn-secondary"
+          onClick={onOriginaltextToggle}
+          aria-expanded={originaltextOpen}
+        >
+          <FileIcon />Originaltext anzeigen
+        </button>
+      </div>
+
+      <div className="post-followups">
+        <div className="lbl">Was kann ich tun?</div>
+        <div className="chips">
+          <button type="button" className="chip-btn">
+            <Scale />Einspruch erklären
+          </button>
+          <button type="button" className="chip-btn">
+            <Euro />Zahlung prüfen
+          </button>
+          <button type="button" className="chip-btn">
+            <FolderInput />Dokument ablegen
+          </button>
+          <span style={{ flex: 1 }} />
+          <ChevronRight style={{ color: 'var(--ink-4)' }} />
+        </div>
+      </div>
+
+      {!originaltextOpen ? (
+        <div className="auszug">
+          <button
+            type="button"
+            className="more"
+            onClick={onOriginaltextToggle}
+            style={{ background: 'transparent', border: 0, padding: 0, cursor: 'pointer' }}
+          >
+            Mehr anzeigen <ChevronDown style={{ width: '12px', height: '12px' }} />
+          </button>
+          <div className="h">Auszug aus dem Originaltext</div>
+          <div className="quote">„{bodyExcerpt || letter.body_de.slice(0, 220)}"</div>
+        </div>
+      ) : (
+        <div style={{ marginTop: '18px' }}>
+          <OriginaltextBlock body={letter.body_de} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── helpers ─────────────────────────────────────────────────────────────────
+
+function AvatarSquare({ variant }: { variant: AvatarVariant }) {
+  switch (variant) {
+    case 'eagle':
+      return (
+        <span className="av eagle">
+          <Landmark />
+        </span>
+      );
+    case 'aok':
+      return <span className="av aok">AOK</span>;
+    case 'ard':
+      return (
+        <span className="av ard">ARD ZDF deutschland radio beitragsservice</span>
+      );
+    case 'lea':
+      return <span className="av lea">LEA BERLIN</span>;
+    case 'jc':
+      return (
+        <span className="av jc">
+          <Briefcase />
+        </span>
+      );
+    default:
+      return <span className="av">··</span>;
+  }
+}
+
+function avatarVariant(behoerdeId: string): AvatarVariant {
+  if (behoerdeId.startsWith('finanzamt-')) return 'eagle';
+  if (behoerdeId.startsWith('aok-')) return 'aok';
+  if (behoerdeId.startsWith('ardzdf-') || behoerdeId.includes('beitragsservice'))
+    return 'ard';
+  if (
+    behoerdeId.startsWith('lea-') ||
+    behoerdeId.startsWith('landesamt-einwanderung') ||
+    behoerdeId.includes('lea')
+  )
+    return 'lea';
+  if (behoerdeId.startsWith('jobcenter-')) return 'jc';
+  if (behoerdeId.startsWith('bundesdruckerei')) return 'eagle';
+  if (behoerdeId.startsWith('familienkasse')) return 'jc';
+  if (behoerdeId.startsWith('buergeramt-') || behoerdeId.startsWith('bezirksamt-'))
+    return 'eagle';
+  return 'default';
+}
+
+function archetypeText(letter: Letter): string {
+  switch (letter.archetype) {
+    case 'steuerbescheid':
+      return 'Steuerbescheid';
+    case 'krankenkasse-beitrag':
+      return 'Abrechnung';
+    case 'beitragsservice-mahnung':
+      return 'Beitragsbescheid';
+    case 'abh-verlaengerung':
+      return 'Erinnerung';
+    case 'familienkasse-nachweis':
+      return 'Bewilligungsbescheid';
+    case 'buergeramt-meldung':
+      return 'Meldung';
+    case 'ihk-beitrag':
+      return 'Beitragsbescheid';
+    case 'berufsgenossenschaft-beitrag':
+      return 'Beitragsbescheid';
+    case 'standesamt-urkunde':
+      return 'Urkunde';
+    case 'renteninfo':
+      return 'Renteninformation';
+    default:
+      return 'Schreiben';
+  }
+}
+
+function formatFristLabel(iso: string): string {
+  const d = parseISO(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return formatDDMMYYYY(d);
+}
+
+function formatEingangLabel(iso: string, nowIso: string): string {
+  const days = differenceInCalendarDays(parseISO(nowIso), parseISO(iso));
+  if (days <= 0) return 'Heute';
+  if (days === 1) return 'Gestern';
+  if (days < 7) return `vor ${days} Tagen`;
+  return formatDDMMYYYY(parseISO(iso));
+}
+
+function formatDDMMYYYY(d: Date): string {
+  const dd = String(d.getDate()).padStart(2, '0');
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  return `${dd}.${mm}.${d.getFullYear()}`;
+}

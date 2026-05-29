@@ -1,0 +1,870 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GovTech DE — Pitch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --surface: #FFFFFF;
+  --surface-raised: #FAFAF8;
+  --surface-muted: #F2F1ED;
+  --border: #DCDAD3;
+  --border-strong: #9F998D;
+  --text-primary: #1A1D23;
+  --text-secondary: #4A5060;
+  --text-muted: #6B7280;
+  --accent: #1A4D8F;
+  --accent-soft: #E8F0FA;
+  --warning: #946400;
+  --warning-soft: #FFF8E1;
+  --danger: #B3261E;
+  --success: #2D6B3F;
+  --info-soft: #E6EEF7;
+  --font: 'Source Sans 3', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --mono: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--surface);
+  color: var(--text-primary);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+::selection { background: color-mix(in oklch, var(--accent) 22%, transparent); }
+
+/* ── Page shell ─────────────────────────────────────────────── */
+.doc { max-width: 920px; margin: 0 auto; padding: 80px 56px 120px; }
+@media (max-width: 720px) { .doc { padding: 56px 24px 80px; } }
+
+.tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+.tag .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+.cover {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 56px;
+  margin-bottom: 64px;
+  display: grid;
+  gap: 24px;
+}
+.cover .row1 {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 24px; flex-wrap: wrap;
+}
+.cover .meta {
+  font-size: 12px; color: var(--text-muted);
+  font-variant-numeric: tabular-nums; letter-spacing: 0.02em;
+}
+.cover h1 {
+  margin: 0;
+  font-size: clamp(3rem, 8vw, 5.5rem);
+  line-height: 0.96;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  max-width: 14ch;
+  text-wrap: balance;
+}
+.cover h1 .a { color: var(--accent); }
+.cover .lede {
+  margin: 0;
+  font-size: clamp(17px, 1.6vw, 20px);
+  line-height: 1.5;
+  color: var(--text-secondary);
+  max-width: 50ch;
+}
+.cover .by {
+  display: flex; gap: 24px; padding-top: 16px;
+  font-size: 12.5px; color: var(--text-muted);
+  border-top: 1px dashed var(--border);
+}
+.cover .by strong { color: var(--text-secondary); font-weight: 600; }
+
+/* ── Section ─────────────────────────────────────────────── */
+.section { margin: 80px 0; }
+.section-mark {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 20px;
+}
+.section-mark .num {
+  font-variant-numeric: tabular-nums;
+  font-size: 11px; font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+.section-mark .label {
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.section-mark .rule { flex: 1; height: 1px; background: var(--border); }
+
+h2.section-h {
+  margin: 0 0 24px;
+  font-size: clamp(28px, 3.4vw, 38px);
+  line-height: 1.1;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  max-width: 22ch;
+  text-wrap: balance;
+}
+.section p {
+  margin: 0 0 16px;
+  max-width: 64ch;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+.section p strong { color: var(--text-primary); font-weight: 600; }
+.section p em { font-style: normal; font-weight: 600; color: var(--text-primary); }
+
+.callout {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 10px;
+  padding: 20px 24px;
+  margin: 24px 0;
+  font-size: 15px;
+  line-height: 1.55;
+  max-width: 64ch;
+}
+.callout strong { font-weight: 700; }
+
+/* ── Norm cite ─────────────────────────────────────────────── */
+.norm {
+  background: color-mix(in oklch, var(--accent-soft) 80%, transparent);
+  color: var(--accent);
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-family: var(--mono);
+  font-size: 0.92em;
+  font-weight: 500;
+}
+.mock-tag {
+  display: inline-block;
+  border: 1px dashed var(--border-strong);
+  color: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+
+/* ── Mock letter (Anna's bescheid) ─────────────────────────── */
+.mock-letter {
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 36px 40px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-primary);
+  white-space: pre-wrap;
+  margin: 24px 0;
+  position: relative;
+  overflow: hidden;
+  letter-spacing: -0.005em;
+}
+.mock-letter::before {
+  content: "MOCK";
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%) rotate(-22deg);
+  font-size: 120px; font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--text-primary);
+  opacity: 0.035;
+  pointer-events: none;
+  font-family: var(--mono);
+  z-index: 0;
+}
+
+/* ── Side-by-side: before/after ─────────────────────────────── */
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 24px 0;
+}
+@media (max-width: 720px) { .compare { grid-template-columns: 1fr; } }
+.compare .col { padding: 24px 24px 28px; min-height: 220px; }
+.compare .col:first-child { background: var(--surface-muted); border-right: 1px solid var(--border); }
+@media (max-width: 720px) { .compare .col:first-child { border-right: none; border-bottom: 1px solid var(--border); } }
+.compare .col .tag { margin-bottom: 14px; }
+.compare h4 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+.compare p {
+  margin: 0; font-size: 13.5px; line-height: 1.55;
+  color: var(--text-secondary);
+}
+.compare ul { margin: 12px 0 0; padding: 0 0 0 18px; font-size: 13.5px; color: var(--text-secondary); line-height: 1.6; }
+.compare ul li { margin-bottom: 4px; }
+
+/* ── Personas card row ─────────────────────────────────────── */
+.persona-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin: 24px 0;
+}
+@media (max-width: 720px) { .persona-grid { grid-template-columns: 1fr; } }
+.persona {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.persona .av {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+.persona .name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.005em;
+}
+.persona .meta {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.persona .pain {
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+.persona .pain strong { color: var(--text-secondary); font-weight: 600; }
+
+/* ── Inline UI mockups ─────────────────────────────────────── */
+.ui-frame {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 32px 0;
+  background: var(--surface);
+}
+.ui-frame .chrome {
+  padding: 10px 16px;
+  background: var(--surface-muted);
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--mono);
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--border);
+  display: flex; gap: 12px; align-items: center;
+}
+.ui-frame .chrome::before {
+  content: ""; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--border-strong);
+  flex-shrink: 0;
+}
+.ui-frame .stage { padding: 32px; }
+
+/* Mockup: Posteingang Priority Inbox snippet */
+.mock-inbox h3 {
+  margin: 0 0 4px; font-size: 22px; font-weight: 600; letter-spacing: -0.015em;
+}
+.mock-inbox .stats { margin: 0 0 24px; font-size: 13px; color: var(--text-secondary); }
+.mock-inbox .stats .red { color: var(--danger); font-weight: 600; }
+.mock-inbox .section-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 0 8px;
+  border-bottom: 1px solid var(--border);
+  margin-top: 8px;
+}
+.mock-inbox .section-head .lbl {
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+.mock-inbox .section-head.danger .lbl { color: var(--danger); }
+.mock-inbox .section-head.warning .lbl { color: #6b4500; }
+.mock-inbox .section-head .count {
+  font-size: 11.5px; color: var(--text-muted); font-variant-numeric: tabular-nums;
+}
+.mock-inbox .row {
+  display: grid;
+  grid-template-columns: 152px 1fr auto;
+  gap: 16px;
+  padding: 11px 4px;
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+}
+.mock-inbox .row .chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11.5px; font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.mock-inbox .row .chip.warn {
+  background: var(--warning-soft);
+  color: #4a2e00;
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--warning) 40%, transparent);
+}
+.mock-inbox .row .chip.long {
+  background: var(--surface-muted);
+  color: var(--text-secondary);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+.mock-inbox .row .behoerde { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+.mock-inbox .row .behoerde + .typ { font-size: 12.5px; color: var(--text-secondary); }
+.mock-inbox .row .akz { font-family: var(--mono); font-size: 11.5px; color: var(--text-muted); }
+.mock-inbox .row .date { font-size: 12px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+
+/* Mockup: Stammdaten signature */
+.mock-stamm {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 40px;
+  align-items: end;
+  padding: 16px 0;
+}
+.mock-stamm .count {
+  font-size: clamp(64px, 9vw, 96px);
+  line-height: 0.92;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
+}
+.mock-stamm .count-lbl {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+.mock-stamm .ctx {
+  font-size: 14.5px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  max-width: 38ch;
+  padding-bottom: 6px;
+}
+.mock-stamm .ctx strong { color: var(--text-primary); font-weight: 600; }
+
+/* Mockup: Umzug cascade */
+.mock-umzug .step {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 32px 1fr auto;
+  gap: 16px;
+  align-items: baseline;
+}
+.mock-umzug .step:last-child { border-bottom: none; }
+.mock-umzug .step .n {
+  font-variant-numeric: tabular-nums;
+  font-size: 12px; color: var(--text-muted);
+}
+.mock-umzug .step .title { font-size: 15px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.005em; }
+.mock-umzug .step .behoerden { font-size: 12.5px; color: var(--text-secondary); margin-top: 3px; line-height: 1.5; }
+.mock-umzug .step .status {
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 0.04em; text-transform: uppercase;
+}
+.mock-umzug .step .status.done { color: var(--success); }
+.mock-umzug .step .status.queued { color: var(--text-muted); }
+
+/* ── Foundations grid ─────────────────────────────────────── */
+.found {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin: 24px 0;
+}
+@media (max-width: 720px) { .found { grid-template-columns: 1fr; } }
+.found .block { display: flex; flex-direction: column; gap: 12px; }
+.found h3 {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.swatches { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.swatch { display: flex; flex-direction: column; gap: 4px; }
+.swatch .chip { height: 44px; border-radius: 6px; border: 1px solid var(--border); }
+.swatch .lbl { font-size: 10.5px; color: var(--text-secondary); font-weight: 500; }
+.swatch .meta { font-size: 10px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+
+.type-scale { display: flex; flex-direction: column; gap: 6px; }
+.type-scale .row { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 6px 0; border-bottom: 1px dashed var(--border); }
+.type-scale .row:last-child { border-bottom: none; }
+.type-scale .row .specimen { color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.type-scale .row .meta { font-size: 10.5px; color: var(--text-muted); font-variant-numeric: tabular-nums; letter-spacing: 0.02em; white-space: nowrap; }
+
+/* ── Hard-Lines table ─────────────────────────────────────── */
+.hl-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 16px 0; }
+.hl-table th, .hl-table td { text-align: left; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--border); vertical-align: top; }
+.hl-table th {
+  font-size: 10.5px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+.hl-table td.id { font-family: var(--mono); font-size: 11.5px; color: var(--accent); width: 90px; white-space: nowrap; }
+.hl-table td.rule { color: var(--text-primary); font-weight: 500; max-width: 56ch; }
+
+/* ── Questions list ─────────────────────────────────────── */
+.q-list {
+  display: grid;
+  gap: 0;
+  margin: 24px 0;
+  border-top: 1px solid var(--border);
+}
+.q {
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 16px;
+}
+.q .num {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.q .body h4 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--text-primary);
+}
+.q .body p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  max-width: 64ch;
+}
+
+/* ── Footer ─────────────────────────────────────────────── */
+.foot {
+  margin-top: 80px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-muted);
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.foot a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+</style>
+</head>
+<body>
+<article class="doc">
+
+<!-- ═════════════════ COVER ═════════════════ -->
+<header class="cover">
+  <div class="row1">
+    <span class="tag"><span class="dot"></span>Speculative Prototype · 2027-Vision</span>
+    <span class="meta">PITCH · 14. Mai 2026 · GovTech DE</span>
+  </div>
+  <h1>Verwaltung, <span class="a">die wartet</span> — nicht Sie.</h1>
+  <p class="lede">
+    Ein einheitliches Bürger-Interface über DeutschlandID, EUDI Wallet und den Deutschland-Stack.
+    Behörden­briefe werden zusammengefasst, Umzüge laufen automatisch, Ihre Daten bleiben bei Ihnen.
+  </p>
+  <div class="by">
+    <span><strong>Status:</strong> speculative prototype</span>
+    <span><strong>Daten:</strong> synthetisch <span class="mock-tag">MOCK</span></span>
+    <span><strong>Stack:</strong> Next.js 15 · Tailwind v4 · Claude Haiku 4.5</span>
+  </div>
+</header>
+
+<!-- ═════════════════ 01 PROBLEM ═════════════════ -->
+<section class="section">
+  <div class="section-mark"><span class="num">01</span><span class="label">Das Problem</span><span class="rule"></span></div>
+  <h2 class="section-h">Ein gewöhnlicher Donnerstag in Berlin.</h2>
+  <p>
+    Anna Petrov, 28, Software-Engineer, holt ihre Post aus dem Briefkasten. Drei Briefe vom Finanzamt, der Ausländerbehörde, der Krankenkasse. Vier Aktenzeichen, drei Fristen, zwei <span class="norm">§</span>-Verweise, ein einziger Satz, der einen Termin in fünf Wochen zwingt.
+  </p>
+
+  <div class="mock-letter">FINANZAMT BERLIN FRIEDRICHSHAIN-KREUZBERG
+Frankfurter Allee 13, 10247 Berlin
+
+Aktenzeichen: F-2026-04827-K
+Steuernummer: 11/123/45678
+
+Frau Anna Petrov
+Rigaer Str. 78, 10247 Berlin
+
+Einkommensteuerbescheid für 2024
+
+Sehr geehrte Frau Petrov,
+
+für das Veranlagungsjahr 2024 ergibt sich folgende Festsetzung:
+
+  zu versteuerndes Einkommen           58.420,00 €
+  festzusetzende Einkommensteuer       11.232,00 €
+  bereits gezahlt (Lohnsteuer)         12.480,00 €
+  ──────────────────────────────────────────────
+  Steuererstattung                      1.247,89 €
+
+Rechtsbehelfsbelehrung: Gegen diesen Bescheid ist innerhalb eines
+Monats nach Bekanntgabe Einspruch zulässig (§ 357 AO).
+
+Mit freundlichen Grüßen
+Finanzamt Berlin-Friedrichshain-Kreuzberg</div>
+
+  <p>
+    Im Idealfall: Anna versteht den Brief in 60 Sekunden, weiß ob sie etwas tun muss, und der Staat hat die Umzugs­information schon, bevor Anna selbst zum Bürgeramt gerannt ist.
+    Im Status quo: <em>fünf Wochen Termin­warte­zeit, Rückfrage per Brief, Behördengang.</em>
+  </p>
+
+  <div class="callout">
+    <strong>Das zentrale Wow-Moment des Prototyps</strong> ist nicht „schnellere Formulare". Es ist: was die App <em>für</em> Sie tut, während Sie nichts tun.
+  </div>
+</section>
+
+<!-- ═════════════════ 02 PRINCIPLE ═════════════════ -->
+<section class="section">
+  <div class="section-mark"><span class="num">02</span><span class="label">Die Antwort</span><span class="rule"></span></div>
+  <h2 class="section-h">Drei Säulen, eine Stimme.</h2>
+
+  <div class="compare">
+    <div class="col">
+      <span class="tag">Status quo</span>
+      <h4>Bürger zur Behörde</h4>
+      <p>Bürger lesen Briefe, suchen Aktenzeichen, suchen Fristen, suchen <span class="norm">§</span>, rennen zum Termin, füllen Formulare, warten auf den nächsten Brief.</p>
+      <ul>
+        <li>Aktenzeichen-Suchen</li>
+        <li>Termin-Warte­schlange</li>
+        <li>Form A löst Form B aus</li>
+        <li>Wer hat meine Daten? Unklar.</li>
+      </ul>
+    </div>
+    <div class="col">
+      <span class="tag">GovTech DE</span>
+      <h4>Behörde zum Bürger</h4>
+      <p>Die App fasst Briefe zusammen, erkennt Fristen, schlägt Vorgänge vor, synchronisiert Behörden mit Zustimmung — und zeigt, wer wann was über Sie gesehen hat.</p>
+      <ul>
+        <li>KI-Zusammenfassung mit <span class="norm">§</span>-Zitaten</li>
+        <li>Autopilot je Lebens­ereignis</li>
+        <li>Eine Zustimmung pro Behörde</li>
+        <li>Aktivitätsprotokoll Behörde → Behörde</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════════════ 03 POSTEINGANG ═════════════════ -->
+<section class="section">
+  <div class="section-mark"><span class="num">03</span><span class="label">Säule 1 · Posteingang</span><span class="rule"></span></div>
+  <h2 class="section-h">Behörden­briefe, geordnet nach Frist — nicht nach Datum.</h2>
+  <p>
+    Der Posteingang gruppiert nach Dringlichkeit (Gmail Priority Inbox-Pattern), nicht nach Eingangs­datum.
+    Die Frist ist das primäre visuelle Element — die Behörde, der Brieftyp und das Aktenzeichen folgen.
+    KI-Zusammenfassungen leben in der Detail­ansicht; in der Liste nur die Fakten.
+  </p>
+
+  <div class="ui-frame">
+    <div class="chrome">govtech-de · posteingang · Anna Petrov</div>
+    <div class="stage mock-inbox">
+      <h3>Posteingang</h3>
+      <p class="stats">2 offene Briefe · <span class="red">1 heute fällig</span></p>
+
+      <div class="section-head danger"><span class="lbl">Heute fällig</span><span class="count">1</span></div>
+      <div class="row">
+        <span class="chip warn">⏱ Antwortfrist · in 6 Tagen</span>
+        <div>
+          <span class="behoerde">Finanzamt Berlin-Friedrichshain</span>
+          <div class="typ">Einkommensteuer­bescheid 2024 · <span class="akz">F-2026-04827-K</span></div>
+        </div>
+        <span class="date">Di</span>
+      </div>
+
+      <div class="section-head warning" style="margin-top: 22px;"><span class="lbl">Ohne Frist</span><span class="count">1</span></div>
+      <div class="row">
+        <span class="chip long">⏱ Antragsfrist · in 352 Tagen</span>
+        <div>
+          <span class="behoerde">Ausländerbehörde Berlin-Mitte</span>
+          <div class="typ">Hinweis Aufenthaltstitel-Verlängerung · <span class="akz">ABH-2026-118-MIT</span></div>
+        </div>
+        <span class="date">Fr</span>
+      </div>
+    </div>
+  </div>
+
+  <p>
+    In der Detail­ansicht erscheint die KI-Zusammenfassung links — fünf bis acht Punkte mit nummerierten Zitaten aus dem Original — und der Original­brief rechts mit dezentem MOCK-Wasser­zeichen. Maßgeblich ist der Bescheid; die KI ist Übersetzungs­hilfe, nicht Ersatz.
+  </p>
+</section>
+
+<!-- ═════════════════ 04 STAMMDATEN ═════════════════ -->
+<section class="section">
+  <div class="section-mark"><span class="num">04</span><span class="label">Säule 2 · Stammdaten</span><span class="rule"></span></div>
+  <h2 class="section-h">Welche Behörde weiß was über Sie — und wann sie es gesehen hat.</h2>
+  <p>
+    Eine Single-Source-of-Truth-Ansicht über alle Behörden-Register, in denen die Person geführt wird, plus ein Aktivitäts­protokoll: <strong>wer hat welches Feld wann auf welcher Rechts­grundlage abgerufen.</strong>
+    Das ist der spekulative Sprung von 2026 nach 2027 — heute gibt es das Cockpit nicht.
+  </p>
+
+  <div class="ui-frame">
+    <div class="chrome">govtech-de · stammdaten · Übersicht</div>
+    <div class="stage">
+      <div class="tag" style="margin-bottom: 8px;">Stammdaten · Single Source of Truth</div>
+      <div class="mock-stamm">
+        <div>
+          <div class="count">14</div>
+          <div class="count-lbl">Behörden-Register</div>
+        </div>
+        <div class="ctx">
+          Letzte Übermittlung vor <strong>3 Stunden</strong>:&nbsp;
+          Meldewesen Berlin <span style="color: var(--text-muted);">→</span> Kraftfahrt-Bundesamt.
+          &nbsp;<span class="norm">§ 15 FZV</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p>
+    Sensible Felder (FE-Nummer, AZR-ID, IBAN, Renten-Versicherungs­nummer) sind standardmäßig maskiert. Sichtbar nur mit eID-Re-Auth, Auto-Maskierung nach 30 Sekunden — das Apple-Wallet-„numberless-card"-Pattern, übertragen auf Behördendaten.
+  </p>
+</section>
+
+<!-- ═════════════════ 05 AUTOPILOT ═════════════════ -->
+<section class="section">
+  <div class="section-mark"><span class="num">05</span><span class="label">Säule 3 · Autopilot</span><span class="rule"></span></div>
+  <h2 class="section-h">Ein Umzug, eine Zustimmung pro Behörde.</h2>
+  <p>
+    Lebensereignisse — Umzug, Geburt, Aufenthaltstitel-Verlängerung, Gewerbe­anmeldung — werden als Kaskade modelliert.
+    Die App zeigt vorab, welche Behörden in welcher Reihenfolge benachrichtigt werden. Der Bürger erteilt Zustimmung <em>pro Behörde</em>, nicht einmal für alles.
+    Wenn eine Behörde nicht BundID-angebunden ist, sagt der Föderalismus-Hinweis das auch.
+  </p>
+
+  <div class="ui-frame">
+    <div class="chrome">govtech-de · vorgang · umzug · Vorschau</div>
+    <div class="stage mock-umzug">
+      <div class="step">
+        <div class="n">01</div>
+        <div>
+          <div class="title">Meldewesen + Steuer</div>
+          <div class="behoerden">Bürgeramt FH (Quell) · Bürgeramt Tempelhof-Schöneberg (Ziel) · Finanzamt FH-Kreuzberg</div>
+        </div>
+        <div class="status done">Erledigt</div>
+      </div>
+      <div class="step">
+        <div class="n">02</div>
+        <div>
+          <div class="title">Fahrzeug + Führerschein</div>
+          <div class="behoerden">Kraftfahrt-Bundesamt (FAER + ZFER, <span class="norm">§ 15 FZV</span>) · Kfz-Zulassung Berlin</div>
+        </div>
+        <div class="status done">Erledigt</div>
+      </div>
+      <div class="step">
+        <div class="n">03</div>
+        <div>
+          <div class="title">Sozial + Versicherung</div>
+          <div class="behoerden">Techniker Krankenkasse · Bundesagentur für Arbeit</div>
+        </div>
+        <div class="status queued">In Sync</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    Föderalismus-Hinweis im UI verbatim: <em>„Bürgeramt Tempelhof-Schöneberg ist BundID-angebunden seit 01/2026. Familienkasse Brandenburg seit 04/2026. ABH Köln noch nicht angebunden — Brief wird postalisch zugestellt."</em>
+  </div>
+</section>
+
+<!-- ═════════════════ 06 PERSONAS ═════════════════ -->
+<section class="section">
+  <div class="section-mark"><span class="num">06</span><span class="label">Drei Personas</span><span class="rule"></span></div>
+  <h2 class="section-h">Anna, Familie Schmidt, Mehmet.</h2>
+  <p>
+    Der Onboarding-Screen lässt den Reviewer eine Persona wählen — jede seed't den Demo-State mit realistischen Briefen, Vorgängen, Dokumenten und Terminen. Die Personas sind so gewählt, dass sie verschiedene Härte­fälle der deutschen Verwaltung abdecken.
+  </p>
+
+  <div class="persona-grid">
+    <div class="persona">
+      <span class="av">AP</span>
+      <div class="name">Anna Petrov, 28</div>
+      <div class="meta">Software-Engineer · Blue Card EU (<span class="norm">§ 18g AufenthG</span>) · russisch · Berlin · 1 Kind</div>
+      <div class="pain"><strong>Härtefall</strong> Aufenthaltstitel-Verlängerung in 2027; Anmeldung dauerte 5 Wochen; Kindergeld-Window verpasst.</div>
+    </div>
+    <div class="persona">
+      <span class="av">FS</span>
+      <div class="name">Familie Schmidt</div>
+      <div class="meta">Markus + Lena + Felix (4) + Mia (in 2 Wo geboren) · Hamburg-Eimsbüttel · Lena selbstständig</div>
+      <div class="pain"><strong>Härtefall</strong> Geburt löst 7 Anträge aus (Urkunde, KK, Elterngeld, Kindergeld, Steuer-ID, Kita, Eintragung).</div>
+    </div>
+    <div class="persona">
+      <span class="av">MY</span>
+      <div class="name">Mehmet Yıldız, 34</div>
+      <div class="meta">Deutsch-türkisch · eingebürgert 2018 · Köln · 2 Kinder · Gewerbe geplant</div>
+      <div class="pain"><strong>Härtefall</strong> Gewerbe­anmeldung löst Finanzamt-Fragebogen, IHK-Pflicht, Berufsgenossenschaft, KK-Status­wechsel aus.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════════════ 07 FOUNDATIONS ═════════════════ -->
+<section class="section">
+  <div class="section-mark"><span class="num">07</span><span class="label">Visuelle Grundlagen</span><span class="rule"></span></div>
+  <h2 class="section-h">DigitalService DE — in einem Linear-Hemd.</h2>
+  <p>
+    GOV.UK / KERN-konformes Grid und Sprach­register, poliert durch drei kalibrierte Stripe/Linear-Bewegungen:
+    warm-neutrale OKLCH-Palette mit Chroma-Cap ≤ 0.005, drei Shadow-Stufen, zwei Motion-Kurven <em>ohne Bounce</em>.
+  </p>
+
+  <div class="found">
+    <div class="block">
+      <h3>Palette · Light</h3>
+      <div class="swatches">
+        <div class="swatch"><div class="chip" style="background: #FFFFFF;"></div><span class="lbl">surface</span><span class="meta">#FFFFFF</span></div>
+        <div class="swatch"><div class="chip" style="background: #F2F1ED;"></div><span class="lbl">muted</span><span class="meta">#F2F1ED</span></div>
+        <div class="swatch"><div class="chip" style="background: #1A4D8F;"></div><span class="lbl">accent</span><span class="meta">#1A4D8F</span></div>
+        <div class="swatch"><div class="chip" style="background: #946400;"></div><span class="lbl">warning</span><span class="meta">#946400</span></div>
+        <div class="swatch"><div class="chip" style="background: #B3261E;"></div><span class="lbl">danger</span><span class="meta">#B3261E</span></div>
+      </div>
+      <p style="margin: 8px 0 0; font-size: 12.5px; color: var(--text-muted);">
+        Trust-Blau ist der <em>einzige</em> chromatische Akzent. Bund / Land / Kommune tragen <em>keine</em> Farb-Differenzierung — nur Text-Label.
+      </p>
+    </div>
+
+    <div class="block">
+      <h3>Typografie · Source Sans 3 (SIL-OFL)</h3>
+      <div class="type-scale">
+        <div class="row"><span class="specimen" style="font-size: 30px; font-weight: 700; letter-spacing: -0.02em; line-height: 1;">Ihre Stammdaten</span><span class="meta">48 / 50</span></div>
+        <div class="row"><span class="specimen" style="font-size: 24px; font-weight: 600; letter-spacing: -0.015em;">Posteingang</span><span class="meta">36 / 40</span></div>
+        <div class="row"><span class="specimen" style="font-size: 18px; font-weight: 600;">Aktivitäts­protokoll</span><span class="meta">24 / 30</span></div>
+        <div class="row"><span class="specimen" style="font-size: 16px;">Body — Sie-Form, keine Marketing­stimme.</span><span class="meta">16 / 24</span></div>
+        <div class="row"><span class="specimen" style="font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 14px;">F-2026-04827-K · § 357 AO</span><span class="meta">tabular-nums</span></div>
+      </div>
+    </div>
+  </div>
+
+  <p>
+    <strong>Motion.</strong> Zwei dokumentierte Kurven: <span class="norm">ease-out 180 ms</span> für Enter, <span class="norm">ease-in-out 240 ms</span> für Layout-Shifts. Autopilot-Handoff darf 400 ms dauern. Keine Spring, kein Bounce, kein Overshoot. <span class="norm">prefers-reduced-motion</span> wird global geehrt.
+  </p>
+</section>
+
+<!-- ═════════════════ 08 HARD-LINES ═════════════════ -->
+<section class="section">
+  <div class="section-mark"><span class="num">08</span><span class="label">Hard-Lines</span><span class="rule"></span></div>
+  <h2 class="section-h">Vierzehn Regeln, die nicht verhandelbar sind.</h2>
+  <p>
+    Diese 14 Regeln sind im Forschungs­brief verbatim festgelegt und gelten projekt­weit. Sie sind das, was den Trust-Anker hält und das Produkt von einem SaaS-Dashboard unterscheidet.
+  </p>
+
+  <table class="hl-table">
+    <thead><tr><th>ID</th><th>Regel</th></tr></thead>
+    <tbody>
+      <tr><td class="id">HL-DS-1</td><td class="rule">Source Sans 3 wird ausschließlich tech-only begründet. Das Wort „BundesSans" taucht null mal als positive Framing-Referenz auf.</td></tr>
+      <tr><td class="id">HL-DS-2</td><td class="rule">Genau drei Shadow-Tokens (card / popover / modal). Keine weiteren.</td></tr>
+      <tr><td class="id">HL-DS-3</td><td class="rule">Eine chromatische Akzent­familie (Trust-Blau) + drei Status-Familien + ein Föderalismus-Info-Soft. Surface/Border-Chroma ≤ 0.005.</td></tr>
+      <tr><td class="id">HL-DS-4</td><td class="rule">Global <span class="norm">MotionConfig reducedMotion="user"</span>. Animationen ≥ 400 ms kollabieren auf ≤ 200 ms Opacity-Fade unter reduced-motion.</td></tr>
+      <tr><td class="id">HL-DS-6</td><td class="rule">Tabular-Numerals Pflicht für Aktenzeichen, FE-Nr, IBAN, AZR-ID, Renten-Vers-Nr, Frist-Daten.</td></tr>
+      <tr><td class="id">HL-DS-7</td><td class="rule">Kontrast-Floor für <span class="norm">--text-muted</span>: 5.63:1 Light, 5.53:1 Dark. Nie gelockert. Focus-Ring ≥ 3:1.</td></tr>
+      <tr><td class="id">HL-DS-8</td><td class="rule">Touch-Targets ≥ 44 × 44 CSS-px (WCAG 2.5.5).</td></tr>
+      <tr><td class="id">HL-DS-9</td><td class="rule">Inputs ≥ 48 px Höhe.</td></tr>
+      <tr><td class="id">HL-DS-10</td><td class="rule">Bund / Land / Kommune tragen <em>keine</em> Farb-Differenzierung. Text-Label only.</td></tr>
+      <tr><td class="id">HL-DS-12</td><td class="rule">Wallet / mDL-Karten folgen dem Page-Theme. Keine „Wallet ist immer dunkel"-Sonderlocke.</td></tr>
+      <tr><td class="id">HL-DS-13</td><td class="rule">Print-Stylesheet: monochrom A4 portrait, Source Sans 3, Tabular-Nums, QR-Footer.</td></tr>
+      <tr><td class="id">HL-DS-14</td><td class="rule">Föderalismus-Disclaimer nutzt <span class="norm">info-soft</span>, nie die Warning-Familie.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═════════════════ 09 QUESTIONS ═════════════════ -->
+<section class="section">
+  <div class="section-mark"><span class="num">09</span><span class="label">Was wir prüfen wollen</span><span class="rule"></span></div>
+  <h2 class="section-h">Sechs Fragen für den Reviewer.</h2>
+  <p>
+    Wenn Sie konkret und kritisch sind und Verbesserungs­vorschläge mit Begründung liefern — das ist das, was wir suchen. Bitte keine generische Affirmation.
+  </p>
+
+  <div class="q-list">
+    <div class="q">
+      <span class="num">01</span>
+      <div class="body">
+        <h4>Trust-Register.</h4>
+        <p>Liest die visuelle Sprache als Bürger­werkzeug (gov.uk / DigitalService DE) oder als SaaS-Dashboard? Wo rutscht sie in Richtung Letzteres?</p>
+      </div>
+    </div>
+    <div class="q">
+      <span class="num">02</span>
+      <div class="body">
+        <h4>AI-Unsichtbarkeit.</h4>
+        <p>Das Produkt ist stark KI-getrieben (Brief-Zusammen­fassungen, Vorgangs-Kaskade, geplanter Assistent), darf aber nicht KI-generiert <em>aussehen</em>. Wo leckt das? Gradient-Slop, Emoji, generische dekorative Formen?</p>
+      </div>
+    </div>
+    <div class="q">
+      <span class="num">03</span>
+      <div class="body">
+        <h4>Posteingang-Gruppierung.</h4>
+        <p>Ist die Gmail Priority Inbox-Abstraktion (HEUTE FÄLLIG / DIESE WOCHE / DIESEN MONAT / OHNE FRIST / Erledigt) richtig — oder über­segmentiert für einen typischen 4–8-Briefe-Posteingang?</p>
+      </div>
+    </div>
+    <div class="q">
+      <span class="num">04</span>
+      <div class="body">
+        <h4>Stammdaten-Signature.</h4>
+        <p>Ist die massive Register-Zahl (<span class="norm">14</span> in der Demo) angemessen monumental, oder wirkt sie gewollt? Wann wird Größe Selbstzweck statt Hierarchie?</p>
+      </div>
+    </div>
+    <div class="q">
+      <span class="num">05</span>
+      <div class="body">
+        <h4>Autopilot-Kommunikation.</h4>
+        <p>Kommuniziert die 3-Block-Kaskade „Sie behalten die Kontrolle" — oder „die Maschine entscheidet für Sie"? Wo könnte man Vertrauen verlieren?</p>
+      </div>
+    </div>
+    <div class="q">
+      <span class="num">06</span>
+      <div class="body">
+        <h4>Content-Register.</h4>
+        <p>Sie-Form, kein Emoji, keine Ausrufezeichen, nur reale <span class="norm">§</span>-Zitate. Wo rutscht der Tonfall trotzdem in Marketing-Stimme? Konkrete Beispiel-Strings, bitte.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <span>GovTech DE · Speculative Prototype · 14. Mai 2026</span>
+  <span><a href="https://github.com/loneliness-is-repulsive/govtech-de">Upstream-Repo auf GitHub</a></span>
+  <span>Alle Daten <span class="mock-tag">MOCK</span></span>
+</footer>
+
+</article>
+</body>
+</html>

@@ -1,0 +1,301 @@
+/* ============================================================================
+   GovTech DE — Design Tokens (colors + type)
+   Source-of-truth for the GovTech DE speculative-design prototype.
+   Faithfully transcribed from src/app/globals.css in loneliness-is-repulsive/govtech-de.
+   Hard-Lines HL-DS-1..HL-DS-14 enforced; see README.md § Visual Foundations.
+   ========================================================================= */
+
+/* Webfont — Source Sans 3 (SIL-OFL, kommerziell + Demo-frei).
+   In production the Next.js app loads it via next/font/google; for design
+   artefacts use the Google Fonts CDN below. AR-Locale (RTL) MUST add
+   "Noto Sans Arabic" before system-ui — Source Sans 3 has limited Arabic
+   glyph coverage (see [lang="ar"] override). */
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
+
+:root {
+  color-scheme: light dark;
+
+  /* ── Type-Scale (GOV.UK-aligned, 5-px-line-height-rhythm) ─────────────── */
+  --ds-text-display: 3rem;     /* 48 px */
+  --ds-text-h1:      2.25rem;  /* 36 px */
+  --ds-text-h2:      1.5rem;   /* 24 px */
+  --ds-text-h3:      1.1875rem;/* 19 px */
+  --ds-text-h4:      1rem;     /* 16 px */
+  --ds-text-body:    1rem;     /* 16 px */
+  --ds-text-body-s:  0.9375rem;/* 15 px */
+  --ds-text-small:   0.875rem; /* 14 px */
+  --ds-text-tiny:    0.6875rem;/* 11 px */
+
+  --ds-line-display: 1.0417;   /* 50/48 */
+  --ds-line-h1:      1.1111;   /* 40/36 */
+  --ds-line-h2:      1.25;     /* 30/24 */
+  --ds-line-h3:      1.3158;   /* 25/19 */
+  --ds-line-body:    1.5;      /* 24/16 */
+  --ds-line-small:   1.4286;   /* 20/14 */
+
+  --ds-weight-regular: 400;
+  --ds-weight-medium:  500;
+  --ds-weight-semi:    600;
+  --ds-weight-bold:    700;
+
+  --ds-tracking-tight: -0.01em;
+  --ds-tracking-normal: 0;
+  --ds-tracking-wide:  0.06em;   /* uppercase eyebrows */
+
+  /* ── Font Families ────────────────────────────────────────────────────── */
+  --ds-font-sans:
+    'Source Sans 3', ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --ds-font-mono:
+    ui-monospace, 'SF Mono', 'Cascadia Mono', 'Roboto Mono', Menlo, monospace;
+
+  /* ── Spacing (additive parallel scale — Tailwind 4-pt default untouched) ─ */
+  --ds-space-fixed-5:  0.3125rem;  /*  5 px */
+  --ds-space-fixed-10: 0.625rem;   /* 10 px */
+  --ds-space-fixed-15: 0.9375rem;  /* 15 px */
+  --ds-space-fixed-20: 1.25rem;    /* 20 px */
+  --ds-space-fixed-25: 1.5625rem;  /* 25 px */
+  --ds-space-fixed-30: 1.875rem;   /* 30 px */
+  --ds-space-fixed-40: 2.5rem;     /* 40 px */
+  --ds-space-fixed-50: 3.125rem;   /* 50 px */
+  --ds-space-fixed-60: 3.75rem;    /* 60 px */
+
+  /* ── Radii ────────────────────────────────────────────────────────────── */
+  --ds-radius-xs:    2px;
+  --ds-radius-sm:    4px;
+  --ds-radius-md:    8px;
+  --ds-radius-lg:    12px;
+  --ds-radius-card:  14px;        /* Apple-Wallet/mDL reference */
+  --ds-radius-full:  9999px;
+
+  /* ── Touch / hit-target floors (HL-DS-8, HL-DS-9) ─────────────────────── */
+  --ds-size-touch-min:   44px;
+  --ds-size-input-min:   48px;
+  --ds-size-icon-btn:    44px;
+  --ds-size-btn-default: 48px;
+
+  /* ── Color tokens — Light mode (OKLCH; HEX fallback in @supports below) ── */
+  /* Surface — warm-neutral, Hue 80°, chroma ≤ 0.005 (HL-DS-3 cap) */
+  --ds-color-surface:        oklch(100% 0 0);
+  --ds-color-surface-raised: oklch(98%  0.002 80);
+  --ds-color-surface-muted:  oklch(95%  0.003 80);
+
+  /* Border — warm-neutral hairlines */
+  --ds-color-border:         oklch(86% 0.004 80);
+  --ds-color-border-strong:  oklch(65% 0.005 80);
+
+  /* Text — cool-neutral, Hue 250°. text-muted is the V1.5.1-hardened floor
+     (5.63:1 light, HL-DS-7); NOT to be relaxed. */
+  --ds-color-text-primary:   oklch(20% 0.005 250);
+  --ds-color-text-secondary: oklch(45% 0.005 250);
+  --ds-color-text-muted:     oklch(55% 0.015 250);
+
+  /* Accent — single chromatic family: Trust-Blau (Hue 252°, HL-DS-3) */
+  --ds-color-accent:            oklch(40% 0.12 252);
+  --ds-color-accent-soft:       oklch(95% 0.025 252);
+  --ds-color-accent-foreground: oklch(100% 0 0);
+
+  /* Status families — exactly three (HL-DS-3) */
+  --ds-color-warning:      oklch(55% 0.13 80);
+  --ds-color-warning-soft: oklch(97% 0.04 90);
+  --ds-color-danger:       oklch(48% 0.18 27);
+  --ds-color-success:      oklch(45% 0.12 152);
+
+  /* Föderalismus-Info-Soft (HL-DS-14) */
+  --ds-color-info-soft: oklch(94% 0.018 245);
+
+  /* ── Shadow tiers — exactly three (HL-DS-2) ───────────────────────────── */
+  --ds-shadow-card:    0 1px 2px 0 rgb(0 0 0 / 0.04),
+                       0 1px 3px 0 rgb(0 0 0 / 0.06);
+  --ds-shadow-popover: 0 4px 8px -2px rgb(0 0 0 / 0.06),
+                       0 8px 16px -4px rgb(0 0 0 / 0.08);
+  --ds-shadow-modal:   0 12px 24px -6px rgb(0 0 0 / 0.10),
+                       0 20px 48px -12px rgb(0 0 0 / 0.14);
+
+  /* ── Motion (no bounce/overshoot — Trust-Anchor; HL-DS-4) ─────────────── */
+  --ds-ease-out:    cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ds-ease-in:     cubic-bezier(0.64, 0,    0.78, 0.39);
+  --ds-ease-in-out: cubic-bezier(0.65, 0,    0.35, 1);
+  --ds-ease-handoff:cubic-bezier(0.65, 0,    0.35, 1);  /* same curve, longer dur */
+
+  /* Stronger UI curves — Emil Kowalski / Refactoring-UI calibre.
+     Use these for hover, press, popover entry — they have more punch than
+     the default ease-* family above. */
+  --ds-ease-out-strong:    cubic-bezier(0.23, 1, 0.32, 1);
+  --ds-ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
+  --ds-ease-drawer:        cubic-bezier(0.32, 0.72, 0, 1);
+
+  --ds-duration-press:   140ms;
+  --ds-duration-fast:    140ms;
+  --ds-duration-base:    180ms;
+  --ds-duration-medium:  240ms;
+  --ds-duration-handoff: 400ms;
+
+  /* ── Editorial type — for the signature moment on each screen ─────────── */
+  --ds-text-mega:    7rem;     /* 112 px — register count, big KPI */
+  --ds-text-jumbo:   4.5rem;   /*  72 px — secondary monumental */
+  --ds-line-mega:    0.95;
+  --ds-line-jumbo:   1.0;
+}
+
+/* ── Dark mode — auto via OS, also class-based via next-themes ──────────── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ds-color-surface:        oklch(15% 0.004 250);
+    --ds-color-surface-raised: oklch(20% 0.005 250);
+    --ds-color-surface-muted:  oklch(24% 0.006 250);
+    --ds-color-border:         oklch(32% 0.008 250);
+    --ds-color-border-strong:  oklch(45% 0.01  250);
+    --ds-color-text-primary:   oklch(94% 0.004 250);
+    --ds-color-text-secondary: oklch(78% 0.005 250);
+    --ds-color-text-muted:     oklch(64% 0.012 250);  /* 5.53:1 floor, HL-DS-7 */
+    --ds-color-accent:            oklch(72% 0.13  252);
+    --ds-color-accent-soft:       oklch(32% 0.05  252);
+    --ds-color-accent-foreground: oklch(15% 0.004 250);
+    --ds-color-warning:      oklch(78% 0.13 80);
+    --ds-color-warning-soft: oklch(28% 0.05 80);
+    --ds-color-danger:       oklch(72% 0.13 27);
+    --ds-color-success:      oklch(76% 0.11 152);
+    --ds-color-info-soft:    oklch(28% 0.04 245);
+  }
+}
+
+.dark {
+  --ds-color-surface:        oklch(15% 0.004 250);
+  --ds-color-surface-raised: oklch(20% 0.005 250);
+  --ds-color-surface-muted:  oklch(24% 0.006 250);
+  --ds-color-border:         oklch(32% 0.008 250);
+  --ds-color-border-strong:  oklch(45% 0.01  250);
+  --ds-color-text-primary:   oklch(94% 0.004 250);
+  --ds-color-text-secondary: oklch(78% 0.005 250);
+  --ds-color-text-muted:     oklch(64% 0.012 250);
+  --ds-color-accent:            oklch(72% 0.13  252);
+  --ds-color-accent-soft:       oklch(32% 0.05  252);
+  --ds-color-accent-foreground: oklch(15% 0.004 250);
+  --ds-color-warning:      oklch(78% 0.13 80);
+  --ds-color-warning-soft: oklch(28% 0.05 80);
+  --ds-color-danger:       oklch(72% 0.13 27);
+  --ds-color-success:      oklch(76% 0.11 152);
+  --ds-color-info-soft:    oklch(28% 0.04 245);
+}
+
+/* ── OKLCH browser fallback (HEX). Legacy Edge / institutional chassis. ──── */
+@supports not (color: oklch(0% 0 0)) {
+  :root {
+    --ds-color-surface:        #FFFFFF;
+    --ds-color-surface-raised: #FAFAF8;
+    --ds-color-surface-muted:  #F2F1ED;
+    --ds-color-border:         #DCDAD3;
+    --ds-color-border-strong:  #9F998D;
+    --ds-color-text-primary:   #1A1D23;
+    --ds-color-text-secondary: #4A5060;
+    --ds-color-text-muted:     #6B7280;
+    --ds-color-accent:            #1A4D8F;
+    --ds-color-accent-soft:       #E8F0FA;
+    --ds-color-accent-foreground: #FFFFFF;
+    --ds-color-warning:      #946400;
+    --ds-color-warning-soft: #FFF8E1;
+    --ds-color-danger:       #B3261E;
+    --ds-color-success:      #2D6B3F;
+    --ds-color-info-soft:    #E6EEF7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ds-color-surface:        #0F1115;
+      --ds-color-surface-raised: #161A20;
+      --ds-color-surface-muted:  #1C2128;
+      --ds-color-border:         #2B2F38;
+      --ds-color-border-strong:  #4A5060;
+      --ds-color-text-primary:   #ECEEF2;
+      --ds-color-text-secondary: #B4BAC4;
+      --ds-color-text-muted:     #8A93A0;
+      --ds-color-accent:            #6FA8FF;
+      --ds-color-accent-soft:       #1F3A5C;
+      --ds-color-accent-foreground: #0F1115;
+      --ds-color-warning:      #E5B547;
+      --ds-color-warning-soft: #3A2D0E;
+      --ds-color-danger:       #F2837C;
+      --ds-color-success:      #6FCB8B;
+      --ds-color-info-soft:    #1F2C3E;
+    }
+  }
+}
+
+/* ── prefers-reduced-motion — globally honoured (HL-DS-4) ───────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── BITV 2.0 high-contrast (WCAG 1.4.6 AAA, ≥ 7:1) ─────────────────────── */
+@media (prefers-contrast: more) {
+  :root {
+    --ds-color-text-primary:   oklch(0%  0 0);
+    --ds-color-text-secondary: oklch(15% 0 0);
+    --ds-color-text-muted:     oklch(30% 0 0);
+    --ds-color-border:         oklch(40% 0 0);
+    --ds-color-border-strong:  oklch(20% 0 0);
+    --ds-color-accent:         oklch(28% 0.18 252);
+    --ds-color-warning:        oklch(30% 0.15 80);
+    --ds-color-danger:         oklch(30% 0.20 27);
+    --ds-color-success:        oklch(30% 0.13 152);
+  }
+}
+
+/* ── Tabular numerals — mandatory for Aktenzeichen, FE-Nr, IBAN, dates ──── */
+.ds-tabular,
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================================
+   Semantic class hooks — drop straight onto markup.
+   ========================================================================= */
+
+html,
+body { font-family: var(--ds-font-sans); }
+
+body {
+  background: var(--ds-color-surface);
+  color: var(--ds-color-text-primary);
+  font-size: var(--ds-text-body);
+  line-height: var(--ds-line-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.ds-mega   { font-size: clamp(4rem, 12vw, var(--ds-text-mega)); line-height: var(--ds-line-mega); font-weight: 700; letter-spacing: -0.035em; color: var(--ds-color-text-primary); font-variant-numeric: tabular-nums; }
+.ds-jumbo  { font-size: clamp(3rem, 8vw, var(--ds-text-jumbo)); line-height: var(--ds-line-jumbo); font-weight: 700; letter-spacing: -0.025em; color: var(--ds-color-text-primary); }
+.ds-display { font-size: var(--ds-text-display); line-height: var(--ds-line-display); font-weight: 700; letter-spacing: var(--ds-tracking-tight); color: var(--ds-color-text-primary); }
+.ds-h1      { font-size: var(--ds-text-h1);      line-height: var(--ds-line-h1);      font-weight: 600; letter-spacing: var(--ds-tracking-tight); color: var(--ds-color-text-primary); }
+.ds-h2      { font-size: var(--ds-text-h2);      line-height: var(--ds-line-h2);      font-weight: 600; color: var(--ds-color-text-primary); }
+.ds-h3      { font-size: var(--ds-text-h3);      line-height: var(--ds-line-h3);      font-weight: 600; color: var(--ds-color-text-primary); }
+.ds-body    { font-size: var(--ds-text-body);    line-height: var(--ds-line-body);    font-weight: 400; color: var(--ds-color-text-primary); }
+.ds-body-s  { font-size: var(--ds-text-body-s);  line-height: var(--ds-line-body);    font-weight: 400; color: var(--ds-color-text-secondary); }
+.ds-caption { font-size: var(--ds-text-small);   line-height: var(--ds-line-small);   font-weight: 500; color: var(--ds-color-text-secondary); }
+.ds-eyebrow { font-size: var(--ds-text-tiny);    line-height: 1.45; font-weight: 600; letter-spacing: var(--ds-tracking-wide); text-transform: uppercase; color: var(--ds-color-text-muted); }
+.ds-mono    { font-family: var(--ds-font-mono); font-variant-numeric: tabular-nums; }
+
+/* Branded text-selection — small detail, big polish */
+::selection { background: color-mix(in oklch, var(--ds-color-accent) 22%, transparent); color: var(--ds-color-text-primary); }
+
+/* Focus ring — 2 px outline + 2 px offset, accent color (HL-DS-7 ≥ 3:1) */
+.ds-focus,
+.ds-focus:focus-visible,
+:where(button, a, input, select, textarea):focus-visible {
+  outline: 2px solid var(--ds-color-accent);
+  outline-offset: 2px;
+  border-radius: var(--ds-radius-sm);
+}
+
+/* AR (right-to-left) — Source Sans 3 has limited Arabic glyphs */
+[lang="ar"] {
+  --ds-font-sans:
+    'Source Sans 3', 'Noto Sans Arabic', 'Segoe UI', system-ui,
+    -apple-system, sans-serif;
+  direction: rtl;
+}

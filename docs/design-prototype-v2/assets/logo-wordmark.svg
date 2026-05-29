@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 48" width="280" height="48" role="img" aria-label="GovTech DE">
+  <title>GovTech DE</title>
+  <g transform="translate(0, 8)" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="3" y1="22" x2="21" y2="22"></line>
+    <polyline points="5,22 5,32 19,32 19,22"></polyline>
+    <line x1="3" y1="32" x2="21" y2="32"></line>
+    <line x1="9" y1="24" x2="9" y2="30"></line>
+    <line x1="15" y1="24" x2="15" y2="30"></line>
+    <path d="M2 18 L12 10 L22 18"></path>
+    <circle cx="12" cy="14" r="1.4" fill="currentColor"></circle>
+  </g>
+  <g font-family="&#39;Source Sans 3&#39;, system-ui, sans-serif" fill="currentColor">
+    <text x="36" y="28" font-size="20" font-weight="600" letter-spacing="-0.01em">GovTech DE</text>
+    <text x="36" y="40" font-size="10" font-weight="500" fill-opacity="0.6" letter-spacing="0.04em">VERWALTUNG · CITIZEN-FIRST</text>
+  </g>
+</svg>

@@ -10,9 +10,37 @@
     'Segoe UI', Roboto, sans-serif;
 
   --color-brand-50: oklch(0.96 0.02 262);
+  --color-brand-100: oklch(0.92 0.05 262);
+  --color-brand-200: oklch(0.86 0.10 262);
   --color-brand-500: oklch(0.55 0.21 262);
   --color-brand-600: oklch(0.51 0.21 262);
   --color-brand-700: oklch(0.47 0.20 262);
+
+  /* Status accent ramps for the prototype-v2 components — additive extension
+     of the existing redesign-foundation tokens. Inherits Tailwind defaults
+     where the ramp is otherwise undeclared. */
+  --color-amber-50:  oklch(0.97 0.04 90);
+  --color-amber-100: oklch(0.93 0.10 90);
+  --color-amber-500: oklch(0.75 0.18 75);
+  --color-amber-600: oklch(0.62 0.16 65);
+
+  --color-green-50:  oklch(0.95 0.05 155);
+  --color-green-100: oklch(0.90 0.10 155);
+  --color-green-500: oklch(0.65 0.18 150);
+  --color-green-600: oklch(0.55 0.16 150);
+
+  --color-pink-50:  oklch(0.94 0.04 5);
+  --color-pink-500: oklch(0.62 0.20 5);
+  --color-violet-50:  oklch(0.94 0.04 290);
+  --color-violet-500: oklch(0.55 0.20 290);
+  --color-teal-50:  oklch(0.94 0.04 195);
+  --color-teal-500: oklch(0.55 0.13 195);
+
+  /* Secondary ink tier — sits between text-primary and text-secondary. */
+  --color-text-ink-2: oklch(0.32 0.04 262);
+
+  /* Softer surface tint for embedded sub-cards (vorgaenge progress card). */
+  --color-surface-soft: oklch(0.985 0.005 262);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -120,6 +148,85 @@
   --ds-duration-base-plus: 400ms;
   --ds-duration-slow: 600ms;
   --ds-duration-page: 800ms;
+
+  /* ─────────────────────────────────────────────────────────────────────
+     prototype-v2 token aliases (2026-05-28). The literal-copy CSS in
+     `prototype-v2.css` (sourced from `docs/design-prototype-v2/assets/
+     govtech.css`) references a parallel token namespace (`--bg`, `--surface`,
+     `--ink-*`, `--brand-*`, `--green-*`, `--amber-*`, `--red-*`, `--pink-*`,
+     `--violet-*`, `--teal-*`, `--r-*`, `--shadow-*`, `--header-h`,
+     `--sidebar-w`). Rather than dupe-declare them, we passthrough-alias them
+     onto the existing `--color-*` / shadcn tokens here, so the consolidated
+     light/dark/high-contrast variants flow through automatically.
+     ───────────────────────────────────────────────────────────────────── */
+  --bg: var(--color-surface-page);
+  --surface: var(--color-surface);
+  --surface-soft: #F8FAFC;
+  --surface-muted: var(--color-surface-muted);
+
+  --border: var(--color-border);
+  --border-strong: var(--color-border-strong);
+
+  --ink: var(--color-text-primary);
+  --ink-2: #2A3656;
+  --ink-3: var(--color-text-secondary);
+  --ink-4: var(--color-text-muted);
+
+  /* Brand ramp — mirrors the zip palette verbatim so the prototype's mock-up
+     chrome (e.g. `var(--brand-600)` solid pills) renders the cobalt the
+     user signed off on. The shadcn `--primary` token remains the single source
+     of truth for utility classes (`bg-primary`, …). */
+  --brand-50:  #EEF3FE;
+  --brand-100: #DCE6FD;
+  --brand-200: #B7CBFB;
+  --brand-500: #2A5EE2;
+  --brand-600: #1E4FCC;
+  --brand-700: #173FA8;
+  --brand-900: #0F1F4E;
+
+  /* Status ramps — verbatim from zip CSS; coexist with --color-success /
+     --color-warning / --color-danger semantic tokens. */
+  --green-50:  #E6F6EC;
+  --green-100: #D5F0E0;
+  --green-500: #1FA864;
+  --green-600: #178A52;
+  --green-700: #0F6B40;
+
+  --amber-50:  #FEF3E1;
+  --amber-100: #FDE6BC;
+  --amber-500: #D9870C;
+  --amber-600: #B26B05;
+
+  --red-50:  #FDECEC;
+  --red-100: #FBD7D7;
+  --red-500: #D92D2D;
+  --red-600: #B62121;
+
+  --pink-50:  #FBE8F2;
+  --pink-500: #C53A88;
+
+  --violet-50: #ECE9FB;
+  --violet-500: #6049D6;
+
+  --teal-50: #DEF4F3;
+  --teal-500: #11857F;
+
+  /* Radii (zip-flavour, on top of the existing --radius / --radius-card). */
+  --r-sm: 8px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 18px;
+  --r-pill: 999px;
+
+  /* Shadows — explicit zip values (not aliased onto --shadow-card, because
+     the zip ramp has three tiers and the prototype expects each). */
+  --shadow-1: 0 1px 0 rgba(15, 31, 78, 0.04), 0 1px 2px rgba(15, 31, 78, 0.04);
+  --shadow-2: 0 1px 0 rgba(15, 31, 78, 0.05), 0 6px 16px -8px rgba(15, 31, 78, 0.10);
+  --shadow-pop: 0 12px 32px -12px rgba(15, 31, 78, 0.18);
+
+  /* Layout chrome dimensions used by `.gt-header`, `.gt-sidebar`. */
+  --header-h: 64px;
+  --sidebar-w: 252px;
 }
 
 /* ── Neutral scale + cobalt + semantic (DARK) ───────────────────────────── */

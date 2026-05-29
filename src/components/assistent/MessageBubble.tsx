@@ -1,11 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { useFormatter, useTranslations } from 'next-intl';
 import { CheckCheck, Sparkles } from 'lucide-react';
-
-import { IconCircle } from '@/components/shared/IconCircle';
-import { cn } from '@/lib/utils';
 
 import { MessageMarkdown } from './MessageMarkdown';
 import type { ChatMessage } from './types';
@@ -14,35 +10,32 @@ interface MessageBubbleProps {
   message: ChatMessage;
 }
 
-function Timestamp({ iso }: { iso: string }) {
-  const format = useFormatter();
-  const date = new Date(iso);
-  const valid = !Number.isNaN(date.getTime());
-  return (
-    <time
-      dateTime={valid ? iso : undefined}
-      className="text-xs text-text-muted tabular-nums"
-    >
-      {valid ? format.dateTime(date, { hour: '2-digit', minute: '2-digit' }) : ''}
-    </time>
-  );
+function formatTime(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 }
 
 export function MessageBubble({ message }: MessageBubbleProps) {
-  const t = useTranslations('assistent.message');
   const isUser = message.role === 'user';
+  const time = formatTime(message.at);
 
   if (isUser) {
     return (
-      <div className="flex justify-end">
-        <div className="max-w-[85%] rounded-lg rounded-tr-sm bg-surface-muted px-4 py-3 text-base text-text-primary">
-          <MessageMarkdown text={message.text} />
-          <div className="mt-1 flex items-center justify-end gap-1">
-            <Timestamp iso={message.at} />
-            <CheckCheck
-              className="size-3.5 text-primary"
-              aria-label={t('user_sent')}
-            />
+      <div className="msg user">
+        <span
+          className="av"
+          aria-hidden="true"
+          style={{ background: 'var(--brand-50)', color: 'var(--brand-700)' }}
+        >
+          AP
+        </span>
+        <div>
+          <div className="bubble">
+            <MessageMarkdown text={message.text} />
+          </div>
+          <div className="time">
+            {time} <CheckCheck aria-label="Gesendet" />
           </div>
         </div>
       </div>
@@ -50,27 +43,20 @@ export function MessageBubble({ message }: MessageBubbleProps) {
   }
 
   return (
-    <div className="flex gap-3">
-      <IconCircle
-        icon={<Sparkles aria-hidden="true" />}
-        tone="primary"
-        size="sm"
-        className="mt-0.5"
-      />
-      <div className="min-w-0 max-w-[85%] rounded-lg rounded-tl-sm bg-accent-soft px-4 py-3 text-base text-text-primary">
-        <span className="sr-only">{t('assistant_label')}: </span>
-        {message.text ? (
-          <MessageMarkdown text={message.text} />
-        ) : (
-          <span className="text-text-muted">…</span>
-        )}
-        <div
-          className={cn(
-            'mt-1 flex items-center justify-end',
-            !message.text && 'hidden',
+    <div className="msg">
+      <span className="av" aria-hidden="true">
+        <Sparkles />
+      </span>
+      <div>
+        <div className="bubble">
+          {message.text ? (
+            <MessageMarkdown text={message.text} />
+          ) : (
+            <span style={{ color: 'var(--ink-3)' }}>…</span>
           )}
-        >
-          <Timestamp iso={message.at} />
+        </div>
+        <div className="time" style={{ display: message.text ? 'flex' : 'none' }}>
+          {time}
         </div>
       </div>
     </div>

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><link rel="stylesheet" href="_preview.css">
+<style>
+  .letter { display: flex; flex-direction: column; gap: 8px; padding: 16px; border: 1px solid color-mix(in oklch, var(--ds-color-text-primary) 20%, transparent); background: var(--ds-color-surface-raised); border-radius: var(--ds-radius-lg); box-shadow: var(--ds-shadow-card); }
+  .row1 { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .dot { width: 8px; height: 8px; background: var(--ds-color-text-primary); border-radius: 50%; }
+  .frist { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: var(--ds-radius-full); font-size: 15px; font-weight: 600; background: var(--ds-color-warning-soft); color: #4a2e00; box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--ds-color-warning) 40%, transparent); }
+  .action { font-size: 14px; font-weight: 600; color: var(--ds-color-text-primary); }
+  .row2 { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+  .behoerde { font-weight: 600; color: var(--ds-color-text-primary); }
+  .sep { color: var(--ds-color-text-muted); }
+  .brieftyp { color: var(--ds-color-text-secondary); }
+  .row3 { font-size: 12px; color: var(--ds-color-text-muted); font-variant-numeric: tabular-nums; }
+  .util { display: flex; gap: 12px; justify-content: flex-end; font-size: 11.5px; color: var(--ds-color-text-muted); }
+  .util span { display: inline-flex; align-items: center; gap: 4px; }
+</style></head>
+<body>
+  <div class="letter">
+    <div class="row1">
+      <span class="dot" aria-hidden="true"></span>
+      <span class="frist">⏱  Antwortfrist · in 5 Tagen</span>
+      <span class="action">Antwort erforderlich</span>
+    </div>
+    <div class="row2"><span class="behoerde">Finanzamt Berlin-Friedrichshain-Kreuzberg</span><span class="sep">·</span><span class="brieftyp">Einkommensteuer­bescheid 2024</span></div>
+    <div class="row3">Aktenzeichen: F-2026-04827-K</div>
+    <div class="util"><span>✉ Brief</span><span>🛡 Datenschutz</span></div>
+  </div>
+</body></html>

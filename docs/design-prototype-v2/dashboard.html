@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>Dashboard — GovTech DE</title>
+<link rel="stylesheet" href="assets/govtech.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  .dash-grid { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+  .greeting h2 { font-size: 24px; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 4px; }
+  .greeting .meta { color: var(--ink-3); font-size: 13px; }
+
+  .since-last {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+    padding: 20px;
+    box-shadow: var(--shadow-1);
+  }
+  .since-last h4 { grid-column: 1 / -1; margin: 0 0 14px; font-size: 14px; color: var(--ink-3); font-weight: 500; }
+  .since-stat { display: flex; align-items: center; gap: 12px; }
+  .since-stat .icon-circle { width: 36px; height: 36px; }
+  .since-stat .icon-circle svg { width: 16px; height: 16px; }
+  .since-stat .n { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+  .since-stat .l { font-size: 12.5px; color: var(--ink-3); }
+
+  .heute-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 22px; box-shadow: var(--shadow-1); }
+  .heute-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+  .heute-head h3 { font-size: 17px; font-weight: 600; margin: 0; }
+  .heute-list { display: flex; flex-direction: column; gap: 10px; }
+  .heute-item {
+    display: flex; align-items: center; gap: 16px;
+    padding: 16px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+  }
+  .heute-item:hover { background: var(--surface-soft); }
+  .heute-item .n {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--brand-600); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px;
+  }
+  .heute-item .n.muted { background: var(--ink-4); }
+  .heute-item .icon-circle { width: 36px; height: 36px; }
+  .heute-item .body .t { font-weight: 600; color: var(--ink); }
+  .heute-item .body .s { color: var(--ink-3); font-size: 13px; }
+
+  .grid-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 24px; }
+  .grid-cards .small-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 18px 20px;
+    display: flex; gap: 14px; align-items: flex-start;
+  }
+  .small-card .icon-circle { width: 40px; height: 40px; }
+  .small-card .t { font-weight: 600; color: var(--ink); }
+  .small-card .s { color: var(--ink-3); font-size: 12.5px; margin: 2px 0 10px; }
+  .small-card .link { color: var(--brand-600); font-weight: 500; font-size: 13px; display: inline-flex; align-items: center; gap: 4px; }
+  .small-card .link svg { width: 12px; height: 12px; }
+</style>
+</head>
+<body>
+
+<div data-gt-header></div>
+<div class="gt-shell">
+  <div data-gt-sidebar></div>
+  <main class="gt-content">
+    <div class="gt-page-head">
+      <h1>Dashboard</h1>
+      <div class="sub">Ihr persönlicher Überblick über Briefe, Fristen und Vorgänge.</div>
+    </div>
+
+    <div class="dash-grid">
+      <div class="greeting">
+        <h2>Guten Tag, Frau Petrov</h2>
+        <div class="meta">letzter Login vor 23 Tagen · auf diesem Gerät</div>
+        <div class="gt-banner" style="margin-top: 16px;">
+          <i data-lucide="info"></i>
+          <div><a href="#" style="color: var(--brand-600); font-weight: 500;">Demo-Modus · Mock-Daten · Originale liegen in den amtlichen Postfächern</a></div>
+        </div>
+      </div>
+
+      <div class="since-last">
+        <h4>Seit Ihrem letzten Login</h4>
+        <div class="since-stat">
+          <span class="icon-circle"><i data-lucide="mail"></i></span>
+          <div><div class="n">2</div><div class="l">neue Briefe</div></div>
+        </div>
+        <div class="since-stat">
+          <span class="icon-circle"><i data-lucide="clock"></i></span>
+          <div><div class="n">1</div><div class="l">Frist näher gerückt</div></div>
+        </div>
+        <div class="since-stat">
+          <span class="icon-circle green"><i data-lucide="check-circle-2"></i></span>
+          <div><div class="n">1</div><div class="l">Vorgang abgeschlossen</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="heute-card" style="margin-top: 24px;">
+      <div class="heute-head">
+        <h3>Heute zu tun</h3>
+        <div class="tab-chips">
+          <button class="chip active"><i data-lucide="sparkles"></i>KI</button>
+          <button class="chip">Frist <i data-lucide="chevrons-up-down" style="width:12px;height:12px;"></i></button>
+          <button class="chip">Behörde</button>
+          <button class="chip">Vorgang</button>
+        </div>
+      </div>
+      <div class="heute-list">
+        <a href="vorgaenge.html" class="heute-item">
+          <span class="n">1</span>
+          <span class="icon-circle violet"><i data-lucide="id-card"></i></span>
+          <div class="body grow"><div class="t">Aufenthaltstitel verlängern</div><div class="s">Frist in 14 Tagen</div></div>
+          <span class="badge red">Fristnähe</span>
+          <i data-lucide="chevron-right" style="color: var(--ink-4);"></i>
+        </a>
+        <a href="posteingang.html" class="heute-item">
+          <span class="n">2</span>
+          <span class="icon-circle"><i data-lucide="file-text"></i></span>
+          <div class="body grow"><div class="t">Steuerbescheid prüfen</div><div class="s">Einspruch bis 12.04.2026</div></div>
+          <span class="badge brand">Folgevorgang</span>
+          <i data-lucide="chevron-right" style="color: var(--ink-4);"></i>
+        </a>
+        <a href="#" class="heute-item">
+          <span class="n muted">3</span>
+          <span class="icon-circle"><i data-lucide="gauge"></i></span>
+          <div class="body grow"><div class="t">Stromzähler melden</div><div class="s">Frist in 7 Tagen</div></div>
+          <span class="badge amber">Manuell priorisiert</span>
+          <i data-lucide="chevron-right" style="color: var(--ink-4);"></i>
+        </a>
+      </div>
+    </div>
+
+    <div class="grid-cards">
+      <div class="small-card">
+        <span class="icon-circle"><i data-lucide="clock"></i></span>
+        <div>
+          <div class="t">Fristen</div>
+          <div class="s">3 offen</div>
+          <a class="link" href="termine.html">Ansehen <i data-lucide="chevron-right"></i></a>
+        </div>
+      </div>
+      <div class="small-card">
+        <span class="icon-circle"><i data-lucide="mail"></i></span>
+        <div>
+          <div class="t">Posteingang</div>
+          <div class="s">2 ungelesen</div>
+          <a class="link" href="posteingang.html">Öffnen <i data-lucide="chevron-right"></i></a>
+        </div>
+      </div>
+      <div class="small-card">
+        <span class="icon-circle"><i data-lucide="folder"></i></span>
+        <div>
+          <div class="t">Vorgänge</div>
+          <div class="s">1 läuft, 1 abgeschlossen</div>
+          <a class="link" href="vorgaenge.html">Ansehen <i data-lucide="chevron-right"></i></a>
+        </div>
+      </div>
+      <div class="small-card">
+        <span class="icon-circle"><i data-lucide="calendar"></i></span>
+        <div>
+          <div class="t">Termine</div>
+          <div class="s">Nächster Termin 18.04.2026</div>
+          <a class="link" href="termine.html">Ansehen <i data-lucide="chevron-right"></i></a>
+        </div>
+      </div>
+      <div class="small-card">
+        <span class="icon-circle"><i data-lucide="shield"></i></span>
+        <div>
+          <div class="t">Datenschutz-Cockpit</div>
+          <div class="s">3 Aktivitäten in 30 Tagen</div>
+          <a class="link" href="datenschutz.html">Öffnen <i data-lucide="chevron-right"></i></a>
+        </div>
+      </div>
+      <div class="small-card">
+        <span class="icon-circle"><i data-lucide="user"></i></span>
+        <div>
+          <div class="t">Stammdaten-Status</div>
+          <div class="s">Adresse zuletzt bestätigt am 22.03.2026</div>
+          <a class="link" href="stammdaten.html">Ansehen <i data-lucide="chevron-right"></i></a>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>window.GT_ACTIVE='dashboard';</script>
+<script src="assets/govtech.js"></script>
+</body>
+</html>

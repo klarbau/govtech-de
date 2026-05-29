@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><link rel="stylesheet" href="_preview.css">
+<style>
+  .btn { display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border-radius: var(--ds-radius-md); border: 1px solid transparent; font-family: inherit; font-weight: 500; font-size: 14px; cursor: pointer; transition: background var(--ds-duration-fast) var(--ds-ease-out), box-shadow var(--ds-duration-fast) var(--ds-ease-out); }
+  .btn-default { background: var(--ds-color-text-primary); color: var(--ds-color-surface); }
+  .btn-default:hover { background: color-mix(in oklch, var(--ds-color-text-primary) 80%, transparent); }
+  .btn-ds-primary { background: var(--ds-color-accent); color: var(--ds-color-accent-foreground); min-height: 44px; }
+  .btn-outline { background: var(--ds-color-surface); border-color: var(--ds-color-border); color: var(--ds-color-text-primary); }
+  .btn-outline:hover { background: var(--ds-color-surface-muted); }
+  .btn-ghost { background: transparent; color: var(--ds-color-text-primary); }
+  .btn-ghost:hover { background: var(--ds-color-surface-muted); }
+  .btn-destructive { background: var(--ds-color-danger); color: var(--ds-color-surface); }
+  .btn-link { background: transparent; color: var(--ds-color-accent); padding: 0 4px; height: auto; text-decoration: underline; text-underline-offset: 3px; }
+  .btn-disabled { opacity: 0.5; pointer-events: none; }
+  .btn-focus { outline: 2px solid var(--ds-color-accent); outline-offset: 2px; }
+</style></head>
+<body>
+  <div class="row">
+    <button class="btn btn-default">Vorgang starten</button>
+    <button class="btn btn-ds-primary">Antwort verfassen</button>
+    <button class="btn btn-outline">Zurück</button>
+    <button class="btn btn-ghost">Filter zurücksetzen</button>
+  </div>
+  <div class="row">
+    <button class="btn btn-destructive">Vorgang abbrechen</button>
+    <a class="btn btn-link" href="#">Mehr anzeigen</a>
+    <button class="btn btn-outline btn-focus">Focus</button>
+    <button class="btn btn-default btn-disabled">Disabled</button>
+  </div>
+  <p class="ds-caption" style="margin: 0; font-size: 12px;">ds-primary uses Trust-Blau with 44 px touch floor (HL-DS-8). All buttons rounded-lg; active state shifts 1 px down — no scale, no colour darken.</p>
+</body></html>

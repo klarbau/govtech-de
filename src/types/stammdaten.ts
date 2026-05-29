@@ -16,7 +16,7 @@
  */
 import type { Adresse } from './adresse';
 import type { BehoerdeId } from './behoerde';
-import type { PersonaId } from './persona';
+import type { Familienstand, PersonaId } from './persona';
 import type {
   AnrechnungszeitPflege,
   EpaStatus,
@@ -322,6 +322,8 @@ export interface Stammdaten {
     Adresse & { gueltig_ab: string; gueltig_bis: string }
   >;
   familie: {
+    /** Familienstand (Personenstand) aus der Persona (§ 3 Abs. 1 Nr. 8 BMG). */
+    familienstand?: Familienstand;
     partner?: {
       vorname: string;
       nachname: string;

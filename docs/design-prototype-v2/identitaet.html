@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>Identität bestätigen — GovTech DE</title>
+<link rel="stylesheet" href="assets/govtech.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  .id-top { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
+  .id-method {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+    padding: 22px 24px;
+    display: grid; grid-template-columns: 56px 1fr auto; gap: 16px; align-items: center;
+    box-shadow: var(--shadow-1);
+  }
+  .id-method .icon-circle.lg { width: 56px; height: 56px; }
+  .id-method .icon-circle.lg svg { width: 26px; height: 26px; }
+  .id-method .t { font-weight: 700; font-size: 17px; letter-spacing: -0.005em; }
+  .id-method .s { color: var(--ink-3); font-size: 13.5px; margin-top: 2px; }
+  .id-method .verb { display: inline-flex; align-items: center; gap: 6px; color: var(--green-700); font-size: 13px; font-weight: 500; margin-top: 6px; }
+  .id-method .verb svg { color: var(--green-600); width: 14px; height: 14px; }
+
+  .id-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; margin-top: 18px; }
+  .id-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 22px 24px; box-shadow: var(--shadow-1); }
+  .id-card h3 { margin: 0 0 4px; font-size: 17px; font-weight: 600; }
+  .id-card .sub { color: var(--ink-3); font-size: 13px; margin-bottom: 18px; }
+
+  .data-row {
+    display: grid; grid-template-columns: 40px 1fr auto auto; gap: 12px; align-items: center;
+    padding: 14px 0; border-top: 1px solid var(--border);
+  }
+  .data-row:first-of-type { border-top: 0; }
+  .data-row .icon-circle { width: 40px; height: 40px; }
+  .data-row .icon-circle svg { width: 18px; height: 18px; }
+  .data-row .t { font-weight: 600; }
+  .data-row .s { color: var(--ink-3); font-size: 12.5px; }
+  .data-row .chev { color: var(--ink-4); }
+
+  .dsgvo {
+    margin-top: 16px;
+    border: 1px solid var(--border); border-radius: var(--r-md);
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px; color: var(--ink-2); font-size: 13px;
+  }
+  .dsgvo svg { color: var(--ink-3); width: 16px; height: 16px; }
+  .dsgvo .link { margin-left: auto; color: var(--brand-600); font-weight: 500; }
+
+  /* freigaben */
+  .freig-sub-h { font-weight: 600; font-size: 13.5px; margin: 6px 0 12px; }
+  .freig-sub-h small { color: var(--ink-3); font-weight: 400; }
+  .freig-row {
+    display: grid; grid-template-columns: 36px 1fr auto; gap: 12px; align-items: center;
+    padding: 12px 0; border-top: 1px solid var(--border);
+  }
+  .freig-row:first-of-type { border-top: 0; }
+  .freig-row .icon-circle { width: 36px; height: 36px; }
+  .freig-row .icon-circle svg { width: 16px; height: 16px; }
+  .freig-row .t { font-weight: 600; font-size: 13.5px; }
+  .freig-row .s { color: var(--ink-3); font-size: 12.5px; }
+  .freig-row .right { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-2); }
+  .freig-row .right svg { color: var(--green-600); width: 16px; height: 16px; }
+  .freig-row.einwill .right { color: var(--brand-600); font-weight: 500; }
+
+  .hint-banner {
+    margin-top: 18px;
+    background: var(--brand-50); border: 1px solid var(--brand-100); border-radius: var(--r-md);
+    padding: 16px 20px;
+    display: flex; align-items: flex-start; gap: 14px;
+  }
+  .hint-banner svg { color: var(--brand-600); width: 20px; height: 20px; flex: none; margin-top: 2px; }
+  .hint-banner .t { font-weight: 600; }
+  .hint-banner .s { color: var(--ink-2); font-size: 13px; line-height: 1.55; }
+  .hint-banner a { color: var(--brand-600); font-weight: 500; }
+
+  .id-cta { display: flex; justify-content: flex-end; margin-top: 20px; }
+  .id-cta .btn { padding: 0 22px; }
+</style>
+</head>
+<body>
+
+<div data-gt-header></div>
+<div class="gt-shell">
+  <div data-gt-sidebar></div>
+  <main class="gt-content">
+    <div class="gt-page-head">
+      <h1>Identität bestätigen</h1>
+      <div class="sub">Bitte prüfen Sie, welche Daten verwendet werden, bevor der Umzug-Autopilot gestartet wird.</div>
+    </div>
+
+    <div class="id-top">
+      <div class="id-method">
+        <span class="icon-circle lg"><i data-lucide="shield-check"></i></span>
+        <div>
+          <div class="t">DeutschlandID</div>
+          <div class="s">Staatliches Online-Identitätskonto</div>
+          <div class="verb"><i data-lucide="check-circle-2"></i>Verbunden</div>
+        </div>
+        <span class="badge green">Verifiziert</span>
+      </div>
+      <div class="id-method">
+        <span class="icon-circle lg"><i data-lucide="wallet"></i></span>
+        <div>
+          <div class="t">EUDI Wallet</div>
+          <div class="s">Europäische digitale Brieftasche</div>
+          <div class="verb"><i data-lucide="check-circle-2"></i>Bereit</div>
+        </div>
+        <span class="badge green">Bereit</span>
+      </div>
+    </div>
+
+    <div class="id-grid">
+      <div class="id-card">
+        <h3>Ihre verfügbaren Daten</h3>
+        <div class="sub">Daten, die für den Umzug-Autopilot verwendet werden können.</div>
+
+        <div class="data-row">
+          <span class="icon-circle"><i data-lucide="user"></i></span>
+          <div><div class="t">Name</div><div class="s">Vor- und Nachname</div></div>
+          <span class="badge green"><i data-lucide="check-circle-2" style="width:12px;height:12px;"></i>Bestätigt</span>
+          <i data-lucide="chevron-down" class="chev"></i>
+        </div>
+        <div class="data-row">
+          <span class="icon-circle"><i data-lucide="calendar"></i></span>
+          <div><div class="t">Geburtsdatum</div><div class="s">Geburtsdatum</div></div>
+          <span class="badge green"><i data-lucide="check-circle-2" style="width:12px;height:12px;"></i>Bestätigt</span>
+          <i data-lucide="chevron-down" class="chev"></i>
+        </div>
+        <div class="data-row">
+          <span class="icon-circle"><i data-lucide="home"></i></span>
+          <div><div class="t">Aktuelle Anschrift</div><div class="s">Hauptwohnsitz</div></div>
+          <span class="badge green"><i data-lucide="check-circle-2" style="width:12px;height:12px;"></i>Bestätigt</span>
+          <i data-lucide="chevron-down" class="chev"></i>
+        </div>
+        <div class="data-row">
+          <span class="icon-circle pink"><i data-lucide="users"></i></span>
+          <div><div class="t">Familienstand</div><div class="s">Aktueller Familienstand</div></div>
+          <span class="badge brand"><span class="dot" style="background: var(--brand-500);"></span>Verfügbar</span>
+          <i data-lucide="chevron-down" class="chev"></i>
+        </div>
+        <div class="data-row">
+          <span class="icon-circle violet"><i data-lucide="id-card"></i></span>
+          <div><div class="t">Aufenthaltstitel</div><div class="s">Aufenthaltstitel (falls vorhanden)</div></div>
+          <span class="badge outline">Optional</span>
+          <i data-lucide="chevron-down" class="chev"></i>
+        </div>
+        <div class="data-row">
+          <span class="icon-circle"><i data-lucide="file"></i></span>
+          <div><div class="t">Dokumente</div><div class="s">Ausweisdokumente, Meldebescheinigungen</div></div>
+          <span class="badge outline">Optional</span>
+          <i data-lucide="chevron-down" class="chev"></i>
+        </div>
+
+        <div class="dsgvo">
+          <i data-lucide="lock"></i>
+          Ihre Daten werden sicher übertragen und gemäß DSGVO verarbeitet.
+          <a href="datenschutz.html" class="link">Mehr erfahren <i data-lucide="chevron-right" style="width:12px;height:12px;"></i></a>
+        </div>
+      </div>
+
+      <div class="id-card">
+        <h3>Freigaben für diesen Vorgang</h3>
+        <div class="sub">Sie legen fest, welche Organisationen Daten erhalten und wofür.</div>
+
+        <div class="freig-sub-h">Automatischer Behördenabgleich <small>(gesetzlich erlaubt)</small></div>
+        <div class="freig-row">
+          <span class="icon-circle"><i data-lucide="landmark"></i></span>
+          <div><div class="t">Bürgeramt</div><div class="s">An- und Ummeldung, Meldebestätigung</div></div>
+          <div class="right">Wird automatisch abgeglichen <i data-lucide="check-circle-2"></i></div>
+        </div>
+        <div class="freig-row">
+          <span class="icon-circle"><i data-lucide="landmark"></i></span>
+          <div><div class="t">Finanzamt</div><div class="s">Adressänderung für Steuerdaten</div></div>
+          <div class="right">Wird automatisch abgeglichen <i data-lucide="check-circle-2"></i></div>
+        </div>
+        <div class="freig-row">
+          <span class="icon-circle"><i data-lucide="landmark"></i></span>
+          <div><div class="t">Beitragsservice</div><div class="s">Adressänderung für Rundfunkbeitrag</div></div>
+          <div class="right">Wird automatisch abgeglichen <i data-lucide="check-circle-2"></i></div>
+        </div>
+        <div class="freig-row">
+          <span class="icon-circle"><i data-lucide="landmark"></i></span>
+          <div><div class="t">Bundesdruckerei</div><div class="s">Aktualisierung von Dokumentenstatus</div></div>
+          <div class="right">Wird automatisch abgeglichen <i data-lucide="check-circle-2"></i></div>
+        </div>
+
+        <div class="freig-sub-h" style="margin-top: 20px;">Einwilligungsbasierte Freigaben <small>(Ihre Zustimmung erforderlich)</small></div>
+        <div class="freig-row einwill">
+          <span class="icon-circle pink"><i data-lucide="heart"></i></span>
+          <div><div class="t">Krankenkasse</div><div class="s">Adressänderung und Versichertendaten</div></div>
+          <div class="right">Zustimmung erforderlich <i data-lucide="chevron-right" style="color: var(--ink-4);"></i></div>
+        </div>
+        <div class="freig-row einwill">
+          <span class="icon-circle"><i data-lucide="landmark"></i></span>
+          <div><div class="t">Bank</div><div class="s">Adressänderung und Kontaktdaten</div></div>
+          <div class="right">Zustimmung erforderlich <i data-lucide="chevron-right" style="color: var(--ink-4);"></i></div>
+        </div>
+        <div class="freig-row einwill">
+          <span class="icon-circle amber"><i data-lucide="briefcase"></i></span>
+          <div><div class="t">Arbeitgeber</div><div class="s">Adressänderung für Personalakte</div></div>
+          <div class="right">Zustimmung erforderlich <i data-lucide="chevron-right" style="color: var(--ink-4);"></i></div>
+        </div>
+        <div class="freig-row einwill">
+          <span class="icon-circle"><i data-lucide="shield"></i></span>
+          <div><div class="t">Versicherer</div><div class="s">Adressänderung für Verträge</div></div>
+          <div class="right">Zustimmung erforderlich <i data-lucide="chevron-right" style="color: var(--ink-4);"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hint-banner">
+      <i data-lucide="info"></i>
+      <div>
+        <div class="t">Hinweis: Dies ist eine spekulative Demo</div>
+        <div class="s">Diese Demonstration zeigt einen möglichen zukünftigen Prozess. Nicht alle gezeigten Leistungen sind bereits verfügbar. Einige Schritte erfordern Ihre ausdrückliche Zustimmung und können je nach Behörde variieren.<br/><a href="#">Mehr erfahren <i data-lucide="chevron-right" style="width:11px;height:11px;"></i></a></div>
+      </div>
+    </div>
+
+    <div class="id-cta">
+      <a href="umzug.html" class="btn btn-primary btn-lg"><i data-lucide="shield-check"></i>Mit eID bestätigen und Autopilot vorbereiten <i data-lucide="chevron-right"></i></a>
+    </div>
+  </main>
+</div>
+
+<script>window.GT_ACTIVE='stammdaten';</script>
+<script src="assets/govtech.js"></script>
+</body>
+</html>

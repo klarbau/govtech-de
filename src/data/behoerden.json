@@ -890,5 +890,25 @@
       "supports_eudi": false
     },
     "bundid_postfach_anbindung": "nicht_angebunden"
+  },
+  {
+    "id": "kinderarzt-prenzlauer-berg",
+    "name_de": "Kinderarztpraxis am Park (Prenzlauer Berg)",
+    "kategorie": "privat",
+    "zustaendige_themen": [
+      "kindervorsorge",
+      "u_untersuchung"
+    ],
+    "adresse": {
+      "strasse": "Winsstraße",
+      "hausnummer": "12",
+      "plz": "10405",
+      "ort": "Berlin",
+      "land": "DE"
+    },
+    "online": {
+      "supports_eudi": false
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
   }
 ]

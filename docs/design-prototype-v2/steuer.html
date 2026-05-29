@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>Steuer — GovTech DE</title>
+<link rel="stylesheet" href="assets/govtech.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  .st-layout { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); gap: 18px; align-items: start; margin-top: 18px; }
+  .st-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 22px 26px; box-shadow: var(--shadow-1); }
+  .st-year-row { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; }
+  .st-year-row h2 { display: inline-flex; align-items: center; gap: 10px; margin: 0; font-size: 19px; font-weight: 700; letter-spacing: -0.01em; }
+  .st-year-row .stand { color: var(--ink-3); font-size: 13px; margin: 4px 0 12px; }
+  .st-year-row .vor { color: var(--ink-3); font-size: 13.5px; }
+  .st-year-row .erstattung { font-size: 44px; font-weight: 700; letter-spacing: -0.025em; margin: 4px 0 8px; }
+
+  .quellen-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .quellen-grid .lbl { grid-column: 1 / -1; font-weight: 500; }
+  .qcard {
+    display: flex; align-items: center; gap: 10px;
+    border: 1px solid var(--border); border-radius: var(--r-md);
+    background: var(--surface); padding: 10px 12px;
+  }
+  .qcard.full { grid-column: 1 / -1; }
+  .qcard .icon-circle { width: 32px; height: 32px; }
+  .qcard .icon-circle svg { width: 14px; height: 14px; }
+  .qcard .t { font-weight: 600; font-size: 13px; }
+  .qcard .s { color: var(--ink-3); font-size: 12px; }
+
+  /* progress row */
+  .progress-row { margin-top: 22px; padding: 18px 20px; background: var(--surface-soft); border: 1px solid var(--border); border-radius: var(--r-md); }
+  .progress-row h4 { margin: 0 0 14px; font-size: 14px; font-weight: 600; }
+  .pr-steps { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; position: relative; }
+  .pr-step { display: grid; grid-template-columns: 32px 1fr; gap: 12px; position: relative; }
+  .pr-step .dot {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--green-600); color: #fff; font-weight: 700; font-size: 13px;
+  }
+  .pr-step.current .dot { background: var(--brand-600); }
+  .pr-step.pending .dot { background: var(--surface); border: 1.5px solid var(--border-strong); color: var(--ink-4); }
+  .pr-step .t { font-weight: 600; }
+  .pr-step.current .t { color: var(--brand-700); }
+  .pr-step .s { color: var(--ink-3); font-size: 12.5px; line-height: 1.5; }
+  .pr-step .link { color: var(--brand-600); font-weight: 500; font-size: 13px; }
+  .pr-step::after {
+    content: ''; position: absolute; top: 14px; right: -10px; width: calc(100% - 28px); border-top: 1.5px dashed var(--border-strong);
+    z-index: 0; left: 40px;
+  }
+  .pr-step:last-child::after { display: none; }
+
+  .uberblick { margin-top: 22px; }
+  .uberblick h3 { margin: 0 0 14px; font-size: 16px; font-weight: 600; }
+  .uberblick table { width: 100%; border-collapse: collapse; }
+  .uberblick th { text-align: left; padding: 10px 12px; color: var(--ink-3); font-size: 12.5px; font-weight: 500; border-bottom: 1px solid var(--border); }
+  .uberblick td { padding: 14px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; font-size: 13.5px; }
+  .uberblick tr:last-child td { border-bottom: 0; }
+  .uberblick .bereich { display: flex; align-items: center; gap: 12px; }
+  .uberblick .bereich .icon-square { width: 32px; height: 32px; border-radius: 8px; background: var(--brand-50); color: var(--brand-700); }
+  .uberblick .bereich .icon-square svg { width: 16px; height: 16px; }
+  .uberblick .bereich .icon-square.green { background: var(--green-50); color: var(--green-600); }
+  .uberblick .bereich .icon-square.violet { background: var(--violet-50); color: var(--violet-500); }
+  .uberblick .bereich .icon-square.pink { background: var(--pink-50); color: var(--pink-500); }
+  .uberblick .bereich .icon-square.teal { background: var(--teal-50); color: var(--teal-500); }
+  .uberblick .bereich .t { font-weight: 600; }
+  .uberblick .bereich .s { color: var(--ink-3); font-size: 12.5px; }
+  .uberblick .right-link { color: var(--brand-600); font-weight: 500; display: inline-flex; align-items: center; gap: 4px; }
+
+  /* Right rail */
+  .frist-card .item { display: grid; grid-template-columns: 32px 1fr auto; gap: 12px; padding: 12px 0; border-top: 1px solid var(--border); }
+  .frist-card .item:first-of-type { border-top: 0; }
+  .frist-card .item .icon { color: var(--ink-3); margin-top: 2px; }
+  .frist-card .item .t { font-weight: 600; font-size: 13.5px; }
+  .frist-card .item .d { color: var(--ink-3); font-size: 12.5px; }
+
+  .nachweise .item { display: grid; grid-template-columns: 40px 1fr auto auto; gap: 12px; padding: 12px 0; border-top: 1px solid var(--border); align-items: center; }
+  .nachweise .item:first-of-type { border-top: 0; }
+  .nachweise .item .av { width: 40px; height: 40px; border-radius: 8px; background: var(--red-50); color: var(--red-500); display: flex; align-items: center; justify-content: center; }
+  .nachweise .item .av svg { width: 18px; height: 18px; }
+  .nachweise .item .t { font-weight: 600; font-size: 13.5px; }
+  .nachweise .item .s { color: var(--ink-3); font-size: 12px; }
+</style>
+</head>
+<body>
+
+<div data-gt-header></div>
+<div class="gt-shell">
+  <div data-gt-sidebar></div>
+  <main class="gt-content">
+    <div class="gt-page-head">
+      <h1>Steuer</h1>
+      <div class="sub">Vorausgefüllte Steuerübersicht aus bereits vorhandenen Daten.</div>
+    </div>
+
+    <div class="st-layout">
+      <div>
+        <div class="st-card">
+          <div class="st-year-row">
+            <div>
+              <h2>Steuerjahr 2024 <span class="badge brand">Entwurf</span></h2>
+              <div class="stand">Stand: 28.05.2025</div>
+              <div class="vor">Voraussichtliche Erstattung</div>
+              <div class="erstattung">371,00 €</div>
+              <div style="display: flex; align-items: center; gap: 8px; color: var(--green-700); font-size: 13px;">
+                <i data-lucide="check-circle-2" style="width: 16px; height: 16px; color: var(--green-600);"></i>
+                Auf Basis Ihrer bereits bekannten Daten
+              </div>
+            </div>
+            <div class="quellen-grid">
+              <div class="lbl">Datenquellen</div>
+              <div class="qcard"><span class="icon-circle"><i data-lucide="wallet"></i></span><div><div class="t">Lohnsteuer</div><div class="s">3 Quellen</div></div></div>
+              <div class="qcard"><span class="icon-circle pink"><i data-lucide="user"></i></span><div><div class="t">Kind</div><div class="s">2 Kinder</div></div></div>
+              <div class="qcard"><span class="icon-circle green"><i data-lucide="shield"></i></span><div><div class="t">Krankenkasse</div><div class="s">Gesetzlich</div></div></div>
+              <div class="qcard full"><span class="icon-circle"><i data-lucide="database"></i></span><div><div class="t">Bereits bekannte Daten</div><div class="s">Finanzamt, Arbeitgeber, Behörden</div></div></div>
+            </div>
+          </div>
+
+          <div class="progress-row">
+            <h4>Ihr Fortschritt</h4>
+            <div class="pr-steps">
+              <div class="pr-step"><span class="dot"><i data-lucide="check" style="width:14px;height:14px;"></i></span><div><div class="t">Daten geprüft</div><div class="s">Daten vollständig geprüft<br/>28.05.2025</div></div></div>
+              <div class="pr-step current"><span class="dot">2</span><div><div class="t">Belege ergänzt</div><div class="s">3 Belege fehlen noch<br/><a class="link" href="#">Anzeigen</a></div></div></div>
+              <div class="pr-step pending"><span class="dot">3</span><div><div class="t">Zur Abgabe bereit</div><div class="s">Prüfung abschließen und<br/>Erklärung abgeben</div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="st-card uberblick">
+          <h3>Übersicht der Steuerbereiche</h3>
+          <table>
+            <thead><tr><th>Bereich</th><th style="text-align:right;">Betrag</th><th>Status</th><th style="text-align:right;">Aktion</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><div class="bereich"><span class="icon-square"><i data-lucide="briefcase"></i></span><div><div class="t">Einkommen</div><div class="s">Bruttoarbeitslohn, weitere Einkünfte</div></div></div></td>
+                <td style="text-align:right;" class="mono">48.650,00 €</td>
+                <td><span class="badge green">Geprüft</span></td>
+                <td style="text-align:right;"><a class="right-link" href="#">Anzeigen <i data-lucide="chevron-right" style="width:12px;height:12px;"></i></a></td>
+              </tr>
+              <tr>
+                <td><div class="bereich"><span class="icon-square green"><i data-lucide="briefcase"></i></span><div><div class="t">Werbungskosten</div><div class="s">Pendlerpauschale, Arbeitsmittel, Fortbildung</div></div></div></td>
+                <td style="text-align:right;" class="mono">1.230,00 €</td>
+                <td><span class="badge green">Geprüft</span></td>
+                <td style="text-align:right;"><a class="right-link" href="#">Anzeigen <i data-lucide="chevron-right" style="width:12px;height:12px;"></i></a></td>
+              </tr>
+              <tr>
+                <td><div class="bereich"><span class="icon-square teal"><i data-lucide="shield"></i></span><div><div class="t">Vorsorgeaufwand</div><div class="s">Kranken- und Pflegeversicherung, Altersvorsorge</div></div></div></td>
+                <td style="text-align:right;" class="mono">2.840,00 €</td>
+                <td><span class="badge amber">Ergänzen</span></td>
+                <td style="text-align:right;"><a class="right-link" href="#">Bearbeiten <i data-lucide="chevron-right" style="width:12px;height:12px;"></i></a></td>
+              </tr>
+              <tr>
+                <td><div class="bereich"><span class="icon-square pink"><i data-lucide="users"></i></span><div><div class="t">Sonderausgaben</div><div class="s">Spenden, Kirchensteuer, weitere</div></div></div></td>
+                <td style="text-align:right;" class="mono">780,00 €</td>
+                <td><span class="badge green">Geprüft</span></td>
+                <td style="text-align:right;"><a class="right-link" href="#">Anzeigen <i data-lucide="chevron-right" style="width:12px;height:12px;"></i></a></td>
+              </tr>
+              <tr>
+                <td><div class="bereich"><span class="icon-square"><i data-lucide="user"></i></span><div><div class="t">Außergewöhnliche Belastungen</div><div class="s">Behinderung, Pflege, Krankheitskosten</div></div></div></td>
+                <td style="text-align:right;" class="mono">0,00 €</td>
+                <td><span class="badge outline">Nicht vorhanden</span></td>
+                <td style="text-align:right;"><a class="right-link" href="#">Hinzufügen <i data-lucide="chevron-right" style="width:12px;height:12px;"></i></a></td>
+              </tr>
+            </tbody>
+          </table>
+          <a class="right-link" href="#" style="margin-top: 12px; display: inline-flex;">Alle Bereiche anzeigen <i data-lucide="chevron-right" style="width:12px;height:12px;"></i></a>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 18px;">
+        <div class="st-card frist-card">
+          <h3 style="margin: 0 0 14px; font-size: 16px; font-weight: 600;">Wichtige Fristen</h3>
+          <div class="item">
+            <i data-lucide="calendar" class="icon"></i>
+            <div><div class="t">Abgabefrist Steuererklärung 2024</div><div class="d">31.07.2025</div></div>
+            <span class="badge brand">In 64 Tagen</span>
+          </div>
+          <div class="item">
+            <i data-lucide="bell" class="icon"></i>
+            <div><div class="t">Zahlungstermin (bei Nachzahlung)</div><div class="d">01.09.2025</div></div>
+            <span class="badge brand">In 96 Tagen</span>
+          </div>
+          <a class="right-link" href="termine.html" style="display: inline-flex; align-items: center; gap: 4px; margin-top: 12px;">Alle Fristen anzeigen <i data-lucide="chevron-right" style="width:12px;height:12px;"></i></a>
+        </div>
+
+        <div class="st-card nachweise">
+          <h3 style="margin: 0 0 14px; font-size: 16px; font-weight: 600;">Verwendete Nachweise</h3>
+          <div class="item">
+            <span class="av"><i data-lucide="file-text"></i></span>
+            <div><div class="t">Lohnsteuerbescheinigung 2024</div><div class="s">Arbeitgeber GmbH<br/>Hochgeladen am 15.01.2025</div></div>
+            <span class="badge green">Verwendet</span>
+            <button class="btn btn-secondary btn-sm" style="height: 28px; width: 28px; padding: 0;"><i data-lucide="more-vertical"></i></button>
+          </div>
+          <div class="item">
+            <span class="av"><i data-lucide="file-text"></i></span>
+            <div><div class="t">Versicherungsbescheinigung 2024</div><div class="s">TK – Techniker Krankenkasse<br/>Hochgeladen am 10.02.2025</div></div>
+            <span class="badge green">Verwendet</span>
+            <button class="btn btn-secondary btn-sm" style="height: 28px; width: 28px; padding: 0;"><i data-lucide="more-vertical"></i></button>
+          </div>
+          <div class="item">
+            <span class="av"><i data-lucide="file-text"></i></span>
+            <div><div class="t">Spendenbescheinigung 2024</div><div class="s">Umweltstiftung<br/>Hochgeladen am 12.04.2025</div></div>
+            <span class="badge amber">Optional</span>
+            <button class="btn btn-secondary btn-sm" style="height: 28px; width: 28px; padding: 0;"><i data-lucide="more-vertical"></i></button>
+          </div>
+          <a class="right-link" href="dokumente.html" style="display: inline-flex; align-items: center; gap: 4px; margin-top: 12px;">Alle Nachweise anzeigen <i data-lucide="chevron-right" style="width:12px;height:12px;"></i></a>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>window.GT_ACTIVE='steuer';</script>
+<script src="assets/govtech.js"></script>
+</body>
+</html>

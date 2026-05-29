@@ -5,8 +5,10 @@ import { useTheme } from 'next-themes';
 import { useTranslations } from 'next-intl';
 import { Monitor, Moon, Sun } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-
+/**
+ * `.gt-header-btn.icon` from the HTML prototype: a 36px square ghost button
+ * holding only the icon. Cycles light → dark → system (existing behaviour).
+ */
 export function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -27,9 +29,9 @@ export function ThemeToggle() {
   const isDark = mounted ? resolvedTheme === 'dark' : false;
 
   return (
-    <Button
-      variant="ghost"
-      size="icon"
+    <button
+      type="button"
+      className="gt-header-btn icon"
       onClick={() => setTheme(next)}
       aria-label={labels[next]}
       title={labels[current]}
@@ -41,6 +43,6 @@ export function ThemeToggle() {
       ) : (
         <Sun aria-hidden="true" />
       )}
-    </Button>
+    </button>
   );
 }

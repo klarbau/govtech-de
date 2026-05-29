@@ -79,6 +79,105 @@
     }
   },
   {
+    "id": "vg-anna-umzug-skalitzer-friedrichstr",
+    "typ": "umzug",
+    "titel": "Umzug",
+    "status": "in_pruefung",
+    "beteiligte_behoerden_ids": [
+      "buergeramt-berlin-friedrichshain-kreuzberg",
+      "finanzamt-koerperschaften-i-berlin",
+      "beitragsservice-koeln",
+      "bundesdruckerei",
+      "aok-nordost",
+      "kfz-berlin-labo"
+    ],
+    "schritte": [
+      {
+        "id": "step-anna-umzug-buergeramt",
+        "behoerde_id": "buergeramt-berlin-friedrichshain-kreuzberg",
+        "block": "A",
+        "aktion": "Anmeldung\nabgeschlossen",
+        "rechtsgrundlage": "§ 17 BMG",
+        "status": "confirmed",
+        "started_at": "2026-05-08T10:40:00.000Z",
+        "completed_at": "2026-05-08T10:52:00.000Z",
+        "letter_id": "letter-buergeramt-meldebestaetigung-anmeldung"
+      },
+      {
+        "id": "step-anna-umzug-finanzamt",
+        "behoerde_id": "finanzamt-koerperschaften-i-berlin",
+        "block": "A",
+        "aktion": "Adressänderung\nübermittelt",
+        "rechtsgrundlage": "§ 36 BMG i.V.m. § 139b AO",
+        "status": "confirmed",
+        "started_at": "2026-05-08T10:52:00.000Z",
+        "completed_at": "2026-05-08T11:05:00.000Z"
+      },
+      {
+        "id": "step-anna-umzug-beitragsservice",
+        "behoerde_id": "beitragsservice-koeln",
+        "block": "A",
+        "aktion": "Daten aktualisiert",
+        "rechtsgrundlage": "§ 11 Abs. 4 RBStV i.V.m. § 36 BMG",
+        "status": "confirmed",
+        "started_at": "2026-05-08T11:05:00.000Z",
+        "completed_at": "2026-05-08T11:18:00.000Z"
+      },
+      {
+        "id": "step-anna-umzug-bundesdruckerei",
+        "behoerde_id": "bundesdruckerei",
+        "block": "A",
+        "aktion": "Ausweis ändern\nin Bearbeitung",
+        "rechtsgrundlage": "§ 28 PAuswG",
+        "status": "in_progress",
+        "started_at": "2026-05-08T11:24:00.000Z"
+      },
+      {
+        "id": "step-anna-umzug-aok",
+        "behoerde_id": "aok-nordost",
+        "block": "B",
+        "aktion": "Krankenkasse\ninformieren",
+        "rechtsgrundlage": "Art. 6 Abs. 1 lit. b DSGVO",
+        "status": "pending"
+      },
+      {
+        "id": "step-anna-umzug-kfz",
+        "behoerde_id": "kfz-berlin-labo",
+        "block": "D",
+        "aktion": "Halteranschrift\naktualisiert",
+        "rechtsgrundlage": "§ 15 FZV (2023)",
+        "status": "confirmed",
+        "started_at": "2026-05-08T11:18:00.000Z",
+        "completed_at": "2026-05-08T11:24:00.000Z",
+        "eid_confirmed_at": "2026-05-08T11:23:00.000Z"
+      }
+    ],
+    "fristen": [
+      { "typ": "bmg_17", "datum": "2026-05-22" }
+    ],
+    "angelegt_am": "2026-05-08T10:38:00.000Z",
+    "persona_id": "anna-petrov",
+    "context": {
+      "alte_adresse": {
+        "strasse": "Skalitzer Straße",
+        "hausnummer": "68",
+        "plz": "10997",
+        "ort": "Berlin",
+        "land": "DE"
+      },
+      "neue_adresse": {
+        "strasse": "Friedrichstraße",
+        "hausnummer": "100",
+        "plz": "10117",
+        "ort": "Berlin",
+        "land": "DE"
+      },
+      "stichtag": "2026-05-08",
+      "mock": true,
+      "note": "[MOCK – Verwaltungsdemo, keine echten Daten]"
+    }
+  },
+  {
     "id": "vorgang-anna-aufenthaltstitel-2027-stub",
     "typ": "aufenthaltstitel-verlaengerung",
     "titel": "Verlängerung Aufenthaltstitel § 18g AufenthG",

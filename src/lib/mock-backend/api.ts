@@ -117,6 +117,7 @@ import { MockBackendError } from './errors';
 import { emit, subscribe } from './events';
 import { uuid } from './id';
 import { withLatency } from './latency';
+import { captureContext, runWithCapturedContext } from './store-context';
 import {
   resolveReplyBody as resolveReplyBodyImpl,
   type ResolveReplyBodyInput,
@@ -1532,7 +1533,16 @@ export const api: MockBackendApi & {
 
       recordConsent(input.consents ?? [], 'umzug:adressaenderung');
 
-      void runAutopilotInBackground({ vorgangId, input, persona });
+      // Deferred-Emit-Fix (Stage 2): der Autopilot läuft fire-and-forget über
+      // Timer/`await`; wir kapseln den aktuellen Request-Kontext (Session-Store
+      // + Session-Bus + Reliable-Flag) und re-binden ihn für den gesamten
+      // Hintergrund-Lauf. Dadurch landen auch verzögerte `emit()`-Aufrufe auf
+      // dem Session-Bus (den die SSE-Route abhört) und im Session-Store.
+      // Im Browser/Default-Pfad ist der Snapshot leer → identisches Verhalten.
+      const ctxSnapshot = captureContext();
+      void runWithCapturedContext(ctxSnapshot, () =>
+        runAutopilotInBackground({ vorgangId, input, persona }),
+      );
 
       return { vorgangId };
     }),
