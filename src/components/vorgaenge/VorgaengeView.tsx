@@ -25,6 +25,44 @@ import type { Behoerde, BehoerdeId, Vorgang } from '@/types';
 
 type FilterId = 'alle' | 'laufend' | 'warten' | 'abgeschlossen';
 
+/* Shared status predicates — single source of truth for both tab counts and tab filtering. */
+function isAbgeschlossen(v: Vorgang): boolean {
+  return v.status === 'abgeschlossen';
+}
+
+function isLaufend(v: Vorgang): boolean {
+  return (
+    v.status !== 'abgeschlossen' &&
+    v.status !== 'abgelehnt' &&
+    v.schritte.filter((s) => s.status === 'confirmed').length < v.schritte.length
+  );
+}
+
+function isWarten(v: Vorgang): boolean {
+  return (
+    v.schritte.some(
+      (s) =>
+        s.status === 'needs_eid' ||
+        s.status === 'pending_eid_confirmation' ||
+        s.status === 'self_assigned',
+    ) || v.context?.unterlagen_fehlen === true
+  );
+}
+
+function matchesTab(v: Vorgang, tab: FilterId): boolean {
+  switch (tab) {
+    case 'laufend':
+      return isLaufend(v);
+    case 'warten':
+      return isWarten(v);
+    case 'abgeschlossen':
+      return isAbgeschlossen(v);
+    case 'alle':
+    default:
+      return true;
+  }
+}
+
 function formatDateShort(iso?: string): string {
   if (!iso) return '';
   const datePart = iso.slice(0, 10);
@@ -49,6 +87,7 @@ interface SmallVorgang {
   typ: string;
   fristIso?: string;
   unterlagenFehlen: boolean;
+  abgeschlossen: boolean;
   href: string;
 }
 
@@ -89,32 +128,28 @@ export function VorgaengeView() {
     };
   }, []);
 
-  /* Counts for tab chips, derived purely from the API response. */
-  const counts = React.useMemo(() => {
-    const isLaufend = (v: Vorgang) =>
-      v.status !== 'abgeschlossen' &&
-      v.status !== 'abgelehnt' &&
-      v.schritte.filter((s) => s.status === 'confirmed').length < v.schritte.length;
-    const isWarten = (v: Vorgang) =>
-      v.schritte.some(
-        (s) =>
-          s.status === 'needs_eid' ||
-          s.status === 'pending_eid_confirmation' ||
-          s.status === 'self_assigned',
-      ) || v.context?.unterlagen_fehlen === true;
-    return {
+  /* Counts for tab chips, derived purely from the API response via the shared predicates. */
+  const counts = React.useMemo(
+    () => ({
       alle: vorgaenge.length,
       laufend: vorgaenge.filter(isLaufend).length,
       warten: vorgaenge.filter(isWarten).length,
-      abgeschlossen: vorgaenge.filter((v) => v.status === 'abgeschlossen').length,
-    };
-  }, [vorgaenge]);
+      abgeschlossen: vorgaenge.filter(isAbgeschlossen).length,
+    }),
+    [vorgaenge],
+  );
 
-  /* Pick the featured (umzug) Vorgang. */
+  /* Vorgänge visible under the active tab — drives BOTH the featured card and the small cards. */
+  const visibleVorgaenge = React.useMemo(
+    () => vorgaenge.filter((v) => matchesTab(v, activeTab)),
+    [vorgaenge, activeTab],
+  );
+
+  /* Pick the featured (umzug) Vorgang from the visible set — null if no umzug matches the tab. */
   const featuredUmzug = React.useMemo(() => {
-    const running = vorgaenge.find((v) => v.typ === 'umzug' && v.status !== 'abgeschlossen');
-    return running ?? vorgaenge.find((v) => v.typ === 'umzug') ?? null;
-  }, [vorgaenge]);
+    const running = visibleVorgaenge.find((v) => v.typ === 'umzug' && v.status !== 'abgeschlossen');
+    return running ?? visibleVorgaenge.find((v) => v.typ === 'umzug') ?? null;
+  }, [visibleVorgaenge]);
 
   const bigVorgang: BigVorgang | null = React.useMemo(() => {
     if (!featuredUmzug) return null;
@@ -155,12 +190,18 @@ export function VorgaengeView() {
     };
   }, [featuredUmzug, behoerdenById]);
 
-  /* Two small cards: laufende (in_pruefung-ähnlich) Vorgänge ausser Umzug. */
+  /* Badge state for the featured Umzug big card, derived from its actual status (not hardcoded). */
+  const featuredState: 'abgeschlossen' | 'warten' | 'laufend' | null = React.useMemo(() => {
+    if (!featuredUmzug) return null;
+    if (isAbgeschlossen(featuredUmzug)) return 'abgeschlossen';
+    if (isWarten(featuredUmzug)) return 'warten';
+    return 'laufend';
+  }, [featuredUmzug]);
+
+  /* Small cards: the other visible Vorgänge (excluding the featured Umzug) under the active tab. */
   const smallVorgaenge: SmallVorgang[] = React.useMemo(() => {
-    const filtered = vorgaenge.filter(
-      (v) => v.id !== featuredUmzug?.id && v.status !== 'abgeschlossen' && v.status !== 'abgelehnt',
-    );
-    return filtered.slice(0, 2).map<SmallVorgang>((v) => {
+    const filtered = visibleVorgaenge.filter((v) => v.id !== featuredUmzug?.id);
+    return filtered.slice(0, 4).map<SmallVorgang>((v) => {
       const primaryId = v.beteiligte_behoerden_ids?.[0];
       const fristen = (v.fristen ?? []).map((f) => f.datum).sort();
       return {
@@ -170,10 +211,11 @@ export function VorgaengeView() {
         typ: v.typ,
         fristIso: fristen[0],
         unterlagenFehlen: v.context?.unterlagen_fehlen === true,
+        abgeschlossen: isAbgeschlossen(v),
         href: `/vorgaenge/${encodeURIComponent(v.id)}`,
       };
     });
-  }, [vorgaenge, featuredUmzug, behoerdenById]);
+  }, [visibleVorgaenge, featuredUmzug, behoerdenById]);
 
   /* Rail numbers — derived purely from the API response. */
   const rail = React.useMemo(() => {
@@ -209,20 +251,21 @@ export function VorgaengeView() {
               key={tab.id}
               type="button"
               className={`chip${activeTab === tab.id ? ' active' : ''}`}
+              aria-pressed={activeTab === tab.id}
               onClick={() => setActiveTab(tab.id)}
             >
               {tab.label} <span className="count">{tab.n}</span>
             </button>
           ))}
         </div>
-        <button type="button" className="btn btn-secondary filter">
+        <button type="button" className="btn btn-secondary filter" disabled aria-disabled="true">
           <Filter />
           Filter
         </button>
       </div>
 
       <div className="vg-layout">
-        <div>
+        <section id="vorgaenge-liste" aria-label="Vorgangsliste" tabIndex={-1}>
             {bigVorgang ? (
             <div className="vg-big">
               <div className="vg-big-head">
@@ -234,10 +277,22 @@ export function VorgaengeView() {
                   <div className="sub">Ihre Behörden werden automatisch informiert.</div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <span className="badge brand">
-                    <span className="dot" style={{ background: 'var(--brand-500)' }} />
-                    Laufend
-                  </span>
+                  {featuredState === 'abgeschlossen' ? (
+                    <span className="badge green">
+                      <span className="dot" style={{ background: 'var(--green-500)' }} />
+                      Abgeschlossen
+                    </span>
+                  ) : featuredState === 'warten' ? (
+                    <span className="badge amber">
+                      <span className="dot" style={{ background: 'var(--amber-500)' }} />
+                      Warten auf Sie
+                    </span>
+                  ) : (
+                    <span className="badge brand">
+                      <span className="dot" style={{ background: 'var(--brand-500)' }} />
+                      Laufend
+                    </span>
+                  )}
                   <div className="muted text-xs" style={{ marginTop: 6 }}>
                     Verantwortlich: Sie
                   </div>
@@ -295,10 +350,11 @@ export function VorgaengeView() {
             {smallVorgaenge.length === 0
               ? null
               : smallVorgaenge.map((u, idx) => {
-                  const isWarten = u.unterlagenFehlen;
+                  const warten = u.unterlagenFehlen;
+                  const done = u.abgeschlossen;
                   const days = daysUntil(u.fristIso, nowIso);
                   const Icon = u.typ === 'aufenthaltstitel-verlaengerung' ? IdCard : Users;
-                  const iconToneClass = idx === 0 ? 'violet' : 'pink';
+                  const iconToneClass = idx % 2 === 0 ? 'violet' : 'pink';
                   return (
                     <div key={u.id} className="vg-card">
                       <div className="vg-card-head">
@@ -310,19 +366,36 @@ export function VorgaengeView() {
                           <div className="sub">{u.primaryBehoerde}</div>
                         </div>
                         <div style={{ textAlign: 'right' }}>
-                          <span className={`badge ${isWarten ? 'amber' : 'brand'}`}>
-                            <span
-                              className="dot"
-                              style={{ background: isWarten ? 'var(--amber-500)' : 'var(--brand-500)' }}
-                            />
-                            {isWarten ? 'Warten auf Sie' : 'Laufend'}
-                          </span>
+                          {done ? (
+                            <span className="badge green">
+                              <span className="dot" style={{ background: 'var(--green-500)' }} />
+                              Abgeschlossen
+                            </span>
+                          ) : warten ? (
+                            <span className="badge amber">
+                              <span className="dot" style={{ background: 'var(--amber-500)' }} />
+                              Warten auf Sie
+                            </span>
+                          ) : (
+                            <span className="badge brand">
+                              <span className="dot" style={{ background: 'var(--brand-500)' }} />
+                              Laufend
+                            </span>
+                          )}
                           <div className="muted text-xs" style={{ marginTop: 6 }}>
                             Verantwortlich: Sie
                           </div>
                         </div>
                       </div>
-                      {isWarten ? (
+                      {done ? (
+                        <div className="frist-box">
+                          <div className="t" style={{ color: 'var(--green-700)' }}>
+                            <Check style={{ width: 18, height: 18 }} />
+                            Abgeschlossen
+                          </div>
+                          <div className="s">Alle Behörden wurden informiert. Keine Frist offen.</div>
+                        </div>
+                      ) : warten ? (
                         <div className="frist-box warn">
                           <div className="t">
                             <AlertTriangle />
@@ -347,13 +420,15 @@ export function VorgaengeView() {
                       )}
                       <div className="vg-card-actions">
                         <Link href={u.href} className="btn btn-secondary">
-                          {isWarten ? 'Unterlagen hochladen' : 'Weiter bearbeiten'}
+                          {done ? 'Vorgang ansehen' : warten ? 'Unterlagen hochladen' : 'Weiter bearbeiten'}
                         </Link>
                         <button
                           type="button"
                           className="btn btn-secondary btn-sm"
                           style={{ height: 32, width: 32, padding: 0 }}
                           aria-label="Mehr Aktionen"
+                          disabled
+                          aria-disabled="true"
                         >
                           <MoreVertical />
                         </button>
@@ -362,7 +437,13 @@ export function VorgaengeView() {
                   );
                 })}
           </div>
-        </div>
+
+          {!bigVorgang && smallVorgaenge.length === 0 ? (
+            <div className="vg-empty muted" role="status">
+              Keine Vorgänge in dieser Ansicht.
+            </div>
+          ) : null}
+        </section>
 
         <div className="rail-card">
           <h3>Was ist gerade wichtig?</h3>
