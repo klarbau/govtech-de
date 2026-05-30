@@ -11,7 +11,6 @@ import {
   ChevronRight,
   Database,
   FileText,
-  MoreVertical,
   Shield,
   User,
   Users,
@@ -212,7 +211,7 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
             </div>
           </div>
 
-          <div className="st-card uberblick">
+          <div className="st-card uberblick" id="steuerbereiche">
             <h3>Übersicht der Steuerbereiche</h3>
             <table>
               <thead>
@@ -253,16 +252,27 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
                         <span className={`badge ${badgeClass}`}>{badgeLabel}</span>
                       </td>
                       <td style={{ textAlign: 'right' }}>
-                        <a className="right-link" href="#">
-                          {action} <ChevronRight style={{ width: 12, height: 12 }} />
-                        </a>
+                        <button
+                          type="button"
+                          className="right-link"
+                          disabled
+                          aria-disabled="true"
+                          title="In dieser Demo nicht aktiv"
+                          style={{ background: 'none', border: 0, cursor: 'not-allowed', opacity: 0.55 }}
+                        >
+                          {action}
+                        </button>
                       </td>
                     </tr>
                   );
                 })}
               </tbody>
             </table>
-            <a className="right-link" href="#" style={{ marginTop: 12, display: 'inline-flex' }}>
+            <a
+              className="right-link"
+              href="#steuerbereiche"
+              style={{ marginTop: 12, display: 'inline-flex' }}
+            >
               Alle Bereiche anzeigen <ChevronRight style={{ width: 12, height: 12 }} />
             </a>
           </div>
@@ -312,14 +322,6 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
                   </div>
                 </div>
                 <span className="badge green">Verwendet</span>
-                <button
-                  type="button"
-                  className="btn btn-secondary btn-sm"
-                  style={{ height: 28, width: 28, padding: 0 }}
-                  aria-label="Mehr Aktionen"
-                >
-                  <MoreVertical />
-                </button>
               </div>
             ))}
             <Link

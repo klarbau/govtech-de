@@ -30,6 +30,12 @@ import type { Behoerde, Letter, Vorgang } from '@/types';
 import { NeuerVorgangAusBriefModal } from './NeuerVorgangAusBriefModal';
 import { ReplySheet } from './ReplySheet';
 import { OriginaltextBlock } from './OriginaltextBlock';
+import { VorgangsGruppe, SonstigeGruppe } from './VorgangsGruppe';
+import { FilterSheet } from './FilterSheet';
+import {
+  filterKategorieToInternal,
+  type FilterKategorie,
+} from './FilterPopover';
 
 interface InitialData {
   letters: Letter[];
@@ -61,10 +67,14 @@ export function PosteingangInbox({ initial }: PosteingangInboxProps) {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [view, setView] = React.useState<'chronologisch' | 'vorgang'>('chronologisch');
   const [selectedLetterId, setSelectedLetterId] = React.useState<string | null>(null);
+  const [filterOpen, setFilterOpen] = React.useState(false);
+  const [filterSelected, setFilterSelected] = React.useState<FilterKategorie[]>([]);
 
   const [replyLetter, setReplyLetter] = React.useState<Letter | null>(null);
   const [vorgangModalLetter, setVorgangModalLetter] = React.useState<Letter | null>(null);
   const [originalTextOpen, setOriginalTextOpen] = React.useState(false);
+
+  const vorgaengeById = initial.vorgaengeById;
 
   React.useEffect(() => {
     if (hasLoaded) return;
@@ -92,17 +102,26 @@ export function PosteingangInbox({ initial }: PosteingangInboxProps) {
 
   const nowIso = initial.nowIso;
 
-  const grouped = React.useMemo(() => {
+  const filteredLetters = React.useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
-    const filtered = letters.filter((l) => {
+    const activeKategorien = new Set(
+      filterSelected.flatMap((k) => filterKategorieToInternal(k)),
+    );
+    return letters.filter((l) => {
+      const behoerde = behoerdenById[l.absender_behoerde_id];
+      if (activeKategorien.size > 0) {
+        if (!behoerde || !activeKategorien.has(behoerde.kategorie)) return false;
+      }
       if (q.length < 3) return true;
       return (
         l.aktenzeichen.toLowerCase().includes(q) ||
-        (behoerdenById[l.absender_behoerde_id]?.name_de ?? '')
-          .toLowerCase()
-          .includes(q)
+        (behoerde?.name_de ?? '').toLowerCase().includes(q)
       );
     });
+  }, [letters, behoerdenById, searchQuery, filterSelected]);
+
+  const grouped = React.useMemo(() => {
+    const filtered = filteredLetters;
 
     const neu: Letter[] = [];
     const frist7: Letter[] = [];
@@ -129,7 +148,22 @@ export function PosteingangInbox({ initial }: PosteingangInboxProps) {
       }
     }
     return { neu, frist7, erledigt };
-  }, [letters, behoerdenById, nowIso, searchQuery]);
+  }, [filteredLetters, nowIso]);
+
+  const byVorgang = React.useMemo(() => {
+    const groups = new Map<string, Letter[]>();
+    const sonstige: Letter[] = [];
+    for (const l of filteredLetters) {
+      if (l.vorgang_id) {
+        const bucket = groups.get(l.vorgang_id);
+        if (bucket) bucket.push(l);
+        else groups.set(l.vorgang_id, [l]);
+      } else {
+        sonstige.push(l);
+      }
+    }
+    return { groups, sonstige };
+  }, [filteredLetters]);
 
   const selectedLetter =
     letters.find((l) => l.id === selectedLetterId) ?? letters[0] ?? null;
@@ -178,79 +212,140 @@ export function PosteingangInbox({ initial }: PosteingangInboxProps) {
             Nach Vorgang
           </button>
         </div>
-        <button type="button" className="btn btn-secondary">
+        <button
+          type="button"
+          className="btn btn-secondary"
+          onClick={() => setFilterOpen(true)}
+          aria-haspopup="dialog"
+        >
           <Filter />Filter
+          {filterSelected.length > 0 && (
+            <span
+              aria-label={`${filterSelected.length} Filter aktiv`}
+              style={{
+                minWidth: '18px',
+                height: '18px',
+                padding: '0 5px',
+                borderRadius: '9px',
+                background: 'var(--brand-600)',
+                color: '#fff',
+                fontSize: '11px',
+                fontWeight: 600,
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              {filterSelected.length}
+            </span>
+          )}
         </button>
       </div>
 
       <div className="post-layout">
-        <div>
-          <PostSection
-            label="Neu"
-            count={grouped.neu.length}
-            countTone="brand"
-          >
-            {grouped.neu.map((l) => (
-              <PostItemRow
-                key={l.id}
-                letter={l}
-                behoerde={behoerdenById[l.absender_behoerde_id]}
-                active={selectedLetter?.id === l.id}
-                nowIso={nowIso}
-                section="neu"
-                onSelect={() => setSelectedLetterId(l.id)}
-              />
-            ))}
-          </PostSection>
+        {view === 'chronologisch' ? (
+          <div>
+            <PostSection
+              label="Neu"
+              count={grouped.neu.length}
+              countTone="brand"
+            >
+              {grouped.neu.map((l) => (
+                <PostItemRow
+                  key={l.id}
+                  letter={l}
+                  behoerde={behoerdenById[l.absender_behoerde_id]}
+                  active={selectedLetter?.id === l.id}
+                  nowIso={nowIso}
+                  section="neu"
+                  onSelect={() => setSelectedLetterId(l.id)}
+                />
+              ))}
+            </PostSection>
 
-          <PostSection
-            label="Frist offen ≤ 7 Tagen"
-            count={grouped.frist7.length}
-            countTone="red"
-          >
-            {grouped.frist7.map((l) => (
-              <PostItemRow
-                key={l.id}
-                letter={l}
-                behoerde={behoerdenById[l.absender_behoerde_id]}
-                active={selectedLetter?.id === l.id}
-                nowIso={nowIso}
-                section="frist7"
-                onSelect={() => setSelectedLetterId(l.id)}
-              />
-            ))}
-          </PostSection>
+            <PostSection
+              label="Frist offen ≤ 7 Tagen"
+              count={grouped.frist7.length}
+              countTone="red"
+            >
+              {grouped.frist7.map((l) => (
+                <PostItemRow
+                  key={l.id}
+                  letter={l}
+                  behoerde={behoerdenById[l.absender_behoerde_id]}
+                  active={selectedLetter?.id === l.id}
+                  nowIso={nowIso}
+                  section="frist7"
+                  onSelect={() => setSelectedLetterId(l.id)}
+                />
+              ))}
+            </PostSection>
 
-          <PostSection
-            label="Erledigt"
-            count={grouped.erledigt.length}
-            countTone="muted"
-          >
-            {grouped.erledigt.map((l) => (
-              <PostItemRow
-                key={l.id}
-                letter={l}
-                behoerde={behoerdenById[l.absender_behoerde_id]}
-                active={selectedLetter?.id === l.id}
+            <PostSection
+              label="Erledigt"
+              count={grouped.erledigt.length}
+              countTone="muted"
+            >
+              {grouped.erledigt.map((l) => (
+                <PostItemRow
+                  key={l.id}
+                  letter={l}
+                  behoerde={behoerdenById[l.absender_behoerde_id]}
+                  active={selectedLetter?.id === l.id}
+                  nowIso={nowIso}
+                  section="erledigt"
+                  onSelect={() => setSelectedLetterId(l.id)}
+                />
+              ))}
+            </PostSection>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {[...byVorgang.groups.entries()].map(([vorgangId, vorgangLetters]) => (
+              <VorgangsGruppe
+                key={vorgangId}
+                vorgangId={vorgangId}
+                vorgangTitle={vorgaengeById[vorgangId]?.titel ?? vorgangId}
+                letters={vorgangLetters}
+                behoerdenById={behoerdenById}
+                vorgaengeById={vorgaengeById}
                 nowIso={nowIso}
-                section="erledigt"
-                onSelect={() => setSelectedLetterId(l.id)}
+                onCreateVorgang={(l) => setVorgangModalLetter(l)}
               />
             ))}
-          </PostSection>
-        </div>
+            {byVorgang.sonstige.length > 0 && (
+              <SonstigeGruppe
+                letters={byVorgang.sonstige}
+                behoerdenById={behoerdenById}
+                nowIso={nowIso}
+                onCreateVorgang={(l) => setVorgangModalLetter(l)}
+              />
+            )}
+            {byVorgang.groups.size === 0 && byVorgang.sonstige.length === 0 && (
+              <p className="muted text-sm">Keine Briefe für diese Auswahl.</p>
+            )}
+          </div>
+        )}
 
         {selectedLetter && (
           <PostDetail
             letter={selectedLetter}
             absender={selectedAbsender}
             onAntwortVorbereiten={() => setReplyLetter(selectedLetter)}
+            onEinspruch={() => setReplyLetter(selectedLetter)}
             onVorgangErstellen={() => setVorgangModalLetter(selectedLetter)}
             onOriginaltextToggle={() => setOriginalTextOpen((v) => !v)}
             originaltextOpen={originalTextOpen}
           />
         )}
       </div>
+
+      <FilterSheet
+        open={filterOpen}
+        onOpenChange={setFilterOpen}
+        selected={filterSelected}
+        onChange={setFilterSelected}
+      />
 
       <NeuerVorgangAusBriefModal
         letter={vorgangModalLetter}
@@ -409,6 +504,7 @@ function PostDetail({
   letter,
   absender,
   onAntwortVorbereiten,
+  onEinspruch,
   onVorgangErstellen,
   onOriginaltextToggle,
   originaltextOpen,
@@ -416,6 +512,7 @@ function PostDetail({
   letter: Letter;
   absender: Behoerde | null;
   onAntwortVorbereiten: () => void;
+  onEinspruch: () => void;
   onVorgangErstellen: () => void;
   onOriginaltextToggle: () => void;
   originaltextOpen: boolean;
@@ -461,6 +558,8 @@ function PostDetail({
           className="btn btn-secondary btn-sm"
           style={{ height: '32px', width: '32px', padding: 0 }}
           aria-label="Weitere Optionen"
+          disabled
+          aria-disabled="true"
         >
           <MoreHorizontal />
         </button>
@@ -532,17 +631,28 @@ function PostDetail({
       <div className="post-followups">
         <div className="lbl">Was kann ich tun?</div>
         <div className="chips">
-          <button type="button" className="chip-btn">
+          <button type="button" className="chip-btn" onClick={onEinspruch}>
             <Scale />Einspruch erklären
           </button>
-          <button type="button" className="chip-btn">
+          <button
+            type="button"
+            className="chip-btn"
+            disabled
+            aria-disabled="true"
+            title="In diesem Prototyp nicht hinterlegt"
+            style={{ opacity: 0.55, cursor: 'not-allowed' }}
+          >
             <Euro />Zahlung prüfen
           </button>
-          <button type="button" className="chip-btn">
+          <Link
+            href="/dokumente"
+            className="chip-btn"
+            style={{ textDecoration: 'none' }}
+          >
             <FolderInput />Dokument ablegen
-          </button>
+          </Link>
           <span style={{ flex: 1 }} />
-          <ChevronRight style={{ color: 'var(--ink-4)' }} />
+          <ChevronRight aria-hidden="true" style={{ color: 'var(--ink-4)' }} />
         </div>
       </div>
 

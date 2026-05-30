@@ -30,7 +30,7 @@ export function PostanschriftCrossRefCard() {
       </p>
 
       <a
-        href="#sektion-anschrift"
+        href="#anschrift"
         aria-label={tCard('cross_ref_link_label')}
         className="inline-flex w-fit items-center gap-1 rounded-md border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         data-testid="postanschrift-cross-ref-link"

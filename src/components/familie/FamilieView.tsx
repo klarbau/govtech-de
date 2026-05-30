@@ -17,6 +17,14 @@ import {
 } from 'lucide-react';
 
 import { api } from '@/lib/mock-backend';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import type {
   Behoerde,
   FamilieNachweis,
@@ -50,6 +58,7 @@ export function FamilieView() {
   const [behoerdenById, setBehoerdenById] = React.useState<
     Record<string, Behoerde>
   >({});
+  const [haushaltDialogOpen, setHaushaltDialogOpen] = React.useState(false);
 
   React.useEffect(() => {
     let cancelled = false;
@@ -117,7 +126,11 @@ export function FamilieView() {
                 <div className="ttl">Mein Haushalt</div>
                 <div className="sub">{view?.mitglieder.length ?? 0} Personen</div>
               </div>
-              <button type="button" className="btn btn-secondary">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => setHaushaltDialogOpen(true)}
+              >
                 <Users />
                 Haushalt verwalten
               </button>
@@ -235,10 +248,10 @@ export function FamilieView() {
                   );
                 })
               )}
-              <a className="all-link" href="#">
+              <Link className="all-link" href="/dokumente">
                 {t('nachweise.show_all')}{' '}
                 <ChevronRight style={{ width: 14, height: 14 }} />
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -340,15 +353,83 @@ export function FamilieView() {
             <div>
               <div className="t">Änderungen im Haushalt oder bei Berechtigungen?</div>
               <div className="s">
-                <a href="#">
+                <button
+                  type="button"
+                  onClick={() => setHaushaltDialogOpen(true)}
+                  style={{
+                    background: 'none',
+                    border: 0,
+                    padding: 0,
+                    color: 'inherit',
+                    font: 'inherit',
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 4,
+                  }}
+                >
                   Haushaltseinstellungen öffnen{' '}
                   <ChevronRight style={{ width: 11, height: 11 }} />
-                </a>
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      <Dialog open={haushaltDialogOpen} onOpenChange={setHaushaltDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Haushalt verwalten</DialogTitle>
+            <DialogDescription>
+              Übersicht der Personen in Ihrem Haushalt. Das Bearbeiten von
+              Mitgliedern und Berechtigungen folgt in einer späteren Version.
+            </DialogDescription>
+          </DialogHeader>
+
+          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {(view?.mitglieder ?? []).map((m) => (
+              <li
+                key={m.persona_ref_id}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 12,
+                  padding: '10px 12px',
+                  border: '1px solid var(--border)',
+                  borderRadius: 10,
+                }}
+              >
+                <span className={`avatar${m.rolle === 'kind' ? ' green' : ''}`}>
+                  {initialsOf(m.vorname, m.nachname)}
+                </span>
+                <div style={{ flex: 1 }}>
+                  <div className="fw-600 text-sm">
+                    {`${m.vorname} ${m.nachname}`.trim()}
+                    {m.ist_hauptperson ? ' (Sie)' : ''}
+                  </div>
+                  <div className="muted text-xs">
+                    Geb. {formatDe(m.geburtsdatum)}
+                  </div>
+                </div>
+                <span className={`badge ${m.rolle === 'kind' ? 'green' : 'violet'}`}>
+                  {m.rolle === 'kind' ? 'Kind' : 'Erwachsen'}
+                </span>
+              </li>
+            ))}
+          </ul>
+
+          <div className="gt-banner" style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+            <Info style={{ flexShrink: 0 }} />
+            <div className="text-xs muted">
+              [MOCK] Demo-Daten. Hinzufügen, Entfernen und Anpassen von
+              Berechtigungen ist in dieser Vorschau noch nicht aktiv.
+            </div>
+          </div>
+
+          <DialogFooter showCloseButton />
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
