@@ -252,7 +252,8 @@
       "frau": "Здравствуйте, г-жа {nachname}",
       "herr": "Здравствуйте, г-н {nachname}",
       "neutral": "Здравствуйте, {vorname} {nachname}",
-      "last_login_meta": "последний вход {days} дн. назад · на этом устройстве"
+      "last_login_meta": "последний вход {days} дн. назад · на этом устройстве",
+      "guten_tag": "Здравствуйте, {name}"
     },
     "demo_banner": {
       "text": "Демо-режим · демо-данные · оригиналы остаются в официальных почтовых ящиках",
@@ -329,6 +330,78 @@
       "in_n_days": "Срок через {days} дн.",
       "on_date": "Срок {datum}",
       "overdue": "Срок {datum} пропущен"
+    },
+    "titel": "Панель",
+    "untertitel": "Ваш личный обзор писем, сроков и процессов",
+    "fehler": {
+      "laden": "Не удалось загрузить данные."
+    },
+    "letzter_login": "последний вход {days} дн. назад · на этом устройстве",
+    "prototyp_hinweis": {
+      "text": "Демо-режим · демо-данные · оригиналы остаются в официальных почтовых ящиках"
+    },
+    "seit_login": {
+      "titel": "С момента Вашего последнего входа",
+      "neue_briefe": "новых писем",
+      "frist_naeher": "срок приблизился",
+      "vorgang_abgeschlossen": "процесс завершён"
+    },
+    "heute": {
+      "titel": "Сегодня нужно сделать",
+      "tab_ki": "ИИ",
+      "tab_frist": "Срок",
+      "tab_behoerde": "Ведомство",
+      "tab_vorgang": "Процесс",
+      "empty_title": "Сегодня дел нет",
+      "empty_body": "Мы сообщим, когда что-то появится.",
+      "done": "Готово",
+      "snooze": "Напомнить позже",
+      "snooze_days": "Отложено на {days} дн.",
+      "actions_label": "Действия для {titel}"
+    },
+    "triumph": {
+      "title": "Сделано за Вас",
+      "subtitle": "Переезд передан в {count} ведомств — Вам не пришлось ничего делать.",
+      "zeitersparnis": "сэкономлено ок. {min} мин",
+      "link": "Посмотреть процесс",
+      "gerade_eben": "только что"
+    },
+    "erledigt_feed": {
+      "title": "Сделано автоматически за Вас",
+      "empty": "Пока ничего не сделано автоматически."
+    },
+    "achievement": {
+      "jahr": "{count} процессов выполнено за Вас в этом году"
+    },
+    "kacheln": {
+      "fristen": {
+        "titel": "Сроки",
+        "offen": "{count} открыт.",
+        "cta": "Посмотреть"
+      },
+      "posteingang": {
+        "titel": "Входящие",
+        "ungelesen": "{count} непрочитано",
+        "cta": "Открыть"
+      },
+      "vorgaenge": {
+        "titel": "Процессы",
+        "stand": "{laeuft} в работе, {abgeschlossen} завершено",
+        "cta": "Посмотреть"
+      },
+      "termine": {
+        "titel": "Встречи",
+        "cta": "Посмотреть"
+      },
+      "datenschutz": {
+        "titel": "Центр конфиденциальности",
+        "aktivitaeten": "{count} действий за 30 дней",
+        "cta": "Открыть"
+      },
+      "stammdaten": {
+        "titel": "Статус анкетных данных",
+        "cta": "Посмотреть"
+      }
     }
   },
   "common": {
@@ -580,7 +653,8 @@
       "termin_label_template": "Запись: {datum}, {ort}",
       "not_found_title": "Дело не найдено",
       "not_found_body": "Это дело не существует или было удалено.",
-      "back_to_dashboard": "Назад на главную"
+      "back_to_dashboard": "Назад на главную",
+      "dokumente_count": "{count, plural, one {# документ} few {# документа} many {# документов} other {# документа}}"
     },
     "rechtsgrundlage": {
       "bmg_17": "§ 17 BMG: обязанность зарегистрироваться в течение двух недель с момента въезда.",
@@ -2210,6 +2284,15 @@
       "sort_ausgestellt": "Дата выдачи (сначала новые)",
       "sort_gueltig": "Срок действия (сначала истекающие)",
       "status_label": "Статус"
+    },
+    "eudi": {
+      "button": "Экспортировать в EUDI Wallet (предпросмотр)",
+      "dialog_title": "Экспорт в EUDI Wallet — предпросмотр [MOCK]",
+      "disclaimer_2027": "[MOCK] Имитация предпросмотра EUDI Wallet. EUDI Wallet внедряется в 2027 году; здесь не экспортируется ни один настоящий документ.",
+      "download": "Скачать предпросмотр",
+      "mock_badge": "[MOCK]",
+      "close": "Закрыть",
+      "payload_label": "Предпросмотр документа (синтетический)"
     }
   },
   "termine": {
@@ -2289,7 +2372,17 @@
       "filter_title": "Нет приёмов по этому выбору",
       "naechster_schritt": "Выберите приём, чтобы увидеть подробности."
     },
-    "error": "Не удалось загрузить приёмы."
+    "error": "Не удалось загрузить приёмы.",
+    "action": {
+      "bestaetigen": "Подтвердить",
+      "verschieben": "Перенести",
+      "absagen": "Отменить",
+      "confirm_cancel": "Действительно отменить приём?",
+      "verschoben_um": "Перенесено на 7 дней",
+      "bestaetigt": "Подтверждено",
+      "abgesagt": "Отменено",
+      "vorschlag": "Предложено"
+    }
   },
   "steuer": {
     "title": "Налоги",
@@ -2592,5 +2685,74 @@
       "started_title": "Автопилот запущен",
       "started_subtitle": "Ваши данные проверены, каскад запущен."
     }
+  },
+  "convenience": {
+    "value_receipt": {
+      "title": "Ваша экономия",
+      "behoerden": "ведомств уведомлено",
+      "zeitersparnis": "сэкономлено времени (ок.)",
+      "klassische_schritte": "классических шагов",
+      "ihr_aufwand": "Ваши усилия",
+      "ein_satz": "одно предложение",
+      "ca_prefix": "ок.",
+      "minuten_suffix": "мин",
+      "disclaimer_conservative": "Консервативная оценка. [MOCK]"
+    },
+    "step": {
+      "basis_label": "Правовая основа",
+      "data_label": "Переданные данные"
+    },
+    "receipt": {
+      "toggle": "Что было передано?",
+      "fields_label": "Переданные данные",
+      "basis_label": "Правовая основа",
+      "consent_label": "Согласие дано",
+      "minimierung_note": "Минимизация данных: передаются только эти поля."
+    },
+    "datenkat": {
+      "neue_anschrift": "новый адрес",
+      "einzugsdatum": "дата въезда",
+      "beitragsnummer": "номер плательщика взноса (Beitragsnummer)",
+      "steuer_id": "идентификационный номер налогоплательщика (Steuer-IdNr.)",
+      "versichertennummer": "номер застрахованного (Versichertennummer)",
+      "familienstand": "семейное положение",
+      "name": "имя",
+      "geburtsdatum": "дата рождения",
+      "alte_anschrift": "прежний адрес",
+      "wohnungsgeberbestaetigung": "подтверждение от наймодателя (Wohnungsgeberbestätigung)",
+      "eat_nummer": "номер eAT / документа",
+      "kindergeldnummer": "номер детского пособия (Kindergeldnummer)",
+      "personalnummer": "табельный номер",
+      "kennzeichen": "регистрационный знак"
+    },
+    "assistant": {
+      "run_summary_intro": "Сводка Вашей экономии"
+    }
+  },
+  "katalog": {
+    "titel": "Каталог автопилота",
+    "untertitel": "Жизненные ситуации, которые автопилот берёт на себя.",
+    "behoerden_label": "Задействованные ведомства",
+    "starten": "Запустить переезд",
+    "umzug": {
+      "titel": "Переезд",
+      "beschreibung": "Одно подтверждение — мы сообщим Ваш новый адрес во все компетентные ведомства."
+    },
+    "kindergeburt": {
+      "titel": "Рождение ребёнка",
+      "beschreibung": "Свидетельство о рождении, детское пособие и медицинская страховка в одном процессе."
+    },
+    "steuererklaerung": {
+      "titel": "Налоговая декларация",
+      "beschreibung": "Предзаполненная декларация из уже известных данных."
+    },
+    "status": {
+      "live": "доступно",
+      "demnaechst": "скоро"
+    }
+  },
+  "shared": {
+    "gehoert_zu": "Относится к: {vorgang}",
+    "neu_badge": "новое"
   }
 }

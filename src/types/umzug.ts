@@ -34,6 +34,10 @@ export interface AutopilotStepDraft {
   requires_consent?: boolean;
   /** Persona-Flag, der die Sichtbarkeit dieses Schritts steuert (z. B. 'kfz_halter'). */
   persona_flag?: string;
+  /** Delegierte Agent-Stimme — gespiegelt aus AutopilotStep (§1.1). DE-Daten. */
+  agent_label?: string;
+  /** Datenkategorien dieses Hops — gespiegelt aus AutopilotStep (§1.1). */
+  datenkategorien?: string[];
 }
 
 /** Eintrag der Block-C-Selbstchecks (kein Datenkanal vorhanden). */

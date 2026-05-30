@@ -45,6 +45,11 @@ export const TOOL_NAMES = [
   'erklaere_brief',
   'extrahiere_frist',
   'vorschlage_naechsten_schritt',
+  // Convenience Pass-1 (convenience-pass1.md §7). Read-only, no confirm gate.
+  // `hole_ersparnis` mirrors the ValueReceipt into the chat after an Umzug run;
+  // `hole_autopilot_katalog` answers "was kannst du noch automatisieren?".
+  'hole_ersparnis',
+  'hole_autopilot_katalog',
 ] as const;
 
 export type ToolName = (typeof TOOL_NAMES)[number];
@@ -336,6 +341,45 @@ export const tools: Anthropic.Tool[] = [
       required: ['letterId'],
     },
   },
+
+  /* ─────────────────────────────── hole_ersparnis ───────────────────────── */
+  {
+    name: 'hole_ersparnis',
+    description: [
+      'Liefert die Wert-/Konvenienz-Bilanz (ValueReceipt) eines abgeschlossenen Umzug-Vorgangs: Anzahl der für die Nutzerin informierten Behörden, geschätzte Zeitersparnis in Minuten (konservativ, „ca."), Anzahl der klassischen Schritte (Behördengänge/Anträge im Status quo) und der eigene Aufwand der Nutzerin (genau 1 — „ein Satz").',
+      '',
+      'Aufrufen, NACHDEM ein Umzug per "starte_umzug" abgeschlossen wurde oder wenn die Nutzerin fragt „Was hast du erledigt?", „Wie viel Zeit habe ich gespart?" o. ä. Verwende eine vorgang_id aus einem vorherigen Turn (z. B. aus dem starte_umzug-Ergebnis oder aus "lese_posteingang"/"hole_vorgang").',
+      '',
+      'WICHTIG: Alle Zahlen stammen aus diesem Tool — erfinde NIE eigene Zahlen und runde nicht nach oben. Gib Zeit-/Schrittangaben immer als „ca." aus. Liefert das Tool null (kein bestätigter Schritt oder Vorgang unbekannt), sage sachlich, dass noch keine Bilanz vorliegt. Die Zahlen sind illustrativ ([MOCK], konservative Schätzung).',
+    ].join('\n'),
+    input_schema: {
+      type: 'object',
+      properties: {
+        vorgang_id: {
+          type: 'string',
+          description:
+            'ID des Umzug-Vorgangs, dessen Ersparnis-Bilanz geholt werden soll (z. B. aus dem starte_umzug-Ergebnis oder aus "lese_posteingang").',
+        },
+      },
+      required: ['vorgang_id'],
+    },
+  },
+
+  /* ──────────────────────────── hole_autopilot_katalog ──────────────────── */
+  {
+    name: 'hole_autopilot_katalog',
+    description: [
+      'Liefert den Autopilot-Katalog: welche Lebenslagen heute automatisiert werden können und welche „demnächst" geplant sind.',
+      '',
+      'Aufrufen, wenn die Nutzerin fragt „Was kannst du noch automatisieren?", „Was geht außer Umzug?" o. ä. Pass-1-Stand: „umzug" ist live (verfügbar); „kindergeburt" und „steuererklaerung" sind „demnaechst" (noch NICHT ausführbar — nur Vorschau).',
+      '',
+      'Verspreche nichts, was nicht „live" ist: nenne Kindergeburt und Steuererklärung ausdrücklich als geplant/demnächst, nicht als heute startbar. Pro Eintrag stehen reale Behörden-Vorschauen (behoerden_preview) bereit — nenne keine Behörden, die nicht im Tool-Ergebnis stehen.',
+    ].join('\n'),
+    input_schema: {
+      type: 'object',
+      properties: {},
+    },
+  },
 ];
 
 /**
@@ -405,6 +449,8 @@ export function isKnownTool(name: string): name is ToolName {
  *   erklaere_brief               → api.extrahiereAktion(letterId)    | no
  *   extrahiere_frist             → api.extrahiereAktion(id).fristen  | no
  *   vorschlage_naechsten_schritt → api.extrahiereAktion(id).options  | no
+ *   hole_ersparnis               → api.getValueReceipt(vorgang_id)   | no
+ *   hole_autopilot_katalog       → api.getAutopilotKatalog()         | no
  *   preview_umzug                → api.previewUmzug({adresse,stichtag})| no  → renders <UmzugConfirmCard>
  *   starte_umzug                 → api.startUmzug({…})               | YES → gated by <UmzugConfirmCard> click
  *

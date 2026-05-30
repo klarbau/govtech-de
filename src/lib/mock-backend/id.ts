@@ -84,6 +84,11 @@ export function aktenzeichenBundesdruckerei(): string {
   return `[MOCK] BD-PA/${currentYear()}-${currentMonth()}-${randomDigits(6)}`;
 }
 
+/** Arbeitgeber (private Stelle) — Personalnummer-artiges Az (synthetisch). */
+export function aktenzeichenArbeitgeber(): string {
+  return `[MOCK] PERS-${currentYear()}-${randomDigits(5)}`;
+}
+
 /** Synthetische Steuer-Identifikationsnummer (AO §139b, 11 Ziffern). */
 export function steuerIdSynthetic(): string {
   return `${randomDigits(2)} ${randomDigits(3)} ${randomDigits(3)} ${randomDigits(3)}`;
@@ -106,8 +111,15 @@ export function aktenzeichenForBehoerde(behoerdeId: string): string {
   switch (behoerdeId) {
     case 'buergeramt-berlin-mitte':
       return aktenzeichenBuergeramtBerlin('MITTE');
+    case 'buergeramt-berlin-friedrichshain-kreuzberg':
+      return aktenzeichenBuergeramtBerlin('FRIKR');
+    // D1 — Wohnsitz-Finanzamt (§19 AO); behält das Berliner FA-Nummern-Format.
+    case 'finanzamt-berlin-mitte-tiergarten':
     case 'finanzamt-koerperschaften-i-berlin':
       return aktenzeichenFinanzamt('11');
+    // D6 — Arbeitgeber (private Stelle, Art. 6 Abs. 1 lit. b DSGVO).
+    case 'arbeitgeber-mittelstand-software':
+      return aktenzeichenArbeitgeber();
     case 'kfz-berlin-labo':
       return aktenzeichenKfzBerlin();
     case 'aok-nordost':

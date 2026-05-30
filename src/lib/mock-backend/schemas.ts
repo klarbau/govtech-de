@@ -1207,6 +1207,9 @@ export const reminderSchema = z
     datum: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'ISO-Datum YYYY-MM-DD'),
     kategorie: reminderKategorieSchema,
     frist_typ: z.string().optional(),
+    // Convenience-Pass-1 (§A3 Owner-Filter / §A1 overdue-handled).
+    owner_persona_id: z.string().optional(),
+    erledigt: z.boolean().optional(),
   })
   .passthrough();
 

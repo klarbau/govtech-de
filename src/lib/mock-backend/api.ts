@@ -37,12 +37,15 @@
  * ============================================================================
  */
 import type {
+  AutopilotKatalogEntry,
   BehoerdeKategorie,
   Behoerde,
   BundidPostfachAnbindung,
   DashboardSnapshot,
   DashboardSortMode,
   DatenquellenEintrag,
+  EudiExportPreview,
+  ValueReceipt,
   DatenschutzEinwilligung,
   Document as VaultDocument,
   DocumentKategorie,
@@ -115,7 +118,8 @@ import {
 } from './stammdaten/v1-3-api';
 import { MockBackendError } from './errors';
 import { emit, subscribe } from './events';
-import { uuid } from './id';
+import { uuid, aktenzeichenForBehoerde } from './id';
+import { computeValueReceipt } from './value-receipt';
 import { withLatency } from './latency';
 import { captureContext, runWithCapturedContext } from './store-context';
 import {
@@ -140,6 +144,7 @@ import {
   personasArraySchema,
   personaSchema,
   replySchema,
+  remindersArraySchema,
   termineArraySchema,
   vorgaengeArraySchema,
 } from './schemas';
@@ -259,6 +264,10 @@ function deriveDocumentKategorie(typ: string): DocumentKategorie {
 function loadTermine(): Termin[] {
   ensureBooted();
   return readOrInit('termine' as CollectionKey, termineArraySchema, []) as Termin[];
+}
+
+function saveTermine(termine: Termin[]): void {
+  write('termine' as CollectionKey, termine);
 }
 
 function loadBehoerden(): Behoerde[] {
@@ -593,6 +602,157 @@ function createWohnungsgeberDoc(
     watermark: '[MOCK]',
     vorgang_id: vorgangId,
   };
+}
+
+// ----------------------------------------------------------------------------
+// §C1 — Autopilot mintet durable, klickbare Artefakte (Document + Termin),
+// kreuzverlinkt per vorgang_id, und EMITTIERT Events (document_added /
+// termin_created), damit Dokumente-/Termine-Screen live reagieren.
+// Idempotent: jeder Mint hat eine deterministische ID je Vorgang.
+// ----------------------------------------------------------------------------
+
+function upsertDocument(doc: VaultDocument): boolean {
+  const docs = loadDocuments();
+  if (docs.some((d) => d.id === doc.id)) return false; // schon gemintet
+  docs.unshift(doc);
+  saveDocuments(docs);
+  emit({ type: 'document_added', document: doc });
+  return true;
+}
+
+function upsertTermin(termin: Termin): boolean {
+  const termine = loadTermine();
+  if (termine.some((t) => t.id === termin.id)) return false;
+  termine.unshift(termin);
+  saveTermine(termine);
+  emit({ type: 'termin_created', termin });
+  return true;
+}
+
+/** §C2 — mutiert einen Termin in-place + emittiert `termin_updated`. */
+function mutateTermin(terminId: string, mutator: (t: Termin) => Termin): void {
+  const termine = loadTermine();
+  const idx = termine.findIndex((t) => t.id === terminId);
+  if (idx === -1) {
+    throw new MockBackendError(`Termin "${terminId}" nicht gefunden.`, {
+      code: 'TERMIN_NOT_FOUND',
+      retryable: false,
+    });
+  }
+  const updated = mutator(termine[idx]);
+  termine[idx] = updated;
+  saveTermine(termine);
+  emit({ type: 'termin_updated', termin: updated });
+}
+
+/** §C4 — mutiert einen Reminder im Bucket (markReminderDone / snooze). */
+function mutateReminder(
+  reminderId: string,
+  mutator: (r: Reminder) => Reminder,
+): void {
+  const reminders = readOrInit(
+    'reminders' as CollectionKey,
+    remindersArraySchema as unknown as import('zod').ZodType<Reminder[]>,
+    [] as Reminder[],
+  ) as Reminder[];
+  const idx = reminders.findIndex((r) => r.id === reminderId);
+  if (idx === -1) {
+    throw new MockBackendError(`Reminder "${reminderId}" nicht gefunden.`, {
+      code: 'REMINDER_NOT_FOUND',
+      retryable: false,
+    });
+  }
+  reminders[idx] = mutator(reminders[idx]);
+  write('reminders' as CollectionKey, reminders);
+}
+
+/**
+ * §C1 — bei abgeschlossenem Umzug-Lauf: Meldebestätigung + (KFZ) Zulassungs-
+ * bescheinigung Teil I minten, LEA-Termin (ABH) anlegen, alles vorgang_id-
+ * verlinkt + owner-gestempelt, Events emittiert. Idempotent.
+ */
+function applyUmzugRipple(vorgang: Vorgang, persona: Persona): void {
+  const stamp = new Date().toISOString().slice(0, 10);
+  const hasStep = (pred: (s: AutopilotStep) => boolean): boolean =>
+    vorgang.schritte.some((s) => s.status === 'confirmed' && pred(s));
+
+  // Bürgeramt-Schritt → Meldebestätigung-Document.
+  if (hasStep((s) => s.behoerde_id === 'buergeramt-berlin-mitte')) {
+    upsertDocument({
+      id: `doc-meldebestaetigung-${vorgang.id}`,
+      typ: 'meldebestaetigung',
+      titel: 'Meldebestätigung Berlin-Mitte',
+      ausstellende_behoerde_id: 'buergeramt-berlin-mitte',
+      ausgestellt_am: stamp,
+      kategorie: 'bescheide',
+      dokument_nr: aktenzeichenForBehoerde('buergeramt-berlin-mitte'),
+      qr_payload: `[MOCK-QR] meldung://berlin-mitte/${persona.id}/${stamp} [MOCK – Verwaltungsdemo, keine echten Daten]`,
+      eudi_compatible: true,
+      watermark: '[MOCK]',
+      vorgang_id: vorgang.id,
+      owner_persona_id: persona.id,
+    });
+  }
+
+  // KFZ-Schritt → Zulassungsbescheinigung Teil I (nur wenn KFZ-Hop lief).
+  if (hasStep((s) => s.behoerde_id === 'kfz-berlin-labo')) {
+    upsertDocument({
+      id: `doc-zulassungsbescheinigung-${vorgang.id}`,
+      typ: 'zulassungsbescheinigung_teil_i',
+      titel: 'Zulassungsbescheinigung Teil I (neue Halteranschrift)',
+      ausstellende_behoerde_id: 'kfz-berlin-labo',
+      ausgestellt_am: stamp,
+      kategorie: 'vertraege',
+      dokument_nr: aktenzeichenForBehoerde('kfz-berlin-labo'),
+      qr_payload: `[MOCK-QR] zb1://kfz-berlin-labo/${persona.id}/${stamp} [MOCK – Verwaltungsdemo, keine echten Daten]`,
+      eudi_compatible: true,
+      watermark: '[MOCK]',
+      vorgang_id: vorgang.id,
+      owner_persona_id: persona.id,
+    });
+  }
+
+  // ABH/LEA-Schritt → Termin (Adressaktualisierung Aufenthaltstitel).
+  if (hasStep((s) => s.behoerde_id === 'abh-berlin-lea')) {
+    const inSevenDays = new Date(Date.now() + 7 * 86400000);
+    inSevenDays.setUTCHours(9, 0, 0, 0);
+    upsertTermin({
+      id: `termin-abh-adressupdate-${vorgang.id}`,
+      behoerde_id: 'abh-berlin-lea',
+      vorgang_id: vorgang.id,
+      datum: inSevenDays.toISOString(),
+      ort: {
+        typ: 'praesenz',
+        details:
+          'Landesamt für Einwanderung — Friedrich-Krause-Ufer 24, 13353 Berlin, Wartebereich C',
+      },
+      status: 'gebucht',
+      betreff: 'Adressaktualisierung Aufenthaltstitel',
+      buchungsreferenz: `[MOCK] ${aktenzeichenForBehoerde('abh-berlin-lea')}`,
+      kategorie: 'behoerdentermin',
+      owner_persona_id: persona.id,
+    });
+  }
+
+  // Run-Frist/Reminder auf erledigt setzen.
+  try {
+    const reminders = readOrInit(
+      'reminders' as CollectionKey,
+      remindersArraySchema as unknown as import('zod').ZodType<Reminder[]>,
+      [] as Reminder[],
+    ) as Reminder[];
+    let touched = false;
+    const next = reminders.map((r) => {
+      if (r.vorgang_id === vorgang.id && !r.erledigt) {
+        touched = true;
+        return { ...r, erledigt: true };
+      }
+      return r;
+    });
+    if (touched) write('reminders' as CollectionKey, next);
+  } catch {
+    /* defensiv — Ripple darf den Run nicht crashen */
+  }
 }
 
 // ----------------------------------------------------------------------------
@@ -1080,6 +1240,36 @@ export interface MockBackendApi {
   /** Erinnerungen/Fristen der aktiven Persona (Seed + abgeleitet aus Vorgang.fristen[]). */
   getReminders(): Promise<Reminder[]>;
 
+  // ---------------------- Convenience-Pass-1 (§B1 / §A5 / §A-katalog / §C3) ----------------------
+  /**
+   * §B1 — Wertquittung eines Umzug-Laufs. `null` bis ≥ 1 Schritt bestätigt ist.
+   * Alle Zahlen konservativ ("ca.") aus docs/domain/umzug-konvenienz-und-normen.md.
+   */
+  getValueReceipt(vorgangId: string): Promise<ValueReceipt | null>;
+  /**
+   * §A5 — alle vorgang_id-verlinkten Artefakte eines Vorgangs (für Detail-View +
+   * "Gehört zu"-Chips). Owner-gefiltert über die bereits geseedeten Buckets.
+   */
+  getVorgangRelated(vorgangId: string): Promise<{
+    letters: Letter[];
+    documents: VaultDocument[];
+    termine: Termin[];
+    reminders: Reminder[];
+  }>;
+  /** §A-katalog — Teaser-Liste der Autopilot-Lebenslagen (Umzug live, Rest demnächst). */
+  getAutopilotKatalog(): Promise<AutopilotKatalogEntry[]>;
+  /** §C3 — CLEARLY-MOCKED EUDI-Wallet-Export-Vorschau (nie ein echter Export). */
+  exportiereDokumentEudi(docId: string): Promise<EudiExportPreview>;
+
+  // ---------------------- Convenience-Pass-1 (§C2 Termine-Ops) ----------------------
+  bestaetigeTerminVorschlag(terminId: string): Promise<void>;
+  verschiebeTermin(terminId: string, neuesDatumIso: string): Promise<void>;
+  sageTerminAb(terminId: string): Promise<void>;
+
+  // ---------------------- Convenience-Pass-1 (§C4 Reminder-Ops) ----------------------
+  markReminderDone(reminderId: string): Promise<void>;
+  snoozeReminder(reminderId: string, tage: number): Promise<void>;
+
   // ---------------------- Redesign — Steuer ----------------------
   // Spec: docs/specs/redesign-steuer.md § 6.
 
@@ -1262,9 +1452,18 @@ async function bestaetigeImpl(
     }
   }
 
+  // §C1 — nach jedem bestätigten Block-D-Schritt durable Artefakte minten
+  // (KFZ → Zulassungsbescheinigung, ABH → LEA-Termin). Idempotent.
+  const afterStep = loadVorgaenge().find((v) => v.id === vorgangId);
+  if (afterStep && afterStep.typ === 'umzug') {
+    applyUmzugRipple(afterStep, persona);
+  }
+
   const after = loadVorgaenge().find((v) => v.id === vorgangId);
   if (after && isVorgangFullyResolved(after) && after.status !== 'abgeschlossen') {
     changeVorgangStatus(vorgangId, 'abgeschlossen');
+    const done = loadVorgaenge().find((v) => v.id === vorgangId);
+    if (done && done.typ === 'umzug') applyUmzugRipple(done, persona);
   }
 }
 
@@ -1285,9 +1484,16 @@ async function runAutopilotInBackground(ctx: {
       }
       upsertStep(ctx.vorgangId, step);
     }
+    // §C1 — Ripple nach Block A/B (Meldebestätigung-Document; KFZ/ABH folgen
+    // beim Block-D-Confirm in bestaetigeImpl). Idempotent.
+    const mid = loadVorgaenge().find((x) => x.id === ctx.vorgangId);
+    if (mid && mid.typ === 'umzug') applyUmzugRipple(mid, ctx.persona);
+
     const v = loadVorgaenge().find((x) => x.id === ctx.vorgangId);
     if (v && isVorgangFullyResolved(v) && v.status !== 'abgeschlossen') {
       changeVorgangStatus(ctx.vorgangId, 'abgeschlossen');
+      const done = loadVorgaenge().find((x) => x.id === ctx.vorgangId);
+      if (done && done.typ === 'umzug') applyUmzugRipple(done, ctx.persona);
     }
   } catch (err) {
     if (typeof console !== 'undefined') {
@@ -2304,6 +2510,138 @@ export const api: MockBackendApi & {
     ensureBooted();
     return remindersApi.getReminders();
   },
+
+  // ---------- Convenience-Pass-1 (§B1 / §A5 / §A-katalog / §C3) ----------
+  getValueReceipt: (vorgangId: string) =>
+    withLatency<ValueReceipt | null>(() => {
+      const v = loadVorgaenge().find((x) => x.id === vorgangId);
+      return v ? computeValueReceipt(v) : null;
+    }),
+
+  getVorgangRelated: (vorgangId: string) =>
+    withLatency(() => {
+      const persona = loadProfile();
+      const letters = loadLetters().filter((l) => l.vorgang_id === vorgangId);
+      const documents = loadDocuments().filter(
+        (d) => d.vorgang_id === vorgangId && d.owner_persona_id === persona.id,
+      );
+      const termine = loadTermine().filter(
+        (t) => t.vorgang_id === vorgangId && t.owner_persona_id === persona.id,
+      );
+      const reminders = (
+        readOrInit(
+          'reminders' as CollectionKey,
+          remindersArraySchema as unknown as import('zod').ZodType<Reminder[]>,
+          [] as Reminder[],
+        ) as Reminder[]
+      ).filter(
+        (r) => r.vorgang_id === vorgangId && r.owner_persona_id === persona.id,
+      );
+      return { letters, documents, termine, reminders };
+    }),
+
+  getAutopilotKatalog: () =>
+    withLatency<AutopilotKatalogEntry[]>(() => [
+      {
+        id: 'umzug',
+        status: 'live',
+        titel_key: 'katalog.umzug.titel',
+        beschreibung_key: 'katalog.umzug.beschreibung',
+        behoerden_preview: [
+          'buergeramt-berlin-mitte',
+          'finanzamt-berlin-mitte-tiergarten',
+          'kfz-berlin-labo',
+          'aok-nordost',
+          'familienkasse-berlin-brandenburg',
+          'abh-berlin-lea',
+        ],
+      },
+      {
+        id: 'kindergeburt',
+        status: 'demnaechst',
+        titel_key: 'katalog.kindergeburt.titel',
+        beschreibung_key: 'katalog.kindergeburt.beschreibung',
+        behoerden_preview: [
+          'standesamt-berlin-mitte',
+          'familienkasse-berlin-brandenburg',
+          'aok-nordost',
+        ],
+      },
+      {
+        id: 'steuererklaerung',
+        status: 'demnaechst',
+        titel_key: 'katalog.steuererklaerung.titel',
+        beschreibung_key: 'katalog.steuererklaerung.beschreibung',
+        behoerden_preview: ['finanzamt-berlin-mitte-tiergarten'],
+      },
+    ]),
+
+  exportiereDokumentEudi: (docId: string) =>
+    withLatency<EudiExportPreview>(() => {
+      const doc = loadDocuments().find((d) => d.id === docId);
+      if (!doc) {
+        throw new MockBackendError(`Dokument "${docId}" nicht gefunden.`, {
+          code: 'DOCUMENT_NOT_FOUND',
+          retryable: false,
+        });
+      }
+      // CLEARLY-MOCKED VC-förmige Vorschau — NIE ein echter Export.
+      const payload = {
+        '@context': ['https://www.w3.org/ns/credentials/v2'],
+        type: ['VerifiableCredential', 'MOCK_DemoCredential'],
+        mock: true,
+        issuer: `[MOCK] ${doc.ausstellende_behoerde_id}`,
+        credentialSubject: {
+          id: `[MOCK] did:example:${doc.owner_persona_id ?? 'demo'}`,
+          dokument_typ: doc.typ,
+          titel: doc.titel,
+          dokument_nr: doc.dokument_nr,
+          ausgestellt_am: doc.ausgestellt_am,
+        },
+        watermark: '[MOCK – Verwaltungsdemo, keine echten Daten]',
+      };
+      return {
+        document_id: doc.id,
+        mock: true,
+        payload_preview: JSON.stringify(payload, null, 2),
+        disclaimer_key: 'dokumente.eudi.disclaimer_2027',
+      };
+    }),
+
+  // ---------- Convenience-Pass-1 (§C2 Termine-Ops) ----------
+  bestaetigeTerminVorschlag: (terminId: string) =>
+    withLatency<void>(() =>
+      mutateTermin(terminId, (t) => ({ ...t, status: 'bestaetigt' })),
+    ),
+
+  verschiebeTermin: (terminId: string, neuesDatumIso: string) =>
+    withLatency<void>(() =>
+      mutateTermin(terminId, (t) => ({
+        ...t,
+        datum: neuesDatumIso,
+        status: 'verschoben',
+      })),
+    ),
+
+  sageTerminAb: (terminId: string) =>
+    withLatency<void>(() =>
+      mutateTermin(terminId, (t) => ({ ...t, status: 'abgesagt' })),
+    ),
+
+  // ---------- Convenience-Pass-1 (§C4 Reminder-Ops) ----------
+  markReminderDone: (reminderId: string) =>
+    withLatency<void>(() =>
+      mutateReminder(reminderId, (r) => ({ ...r, erledigt: true })),
+    ),
+
+  snoozeReminder: (reminderId: string, tage: number) =>
+    withLatency<void>(() =>
+      mutateReminder(reminderId, (r) => {
+        const d = new Date(r.datum);
+        d.setUTCDate(d.getUTCDate() + tage);
+        return { ...r, datum: d.toISOString().slice(0, 10) };
+      }),
+    ),
 
   // ---------- Redesign — Steuer ----------
   getSteuerUebersicht: (personaId, steuerjahr) => {

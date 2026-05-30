@@ -252,7 +252,8 @@
       "frau": "مرحباً، السيدة {nachname}",
       "herr": "مرحباً، السيد {nachname}",
       "neutral": "مرحباً، {vorname} {nachname}",
-      "last_login_meta": "آخر تسجيل دخول قبل {days} يوماً · على هذا الجهاز"
+      "last_login_meta": "آخر تسجيل دخول قبل {days} يوماً · على هذا الجهاز",
+      "guten_tag": "مرحباً، {name}"
     },
     "demo_banner": {
       "text": "وضع العرض · بيانات تجريبية · النسخ الأصلية تبقى في الصناديق الرسمية",
@@ -329,6 +330,78 @@
       "in_n_days": "موعد نهائي خلال {days} أيام",
       "on_date": "موعد نهائي {datum}",
       "overdue": "فات الموعد {datum}"
+    },
+    "titel": "لوحة المعلومات",
+    "untertitel": "نظرتك الشخصية على الرسائل والمواعيد النهائية والمعاملات",
+    "fehler": {
+      "laden": "تعذّر تحميل البيانات."
+    },
+    "letzter_login": "آخر تسجيل دخول قبل {days} يوماً · على هذا الجهاز",
+    "prototyp_hinweis": {
+      "text": "وضع العرض · بيانات تجريبية · النسخ الأصلية تبقى في الصناديق الرسمية"
+    },
+    "seit_login": {
+      "titel": "منذ آخر تسجيل دخول لك",
+      "neue_briefe": "رسائل جديدة",
+      "frist_naeher": "اقترب الموعد النهائي",
+      "vorgang_abgeschlossen": "معاملة مكتملة"
+    },
+    "heute": {
+      "titel": "مهام اليوم",
+      "tab_ki": "الذكاء الاصطناعي",
+      "tab_frist": "الموعد النهائي",
+      "tab_behoerde": "الجهة",
+      "tab_vorgang": "المعاملة",
+      "empty_title": "لا مهام اليوم",
+      "empty_body": "سنُعلِمك عند ظهور أي جديد.",
+      "done": "منجَز",
+      "snooze": "ذكِّرني لاحقاً",
+      "snooze_days": "مؤجَّل لمدة {days} يوماً",
+      "actions_label": "إجراءات {titel}"
+    },
+    "triumph": {
+      "title": "أُنجز نيابةً عنك",
+      "subtitle": "تم إبلاغ {count} جهة بالانتقال — لم تضطر إلى فعل أي شيء.",
+      "zeitersparnis": "تم توفير {min} دقيقة تقريباً",
+      "link": "عرض المعاملة",
+      "gerade_eben": "للتو"
+    },
+    "erledigt_feed": {
+      "title": "أُنجز تلقائياً نيابةً عنك",
+      "empty": "لم يُنجَز أي شيء تلقائياً بعد."
+    },
+    "achievement": {
+      "jahr": "{count} معاملة أُنجزت نيابةً عنك هذا العام"
+    },
+    "kacheln": {
+      "fristen": {
+        "titel": "المواعيد النهائية",
+        "offen": "{count} مفتوح",
+        "cta": "عرض"
+      },
+      "posteingang": {
+        "titel": "صندوق الوارد",
+        "ungelesen": "{count} غير مقروء",
+        "cta": "فتح"
+      },
+      "vorgaenge": {
+        "titel": "المعاملات",
+        "stand": "{laeuft} قيد التنفيذ، {abgeschlossen} مكتمل",
+        "cta": "عرض"
+      },
+      "termine": {
+        "titel": "المواعيد",
+        "cta": "عرض"
+      },
+      "datenschutz": {
+        "titel": "مركز الخصوصية",
+        "aktivitaeten": "{count} نشاط خلال 30 يوماً",
+        "cta": "فتح"
+      },
+      "stammdaten": {
+        "titel": "حالة البيانات الأساسية",
+        "cta": "عرض"
+      }
     }
   },
   "common": {
@@ -580,7 +653,8 @@
       "termin_label_template": "موعد: {datum}، {ort}",
       "not_found_title": "المعاملة غير موجودة",
       "not_found_body": "هذه المعاملة غير موجودة أو تم حذفها.",
-      "back_to_dashboard": "العودة إلى لوحة المعلومات"
+      "back_to_dashboard": "العودة إلى لوحة المعلومات",
+      "dokumente_count": "{count, plural, zero {لا مستندات} one {مستند واحد} two {مستندان} few {# مستندات} many {# مستنداً} other {# مستند}}"
     },
     "rechtsgrundlage": {
       "bmg_17": "§ 17 BMG: واجب التسجيل خلال أسبوعين من تاريخ الانتقال.",
@@ -2210,6 +2284,15 @@
       "sort_ausgestellt": "تاريخ الإصدار (الأحدث أولًا)",
       "sort_gueltig": "الصلاحية (المنتهية قريبًا أولًا)",
       "status_label": "الحالة"
+    },
+    "eudi": {
+      "button": "التصدير إلى EUDI Wallet (معاينة)",
+      "dialog_title": "التصدير إلى EUDI Wallet — معاينة [MOCK]",
+      "disclaimer_2027": "[MOCK] معاينة محاكاة لمحفظة EUDI Wallet. يجري طرح محفظة EUDI Wallet في عام 2027؛ ولا يُصدَّر هنا أي مستند حقيقي.",
+      "download": "تنزيل المعاينة",
+      "mock_badge": "[MOCK]",
+      "close": "إغلاق",
+      "payload_label": "معاينة المستند (اصطناعية)"
     }
   },
   "termine": {
@@ -2289,7 +2372,17 @@
       "filter_title": "لا توجد مواعيد لهذا الاختيار",
       "naechster_schritt": "اختر موعدًا لرؤية التفاصيل."
     },
-    "error": "تعذّر تحميل المواعيد."
+    "error": "تعذّر تحميل المواعيد.",
+    "action": {
+      "bestaetigen": "تأكيد",
+      "verschieben": "إعادة جدولة",
+      "absagen": "إلغاء",
+      "confirm_cancel": "هل تريد إلغاء الموعد فعلًا؟",
+      "verschoben_um": "أُعيدت جدولته بمقدار 7 أيام",
+      "bestaetigt": "مؤكَّد",
+      "abgesagt": "مُلغى",
+      "vorschlag": "مُقترَح"
+    }
   },
   "steuer": {
     "title": "الضرائب",
@@ -2592,5 +2685,74 @@
       "started_title": "بدأ الطيار الآلي",
       "started_subtitle": "تم فحص بياناتك وبدء السلسلة."
     }
+  },
+  "convenience": {
+    "value_receipt": {
+      "title": "ما وفّرته",
+      "behoerden": "جهات تم إبلاغها",
+      "zeitersparnis": "الوقت الموفَّر (تقريباً)",
+      "klassische_schritte": "خطوات تقليدية",
+      "ihr_aufwand": "جهدك",
+      "ein_satz": "جملة واحدة",
+      "ca_prefix": "تقريباً",
+      "minuten_suffix": "دقيقة",
+      "disclaimer_conservative": "تقدير متحفّظ. [MOCK]"
+    },
+    "step": {
+      "basis_label": "الأساس القانوني",
+      "data_label": "البيانات المُرسَلة"
+    },
+    "receipt": {
+      "toggle": "ما الذي تم إرساله؟",
+      "fields_label": "البيانات المُرسَلة",
+      "basis_label": "الأساس القانوني",
+      "consent_label": "تم منح الموافقة في",
+      "minimierung_note": "تقليل البيانات: تُرسَل هذه الحقول فقط."
+    },
+    "datenkat": {
+      "neue_anschrift": "العنوان الجديد",
+      "einzugsdatum": "تاريخ الانتقال",
+      "beitragsnummer": "رقم المساهم (Beitragsnummer)",
+      "steuer_id": "رقم التعريف الضريبي (Steuer-IdNr.)",
+      "versichertennummer": "رقم المؤمَّن عليه (Versichertennummer)",
+      "familienstand": "الحالة الاجتماعية",
+      "name": "الاسم",
+      "geburtsdatum": "تاريخ الميلاد",
+      "alte_anschrift": "العنوان السابق",
+      "wohnungsgeberbestaetigung": "إفادة المؤجِّر (Wohnungsgeberbestätigung)",
+      "eat_nummer": "رقم eAT / المستند",
+      "kindergeldnummer": "رقم علاوة الأبناء (Kindergeldnummer)",
+      "personalnummer": "الرقم الوظيفي",
+      "kennzeichen": "لوحة المركبة"
+    },
+    "assistant": {
+      "run_summary_intro": "ملخّص ما وفّرته"
+    }
+  },
+  "katalog": {
+    "titel": "كتالوج الطيار الآلي",
+    "untertitel": "مواقف حياتية يتولّاها الطيار الآلي نيابةً عنك.",
+    "behoerden_label": "الجهات المعنية",
+    "starten": "بدء تغيير العنوان",
+    "umzug": {
+      "titel": "تغيير العنوان",
+      "beschreibung": "تأكيد واحد — نُبلِغ عنوانك الجديد إلى جميع الجهات المختصّة."
+    },
+    "kindergeburt": {
+      "titel": "ولادة طفل",
+      "beschreibung": "شهادة الميلاد وعلاوة الأبناء والتأمين الصحي في معاملة واحدة."
+    },
+    "steuererklaerung": {
+      "titel": "الإقرار الضريبي",
+      "beschreibung": "إقرار مُعبَّأ مسبقاً من بياناتك المعروفة."
+    },
+    "status": {
+      "live": "متاح",
+      "demnaechst": "قريباً"
+    }
+  },
+  "shared": {
+    "gehoert_zu": "تابعة لـ: {vorgang}",
+    "neu_badge": "جديد"
   }
 }

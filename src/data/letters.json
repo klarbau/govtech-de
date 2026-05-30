@@ -6,7 +6,7 @@
     "aktenzeichen": "[MOCK] 11/123/45678",
     "aktenzeichen_weitere": ["[MOCK] 47 113 815 421"],
     "betreff": "Bescheid für 2024 über Einkommensteuer, Solidaritätszuschlag und Kirchensteuer — Steuernummer [MOCK] 11/123/45678",
-    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nFinanzamt für Körperschaften I Berlin\nBredtschneiderstraße 5, 14057 Berlin\n\nSehr geehrte Frau Petrov,\n\nin oben genannter Angelegenheit übersenden wir Ihnen den Einkommensteuerbescheid für das Kalenderjahr 2024.\n\nFestgesetzte Einkommensteuer: 6.842,00 €\nAnzurechnende Lohnsteuer: 7.213,00 €\nErstattung: 371,00 €\n\nDer Erstattungsbetrag wird in den nächsten 14 Tagen auf das uns vorliegende Konto überwiesen.\n\nDieser Bescheid ist maschinell erstellt und auch ohne Unterschrift gültig.\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Einspruch eingelegt werden. Der Einspruch ist bei dem oben bezeichneten Finanzamt schriftlich einzureichen, zur Niederschrift zu erklären oder elektronisch zu übermitteln. [MOCK]\n\nMit freundlichen Grüßen\nIm Auftrag\nM. Hartwig, Sachbearbeiterin\nAz. [MOCK] 11/123/45678",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nFinanzamt Berlin Mitte/Tiergarten\nNeue Jakobstraße 6-7, 10179 Berlin\n\nSehr geehrte Frau Petrov,\n\nin oben genannter Angelegenheit übersenden wir Ihnen den Einkommensteuerbescheid für das Kalenderjahr 2024.\n\nFestgesetzte Einkommensteuer: 6.842,00 €\nAnzurechnende Lohnsteuer: 7.213,00 €\nErstattung: 371,00 €\n\nDer Erstattungsbetrag wird in den nächsten 14 Tagen auf das uns vorliegende Konto überwiesen.\n\nDieser Bescheid ist maschinell erstellt und auch ohne Unterschrift gültig.\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Einspruch eingelegt werden. Der Einspruch ist bei dem oben bezeichneten Finanzamt schriftlich einzureichen, zur Niederschrift zu erklären oder elektronisch zu übermitteln. [MOCK]\n\nMit freundlichen Grüßen\nIm Auftrag\nM. Hartwig, Sachbearbeiterin\nAz. [MOCK] 11/123/45678",
     "ai_summary": {
       "de": "Ihr Steuerbescheid 2024: Sie erhalten 371 € Erstattung — automatisch in 14 Tagen auf Ihr hinterlegtes Konto. Keine Aktion erforderlich."
     },
@@ -122,6 +122,7 @@
     "empfaenger_persona_id": "anna-petrov",
     "aktenzeichen": "[MOCK] 115FK668412",
     "kanal": "brief",
+    "vorgang_id": "vorgang-anna-kindergeld-aktualisierung-2026",
     "betreff": "Ihr Kindergeld — Kindergeldnummer [MOCK] 115FK668412",
     "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nFamilienkasse Berlin-Brandenburg, 14460 Potsdam\n\nSehr geehrte Frau Petrov,\n\nin oben genannter Angelegenheit teilen wir Ihnen mit, dass Ihr Antrag auf Kindergeld für Ihren Sohn Lev (geb. 03.11.2024) bewilligt wurde.\n\nMonatlicher Anspruch: 250,00 €\nLaufzeit: ab 01.12.2024\n\nDie Auszahlung erfolgt monatlich auf das uns vorliegende Konto.\n\nMit freundlichen Grüßen\nFamilienkasse Berlin-Brandenburg\nAz. [MOCK] 115FK668412",
     "ai_summary": {
@@ -524,9 +525,9 @@
     "fristen": [
       {
         "typ": "antragstellung",
-        "datum": "2026-05-30",
-        "original_zitat": "Bitte teilen Sie uns bis zum 30.05.2026 mit, ob Sie den vorgeschlagenen Termin annehmen oder einen anderen Wunschtermin vorschlagen möchten.",
-        "citation_match": true,
+        "datum": "@now+8d",
+        "original_zitat": "Bitte teilen Sie uns mit, ob Sie den vorgeschlagenen Termin annehmen oder einen anderen Wunschtermin vorschlagen möchten.",
+        "citation_match": false,
         "rechtsgrundlage": "§ 1310 BGB",
         "cta_label": "Termin beantworten"
       }
@@ -641,5 +642,115 @@
     "was_kann_ich_tun_options": [],
     "status": "ungelesen",
     "empfangen_am": "2026-05-02T07:15:00.000Z"
+  },
+  {
+    "id": "letter-umzug2026-buergeramt-bestaetigung",
+    "absender_behoerde_id": "buergeramt-berlin-mitte",
+    "empfaenger_persona_id": "anna-petrov",
+    "aktenzeichen": "[MOCK] BA-MITTE/EWA-2026-05-0298844",
+    "vorgang_id": "vg-anna-umzug-2026-completed",
+    "betreff": "Ihre Anmeldung nach § 17 BMG — Aktenzeichen [MOCK] BA-MITTE/EWA-2026-05-0298844",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nBezirksamt Mitte von Berlin — Bürgeramt Müllerstraße\nMüllerstraße 146, 13353 Berlin\n\nSehr geehrte Frau Petrov,\n\nin oben genannter Angelegenheit bestätigen wir Ihre Anmeldung unter folgender Anschrift:\n\nFriedrichstraße 100, 10117 Berlin\n\nDie Wohnungsgeberbestätigung (§ 19 BMG) lag vor. Die Datenübermittlung an die zuständigen öffentlichen Stellen erfolgt gemäß §§ 33, 34 und 36 BMG. Eine Meldebestätigung liegt bei.\n\nMit freundlichen Grüßen\nIm Auftrag\nT. Klose, Sachbearbeiter:in\nAz. [MOCK] BA-MITTE/EWA-2026-05-0298844",
+    "ai_summary": {
+      "de": "Ihre Anmeldung in Friedrichstraße 100 wurde bestätigt. Meldebestätigung liegt im Dokumente-Vault."
+    },
+    "archetype": "buergeramt-meldung",
+    "auth_channel": "briefpost",
+    "fristen": [],
+    "was_kann_ich_tun_options": [],
+    "status": "ungelesen",
+    "empfangen_am": "@now-1d"
+  },
+  {
+    "id": "letter-umzug2026-finanzamt-bestaetigung",
+    "absender_behoerde_id": "finanzamt-berlin-mitte-tiergarten",
+    "empfaenger_persona_id": "anna-petrov",
+    "aktenzeichen": "[MOCK] 11/345/67890 // 2026",
+    "aktenzeichen_weitere": ["[MOCK] 47 113 815 421"],
+    "vorgang_id": "vg-anna-umzug-2026-completed",
+    "betreff": "Mitteilung über die örtliche Zuständigkeit nach 19 AO",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nFinanzamt Berlin Mitte/Tiergarten\nNeue Jakobstraße 6-7, 10179 Berlin\n\nSehr geehrte Frau Petrov,\n\nin oben genannter Angelegenheit teilen wir Ihnen mit, dass sich die örtliche Zuständigkeit für Ihre Einkommensteuer nach Ihrem Wohnsitz richtet (§ 19 AO). Ihre Steuerakte wurde an unser Finanzamt abgegeben.\n\nIhre steuerliche Identifikationsnummer (§ 139b AO) bleibt unverändert; lediglich Ihre örtliche Steuernummer ändert sich durch den Zuständigkeitswechsel.\n\nDiese Mitteilung ergeht maschinell und ist auch ohne Unterschrift gültig.\n\nMit freundlichen Grüßen\nFinanzamt Berlin Mitte/Tiergarten\nAz. [MOCK] 11/345/67890 // 2026",
+    "ai_summary": {
+      "de": "Ihr Wohnsitz-Finanzamt hat die Zuständigkeit übernommen (§ 19 AO). Ihre Steuer-IdNr. bleibt gleich — nur die örtliche Steuernummer ändert sich."
+    },
+    "archetype": "sonstiges",
+    "auth_channel": "mein-elster",
+    "fristen": [],
+    "was_kann_ich_tun_options": [],
+    "status": "ungelesen",
+    "empfangen_am": "@now-1d"
+  },
+  {
+    "id": "letter-umzug2026-beitragsservice-bestaetigung",
+    "absender_behoerde_id": "beitragsservice-koeln",
+    "empfaenger_persona_id": "anna-petrov",
+    "aktenzeichen": "[MOCK] 731 042 088",
+    "vorgang_id": "vg-anna-umzug-2026-completed",
+    "betreff": "Ihre Beitragsnummer [MOCK] 731 042 088 — Anschriftenänderung",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nARD ZDF Deutschlandradio Beitragsservice, 50656 Köln\n\nSehr geehrte Frau Petrov,\n\nvielen Dank für die Übermittlung. Wir haben Ihre neue Anschrift in unserem System hinterlegt:\n\nFriedrichstraße 100, 10117 Berlin\n\nÜbermittelt wurden ausschließlich Ihre neue Anschrift, das Einzugsdatum und Ihre Beitragsnummer — nicht Ihr Familienstand oder Ihre Konfession.\n\nMit freundlichen Grüßen\nBeitragsservice\nAz. [MOCK] 731 042 088",
+    "ai_summary": {
+      "de": "Beitragsservice hat Ihre neue Anschrift übernommen. Es wurden nur Anschrift, Einzugsdatum und Beitragsnummer übermittelt."
+    },
+    "archetype": "sonstiges",
+    "auth_channel": "briefpost",
+    "fristen": [],
+    "was_kann_ich_tun_options": [],
+    "status": "ungelesen",
+    "empfangen_am": "@now-1d"
+  },
+  {
+    "id": "letter-umzug2026-kfz-bestaetigung",
+    "absender_behoerde_id": "kfz-berlin-labo",
+    "empfaenger_persona_id": "anna-petrov",
+    "aktenzeichen": "[MOCK] B-KFZ-2026-04711-Halter",
+    "vorgang_id": "vg-anna-umzug-2026-completed",
+    "betreff": "Ihre Mitteilung gem. 15 FZV — Halteranschrift [MOCK] B-KFZ-2026-04711-Halter",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nLandesamt für Bürger- und Ordnungsangelegenheiten — KFZ-Zulassung\nJüterboger Straße 3, 10965 Berlin\n\nSehr geehrte Frau Petrov,\n\nin oben genannter Angelegenheit bestätigen wir den Eingang Ihrer Mitteilung nach § 15 FZV. Wir haben die Halteranschrift Ihres Fahrzeugs (B-AP 4711) mit Ihrer neuen Anschrift aktualisiert. Eine neue Zulassungsbescheinigung Teil I liegt bei.\n\nMit freundlichen Grüßen\nKFZ-Zulassung Berlin\nAz. [MOCK] B-KFZ-2026-04711-Halter",
+    "ai_summary": {
+      "de": "Die Halteranschrift Ihres VW Polo wurde aktualisiert. Neue Zulassungsbescheinigung Teil I liegt im Vault."
+    },
+    "archetype": "sonstiges",
+    "auth_channel": "briefpost",
+    "fristen": [],
+    "was_kann_ich_tun_options": [],
+    "status": "ungelesen",
+    "empfangen_am": "@now-1d"
+  },
+  {
+    "id": "letter-umzug2026-arbeitgeber-bestaetigung",
+    "absender_behoerde_id": "arbeitgeber-mittelstand-software",
+    "empfaenger_persona_id": "anna-petrov",
+    "aktenzeichen": "[MOCK] PERS-2026-04711",
+    "vorgang_id": "vg-anna-umzug-2026-completed",
+    "betreff": "Aktualisierung Ihrer Personalstammdaten — Personalnummer [MOCK] PERS-2026-04711",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nMittelstand Software GmbH\nRitterstraße 12, 10969 Berlin\n\nSehr geehrte Frau Petrov,\n\nwir haben Ihre neue Anschrift für Personalstammdaten und Lohnabrechnung erfasst (Art. 6 Abs. 1 lit. b DSGVO):\n\nFriedrichstraße 100, 10117 Berlin\n\nIhre Lohnabrechnung wird ab dem nächsten Abrechnungslauf an die neue Anschrift adressiert.\n\nMit freundlichen Grüßen\nPersonalabteilung Mittelstand Software GmbH\nAz. [MOCK] PERS-2026-04711",
+    "ai_summary": {
+      "de": "Ihr Arbeitgeber hat Ihre neue Anschrift für die Lohnabrechnung übernommen."
+    },
+    "archetype": "sonstiges",
+    "auth_channel": "briefpost",
+    "fristen": [],
+    "was_kann_ich_tun_options": [],
+    "status": "ungelesen",
+    "empfangen_am": "@now-1d"
+  },
+  {
+    "id": "letter-umzug2026-abh-bestaetigung",
+    "absender_behoerde_id": "abh-berlin-lea",
+    "empfaenger_persona_id": "anna-petrov",
+    "aktenzeichen": "[MOCK] ABH-B-2026/IV-A-5518",
+    "aktenzeichen_weitere": ["[MOCK] T0123456X"],
+    "vorgang_id": "vg-anna-umzug-2026-completed",
+    "betreff": "Ihr Aufenthaltstitel — Adressaktualisierung, Az [MOCK] ABH-B-2026/IV-A-5518",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nLandesamt für Einwanderung Berlin (LEA)\nFriedrich-Krause-Ufer 24, 13353 Berlin\n\nSehr geehrte Frau Petrov,\n\nin oben genannter Angelegenheit bestätigen wir den Eingang Ihrer Adressmeldung. Die Aktualisierung der auf der elektronischen Aufenthaltskarte hinterlegten Anschrift erfolgt nutzergesteuert über die eID-Funktion (§ 18 PAuswG); hierzu haben wir Ihnen einen Termin angeboten. Es findet kein automatischer Melderegister→Ausländerbehörde-Abgleich statt — bitte nehmen Sie den angebotenen Termin wahr.\n\nMit freundlichen Grüßen\nIm Auftrag\nS. Wegener, Sachbearbeiter:in\nAz. [MOCK] ABH-B-2026/IV-A-5518",
+    "ai_summary": {
+      "de": "Adressmeldung an die Ausländerbehörde vorbereitet. Die Kartenaktualisierung erfolgt termin-/eID-gebunden — ein Termin steht für Sie bereit."
+    },
+    "archetype": "abh-verlaengerung",
+    "auth_channel": "briefpost",
+    "fristen": [],
+    "was_kann_ich_tun_options": [],
+    "status": "ungelesen",
+    "empfangen_am": "@now-1d"
   }
 ]

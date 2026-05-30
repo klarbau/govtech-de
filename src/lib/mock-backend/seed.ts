@@ -71,6 +71,63 @@ import {
 
 const DEFAULT_PERSONA_ID = 'anna-petrov';
 
+// ---------------------------------------------------------------------------
+// §A1 — Relative-Zeit-Anker / Sentinel-Resolver
+// ---------------------------------------------------------------------------
+//
+// Fixture-Datumsfelder dürfen Sentinels statt harter ISO-Daten tragen:
+//   "@now"        → der Seed-Anker (jetzt)
+//   "@now-<N>d"   → N Tage vor dem Anker
+//   "@now+<N>d"   → N Tage nach dem Anker
+// Felder, deren Schlüssel reine Datumsangaben sind (DATE_ONLY_KEYS), lösen auf
+// `YYYY-MM-DD` auf; alle anderen (Timestamps) auf vollen ISO um 09:00 UTC
+// (deterministisch). Sentinels leben NUR in Fixtures, nie in nutzergeschriebenem
+// State. Resolution passiert EINMALIG beim Seed (gegen `seeded_at`).
+
+const SENTINEL_RE = /^@now([+-]\d+)d$/;
+
+const DATE_ONLY_KEYS = new Set([
+  'datum', // VorgangFrist / LetterFrist / Reminder-Datum (YYYY-MM-DD)
+  'ausgestellt_am',
+  'gueltig_bis',
+  'faellig_am',
+  'erlassdatum',
+  'bescheid_dated_at',
+]);
+
+function isSentinel(value: unknown): value is string {
+  return typeof value === 'string' && (value === '@now' || SENTINEL_RE.test(value));
+}
+
+function resolveSentinel(sentinel: string, anchor: Date, dateOnly: boolean): string {
+  let offsetDays = 0;
+  if (sentinel !== '@now') {
+    const m = sentinel.match(SENTINEL_RE);
+    if (m) offsetDays = parseInt(m[1], 10);
+  }
+  const d = new Date(anchor);
+  d.setUTCDate(d.getUTCDate() + offsetDays);
+  if (dateOnly) return d.toISOString().slice(0, 10);
+  d.setUTCHours(9, 0, 0, 0);
+  return d.toISOString();
+}
+
+/** Tief-Walk: ersetzt jeden Sentinel-String durch sein aufgelöstes ISO-Datum. */
+function resolveSentinels<T>(node: T, anchor: Date, keyHint?: string): T {
+  if (isSentinel(node)) {
+    return resolveSentinel(node, anchor, keyHint ? DATE_ONLY_KEYS.has(keyHint) : false) as unknown as T;
+  }
+  if (Array.isArray(node)) {
+    return node.map((item) => resolveSentinels(item, anchor, keyHint)) as unknown as T;
+  }
+  if (node && typeof node === 'object') {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(node)) out[k] = resolveSentinels(v, anchor, k);
+    return out as unknown as T;
+  }
+  return node;
+}
+
 const fixtures = {
   behoerden: behoerdenFixture as unknown as Behoerde[],
   personas: personasFixture as unknown as Persona[],
@@ -84,6 +141,34 @@ const fixtures = {
     Record<string, SteuerUebersicht>
   >,
 };
+
+/**
+ * §A1 — der relative-Zeit-Anker. Wird einmal pro Seed bestimmt und in
+ * `meta.seeded_at` persistiert; Sentinels lösen gegen diesen Wert auf. Existiert
+ * bereits ein `meta.seeded_at`, wird es wiederverwendet (Sentinels bleiben
+ * stabil über Re-Seeds einzelner Buckets).
+ */
+function seedAnchor(): Date {
+  const meta = read('meta' as CollectionKey, metaSchema);
+  return meta?.seeded_at ? new Date(meta.seeded_at) : new Date();
+}
+
+/** Fixtures mit aufgelösten Sentinels (gegen den Seed-Anker). */
+function resolvedFixtures(anchor: Date): {
+  letters: Letter[];
+  vorgaenge: Vorgang[];
+  documents: Document[];
+  termine: Termin[];
+  reminders: Reminder[];
+} {
+  return {
+    letters: resolveSentinels(fixtures.letters, anchor),
+    vorgaenge: resolveSentinels(fixtures.vorgaenge, anchor),
+    documents: resolveSentinels(fixtures.documents, anchor),
+    termine: resolveSentinels(fixtures.termine, anchor),
+    reminders: resolveSentinels(fixtures.reminders, anchor),
+  };
+}
 
 /**
  * Stellt sicher, dass alle Buckets befüllt und schema-konform sind.
@@ -113,6 +198,7 @@ export function seedIfEmpty(): void {
   const meta = read('meta' as CollectionKey, metaSchema);
   if (!meta) {
     const activePersonaId = DEFAULT_PERSONA_ID;
+    // §A1 — Seed-Anker setzen, BEVOR seedForPersona Sentinels auflöst.
     write('meta' as CollectionKey, {
       version: 1,
       active_persona_id: activePersonaId,
@@ -124,6 +210,8 @@ export function seedIfEmpty(): void {
 
   // Ggf. einzelne fehlende Buckets nachseeden (z. B. nach Schema-Reset).
   const personaId = meta.active_persona_id;
+  const anchor = seedAnchor();
+  const rf = resolvedFixtures(anchor);
   const profile = read('profile' as CollectionKey, personaSchema);
   if (!profile) {
     const persona = fixtures.personas.find((p) => p.id === personaId);
@@ -132,22 +220,23 @@ export function seedIfEmpty(): void {
   readOrInit<Letter[]>(
     'letters' as CollectionKey,
     lettersArraySchema as unknown as import('zod').ZodType<Letter[]>,
-    filterByPersona(fixtures.letters, personaId),
+    filterByPersona(rf.letters, personaId),
   );
   readOrInit<Vorgang[]>(
     'vorgaenge' as CollectionKey,
     vorgaengeArraySchema as unknown as import('zod').ZodType<Vorgang[]>,
-    filterVorgaengeByPersona(fixtures.vorgaenge, personaId),
+    filterVorgaengeByPersona(rf.vorgaenge, personaId),
   );
+  // §A3 — Owner-Filter auch auf documents/termine/reminders (vorher Anna-Leak).
   readOrInit<Document[]>(
     'documents' as CollectionKey,
     documentsArraySchema as unknown as import('zod').ZodType<Document[]>,
-    fixtures.documents,
+    filterDocumentsByPersona(rf.documents, personaId),
   );
   readOrInit<Termin[]>(
     'termine' as CollectionKey,
     termineArraySchema as unknown as import('zod').ZodType<Termin[]>,
-    fixtures.termine,
+    filterTermineByPersona(rf.termine, personaId),
   );
   readOrInit('consent' as CollectionKey, consentSchema, {});
   readOrInit('letter-activity-log' as CollectionKey, letterActivityLogSchema, {});
@@ -182,8 +271,12 @@ export function seedIfEmpty(): void {
     stammdatenMobilitaetBucketSchema,
     SEED_MOBILITAET,
   );
-  // Redesign-Termine — Reminder-Bucket aus Fixture (idempotent).
-  readOrInit('reminders' as CollectionKey, remindersArraySchema, fixtures.reminders);
+  // Redesign-Termine — Reminder-Bucket aus Fixture (idempotent, owner-gefiltert §A3).
+  readOrInit(
+    'reminders' as CollectionKey,
+    remindersArraySchema as unknown as import('zod').ZodType<Reminder[]>,
+    filterRemindersByPersona(rf.reminders, personaId),
+  );
   // Redesign-Steuer — Steuer-Übersicht-Bucket aus Fixture (idempotent).
   readOrInit(
     'steuer' as CollectionKey,
@@ -239,17 +332,34 @@ function filterVorgaengeByPersona(vorgaenge: Vorgang[], personaId: string): Vorg
   return vorgaenge.filter((v) => v.persona_id === personaId);
 }
 
+// §A3 — Owner-Filter pro Entität. Legacy-Records ohne Owner-Feld werden NICHT
+// geleakt (kein Match → ausgefiltert); neue Seeds tragen den Owner immer.
+function filterDocumentsByPersona(documents: Document[], personaId: string): Document[] {
+  return documents.filter((d) => d.owner_persona_id === personaId);
+}
+
+function filterTermineByPersona(termine: Termin[], personaId: string): Termin[] {
+  return termine.filter((t) => t.owner_persona_id === personaId);
+}
+
+function filterRemindersByPersona(reminders: Reminder[], personaId: string): Reminder[] {
+  return reminders.filter((r) => r.owner_persona_id === personaId);
+}
+
 function seedForPersona(personaId: string): void {
   const persona = fixtures.personas.find((p) => p.id === personaId);
   if (persona) write('profile' as CollectionKey, persona);
-  write('letters' as CollectionKey, filterByPersona(fixtures.letters, personaId));
+  // §A1 — Sentinels gegen den Seed-Anker auflösen; §A3 — Owner-Filter auf allen Listen.
+  const anchor = seedAnchor();
+  const rf = resolvedFixtures(anchor);
+  write('letters' as CollectionKey, filterByPersona(rf.letters, personaId));
   write(
     'vorgaenge' as CollectionKey,
-    filterVorgaengeByPersona(fixtures.vorgaenge, personaId),
+    filterVorgaengeByPersona(rf.vorgaenge, personaId),
   );
-  write('documents' as CollectionKey, fixtures.documents);
-  write('termine' as CollectionKey, fixtures.termine);
-  write('reminders' as CollectionKey, fixtures.reminders);
+  write('documents' as CollectionKey, filterDocumentsByPersona(rf.documents, personaId));
+  write('termine' as CollectionKey, filterTermineByPersona(rf.termine, personaId));
+  write('reminders' as CollectionKey, filterRemindersByPersona(rf.reminders, personaId));
   write('steuer' as CollectionKey, fixtures.steuer);
   write('consent' as CollectionKey, {});
   write('letter-activity-log' as CollectionKey, {});

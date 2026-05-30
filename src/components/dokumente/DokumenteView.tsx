@@ -24,9 +24,13 @@ import {
   SquareArrowRight,
   Upload,
   Users,
+  Wallet,
   type LucideIcon,
 } from 'lucide-react';
 
+import { useTranslations } from 'next-intl';
+
+import { EudiExportDialog } from '@/components/dokumente/EudiExportDialog';
 import { api } from '@/lib/mock-backend';
 import type { Document, DocumentKategorie, DocumentTyp } from '@/types';
 
@@ -109,10 +113,14 @@ const TABS: Array<{ id: TabId; label: string }> = [
 const PAGE_SIZE = 10;
 
 export function DokumenteView({ nowIso }: { nowIso: string }) {
+  const tEudi = useTranslations('dokumente.eudi');
+  const tShared = useTranslations('shared');
   const [docs, setDocs] = React.useState<Document[]>([]);
   const [search, setSearch] = React.useState('');
   const [activeTab, setActiveTab] = React.useState<TabId>('alle');
   const [page, setPage] = React.useState(1);
+  const [eudiDoc, setEudiDoc] = React.useState<Document | null>(null);
+  const [newDocIds, setNewDocIds] = React.useState<Set<string>>(() => new Set());
 
   const now = React.useMemo(() => new Date(nowIso), [nowIso]);
 
@@ -129,6 +137,21 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
     return () => {
       cancelled = true;
     };
+  }, []);
+
+  /* C1/§1.2: react live when the autopilot mints a Document. */
+  React.useEffect(() => {
+    const unsubscribe = api.subscribe((event) => {
+      if (event.type === 'document_added') {
+        setDocs((prev) =>
+          prev.some((d) => d.id === event.document.id)
+            ? prev
+            : [event.document, ...prev],
+        );
+        setNewDocIds((prev) => new Set(prev).add(event.document.id));
+      }
+    });
+    return () => unsubscribe();
   }, []);
 
   const kategorieOf = (d: Document): DocumentKategorie =>
@@ -220,23 +243,26 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
                 <tr>
                   <th>
                     <span className="sort">
-                      Dokument <ChevronsUpDown style={{ width: 12, height: 12 }} />
+                      Dokument{' '}
+                      <ChevronsUpDown style={{ width: 12, height: 12 }} aria-hidden="true" />
                     </span>
                   </th>
                   <th>
                     <span className="sort">
-                      Kategorie <ChevronsUpDown style={{ width: 12, height: 12 }} />
+                      Kategorie{' '}
+                      <ChevronsUpDown style={{ width: 12, height: 12 }} aria-hidden="true" />
                     </span>
                   </th>
                   <th>
                     <span className="sort">
-                      Status <ChevronsUpDown style={{ width: 12, height: 12 }} />
+                      Status{' '}
+                      <ChevronsUpDown style={{ width: 12, height: 12 }} aria-hidden="true" />
                     </span>
                   </th>
                   <th>
                     <span className="sort">
                       Ausgestellt / Gültig bis{' '}
-                      <ChevronsUpDown style={{ width: 12, height: 12 }} />
+                      <ChevronsUpDown style={{ width: 12, height: 12 }} aria-hidden="true" />
                     </span>
                   </th>
                   <th>Aktionen</th>
@@ -262,10 +288,26 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
                               <av.Icon />
                             </span>
                             <div>
-                              <div className="t">{doc.titel}</div>
-                              {doc.dokument_nr ? (
-                                <div className="s">{doc.dokument_nr}</div>
-                              ) : null}
+                              <div className="t">
+                                {doc.titel}{' '}
+                                {newDocIds.has(doc.id) ? (
+                                  <span className="nav-neu-dot" aria-hidden="true" />
+                                ) : null}
+                              </div>
+                              <div className="s" style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                                {doc.dokument_nr ? <span>{doc.dokument_nr}</span> : null}
+                                <span className="badge" style={{ fontFamily: 'var(--mono, monospace)' }}>
+                                  {doc.watermark}
+                                </span>
+                                {doc.vorgang_id ? (
+                                  <Link
+                                    href={`/vorgaenge/umzug/${doc.vorgang_id}`}
+                                    className="gehoert-zu-chip"
+                                  >
+                                    {tShared('gehoert_zu', { vorgang: 'Umzug' })}
+                                  </Link>
+                                ) : null}
+                              </div>
                             </div>
                           </div>
                         </td>
@@ -312,9 +354,20 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
                             <button type="button" aria-label="Herunterladen">
                               <Download />
                             </button>
-                            <button type="button" aria-label="Mehr">
-                              <MoreVertical />
-                            </button>
+                            {doc.eudi_compatible ? (
+                              <button
+                                type="button"
+                                aria-label={tEudi('button')}
+                                title={tEudi('button')}
+                                onClick={() => setEudiDoc(doc)}
+                              >
+                                <Wallet />
+                              </button>
+                            ) : (
+                              <button type="button" aria-label="Mehr">
+                                <MoreVertical />
+                              </button>
+                            )}
                           </div>
                         </td>
                       </tr>
@@ -462,6 +515,14 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
           </div>
         </div>
       </div>
+
+      <EudiExportDialog
+        open={!!eudiDoc}
+        doc={eudiDoc}
+        onOpenChange={(next) => {
+          if (!next) setEudiDoc(null);
+        }}
+      />
     </>
   );
 }

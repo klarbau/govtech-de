@@ -8,7 +8,7 @@
       "buergeramt-berlin-friedrichshain-kreuzberg",
       "bundesdruckerei",
       "abh-berlin-lea",
-      "finanzamt-koerperschaften-i-berlin"
+      "finanzamt-berlin-mitte-tiergarten"
     ],
     "schritte": [
       {
@@ -16,7 +16,7 @@
         "behoerde_id": "buergeramt-berlin-friedrichshain-kreuzberg",
         "block": "A",
         "aktion": "Anmeldung neuer Wohnort nach § 17 BMG",
-        "rechtsgrundlage": "§ 17 BMG",
+        "rechtsgrundlage": "§ 17 Abs. 1 BMG",
         "status": "confirmed",
         "started_at": "2024-09-18T08:30:00.000Z",
         "completed_at": "2024-09-18T08:42:00.000Z",
@@ -38,7 +38,7 @@
         "behoerde_id": "abh-berlin-lea",
         "block": "D",
         "aktion": "Adresseintrag auf eAT-Karte",
-        "rechtsgrundlage": "§ 87 AufenthG",
+        "rechtsgrundlage": "§ 18 PAuswG",
         "status": "confirmed",
         "started_at": "2024-09-25T09:00:00.000Z",
         "completed_at": "2024-10-08T14:30:00.000Z",
@@ -46,10 +46,10 @@
       },
       {
         "id": "step-anmeldung-2024-finanzamt",
-        "behoerde_id": "finanzamt-koerperschaften-i-berlin",
+        "behoerde_id": "finanzamt-berlin-mitte-tiergarten",
         "block": "A",
-        "aktion": "Erstzuordnung Steuernummer",
-        "rechtsgrundlage": "§ 39 AO + § 36 BMG",
+        "aktion": "Erstzuordnung Steuernummer nach § 19 AO",
+        "rechtsgrundlage": "§ 19 AO i.V.m. § 36 BMG",
         "status": "confirmed",
         "started_at": "2024-09-19T10:00:00.000Z",
         "completed_at": "2024-10-30T11:15:00.000Z"
@@ -79,83 +79,136 @@
     }
   },
   {
-    "id": "vg-anna-umzug-skalitzer-friedrichstr",
+    "id": "vg-anna-umzug-2026-completed",
     "typ": "umzug",
-    "titel": "Umzug",
-    "status": "in_pruefung",
+    "titel": "Umzug nach Berlin-Mitte (erledigt)",
+    "status": "abgeschlossen",
     "beteiligte_behoerden_ids": [
-      "buergeramt-berlin-friedrichshain-kreuzberg",
-      "finanzamt-koerperschaften-i-berlin",
-      "beitragsservice-koeln",
-      "bundesdruckerei",
+      "buergeramt-berlin-mitte",
+      "finanzamt-berlin-mitte-tiergarten",
+      "kfz-berlin-labo",
       "aok-nordost",
-      "kfz-berlin-labo"
+      "familienkasse-berlin-brandenburg",
+      "abh-berlin-lea",
+      "beitragsservice-koeln",
+      "arbeitgeber-mittelstand-software"
     ],
     "schritte": [
       {
-        "id": "step-anna-umzug-buergeramt",
-        "behoerde_id": "buergeramt-berlin-friedrichshain-kreuzberg",
+        "id": "step-umzug2026-buergeramt",
+        "behoerde_id": "buergeramt-berlin-mitte",
         "block": "A",
-        "aktion": "Anmeldung\nabgeschlossen",
-        "rechtsgrundlage": "§ 17 BMG",
+        "aktion": "Anmeldung neuer Wohnort nach § 17 BMG",
+        "rechtsgrundlage": "§ 17 Abs. 1 BMG (Voraussetzung: § 19 BMG erfüllt)",
+        "agent_label": "Wir melden Sie beim Einwohnermeldeamt an",
+        "datenkategorien": ["neue_anschrift", "einzugsdatum", "familienstand"],
         "status": "confirmed",
-        "started_at": "2026-05-08T10:40:00.000Z",
-        "completed_at": "2026-05-08T10:52:00.000Z",
-        "letter_id": "letter-buergeramt-meldebestaetigung-anmeldung"
+        "started_at": "@now-1d",
+        "completed_at": "@now-1d",
+        "letter_id": "letter-umzug2026-buergeramt-bestaetigung"
       },
       {
-        "id": "step-anna-umzug-finanzamt",
-        "behoerde_id": "finanzamt-koerperschaften-i-berlin",
+        "id": "step-umzug2026-finanzamt",
+        "behoerde_id": "finanzamt-berlin-mitte-tiergarten",
         "block": "A",
-        "aktion": "Adressänderung\nübermittelt",
-        "rechtsgrundlage": "§ 36 BMG i.V.m. § 139b AO",
+        "aktion": "Mitteilung örtliche Zuständigkeit nach § 19 AO",
+        "rechtsgrundlage": "§ 19 AO i.V.m. § 36 BMG",
+        "agent_label": "Wir melden Ihre neue Anschrift an Ihr Wohnsitz-Finanzamt",
+        "datenkategorien": ["neue_anschrift", "steuer_id"],
         "status": "confirmed",
-        "started_at": "2026-05-08T10:52:00.000Z",
-        "completed_at": "2026-05-08T11:05:00.000Z"
+        "started_at": "@now-1d",
+        "completed_at": "@now-1d",
+        "letter_id": "letter-umzug2026-finanzamt-bestaetigung"
       },
       {
-        "id": "step-anna-umzug-beitragsservice",
-        "behoerde_id": "beitragsservice-koeln",
-        "block": "A",
-        "aktion": "Daten aktualisiert",
-        "rechtsgrundlage": "§ 11 Abs. 4 RBStV i.V.m. § 36 BMG",
-        "status": "confirmed",
-        "started_at": "2026-05-08T11:05:00.000Z",
-        "completed_at": "2026-05-08T11:18:00.000Z"
-      },
-      {
-        "id": "step-anna-umzug-bundesdruckerei",
-        "behoerde_id": "bundesdruckerei",
-        "block": "A",
-        "aktion": "Ausweis ändern\nin Bearbeitung",
-        "rechtsgrundlage": "§ 28 PAuswG",
-        "status": "in_progress",
-        "started_at": "2026-05-08T11:24:00.000Z"
-      },
-      {
-        "id": "step-anna-umzug-aok",
-        "behoerde_id": "aok-nordost",
-        "block": "B",
-        "aktion": "Krankenkasse\ninformieren",
-        "rechtsgrundlage": "Art. 6 Abs. 1 lit. b DSGVO",
-        "status": "pending"
-      },
-      {
-        "id": "step-anna-umzug-kfz",
+        "id": "step-umzug2026-kfz",
         "behoerde_id": "kfz-berlin-labo",
         "block": "D",
-        "aktion": "Halteranschrift\naktualisiert",
-        "rechtsgrundlage": "§ 15 FZV (2023)",
+        "aktion": "Adressänderung Fahrzeugschein nach § 15 FZV",
+        "rechtsgrundlage": "§ 15 FZV + § 18 PAuswG eID",
+        "agent_label": "Wir aktualisieren die Anschrift in Ihren Fahrzeugpapieren",
+        "datenkategorien": ["neue_anschrift", "kennzeichen"],
         "status": "confirmed",
-        "started_at": "2026-05-08T11:18:00.000Z",
-        "completed_at": "2026-05-08T11:24:00.000Z",
-        "eid_confirmed_at": "2026-05-08T11:23:00.000Z"
+        "started_at": "@now-1d",
+        "completed_at": "@now-1d",
+        "eid_confirmed_at": "@now-1d",
+        "letter_id": "letter-umzug2026-kfz-bestaetigung"
+      },
+      {
+        "id": "step-umzug2026-aok",
+        "behoerde_id": "aok-nordost",
+        "block": "B",
+        "aktion": "Adressänderung Versichertenkonto",
+        "rechtsgrundlage": "Art. 6 Abs. 1 lit. a DSGVO i.V.m. § 206 SGB V",
+        "agent_label": "Wir aktualisieren Ihre Adresse bei Ihrer Krankenkasse",
+        "datenkategorien": ["neue_anschrift", "einzugsdatum", "versichertennummer"],
+        "status": "confirmed",
+        "started_at": "@now-1d",
+        "completed_at": "@now-1d",
+        "consent_given_at": "@now-1d",
+        "requires_consent": true
+      },
+      {
+        "id": "step-umzug2026-beitragsservice",
+        "behoerde_id": "beitragsservice-koeln",
+        "block": "A",
+        "aktion": "Adressänderung Beitragskonto nach § 11 Abs. 4 RBStV",
+        "rechtsgrundlage": "§ 11 Abs. 4 RBStV i.V.m. § 36 BMG",
+        "agent_label": "Wir melden Ihre neue Anschrift dem Beitragsservice",
+        "datenkategorien": ["neue_anschrift", "einzugsdatum", "beitragsnummer"],
+        "status": "confirmed",
+        "started_at": "@now-1d",
+        "completed_at": "@now-1d",
+        "letter_id": "letter-umzug2026-beitragsservice-bestaetigung"
+      },
+      {
+        "id": "step-umzug2026-arbeitgeber",
+        "behoerde_id": "arbeitgeber-mittelstand-software",
+        "block": "B",
+        "aktion": "Adressänderung Personalstammdaten / Lohnabrechnung",
+        "rechtsgrundlage": "Art. 6 Abs. 1 lit. b DSGVO — Durchführung des Arbeitsverhältnisses",
+        "agent_label": "Wir informieren Ihren Arbeitgeber über Ihre neue Anschrift",
+        "datenkategorien": ["neue_anschrift", "einzugsdatum"],
+        "status": "confirmed",
+        "started_at": "@now-1d",
+        "completed_at": "@now-1d",
+        "consent_given_at": "@now-1d",
+        "requires_consent": true,
+        "letter_id": "letter-umzug2026-arbeitgeber-bestaetigung"
+      },
+      {
+        "id": "step-umzug2026-familienkasse",
+        "behoerde_id": "familienkasse-berlin-brandenburg",
+        "block": "D",
+        "aktion": "Veränderungsmitteilung Adresse / Zuständigkeitswechsel",
+        "rechtsgrundlage": "§§ 67/68 EStG + § 18 PAuswG eID",
+        "agent_label": "Wir melden Ihre neue Anschrift der Familienkasse",
+        "datenkategorien": ["neue_anschrift", "kindergeldnummer"],
+        "status": "confirmed",
+        "started_at": "@now-1d",
+        "completed_at": "@now-1d",
+        "eid_confirmed_at": "@now-1d"
+      },
+      {
+        "id": "step-umzug2026-abh",
+        "behoerde_id": "abh-berlin-lea",
+        "block": "D",
+        "aktion": "Adressaktualisierung Aufenthaltstitel (Termin angeboten)",
+        "rechtsgrundlage": "§ 18 PAuswG",
+        "agent_label": "Wir bereiten die Adressaktualisierung Ihres Aufenthaltstitels vor und bieten einen Termin an",
+        "datenkategorien": ["neue_anschrift", "dokumentennummer"],
+        "status": "confirmed",
+        "started_at": "@now-1d",
+        "completed_at": "@now-1d",
+        "eid_confirmed_at": "@now-1d",
+        "letter_id": "letter-umzug2026-abh-bestaetigung"
       }
     ],
     "fristen": [
-      { "typ": "bmg_17", "datum": "2026-05-22" }
+      { "typ": "bmg_17", "datum": "@now-3d" }
     ],
-    "angelegt_am": "2026-05-08T10:38:00.000Z",
+    "angelegt_am": "@now-1d",
+    "abgeschlossen_am": "@now-1d",
     "persona_id": "anna-petrov",
     "context": {
       "alte_adresse": {
@@ -172,9 +225,9 @@
         "ort": "Berlin",
         "land": "DE"
       },
-      "stichtag": "2026-05-08",
+      "stichtag": "@now-1d",
       "mock": true,
-      "note": "[MOCK – Verwaltungsdemo, keine echten Daten]"
+      "note": "[MOCK – Verwaltungsdemo, keine echten Daten] Cold-Open-Heldenlauf: vollständig erledigter Umzug."
     }
   },
   {
@@ -191,14 +244,14 @@
         "aktion": "Unterlagen zusammenstellen (Arbeitsvertrag, Gehaltsnachweise, Meldebestätigung)",
         "rechtsgrundlage": "§ 18g AufenthG",
         "status": "self_assigned",
-        "started_at": "2026-04-29T09:20:00.000Z"
+        "started_at": "@now-30d"
       }
     ],
     "fristen": [
       { "typ": "abh_termin_empfehlung", "datum": "2027-05-14" },
       { "typ": "ablauf_aufenthaltstitel", "datum": "2027-09-14" }
     ],
-    "angelegt_am": "2026-04-29T09:20:00.000Z",
+    "angelegt_am": "@now-30d",
     "persona_id": "anna-petrov"
   },
   {
@@ -215,17 +268,102 @@
         "aktion": "Nachweis zur Fortzahlung einreichen (aktuelle Meldebestätigung Lev + Betreuungsnachweis Kita)",
         "rechtsgrundlage": "§ 68 Abs. 1 EStG",
         "status": "self_assigned",
-        "started_at": "2026-05-12T09:05:00.000Z"
+        "started_at": "@now-2d"
       }
     ],
-    "fristen": [{ "typ": "nachweis", "datum": "2026-06-25" }],
-    "angelegt_am": "2026-05-12T09:05:00.000Z",
+    "fristen": [{ "typ": "nachweis", "datum": "@now+5d" }],
+    "angelegt_am": "@now-2d",
     "persona_id": "anna-petrov",
     "context": {
       "unterlagen_fehlen": true,
       "kindergeldnummer": "[MOCK] 115FK668412",
       "mock": true,
       "note": "[MOCK – Verwaltungsdemo, keine echten Daten] Warten auf Sie: angeforderte Nachweise stehen noch aus."
+    }
+  },
+  {
+    "id": "vg-schmidt-kindergeburt-mia-2026",
+    "typ": "kindergeburt",
+    "titel": "Geburt Tochter Mia",
+    "status": "in_pruefung",
+    "beteiligte_behoerden_ids": [
+      "standesamt-hamburg-eimsbuettel",
+      "familienkasse-berlin-brandenburg",
+      "tk-hamburg"
+    ],
+    "schritte": [
+      {
+        "id": "step-mia-standesamt",
+        "behoerde_id": "standesamt-hamburg-eimsbuettel",
+        "block": "A",
+        "aktion": "Beurkundung der Geburt / Geburtsurkunde",
+        "rechtsgrundlage": "§ 21 PStG",
+        "status": "confirmed",
+        "started_at": "@now-2d",
+        "completed_at": "@now-2d",
+        "letter_id": "letter-schmidt-standesamt-geburt"
+      },
+      {
+        "id": "step-mia-familienkasse",
+        "behoerde_id": "familienkasse-berlin-brandenburg",
+        "block": "C",
+        "aktion": "Kindergeld für Mia beantragen (Geburtsurkunde beifügen)",
+        "rechtsgrundlage": "§ 67 EStG",
+        "status": "self_assigned",
+        "started_at": "@now-1d"
+      },
+      {
+        "id": "step-mia-krankenkasse",
+        "behoerde_id": "tk-hamburg",
+        "block": "C",
+        "aktion": "Familienversicherung Mia anmelden",
+        "rechtsgrundlage": "§ 10 SGB V",
+        "status": "self_assigned",
+        "started_at": "@now-1d"
+      }
+    ],
+    "fristen": [{ "typ": "nachweis", "datum": "@now+14d" }],
+    "angelegt_am": "@now-2d",
+    "persona_id": "markus-schmidt",
+    "context": {
+      "mock": true,
+      "note": "[MOCK – Verwaltungsdemo, keine echten Daten] Kindergeburt-Vorgang mid-flight."
+    }
+  },
+  {
+    "id": "vg-mehmet-steuererklaerung-2024",
+    "typ": "steuer-jahr",
+    "titel": "Steuererklärung 2024",
+    "status": "in_pruefung",
+    "beteiligte_behoerden_ids": ["finanzamt-koeln-mitte"],
+    "schritte": [
+      {
+        "id": "step-mehmet-steuer-bescheid",
+        "behoerde_id": "finanzamt-koeln-mitte",
+        "block": "A",
+        "aktion": "Einkommensteuerbescheid 2024 erhalten (Mein ELSTER)",
+        "rechtsgrundlage": "§ 122a AO",
+        "status": "confirmed",
+        "started_at": "@now-4d",
+        "completed_at": "@now-4d",
+        "letter_id": "letter-mehmet-fa-steuerbescheid-2024"
+      },
+      {
+        "id": "step-mehmet-steuer-zahlung",
+        "behoerde_id": "finanzamt-koeln-mitte",
+        "block": "C",
+        "aktion": "Nachzahlung leisten / Einspruch prüfen",
+        "rechtsgrundlage": "§ 240 AO",
+        "status": "self_assigned",
+        "started_at": "@now-4d"
+      }
+    ],
+    "fristen": [{ "typ": "zahlung", "datum": "@now+12d" }],
+    "angelegt_am": "@now-4d",
+    "persona_id": "mehmet-yildiz",
+    "context": {
+      "mock": true,
+      "note": "[MOCK – Verwaltungsdemo, keine echten Daten] Steuererklärung-Vorgang mid-flight."
     }
   }
 ]

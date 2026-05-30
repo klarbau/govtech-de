@@ -252,7 +252,8 @@
       "frau": "İyi günler, Sayın {nachname}",
       "herr": "İyi günler, Sayın {nachname}",
       "neutral": "İyi günler, {vorname} {nachname}",
-      "last_login_meta": "son giriş {days} gün önce · bu cihazda"
+      "last_login_meta": "son giriş {days} gün önce · bu cihazda",
+      "guten_tag": "İyi günler, {name}"
     },
     "demo_banner": {
       "text": "Demo modu · örnek veri · orijinaller resmi posta kutularında kalır",
@@ -329,6 +330,78 @@
       "in_n_days": "Süre {days} gün içinde",
       "on_date": "Süre {datum}",
       "overdue": "Süre {datum} aşıldı"
+    },
+    "titel": "Panel",
+    "untertitel": "Mektuplar, süreler ve işlemlere ilişkin kişisel genel bakışınız",
+    "fehler": {
+      "laden": "Veriler yüklenemedi."
+    },
+    "letzter_login": "son giriş {days} gün önce · bu cihazda",
+    "prototyp_hinweis": {
+      "text": "Demo modu · örnek veri · orijinaller resmi posta kutularında kalır"
+    },
+    "seit_login": {
+      "titel": "Son girişinizden bu yana",
+      "neue_briefe": "yeni mektup",
+      "frist_naeher": "süre yaklaştı",
+      "vorgang_abgeschlossen": "işlem tamamlandı"
+    },
+    "heute": {
+      "titel": "Bugün yapılacaklar",
+      "tab_ki": "Yapay Zekâ",
+      "tab_frist": "Süre",
+      "tab_behoerde": "Makam",
+      "tab_vorgang": "İşlem",
+      "empty_title": "Bugün yapılacak bir şey yok",
+      "empty_body": "Bir şey çıktığında size haber veririz.",
+      "done": "Tamamlandı",
+      "snooze": "Daha sonra hatırlat",
+      "snooze_days": "{days} gün ertelendi",
+      "actions_label": "{titel} için işlemler"
+    },
+    "triumph": {
+      "title": "Sizin için halledildi",
+      "subtitle": "Taşınma {count} kuruma bildirildi — hiçbir şey yapmanıza gerek kalmadı.",
+      "zeitersparnis": "yaklaşık {min} dk kazanıldı",
+      "link": "İşlemi görüntüle",
+      "gerade_eben": "az önce"
+    },
+    "erledigt_feed": {
+      "title": "Sizin için otomatik halledildi",
+      "empty": "Henüz otomatik olarak hiçbir şey halledilmedi."
+    },
+    "achievement": {
+      "jahr": "Bu yıl sizin için {count} işlem halledildi"
+    },
+    "kacheln": {
+      "fristen": {
+        "titel": "Süreler",
+        "offen": "{count} açık",
+        "cta": "Görüntüle"
+      },
+      "posteingang": {
+        "titel": "Gelen kutusu",
+        "ungelesen": "{count} okunmamış",
+        "cta": "Aç"
+      },
+      "vorgaenge": {
+        "titel": "İşlemler",
+        "stand": "{laeuft} sürüyor, {abgeschlossen} tamamlandı",
+        "cta": "Görüntüle"
+      },
+      "termine": {
+        "titel": "Randevular",
+        "cta": "Görüntüle"
+      },
+      "datenschutz": {
+        "titel": "Gizlilik merkezi",
+        "aktivitaeten": "30 günde {count} etkinlik",
+        "cta": "Aç"
+      },
+      "stammdaten": {
+        "titel": "Temel veri durumu",
+        "cta": "Görüntüle"
+      }
     }
   },
   "common": {
@@ -580,7 +653,8 @@
       "termin_label_template": "Randevu: {datum}, {ort}",
       "not_found_title": "İşlem bulunamadı",
       "not_found_body": "Bu işlem mevcut değil ya da silinmiş.",
-      "back_to_dashboard": "Panele dön"
+      "back_to_dashboard": "Panele dön",
+      "dokumente_count": "{count, plural, one {# belge} other {# belge}}"
     },
     "rechtsgrundlage": {
       "bmg_17": "§ 17 BMG: taşınmadan itibaren iki hafta içinde kayıt zorunluluğu.",
@@ -2210,6 +2284,15 @@
       "sort_ausgestellt": "Düzenlenme tarihi (en yeni önce)",
       "sort_gueltig": "Geçerlilik (yakında dolacak önce)",
       "status_label": "Durum"
+    },
+    "eudi": {
+      "button": "EUDI Wallet'a aktar (önizleme)",
+      "dialog_title": "EUDI Wallet dışa aktarımı — önizleme [MOCK]",
+      "disclaimer_2027": "[MOCK] Simüle edilmiş EUDI Wallet önizlemesi. EUDI Wallet 2027'de yaygınlaştırılıyor; burada gerçek bir belge dışa aktarılmaz.",
+      "download": "Önizlemeyi indir",
+      "mock_badge": "[MOCK]",
+      "close": "Kapat",
+      "payload_label": "Belge önizlemesi (sentetik)"
     }
   },
   "termine": {
@@ -2289,7 +2372,17 @@
       "filter_title": "Bu seçim için randevu yok",
       "naechster_schritt": "Ayrıntıları görmek için bir randevu seçin."
     },
-    "error": "Randevular yüklenemedi."
+    "error": "Randevular yüklenemedi.",
+    "action": {
+      "bestaetigen": "Onayla",
+      "verschieben": "Ertele",
+      "absagen": "İptal et",
+      "confirm_cancel": "Randevu gerçekten iptal edilsin mi?",
+      "verschoben_um": "7 gün ertelendi",
+      "bestaetigt": "Onaylandı",
+      "abgesagt": "İptal edildi",
+      "vorschlag": "Önerildi"
+    }
   },
   "steuer": {
     "title": "Vergi",
@@ -2592,5 +2685,74 @@
       "started_title": "Otomatik pilot başlatıldı",
       "started_subtitle": "Bilgileriniz kontrol edildi ve zincir başlatıldı."
     }
+  },
+  "convenience": {
+    "value_receipt": {
+      "title": "Tasarrufunuz",
+      "behoerden": "kurum bilgilendirildi",
+      "zeitersparnis": "kazanılan süre (yaklaşık)",
+      "klassische_schritte": "klasik adım",
+      "ihr_aufwand": "sizin çabanız",
+      "ein_satz": "bir cümle",
+      "ca_prefix": "yakl.",
+      "minuten_suffix": "dk",
+      "disclaimer_conservative": "Temkinli tahmin. [MOCK]"
+    },
+    "step": {
+      "basis_label": "Yasal dayanak",
+      "data_label": "İletilen veriler"
+    },
+    "receipt": {
+      "toggle": "Ne iletildi?",
+      "fields_label": "İletilen veriler",
+      "basis_label": "Yasal dayanak",
+      "consent_label": "Onay verildi",
+      "minimierung_note": "Veri minimizasyonu: yalnızca bu alanlar iletilir."
+    },
+    "datenkat": {
+      "neue_anschrift": "yeni adres",
+      "einzugsdatum": "taşınma tarihi",
+      "beitragsnummer": "katkı payı numarası (Beitragsnummer)",
+      "steuer_id": "vergi kimlik numarası (Steuer-IdNr.)",
+      "versichertennummer": "sigortalı numarası (Versichertennummer)",
+      "familienstand": "medeni durum",
+      "name": "ad",
+      "geburtsdatum": "doğum tarihi",
+      "alte_anschrift": "önceki adres",
+      "wohnungsgeberbestaetigung": "konut sağlayıcı belgesi (Wohnungsgeberbestätigung)",
+      "eat_nummer": "eAT / belge numarası",
+      "kindergeldnummer": "çocuk parası numarası (Kindergeldnummer)",
+      "personalnummer": "personel numarası",
+      "kennzeichen": "araç plakası"
+    },
+    "assistant": {
+      "run_summary_intro": "Tasarrufunuzun özeti"
+    }
+  },
+  "katalog": {
+    "titel": "Otomatik pilot kataloğu",
+    "untertitel": "Otomatik pilotun sizin için üstlendiği yaşam durumları.",
+    "behoerden_label": "İlgili kurumlar",
+    "starten": "Adres değişikliğini başlat",
+    "umzug": {
+      "titel": "Adres değişikliği",
+      "beschreibung": "Tek bir onay — yeni adresinizi tüm yetkili kurumlara biz bildiririz."
+    },
+    "kindergeburt": {
+      "titel": "Çocuğun doğumu",
+      "beschreibung": "Doğum belgesi, çocuk parası ve sağlık sigortası tek bir işlemde."
+    },
+    "steuererklaerung": {
+      "titel": "Vergi beyannamesi",
+      "beschreibung": "Bilinen verilerinizden önceden doldurulmuş beyanname."
+    },
+    "status": {
+      "live": "kullanılabilir",
+      "demnaechst": "yakında"
+    }
+  },
+  "shared": {
+    "gehoert_zu": "Şuna ait: {vorgang}",
+    "neu_badge": "yeni"
   }
 }

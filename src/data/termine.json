@@ -1,9 +1,10 @@
 [
   {
     "id": "termin-anna-lea-aufenthaltstitel",
+    "owner_persona_id": "anna-petrov",
     "behoerde_id": "abh-berlin-lea",
     "vorgang_id": "vorgang-anna-aufenthaltstitel-2027-stub",
-    "datum": "2026-06-05T14:30:00.000Z",
+    "datum": "@now+7d",
     "ort": {
       "typ": "praesenz",
       "details": "Landesamt für Einwanderung — Friedrich-Krause-Ufer 24, 13353 Berlin, Wartebereich C"
@@ -20,26 +21,29 @@
     ]
   },
   {
-    "id": "termin-anna-buergeramt-ummeldung",
-    "behoerde_id": "buergeramt-berlin-friedrichshain-kreuzberg",
-    "datum": "2026-06-11T09:15:00.000Z",
+    "id": "termin-anna-lea-adressaktualisierung",
+    "owner_persona_id": "anna-petrov",
+    "behoerde_id": "abh-berlin-lea",
+    "vorgang_id": "vg-anna-umzug-2026-completed",
+    "datum": "@now+9d",
     "ort": {
       "typ": "praesenz",
-      "details": "Bürgeramt Friedrichshain-Kreuzberg — Frankfurter Allee 35/37, 10247 Berlin, Schalter 4"
+      "details": "Landesamt für Einwanderung — Friedrich-Krause-Ufer 24, 13353 Berlin, Wartebereich C"
     },
     "status": "gebucht",
-    "betreff": "Anmeldung neuer Wohnort",
-    "buchungsreferenz": "[MOCK] BA-FRIKR-2026-08841",
+    "betreff": "Adressaktualisierung Aufenthaltstitel",
+    "buchungsreferenz": "[MOCK] LEA-2026-05518",
     "kategorie": "behoerdentermin",
     "vorbereitung": [
-      { "label_i18n_key": "termine.vorbereitung.meldung" },
-      { "label_i18n_key": "termine.vorbereitung.reisepass" }
+      { "label_i18n_key": "termine.vorbereitung.alter_titel" },
+      { "label_i18n_key": "termine.vorbereitung.meldung" }
     ]
   },
   {
     "id": "termin-anna-aok-beratung",
+    "owner_persona_id": "anna-petrov",
     "behoerde_id": "aok-nordost",
-    "datum": "2026-05-21T10:30:00.000Z",
+    "datum": "@now+2d",
     "ort": {
       "typ": "video",
       "details": "AOK Nordost Video-Sprechstunde — Link wird 24 h vorher per E-Mail zugestellt"
@@ -48,20 +52,10 @@
     "betreff": "Beratung Vorsorge-Untersuchungen"
   },
   {
-    "id": "termin-anna-fa-elster",
-    "behoerde_id": "finanzamt-koerperschaften-i-berlin",
-    "datum": "2026-06-04T09:00:00.000Z",
-    "ort": {
-      "typ": "praesenz",
-      "details": "Finanzamt für Körperschaften I Berlin, Bredtschneiderstraße 5, 14057 Berlin, Raum 214"
-    },
-    "status": "bestaetigt",
-    "betreff": "ELSTER-Unterstützung Steuererklärung 2025"
-  },
-  {
     "id": "termin-anna-kinderarzt-u7",
+    "owner_persona_id": "anna-petrov",
     "behoerde_id": "kinderarzt-prenzlauer-berg",
-    "datum": "2026-06-09T14:30:00.000Z",
+    "datum": "@now+11d",
     "ort": {
       "typ": "praesenz",
       "details": "Kinderarztpraxis am Park, Winsstraße 12, 10405 Berlin"
@@ -70,5 +64,63 @@
     "betreff": "Vorsorgeuntersuchung U7 (Lev)",
     "buchungsreferenz": "[MOCK] KAP-2026-U7-0412",
     "kategorie": "buchung"
+  },
+  {
+    "id": "termin-schmidt-standesamt-geburt",
+    "owner_persona_id": "markus-schmidt",
+    "behoerde_id": "standesamt-hamburg-eimsbuettel",
+    "vorgang_id": "vg-schmidt-kindergeburt-mia-2026",
+    "datum": "@now+6d",
+    "ort": {
+      "typ": "praesenz",
+      "details": "Standesamt Hamburg-Eimsbüttel, Grindelberg 66, 20144 Hamburg, Zimmer 4"
+    },
+    "status": "bestaetigt",
+    "betreff": "Abholung Geburtsurkunde Mia",
+    "buchungsreferenz": "[MOCK] HH-STA-2026-08841",
+    "kategorie": "behoerdentermin",
+    "vorbereitung": [
+      { "label_i18n_key": "termine.vorbereitung.reisepass" }
+    ]
+  },
+  {
+    "id": "termin-schmidt-kinderarzt-u3",
+    "owner_persona_id": "markus-schmidt",
+    "behoerde_id": "kinderarzt-prenzlauer-berg",
+    "datum": "@now+13d",
+    "ort": {
+      "typ": "praesenz",
+      "details": "Kinderarztpraxis Eppendorf, Hamburg"
+    },
+    "status": "gebucht",
+    "betreff": "Vorsorgeuntersuchung U3 (Mia)",
+    "kategorie": "buchung"
+  },
+  {
+    "id": "termin-mehmet-fa-beratung",
+    "owner_persona_id": "mehmet-yildiz",
+    "behoerde_id": "finanzamt-koeln-mitte",
+    "vorgang_id": "vg-mehmet-steuererklaerung-2024",
+    "datum": "@now+8d",
+    "ort": {
+      "typ": "telefon",
+      "details": "Finanzamt Köln-Mitte — telefonische Rückfrage, Durchwahl per E-Mail"
+    },
+    "status": "gebucht",
+    "betreff": "Rückfrage Einkommensteuer 2024",
+    "kategorie": "behoerdentermin"
+  },
+  {
+    "id": "termin-mehmet-ihk-gruendung",
+    "owner_persona_id": "mehmet-yildiz",
+    "behoerde_id": "ihk-koeln",
+    "datum": "@now+20d",
+    "ort": {
+      "typ": "video",
+      "details": "IHK Köln — Online-Beratung Selbstständige"
+    },
+    "status": "gebucht",
+    "betreff": "Beratung Beitragsfestsetzung",
+    "kategorie": "behoerdentermin"
   }
 ]

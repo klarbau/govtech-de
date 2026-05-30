@@ -17,6 +17,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 
+import { ValueReceiptCard } from '@/components/autopilot/ValueReceiptCard';
 import { api } from '@/lib/mock-backend';
 import type {
   AutopilotStep,
@@ -26,6 +27,7 @@ import type {
   BlockTyp,
   Letter,
   MockBackendEvent,
+  ValueReceipt,
   Vorgang,
 } from '@/types';
 
@@ -40,6 +42,8 @@ interface CascadeNode {
   behoerdeName: string;
   status: AutopilotStepStatus;
   aktion: string;
+  /** Delegierte Agent-Stimme (§B3) — Primärzeile, falls vorhanden. */
+  agentLabel?: string;
   timestamp: string | null;
 }
 
@@ -122,6 +126,8 @@ function UmzugRunInner() {
 
   const [vorgang, setVorgang] = useState<Vorgang | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [receipt, setReceipt] = useState<ValueReceipt | null>(null);
+  const receiptFetchedRef = React.useRef(false);
   const [behoerdenById, setBehoerdenById] = useState<
     Record<BehoerdeId, Pick<Behoerde, 'name_de' | 'kategorie'>>
   >({});
@@ -201,6 +207,27 @@ function UmzugRunInner() {
     };
   }, []);
 
+  /* B1: once the run is complete, fetch the value receipt exactly once. The
+   * id resolves whether we came in with a live vorgangId or fell back to the
+   * seeded Umzug. */
+  useEffect(() => {
+    if (!vorgang || vorgang.status !== 'abgeschlossen') return;
+    if (receiptFetchedRef.current) return;
+    receiptFetchedRef.current = true;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const r = await api.getValueReceipt(vorgang.id);
+        if (!cancelled) setReceipt(r);
+      } catch {
+        // receipt is nice-to-have
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [vorgang]);
+
   /* Derive cascade nodes — block C filtered out, sorted A → D → B.
    * While the Vorgang is still loading the empty array yields graceful
    * placeholder slots (see displayNodes). */
@@ -220,6 +247,7 @@ function UmzugRunInner() {
         behoerdeName: behoerdenById[step.behoerde_id]?.name_de ?? step.behoerde_id,
         status: step.status,
         aktion: step.aktion,
+        agentLabel: step.agent_label,
         timestamp: formatHHmm(step.completed_at ?? step.started_at),
       }));
   }, [vorgang, behoerdenById]);
@@ -261,7 +289,7 @@ function UmzugRunInner() {
           pipClass: state === 'done' ? '' : 'brand',
           iconToneClass: state === 'done' ? 'green' : '',
           behoerdeName: n.behoerdeName,
-          aktion: n.aktion,
+          aktion: n.agentLabel ?? n.aktion,
           badgeLabel: label,
           badgeVariant: variant,
         };
@@ -310,6 +338,12 @@ function UmzugRunInner() {
         </span>
       </div>
 
+      {receipt ? (
+        <div style={{ marginBottom: 20 }}>
+          <ValueReceiptCard receipt={receipt} variant="live" />
+        </div>
+      ) : null}
+
       <div className="cascade">
         <div className="cascade-rail">
           <div className="cascade-track">
@@ -354,7 +388,7 @@ function UmzugRunInner() {
                   <Icon />
                 </span>
                 <div className="t">{n.behoerdeName}</div>
-                <div className="s">{n.aktion}</div>
+                <div className="s">{n.agentLabel ?? n.aktion}</div>
                 <div className="time">
                   {n.timestamp ? `${n.timestamp} Uhr` : state === 'pending' ? 'Wird gestartet' : '—'}
                 </div>

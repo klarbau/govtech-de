@@ -252,7 +252,8 @@
       "frau": "Guten Tag, Frau {nachname}",
       "herr": "Guten Tag, Herr {nachname}",
       "neutral": "Guten Tag, {vorname} {nachname}",
-      "last_login_meta": "letzter Login vor {days} Tagen · auf diesem Gerät"
+      "last_login_meta": "letzter Login vor {days} Tagen · auf diesem Gerät",
+      "guten_tag": "Guten Tag, {name}"
     },
     "demo_banner": {
       "text": "Demo-Modus · Mock-Daten · Originale liegen in den amtlichen Postfächern",
@@ -329,7 +330,79 @@
     "error": {
       "load": "Das Dashboard konnte nicht geladen werden."
     },
-    "loading": "Dashboard wird geladen"
+    "loading": "Dashboard wird geladen",
+    "titel": "Dashboard",
+    "untertitel": "Ihr persönlicher Überblick über Briefe, Fristen und Vorgänge",
+    "fehler": {
+      "laden": "Daten konnten nicht geladen werden."
+    },
+    "letzter_login": "letzter Login vor {days} Tagen · auf diesem Gerät",
+    "prototyp_hinweis": {
+      "text": "Demo-Modus · Mock-Daten · Originale liegen in den amtlichen Postfächern"
+    },
+    "seit_login": {
+      "titel": "Seit Ihrem letzten Login",
+      "neue_briefe": "neue Briefe",
+      "frist_naeher": "Frist näher gerückt",
+      "vorgang_abgeschlossen": "Vorgang abgeschlossen"
+    },
+    "heute": {
+      "titel": "Heute zu tun",
+      "tab_ki": "KI",
+      "tab_frist": "Frist",
+      "tab_behoerde": "Behörde",
+      "tab_vorgang": "Vorgang",
+      "empty_title": "Heute nichts zu tun",
+      "empty_body": "Wir melden uns, wenn etwas ansteht.",
+      "done": "Erledigt",
+      "snooze": "Später erinnern",
+      "snooze_days": "Um {days} Tage verschoben",
+      "actions_label": "Aktionen für {titel}"
+    },
+    "triumph": {
+      "title": "Erledigt für Sie",
+      "subtitle": "Umzug an {count} Behörden gemeldet — Sie mussten nichts tun.",
+      "zeitersparnis": "ca. {min} Min gespart",
+      "link": "Vorgang ansehen",
+      "gerade_eben": "gerade eben"
+    },
+    "erledigt_feed": {
+      "title": "Automatisch erledigt für Sie",
+      "empty": "Noch nichts automatisch erledigt."
+    },
+    "achievement": {
+      "jahr": "{count} Vorgänge dieses Jahr für Sie erledigt"
+    },
+    "kacheln": {
+      "fristen": {
+        "titel": "Fristen",
+        "offen": "{count} offen",
+        "cta": "Ansehen"
+      },
+      "posteingang": {
+        "titel": "Posteingang",
+        "ungelesen": "{count} ungelesen",
+        "cta": "Öffnen"
+      },
+      "vorgaenge": {
+        "titel": "Vorgänge",
+        "stand": "{laeuft} läuft, {abgeschlossen} abgeschlossen",
+        "cta": "Ansehen"
+      },
+      "termine": {
+        "titel": "Termine",
+        "cta": "Ansehen"
+      },
+      "datenschutz": {
+        "titel": "Datenschutz-Cockpit",
+        "aktivitaeten": "{count} Aktivitäten in 30 Tagen",
+        "cta": "Öffnen"
+      },
+      "stammdaten": {
+        "titel": "Stammdaten-Status",
+        "cta": "Ansehen"
+      }
+    }
   },
   "common": {
     "cta": {
@@ -583,7 +656,8 @@
       "termin_label_template": "Termin: {datum}, {ort}",
       "not_found_title": "Vorgang nicht gefunden",
       "not_found_body": "Dieser Vorgang existiert nicht oder wurde gelöscht.",
-      "back_to_dashboard": "Zurück zum Dashboard"
+      "back_to_dashboard": "Zurück zum Dashboard",
+      "dokumente_count": "{count, plural, one {# Dokument} other {# Dokumente}}"
     },
     "rechtsgrundlage": {
       "bmg_17": "§ 17 BMG: Anmeldepflicht innerhalb von zwei Wochen nach Einzug.",
@@ -2442,6 +2516,15 @@
       "sort_ausgestellt": "Ausgestellt (neueste zuerst)",
       "sort_gueltig": "Gültigkeit (bald ablaufend zuerst)",
       "status_label": "Status"
+    },
+    "eudi": {
+      "button": "In EUDI Wallet exportieren (Vorschau)",
+      "dialog_title": "EUDI-Wallet-Export — Vorschau [MOCK]",
+      "disclaimer_2027": "[MOCK] Simulierte EUDI-Wallet-Vorschau. Die EUDI Wallet befindet sich 2027 im Rollout; hier wird kein echter Nachweis exportiert.",
+      "download": "Vorschau herunterladen",
+      "mock_badge": "[MOCK]",
+      "close": "Schließen",
+      "payload_label": "Nachweis-Vorschau (synthetisch)"
     }
   },
   "termine": {
@@ -2521,7 +2604,17 @@
       "filter_title": "Keine Termine für diese Auswahl",
       "naechster_schritt": "Wählen Sie einen Termin, um die Details zu sehen."
     },
-    "error": "Termine konnten nicht geladen werden."
+    "error": "Termine konnten nicht geladen werden.",
+    "action": {
+      "bestaetigen": "Bestätigen",
+      "verschieben": "Verschieben",
+      "absagen": "Absagen",
+      "confirm_cancel": "Termin wirklich absagen?",
+      "verschoben_um": "Um 7 Tage verschoben",
+      "bestaetigt": "Bestätigt",
+      "abgesagt": "Abgesagt",
+      "vorschlag": "Vorgeschlagen"
+    }
   },
   "steuer": {
     "title": "Steuer",
@@ -2824,5 +2917,74 @@
       "started_title": "Autopilot gestartet",
       "started_subtitle": "Ihre Angaben wurden geprüft und die Kaskade gestartet."
     }
+  },
+  "convenience": {
+    "value_receipt": {
+      "title": "Ihre Ersparnis",
+      "behoerden": "Behörden informiert",
+      "zeitersparnis": "Zeit gespart (ca.)",
+      "klassische_schritte": "klassische Schritte",
+      "ihr_aufwand": "Ihr Aufwand",
+      "ein_satz": "ein Satz",
+      "ca_prefix": "ca.",
+      "minuten_suffix": "Min",
+      "disclaimer_conservative": "Konservative Schätzung. [MOCK]"
+    },
+    "step": {
+      "basis_label": "Rechtsgrundlage",
+      "data_label": "Übermittelte Daten"
+    },
+    "receipt": {
+      "toggle": "Was wurde übermittelt?",
+      "fields_label": "Übermittelte Daten",
+      "basis_label": "Rechtsgrundlage",
+      "consent_label": "Einwilligung erteilt am",
+      "minimierung_note": "Datenminimierung: nur diese Felder werden übermittelt."
+    },
+    "datenkat": {
+      "neue_anschrift": "neue Anschrift",
+      "einzugsdatum": "Einzugsdatum",
+      "beitragsnummer": "Beitragsnummer",
+      "steuer_id": "Steuer-Identifikationsnummer",
+      "versichertennummer": "Versichertennummer",
+      "familienstand": "Familienstand",
+      "name": "Name",
+      "geburtsdatum": "Geburtsdatum",
+      "alte_anschrift": "alte Anschrift",
+      "wohnungsgeberbestaetigung": "Wohnungsgeberbestätigung",
+      "eat_nummer": "eAT-/Dokumentennummer",
+      "kindergeldnummer": "Kindergeldnummer",
+      "personalnummer": "Personalnummer",
+      "kennzeichen": "Kennzeichen"
+    },
+    "assistant": {
+      "run_summary_intro": "Zusammenfassung Ihrer Ersparnis"
+    }
+  },
+  "katalog": {
+    "titel": "Autopilot-Katalog",
+    "untertitel": "Lebenslagen, die der Autopilot für Sie übernimmt.",
+    "behoerden_label": "Beteiligte Stellen",
+    "starten": "Umzug starten",
+    "umzug": {
+      "titel": "Umzug",
+      "beschreibung": "Eine Bestätigung — wir melden Ihre neue Anschrift bei allen zuständigen Stellen."
+    },
+    "kindergeburt": {
+      "titel": "Geburt eines Kindes",
+      "beschreibung": "Geburtsurkunde, Kindergeld und Krankenversicherung in einem Vorgang."
+    },
+    "steuererklaerung": {
+      "titel": "Steuererklärung",
+      "beschreibung": "Vorausgefüllte Erklärung aus Ihren bekannten Daten."
+    },
+    "status": {
+      "live": "verfügbar",
+      "demnaechst": "demnächst"
+    }
+  },
+  "shared": {
+    "gehoert_zu": "Gehört zu: {vorgang}",
+    "neu_badge": "neu"
   }
 }

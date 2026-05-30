@@ -1,6 +1,6 @@
 import type { BehoerdeId } from './behoerde';
 
-export type TerminStatus = 'gebucht' | 'bestaetigt' | 'abgesagt';
+export type TerminStatus = 'gebucht' | 'bestaetigt' | 'abgesagt' | 'verschoben';
 export type TerminOrtTyp = 'praesenz' | 'video' | 'telefon';
 
 export interface TerminOrt {
@@ -40,6 +40,8 @@ export interface Termin {
   vorbereitung?: TerminVorbereitungItem[];
   /** Optionale Kategorie-Markierung für Filter; sonst aus `ort.typ` abgeleitet. */
   kategorie?: TerminKategorie;
+  /** Besitzer-Persona (Owner-Filter, §A3). Neue Seeds tragen das Feld immer. */
+  owner_persona_id?: string;
 }
 
 /** Kategorie eines Reminders (Redesign-Termine). */
@@ -62,4 +64,11 @@ export interface Reminder {
   kategorie: ReminderKategorie;
   /** Maschinenlesbarer Frist-Typ, falls aus Vorgang ("bmg_17", …). */
   frist_typ?: string;
+  /** Besitzer-Persona (Owner-Filter, §A3). Neue Seeds tragen das Feld immer. */
+  owner_persona_id?: string;
+  /**
+   * Erledigt-Status (§A1 "overdue-but-handled" / §C4 markReminderDone). Wenn
+   * `true`, gilt die Frist als bereits abgearbeitet — überfällig aber gehandhabt.
+   */
+  erledigt?: boolean;
 }

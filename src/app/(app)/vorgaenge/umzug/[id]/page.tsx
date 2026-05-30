@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
+import { ValueReceiptCard } from '@/components/autopilot/ValueReceiptCard';
 import { LetterCard } from '@/components/posteingang/LetterCard';
 import { DatenschutzCockpitLink } from '@/components/shared/DatenschutzCockpitLink';
 import { FristDetailModal } from '@/components/shared/FristDetailModal';
@@ -15,8 +16,10 @@ import type {
   Adresse,
   Behoerde,
   BehoerdeId,
+  Document,
   Letter,
   Termin,
+  ValueReceipt,
   Vorgang,
 } from '@/types';
 
@@ -102,6 +105,24 @@ export default async function UmzugDetailPage({ params }: UmzugDetailPageProps) 
   const adresseNeu = readAdresseFromContext(vorgang.context, 'neue_adresse');
   const stichtag = readStichtagFromContext(vorgang.context);
 
+  // A4 / B1: completed Umzug shows its value receipt; A5: minted artefacts
+  // (Meldebestätigung, Zulassungsbescheinigung, …) deep-linked via getVorgangRelated.
+  let receipt: ValueReceipt | null = null;
+  let relatedDocuments: Document[] = [];
+  if (vorgang.status === 'abgeschlossen') {
+    try {
+      receipt = await api.getValueReceipt(id);
+    } catch {
+      receipt = null;
+    }
+  }
+  try {
+    const related = await api.getVorgangRelated(id);
+    relatedDocuments = related.documents;
+  } catch {
+    relatedDocuments = [];
+  }
+
   return (
     <div className="flex flex-col gap-8">
       <VorgangHeader
@@ -111,6 +132,8 @@ export default async function UmzugDetailPage({ params }: UmzugDetailPageProps) 
         stichtagIso={stichtag}
       />
 
+      {receipt ? <ValueReceiptCard receipt={receipt} variant="static" /> : null}
+
       {adresseNeu ? <AdresseDiff alt={adresseAlt} neu={adresseNeu} /> : null}
 
       <BehoerdenStatusList
@@ -118,6 +141,10 @@ export default async function UmzugDetailPage({ params }: UmzugDetailPageProps) 
         behoerdenById={behoerdenById}
         lettersById={lettersById}
       />
+
+      {relatedDocuments.length > 0 ? (
+        <VorgangDocuments documents={relatedDocuments} behoerdenById={behoerdenById} />
+      ) : null}
 
       {termine.length > 0 ? (
         <section
@@ -178,6 +205,46 @@ export default async function UmzugDetailPage({ params }: UmzugDetailPageProps) 
 
       <PrototypeDisclaimer />
     </div>
+  );
+}
+
+async function VorgangDocuments({
+  documents,
+  behoerdenById,
+}: {
+  documents: Document[];
+  behoerdenById: Record<BehoerdeId, Pick<Behoerde, 'name_de' | 'kategorie'>>;
+}) {
+  const t = await getTranslations('umzug.detail');
+  return (
+    <section aria-labelledby="vorgang-docs" className="flex flex-col gap-3">
+      <h2 id="vorgang-docs" className="text-sm font-medium text-foreground">
+        {t('dokumente_count', { count: documents.length })}
+      </h2>
+      <ul className="grid gap-3 sm:grid-cols-2">
+        {documents.map((doc) => (
+          <li key={doc.id}>
+            <Link
+              href="/dokumente"
+              className="flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-shadow hover:shadow-sm"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-sm font-medium text-foreground">
+                  {doc.titel}
+                </span>
+                <span className="rounded-full bg-muted px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
+                  {doc.watermark}
+                </span>
+              </div>
+              <span className="text-xs text-muted-foreground">
+                {behoerdenById[doc.ausstellende_behoerde_id]?.name_de ??
+                  doc.ausstellende_behoerde_id}
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 

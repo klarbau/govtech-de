@@ -50,6 +50,13 @@ export interface Document {
   watermark: '[MOCK]';
   /** Optionaler Bezug zu einem Vorgang (z. B. Wohnungsgeberbestätigung → Umzug). */
   vorgang_id?: string;
+  /**
+   * Besitzer-Persona (Owner-Filter, §A3). Verhindert, dass Dokumente einer
+   * Persona für eine andere sichtbar werden. Optional für Legacy-Seeds; der
+   * Owner-Filter behandelt fehlenden Owner als "gehört keiner anderen Persona"
+   * NICHT — neue Seeds tragen das Feld immer.
+   */
+  owner_persona_id?: string;
 
   // ---------------------------------------------------------------------------
   // Redesign-Dokumente — additive optionale Felder (`redesign-dokumente.md` § 6).
