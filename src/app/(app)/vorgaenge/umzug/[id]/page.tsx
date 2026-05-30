@@ -187,12 +187,11 @@ export default async function UmzugDetailPage({ params }: UmzugDetailPageProps) 
           </h2>
           <ul className="flex flex-col gap-2">
             {letters.map((letter) => (
-              <li key={letter.id}>
-                <LetterCard
-                  letter={letter}
-                  absender={behoerdenById[letter.absender_behoerde_id]}
-                />
-              </li>
+              <LetterCard
+                key={letter.id}
+                letter={letter}
+                absender={behoerdenById[letter.absender_behoerde_id]}
+              />
             ))}
           </ul>
         </section>

@@ -124,7 +124,7 @@ export function MobileNav() {
           <div className="gt-sidebar-bottom">
             <div className="gt-nav-divider" />
             <nav className="gt-nav">
-              <Link href="#">
+              <Link href="/assistent">
                 <HelpCircle aria-hidden="true" />
                 <span>{tShell('sidebar.help')}</span>
               </Link>
