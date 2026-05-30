@@ -42,6 +42,10 @@ interface BlockAEntry {
   behoerdeId: string;
   aktion: string;
   rechtsgrundlage: string;
+  /** Delegierte Agent-Stimme (§B3) — DE-Primärzeile. */
+  agentLabel: string;
+  /** Minimal übermittelte Datenkategorien (§B4/§D7, domain note). */
+  datenkategorien: string[];
   latencyMs: number;
   /** Briefkopf + Body-Template; `{az}`, `{neue_adresse}`, `{name}` werden ersetzt. */
   briefTemplate?: {
@@ -60,13 +64,30 @@ interface BlockBEntry {
   behoerdeId: string;
   aktion: string;
   rechtsgrundlage: string;
+  /** Delegierte Agent-Stimme (§B3) — DE-Primärzeile. */
+  agentLabel: string;
+  /** Minimal übermittelte Datenkategorien (§B4/§D7, domain note). */
+  datenkategorien: string[];
   latencyMs: number;
+  /** Sichtbarkeit über Persona-Flag steuern (z. B. Arbeitgeber nur bei `angestellt`). */
+  visibleIf?: (persona: Persona) => boolean;
+  /** Erzeugt ein Bestätigungsschreiben wie Block A (z. B. Arbeitgeber). */
+  briefTemplate?: {
+    absender: string;
+    betreffTemplate: string;
+    floskel: string;
+    abschluss: string;
+  };
 }
 
 interface BlockDEntry {
   behoerdeId: string;
   aktion: string;
   rechtsgrundlage: string;
+  /** Delegierte Agent-Stimme (§B3) — DE-Primärzeile. */
+  agentLabel: string;
+  /** Minimal übermittelte Datenkategorien (§B4/§D7, domain note). */
+  datenkategorien: string[];
   /** Persona-Flag, der die Sichtbarkeit dieses Schritts steuert (für Preview-Rendering). */
   personaFlag: 'kfz_halter' | 'kindergeld_bezug' | 'aufenthaltstitel';
   visibleIf: (persona: Persona) => boolean;
@@ -78,11 +99,17 @@ interface BlockDEntry {
   };
 }
 
+// Block A — Anker (Einwohnermeldeamt) + Wohnsitz-Finanzamt + Beitragsservice +
+// Bundesdruckerei. Normen + Datenkategorien verbatim aus
+// docs/domain/umzug-konvenienz-und-normen.md (§2 D0/D1/D5, §D7).
 const BLOCK_A: BlockAEntry[] = [
   {
     behoerdeId: 'buergeramt-berlin-mitte',
+    // D0 — §17 BMG; Wohnungsgeberbestätigung §19 BMG als erfüllte Voraussetzung (D4).
     aktion: 'Anmeldung neuer Wohnort nach § 17 BMG',
-    rechtsgrundlage: '§ 17 BMG',
+    rechtsgrundlage: '§ 17 Abs. 1 BMG (Voraussetzung: § 19 BMG erfüllt)',
+    agentLabel: 'Wir melden Sie beim Einwohnermeldeamt an',
+    datenkategorien: ['neue_anschrift', 'einzugsdatum', 'familienstand'],
     latencyMs: 900,
     briefTemplate: {
       absender:
@@ -90,36 +117,42 @@ const BLOCK_A: BlockAEntry[] = [
       betreffTemplate:
         'Ihre Anmeldung nach § 17 BMG vom {stichtag} — Aktenzeichen {az}',
       floskel:
-        'in oben genannter Angelegenheit bestätigen wir Ihre Anmeldung unter folgender Anschrift:\n\n{neue_adresse}\n\nDie Datenübermittlung an die zuständigen öffentlichen Stellen erfolgt gemäß §§ 33, 34 und 36 BMG. Die im Personalausweis hinterlegte Anschrift wird durch die Bundesdruckerei aktualisiert.',
+        'in oben genannter Angelegenheit bestätigen wir Ihre Anmeldung unter folgender Anschrift:\n\n{neue_adresse}\n\nDie Wohnungsgeberbestätigung (§ 19 BMG) lag vor. Die Datenübermittlung an die zuständigen öffentlichen Stellen erfolgt gemäß §§ 33, 34 und 36 BMG. Die im Personalausweis hinterlegte Anschrift wird durch die Bundesdruckerei aktualisiert.',
       abschluss: 'Mit freundlichen Grüßen\nIm Auftrag\nT. Klose, Sachbearbeiter:in',
     },
   },
   {
-    behoerdeId: 'finanzamt-koerperschaften-i-berlin',
-    aktion: 'Mitteilung örtliche Zuständigkeit nach § 39 AO',
-    rechtsgrundlage: '§ 39 AO + § 36 BMG',
+    // D1 — Wohnsitz-Finanzamt (§ 19 AO), NICHT Körperschaften-FA. §39 AO entfernt.
+    behoerdeId: 'finanzamt-berlin-mitte-tiergarten',
+    aktion: 'Mitteilung örtliche Zuständigkeit nach § 19 AO',
+    rechtsgrundlage: '§ 19 AO i.V.m. § 36 BMG',
+    agentLabel: 'Wir melden Ihre neue Anschrift an Ihr Wohnsitz-Finanzamt',
+    datenkategorien: ['neue_anschrift', 'steuer_id'],
     latencyMs: 1400,
     briefTemplate: {
       absender:
-        'Finanzamt für Körperschaften I Berlin\nBredtschneiderstraße 5, 14057 Berlin',
+        'Finanzamt Berlin Mitte/Tiergarten\nNeue Jakobstraße 6-7, 10179 Berlin',
       betreffTemplate:
-        'Mitteilung über die örtliche Zuständigkeit — Steuernummer {az}',
+        'Mitteilung über die örtliche Zuständigkeit nach § 19 AO — Steuernummer {az}',
       floskel:
-        'aufgrund Ihres Wohnsitzwechsels ist Ihre Steuerakte ab dem {stichtag} an unser Finanzamt abgegeben worden. Bitte verwenden Sie zukünftig die oben angegebene Steuernummer in Ihrer Korrespondenz und Ihrer ELSTER-Erklärung.\n\nDiese Mitteilung ergeht maschinell und ist auch ohne Unterschrift gültig.',
-      abschluss: 'Mit freundlichen Grüßen\nFinanzamt für Körperschaften I Berlin',
+        'aufgrund Ihres Wohnsitzwechsels richtet sich die örtliche Zuständigkeit für Ihre Einkommensteuer nach Ihrem Wohnsitz (§ 19 AO); Ihre Steuerakte ist ab dem {stichtag} an unser Finanzamt abgegeben worden. Ihre steuerliche Identifikationsnummer (§ 139b AO) bleibt unverändert; lediglich Ihre örtliche Steuernummer ändert sich durch den Zuständigkeitswechsel. Bitte verwenden Sie zukünftig die oben angegebene Steuernummer.\n\nDiese Mitteilung ergeht maschinell und ist auch ohne Unterschrift gültig.',
+      abschluss: 'Mit freundlichen Grüßen\nFinanzamt Berlin Mitte/Tiergarten',
     },
   },
   {
+    // D7 — Beitragsservice = Vorzeige-Beat (nur Anschrift+Einzugsdatum+Beitragsnr.).
     behoerdeId: 'beitragsservice-koeln',
     aktion: 'Adressänderung Beitragskonto nach § 11 Abs. 4 RBStV',
-    rechtsgrundlage: '§ 11 Abs. 4 RBStV',
+    rechtsgrundlage: '§ 11 Abs. 4 RBStV i.V.m. § 36 BMG',
+    agentLabel: 'Wir melden Ihre neue Anschrift dem Beitragsservice',
+    datenkategorien: ['neue_anschrift', 'einzugsdatum', 'beitragsnummer'],
     latencyMs: 1100,
     briefTemplate: {
       absender: 'ARD ZDF Deutschlandradio Beitragsservice, 50656 Köln',
       betreffTemplate:
         'Ihre Beitragsnummer {az} — Anschriftenänderung',
       floskel:
-        'vielen Dank für die Übermittlung. Wir haben Ihre neue Anschrift zum {stichtag} in unserem System hinterlegt:\n\n{neue_adresse}',
+        'vielen Dank für die Übermittlung. Wir haben Ihre neue Anschrift zum {stichtag} in unserem System hinterlegt:\n\n{neue_adresse}\n\nÜbermittelt wurden ausschließlich Ihre neue Anschrift, das Einzugsdatum und Ihre Beitragsnummer — nicht Ihr Familienstand oder Ihre Konfession.',
       abschluss: 'Mit freundlichen Grüßen\nBeitragsservice',
     },
   },
@@ -127,6 +160,8 @@ const BLOCK_A: BlockAEntry[] = [
     behoerdeId: 'bundesdruckerei',
     aktion: 'Beauftragung Personalausweis-Adressaufkleber nach § 28 PAuswG',
     rechtsgrundlage: '§ 28 PAuswG',
+    agentLabel: 'Wir beauftragen den Adressaufkleber für Ihren Personalausweis',
+    datenkategorien: ['neue_anschrift'],
     latencyMs: 1700,
     briefTemplate: {
       absender: 'Bundesdruckerei GmbH\nKommandantenstraße 18, 10969 Berlin',
@@ -138,35 +173,67 @@ const BLOCK_A: BlockAEntry[] = [
   },
 ];
 
+// Block B — privat/anstaltlich + Arbeitgeber, einwilligungsbasiert.
+// D3 (Krankenkasse) eine Basis: Art. 6 Abs. 1 lit. a DSGVO + § 206 SGB V.
+// D6 (Arbeitgeber) Art. 6 Abs. 1 lit. b DSGVO — spine-kritischer 6. Hop.
 const BLOCK_B: BlockBEntry[] = [
   {
     behoerdeId: 'aok-nordost',
     aktion: 'Adressänderung Versichertenkonto',
-    rechtsgrundlage: 'Art. 6 Abs. 1 lit. a DSGVO',
+    rechtsgrundlage: 'Art. 6 Abs. 1 lit. a DSGVO i.V.m. § 206 SGB V',
+    agentLabel: 'Wir aktualisieren Ihre Adresse bei Ihrer Krankenkasse',
+    datenkategorien: ['neue_anschrift', 'einzugsdatum', 'versichertennummer'],
     latencyMs: 600,
+  },
+  {
+    // D6 — Arbeitgeber (private Stelle). Gated auf `angestellt` (§16.1).
+    behoerdeId: 'arbeitgeber-mittelstand-software',
+    aktion: 'Adressänderung Personalstammdaten / Lohnabrechnung',
+    rechtsgrundlage:
+      'Art. 6 Abs. 1 lit. b DSGVO — Durchführung des Arbeitsverhältnisses',
+    agentLabel: 'Wir informieren Ihren Arbeitgeber über Ihre neue Anschrift',
+    datenkategorien: ['neue_anschrift', 'einzugsdatum'],
+    latencyMs: 700,
+    visibleIf: (p) => p.beschaeftigung?.typ === 'angestellt',
+    briefTemplate: {
+      absender: 'Mittelstand Software GmbH\nRitterstraße 12, 10969 Berlin',
+      betreffTemplate:
+        'Aktualisierung Ihrer Personalstammdaten — Personalnummer {az}',
+      floskel:
+        'wir haben Ihre neue Anschrift für Personalstammdaten und Lohnabrechnung erfasst (Art. 6 Abs. 1 lit. b DSGVO):\n\n{neue_adresse}\n\nIhre Lohnabrechnung wird ab dem nächsten Abrechnungslauf an die neue Anschrift adressiert.',
+      abschluss: 'Mit freundlichen Grüßen\nPersonalabteilung Mittelstand Software GmbH',
+    },
   },
   {
     behoerdeId: 'berliner-sparkasse',
     aktion: 'Adressänderung Bankverbindung',
     rechtsgrundlage: 'Art. 6 Abs. 1 lit. a DSGVO + AGB',
+    agentLabel: 'Wir aktualisieren Ihre Adresse bei Ihrer Bank',
+    datenkategorien: ['neue_anschrift'],
     latencyMs: 800,
   },
   {
     behoerdeId: 'allianz-hausrat',
     aktion: 'Adressänderung Versicherungsvertrag',
     rechtsgrundlage: 'Art. 6 Abs. 1 lit. a DSGVO',
+    agentLabel: 'Wir aktualisieren Ihre Adresse bei Ihrer Versicherung',
+    datenkategorien: ['neue_anschrift'],
     latencyMs: 700,
   },
   {
     behoerdeId: 'vattenfall-strom',
     aktion: 'Adressänderung Stromvertrag',
     rechtsgrundlage: 'Art. 6 Abs. 1 lit. a DSGVO',
+    agentLabel: 'Wir aktualisieren Ihre Adresse bei Ihrem Stromanbieter',
+    datenkategorien: ['neue_anschrift'],
     latencyMs: 500,
   },
   {
     behoerdeId: 'telekom',
     aktion: 'Adressänderung Mobilfunk-/Internetvertrag',
     rechtsgrundlage: 'Art. 6 Abs. 1 lit. a DSGVO',
+    agentLabel: 'Wir aktualisieren Ihre Adresse bei Ihrem Telekommunikationsanbieter',
+    datenkategorien: ['neue_anschrift'],
     latencyMs: 500,
   },
 ];
@@ -180,6 +247,8 @@ const BLOCK_D: BlockDEntry[] = [
     behoerdeId: 'kfz-berlin-labo',
     aktion: 'Pre-Fill der i-Kfz-Adressänderung gemäß § 15 FZV',
     rechtsgrundlage: '§ 15 FZV + § 18 PAuswG eID',
+    agentLabel: 'Wir aktualisieren die Anschrift in Ihren Fahrzeugpapieren',
+    datenkategorien: ['neue_anschrift', 'kennzeichen'],
     personaFlag: 'kfz_halter',
     visibleIf: (p) => p.kfz_halter === true,
     briefTemplate: {
@@ -196,6 +265,8 @@ const BLOCK_D: BlockDEntry[] = [
     behoerdeId: 'familienkasse-berlin-brandenburg',
     aktion: 'Veränderungsmitteilung Adresse / Zuständigkeitswechsel',
     rechtsgrundlage: '§§ 67/68 EStG + § 18 PAuswG eID',
+    agentLabel: 'Wir melden Ihre neue Anschrift der Familienkasse',
+    datenkategorien: ['neue_anschrift', 'kindergeldnummer'],
     personaFlag: 'kindergeld_bezug',
     visibleIf: (p) => p.kindergeld_bezug === true,
     briefTemplate: {
@@ -208,9 +279,14 @@ const BLOCK_D: BlockDEntry[] = [
     },
   },
   {
+    // D2 — eID-Basis § 18 PAuswG; §87/§86 AufenthG entfernt (Strafverfolgungs-/
+    // Erhebungskanal, NICHT Adresspflege). Kein Melderegister→ABH-Push.
     behoerdeId: 'abh-berlin-lea',
-    aktion: 'Adress-Update auf eAT-Karte + Termin-Buchung',
-    rechtsgrundlage: '§ 87 AufenthG + § 18 PAuswG eID',
+    aktion: 'Adressaktualisierung Aufenthaltstitel (Termin angeboten)',
+    rechtsgrundlage: '§ 18 PAuswG',
+    agentLabel:
+      'Wir bereiten die Adressaktualisierung Ihres Aufenthaltstitels vor und bieten einen Termin an',
+    datenkategorien: ['neue_anschrift', 'dokumentennummer'],
     personaFlag: 'aufenthaltstitel',
     visibleIf: (p) => p.aufenthaltstitel !== undefined,
     briefTemplate: {
@@ -219,7 +295,7 @@ const BLOCK_D: BlockDEntry[] = [
       betreffTemplate:
         'Ihr Aufenthaltstitel — Aktenzeichen {az}',
       floskel:
-        'in oben genannter Angelegenheit bestätigen wir die Übermittlung Ihrer neuen Anschrift. Zur Aktualisierung der auf der elektronischen Aufenthaltskarte hinterlegten Anschrift bitten wir Sie, den vereinbarten Termin wahrzunehmen.',
+        'in oben genannter Angelegenheit bestätigen wir den Eingang Ihrer Adressmeldung. Die Aktualisierung der auf der elektronischen Aufenthaltskarte hinterlegten Anschrift erfolgt nutzergesteuert über die eID-Funktion (§ 18 PAuswG); hierzu haben wir Ihnen einen Termin angeboten. Es findet kein automatischer Melderegister→Ausländerbehörde-Abgleich statt — bitte nehmen Sie den angebotenen Termin wahr.',
       abschluss: 'Mit freundlichen Grüßen\nIm Auftrag\nS. Wegener, Sachbearbeiter:in',
     },
   },
@@ -295,6 +371,39 @@ export interface UmzugAutopilotContext {
 }
 
 /**
+ * D7 — der minimale Datenkategorien-Satz je Empfänger (single source, deckt
+ * Generator-Steps + Activity-Log + Übermittlungs-Quittung). Werte verbatim aus
+ * docs/domain/umzug-konvenienz-und-normen.md §D7.
+ */
+export function datenkategorienForEmpfaenger(behoerdeId: string): string[] {
+  switch (behoerdeId) {
+    case 'buergeramt-berlin-mitte':
+    case 'buergeramt-berlin-friedrichshain-kreuzberg':
+      return ['neue_anschrift', 'einzugsdatum', 'familienstand'];
+    case 'finanzamt-berlin-mitte-tiergarten':
+    case 'finanzamt-koerperschaften-i-berlin':
+      return ['neue_anschrift', 'steuer_id'];
+    case 'beitragsservice-koeln':
+      return ['neue_anschrift', 'einzugsdatum', 'beitragsnummer'];
+    case 'aok-nordost':
+    case 'tk-hamburg':
+      return ['neue_anschrift', 'einzugsdatum', 'versichertennummer'];
+    case 'arbeitgeber-mittelstand-software':
+      return ['neue_anschrift', 'einzugsdatum'];
+    case 'kfz-berlin-labo':
+      return ['neue_anschrift', 'kennzeichen'];
+    case 'familienkasse-berlin-brandenburg':
+      return ['neue_anschrift', 'kindergeldnummer'];
+    case 'abh-berlin-lea':
+      return ['neue_anschrift', 'dokumentennummer'];
+    case 'bundesdruckerei':
+      return ['neue_anschrift'];
+    default:
+      return ['neue_anschrift'];
+  }
+}
+
+/**
  * Stammdaten-Activity-Log-Hook (Spec § 8.1). Wird pro confirmed Cascade-Schritt
  * aufgerufen und schreibt einen `UebermittlungsLogEntry` der Kategorie
  * `behoerde_zu_behoerde` (Block A) oder `app_aktivitaet` (Block B = consent-
@@ -328,6 +437,7 @@ function emitStammdatenLogForCascadeStep(opts: {
     return 'stammdaten.aktivitaet.zweck.adressuebermittlung_buergeramt_finanzamt';
   })();
 
+  // Normen verbatim aus docs/domain/umzug-konvenienz-und-normen.md §2 (D1–D6).
   const rechtsgrundlage = (() => {
     if (empfaengerBehoerdeId === 'beitragsservice-koeln') {
       return '§ 11 Abs. 4 RBStV i.V.m. § 36 BMG';
@@ -336,10 +446,16 @@ function emitStammdatenLogForCascadeStep(opts: {
       empfaengerBehoerdeId.startsWith('aok-') ||
       empfaengerBehoerdeId === 'tk-hamburg'
     ) {
-      return '§ 28a SGB IV (DEÜV)';
+      // D3 — §28a SGB IV (Arbeitgeberpflicht) entfernt; eine Basis: lit. a + §206 SGB V.
+      return 'Art. 6 Abs. 1 lit. a DSGVO i.V.m. § 206 SGB V';
     }
     if (empfaengerBehoerdeId.startsWith('finanzamt-')) {
-      return '§ 36 BMG i.V.m. § 139b AO';
+      // D1 — Wohnsitz-FA §19 AO; §139b AO nur für IdNr-Unveränderlichkeit.
+      return '§ 19 AO i.V.m. § 36 BMG';
+    }
+    if (empfaengerBehoerdeId === 'arbeitgeber-mittelstand-software') {
+      // D6 — privatrechtlich.
+      return 'Art. 6 Abs. 1 lit. b DSGVO';
     }
     if (empfaengerBehoerdeId === 'bundesdruckerei') {
       return '§ 28 PAuswG';
@@ -348,13 +464,17 @@ function emitStammdatenLogForCascadeStep(opts: {
       return '§ 15 FZV';
     }
     if (empfaengerBehoerdeId === 'abh-berlin-lea') {
-      return '§ 86 AufenthG';
+      // D2 — §86/§87 AufenthG entfernt; eID-Basis §18 PAuswG.
+      return '§ 18 PAuswG';
     }
     if (empfaengerBehoerdeId.startsWith('familienkasse-')) {
       return '§§ 67/68 EStG + § 36 BMG';
     }
     return '§ 36 BMG';
   })();
+
+  // D7 — reale Datenkategorien je Empfänger (ersetzt hardcoded `anschrift_aktuell`).
+  const datenkategorien = datenkategorienForEmpfaenger(empfaengerBehoerdeId);
 
   const entry: UebermittlungsLogEntry = {
     id: `log-${uuid()}`,
@@ -366,7 +486,7 @@ function emitStammdatenLogForCascadeStep(opts: {
     empfaenger_id: empfaengerBehoerdeId,
     zweck_i18n_key: zweck,
     rechtsgrundlage,
-    note: `persona_id:${personaId}; field_id:anschrift_aktuell; quelle:umzug_cascade; mock:true`,
+    note: `persona_id:${personaId}; field_id:anschrift_aktuell; datenkategorien:${datenkategorien.join('+')}; quelle:umzug_cascade; mock:true`,
   };
   try {
     appendLogEntry(personaId, entry);
@@ -420,6 +540,8 @@ export async function* umzugAutopilot(
         block: 'A',
         aktion: entry.aktion,
         rechtsgrundlage: entry.rechtsgrundlage,
+        agent_label: entry.agentLabel,
+        datenkategorien: entry.datenkategorien,
         status: 'in_progress',
         started_at: startedAt,
       },
@@ -436,6 +558,8 @@ export async function* umzugAutopilot(
           block: 'A',
           aktion: entry.aktion,
           rechtsgrundlage: entry.rechtsgrundlage,
+          agent_label: entry.agentLabel,
+          datenkategorien: entry.datenkategorien,
           status: 'failed',
           started_at: startedAt,
           completed_at: new Date().toISOString(),
@@ -465,6 +589,8 @@ export async function* umzugAutopilot(
         block: 'A',
         aktion: entry.aktion,
         rechtsgrundlage: entry.rechtsgrundlage,
+        agent_label: entry.agentLabel,
+        datenkategorien: entry.datenkategorien,
         status: 'confirmed',
         started_at: startedAt,
         completed_at: new Date().toISOString(),
@@ -495,6 +621,8 @@ export async function* umzugAutopilot(
         block: 'D',
         aktion: entry.aktion,
         rechtsgrundlage: entry.rechtsgrundlage,
+        agent_label: entry.agentLabel,
+        datenkategorien: entry.datenkategorien,
         status: 'pending_eid_confirmation',
         started_at: new Date().toISOString(),
         requires_eid: true,
@@ -508,6 +636,7 @@ export async function* umzugAutopilot(
   // ---------- Block B ----------
   for (const entry of BLOCK_B) {
     if (!consents.has(entry.behoerdeId)) continue;
+    if (entry.visibleIf && !entry.visibleIf(persona)) continue;
     const stepId = `step-${uuid()}`;
     const startedAt = new Date().toISOString();
     yield {
@@ -517,6 +646,8 @@ export async function* umzugAutopilot(
         block: 'B',
         aktion: entry.aktion,
         rechtsgrundlage: entry.rechtsgrundlage,
+        agent_label: entry.agentLabel,
+        datenkategorien: entry.datenkategorien,
         status: 'in_progress',
         started_at: startedAt,
         requires_consent: true,
@@ -533,6 +664,8 @@ export async function* umzugAutopilot(
           block: 'B',
           aktion: entry.aktion,
           rechtsgrundlage: entry.rechtsgrundlage,
+          agent_label: entry.agentLabel,
+          datenkategorien: entry.datenkategorien,
           status: 'failed',
           started_at: startedAt,
           completed_at: new Date().toISOString(),
@@ -542,6 +675,20 @@ export async function* umzugAutopilot(
       };
       continue;
     }
+    // Block-B-Empfänger mit Brieftemplate (z. B. Arbeitgeber) erzeugen ein
+    // Bestätigungsschreiben analog Block A.
+    let letterB: Letter | undefined;
+    if (entry.briefTemplate) {
+      letterB = buildLetter({
+        behoerdeId: entry.behoerdeId,
+        personaId: persona.id,
+        vorgangId,
+        neueAdresseFormatted,
+        stichtagFormatted,
+        empfaengerName,
+        template: entry.briefTemplate,
+      });
+    }
     yield {
       step: {
         id: stepId,
@@ -549,12 +696,16 @@ export async function* umzugAutopilot(
         block: 'B',
         aktion: entry.aktion,
         rechtsgrundlage: entry.rechtsgrundlage,
+        agent_label: entry.agentLabel,
+        datenkategorien: entry.datenkategorien,
         status: 'confirmed',
         started_at: startedAt,
         completed_at: new Date().toISOString(),
         consent_given_at: startedAt,
         requires_consent: true,
+        letter_id: letterB?.id,
       },
+      letter: letterB,
     };
 
     // Stammdaten-Activity-Log-Hook für Block B (consent-basiert; Empfänger
@@ -616,13 +767,19 @@ export function buildUmzugPreview(
     behoerde_id: e.behoerdeId,
     aktion: `${e.aktion}${adresseSuffix}${stichtagSuffix}`,
     rechtsgrundlage: e.rechtsgrundlage,
+    agent_label: e.agentLabel,
+    datenkategorien: e.datenkategorien,
     block: 'A',
   }));
 
-  const block_b: AutopilotStepDraft[] = BLOCK_B.map((e) => ({
+  const block_b: AutopilotStepDraft[] = BLOCK_B.filter(
+    (e) => !e.visibleIf || e.visibleIf(persona),
+  ).map((e) => ({
     behoerde_id: e.behoerdeId,
     aktion: e.aktion,
     rechtsgrundlage: e.rechtsgrundlage,
+    agent_label: e.agentLabel,
+    datenkategorien: e.datenkategorien,
     block: 'B',
     requires_consent: true,
   }));
@@ -658,6 +815,8 @@ export function buildUmzugPreview(
     behoerde_id: e.behoerdeId,
     aktion: e.aktion,
     rechtsgrundlage: e.rechtsgrundlage,
+    agent_label: e.agentLabel,
+    datenkategorien: e.datenkategorien,
     block: 'D',
     requires_eid: true,
     persona_flag: e.personaFlag,

@@ -174,8 +174,8 @@
         "plz": "10117",
         "ort": "Berlin",
         "uebergangs_marker_via_umzug": true,
-        "uebergangs_marker_seit": "2026-05-08T11:24:00.000Z",
-        "via_umzug_vorgang_id": "vg-anna-umzug-skalitzer-friedrichstr"
+        "uebergangs_marker_seit": "@now-1d",
+        "via_umzug_vorgang_id": "vg-anna-umzug-2026-completed"
       }
     }
   },

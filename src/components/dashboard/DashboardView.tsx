@@ -2,12 +2,15 @@
 
 import * as React from 'react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import {
   Calendar,
+  Check,
   CheckCircle2,
   ChevronRight,
   ChevronsUpDown,
   Clock,
+  Clock3,
   FileText,
   Folder,
   Gauge,
@@ -19,8 +22,11 @@ import {
   User,
 } from 'lucide-react';
 
+import { AutopilotKatalogTeaser } from '@/components/autopilot/AutopilotKatalogTeaser';
+import { ErledigtFeed } from '@/components/dashboard/ErledigtFeed';
+import { TriumphBanner } from '@/components/dashboard/TriumphBanner';
 import { api } from '@/lib/mock-backend';
-import type { DashboardSnapshot, Persona } from '@/types';
+import type { Behoerde, DashboardSnapshot, Persona } from '@/types';
 
 interface DashboardViewProps {
   nowIso: string;
@@ -31,196 +37,314 @@ const DEMO_PRIOR_LOGIN_DAYS = 23;
 type ChipTone = 'red' | 'brand' | 'amber';
 
 /**
- * `<DashboardView>` — literal port of `docs/design-prototype-v2/dashboard.html`.
- * Same DOM, same class names; data wired through `api.getProfile()` +
- * `api.getDashboard()`. No new abstractions — repeated rows are inline.
+ * `<DashboardView>` — Dashboard mit Konvenienz-Pass-1-Schicht: Triumph-Banner
+ * (§B2), „Automatisch erledigt für Sie"-Feed (§B2), ruhiger Leer-Zustand für
+ * „Heute zu tun" (§B2), Dismiss/Snooze auf To-dos (§C4), Autopilot-Katalog
+ * (§A-katalog). Daten via `api.getProfile()` + `api.getDashboard()`.
  */
 export function DashboardView({ nowIso }: DashboardViewProps) {
+  const t = useTranslations('dashboard');
   const [snapshot, setSnapshot] = React.useState<DashboardSnapshot | null>(null);
   const [persona, setPersona] = React.useState<Persona | null>(null);
+  const [behoerdenNames, setBehoerdenNames] = React.useState<Record<string, string>>({});
+  const [dismissed, setDismissed] = React.useState<Set<string>>(() => new Set());
   const [error, setError] = React.useState<string | null>(null);
   const lastSeenWrittenRef = React.useRef(false);
+
+  const reload = React.useCallback(async () => {
+    const p = await api.getProfile();
+    const priorLogin = new Date(
+      new Date(nowIso).getTime() - DEMO_PRIOR_LOGIN_DAYS * 24 * 60 * 60 * 1000,
+    ).toISOString();
+    const snap = await api.getDashboard(p.id, { last_seen_at: priorLogin });
+    setPersona(p);
+    setSnapshot(snap);
+    return p;
+  }, [nowIso]);
 
   React.useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
-        const p = await api.getProfile();
-        const priorLogin = new Date(
-          new Date(nowIso).getTime() -
-            DEMO_PRIOR_LOGIN_DAYS * 24 * 60 * 60 * 1000,
-        ).toISOString();
-        const snap = await api.getDashboard(p.id, {
-          last_seen_at: priorLogin,
-        });
+        const p = await reload();
         if (cancelled) return;
-        setPersona(p);
-        setSnapshot(snap);
         if (!lastSeenWrittenRef.current) {
           lastSeenWrittenRef.current = true;
           await api.setLastSeen(p.id, nowIso);
         }
+        try {
+          const behoerden = (await api.getBehoerden()) as Behoerde[];
+          if (!cancelled) {
+            const names: Record<string, string> = {};
+            for (const b of behoerden) names[b.id] = b.name_de;
+            setBehoerdenNames(names);
+          }
+        } catch {
+          /* names are nice-to-have */
+        }
       } catch {
-        if (!cancelled) setError('Daten konnten nicht geladen werden.');
+        if (!cancelled) setError(t('fehler.laden'));
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [nowIso]);
+  }, [nowIso, reload, t]);
 
   const anrede = greetingAnrede(snapshot, persona);
   const diff = snapshot?.diff_block ?? null;
-  const topActions = snapshot?.top_actions ?? [];
   const stammdatenSubtitle = formatStammdatenSubtitle(snapshot);
   const terminSubtitle = formatTerminSubtitle(snapshot);
+  const highlight = snapshot?.autopilot_highlight;
+  const erledigtFeed = snapshot?.erledigt_feed ?? [];
+
+  const visibleTodos = (snapshot?.top_actions ?? [])
+    .filter((a) => !dismissed.has(a.id))
+    .slice(0, 3);
+  const todosEmpty = visibleTodos.length === 0;
+
+  const loginDays = computeLoginDays(snapshot, nowIso) ?? DEMO_PRIOR_LOGIN_DAYS;
+
+  async function handleDone(reminderId: string) {
+    setDismissed((prev) => new Set(prev).add(reminderId));
+    try {
+      await api.markReminderDone(reminderId);
+      await reload();
+    } catch {
+      /* optimistic dismiss already applied */
+    }
+  }
+
+  async function handleSnooze(reminderId: string) {
+    setDismissed((prev) => new Set(prev).add(reminderId));
+    try {
+      await api.snoozeReminder(reminderId, 7);
+      await reload();
+    } catch {
+      /* optimistic dismiss already applied */
+    }
+  }
 
   return (
     <>
       <div className="gt-page-head">
-        <h1>Dashboard</h1>
-        <div className="sub">Ihr persönlicher Überblick über Briefe, Fristen und Vorgänge.</div>
+        <h1>{t('titel')}</h1>
+        <div className="sub">{t('untertitel')}</div>
       </div>
 
       <div className="dash-grid">
         <div className="greeting">
-          <h2>Guten Tag, {anrede}</h2>
-          <div className="meta">letzter Login vor 23 Tagen · auf diesem Gerät</div>
+          <h2>{t('greeting.guten_tag', { name: anrede })}</h2>
+          <div className="meta">{t('letzter_login', { days: loginDays })}</div>
           <div className="gt-banner" style={{ marginTop: '16px' }}>
             <Info />
             <div>
-              <a href="#" style={{ color: 'var(--brand-600)', fontWeight: 500 }}>
-                Demo-Modus · Mock-Daten · Originale liegen in den amtlichen Postfächern
-              </a>
+              <Link href="/datenschutz" style={{ color: 'var(--brand-600)', fontWeight: 500 }}>
+                {t('prototyp_hinweis.text')}
+              </Link>
             </div>
           </div>
         </div>
 
         <div className="since-last">
-          <h4>Seit Ihrem letzten Login</h4>
+          <h4>{t('seit_login.titel')}</h4>
           <div className="since-stat">
             <span className="icon-circle"><Mail /></span>
             <div>
               <div className="n">{diff?.neue_briefe ?? 0}</div>
-              <div className="l">neue Briefe</div>
+              <div className="l">{t('seit_login.neue_briefe')}</div>
             </div>
           </div>
           <div className="since-stat">
             <span className="icon-circle"><Clock /></span>
             <div>
               <div className="n">{diff?.fristen_naeher_gerueckt ?? 0}</div>
-              <div className="l">Frist näher gerückt</div>
+              <div className="l">{t('seit_login.frist_naeher')}</div>
             </div>
           </div>
           <div className="since-stat">
             <span className="icon-circle green"><CheckCircle2 /></span>
             <div>
               <div className="n">{diff?.vorgaenge_abgeschlossen ?? 0}</div>
-              <div className="l">Vorgang abgeschlossen</div>
+              <div className="l">{t('seit_login.vorgang_abgeschlossen')}</div>
             </div>
           </div>
         </div>
       </div>
 
+      {highlight ? (
+        <div style={{ marginTop: '24px' }}>
+          <TriumphBanner highlight={highlight} variant="static" />
+        </div>
+      ) : null}
+
       <div className="heute-card" style={{ marginTop: '24px' }}>
         <div className="heute-head">
-          <h3>Heute zu tun</h3>
+          <h3>{t('heute.titel')}</h3>
           <div className="tab-chips">
-            <button type="button" className="chip active"><Sparkles />KI</button>
+            <button type="button" className="chip active"><Sparkles />{t('heute.tab_ki')}</button>
             <button type="button" className="chip">
-              Frist <ChevronsUpDown style={{ width: '12px', height: '12px' }} />
+              {t('heute.tab_frist')} <ChevronsUpDown style={{ width: '12px', height: '12px' }} />
             </button>
-            <button type="button" className="chip">Behörde</button>
-            <button type="button" className="chip">Vorgang</button>
+            <button type="button" className="chip">{t('heute.tab_behoerde')}</button>
+            <button type="button" className="chip">{t('heute.tab_vorgang')}</button>
           </div>
         </div>
-        <div className="heute-list">
-          {topActions.slice(0, 3).map(
-            (item, idx) => {
+
+        {todosEmpty ? (
+          <div className="heute-empty">
+            <span className="he-icon" aria-hidden="true"><Check /></span>
+            <div className="he-title">{t('heute.empty_title')}</div>
+            <div className="he-body">{t('heute.empty_body')}</div>
+            <div className="he-achievement">
+              {t('achievement.jahr', {
+                count: snapshot?.vorgaenge_abgeschlossen_jahr ?? 0,
+              })}
+            </div>
+          </div>
+        ) : (
+          <div className="heute-list">
+            {visibleTodos.map((item, idx) => {
               const view = mapToHeuteItem(item, idx);
               return (
-                <Link key={view.id} href={view.href} className="heute-item">
-                  <span className={`n${idx === 2 ? ' muted' : ''}`}>{idx + 1}</span>
-                  <span className={`icon-circle ${view.iconCircleTone}`}>{view.icon}</span>
-                  <div className="body grow">
-                    <div className="t">{view.titel}</div>
-                    <div className="s">{view.subline}</div>
+                <div key={view.id} className="heute-item">
+                  <Link
+                    href={view.href}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 14,
+                      textDecoration: 'none',
+                      color: 'inherit',
+                      minWidth: 0,
+                      flex: 1,
+                    }}
+                  >
+                    <span className={`n${idx === 2 ? ' muted' : ''}`}>{idx + 1}</span>
+                    <span className={`icon-circle ${view.iconCircleTone}`}>{view.icon}</span>
+                    <div className="body grow">
+                      <div className="t">{view.titel}</div>
+                      <div className="s">{view.subline}</div>
+                    </div>
+                    <span className={`badge ${view.badgeTone}`}>{view.badgeLabel}</span>
+                  </Link>
+                  <div
+                    className="heute-actions"
+                    role="group"
+                    aria-label={t('heute.actions_label', { titel: view.titel })}
+                  >
+                    <button
+                      type="button"
+                      aria-label={t('heute.done')}
+                      title={t('heute.done')}
+                      onClick={() => handleDone(view.sourceId)}
+                    >
+                      <Check />
+                    </button>
+                    <button
+                      type="button"
+                      aria-label={t('heute.snooze')}
+                      title={t('heute.snooze')}
+                      onClick={() => handleSnooze(view.sourceId)}
+                    >
+                      <Clock3 />
+                    </button>
                   </div>
-                  <span className={`badge ${view.badgeTone}`}>{view.badgeLabel}</span>
-                  <ChevronRight style={{ color: 'var(--ink-4)' }} />
-                </Link>
+                </div>
               );
-            },
-          )}
-        </div>
+            })}
+          </div>
+        )}
       </div>
 
-      <div className="grid-cards">
+      <section
+        aria-labelledby="erledigt-feed-title"
+        className="heute-card"
+        style={{ marginTop: '24px' }}
+      >
+        <div className="heute-head">
+          <h3 id="erledigt-feed-title">{t('erledigt_feed.title')}</h3>
+        </div>
+        <ErledigtFeed items={erledigtFeed} behoerdenNames={behoerdenNames} nowIso={nowIso} />
+      </section>
+
+      <div style={{ marginTop: '24px' }}>
+        <AutopilotKatalogTeaser />
+      </div>
+
+      <div className="grid-cards" style={{ marginTop: '24px' }}>
         <div className="small-card">
           <span className="icon-circle"><Clock /></span>
           <div>
-            <h3 className="t">Fristen</h3>
-            <div className="s">{snapshot?.frist_tile.length ?? 0} offen</div>
+            <h3 className="t">{t('kacheln.fristen.titel')}</h3>
+            <div className="s">{t('kacheln.fristen.offen', { count: snapshot?.frist_tile.length ?? 0 })}</div>
             <Link className="link" href="/termine">
-              Ansehen <ChevronRight />
+              {t('kacheln.fristen.cta')} <ChevronRight />
             </Link>
           </div>
         </div>
         <div className="small-card">
           <span className="icon-circle"><Mail /></span>
           <div>
-            <h3 className="t">Posteingang</h3>
-            <div className="s">{snapshot?.posteingang_tile.ungelesen ?? 0} ungelesen</div>
+            <h3 className="t">{t('kacheln.posteingang.titel')}</h3>
+            <div className="s">{t('kacheln.posteingang.ungelesen', { count: snapshot?.posteingang_tile.ungelesen ?? 0 })}</div>
             <Link className="link" href="/posteingang">
-              Öffnen <ChevronRight />
+              {t('kacheln.posteingang.cta')} <ChevronRight />
             </Link>
           </div>
         </div>
         <div className="small-card">
           <span className="icon-circle"><Folder /></span>
           <div>
-            <h3 className="t">Vorgänge</h3>
+            <h3 className="t">{t('kacheln.vorgaenge.titel')}</h3>
             <div className="s">
               {snapshot
-                ? `${snapshot.vorgangs_stand_tile.length} läuft, ${snapshot.vorgaenge_abgeschlossen_jahr} abgeschlossen`
+                ? t('kacheln.vorgaenge.stand', {
+                    laeuft: snapshot.vorgangs_stand_tile.length,
+                    abgeschlossen: snapshot.vorgaenge_abgeschlossen_jahr,
+                  })
                 : '—'}
             </div>
             <Link className="link" href="/vorgaenge">
-              Ansehen <ChevronRight />
+              {t('kacheln.vorgaenge.cta')} <ChevronRight />
             </Link>
           </div>
         </div>
         <div className="small-card">
           <span className="icon-circle"><Calendar /></span>
           <div>
-            <h3 className="t">Termine</h3>
+            <h3 className="t">{t('kacheln.termine.titel')}</h3>
             <div className="s">{terminSubtitle}</div>
             <Link className="link" href="/termine">
-              Ansehen <ChevronRight />
+              {t('kacheln.termine.cta')} <ChevronRight />
             </Link>
           </div>
         </div>
         <div className="small-card">
           <span className="icon-circle"><Shield /></span>
           <div>
-            <h3 className="t">Datenschutz-Cockpit</h3>
+            <h3 className="t">{t('kacheln.datenschutz.titel')}</h3>
             <div className="s">
               {snapshot
-                ? `${snapshot.dsc_tile.app_activity.briefe_geoeffnet + snapshot.dsc_tile.app_activity.stammdaten_aktivitaeten} Aktivitäten in 30 Tagen`
+                ? t('kacheln.datenschutz.aktivitaeten', {
+                    count:
+                      snapshot.dsc_tile.app_activity.briefe_geoeffnet +
+                      snapshot.dsc_tile.app_activity.stammdaten_aktivitaeten,
+                  })
                 : '—'}
             </div>
             <Link className="link" href="/datenschutz">
-              Öffnen <ChevronRight />
+              {t('kacheln.datenschutz.cta')} <ChevronRight />
             </Link>
           </div>
         </div>
         <div className="small-card">
           <span className="icon-circle"><User /></span>
           <div>
-            <h3 className="t">Stammdaten-Status</h3>
+            <h3 className="t">{t('kacheln.stammdaten.titel')}</h3>
             <div className="s">{stammdatenSubtitle}</div>
             <Link className="link" href="/stammdaten">
-              Ansehen <ChevronRight />
+              {t('kacheln.stammdaten.cta')} <ChevronRight />
             </Link>
           </div>
         </div>
@@ -251,6 +375,19 @@ function greetingAnrede(
   return '';
 }
 
+/** Leitet „letzter Login vor N Tagen" aus `snapshot.last_login_at` ab (§B2). */
+function computeLoginDays(
+  snapshot: DashboardSnapshot | null,
+  nowIso: string,
+): number | null {
+  const iso = snapshot?.last_login_at ?? snapshot?.diff_block?.last_seen_at;
+  if (!iso) return null;
+  const then = new Date(iso).getTime();
+  const now = new Date(nowIso).getTime();
+  if (Number.isNaN(then) || Number.isNaN(now)) return null;
+  return Math.max(0, Math.round((now - then) / (24 * 60 * 60 * 1000)));
+}
+
 function formatStammdatenSubtitle(snapshot: DashboardSnapshot | null): string {
   const iso = snapshot?.stammdaten_tile.letzte_bestaetigung_durch_buerger;
   if (!iso) return '—';
@@ -260,9 +397,9 @@ function formatStammdatenSubtitle(snapshot: DashboardSnapshot | null): string {
 }
 
 function formatTerminSubtitle(snapshot: DashboardSnapshot | null): string {
-  const t = snapshot?.termin_tile;
-  if (!t) return '—';
-  const d = new Date(t.datum_iso);
+  const tt = snapshot?.termin_tile;
+  if (!tt) return '—';
+  const d = new Date(tt.datum_iso);
   if (Number.isNaN(d.getTime())) return '—';
   return `Nächster Termin ${formatDDMMYYYY(d)}`;
 }
@@ -275,6 +412,7 @@ function formatDDMMYYYY(d: Date): string {
 
 interface HeuteView {
   id: string;
+  sourceId: string;
   titel: string;
   subline: string;
   href: string;
@@ -293,6 +431,7 @@ function mapToHeuteItem(item: unknown, idx: number): HeuteView {
   ) {
     const ta = item as {
       id: string;
+      source_id?: string;
       titel: string;
       target_route: string;
       reason_token: string;
@@ -304,6 +443,7 @@ function mapToHeuteItem(item: unknown, idx: number): HeuteView {
       : reasonLabel(ta.reason_token);
     return {
       id: ta.id,
+      sourceId: ta.source_id ?? ta.id,
       titel: ta.titel,
       subline: sub,
       href: ta.target_route,

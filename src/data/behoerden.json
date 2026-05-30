@@ -44,6 +44,48 @@
     "bundid_postfach_anbindung": "nicht_angebunden"
   },
   {
+    "id": "finanzamt-berlin-mitte-tiergarten",
+    "name_de": "Finanzamt Berlin Mitte/Tiergarten",
+    "kategorie": "land",
+    "zustaendige_themen": [
+      "einkommensteuer",
+      "lohnsteuer",
+      "steuerliche_zustaendigkeit"
+    ],
+    "adresse": {
+      "strasse": "Neue Jakobstraße",
+      "hausnummer": "6-7",
+      "plz": "10179",
+      "ort": "Berlin",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.elster.de",
+      "supports_eudi": false
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
+  },
+  {
+    "id": "arbeitgeber-mittelstand-software",
+    "name_de": "Mittelstand Software GmbH",
+    "kategorie": "privat",
+    "zustaendige_themen": [
+      "personalstammdaten",
+      "lohnabrechnung"
+    ],
+    "adresse": {
+      "strasse": "Ritterstraße",
+      "hausnummer": "12",
+      "plz": "10969",
+      "ort": "Berlin",
+      "land": "DE"
+    },
+    "online": {
+      "supports_eudi": false
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
+  },
+  {
     "id": "kfz-berlin-labo",
     "name_de": "Landesamt für Bürger- und Ordnungsangelegenheiten — KFZ-Zulassung Berlin",
     "kategorie": "kommune",

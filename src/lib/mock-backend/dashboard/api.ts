@@ -18,6 +18,7 @@ import type {
   DashboardSnapshot,
   DashboardSortMode,
   DscSnapshot,
+  ErledigtFeedItem,
   LebenslagenHinweis,
   Letter,
   Persona,
@@ -30,6 +31,7 @@ import type {
   UebermittlungsLogEntry,
   Vorgang,
 } from '@/types';
+import { computeValueReceipt } from '../value-receipt';
 import { MockBackendError } from '../errors';
 import { withLatency } from '../latency';
 import { readOrInit, write, type CollectionKey } from '../persistence';
@@ -631,6 +633,49 @@ function buildDashboard(
       new Date(v.abgeschlossen_am).getUTCFullYear() === jahr,
   ).length;
 
+  // Triumph-Banner (§B2): jüngster abgeschlossener Umzug-Lauf mit Wertquittung.
+  const abgeschlosseneUmzuege = vorgaenge
+    .filter(
+      (v) =>
+        v.typ === 'umzug' &&
+        v.status === 'abgeschlossen' &&
+        v.abgeschlossen_am !== undefined,
+    )
+    .sort((a, b) =>
+      (b.abgeschlossen_am ?? '').localeCompare(a.abgeschlossen_am ?? ''),
+    );
+  const juengsterUmzug = abgeschlosseneUmzuege[0];
+  const value_receipt = juengsterUmzug
+    ? computeValueReceipt(juengsterUmzug)
+    : null;
+  const autopilot_highlight =
+    juengsterUmzug && value_receipt
+      ? {
+          vorgang_id: juengsterUmzug.id,
+          lebenslage: 'umzug' as const,
+          value_receipt,
+          abgeschlossen_at: juengsterUmzug.abgeschlossen_am as string,
+        }
+      : undefined;
+
+  // "Automatisch erledigt für Sie"-Feed (§B2): bestätigte Schritte abgeschlossener
+  // Autopilot-Läufe als delegierte Agent-Stimme, neueste zuerst.
+  const erledigt_feed: ErledigtFeedItem[] = abgeschlosseneUmzuege
+    .flatMap((v) =>
+      v.schritte
+        .filter((s) => s.status === 'confirmed' && s.agent_label)
+        .map((s) => ({
+          id: `erledigt-${v.id}-${s.id}`,
+          behoerde_id: s.behoerde_id,
+          agent_label: s.agent_label as string,
+          erledigt_at: s.completed_at ?? v.abgeschlossen_am ?? v.angelegt_am,
+          vorgang_id: v.id,
+          letter_id: s.letter_id,
+        })),
+    )
+    .sort((a, b) => b.erledigt_at.localeCompare(a.erledigt_at))
+    .slice(0, 10);
+
   return {
     persona_id: personaId,
     last_login_at: lastSeenAt,
@@ -658,6 +703,8 @@ function buildDashboard(
     },
     lebenslagen_hinweise: buildLebenslagenHinweise(persona),
     vorgaenge_abgeschlossen_jahr,
+    autopilot_highlight,
+    erledigt_feed,
   };
 }
 

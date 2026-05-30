@@ -252,7 +252,8 @@
       "frau": "Доброго дня, пані {nachname}",
       "herr": "Доброго дня, пане {nachname}",
       "neutral": "Доброго дня, {vorname} {nachname}",
-      "last_login_meta": "останній вхід {days} днів тому · на цьому пристрої"
+      "last_login_meta": "останній вхід {days} днів тому · на цьому пристрої",
+      "guten_tag": "Доброго дня, {name}"
     },
     "demo_banner": {
       "text": "Демо-режим · демо-дані · оригінали залишаються в офіційних поштових скриньках",
@@ -329,6 +330,78 @@
       "in_n_days": "Термін через {days} днів",
       "on_date": "Термін {datum}",
       "overdue": "Термін {datum} пропущено"
+    },
+    "titel": "Панель",
+    "untertitel": "Ваш особистий огляд листів, термінів і справ",
+    "fehler": {
+      "laden": "Не вдалося завантажити дані."
+    },
+    "letzter_login": "останній вхід {days} днів тому · на цьому пристрої",
+    "prototyp_hinweis": {
+      "text": "Демо-режим · демо-дані · оригінали залишаються в офіційних поштових скриньках"
+    },
+    "seit_login": {
+      "titel": "Від Вашого останнього входу",
+      "neue_briefe": "нових листів",
+      "frist_naeher": "термін наблизився",
+      "vorgang_abgeschlossen": "справу завершено"
+    },
+    "heute": {
+      "titel": "Сьогодні треба зробити",
+      "tab_ki": "ШІ",
+      "tab_frist": "Термін",
+      "tab_behoerde": "Відомство",
+      "tab_vorgang": "Справа",
+      "empty_title": "Сьогодні справ немає",
+      "empty_body": "Ми повідомимо, коли щось зʼявиться.",
+      "done": "Готово",
+      "snooze": "Нагадати пізніше",
+      "snooze_days": "Відкладено на {days} днів",
+      "actions_label": "Дії для {titel}"
+    },
+    "triumph": {
+      "title": "Зроблено за Вас",
+      "subtitle": "Переїзд передано до {count} відомств — Вам не довелося нічого робити.",
+      "zeitersparnis": "заощаджено бл. {min} хв",
+      "link": "Переглянути справу",
+      "gerade_eben": "щойно"
+    },
+    "erledigt_feed": {
+      "title": "Зроблено автоматично за Вас",
+      "empty": "Поки нічого не зроблено автоматично."
+    },
+    "achievement": {
+      "jahr": "{count} справ виконано за Вас цього року"
+    },
+    "kacheln": {
+      "fristen": {
+        "titel": "Терміни",
+        "offen": "{count} відкрит.",
+        "cta": "Переглянути"
+      },
+      "posteingang": {
+        "titel": "Вхідні",
+        "ungelesen": "{count} непрочитано",
+        "cta": "Відкрити"
+      },
+      "vorgaenge": {
+        "titel": "Справи",
+        "stand": "{laeuft} у роботі, {abgeschlossen} завершено",
+        "cta": "Переглянути"
+      },
+      "termine": {
+        "titel": "Зустрічі",
+        "cta": "Переглянути"
+      },
+      "datenschutz": {
+        "titel": "Центр конфіденційності",
+        "aktivitaeten": "{count} дій за 30 днів",
+        "cta": "Відкрити"
+      },
+      "stammdaten": {
+        "titel": "Стан анкетних даних",
+        "cta": "Переглянути"
+      }
     }
   },
   "common": {
@@ -580,7 +653,8 @@
       "termin_label_template": "Запис: {datum}, {ort}",
       "not_found_title": "Справу не знайдено",
       "not_found_body": "Ця справа не існує або була видалена.",
-      "back_to_dashboard": "Назад на панель"
+      "back_to_dashboard": "Назад на панель",
+      "dokumente_count": "{count, plural, one {# документ} few {# документи} many {# документів} other {# документа}}"
     },
     "rechtsgrundlage": {
       "bmg_17": "§ 17 BMG: обовʼязок зареєструватися протягом двох тижнів від дати вʼїзду.",
@@ -2210,6 +2284,15 @@
       "sort_ausgestellt": "Датою видачі (спершу новіші)",
       "sort_gueltig": "Терміном дії (спершу ті, що спливають)",
       "status_label": "Статус"
+    },
+    "eudi": {
+      "button": "Експортувати в EUDI Wallet (попередній перегляд)",
+      "dialog_title": "Експорт у EUDI Wallet — попередній перегляд [MOCK]",
+      "disclaimer_2027": "[MOCK] Імітація попереднього перегляду EUDI Wallet. EUDI Wallet впроваджується у 2027 році; тут не експортується жоден справжній документ.",
+      "download": "Завантажити попередній перегляд",
+      "mock_badge": "[MOCK]",
+      "close": "Закрити",
+      "payload_label": "Попередній перегляд документа (синтетичний)"
     }
   },
   "termine": {
@@ -2289,7 +2372,17 @@
       "filter_title": "Немає прийомів за цим вибором",
       "naechster_schritt": "Оберіть прийом, щоб побачити подробиці."
     },
-    "error": "Не вдалося завантажити прийоми."
+    "error": "Не вдалося завантажити прийоми.",
+    "action": {
+      "bestaetigen": "Підтвердити",
+      "verschieben": "Перенести",
+      "absagen": "Скасувати",
+      "confirm_cancel": "Справді скасувати прийом?",
+      "verschoben_um": "Перенесено на 7 днів",
+      "bestaetigt": "Підтверджено",
+      "abgesagt": "Скасовано",
+      "vorschlag": "Запропоновано"
+    }
   },
   "steuer": {
     "title": "Податки",
@@ -2592,5 +2685,74 @@
       "started_title": "Автопілот запущено",
       "started_subtitle": "Ваші дані перевірено, каскад запущено."
     }
+  },
+  "convenience": {
+    "value_receipt": {
+      "title": "Ваша економія",
+      "behoerden": "відомств повідомлено",
+      "zeitersparnis": "заощаджено часу (бл.)",
+      "klassische_schritte": "класичних кроків",
+      "ihr_aufwand": "Ваші зусилля",
+      "ein_satz": "одне речення",
+      "ca_prefix": "бл.",
+      "minuten_suffix": "хв",
+      "disclaimer_conservative": "Консервативна оцінка. [MOCK]"
+    },
+    "step": {
+      "basis_label": "Правова основа",
+      "data_label": "Передані дані"
+    },
+    "receipt": {
+      "toggle": "Що було передано?",
+      "fields_label": "Передані дані",
+      "basis_label": "Правова основа",
+      "consent_label": "Згоду надано",
+      "minimierung_note": "Мінімізація даних: передаються лише ці поля."
+    },
+    "datenkat": {
+      "neue_anschrift": "нова адреса",
+      "einzugsdatum": "дата вʼїзду",
+      "beitragsnummer": "номер платника внеску (Beitragsnummer)",
+      "steuer_id": "ідентифікаційний номер платника податків (Steuer-IdNr.)",
+      "versichertennummer": "номер застрахованого (Versichertennummer)",
+      "familienstand": "сімейний стан",
+      "name": "імʼя",
+      "geburtsdatum": "дата народження",
+      "alte_anschrift": "попередня адреса",
+      "wohnungsgeberbestaetigung": "підтвердження від наймодавця (Wohnungsgeberbestätigung)",
+      "eat_nummer": "номер eAT / документа",
+      "kindergeldnummer": "номер дитячої допомоги (Kindergeldnummer)",
+      "personalnummer": "табельний номер",
+      "kennzeichen": "реєстраційний номер"
+    },
+    "assistant": {
+      "run_summary_intro": "Підсумок Вашої економії"
+    }
+  },
+  "katalog": {
+    "titel": "Каталог автопілота",
+    "untertitel": "Життєві ситуації, які автопілот бере на себе.",
+    "behoerden_label": "Залучені відомства",
+    "starten": "Запустити переїзд",
+    "umzug": {
+      "titel": "Переїзд",
+      "beschreibung": "Одне підтвердження — ми повідомимо Вашу нову адресу до всіх компетентних відомств."
+    },
+    "kindergeburt": {
+      "titel": "Народження дитини",
+      "beschreibung": "Свідоцтво про народження, дитяча допомога та медичне страхування в одному процесі."
+    },
+    "steuererklaerung": {
+      "titel": "Податкова декларація",
+      "beschreibung": "Попередньо заповнена декларація з уже відомих даних."
+    },
+    "status": {
+      "live": "доступно",
+      "demnaechst": "незабаром"
+    }
+  },
+  "shared": {
+    "gehoert_zu": "Належить до: {vorgang}",
+    "neu_badge": "нове"
   }
 }

@@ -1,0 +1,50 @@
+import type { BehoerdeId } from './behoerde';
+
+/**
+ * Wertquittung eines abgeschlossenen Autopilot-Laufs (§1.3 / §B1).
+ *
+ * Alle Zahlen sind konservative `ca.`-Schätzungen und stammen verbatim aus
+ * `docs/domain/umzug-konvenienz-und-normen.md` §1a — KEINE erfundenen Werte.
+ * Die UI rendert sie immer mit „ca." (Anti-Overclaim-Regel §1b).
+ */
+export interface ValueReceipt {
+  vorgang_id: string;
+  /** Pass-1: einziger Wert. */
+  lebenslage: 'umzug';
+  /** Distinkte Behörden, die der Lauf berührt hat. [domain: beteiligte-behoerden] */
+  behoerden_count: number;
+  /** Konservative gesparte Minuten (Status-quo minus Bürgeraufwand). [domain: zeitersparnis] */
+  geschaetzte_zeitersparnis_min: number;
+  /** Status-quo-Anzahl Anträge/Behördengänge. [domain: status-quo-aufwand] */
+  klassische_schritte: number;
+  /** Literal 1 — „ein Satz" Bürgeraufwand. */
+  ihr_aufwand_schritte: 1;
+}
+
+/**
+ * EUDI-Wallet-Export-Vorschau (§1.7 / §C3) — IMMER `[MOCK]`, nie ein echter
+ * Export. `mock: true` ist literal-konstant.
+ */
+export interface EudiExportPreview {
+  document_id: string;
+  mock: true;
+  /** Pretty-printed, `[MOCK]`-markierter VC-förmiger JSON-String. */
+  payload_preview: string;
+  /** i18n-Key, der den realen EUDI-Wallet-2027-Rollout-Status benennt. */
+  disclaimer_key: string;
+}
+
+/**
+ * Autopilot-Katalog-Eintrag (§1.8 / §A-katalog) — Teaser-Zeile „ist das ein
+ * Muster?". Nur Umzug ist `live`; die anderen sind `demnaechst`-Vorschau.
+ */
+export interface AutopilotKatalogEntry {
+  id: 'umzug' | 'kindergeburt' | 'steuererklaerung';
+  status: 'live' | 'demnaechst';
+  /** i18n-Key. */
+  titel_key: string;
+  /** i18n-Key. */
+  beschreibung_key: string;
+  /** Statische Teaser-Liste echter Behörden-IDs aus behoerden.json. */
+  behoerden_preview: BehoerdeId[];
+}

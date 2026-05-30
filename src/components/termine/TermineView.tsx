@@ -69,9 +69,65 @@ function formatTimeRange(iso: string, durationMinutes = 45): string {
 
 export function TermineView({ nowIso }: TermineViewProps) {
   const t = useTranslations();
+  const tAction = useTranslations('termine.action');
   const [termine, setTermine] = React.useState<Termin[]>([]);
   const [reminders, setReminders] = React.useState<Reminder[]>([]);
   const [behoerdenById, setBehoerdenById] = React.useState<Record<string, Behoerde>>({});
+  const [busy, setBusy] = React.useState<string | null>(null);
+
+  const applyTermin = React.useCallback((updated: Termin) => {
+    setTermine((prev) => prev.map((x) => (x.id === updated.id ? updated : x)));
+  }, []);
+
+  const handleBestaetigen = React.useCallback(
+    async (termin: Termin) => {
+      setBusy(termin.id);
+      applyTermin({ ...termin, status: 'bestaetigt' });
+      try {
+        await api.bestaetigeTerminVorschlag(termin.id);
+      } catch {
+        /* optimistic update already applied */
+      } finally {
+        setBusy(null);
+      }
+    },
+    [applyTermin],
+  );
+
+  const handleVerschieben = React.useCallback(
+    async (termin: Termin) => {
+      setBusy(termin.id);
+      // Demo: shift the appointment by 7 days.
+      const next = new Date(new Date(termin.datum).getTime() + 7 * 86400000).toISOString();
+      applyTermin({ ...termin, datum: next, status: 'verschoben' });
+      try {
+        await api.verschiebeTermin(termin.id, next);
+      } catch {
+        /* optimistic update already applied */
+      } finally {
+        setBusy(null);
+      }
+    },
+    [applyTermin],
+  );
+
+  const handleAbsagen = React.useCallback(
+    async (termin: Termin) => {
+      if (typeof window !== 'undefined' && !window.confirm(tAction('confirm_cancel'))) {
+        return;
+      }
+      setBusy(termin.id);
+      applyTermin({ ...termin, status: 'abgesagt' });
+      try {
+        await api.sageTerminAb(termin.id);
+      } catch {
+        /* optimistic update already applied */
+      } finally {
+        setBusy(null);
+      }
+    },
+    [applyTermin, tAction],
+  );
   const [filters, setFilters] = React.useState<Record<FilterKey, boolean>>({
     behoerden: true,
     erinnerungen: true,
@@ -105,6 +161,23 @@ export function TermineView({ nowIso }: TermineViewProps) {
     return () => {
       cancelled = true;
     };
+  }, []);
+
+  /* C1/§1.2: react live when the autopilot mints/updates a Termin. */
+  React.useEffect(() => {
+    const unsubscribe = api.subscribe((event) => {
+      if (event.type === 'termin_created') {
+        setTermine((prev) =>
+          prev.some((x) => x.id === event.termin.id) ? prev : [...prev, event.termin],
+        );
+      }
+      if (event.type === 'termin_updated') {
+        setTermine((prev) =>
+          prev.map((x) => (x.id === event.termin.id ? event.termin : x)),
+        );
+      }
+    });
+    return () => unsubscribe();
   }, []);
 
   const behoerdeName = React.useCallback(
@@ -194,7 +267,7 @@ export function TermineView({ nowIso }: TermineViewProps) {
   }
 
   return (
-    <main className="gt-content">
+    <div className="gt-content">
       <div className="gt-page-head">
         <h1>Termine</h1>
         <div className="sub">Behördentermine, Erinnerungen und Buchungen an einem Ort.</div>
@@ -321,18 +394,51 @@ export function TermineView({ nowIso }: TermineViewProps) {
                     ) : null}
                   </div>
                 </div>
-                <span className="badge green">
-                  {naechster.status === 'bestaetigt' ? 'Bestätigt' : 'Gebucht'}
+                <span
+                  className={`badge ${naechster.status === 'abgesagt' ? 'red' : naechster.status === 'verschoben' ? 'amber' : 'green'}`}
+                >
+                  {naechster.status === 'bestaetigt'
+                    ? tAction('bestaetigt')
+                    : naechster.status === 'abgesagt'
+                      ? tAction('abgesagt')
+                      : naechster.status === 'verschoben'
+                        ? tAction('verschoben_um')
+                        : 'Gebucht'}
                 </span>
               </div>
-              <div className="actions">
-                <button type="button" className="btn btn-secondary">
-                  <CalendarPlus />
-                  ICS exportieren
-                </button>
-                <button type="button" className="btn btn-primary">
-                  Details <ChevronRight />
-                </button>
+              <div className="appt-actions">
+                {naechster.status !== 'bestaetigt' && naechster.status !== 'abgesagt' ? (
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-sm"
+                    disabled={busy === naechster.id}
+                    onClick={() => handleBestaetigen(naechster)}
+                  >
+                    <CheckCircle2 />
+                    {tAction('bestaetigen')}
+                  </button>
+                ) : null}
+                {naechster.status !== 'abgesagt' ? (
+                  <button
+                    type="button"
+                    className="btn btn-secondary btn-sm"
+                    disabled={busy === naechster.id}
+                    onClick={() => handleVerschieben(naechster)}
+                  >
+                    <CalendarPlus />
+                    {tAction('verschieben')}
+                  </button>
+                ) : null}
+                {naechster.status !== 'abgesagt' ? (
+                  <button
+                    type="button"
+                    className="btn btn-danger btn-sm"
+                    disabled={busy === naechster.id}
+                    onClick={() => handleAbsagen(naechster)}
+                  >
+                    {tAction('absagen')}
+                  </button>
+                ) : null}
               </div>
             </div>
           ) : !loaded ? (
@@ -538,6 +644,6 @@ export function TermineView({ nowIso }: TermineViewProps) {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

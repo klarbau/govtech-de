@@ -10,6 +10,22 @@ import type { BehoerdeId, BehoerdeKategorie } from './behoerde';
 import type { PersonaId } from './persona';
 import type { LetterFristTyp } from './letter';
 import type { VorgangStatus } from './vorgang';
+import type { ValueReceipt } from './value-receipt';
+
+/**
+ * Eine Zeile im "Automatisch erledigt für Sie"-Feed (§1.4/§B2). Delegierte
+ * Agent-Stimme + Behörden-Badge + relative Zeit + Link zum Quell-Letter/Vorgang.
+ */
+export interface ErledigtFeedItem {
+  id: string;
+  behoerde_id: BehoerdeId;
+  /** Delegierte Agent-Stimme (§B3). DE-Daten. */
+  agent_label: string;
+  /** ISO → relative Zeit. */
+  erledigt_at: string;
+  vorgang_id: string;
+  letter_id?: string;
+}
 
 /** Whitelist von Reasoning-Tokens für AI-Top-3 (Hard-Line § 11.44). */
 export type TopActionReasonToken =
@@ -245,4 +261,17 @@ export interface DashboardSnapshot {
   lebenslagen_hinweise: LebenslagenHinweis[];
   /** Achievement-Counter für Empty-State. */
   vorgaenge_abgeschlossen_jahr: number;
+  /**
+   * Triumph-Banner-Quelle: jüngster abgeschlossener Autopilot-Lauf (§1.4/§B2).
+   * Absent vor jedem Lauf → Banner versteckt.
+   */
+  autopilot_highlight?: {
+    vorgang_id: string;
+    lebenslage: 'umzug';
+    value_receipt: ValueReceipt;
+    /** ISO — via §A1-Anker → rendert "gerade eben". */
+    abgeschlossen_at: string;
+  };
+  /** "Automatisch erledigt für Sie"-Feed — chronologisch, neueste zuerst (§B2). */
+  erledigt_feed: ErledigtFeedItem[];
 }

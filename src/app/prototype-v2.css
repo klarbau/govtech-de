@@ -198,7 +198,7 @@ button { font: inherit; cursor: pointer; }
 .badge .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 .badge.brand { background: var(--brand-50); color: var(--brand-700); }
 .badge.green { background: var(--green-50); color: var(--green-700); }
-.badge.amber { background: var(--amber-50); color: var(--amber-600); }
+.badge.amber { background: var(--amber-50); color: var(--amber-700); }
 .badge.red { background: var(--red-50); color: var(--red-600); }
 .badge.pink { background: var(--pink-50); color: var(--pink-500); }
 .badge.violet { background: var(--violet-50); color: var(--violet-500); }
@@ -803,9 +803,10 @@ button { font: inherit; cursor: pointer; }
 .dk-doc .av.violet { background: var(--violet-50); color: var(--violet-500); }
 .dk-doc .t { font-weight: 600; }
 .dk-doc .s { color: var(--ink-3); font-size: 12.5px; }
-.dk-actions { display: inline-flex; gap: 10px; color: var(--ink-3); }
-.dk-actions button { background: none; border: 0; color: var(--ink-3); cursor: pointer; }
-.dk-actions button:hover { color: var(--ink); }
+.dk-actions { display: inline-flex; gap: 2px; color: var(--ink-3); margin: -10px 0; }
+.dk-actions button { display: inline-grid; place-items: center; min-width: 44px; min-height: 44px; padding: 13px; background: none; border: 0; border-radius: 8px; color: var(--ink-3); cursor: pointer; }
+.dk-actions button svg { width: 18px; height: 18px; }
+.dk-actions button:hover { background: var(--surface-2); color: var(--ink); }
 
 .pagination { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; }
 .pagination .pgs { display: inline-flex; gap: 6px; }
@@ -1526,3 +1527,85 @@ button { font: inherit; cursor: pointer; }
 
 .id-cta { display: flex; justify-content: flex-end; margin-top: 20px; }
 .id-cta .btn { padding: 0 22px; }
+
+
+/* ============================================================================
+   Convenience-Pass-1 (frontend-coder) — Value receipt, triumph banner, erledigt
+   feed, calm empty state, to-do dismiss/snooze, autopilot-katalog, ripple chips.
+   Tokens (--surface-*, --line, --green-*, --ink-*, --brand-*, --red-*, --amber-*)
+   are the prototype-v2 set defined above.
+   ============================================================================ */
+
+.btn-sm { padding:6px 10px; font-size:12.5px; border-radius:8px; }
+.btn-danger { color: var(--red-700); border-color: var(--red-50); background: var(--surface-1); }
+.btn-danger:hover { background: var(--red-50); }
+
+.appt-actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:6px; }
+
+/* Value Receipt (§B1) */
+.vr-card { background: linear-gradient(180deg, var(--green-50), var(--surface-1)); border:1px solid var(--green-200); border-radius:16px; padding:20px; }
+.vr-head { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+.vr-icon { width:34px; height:34px; border-radius:999px; background: var(--green-50); color: var(--green-600); display:grid; place-items:center; flex-shrink:0; }
+.vr-icon svg { width:18px; height:18px; }
+.vr-title { font-size:16px; font-weight:650; }
+.vr-stats { display:grid; grid-template-columns: repeat(4, 1fr); gap:14px; }
+@media (max-width: 640px){ .vr-stats { grid-template-columns: repeat(2, 1fr); } }
+.vr-stat { background: var(--surface-1); border:1px solid var(--line); border-radius:12px; padding:14px; }
+.vr-num { font-size:24px; font-weight:700; letter-spacing:-0.02em; color: var(--ink-1); }
+.vr-label { font-size:12px; color: var(--ink-3); margin-top:4px; }
+.vr-disclaimer { font-size:11.5px; color: var(--ink-3); margin-top:14px; }
+
+/* Triumph banner + Erledigt feed (§B2) */
+.triumph { display:flex; align-items:flex-start; gap:14px; background: linear-gradient(180deg, var(--green-50), var(--surface-1)); border:1px solid var(--green-200); border-radius:16px; padding:18px 20px; }
+.triumph .tr-icon { width:40px; height:40px; border-radius:999px; background: var(--green-50); color: var(--green-600); display:grid; place-items:center; flex-shrink:0; }
+.triumph .tr-icon svg { width:20px; height:20px; }
+.triumph .tr-body { flex:1; min-width:0; }
+.triumph .tr-title { font-size:16px; font-weight:650; }
+.triumph .tr-sub { font-size:13.5px; color: var(--ink-2); margin-top:2px; }
+.triumph .tr-meta { display:flex; flex-wrap:wrap; gap:8px 16px; margin-top:8px; font-size:12.5px; color: var(--ink-3); }
+.triumph .tr-link { color: var(--brand-600); font-weight:600; font-size:13px; display:inline-flex; align-items:center; gap:4px; margin-top:10px; text-decoration:none; }
+.erledigt-feed { display:flex; flex-direction:column; gap:10px; }
+.erledigt-item { display:flex; align-items:center; gap:12px; padding:12px 14px; border:1px solid var(--line); border-radius:12px; text-decoration:none; color:inherit; transition: background .12s; }
+.erledigt-item:hover { background: var(--surface-2); }
+.erledigt-item .ei-icon { width:34px; height:34px; border-radius:999px; background: var(--green-50); color: var(--green-600); display:grid; place-items:center; flex-shrink:0; }
+.erledigt-item .ei-icon svg { width:16px; height:16px; }
+.erledigt-item .ei-body { flex:1; min-width:0; }
+.erledigt-item .ei-title { font-weight:600; font-size:14px; }
+.erledigt-item .ei-sub { color: var(--ink-3); font-size:12.5px; margin-top:2px; }
+.erledigt-empty { color: var(--ink-3); font-size:13px; padding:8px 0; }
+
+/* Heute-item dismiss/snooze (§C4) */
+.heute-actions { display:flex; gap:6px; flex-shrink:0; }
+.heute-actions button { min-width:44px; min-height:44px; padding:7px; border-radius:8px; border:1px solid var(--line); background: var(--surface-1); color: var(--ink-3); display:grid; place-items:center; cursor:pointer; }
+.heute-actions button:hover { background: var(--surface-2); color: var(--ink-1); }
+.heute-actions button svg { width:15px; height:15px; }
+
+/* Calm empty state for Heute zu tun (§B2) */
+.heute-empty { display:flex; flex-direction:column; align-items:center; gap:6px; padding:28px 16px; text-align:center; }
+.heute-empty .he-icon { width:44px; height:44px; border-radius:999px; background: var(--green-50); color: var(--green-600); display:grid; place-items:center; }
+.heute-empty .he-icon svg { width:22px; height:22px; }
+.heute-empty .he-title { font-weight:650; font-size:15px; }
+.heute-empty .he-body { color: var(--ink-3); font-size:13px; }
+.heute-empty .he-achievement { color: var(--ink-3); font-size:12.5px; margin-top:4px; }
+
+/* Autopilot-Katalog teaser (§A-katalog) */
+.katalog-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:14px; }
+@media (max-width: 900px){ .katalog-grid { grid-template-columns: 1fr; } }
+.katalog-card { background: var(--surface-1); border:1px solid var(--line); border-radius:14px; padding:18px; display:flex; flex-direction:column; gap:10px; }
+.katalog-card.demnaechst { background: var(--surface-2); border-style: dashed; }
+.katalog-card .kc-head { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.katalog-card .kc-title { font-weight:650; font-size:15px; }
+.katalog-card .kc-desc { font-size:13px; color: var(--ink-3); }
+.katalog-card .kc-behoerden { font-size:12px; color: var(--ink-3); }
+.katalog-card .kc-behoerden .kc-bh-label { font-weight:600; color: var(--ink-2); }
+
+/* neu dot (§C1 ripple) */
+.nav-neu-dot { display:inline-block; width:7px; height:7px; border-radius:999px; background: var(--brand-600); margin-left:6px; vertical-align:middle; }
+
+/* Gehört-zu chip (§A5) */
+.gehoert-zu-chip { display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; padding:3px 9px; border-radius:999px; background: var(--brand-50); color: var(--brand-700); text-decoration:none; }
+.gehoert-zu-chip svg { width:12px; height:12px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .heute-item, .erledigt-item { transition: none; }
+}

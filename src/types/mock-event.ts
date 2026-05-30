@@ -1,5 +1,6 @@
 import type { BehoerdeId } from './behoerde';
 import type { Document } from './document';
+import type { Termin } from './termin';
 import type { Letter } from './letter';
 import type { PersonaId } from './persona';
 import type {
@@ -155,6 +156,12 @@ export type MockBackendEvent =
   | { type: 'vorgang_status_changed'; vorgangId: string; status: VorgangStatus }
   | { type: 'autopilot_step'; vorgangId: string; step: AutopilotStep }
   | { type: 'document_added'; document: Document }
+  // Pass-1 (§1.2/§C1): Dokument-Mint nutzt weiterhin `document_added` (bereits
+  // verdrahtet + von der Dokumente-Screen konsumiert) — KEIN separates
+  // `document_created`, kein Doppel-Emit. Termin-Mint nutzt das neue
+  // `termin_created`; `termin_updated` deckt die Termine-Ops (§C2).
+  | { type: 'termin_created'; termin: Termin }
+  | { type: 'termin_updated'; termin: Termin }
   | StammdatenEvent;
 
 export type MockBackendEventListener = (event: MockBackendEvent) => void;

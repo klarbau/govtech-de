@@ -1,33 +1,76 @@
 [
   {
+    "id": "reminder-anna-umzug-bmg-frist",
+    "owner_persona_id": "anna-petrov",
+    "behoerde_id": "buergeramt-berlin-mitte",
+    "vorgang_id": "vg-anna-umzug-2026-completed",
+    "titel": "Ummeldung fristgerecht erledigt (§ 17 BMG)",
+    "datum": "@now-3d",
+    "kategorie": "frist",
+    "frist_typ": "bmg_17",
+    "erledigt": true
+  },
+  {
     "id": "reminder-anna-kindergeld-nachweis",
+    "owner_persona_id": "anna-petrov",
     "behoerde_id": "familienkasse-berlin-brandenburg",
+    "vorgang_id": "vorgang-anna-kindergeld-aktualisierung-2026",
     "titel": "Kindergeld-Nachweis fällig",
-    "datum": "2026-06-16",
+    "datum": "@now+5d",
     "kategorie": "frist",
     "frist_typ": "nachweis"
   },
   {
     "id": "reminder-anna-aufenthaltstitel-unterlagen",
+    "owner_persona_id": "anna-petrov",
     "behoerde_id": "abh-berlin-lea",
-    "titel": "Unterlagen Aufenthaltstitel-Verlängerung einreichen",
-    "datum": "2026-06-02",
-    "kategorie": "frist",
-    "frist_typ": "antragstellung"
-  },
-  {
-    "id": "reminder-anna-steuererklaerung-2024",
-    "behoerde_id": "finanzamt-koerperschaften-i-berlin",
-    "titel": "Steuererklärung 2024 abgeben",
-    "datum": "2025-07-31",
-    "kategorie": "frist",
-    "frist_typ": "antragstellung"
+    "vorgang_id": "vorgang-anna-aufenthaltstitel-2027-stub",
+    "titel": "Unterlagen Aufenthaltstitel-Verlängerung vorbereiten",
+    "datum": "@now+120d",
+    "kategorie": "erinnerung"
   },
   {
     "id": "reminder-anna-rundfunkbeitrag",
+    "owner_persona_id": "anna-petrov",
     "behoerde_id": "beitragsservice-koeln",
-    "titel": "Rundfunkbeitrag — Abbuchung Q2 2026",
-    "datum": "2026-07-15",
+    "titel": "Rundfunkbeitrag — Abbuchung Q2",
+    "datum": "@now+48d",
+    "kategorie": "erinnerung"
+  },
+  {
+    "id": "reminder-schmidt-familienkasse-nachweis",
+    "owner_persona_id": "markus-schmidt",
+    "behoerde_id": "familienkasse-berlin-brandenburg",
+    "vorgang_id": "vg-schmidt-kindergeburt-mia-2026",
+    "titel": "Schulbescheinigung Felix einreichen",
+    "datum": "@now+14d",
+    "kategorie": "frist",
+    "frist_typ": "nachweis"
+  },
+  {
+    "id": "reminder-schmidt-pflichtumtausch-fs",
+    "owner_persona_id": "markus-schmidt",
+    "behoerde_id": "fe-hamburg-lbv",
+    "titel": "Pflichtumtausch Führerschein (Stichtag 19.01.2027)",
+    "datum": "@now+240d",
+    "kategorie": "erinnerung"
+  },
+  {
+    "id": "reminder-mehmet-steuer-zahlung",
+    "owner_persona_id": "mehmet-yildiz",
+    "behoerde_id": "finanzamt-koeln-mitte",
+    "vorgang_id": "vg-mehmet-steuererklaerung-2024",
+    "titel": "Einkommensteuer-Nachzahlung 2024",
+    "datum": "@now+12d",
+    "kategorie": "frist",
+    "frist_typ": "zahlung"
+  },
+  {
+    "id": "reminder-mehmet-ihk-beitrag",
+    "owner_persona_id": "mehmet-yildiz",
+    "behoerde_id": "ihk-koeln",
+    "titel": "IHK-Beitrag 2026 fällig",
+    "datum": "@now+18d",
     "kategorie": "erinnerung"
   }
 ]

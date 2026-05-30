@@ -47,14 +47,28 @@ interface FormatRule {
 
 const FORMAT_RULES: FormatRule[] = [
   {
-    name: 'Finanzamt — Steuernummer NN/NNN/NNNNN bzw. NNN/NNNN/NNNNN',
-    // Bundeslandprefix 2 oder 3 Ziffern; Mittelteil 3 oder 4 Ziffern.
-    regex: new RegExp(`^${MOCK}\\d{2,3}/\\d{3,4}/\\d{5}$`),
+    name: 'Finanzamt — Steuernummer NN/NNN/NNNNN bzw. NNN/NNNN/NNNNN (opt. // Jahr)',
+    // Bundeslandprefix 2 oder 3 Ziffern; Mittelteil 3 oder 4 Ziffern; optionaler ` // JJJJ`-Suffix.
+    regex: new RegExp(`^${MOCK}\\d{2,3}/\\d{3,4}/\\d{5}( // \\d{4})?$`),
     behoerdeIds: [
       'finanzamt-koerperschaften-i-berlin',
+      // Convenience-Pass-1 §D1: Annas Einkommensteuer → Wohnsitz-FA.
+      'finanzamt-berlin-mitte-tiergarten',
       'finanzamt-hamburg-eimsbuettel',
       'finanzamt-koeln-mitte',
     ],
+  },
+  {
+    // Convenience-Pass-1 §D1/§C1: KFZ-Bestätigungs-Az aus aktenzeichenKfzBerlin().
+    name: 'KFZ Berlin LABO — B-KFZ-YYYY-NNNNN-Halter',
+    regex: new RegExp(`^${MOCK}B-KFZ-\\d{4}-\\d{5}-Halter$`),
+    behoerdeIds: ['kfz-berlin-labo'],
+  },
+  {
+    // Convenience-Pass-1 §D6: Arbeitgeber (private Stelle) — Personalnummer.
+    name: 'Arbeitgeber — Personalnummer PERS-YYYY-NNNNN',
+    regex: new RegExp(`^${MOCK}PERS-\\d{4}-\\d{5}$`),
+    behoerdeIds: ['arbeitgeber-mittelstand-software'],
   },
   {
     name: 'Krankenkasse / Pflegeversicherung — KVNR [A-Z]\\d{9}',
@@ -78,8 +92,9 @@ const FORMAT_RULES: FormatRule[] = [
   },
   {
     name: 'Bürgeramt — lokal frei (Bezirk + Vorgangsnummer)',
-    // Bezirks-Kürzel + EWA-Marker + Datum + Sequenz; Buchstaben/Schrägstriche/Bindestriche erlaubt.
-    regex: new RegExp(`^${MOCK}BA-[A-Z]{2,8}/[A-Z]{2,5}-\\d{4}-\\d{2}-\\d{7}$`),
+    // Bezirks-Kürzel + EWA-Marker + Datum + Sequenz; Sequenz 7 ODER 8 Stellen
+    // (Convenience-Pass-1 Cold-Open-Bestätigung trägt eine 7-stellige Sequenz).
+    regex: new RegExp(`^${MOCK}BA-[A-Z]{2,8}/[A-Z]{2,5}-\\d{4}-\\d{2}-\\d{7,8}$`),
     behoerdeIds: ['buergeramt-berlin-friedrichshain-kreuzberg', 'buergeramt-berlin-mitte'],
   },
   {
@@ -141,6 +156,18 @@ const FORMAT_RULES: FormatRule[] = [
     behoerdeIds: ['kfz-koeln-stadt', 'kfz-hamburg-lbv'],
   },
   {
+    // Convenience-Pass-1 §C1: Berlin LABO KFZ-Bestätigung aus aktenzeichenKfzBerlin().
+    name: 'KFZ Berlin LABO — B-KFZ-YYYY-NNNNN-Halter',
+    regex: new RegExp(`^${MOCK}B-KFZ-\\d{4}-\\d{4,5}-Halter$`),
+    behoerdeIds: ['kfz-berlin-labo'],
+  },
+  {
+    // Convenience-Pass-1 §D6: Arbeitgeber (private Stelle) — Personalnummer.
+    name: 'Arbeitgeber — Personalnummer PERS-YYYY-NNNNN',
+    regex: new RegExp(`^${MOCK}PERS-\\d{4}-\\d{5}$`),
+    behoerdeIds: ['arbeitgeber-mittelstand-software'],
+  },
+  {
     // V1.3 — KBA Flensburg (FAER/ZFER/ZFZR-Selbstauskunft).
     // Format: FAER-AK-YYYY-NNNNNNNN (8-stellige Sequenz; eine Stelle für die
     // FAER-Auskunft-Mock).
@@ -165,6 +192,19 @@ const PER_LETTER_PRIMARY_OVERRIDE: Record<string, RegExp> = {
   // letter-aok-rechnung-zuzahlung trägt eine Rechnungsnummer, keine KVNR.
   'letter-aok-rechnung-zuzahlung': new RegExp(`^${MOCK}AOK-[A-Z]{2}-\\d{4}-\\d{8}$`),
 };
+
+// Convenience-Pass-1 (§A4): Cold-Open-Umzug-Bestätigungsbriefe sind die
+// Artefakte, die der Autopilot auch zur Laufzeit mintet — sie tragen keine
+// pre-baked AI-Summary (sie sind reine Bestätigungen ohne Frist). Von der
+// Summary-Pflicht ausgenommen.
+const LETTERS_WITHOUT_SUMMARY = new Set<string>([
+  'letter-umzug2026-buergeramt-bestaetigung',
+  'letter-umzug2026-finanzamt-bestaetigung',
+  'letter-umzug2026-beitragsservice-bestaetigung',
+  'letter-umzug2026-kfz-bestaetigung',
+  'letter-umzug2026-arbeitgeber-bestaetigung',
+  'letter-umzug2026-abh-bestaetigung',
+]);
 
 function findRule(behoerdeId: string): FormatRule | undefined {
   return FORMAT_RULES.find((r) => r.behoerdeIds.includes(behoerdeId));
@@ -235,6 +275,7 @@ describe('letters.json: Aktenzeichen-Formate', () => {
       });
 
       test('hat eine korrespondierende Pre/Post-Open-Summary', () => {
+        if (LETTERS_WITHOUT_SUMMARY.has(letter.id)) return; // §A4 Cascade-Bestätigung
         const entry = summaries[letter.id];
         expect(
           entry,

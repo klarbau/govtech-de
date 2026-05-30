@@ -49,11 +49,16 @@ check(
   isKnownTool('vorschlage_naechsten_schritt'),
 );
 check(
-  'TOOL_NAMES has 9 entries (5 legacy + 3 posteingang + 1 preview_umzug)',
-  TOOL_NAMES.length === 9,
+  'TOOL_NAMES has 11 entries (5 legacy + 3 posteingang + 1 preview_umzug + 2 convenience)',
+  TOOL_NAMES.length === 11,
   TOOL_NAMES,
 );
 check('TOOL_NAMES contains preview_umzug', isKnownTool('preview_umzug'));
+check('TOOL_NAMES contains hole_ersparnis', isKnownTool('hole_ersparnis'));
+check(
+  'TOOL_NAMES contains hole_autopilot_katalog',
+  isKnownTool('hole_autopilot_katalog'),
+);
 
 const toolsByName = new Map(tools.map((t) => [t.name, t]));
 check('tools[] has erklaere_brief def', toolsByName.has('erklaere_brief'));
@@ -167,6 +172,42 @@ check(
     (previewUmzug!.input_schema.required as string[]).includes('stichtag_iso'),
 );
 
+/* ── Convenience Pass-1 tools (§7) ─────────────────────────────────────── */
+
+const ersparnis = toolsByName.get('hole_ersparnis');
+check('tools[] has hole_ersparnis def', Boolean(ersparnis));
+check(
+  'hole_ersparnis requires vorgang_id',
+  Array.isArray(ersparnis?.input_schema?.required) &&
+    (ersparnis!.input_schema.required as string[]).includes('vorgang_id'),
+);
+check(
+  'hole_ersparnis description insists on ca./conservative, no invented numbers',
+  Boolean(
+    ersparnis?.description?.includes('ca.') &&
+      (ersparnis?.description?.includes('erfinde') ||
+        ersparnis?.description?.includes('konservativ')),
+  ),
+);
+
+const katalog = toolsByName.get('hole_autopilot_katalog');
+check('tools[] has hole_autopilot_katalog def', Boolean(katalog));
+check(
+  'hole_autopilot_katalog flags kindergeburt/steuer as demnächst (no over-promise)',
+  Boolean(
+    katalog?.description?.includes('demnächst') ||
+      katalog?.description?.includes('demnaechst'),
+  ),
+);
+
+const okErsparnis = validatePosteingangToolInput('hole_ersparnis', {
+  vorgang_id: 'vg-anna-umzug-skalitzer-friedrichstr',
+});
+check('hole_ersparnis accepts {vorgang_id}', okErsparnis.ok);
+
+const ersparnisMissing = validatePosteingangToolInput('hole_ersparnis', {});
+check('hole_ersparnis rejects missing vorgang_id', !ersparnisMissing.ok);
+
 /* ── Dispatch table + irreversible-action gate (§7.3) ──────────────────── */
 
 check(
@@ -183,6 +224,16 @@ check(
   'preview_umzug → previewUmzug, NOT confirm-gated',
   TOOL_DISPATCH.preview_umzug.api_method === 'previewUmzug' &&
     TOOL_DISPATCH.preview_umzug.requires_confirmation === false,
+);
+check(
+  'hole_ersparnis → getValueReceipt, NOT confirm-gated',
+  TOOL_DISPATCH.hole_ersparnis.api_method === 'getValueReceipt' &&
+    TOOL_DISPATCH.hole_ersparnis.requires_confirmation === false,
+);
+check(
+  'hole_autopilot_katalog → getAutopilotKatalog, NOT confirm-gated',
+  TOOL_DISPATCH.hole_autopilot_katalog.api_method === 'getAutopilotKatalog' &&
+    TOOL_DISPATCH.hole_autopilot_katalog.requires_confirmation === false,
 );
 check(
   'requiresConfirmation true ONLY for starte_umzug',

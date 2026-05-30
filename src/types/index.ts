@@ -88,11 +88,18 @@ export type {
   SelfTask,
 } from './umzug';
 export type { MockBackendEvent, MockBackendEventListener } from './mock-event';
+// Convenience-Pass-1 — Wertquittung / EUDI-Vorschau / Autopilot-Katalog (§1.3/§1.7/§1.8).
+export type {
+  ValueReceipt,
+  EudiExportPreview,
+  AutopilotKatalogEntry,
+} from './value-receipt';
 // Redesign — Dashboard (read-model + AI-Top-3 candidates).
 export type {
   DashboardSnapshot,
   DashboardSortMode,
   DiffBlock,
+  ErledigtFeedItem,
   DscAppActivitySummary,
   DscSnapshot,
   DscSpeculativeAggregate,

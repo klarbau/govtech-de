@@ -37,6 +37,18 @@ export interface AutopilotStep {
   eid_confirmed_at?: string;
   /** Bei status === 'failed' der Fehlergrund. */
   failure_reason?: string;
+  /**
+   * Delegierte Agent-Stimme ("Wir melden Sie beim Einwohnermeldeamt an").
+   * DE-Daten (kein t()-Key) — wird in B3 zur Primärzeile; `aktion` +
+   * `rechtsgrundlage` werden zur Trust-Subline. Pass-1 (§1.1).
+   */
+  agent_label?: string;
+  /**
+   * Datenkategorien, die in diesem Hop tatsächlich übermittelt werden
+   * (Datenminimierung, Art. 5 Abs. 1 lit. c DSGVO — G8/B4). Minimalsatz je
+   * Empfänger; speist die Übermittlungs-Log-Quittung (§B4). Pass-1 (§1.1).
+   */
+  datenkategorien?: string[];
 }
 
 export type VorgangTyp =

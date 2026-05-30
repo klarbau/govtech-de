@@ -252,7 +252,8 @@
       "frau": "Hello, Ms {nachname}",
       "herr": "Hello, Mr {nachname}",
       "neutral": "Hello, {vorname} {nachname}",
-      "last_login_meta": "last login {days} days ago · on this device"
+      "last_login_meta": "last login {days} days ago · on this device",
+      "guten_tag": "Hello, {name}"
     },
     "demo_banner": {
       "text": "Demo mode · mock data · originals stay in the official mailboxes",
@@ -329,6 +330,78 @@
       "in_n_days": "Deadline in {days} days",
       "on_date": "Deadline {datum}",
       "overdue": "Deadline {datum} missed"
+    },
+    "titel": "Dashboard",
+    "untertitel": "Your personal overview of letters, deadlines and cases",
+    "fehler": {
+      "laden": "Data could not be loaded."
+    },
+    "letzter_login": "last login {days} days ago · on this device",
+    "prototyp_hinweis": {
+      "text": "Demo mode · mock data · originals stay in the official mailboxes"
+    },
+    "seit_login": {
+      "titel": "Since your last login",
+      "neue_briefe": "new letters",
+      "frist_naeher": "deadline closer",
+      "vorgang_abgeschlossen": "case completed"
+    },
+    "heute": {
+      "titel": "To do today",
+      "tab_ki": "AI",
+      "tab_frist": "Deadline",
+      "tab_behoerde": "Authority",
+      "tab_vorgang": "Case",
+      "empty_title": "Nothing to do today",
+      "empty_body": "We'll let you know when something comes up.",
+      "done": "Done",
+      "snooze": "Remind me later",
+      "snooze_days": "Postponed by {days} days",
+      "actions_label": "Actions for {titel}"
+    },
+    "triumph": {
+      "title": "Done for you",
+      "subtitle": "Move reported to {count} authorities — you didn't have to do anything.",
+      "zeitersparnis": "approx. {min} min saved",
+      "link": "View case",
+      "gerade_eben": "just now"
+    },
+    "erledigt_feed": {
+      "title": "Done automatically for you",
+      "empty": "Nothing done automatically yet."
+    },
+    "achievement": {
+      "jahr": "{count} cases handled for you this year"
+    },
+    "kacheln": {
+      "fristen": {
+        "titel": "Deadlines",
+        "offen": "{count} open",
+        "cta": "View"
+      },
+      "posteingang": {
+        "titel": "Inbox",
+        "ungelesen": "{count} unread",
+        "cta": "Open"
+      },
+      "vorgaenge": {
+        "titel": "Cases",
+        "stand": "{laeuft} running, {abgeschlossen} completed",
+        "cta": "View"
+      },
+      "termine": {
+        "titel": "Appointments",
+        "cta": "View"
+      },
+      "datenschutz": {
+        "titel": "Privacy cockpit",
+        "aktivitaeten": "{count} activities in 30 days",
+        "cta": "Open"
+      },
+      "stammdaten": {
+        "titel": "Master-data status",
+        "cta": "View"
+      }
     }
   },
   "common": {
@@ -580,7 +653,8 @@
       "termin_label_template": "Appointment: {datum}, {ort}",
       "not_found_title": "Case not found",
       "not_found_body": "This case does not exist or has been deleted.",
-      "back_to_dashboard": "Back to dashboard"
+      "back_to_dashboard": "Back to dashboard",
+      "dokumente_count": "{count, plural, one {# document} other {# documents}}"
     },
     "rechtsgrundlage": {
       "bmg_17": "§ 17 BMG: duty to register within two weeks of moving in.",
@@ -2210,6 +2284,15 @@
       "sort_ausgestellt": "Issue date (newest first)",
       "sort_gueltig": "Validity (expiring soon first)",
       "status_label": "Status"
+    },
+    "eudi": {
+      "button": "Export to EUDI Wallet (preview)",
+      "dialog_title": "EUDI Wallet export — preview [MOCK]",
+      "disclaimer_2027": "[MOCK] Simulated EUDI Wallet preview. The EUDI Wallet is being rolled out in 2027; no real credential is exported here.",
+      "download": "Download preview",
+      "mock_badge": "[MOCK]",
+      "close": "Close",
+      "payload_label": "Credential preview (synthetic)"
     }
   },
   "termine": {
@@ -2289,7 +2372,17 @@
       "filter_title": "No appointments for this selection",
       "naechster_schritt": "Select an appointment to see the details."
     },
-    "error": "Appointments could not be loaded."
+    "error": "Appointments could not be loaded.",
+    "action": {
+      "bestaetigen": "Confirm",
+      "verschieben": "Reschedule",
+      "absagen": "Cancel",
+      "confirm_cancel": "Really cancel this appointment?",
+      "verschoben_um": "Rescheduled by 7 days",
+      "bestaetigt": "Confirmed",
+      "abgesagt": "Cancelled",
+      "vorschlag": "Proposed"
+    }
   },
   "steuer": {
     "title": "Taxes",
@@ -2592,5 +2685,74 @@
       "started_title": "Autopilot started",
       "started_subtitle": "Your details were checked and the cascade was started."
     }
+  },
+  "convenience": {
+    "value_receipt": {
+      "title": "Your savings",
+      "behoerden": "authorities informed",
+      "zeitersparnis": "time saved (approx.)",
+      "klassische_schritte": "traditional steps",
+      "ihr_aufwand": "your effort",
+      "ein_satz": "one sentence",
+      "ca_prefix": "approx.",
+      "minuten_suffix": "min",
+      "disclaimer_conservative": "Conservative estimate. [MOCK]"
+    },
+    "step": {
+      "basis_label": "Legal basis",
+      "data_label": "Transmitted data"
+    },
+    "receipt": {
+      "toggle": "What was transmitted?",
+      "fields_label": "Transmitted data",
+      "basis_label": "Legal basis",
+      "consent_label": "Consent given on",
+      "minimierung_note": "Data minimisation: only these fields are transmitted."
+    },
+    "datenkat": {
+      "neue_anschrift": "new address",
+      "einzugsdatum": "move-in date",
+      "beitragsnummer": "contribution number (Beitragsnummer)",
+      "steuer_id": "tax identification number (Steuer-IdNr.)",
+      "versichertennummer": "insurance number (Versichertennummer)",
+      "familienstand": "marital status",
+      "name": "name",
+      "geburtsdatum": "date of birth",
+      "alte_anschrift": "previous address",
+      "wohnungsgeberbestaetigung": "landlord confirmation (Wohnungsgeberbestätigung)",
+      "eat_nummer": "eAT / document number",
+      "kindergeldnummer": "child benefit number (Kindergeldnummer)",
+      "personalnummer": "personnel number",
+      "kennzeichen": "vehicle registration"
+    },
+    "assistant": {
+      "run_summary_intro": "Summary of your savings"
+    }
+  },
+  "katalog": {
+    "titel": "Autopilot catalogue",
+    "untertitel": "Life situations the autopilot handles for you.",
+    "behoerden_label": "Offices involved",
+    "starten": "Start change of address",
+    "umzug": {
+      "titel": "Change of address",
+      "beschreibung": "One confirmation — we report your new address to all responsible offices."
+    },
+    "kindergeburt": {
+      "titel": "Birth of a child",
+      "beschreibung": "Birth certificate, child benefit and health insurance in a single case."
+    },
+    "steuererklaerung": {
+      "titel": "Tax return",
+      "beschreibung": "Pre-filled return based on your known data."
+    },
+    "status": {
+      "live": "available",
+      "demnaechst": "coming soon"
+    }
+  },
+  "shared": {
+    "gehoert_zu": "Belongs to: {vorgang}",
+    "neu_badge": "new"
   }
 }

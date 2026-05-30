@@ -69,6 +69,21 @@ export type VorschlageNaechstenSchrittInput = z.infer<
   typeof vorschlageNaechstenSchrittInput
 >;
 
+/* ───────────────────────────── hole_ersparnis ────────────────────────────── */
+
+/**
+ * Input for the convenience-Pass-1 `hole_ersparnis` tool (§7). `vorgang_id` is
+ * required; backs `api.getValueReceipt(vorgangId)`. Read-only, no confirm gate.
+ * Not regex-pinned — mock-backend owns the Vorgang-id namespace.
+ */
+export const holeErsparnisInput = z
+  .object({
+    vorgang_id: z.string().min(1, 'vorgang_id darf nicht leer sein'),
+  })
+  .strict();
+
+export type HoleErsparnisInput = z.infer<typeof holeErsparnisInput>;
+
 /* ─────────────────────────── unified dispatcher ──────────────────────────── */
 
 /**
@@ -84,6 +99,10 @@ export const POSTEINGANG_TOOL_VALIDATORS = {
   erklaere_brief: erklaereBriefInput,
   extrahiere_frist: extrahiereFristInput,
   vorschlage_naechsten_schritt: vorschlageNaechstenSchrittInput,
+  // Convenience Pass-1 (§7): read-only, required vorgang_id. Validated here so a
+  // malformed input surfaces a clean error before `api.getValueReceipt` is hit.
+  // `hole_autopilot_katalog` takes no input → no validator (pass-through).
+  hole_ersparnis: holeErsparnisInput,
 } as const;
 
 export type PosteingangToolName = keyof typeof POSTEINGANG_TOOL_VALIDATORS;
@@ -216,6 +235,17 @@ export const TOOL_DISPATCH: Record<ToolName, ToolDispatchEntry> = {
     api_method: 'extrahiereAktion',
     requires_confirmation: false,
     ui: 'tool_call_card_disclaimer',
+  },
+  // Convenience Pass-1 (§7) — read-only mirrors. No confirm gate.
+  hole_ersparnis: {
+    api_method: 'getValueReceipt',
+    requires_confirmation: false,
+    ui: 'tool_call_card',
+  },
+  hole_autopilot_katalog: {
+    api_method: 'getAutopilotKatalog',
+    requires_confirmation: false,
+    ui: 'tool_call_card',
   },
   preview_umzug: {
     api_method: 'previewUmzug',
