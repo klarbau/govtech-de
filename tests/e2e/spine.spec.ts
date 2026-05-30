@@ -240,6 +240,17 @@ test.describe('SPINE — assistant → autopilot → posteingang (demo-shipped g
     const kaskadeHref = await kaskadeLink.getAttribute('href');
     expect(kaskadeHref).toContain('/vorgaenge/umzug/run?vorgangId=vorgang-');
 
+    /* ── Step 4b: the cascade ALSO plays INLINE in the chat (wow #1, additive) ──
+     * Proves the continuous "I spoke → it acted → I watched" beat happens in the
+     * thread, before any navigation. Additive only — never weakens the /run path. */
+    const inlineCascade = page.getByTestId('inline-cascade');
+    await expect(inlineCascade).toBeVisible({ timeout: 20_000 });
+    await expect(
+      inlineCascade.getByText(/Bürgeramt|Bezirksamt|Finanzamt/i).first(),
+    ).toBeVisible();
+    // C1 regression guard: the kept "Kaskade ansehen" link still co-exists inline.
+    await expect(kaskadeLink).toBeVisible();
+
     /* ── Step 5: cascade renders + progresses (Block A → confirmed) ─────── */
     await kaskadeLink.click();
     await page.waitForURL('**/vorgaenge/umzug/run**');

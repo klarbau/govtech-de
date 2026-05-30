@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { useReducedMotion } from 'framer-motion';
 
+import { InlineCascade } from '@/components/autopilot/InlineCascade';
 import { IconCircle } from '@/components/shared/IconCircle';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import { cn } from '@/lib/utils';
@@ -88,13 +89,16 @@ export function ToolCallCard({ call }: ToolCallCardProps) {
           )}
         </div>
         {isUmzugStart && call.vorgangId ? (
-          <Link
-            href={`/vorgaenge/umzug/run?vorgangId=${encodeURIComponent(call.vorgangId)}`}
-            className="inline-flex items-center gap-1 self-start text-sm font-medium text-primary hover:text-primary-hover"
-          >
-            {t('cta_kaskade')}
-            <ArrowRight className="size-4 rtl:-scale-x-100" aria-hidden="true" />
-          </Link>
+          <>
+            <InlineCascade vorgangId={call.vorgangId} variant="live" />
+            <Link
+              href={`/vorgaenge/umzug/run?vorgangId=${encodeURIComponent(call.vorgangId)}`}
+              className="inline-flex items-center gap-1 self-start text-sm font-medium text-primary hover:text-primary-hover"
+            >
+              {t('cta_kaskade')}
+              <ArrowRight className="size-4 rtl:-scale-x-100" aria-hidden="true" />
+            </Link>
+          </>
         ) : null}
       </div>
     </div>

@@ -2727,6 +2727,20 @@
     },
     "assistant": {
       "run_summary_intro": "ملخّص ما وفّرته"
+    },
+    "inline_cascade": {
+      "live_region_label": "مباشر: يجري إخطار الجهات الحكومية",
+      "once_only_label": "حقول لم تكن مضطرًّا إلى تعبئتها",
+      "source_line": "المصدر: بياناتك الأساسية (Stammdaten)، تم تأكيدها مرة واحدة في {datum}",
+      "posteingang_landing": "{count, plural, =0 {لا توجد تأكيدات في صندوق الوارد بعد} one {تأكيد واحد في صندوق الوارد} two {تأكيدان في صندوق الوارد} few {# تأكيدات في صندوق الوارد} many {# تأكيدًا في صندوق الوارد} other {# تأكيد في صندوق الوارد}}",
+      "posteingang_cta": "فتح صندوق الوارد",
+      "disclaimer": "[MOCK] — محاكاة؛ لا يوجد إرسال فعلي.",
+      "row_status": {
+        "in_progress": "قيد الإرسال",
+        "confirmed": "تم التأكيد",
+        "pending": "في الانتظار",
+        "failed": "فشل"
+      }
     }
   },
   "katalog": {

@@ -19,6 +19,23 @@ export interface ValueReceipt {
   klassische_schritte: number;
   /** Literal 1 — „ein Satz" Bürgeraufwand. */
   ihr_aufwand_schritte: 1;
+
+  /**
+   * Once-Only-Zähler: Summe der pro Schritt wiederverwendeten Datenkategorien
+   * über alle bestätigten Schritte (NICHT dedupliziert über Schritte hinweg —
+   * jede Übermittlung eines Feldes an eine Stelle ist ein vermiedenes Ausfüllen).
+   * Abgeleitet aus `step.datenkategorien`, KEINE erfundene Zahl. Immer mit „ca."
+   * gerendert (Anti-Overclaim §1b). [domain: §D7]
+   */
+  once_only_fields: number;
+
+  /**
+   * Quelle der Wiederverwendung: ISO-Datum, an dem die Stammdaten-Anschrift zuletzt
+   * bestätigt wurde. Speist die „Quelle: Ihre Stammdaten, einmal bestätigt am …"-Zeile.
+   * Ableitung: `verifiziert_am` des Anschrift-Feldes der Persona, sonst Fallback
+   * `vorgang.angelegt_am`. [domain: Once-Only / RegMoG]
+   */
+  stammdaten_bestaetigt_am: string;
 }
 
 /**

@@ -2727,6 +2727,20 @@
     },
     "assistant": {
       "run_summary_intro": "Tasarrufunuzun özeti"
+    },
+    "inline_cascade": {
+      "live_region_label": "Canlı: makamlar bilgilendiriliyor",
+      "once_only_label": "doldurmak zorunda kalmadığınız alanlar",
+      "source_line": "Kaynak: temel verileriniz (Stammdaten), {datum} tarihinde bir kez onaylandı",
+      "posteingang_landing": "{count, plural, =0 {Gelen kutusunda henüz onay yok} other {Gelen kutusunda # onay}}",
+      "posteingang_cta": "Gelen kutusunu aç",
+      "disclaimer": "[MOCK] — benzetim; gerçek bir iletim yapılmaz.",
+      "row_status": {
+        "in_progress": "İletiliyor",
+        "confirmed": "Onaylandı",
+        "pending": "Bekliyor",
+        "failed": "Başarısız"
+      }
     }
   },
   "katalog": {

@@ -2959,6 +2959,20 @@
     },
     "assistant": {
       "run_summary_intro": "Zusammenfassung Ihrer Ersparnis"
+    },
+    "inline_cascade": {
+      "live_region_label": "Live: Behörden werden informiert",
+      "once_only_label": "Felder, die Sie nicht ausfüllen mussten",
+      "source_line": "Quelle: Ihre Stammdaten, einmal bestätigt am {datum}",
+      "posteingang_landing": "{count, plural, =0 {Noch keine Bestätigung im Posteingang} one {# Bestätigung im Posteingang} other {# Bestätigungen im Posteingang}}",
+      "posteingang_cta": "Posteingang öffnen",
+      "disclaimer": "[MOCK] — simuliert; keine reale Übermittlung.",
+      "row_status": {
+        "in_progress": "Wird übermittelt",
+        "confirmed": "Bestätigt",
+        "pending": "Wartet",
+        "failed": "Fehlgeschlagen"
+      }
     }
   },
   "katalog": {

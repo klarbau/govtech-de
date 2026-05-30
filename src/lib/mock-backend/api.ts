@@ -2515,7 +2515,15 @@ export const api: MockBackendApi & {
   getValueReceipt: (vorgangId: string) =>
     withLatency<ValueReceipt | null>(() => {
       const v = loadVorgaenge().find((x) => x.id === vorgangId);
-      return v ? computeValueReceipt(v) : null;
+      if (!v) return null;
+      // Once-Only-Quellzeile (spec §5.2 Shape A): `verifiziert_am` der Persona-
+      // Anschrift, sonst Fallback `vorgang.angelegt_am` (immer vorhanden).
+      const persona = loadProfile();
+      const anschriftVerifiziertAm = (
+        persona.adresse as { verifiziert_am?: string }
+      ).verifiziert_am;
+      const stammdatenBestaetigtAm = anschriftVerifiziertAm ?? v.angelegt_am;
+      return computeValueReceipt(v, stammdatenBestaetigtAm);
     }),
 
   getVorgangRelated: (vorgangId: string) =>
