@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 
 import { Providers } from '@/components/providers/Providers';
+import { IntlClientProvider } from '@/i18n/IntlClientProvider';
 import { rtlLocales, type Locale } from '@/i18n/routing';
 import { cn } from '@/lib/utils';
 
@@ -38,9 +38,9 @@ export default async function RootLayout({
       )}
     >
       <body className="min-h-screen bg-background text-foreground antialiased">
-        <NextIntlClientProvider locale={locale} messages={messages}>
+        <IntlClientProvider locale={locale} messages={messages}>
           <Providers>{children}</Providers>
-        </NextIntlClientProvider>
+        </IntlClientProvider>
       </body>
     </html>
   );

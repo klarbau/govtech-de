@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl';
 import { wrapNormZitate } from '@/components/posteingang/wrapNormZitate';
 import { Button } from '@/components/ui/button';
 import { useStripBaseUiFocusGuardAriaHidden } from '@/components/ui/use-strip-base-ui-focus-guard-aria-hidden';
+import { useInertOutsideModal } from '@/components/ui/use-inert-outside-modal';
 import { cn } from '@/lib/utils';
 
 import { IbanSpeculativeBadge } from './IbanSpeculativeBadge';
@@ -47,6 +48,7 @@ export function IbanSpeculativePushModal({
   const t = useTranslations();
   const tModal = useTranslations('stammdaten.modal.iban_push');
   useStripBaseUiFocusGuardAriaHidden(open);
+  useInertOutsideModal(open);
 
   const [targets, setTargets] = React.useState<IbanSpeculativePushTargets>({
     familienkasse: false,

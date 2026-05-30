@@ -418,7 +418,8 @@
     "all": "All",
     "show_all": "Show all",
     "actions": {
-      "close": "Close"
+      "close": "Close",
+      "abbrechen": "Cancel"
     },
     "pagination": {
       "label": "Pagination",
@@ -672,6 +673,28 @@
       "sgb_iv_28a": "§ 28a SGB IV: DEÜV reports from the employer to the social insurance bodies.",
       "detail_title": "Legal basis",
       "open_cta": "Show legal basis"
+    }
+  },
+  "vorgang": {
+    "detail": {
+      "next_step_title": "Your next step",
+      "next_step_basis_label": "Legal basis",
+      "next_step_cta": "Complete step",
+      "step_done_toast": "Step marked as completed.",
+      "step_done_busy": "Completing …",
+      "step_done_error": "Could not be completed. Please try again.",
+      "next_step_brief_cta": "Open the related letter",
+      "summary_title": "Overview",
+      "summary_status_label": "Status",
+      "summary_angelegt_label": "Created",
+      "summary_stichtag_label": "Effective date",
+      "summary_behoerden_label": "Involved authorities",
+      "summary_frist_label": "Next deadline",
+      "summary_frist_template": "{datum}",
+      "datenschutz_title": "Data protection",
+      "datenschutz_sub": "What is processed for this case — and on what legal basis.",
+      "termine_title": "Appointments for this case ({count})",
+      "no_next_step": "Nothing is required from you right now. The involved authorities are working through the case."
     }
   },
   "assistent": {
@@ -2226,6 +2249,19 @@
       "familie": "Family",
       "vertraege": "Contracts"
     },
+    "tab": {
+      "alle": "All",
+      "ausweise": "ID documents",
+      "bescheide": "Official notices",
+      "familie": "Family",
+      "vertraege": "Contracts"
+    },
+    "status": {
+      "verifiziert": "Verified",
+      "neu": "New",
+      "ablauf_bald": "Expiring soon",
+      "abgelaufen": "Expired"
+    },
     "col": {
       "dokument": "Document",
       "kategorie": "Category",
@@ -2237,32 +2273,67 @@
     "daten": {
       "ausgestellt": "Issued {datum}",
       "gueltig_bis": "Valid until {datum}",
-      "unbefristet": "no expiry"
+      "unbefristet": "no expiry",
+      "ausgestellt_label": "Issued",
+      "gueltig_bis_label": "Valid until"
     },
     "action": {
       "ansehen": "View {name}",
       "herunterladen": "Download {name}",
       "mehr": "More actions for {name}",
+      "ansehen_title": "View",
+      "herunterladen_title": "Download",
       "menu_ansehen": "View",
       "menu_teilen": "Share & use"
+    },
+    "download": {
+      "mock_header": "[MOCK] This document is part of a demo. Not a real official certificate.",
+      "dokument": "Document:",
+      "typ": "Type:",
+      "nr": "Document number:",
+      "aussteller": "Issuing authority:",
+      "ausgestellt": "Issued on:",
+      "gueltig_bis": "Valid until:",
+      "watermark": "Watermark:",
+      "toast_title": "[MOCK] Download started",
+      "toast_description": "{titel} was downloaded as a demo file."
+    },
+    "pagination": {
+      "empty": "0 documents",
+      "range": "{von}–{bis} of {total} documents",
+      "prev": "Previous page",
+      "next": "Next page",
+      "per_page_label": "Documents per page",
+      "per_page_option": "{count} per page"
     },
     "schnellzugriff": {
       "title": "Quick access",
       "upload": "Upload document",
+      "upload_sub": "Add from a file or scan",
+      "upload_toast": "Not available in the demo — new documents are created through cases such as a change of address.",
       "ordner": "New folder",
-      "vorlagen": "Templates",
-      "papier": "Submit paper document"
+      "ordner_sub": "Organise documents",
+      "ordner_toast": "Folder management is planned for this demo.",
+      "vorlagen": "Templates & forms",
+      "vorlagen_sub": "Use official forms",
+      "vorlagen_toast": "The form library is planned for this demo.",
+      "papier": "Submit paper document",
+      "papier_sub": "Send by post to the authority",
+      "papier_toast": "Postal submission to authorities is planned for this demo."
     },
     "zuletzt": {
-      "title": "Recently added"
+      "title": "Recently added",
+      "show_all": "Show all"
     },
     "teilen": {
       "title": "Share & use",
-      "hint": "Documents can be verified by QR code and exported to the EUDI Wallet.",
-      "cta": "Use document"
+      "hint": "You can securely share selected documents with authorities or attach them to cases.",
+      "cta": "Use document",
+      "cta_toast": "In this demo, documents are selected directly as an attachment within a case."
     },
     "preview": {
       "title": "Document preview",
+      "description": "Preview of the stored document metadata. This demo shows no real certificate.",
       "qr_label": "QR verification code",
       "eudi_yes": "Can be exported to the EUDI Wallet",
       "eudi_no": "Cannot be exported to EUDI",
@@ -2301,7 +2372,6 @@
     "calendar": {
       "prev": "Previous month",
       "next": "Next month",
-      "today": "Today",
       "label": "Monthly calendar",
       "weekday_long": {
         "mo": "Monday",
@@ -2321,7 +2391,6 @@
         "sa": "Sat",
         "so": "Sun"
       },
-      "has_events": "{count, plural, =1 {1 appointment} other {# appointments}}",
       "day_aria": "{datum}{events}",
       "day_events_suffix": " — {count, plural, =1 {1 appointment} other {# appointments}}"
     },
@@ -2333,20 +2402,57 @@
       "abgeschlossen": "Completed"
     },
     "naechste": {
-      "title": "Upcoming appointments"
+      "title": "Upcoming appointments",
+      "details_aria": "Details: {betreff}"
     },
     "weitere": {
       "title": "More appointments & reminders"
     },
+    "row": {
+      "details_cta": "Details",
+      "zum_vorgang_cta": "Go to case",
+      "details_aria": "Details: {betreff}",
+      "zum_vorgang_aria": "Go to case: {titel}"
+    },
     "card": {
       "buchungsreferenz": "Booking reference {ref}",
-      "ics": "Export ICS",
-      "ics_aria": "Export appointment {betreff} as ICS",
-      "details": "Details",
-      "details_anzeigen": "Show details"
+      "buchungsreferenz_label": "Booking reference",
+      "ics": "Add to calendar",
+      "ics_aria_all": "Export all upcoming appointments as ICS"
+    },
+    "status": {
+      "gebucht": "Booked",
+      "bestaetigt": "Confirmed",
+      "verschoben": "Rescheduled",
+      "abgesagt": "Cancelled"
+    },
+    "marker": {
+      "erinnerung": "Reminder"
+    },
+    "auswahl": {
+      "label": "Selected: {datum}",
+      "aufheben": "Clear selection"
+    },
+    "alle_anzeigen": {
+      "show": "Show completed appointments",
+      "hide": "Hide completed appointments"
+    },
+    "detail": {
+      "status_label": "Status: {status}"
+    },
+    "reschedule": {
+      "title": "Reschedule appointment",
+      "intro": "Choose a new appointment. The authority is notified of the change automatically.",
+      "confirm": "Reschedule to this appointment"
     },
     "naechster_schritt": {
-      "title": "Next step"
+      "title": "Next step",
+      "untertitel": "How to prepare for your appointment.",
+      "kein_termin": "No open appointment",
+      "vorerinnerung_titel": "Allow enough time",
+      "vorerinnerung_text": "Please arrive 10–15 minutes before your appointment.",
+      "storno_titel": "Cannot attend?",
+      "storno_text": "You can cancel or reschedule your appointment online up to 48 hours in advance."
     },
     "vorbereitung": {
       "title": "Well prepared for your appointment",
@@ -2373,12 +2479,18 @@
       "naechster_schritt": "Select an appointment to see the details."
     },
     "error": "Appointments could not be loaded.",
+    "retry": "Try again",
+    "fristen_offen": "{count, plural, =0 {No open deadlines} =1 {1 open deadline} other {# open deadlines}}",
+    "frist_praefix": "Deadline: {datum}",
+    "faellig_praefix": "Due: {datum}",
+    "uhr_dauer": "{zeit} ({dauer} min)",
     "action": {
       "bestaetigen": "Confirm",
       "verschieben": "Reschedule",
       "absagen": "Cancel",
       "confirm_cancel": "Really cancel this appointment?",
       "verschoben_um": "Rescheduled by 7 days",
+      "verschoben": "Rescheduled",
       "bestaetigt": "Confirmed",
       "abgesagt": "Cancelled",
       "vorschlag": "Proposed"
@@ -2390,6 +2502,8 @@
     "hero": {
       "steuerjahr": "Tax year {jahr}",
       "entwurf_badge": "Draft",
+      "stand": "As of: {datum}",
+      "basis_hint": "Based on data already on record",
       "erstattung_label": "Estimated refund",
       "erstattung_aria": "Estimated refund {betrag}",
       "nachzahlung_label": "Estimated amount due",
@@ -2404,10 +2518,14 @@
       "herkunft": "from {herkunft}"
     },
     "fortschritt": {
-      "title": "Progress",
+      "title": "Your progress",
       "geprueft": "Data checked",
-      "ergaenzen": "Add supporting documents",
+      "geprueft_desc": "Data fully checked",
+      "ergaenzen": "Supporting documents added",
+      "ergaenzen_desc": "3 supporting documents still missing",
+      "anzeigen": "View",
       "abgabe": "Ready to submit",
+      "abgabe_desc": "Finish checking and submit your return",
       "schritt_aria": "Step {n} of 3: {label}",
       "status_done": "completed",
       "status_active": "active",
@@ -2444,16 +2562,20 @@
       "sonderausgaben": "Special expenses (Sonderausgaben)"
     },
     "fristen": {
-      "title": "Important deadlines"
+      "title": "Important deadlines",
+      "show_all": "Show all deadlines"
     },
     "frist": {
       "abgabe": "Filing deadline for tax return {jahr}",
       "einspruch": "Objection deadline for last assessment",
       "in_tagen": "In {count, plural, =0 {today} =1 {1 day} other {# days}}",
-      "ueberfaellig": "overdue"
+      "ueberfaellig": "Overdue"
     },
     "nachweise": {
-      "title": "Supporting documents used"
+      "title": "Supporting documents used",
+      "verwendet": "Used",
+      "ausgestellt_am": "Issued on {datum}",
+      "show_all": "Show all supporting documents"
     },
     "datenschutz": {
       "title": "Data protection notice",
@@ -2474,20 +2596,24 @@
     },
     "error": "The tax overview could not be loaded.",
     "retry": "Try again",
-    "demo_action_toast": "Demo feature — adding supporting documents is not set up in this prototype.",
+    "loading": "Loading…",
+    "demo_action_toast": "Demo feature — not implemented in this prototype.",
     "alle_bereiche": "Show all categories",
     "weniger_bereiche": "Show fewer"
   },
   "datenschutz": {
     "page": {
       "title": "Data protection",
-      "subtitle": "Insight into data access, consents and administrative cases"
+      "subtitle": "Insight into data access, consents and purposes of use.",
+      "tag": "Speculative demo feature"
     },
     "vision_banner": {
       "heading": "2027 vision",
       "title": "2027 vision",
       "body": "This cockpit brings together your data-protection transparency and control. In the real world today, these functions are still spread across several offices.",
-      "dismiss": "Close 2027 vision notice"
+      "body_1": "These functions are part of our vision for more transparency and self-determination over your data.",
+      "body_2": "Availability and content may change before launch.",
+      "dismiss": "Close notice"
     },
     "aktivitaet": {
       "title": "Recent activity",
@@ -2498,10 +2624,11 @@
     "activity": {
       "typ": {
         "uebermittlung": "Transfer",
-        "eingang": "Incoming",
+        "eingang": "Inbox",
         "app": "App activity",
-        "vision": "Vision"
+        "vision": "Speculative 2027"
       },
+      "fallback": "Activity",
       "brief_geoeffnet": "Letter opened",
       "ki_zusammenfassung": "AI summary created",
       "adresse_uebermittelt": "Address transferred to authority",
@@ -2510,13 +2637,21 @@
     },
     "einwilligungen": {
       "title": "Consents",
-      "subtitle": "You decide which offices may access your data",
+      "subtitle": "Control which offices and services may access your data.",
       "krankenkasse": "Health insurer (Krankenkasse)",
+      "krankenkasse_sub": "Data transfer for billing and benefits",
       "bank": "Bank",
+      "bank_sub": "Account check for refunds",
       "arbeitgeber": "Employer",
+      "arbeitgeber_sub": "Data sharing for wage tax and certificates",
       "weitere_dienste": "Other services",
+      "weitere_dienste_sub": "Other authorities and organisations",
+      "verwalten": "Manage",
+      "historie_anzeigen": "Show consent history",
       "ein": "On",
       "aus": "Off",
+      "toggle_ein": "Turn on {empfaenger}",
+      "toggle_aus": "Turn off {empfaenger}",
       "rechtsgrundlage_label": "Legal basis",
       "switch_aria": "Consent {empfaenger}",
       "announce_ein": "Consent {empfaenger} switched on",
@@ -2524,26 +2659,43 @@
     },
     "quellen": {
       "title": "Data sources & recipients",
-      "col_stelle": "Office",
+      "subtitle": "An overview of which offices access your data and how.",
+      "col_stelle": "Office / service",
       "col_zugriffsart": "Access type",
       "col_aktualitaet": "Last updated",
-      "automatisch": "automatically synchronised",
-      "einwilligungsbasiert": "consent-based",
+      "automatisch": "Automatically synchronised",
+      "einwilligungsbasiert": "Consent-based",
       "aktuell": "up to date",
+      "angezeigt": "Showing {shown} of {total} data sources.",
       "show_all": "Show all recipients"
     },
     "kontrolle": {
       "title": "Your data-protection controls",
+      "subtitle": "You decide who may use your data and how.",
       "zugriffsprotokoll": "Access log",
       "zugriffsprotokoll_desc": "Trace all data access",
       "datenexport": "Data export",
+      "export_bereit": "Export ready",
       "datenexport_desc": "Take your data with you under Art. 20 GDPR (DSGVO)",
       "einstellungen": "Settings",
       "einstellungen_desc": "Manage preferences and blocks",
       "vision_hint": "This function is part of this demo's 2027 vision."
     },
+    "log_dialog": {
+      "description": "Full log of data access and transfers.",
+      "loading": "Loading …",
+      "empty": "No activity available."
+    },
+    "hist_dialog": {
+      "title": "Consent history",
+      "description": "Changes to the consents you have granted and withdrawn.",
+      "empty": "No consent changes recorded yet."
+    },
     "log": {
       "einwilligung_geaendert": "Consent changed"
+    },
+    "export": {
+      "hinweis": "[MOCK] Speculative-design demo — no real personal data."
     },
     "toast": {
       "einwilligung_error": "The consent could not be saved."
@@ -2569,7 +2721,13 @@
       "vater": "Father",
       "partner": "Partner",
       "kind": "Child",
+      "erwachsen": "Adult",
+      "sie": "You",
       "hauptperson": "Main person"
+    },
+    "person": {
+      "sie_name": "{name} (you)",
+      "geb": "Born {datum}"
     },
     "cta": {
       "haushalt_verwalten": "Manage household"
@@ -2577,11 +2735,14 @@
     "verwalten_dialog": {
       "title": "Manage household",
       "body": "Managing household members and powers of representation (Vertretungsrechte) is a 2027 vision of this demo. The feature is coming soon.",
+      "mock_hint": "[MOCK] Demo data. Adding, removing and adjusting permissions is not yet active in this preview.",
       "close": "Close"
     },
     "vertretung_banner": {
       "title": "Representation",
-      "body": "You can handle cases on behalf of members of your household (Vertretung)."
+      "body": "You can handle cases on behalf of members of your household (Vertretung).",
+      "titel": "You are the authorised representative for {name}.",
+      "text": "You can view and manage cases for {vorname}."
     },
     "vorgaenge": {
       "title": "Shared cases",
@@ -2624,9 +2785,13 @@
       "nachweise": "Proofs",
       "vertretungen": "Representations"
     },
+    "rail_foot": {
+      "titel": "Changes to your household or permissions?",
+      "cta": "Open household settings"
+    },
     "sicher": {
       "title": "Safe & protected",
-      "body": "Family data is processed only to the extent required. Powers of representation (Vertretungsrechte) are a 2027 vision of this demo.",
+      "body": "Your data and proofs are managed securely. Only people with the appropriate permissions can view them.",
       "more": "More about data protection"
     },
     "empty": {
@@ -2735,8 +2900,15 @@
       "posteingang_landing": "{count, plural, =0 {No confirmations in your inbox yet} one {# confirmation in your inbox} other {# confirmations in your inbox}}",
       "posteingang_cta": "Open inbox",
       "disclaimer": "[MOCK] — simulated; no real transmission.",
+      "eid_confirm_cta": "Confirm with eID",
+      "eid_confirm_cta_aria": "Confirm with eID: {behoerde}",
+      "eid_confirming": "Confirming …",
+      "eid_confirm_error": "Confirmation failed. Please try again.",
+      "eid_gate_hint": "The following two offices require your explicit confirmation with your ID card — these two transmit nothing without your tap.",
+      "row_status_sr_prefix": "Status: ",
       "row_status": {
         "in_progress": "Being transmitted",
+        "needs_eid": "Your confirmation needed",
         "confirmed": "Confirmed",
         "pending": "Waiting",
         "failed": "Failed"

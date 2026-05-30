@@ -5,12 +5,16 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { format, parseISO } from 'date-fns';
 import { de } from 'date-fns/locale';
+import { toast } from 'sonner';
 import {
   AlertCircle,
   ArrowRight,
+  Calendar,
   CheckCircle2,
   Clock,
+  FileText,
   Fingerprint,
+  ListChecks,
   Loader2,
 } from 'lucide-react';
 
@@ -155,13 +159,18 @@ export function VorgangDetailLoader({ id }: VorgangDetailLoaderProps) {
 
   if (state.kind === 'loading') {
     return (
-      <div aria-busy="true" className="flex flex-col gap-6">
-        <div className="flex flex-col gap-2 border-b border-border pb-4">
-          <div className="h-7 w-64 animate-pulse rounded-md bg-muted/60" />
-          <div className="h-4 w-48 animate-pulse rounded-md bg-muted/60" />
+      <div aria-busy="true">
+        <div className="gt-page-head">
+          <div className="h-8 w-64 animate-pulse rounded-md bg-muted/60" />
+          <div className="mt-2 h-4 w-48 animate-pulse rounded-md bg-muted/50" />
         </div>
-        <div className="h-40 animate-pulse rounded-xl bg-muted/40" />
-        <div className="h-40 animate-pulse rounded-xl bg-muted/40" />
+        <div className="vg-layout">
+          <div className="flex flex-col gap-6">
+            <div className="h-40 animate-pulse rounded-2xl bg-muted/40" />
+            <div className="h-56 animate-pulse rounded-2xl bg-muted/40" />
+          </div>
+          <div className="h-72 animate-pulse rounded-2xl bg-muted/40" />
+        </div>
       </div>
     );
   }
@@ -170,29 +179,50 @@ export function VorgangDetailLoader({ id }: VorgangDetailLoaderProps) {
     return <VorgangDetailNotFound />;
   }
 
-  return <VorgangDetail data={state.data} id={id} />;
+  return <VorgangDetail data={state.data} id={id} reload={load} />;
 }
 
 function VorgangDetailNotFound() {
   const t = useTranslations('umzug.detail');
   return (
-    <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-        {t('not_found_title')}
-      </h1>
-      <p className="text-sm text-muted-foreground">{t('not_found_body')}</p>
-      <Link
-        href="/dashboard"
-        className="inline-flex h-8 w-fit items-center rounded-lg border border-border bg-background px-3 text-sm font-medium text-foreground hover:bg-muted"
-      >
+    <>
+      <div className="gt-page-head">
+        <h1>{t('not_found_title')}</h1>
+        <div className="sub">{t('not_found_body')}</div>
+      </div>
+      <Link href="/dashboard" className="btn btn-secondary">
+        <ArrowRight aria-hidden="true" />
         {t('back_to_dashboard')}
       </Link>
-    </div>
+    </>
   );
 }
 
-function VorgangDetail({ data, id }: { data: LoadedState; id: string }) {
+/** Step statuses that put the ball in the citizen's court. */
+const CITIZEN_ACTION_STATUS: ReadonlySet<AutopilotStepStatus> = new Set([
+  'needs_eid',
+  'pending_eid_confirmation',
+  'self_assigned',
+]);
+
+function pickNextStep(steps: AutopilotStep[]): AutopilotStep | undefined {
+  return (
+    steps.find((s) => CITIZEN_ACTION_STATUS.has(s.status)) ??
+    steps.find((s) => s.status === 'pending')
+  );
+}
+
+function VorgangDetail({
+  data,
+  id,
+  reload,
+}: {
+  data: LoadedState;
+  id: string;
+  reload: () => Promise<void>;
+}) {
   const t = useTranslations('umzug.detail');
+  const tv = useTranslations('vorgang.detail');
   const { vorgang, letters, termine, behoerden, relatedDocuments, receipt } = data;
 
   const behoerdenById: Record<BehoerdeId, Pick<Behoerde, 'name_de' | 'kategorie'>> = {};
@@ -209,156 +239,352 @@ function VorgangDetail({ data, id }: { data: LoadedState; id: string }) {
   const adresseNeu = readAdresseFromContext(vorgang.context, 'neue_adresse');
   const stichtag = readStichtagFromContext(vorgang.context);
 
+  const nextStep = pickNextStep(vorgang.schritte);
+  const nextBehoerde = nextStep ? behoerdenById[nextStep.behoerde_id] : undefined;
+  const naechsteFristIso = vorgang.fristen?.[0]?.datum;
+
   return (
-    <div className="flex flex-col gap-8">
+    <>
       <VorgangHeaderClient
         title={vorgang.titel ?? t('title')}
         status={vorgang.status}
-        angelegtIso={vorgang.angelegt_am}
-        stichtagIso={stichtag}
       />
 
-      {receipt ? <ValueReceiptCard receipt={receipt} variant="static" /> : null}
+      <div className="vg-layout">
+        <div className="flex flex-col gap-6">
+          {nextStep ? (
+            <NextStepCard
+              vorgangId={vorgang.id}
+              stepId={nextStep.id}
+              behoerdeName={nextBehoerde?.name_de ?? nextStep.behoerde_id}
+              kategorie={nextBehoerde?.kategorie}
+              aktion={nextStep.aktion}
+              rechtsgrundlage={nextStep.rechtsgrundlage}
+              letterId={nextStep.letter_id}
+              reload={reload}
+            />
+          ) : vorgang.schritte.length > 0 && !receipt ? (
+            <NoNextStepCard />
+          ) : null}
 
-      {adresseNeu ? (
-        <AdresseDiffClient alt={adresseAlt} neu={adresseNeu} />
-      ) : null}
+          {receipt ? <ValueReceiptCard receipt={receipt} variant="static" /> : null}
 
-      <BehoerdenStatusListClient
-        steps={vorgang.schritte}
-        behoerdenById={behoerdenById}
-        lettersById={lettersById}
-      />
+          {adresseNeu ? <AdresseDiffClient alt={adresseAlt} neu={adresseNeu} /> : null}
 
-      {relatedDocuments.length > 0 ? (
-        <VorgangDocuments
-          documents={relatedDocuments}
-          behoerdenById={behoerdenById}
-        />
-      ) : null}
+          <BehoerdenStatusListClient
+            steps={vorgang.schritte}
+            behoerdenById={behoerdenById}
+            lettersById={lettersById}
+          />
 
-      {termine.length > 0 ? (
-        <section aria-labelledby="termine-section" className="flex flex-col gap-3">
-          <h2 id="termine-section" className="text-sm font-medium text-foreground">
-            {t('termin_label_template', { datum: '', ort: '' }).replace(/[,\s]+$/, '')}
-          </h2>
-          <ul className="grid gap-3 sm:grid-cols-2">
-            {termine.map((termin) => (
-              <li key={termin.id}>
-                <TerminCard
-                  termin={termin}
-                  behoerde={
-                    behoerdenById[termin.behoerde_id] ?? {
-                      name_de: termin.behoerde_id,
-                    }
-                  }
-                />
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
+          {relatedDocuments.length > 0 ? (
+            <VorgangDocuments documents={relatedDocuments} behoerdenById={behoerdenById} />
+          ) : null}
 
-      {letters.length > 0 ? (
-        <section aria-labelledby="posteingang-section" className="flex flex-col gap-3">
-          <h2 id="posteingang-section" className="text-sm font-medium text-foreground">
-            {t('posteingang_count', { count: letters.length })}
-          </h2>
-          <ul className="flex flex-col gap-2">
-            {letters.map((letter) => (
-              <LetterCard
-                key={letter.id}
-                letter={letter}
-                absender={behoerdenById[letter.absender_behoerde_id]}
-              />
-            ))}
-          </ul>
-        </section>
-      ) : null}
+          {termine.length > 0 ? (
+            <section aria-labelledby="termine-section" className="gt-card">
+              <div className="gt-card-head">
+                <h2 id="termine-section" className="gt-card-title">
+                  <Calendar aria-hidden="true" />
+                  {tv('termine_title', { count: termine.length })}
+                </h2>
+              </div>
+              <ul className="grid gap-3 sm:grid-cols-2">
+                {termine.map((termin) => (
+                  <li key={termin.id}>
+                    <TerminCard
+                      termin={termin}
+                      behoerde={
+                        behoerdenById[termin.behoerde_id] ?? { name_de: termin.behoerde_id }
+                      }
+                    />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
 
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <FristDetailModal />
-        <DatenschutzCockpitLink vorgangId={id} />
+          {letters.length > 0 ? (
+            <section aria-labelledby="posteingang-section" className="gt-card">
+              <div className="gt-card-head">
+                <h2 id="posteingang-section" className="gt-card-title">
+                  <FileText aria-hidden="true" />
+                  {t('posteingang_count', { count: letters.length })}
+                </h2>
+              </div>
+              <ul className="flex flex-col gap-2">
+                {letters.map((letter) => (
+                  <LetterCard
+                    key={letter.id}
+                    letter={letter}
+                    absender={behoerdenById[letter.absender_behoerde_id]}
+                  />
+                ))}
+              </ul>
+            </section>
+          ) : null}
+        </div>
+
+        <aside aria-label={tv('summary_title')} className="flex flex-col gap-4">
+          <VorgangSummaryRail
+            status={vorgang.status}
+            angelegtIso={vorgang.angelegt_am}
+            stichtagIso={stichtag}
+            behoerdenCount={vorgang.schritte.length}
+            naechsteFristIso={naechsteFristIso}
+          />
+
+          <div className="rail-card flex flex-col gap-3">
+            <h3>{tv('datenschutz_title')}</h3>
+            <p className="sub" style={{ marginBottom: 0 }}>
+              {tv('datenschutz_sub')}
+            </p>
+            <DatenschutzCockpitLink vorgangId={id} />
+            <FristDetailModal />
+          </div>
+
+          <PrototypeDisclaimer />
+        </aside>
       </div>
-
-      <PrototypeDisclaimer />
-    </div>
+    </>
   );
 }
 
-const statusTone: Record<VorgangStatus, string> = {
-  angelegt: 'bg-sky-100 text-sky-800 dark:bg-sky-900/40 dark:text-sky-200',
-  in_pruefung: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200',
-  genehmigt: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200',
-  abgelehnt: 'bg-destructive/15 text-destructive',
-  abgeschlossen: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200',
-};
+function NextStepCard({
+  vorgangId,
+  stepId,
+  behoerdeName,
+  kategorie,
+  aktion,
+  rechtsgrundlage,
+  letterId,
+  reload,
+}: {
+  vorgangId: string;
+  stepId: string;
+  behoerdeName: string;
+  kategorie?: Behoerde['kategorie'];
+  aktion: string;
+  rechtsgrundlage?: string;
+  letterId?: string;
+  reload: () => Promise<void>;
+}) {
+  const tv = useTranslations('vorgang.detail');
+  const [busy, setBusy] = React.useState(false);
 
-function VorgangHeaderClient({
-  title,
+  const handleErledigen = async () => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      await api.erledigeVorgangSchritt(vorgangId, stepId);
+      toast.success(tv('step_done_toast'));
+      await reload();
+      // On success the step becomes `confirmed`, pickNextStep returns nothing,
+      // and this card unmounts in favour of NoNextStepCard — which takes focus.
+    } catch {
+      toast.error(tv('step_done_error'));
+      setBusy(false);
+    }
+  };
+
+  return (
+    <section
+      aria-labelledby="next-step-title"
+      className="gt-card"
+      style={{ borderColor: 'var(--brand-200)', background: 'var(--brand-50)' }}
+    >
+      <div className="flex items-start gap-4">
+        <span className="icon-square" aria-hidden="true">
+          <ListChecks />
+        </span>
+        <div className="grow">
+          <h2 id="next-step-title" className="gt-card-title">
+            {tv('next_step_title')}
+          </h2>
+          <div className="mt-1">
+            <BehoerdenBadge name={behoerdeName} kategorie={kategorie} />
+          </div>
+          <p className="mt-2 text-sm font-medium text-foreground">{aktion}</p>
+          {rechtsgrundlage ? (
+            <p className="mt-1 text-xs text-muted-foreground">
+              <span className="font-medium">{tv('next_step_basis_label')}:</span>{' '}
+              {rechtsgrundlage}
+            </p>
+          ) : null}
+
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleErledigen}
+              disabled={busy}
+              aria-busy={busy}
+            >
+              {busy ? (
+                <Loader2 className="animate-spin" aria-hidden="true" />
+              ) : (
+                <CheckCircle2 aria-hidden="true" />
+              )}
+              {busy ? tv('step_done_busy') : tv('next_step_cta')}
+            </button>
+            {letterId ? (
+              <Link
+                href={`/posteingang/${encodeURIComponent(letterId)}`}
+                className="btn btn-secondary"
+              >
+                <FileText aria-hidden="true" />
+                {tv('next_step_brief_cta')}
+              </Link>
+            ) : null}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function NoNextStepCard() {
+  const tv = useTranslations('vorgang.detail');
+  const ref = React.useRef<HTMLElement>(null);
+
+  React.useEffect(() => {
+    ref.current?.focus();
+  }, []);
+
+  return (
+    <section
+      ref={ref}
+      tabIndex={-1}
+      aria-labelledby="no-next-step-title"
+      className="gt-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      style={{ borderColor: 'var(--green-100)', background: 'var(--green-50)' }}
+    >
+      <div className="flex items-start gap-4">
+        <span className="mt-0.5 flex size-9 items-center justify-center text-emerald-600" aria-hidden="true">
+          <CheckCircle2 className="size-6" />
+        </span>
+        <div className="grow">
+          <h2 id="no-next-step-title" className="gt-card-title">
+            {tv('next_step_title')}
+          </h2>
+          <p className="mt-2 text-sm text-foreground">{tv('no_next_step')}</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function VorgangSummaryRail({
   status,
   angelegtIso,
   stichtagIso,
+  behoerdenCount,
+  naechsteFristIso,
 }: {
-  title: string;
   status: VorgangStatus;
   angelegtIso: string;
   stichtagIso?: string;
+  behoerdenCount: number;
+  naechsteFristIso?: string;
 }) {
-  const t = useTranslations('umzug.detail');
+  const tv = useTranslations('vorgang.detail');
   const angelegtLabel = format(parseISO(angelegtIso), 'd. MMMM yyyy', { locale: de });
   const stichtagLabel = stichtagIso
     ? format(parseISO(stichtagIso), 'd. MMMM yyyy', { locale: de })
     : null;
-
-  const statusKey: 'laeuft' | 'abgeschlossen' | 'fehlerhaft' =
-    status === 'abgeschlossen'
-      ? 'abgeschlossen'
-      : status === 'abgelehnt'
-        ? 'fehlerhaft'
-        : 'laeuft';
+  const fristLabel = naechsteFristIso
+    ? format(parseISO(naechsteFristIso), 'd. MMMM yyyy', { locale: de })
+    : null;
 
   return (
-    <header className="flex flex-col gap-2 border-b border-border pb-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          {title}
-        </h1>
-        <span
-          className={cn(
-            'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
-            statusTone[status],
-          )}
-        >
-          {t(`status.${statusKey}`)}
-        </span>
+    <div className="rail-card">
+      <h3>{tv('summary_title')}</h3>
+      <dl className="flex flex-col">
+        <SummaryRow label={tv('summary_status_label')}>
+          <VorgangStatusBadge status={status} />
+        </SummaryRow>
+        <SummaryRow label={tv('summary_angelegt_label')}>{angelegtLabel}</SummaryRow>
+        {stichtagLabel ? (
+          <SummaryRow label={tv('summary_stichtag_label')}>{stichtagLabel}</SummaryRow>
+        ) : null}
+        <SummaryRow label={tv('summary_behoerden_label')}>{behoerdenCount}</SummaryRow>
+        {fristLabel ? (
+          <SummaryRow label={tv('summary_frist_label')}>
+            <span className="inline-flex items-center gap-1.5">
+              <Calendar className="size-3.5 text-muted-foreground" aria-hidden="true" />
+              {fristLabel}
+            </span>
+          </SummaryRow>
+        ) : null}
+      </dl>
+    </div>
+  );
+}
+
+function SummaryRow({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex items-center justify-between gap-3 border-t border-border py-2.5 first:border-t-0 first:pt-0">
+      <dt className="text-xs text-muted-foreground">{label}</dt>
+      <dd className="text-sm font-medium text-foreground">{children}</dd>
+    </div>
+  );
+}
+
+/* Status badge — `.badge` colour conveys tone decoratively; the localized
+ * label carries the meaning (status is never colour-only). */
+const STATUS_BADGE: Record<
+  VorgangStatus,
+  { tone: 'brand' | 'green' | 'amber' | 'red'; dot: string; key: 'laeuft' | 'abgeschlossen' | 'fehlerhaft' }
+> = {
+  angelegt: { tone: 'brand', dot: 'var(--brand-500)', key: 'laeuft' },
+  in_pruefung: { tone: 'amber', dot: 'var(--amber-500)', key: 'laeuft' },
+  genehmigt: { tone: 'green', dot: 'var(--green-500)', key: 'abgeschlossen' },
+  abgeschlossen: { tone: 'green', dot: 'var(--green-500)', key: 'abgeschlossen' },
+  abgelehnt: { tone: 'red', dot: 'var(--red-500)', key: 'fehlerhaft' },
+};
+
+function VorgangStatusBadge({ status }: { status: VorgangStatus }) {
+  const t = useTranslations('umzug.detail');
+  const cfg = STATUS_BADGE[status];
+  return (
+    <span className={`badge ${cfg.tone}`}>
+      <span className="dot" style={{ background: cfg.dot }} aria-hidden="true" />
+      {t(`status.${cfg.key}`)}
+    </span>
+  );
+}
+
+function VorgangHeaderClient({ title, status }: { title: string; status: VorgangStatus }) {
+  return (
+    <div className="gt-page-head">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1>{title}</h1>
+        <VorgangStatusBadge status={status} />
       </div>
-      <p className="text-sm text-muted-foreground">
-        {t('angelegt_template', { datum: angelegtLabel })}
-        {stichtagLabel ? ` · ${t('stichtag_template', { datum: stichtagLabel })}` : ''}
-      </p>
-    </header>
+    </div>
   );
 }
 
 function AdresseDiffClient({ alt, neu }: { alt?: Adresse; neu: Adresse }) {
   const t = useTranslations('umzug.detail');
   return (
-    <dl className="grid gap-3 sm:grid-cols-[auto_auto_1fr] sm:items-start">
-      <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-        {t('adresse_alt')}
-      </dt>
-      <dd className="text-sm text-muted-foreground line-through sm:col-span-2">
-        {alt ? formatAdresse(alt) : '—'}
-      </dd>
-      <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-        {t('adresse_neu')}
-      </dt>
-      <dd className="flex items-center gap-2 text-sm font-medium text-foreground sm:col-span-2">
-        <ArrowRight className="size-3.5 text-primary" aria-hidden="true" />
-        <span>{formatAdresse(neu)}</span>
-      </dd>
-    </dl>
+    <div className="gt-card">
+      <dl className="grid gap-3 sm:grid-cols-[auto_1fr] sm:items-start">
+        <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          {t('adresse_alt')}
+        </dt>
+        <dd className="text-sm text-muted-foreground line-through">
+          {alt ? formatAdresse(alt) : '—'}
+        </dd>
+        <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          {t('adresse_neu')}
+        </dt>
+        <dd className="flex items-center gap-2 text-sm font-medium text-foreground">
+          <ArrowRight className="size-3.5 text-primary" aria-hidden="true" />
+          <span>{formatAdresse(neu)}</span>
+        </dd>
+      </dl>
+    </div>
   );
 }
 
@@ -409,11 +635,14 @@ function BehoerdenStatusListClient({
   const tStep = useTranslations('convenience.step');
 
   return (
-    <section aria-labelledby="behoerden-status-title" className="flex flex-col gap-3">
-      <h2 id="behoerden-status-title" className="text-sm font-medium text-foreground">
-        {t('beteiligte_behoerden_count', { count: steps.length })}
-      </h2>
-      <ol className="divide-y divide-border rounded-xl border border-border bg-card">
+    <section aria-labelledby="behoerden-status-title" className="gt-card">
+      <div className="gt-card-head">
+        <h2 id="behoerden-status-title" className="gt-card-title">
+          <ListChecks aria-hidden="true" />
+          {t('beteiligte_behoerden_count', { count: steps.length })}
+        </h2>
+      </div>
+      <ol className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-card">
         {steps.map((step) => {
           const viz = STATUS_VIZ[step.status];
           const behoerde = behoerdenById[step.behoerde_id];
@@ -492,16 +721,19 @@ function VorgangDocuments({
 }) {
   const t = useTranslations('umzug.detail');
   return (
-    <section aria-labelledby="vorgang-docs" className="flex flex-col gap-3">
-      <h2 id="vorgang-docs" className="text-sm font-medium text-foreground">
-        {t('dokumente_count', { count: documents.length })}
-      </h2>
+    <section aria-labelledby="vorgang-docs" className="gt-card">
+      <div className="gt-card-head">
+        <h2 id="vorgang-docs" className="gt-card-title">
+          <FileText aria-hidden="true" />
+          {t('dokumente_count', { count: documents.length })}
+        </h2>
+      </div>
       <ul className="grid gap-3 sm:grid-cols-2">
         {documents.map((doc) => (
           <li key={doc.id}>
             <Link
               href="/dokumente"
-              className="flex flex-col gap-1 rounded-xl border border-border bg-card p-4 transition-shadow hover:shadow-sm"
+              className="flex flex-col gap-1 rounded-xl border border-border bg-background p-4 transition-shadow hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
               <div className="flex items-center justify-between gap-2">
                 <span className="text-sm font-medium text-foreground">{doc.titel}</span>

@@ -18,7 +18,11 @@ import {
 
 import { api } from '@/lib/mock-backend';
 import { formatDateDe } from '@/lib/utils';
-import { requiresConfirmation } from '@/lib/ai/tool-schemas';
+import {
+  requiresConfirmation,
+  validateUmzugToolInput,
+  type StarteUmzugInput,
+} from '@/lib/ai/tool-schemas';
 import type { AssistantStreamEvent } from '@/lib/ai/stream';
 import type { PersonaContextInput } from '@/lib/ai/system-prompt';
 import type { Behoerde, Persona } from '@/types';
@@ -307,10 +311,22 @@ export function AssistentView() {
 
       for (const tu of toolUses) {
         if (requiresConfirmation(tu.name)) {
-          heldUmzugToolUseId = tu.id;
           const input = (tu.input ?? {}) as Record<string, unknown>;
-          const proposal = await buildProposalFromStarteUmzug(input);
-          if (proposal) heldUmzug = proposal;
+          const result = await buildProposalFromStarteUmzug(input);
+          if (!result.ok) {
+            // Irreversible-write input failed structural validation: do NOT
+            // hold a confirm card for malformed data. Feed the error back so
+            // the model re-asks the user, and continue the turn.
+            toolResults.push({
+              type: 'tool_result',
+              tool_use_id: tu.id,
+              is_error: true,
+              content: JSON.stringify({ error: result.error }),
+            });
+            continue;
+          }
+          heldUmzugToolUseId = tu.id;
+          heldUmzug = result.proposal;
           continue;
         }
 
@@ -642,24 +658,50 @@ function proposalFromPreview(preview: PreviewResult): UmzugProposal {
   };
 }
 
+type BuildProposalResult =
+  | { ok: true; proposal: UmzugProposal }
+  | { ok: false; error: string };
+
+/**
+ * Build the held confirm-card proposal from a `starte_umzug` tool_use.input.
+ *
+ * The irreversible write path MUST validate to the SAME zod contract that
+ * `preview_umzug` already enforces — structurally, not by loose manual checks.
+ * `validateUmzugToolInput('starte_umzug', …)` enforces 5-digit `plz`,
+ * `land === 'DE'`, all required address fields, ISO `stichtag_iso`, and the
+ * `block_b_consent` array. On failure we REFUSE (return an error the caller
+ * surfaces) rather than proceed into an "Umzug nach undefined".
+ */
 async function buildProposalFromStarteUmzug(
   input: Record<string, unknown>,
-): Promise<UmzugProposal | null> {
-  const adresse = input.neue_adresse;
-  const stichtag = input.stichtag_iso;
-  if (!adresse || typeof adresse !== 'object' || typeof stichtag !== 'string') {
-    return null;
+): Promise<BuildProposalResult> {
+  const validation = validateUmzugToolInput('starte_umzug', input);
+  if (!validation.ok) {
+    return {
+      ok: false,
+      error: 'Die Umzugsdaten sind unvollständig oder ungültig (z. B. fehlende PLZ, kein deutsches Land oder kein gültiges Stichtag-Datum). Bitte ergänzen Sie die Adresse und den Stichtag.',
+    };
   }
-  const neue_adresse = adresse as UmzugProposal['neue_adresse'];
-  const consentRaw = input.block_b_consent;
-  const blockBConsent = Array.isArray(consentRaw)
-    ? consentRaw.filter((v): v is string => typeof v === 'string')
-    : [];
+  const data = validation.data as StarteUmzugInput;
   try {
-    const umzugPreview = await api.previewUmzug({ neue_adresse, stichtag });
-    return { neue_adresse, stichtag, blockBConsent, preview: umzugPreview };
+    const umzugPreview = await api.previewUmzug({
+      neue_adresse: data.neue_adresse,
+      stichtag: data.stichtag_iso,
+    });
+    return {
+      ok: true,
+      proposal: {
+        neue_adresse: data.neue_adresse,
+        stichtag: data.stichtag_iso,
+        blockBConsent: data.block_b_consent,
+        preview: umzugPreview,
+      },
+    };
   } catch {
-    return null;
+    return {
+      ok: false,
+      error: 'Die Umzugsvorschau konnte nicht erstellt werden. Bitte versuchen Sie es erneut.',
+    };
   }
 }
 

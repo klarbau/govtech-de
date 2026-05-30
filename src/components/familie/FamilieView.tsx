@@ -112,10 +112,8 @@ export function FamilieView() {
   return (
     <>
       <div className="gt-page-head">
-        <h1>Familie</h1>
-        <div className="sub">
-          Haushalt, Bezugspersonen und gemeinsame Vorgänge verwalten.
-        </div>
+        <h1>{t('page.title')}</h1>
+        <div className="sub">{t('page.subtitle')}</div>
       </div>
 
       <div className="fm-layout">
@@ -123,8 +121,10 @@ export function FamilieView() {
           <div className="fm-card">
             <div className="hh-head">
               <div>
-                <div className="ttl">Mein Haushalt</div>
-                <div className="sub">{view?.mitglieder.length ?? 0} Personen</div>
+                <div className="ttl">{t('haushalt.title')}</div>
+                <div className="sub">
+                  {t('haushalt.count', { count: view?.mitglieder.length ?? 0 })}
+                </div>
               </div>
               <button
                 type="button"
@@ -132,18 +132,20 @@ export function FamilieView() {
                 onClick={() => setHaushaltDialogOpen(true)}
               >
                 <Users />
-                Haushalt verwalten
+                {t('cta.haushalt_verwalten')}
               </button>
             </div>
             <div className="hh-people">
               <div className="person">
                 <span className="avatar lg">{hauptInitials}</span>
                 <div className="grow">
-                  <div className="name">{hauptName} (Sie)</div>
+                  <div className="name">{t('person.sie_name', { name: hauptName })}</div>
                   <div className="dob">
-                    Geb. {hauptperson ? formatDe(hauptperson.geburtsdatum) : '—'}
+                    {t('person.geb', {
+                      datum: hauptperson ? formatDe(hauptperson.geburtsdatum) : '—',
+                    })}
                   </div>
-                  <span className="badge violet">Mutter</span>
+                  <span className="badge violet">{t('rolle.mutter')}</span>
                 </div>
               </div>
               <div className="person">
@@ -151,9 +153,11 @@ export function FamilieView() {
                 <div className="grow">
                   <div className="name">{kindName}</div>
                   <div className="dob">
-                    Geb. {kind ? formatDe(kind.geburtsdatum) : '—'}
+                    {t('person.geb', {
+                      datum: kind ? formatDe(kind.geburtsdatum) : '—',
+                    })}
                   </div>
-                  <span className="badge green">Kind</span>
+                  <span className="badge green">{t('rolle.kind')}</span>
                 </div>
               </div>
             </div>
@@ -161,10 +165,10 @@ export function FamilieView() {
               <Info />
               <div>
                 <div style={{ fontWeight: 600 }}>
-                  Sie sind berechtigte Vertretung für {kindName}.
+                  {t('vertretung_banner.titel', { name: kindName })}
                 </div>
                 <div className="text-sm muted">
-                  Sie können Vorgänge für {kind?.vorname ?? ''} einsehen und verwalten.
+                  {t('vertretung_banner.text', { vorname: kind?.vorname ?? '' })}
                 </div>
               </div>
             </div>
@@ -270,46 +274,47 @@ export function FamilieView() {
                 <Shield />
               </span>
               <div>
-                <div className="text-md fw-600">Sicher &amp; geschützt</div>
-                <div className="muted text-sm">
-                  Ihre Daten und Nachweise werden sicher verwaltet. Nur Personen
-                  mit entsprechenden Berechtigungen können Einsicht nehmen.
-                </div>
+                <div className="text-md fw-600">{t('sicher.title')}</div>
+                <div className="muted text-sm">{t('sicher.body')}</div>
               </div>
             </div>
             <Link href="/datenschutz" className="btn btn-secondary">
-              Mehr zum Datenschutz
+              {t('sicher.more')}
             </Link>
           </div>
         </div>
 
         <div className="fm-card rail">
-          <h3>Was betrifft wen?</h3>
-          <div className="sub">Übersicht der Zuständigkeiten.</div>
+          <h3>{t('was_betrifft_wen.title')}</h3>
+          <div className="sub">{t('was_betrifft_wen.subtitle')}</div>
 
           <div className="person-head">
             <span className="avatar lg">{hauptInitials}</span>
             <div>
               <div className="name">{hauptName}</div>
-              <span className="badge brand">Sie</span>
+              <span className="badge brand">{t('rolle.sie')}</span>
             </div>
           </div>
           <div className="kvs">
             <div className="kv">
               <FolderClosed />
-              Vorgänge<span className="n">{hauptperson?.counts.vorgaenge ?? 0}</span>
+              {t('was_betrifft_wen.vorgaenge')}
+              <span className="n">{hauptperson?.counts.vorgaenge ?? 0}</span>
             </div>
             <div className="kv">
               <FileText />
-              Dokumente<span className="n">{hauptperson?.counts.dokumente ?? 0}</span>
+              {t('was_betrifft_wen.dokumente')}
+              <span className="n">{hauptperson?.counts.dokumente ?? 0}</span>
             </div>
             <div className="kv">
               <Calendar />
-              Nachweise<span className="n">{hauptperson?.counts.nachweise ?? 0}</span>
+              {t('was_betrifft_wen.nachweise')}
+              <span className="n">{hauptperson?.counts.nachweise ?? 0}</span>
             </div>
             <div className="kv">
               <Users />
-              Vertretungen<span className="n">{hauptperson?.counts.vertretungen ?? 0}</span>
+              {t('was_betrifft_wen.vertretungen')}
+              <span className="n">{hauptperson?.counts.vertretungen ?? 0}</span>
             </div>
           </div>
 
@@ -324,25 +329,29 @@ export function FamilieView() {
             <span className="avatar lg green">{kindInitials}</span>
             <div>
               <div className="name">{kindName}</div>
-              <span className="badge green">Kind</span>
+              <span className="badge green">{t('rolle.kind')}</span>
             </div>
           </div>
           <div className="kvs">
             <div className="kv">
               <FolderClosed />
-              Vorgänge<span className="n">{kind?.counts.vorgaenge ?? 0}</span>
+              {t('was_betrifft_wen.vorgaenge')}
+              <span className="n">{kind?.counts.vorgaenge ?? 0}</span>
             </div>
             <div className="kv">
               <FileText />
-              Dokumente<span className="n">{kind?.counts.dokumente ?? 0}</span>
+              {t('was_betrifft_wen.dokumente')}
+              <span className="n">{kind?.counts.dokumente ?? 0}</span>
             </div>
             <div className="kv">
               <Calendar />
-              Nachweise<span className="n">{kind?.counts.nachweise ?? 0}</span>
+              {t('was_betrifft_wen.nachweise')}
+              <span className="n">{kind?.counts.nachweise ?? 0}</span>
             </div>
             <div className="kv">
               <Users />
-              Vertretungen<span className="n">{kind?.counts.vertretungen ?? 0}</span>
+              {t('was_betrifft_wen.vertretungen')}
+              <span className="n">{kind?.counts.vertretungen ?? 0}</span>
             </div>
           </div>
 
@@ -351,7 +360,7 @@ export function FamilieView() {
               <Info />
             </span>
             <div>
-              <div className="t">Änderungen im Haushalt oder bei Berechtigungen?</div>
+              <div className="t">{t('rail_foot.titel')}</div>
               <div className="s">
                 <button
                   type="button"
@@ -368,7 +377,7 @@ export function FamilieView() {
                     gap: 4,
                   }}
                 >
-                  Haushaltseinstellungen öffnen{' '}
+                  {t('rail_foot.cta')}{' '}
                   <ChevronRight style={{ width: 11, height: 11 }} />
                 </button>
               </div>
@@ -380,11 +389,8 @@ export function FamilieView() {
       <Dialog open={haushaltDialogOpen} onOpenChange={setHaushaltDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Haushalt verwalten</DialogTitle>
-            <DialogDescription>
-              Übersicht der Personen in Ihrem Haushalt. Das Bearbeiten von
-              Mitgliedern und Berechtigungen folgt in einer späteren Version.
-            </DialogDescription>
+            <DialogTitle>{t('verwalten_dialog.title')}</DialogTitle>
+            <DialogDescription>{t('verwalten_dialog.body')}</DialogDescription>
           </DialogHeader>
 
           <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -405,15 +411,18 @@ export function FamilieView() {
                 </span>
                 <div style={{ flex: 1 }}>
                   <div className="fw-600 text-sm">
-                    {`${m.vorname} ${m.nachname}`.trim()}
-                    {m.ist_hauptperson ? ' (Sie)' : ''}
+                    {m.ist_hauptperson
+                      ? t('person.sie_name', {
+                          name: `${m.vorname} ${m.nachname}`.trim(),
+                        })
+                      : `${m.vorname} ${m.nachname}`.trim()}
                   </div>
                   <div className="muted text-xs">
-                    Geb. {formatDe(m.geburtsdatum)}
+                    {t('person.geb', { datum: formatDe(m.geburtsdatum) })}
                   </div>
                 </div>
                 <span className={`badge ${m.rolle === 'kind' ? 'green' : 'violet'}`}>
-                  {m.rolle === 'kind' ? 'Kind' : 'Erwachsen'}
+                  {m.rolle === 'kind' ? t('rolle.kind') : t('rolle.erwachsen')}
                 </span>
               </li>
             ))}
@@ -421,10 +430,7 @@ export function FamilieView() {
 
           <div className="gt-banner" style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
             <Info style={{ flexShrink: 0 }} />
-            <div className="text-xs muted">
-              [MOCK] Demo-Daten. Hinzufügen, Entfernen und Anpassen von
-              Berechtigungen ist in dieser Vorschau noch nicht aktiv.
-            </div>
+            <div className="text-xs muted">{t('verwalten_dialog.mock_hint')}</div>
           </div>
 
           <DialogFooter showCloseButton />

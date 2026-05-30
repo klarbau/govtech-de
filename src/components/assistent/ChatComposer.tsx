@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useTranslations } from 'next-intl';
 import { Paperclip, Send } from 'lucide-react';
 
 interface ChatComposerProps {
@@ -9,6 +10,7 @@ interface ChatComposerProps {
 }
 
 export function ChatComposer({ onSend, disabled }: ChatComposerProps) {
+  const t = useTranslations('assistent.composer');
   const [value, setValue] = React.useState('');
   const inputId = React.useId();
 
@@ -30,11 +32,11 @@ export function ChatComposer({ onSend, disabled }: ChatComposerProps) {
     <div className="composer">
       <Paperclip aria-hidden="true" />
       <label htmlFor={inputId} className="sr-only">
-        Nachricht an den Assistenten
+        {t('label')}
       </label>
       <input
         id={inputId}
-        placeholder="Schreiben Sie eine Nachricht..."
+        placeholder={t('placeholder')}
         value={value}
         disabled={disabled}
         onChange={(e) => setValue(e.target.value)}
@@ -45,7 +47,7 @@ export function ChatComposer({ onSend, disabled }: ChatComposerProps) {
         className="send"
         onClick={submit}
         disabled={disabled || value.trim().length === 0}
-        aria-label="Senden"
+        aria-label={t('send')}
       >
         <Send />
       </button>

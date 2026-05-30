@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 
 import { Button } from '@/components/ui/button';
 import { useStripBaseUiFocusGuardAriaHidden } from '@/components/ui/use-strip-base-ui-focus-guard-aria-hidden';
+import { useInertOutsideModal } from '@/components/ui/use-inert-outside-modal';
 import { cn } from '@/lib/utils';
 import type { Behoerde, Letter, ReplyTemplateId } from '@/types';
 
@@ -62,6 +63,7 @@ export function PreInsertionModal({
   // („posteingang.compose.pre_insertion_modal.einspruch_ao.title").
   const t = useTranslations();
   useStripBaseUiFocusGuardAriaHidden(open);
+  useInertOutsideModal(open);
 
   if (!templateId) return null;
 

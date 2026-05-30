@@ -20,6 +20,11 @@ import {
 } from '../store-context';
 import { seedStore } from '../seed';
 import { getOrCreateSessionBus } from './bus-registry';
+import {
+  consumePreviewToken,
+  GATED_WRITE_METHODS,
+  recordPreviewToken,
+} from './write-gate';
 import type { InMemoryStore } from '../store';
 
 type ApiRecord = Record<string, unknown>;
@@ -74,6 +79,30 @@ export async function dispatch(input: DispatchInput): Promise<DispatchResult> {
     };
   }
 
+  // ── SERVER-SIDE CONFIRM GATE (audit defect #2) ──────────────────────────
+  // This is THE enforcement point for the assistant's "structurally enforced"
+  // safety claim (tools.ts §7.3). Irreversible writes (`startUmzug`) require a
+  // single-use preview token that only a preceding `previewUmzug` in the SAME
+  // session mints — so a raw `POST /api/mock {"method":"startUmzug"}` that
+  // skips the React preview→confirm card is rejected here, not just in the UI.
+  // The legit demo flow (previewUmzug → user confirms → startUmzug) carries a
+  // matching token and passes untouched. See server/write-gate.ts.
+  if (GATED_WRITE_METHODS.has(method)) {
+    const allowed = consumePreviewToken(sessionId, args);
+    if (!allowed) {
+      return {
+        ok: false,
+        status: 403,
+        error: {
+          code: 'CONFIRMATION_REQUIRED',
+          message:
+            'Dieser Vorgang erfordert eine vorausgehende Vorschau-Bestätigung. ' +
+            'Bitte zuerst die Vorschau aufrufen und im Bestätigungsdialog zustimmen.',
+        },
+      };
+    }
+  }
+
   const fn = apiRecord[method] as (...a: unknown[]) => unknown;
   const sessionBus = getOrCreateSessionBus(sessionId);
 
@@ -87,6 +116,11 @@ export async function dispatch(input: DispatchInput): Promise<DispatchResult> {
       seedFn,
     );
     const data = result instanceof Promise ? await result : result;
+    // A successful `previewUmzug` mints the single-use token that the matching
+    // `startUmzug` will consume above on the next RPC turn.
+    if (method === 'previewUmzug') {
+      recordPreviewToken(sessionId, args);
+    }
     return { ok: true, data };
   } catch (err) {
     return toErrorResult(err);

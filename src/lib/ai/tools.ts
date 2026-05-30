@@ -442,7 +442,11 @@ export function isKnownTool(name: string): name is ToolName {
  *
  *   tool name                    → api method                        | confirm?
  *   ─────────────────────────────────────────────────────────────────────────
- *   lese_posteingang             → api.getLetters(filterMap)         | no
+ *   lese_posteingang             → api.getLetters(toLetterFilter(…)) | no
+ *        ↑ the tool's public filter shape ({absender, status:string, max})
+ *          deliberately differs from LetterFilter; dispatch-tool.ts validates
+ *          it (lesePosteingangInput) then translates: status→[status],
+ *          absender→post-fetch substring (id+name_de), max→post-fetch slice.
  *   hole_vorgang                 → api.getVorgang(vorgang_id)        | no
  *   hole_profil                  → api.getProfile()                  | no
  *   liste_termine                → api.getTermine() (+client-filter) | no

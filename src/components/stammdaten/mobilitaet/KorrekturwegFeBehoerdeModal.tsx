@@ -9,6 +9,7 @@ import { wrapNormZitate } from '@/components/posteingang/wrapNormZitate';
 import { BehoerdenBadge } from '@/components/shared/BehoerdenBadge';
 import { Button } from '@/components/ui/button';
 import { useStripBaseUiFocusGuardAriaHidden } from '@/components/ui/use-strip-base-ui-focus-guard-aria-hidden';
+import { useInertOutsideModal } from '@/components/ui/use-inert-outside-modal';
 import { cn } from '@/lib/utils';
 import type { Behoerde } from '@/types';
 
@@ -42,6 +43,7 @@ export function KorrekturwegFeBehoerdeModal({
 }: KorrekturwegFeBehoerdeModalProps) {
   const t = useTranslations('stammdaten.mobilitaet.fe.korrekturweg_modal');
   useStripBaseUiFocusGuardAriaHidden(open);
+  useInertOutsideModal(open);
 
   const titleId = 'korrekturweg-fe-modal-title';
   const bodyId = 'korrekturweg-fe-modal-body';

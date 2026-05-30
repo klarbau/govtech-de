@@ -2,10 +2,13 @@ import type Anthropic from '@anthropic-ai/sdk';
 
 import { api } from '@/lib/mock-backend';
 import {
+  validatePosteingangToolInput,
   validateUmzugToolInput,
+  type LesePosteingangInput,
   type PreviewUmzugInput,
+  type PosteingangToolName,
 } from '@/lib/ai/tool-schemas';
-import type { UmzugInput } from '@/types';
+import type { Letter, LetterFilter, UmzugInput } from '@/types';
 
 /**
  * Client-side tool dispatcher (Approach B). Maps a streamed `tool_use` block
@@ -60,12 +63,78 @@ function errorOutcome(
   };
 }
 
-function asFilterMap(input: unknown): Record<string, unknown> | undefined {
-  if (input && typeof input === 'object' && 'filter' in input) {
-    const f = (input as { filter?: unknown }).filter;
-    if (f && typeof f === 'object') return f as Record<string, unknown>;
+/** Compact a zod issue list into a single human-readable, model-friendly line. */
+function formatZodIssues(issues: { path: (string | number)[]; message: string }[]): string {
+  return issues
+    .map((i) => (i.path.length ? `${i.path.join('.')}: ${i.message}` : i.message))
+    .join('; ');
+}
+
+/**
+ * Translate the validated `lese_posteingang` tool filter into a real
+ * `LetterFilter`. The tool's public shape (`{absender, status, max}`) and the
+ * API's `LetterFilter` deliberately differ; this is the single translation
+ * boundary. Returns the `LetterFilter` plus the cross-cutting `absender`
+ * substring + `max` cap that `getLetters` does NOT support and are therefore
+ * applied post-fetch by `applyLesePosteingangPostFilters`.
+ *
+ *   status (single string)  → LetterFilter.status = [status]   (getLetters reads
+ *                             status as an ARRAY — a bare string would be
+ *                             iterated char-by-char and match nothing)
+ *   vorgang_id              → LetterFilter.vorgang_id
+ *   absender (substring)    → post-fetch (matched against behoerde id + name_de)
+ *   max                     → post-fetch slice (default 10)
+ */
+export function toLetterFilter(filter: LesePosteingangInput['filter']): LetterFilter {
+  const f: LetterFilter = {};
+  if (filter?.status) f.status = [filter.status];
+  if (filter?.vorgang_id) f.vorgang_id = filter.vorgang_id;
+  return f;
+}
+
+export const LESE_POSTEINGANG_DEFAULT_MAX = 10;
+
+/**
+ * Pure post-fetch filter: apply the two dimensions `getLetters` does not
+ * support — an `absender` substring (matched case-insensitively against both
+ * the behoerde id and its `name_de`, so "finanzamt" matches whether the model
+ * passed an id or a display name) and a `max` result cap (default 10).
+ * `letters` arrive already date-sorted desc from `getLetters`, so the slice
+ * keeps the most recent. `nameById` maps behoerde id → lowercased `name_de`.
+ */
+export function filterLettersPostFetch(
+  letters: Letter[],
+  nameById: Map<string, string>,
+  filter: LesePosteingangInput['filter'],
+): Letter[] {
+  let out = letters;
+  if (filter?.absender) {
+    const q = filter.absender.toLowerCase();
+    out = out.filter((l) => {
+      const id = l.absender_behoerde_id.toLowerCase();
+      const name = nameById.get(l.absender_behoerde_id) ?? '';
+      return id.includes(q) || name.includes(q);
+    });
   }
-  return undefined;
+  const max = filter?.max ?? LESE_POSTEINGANG_DEFAULT_MAX;
+  return out.slice(0, max);
+}
+
+/**
+ * Fetch the behoerde-name lookup (only when an `absender` substring filter is
+ * present — avoids an extra round-trip otherwise) and run the pure post-fetch
+ * filter.
+ */
+async function applyLesePosteingangPostFilters(
+  letters: Letter[],
+  filter: LesePosteingangInput['filter'],
+): Promise<Letter[]> {
+  let nameById = new Map<string, string>();
+  if (filter?.absender) {
+    const behoerden = await api.getBehoerden();
+    nameById = new Map(behoerden.map((b) => [b.id, b.name_de.toLowerCase()]));
+  }
+  return filterLettersPostFetch(letters, nameById, filter);
 }
 
 function asLetterId(input: unknown): string | undefined {
@@ -97,10 +166,16 @@ export async function dispatchReadTool(
   try {
     switch (name) {
       case 'lese_posteingang': {
-        const filter = asFilterMap(input);
-        const letters = await api.getLetters(
-          filter as Parameters<typeof api.getLetters>[0] | undefined,
-        );
+        const validation = validatePosteingangToolInput('lese_posteingang', input ?? {});
+        if (!validation.ok) {
+          return errorOutcome(
+            toolUseId,
+            `lese_posteingang: ungültiger Filter — ${formatZodIssues(validation.issues)}`,
+          );
+        }
+        const { filter } = validation.data as LesePosteingangInput;
+        const fetched = await api.getLetters(toLetterFilter(filter));
+        const letters = await applyLesePosteingangPostFilters(fetched, filter);
         return {
           ok: true,
           toolResult: resultBlock(
@@ -138,7 +213,20 @@ export async function dispatchReadTool(
       case 'erklaere_brief':
       case 'extrahiere_frist':
       case 'vorschlage_naechsten_schritt': {
-        const letterId = asLetterId(input);
+        // Defense-in-depth: run the zod validator (`.strict()` rejects unknown
+        // fields like a smuggled `draftAntwort` — Smartlaw V1-OUT) before the
+        // mock-backend call, instead of the ad-hoc letterId pluck.
+        const validation = validatePosteingangToolInput(
+          name as PosteingangToolName,
+          input ?? {},
+        );
+        if (!validation.ok) {
+          return errorOutcome(
+            toolUseId,
+            `${name}: ungültige Eingabe — ${formatZodIssues(validation.issues)}`,
+          );
+        }
+        const letterId = asLetterId(validation.data);
         if (!letterId) return errorOutcome(toolUseId, 'letterId fehlt.');
         const aktion = await api.extrahiereAktion(letterId);
         if (name === 'extrahiere_frist') {

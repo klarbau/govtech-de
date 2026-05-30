@@ -1,6 +1,7 @@
 import { cookies, headers } from 'next/headers';
 import { getRequestConfig } from 'next-intl/server';
 
+import { getMessageFallback } from './message-fallback';
 import { defaultLocale, isLocale, localeCookieName, type Locale } from './routing';
 
 async function resolveLocale(): Promise<Locale> {
@@ -27,5 +28,7 @@ async function resolveLocale(): Promise<Locale> {
 export default getRequestConfig(async () => {
   const locale = await resolveLocale();
   const messages = (await import(`@/lib/i18n/locales/${locale}.json`)).default;
-  return { locale, messages };
+  // Single, explicit time zone (German administration → Europe/Berlin) avoids the
+  // next-intl ENVIRONMENT_FALLBACK warning + server/client date-markup mismatches.
+  return { locale, messages, getMessageFallback, timeZone: 'Europe/Berlin' };
 });

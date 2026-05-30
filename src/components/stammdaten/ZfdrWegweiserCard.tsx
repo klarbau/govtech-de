@@ -8,6 +8,7 @@ import { AlertDialog as AlertDialogPrimitive } from '@base-ui/react/alert-dialog
 import { wrapNormZitate } from '@/components/posteingang/wrapNormZitate';
 import { Button } from '@/components/ui/button';
 import { useStripBaseUiFocusGuardAriaHidden } from '@/components/ui/use-strip-base-ui-focus-guard-aria-hidden';
+import { useInertOutsideModal } from '@/components/ui/use-inert-outside-modal';
 import { cn } from '@/lib/utils';
 
 /**
@@ -30,6 +31,7 @@ export function ZfdrWegweiserCard() {
 
   const [confirmOpen, setConfirmOpen] = React.useState(false);
   useStripBaseUiFocusGuardAriaHidden(confirmOpen);
+  useInertOutsideModal(confirmOpen);
 
   let title: string;
   try {

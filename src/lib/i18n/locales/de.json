@@ -418,7 +418,8 @@
     "all": "Alle",
     "show_all": "Alle anzeigen",
     "actions": {
-      "close": "Schließen"
+      "close": "Schließen",
+      "abbrechen": "Abbrechen"
     },
     "pagination": {
       "label": "Seitennavigation",
@@ -675,6 +676,28 @@
       "sgb_iv_28a": "§ 28a SGB IV: DEÜV-Meldungen des Arbeitgebers an die Sozialversicherungsträger.",
       "detail_title": "Rechtsgrundlage",
       "open_cta": "Rechtsgrundlage anzeigen"
+    }
+  },
+  "vorgang": {
+    "detail": {
+      "next_step_title": "Ihr nächster Schritt",
+      "next_step_basis_label": "Rechtsgrundlage",
+      "next_step_cta": "Schritt erledigen",
+      "step_done_toast": "Schritt als erledigt markiert.",
+      "step_done_busy": "Wird erledigt …",
+      "step_done_error": "Konnte nicht erledigt werden. Bitte erneut versuchen.",
+      "next_step_brief_cta": "Zugehörigen Brief öffnen",
+      "summary_title": "Überblick",
+      "summary_status_label": "Status",
+      "summary_angelegt_label": "Angelegt",
+      "summary_stichtag_label": "Stichtag",
+      "summary_behoerden_label": "Beteiligte Stellen",
+      "summary_frist_label": "Nächste Frist",
+      "summary_frist_template": "{datum}",
+      "datenschutz_title": "Datenschutz",
+      "datenschutz_sub": "Was wird zu diesem Vorgang verarbeitet — und auf welcher Grundlage.",
+      "termine_title": "Termine zu diesem Vorgang ({count})",
+      "no_next_step": "Aktuell ist von Ihnen nichts zu tun. Die beteiligten Stellen arbeiten den Vorgang ab."
     }
   },
   "assistent": {
@@ -2458,6 +2481,19 @@
       "familie": "Familie",
       "vertraege": "Verträge"
     },
+    "tab": {
+      "alle": "Alle",
+      "ausweise": "Ausweise",
+      "bescheide": "Bescheide",
+      "familie": "Familie",
+      "vertraege": "Verträge"
+    },
+    "status": {
+      "verifiziert": "Verifiziert",
+      "neu": "Neu",
+      "ablauf_bald": "Ablauf bald",
+      "abgelaufen": "Abgelaufen"
+    },
     "col": {
       "dokument": "Dokument",
       "kategorie": "Kategorie",
@@ -2469,32 +2505,67 @@
     "daten": {
       "ausgestellt": "Ausgestellt {datum}",
       "gueltig_bis": "Gültig bis {datum}",
-      "unbefristet": "unbefristet"
+      "unbefristet": "unbefristet",
+      "ausgestellt_label": "Ausgestellt",
+      "gueltig_bis_label": "Gültig bis"
     },
     "action": {
       "ansehen": "{name} ansehen",
       "herunterladen": "{name} herunterladen",
       "mehr": "Weitere Aktionen für {name}",
+      "ansehen_title": "Ansehen",
+      "herunterladen_title": "Herunterladen",
       "menu_ansehen": "Ansehen",
       "menu_teilen": "Teilen & verwenden"
+    },
+    "download": {
+      "mock_header": "[MOCK] Dieses Dokument ist Teil einer Demo. Keine echte Behörden-Urkunde.",
+      "dokument": "Dokument:",
+      "typ": "Typ:",
+      "nr": "Dokumentnummer:",
+      "aussteller": "Ausstellende Behörde:",
+      "ausgestellt": "Ausgestellt am:",
+      "gueltig_bis": "Gültig bis:",
+      "watermark": "Wasserzeichen:",
+      "toast_title": "[MOCK] Download gestartet",
+      "toast_description": "{titel} wurde als Demo-Datei heruntergeladen."
+    },
+    "pagination": {
+      "empty": "0 Dokumente",
+      "range": "{von}–{bis} von {total} Dokumenten",
+      "prev": "Vorherige Seite",
+      "next": "Nächste Seite",
+      "per_page_label": "Dokumente pro Seite",
+      "per_page_option": "{count} pro Seite"
     },
     "schnellzugriff": {
       "title": "Schnellzugriff",
       "upload": "Dokument hochladen",
+      "upload_sub": "Aus Datei oder Scan hinzufügen",
+      "upload_toast": "In der Demo nicht verfügbar — neue Dokumente entstehen über Vorgänge wie den Umzug.",
       "ordner": "Neuer Ordner",
-      "vorlagen": "Vorlagen",
-      "papier": "Papierdokument einreichen"
+      "ordner_sub": "Dokumente organisieren",
+      "ordner_toast": "Ordnerverwaltung ist in dieser Demo in Planung.",
+      "vorlagen": "Vorlagen & Formulare",
+      "vorlagen_sub": "Offizielle Formulare nutzen",
+      "vorlagen_toast": "Die Formular-Bibliothek ist in dieser Demo in Planung.",
+      "papier": "Papierdokument einreichen",
+      "papier_sub": "Per Post an Behörde senden",
+      "papier_toast": "Der Postversand an Behörden ist in dieser Demo in Planung."
     },
     "zuletzt": {
-      "title": "Zuletzt hinzugefügt"
+      "title": "Zuletzt hinzugefügt",
+      "show_all": "Alle anzeigen"
     },
     "teilen": {
       "title": "Teilen & verwenden",
-      "hint": "Dokumente lassen sich per QR-Code prüfen und ins EUDI-Wallet exportieren.",
-      "cta": "Dokument verwenden"
+      "hint": "Sie können ausgewählte Dokumente sicher mit Behörden teilen oder als Anlage in Vorgängen verwenden.",
+      "cta": "Dokument verwenden",
+      "cta_toast": "Dokumente werden in dieser Demo direkt in einem Vorgang als Anlage ausgewählt."
     },
     "preview": {
       "title": "Dokumentvorschau",
+      "description": "Vorschau der hinterlegten Dokument-Metadaten. Diese Demo zeigt keine echte Urkunde.",
       "qr_label": "QR-Prüfcode",
       "eudi_yes": "Für EUDI-Wallet exportierbar",
       "eudi_no": "Nicht EUDI-exportierbar",
@@ -2533,7 +2604,6 @@
     "calendar": {
       "prev": "Vorheriger Monat",
       "next": "Nächster Monat",
-      "today": "Heute",
       "label": "Monatskalender",
       "weekday_long": {
         "mo": "Montag",
@@ -2553,7 +2623,6 @@
         "sa": "Sa",
         "so": "So"
       },
-      "has_events": "{count, plural, =1 {1 Termin} other {# Termine}}",
       "day_aria": "{datum}{events}",
       "day_events_suffix": " — {count, plural, =1 {1 Termin} other {# Termine}}"
     },
@@ -2565,20 +2634,57 @@
       "abgeschlossen": "Abgeschlossen"
     },
     "naechste": {
-      "title": "Nächste Termine"
+      "title": "Nächste Termine",
+      "details_aria": "Details: {betreff}"
     },
     "weitere": {
       "title": "Weitere Termine & Erinnerungen"
     },
+    "row": {
+      "details_cta": "Details",
+      "zum_vorgang_cta": "Zum Vorgang",
+      "details_aria": "Details: {betreff}",
+      "zum_vorgang_aria": "Zum Vorgang: {titel}"
+    },
     "card": {
       "buchungsreferenz": "Buchungsreferenz {ref}",
-      "ics": "ICS exportieren",
-      "ics_aria": "Termin {betreff} als ICS exportieren",
-      "details": "Details",
-      "details_anzeigen": "Details anzeigen"
+      "buchungsreferenz_label": "Buchungsreferenz",
+      "ics": "Zum Kalender hinzufügen",
+      "ics_aria_all": "Alle anstehenden Termine als ICS exportieren"
+    },
+    "status": {
+      "gebucht": "Gebucht",
+      "bestaetigt": "Bestätigt",
+      "verschoben": "Verschoben",
+      "abgesagt": "Abgesagt"
+    },
+    "marker": {
+      "erinnerung": "Erinnerung"
+    },
+    "auswahl": {
+      "label": "Ausgewählt: {datum}",
+      "aufheben": "Auswahl aufheben"
+    },
+    "alle_anzeigen": {
+      "show": "Abgeschlossene Termine anzeigen",
+      "hide": "Abgeschlossene Termine ausblenden"
+    },
+    "detail": {
+      "status_label": "Status: {status}"
+    },
+    "reschedule": {
+      "title": "Termin verschieben",
+      "intro": "Wählen Sie einen neuen Termin. Die Behörde erhält die Änderung automatisch.",
+      "confirm": "Auf diesen Termin verschieben"
     },
     "naechster_schritt": {
-      "title": "Nächster Schritt"
+      "title": "Nächster Schritt",
+      "untertitel": "So bereiten Sie sich auf Ihren Termin vor.",
+      "kein_termin": "Kein offener Termin",
+      "vorerinnerung_titel": "Planen Sie genug Zeit ein",
+      "vorerinnerung_text": "Bitte erscheinen Sie 10–15 Minuten vor Ihrem Termin.",
+      "storno_titel": "Nicht wahrnehmen?",
+      "storno_text": "Sie können Ihren Termin bis 48 Stunden vorher online stornieren oder verschieben."
     },
     "vorbereitung": {
       "title": "Gut vorbereitet zum Termin",
@@ -2605,12 +2711,18 @@
       "naechster_schritt": "Wählen Sie einen Termin, um die Details zu sehen."
     },
     "error": "Termine konnten nicht geladen werden.",
+    "retry": "Erneut versuchen",
+    "fristen_offen": "{count, plural, =0 {Keine offenen Fristen} =1 {1 offene Frist} other {# offene Fristen}}",
+    "frist_praefix": "Frist: {datum}",
+    "faellig_praefix": "Fällig: {datum}",
+    "uhr_dauer": "{zeit} ({dauer} Min.)",
     "action": {
       "bestaetigen": "Bestätigen",
       "verschieben": "Verschieben",
       "absagen": "Absagen",
       "confirm_cancel": "Termin wirklich absagen?",
       "verschoben_um": "Um 7 Tage verschoben",
+      "verschoben": "Verschoben",
       "bestaetigt": "Bestätigt",
       "abgesagt": "Abgesagt",
       "vorschlag": "Vorgeschlagen"
@@ -2622,6 +2734,8 @@
     "hero": {
       "steuerjahr": "Steuerjahr {jahr}",
       "entwurf_badge": "Entwurf",
+      "stand": "Stand: {datum}",
+      "basis_hint": "Auf Basis Ihrer bereits bekannten Daten",
       "erstattung_label": "Voraussichtliche Erstattung",
       "erstattung_aria": "Voraussichtliche Erstattung {betrag}",
       "nachzahlung_label": "Voraussichtliche Nachzahlung",
@@ -2636,10 +2750,14 @@
       "herkunft": "von {herkunft}"
     },
     "fortschritt": {
-      "title": "Fortschritt",
+      "title": "Ihr Fortschritt",
       "geprueft": "Daten geprüft",
-      "ergaenzen": "Belege ergänzen",
+      "geprueft_desc": "Daten vollständig geprüft",
+      "ergaenzen": "Belege ergänzt",
+      "ergaenzen_desc": "3 Belege fehlen noch",
+      "anzeigen": "Anzeigen",
       "abgabe": "Zur Abgabe bereit",
+      "abgabe_desc": "Prüfung abschließen und Erklärung abgeben",
       "schritt_aria": "Schritt {n} von 3: {label}",
       "status_done": "abgeschlossen",
       "status_active": "aktiv",
@@ -2676,16 +2794,20 @@
       "sonderausgaben": "Sonderausgaben"
     },
     "fristen": {
-      "title": "Wichtige Fristen"
+      "title": "Wichtige Fristen",
+      "show_all": "Alle Fristen anzeigen"
     },
     "frist": {
       "abgabe": "Abgabefrist Steuererklärung {jahr}",
       "einspruch": "Einspruchsfrist letzter Bescheid",
       "in_tagen": "In {count, plural, =0 {heute} =1 {1 Tag} other {# Tagen}}",
-      "ueberfaellig": "überfällig"
+      "ueberfaellig": "Überfällig"
     },
     "nachweise": {
-      "title": "Verwendete Nachweise"
+      "title": "Verwendete Nachweise",
+      "verwendet": "Verwendet",
+      "ausgestellt_am": "Ausgestellt am {datum}",
+      "show_all": "Alle Nachweise anzeigen"
     },
     "datenschutz": {
       "title": "Datenschutz-Hinweis",
@@ -2706,20 +2828,24 @@
     },
     "error": "Steuer-Übersicht konnte nicht geladen werden.",
     "retry": "Erneut versuchen",
-    "demo_action_toast": "Demo-Funktion — Beleg-Ergänzung in diesem Prototyp nicht hinterlegt.",
+    "loading": "Lädt…",
+    "demo_action_toast": "Demo-Funktion — in diesem Prototyp nicht hinterlegt.",
     "alle_bereiche": "Alle Bereiche anzeigen",
     "weniger_bereiche": "Weniger anzeigen"
   },
   "datenschutz": {
     "page": {
       "title": "Datenschutz",
-      "subtitle": "Einblick in Datenzugriffe, Einwilligungen und Verwaltungsvorgänge"
+      "subtitle": "Einblick in Datenzugriffe, Einwilligungen und Verwendungszwecke.",
+      "tag": "Spekulatives Demo-Feature"
     },
     "vision_banner": {
       "heading": "2027-Vision",
       "title": "2027-Vision",
       "body": "Dieses Cockpit bündelt Ihre Datenschutz-Transparenz und -Kontrolle. In der echten Welt sind diese Funktionen heute noch über mehrere Stellen verteilt.",
-      "dismiss": "2027-Vision-Hinweis schließen"
+      "body_1": "Diese Funktionen sind Teil unserer Vision für mehr Transparenz und Selbstbestimmung über Ihre Daten.",
+      "body_2": "Verfügbarkeit und Inhalte können sich bis zur Einführung ändern.",
+      "dismiss": "Hinweis schließen"
     },
     "aktivitaet": {
       "title": "Letzte Aktivitäten",
@@ -2730,10 +2856,11 @@
     "activity": {
       "typ": {
         "uebermittlung": "Übermittlung",
-        "eingang": "Eingang",
+        "eingang": "Posteingang",
         "app": "App-Aktivität",
-        "vision": "Vision"
+        "vision": "Spekulativ 2027"
       },
+      "fallback": "Aktivität",
       "brief_geoeffnet": "Brief geöffnet",
       "ki_zusammenfassung": "KI-Zusammenfassung erstellt",
       "adresse_uebermittelt": "Adresse an Behörde übermittelt",
@@ -2742,13 +2869,21 @@
     },
     "einwilligungen": {
       "title": "Einwilligungen",
-      "subtitle": "Sie entscheiden, welche Stellen auf Ihre Daten zugreifen dürfen",
+      "subtitle": "Steuern Sie, welche Stellen und Dienste auf Ihre Daten zugreifen dürfen.",
       "krankenkasse": "Krankenkasse",
+      "krankenkasse_sub": "Datenübermittlung für Abrechnungen und Leistungen",
       "bank": "Bank",
+      "bank_sub": "Kontodatenprüfung für Erstattungen",
       "arbeitgeber": "Arbeitgeber",
+      "arbeitgeber_sub": "Datenweitergabe für Lohnsteuer und Bescheinigungen",
       "weitere_dienste": "Weitere Dienste",
+      "weitere_dienste_sub": "Weitere Behörden und Organisationen",
+      "verwalten": "Verwalten",
+      "historie_anzeigen": "Einwilligungshistorie anzeigen",
       "ein": "Ein",
       "aus": "Aus",
+      "toggle_ein": "{empfaenger} einschalten",
+      "toggle_aus": "{empfaenger} ausschalten",
       "rechtsgrundlage_label": "Rechtsgrundlage",
       "switch_aria": "Einwilligung {empfaenger}",
       "announce_ein": "Einwilligung {empfaenger} eingeschaltet",
@@ -2756,26 +2891,43 @@
     },
     "quellen": {
       "title": "Datenquellen & Empfänger",
-      "col_stelle": "Stelle",
+      "subtitle": "Übersicht darüber, welche Stellen auf Ihre Daten zugreifen und wie.",
+      "col_stelle": "Stelle / Dienst",
       "col_zugriffsart": "Zugriffsart",
       "col_aktualitaet": "Aktualität",
-      "automatisch": "automatisch synchronisiert",
-      "einwilligungsbasiert": "einwilligungsbasiert",
+      "automatisch": "Automatisch synchronisiert",
+      "einwilligungsbasiert": "Einwilligungsbasiert",
       "aktuell": "aktuell",
+      "angezeigt": "{shown} von {total} Datenquellen angezeigt.",
       "show_all": "Alle Empfänger anzeigen"
     },
     "kontrolle": {
       "title": "Ihre Datenschutz-Kontrolle",
+      "subtitle": "Sie entscheiden, wer Ihre Daten wie verwenden darf.",
       "zugriffsprotokoll": "Zugriffsprotokoll",
       "zugriffsprotokoll_desc": "Alle Datenzugriffe nachvollziehen",
       "datenexport": "Datenexport",
+      "export_bereit": "Export bereit",
       "datenexport_desc": "Ihre Daten nach Art. 20 DSGVO mitnehmen",
       "einstellungen": "Einstellungen",
       "einstellungen_desc": "Präferenzen und Sperren verwalten",
       "vision_hint": "Diese Funktion ist Teil der 2027-Vision dieser Demo."
     },
+    "log_dialog": {
+      "description": "Vollständiges Protokoll der Datenzugriffe und -übermittlungen.",
+      "loading": "Wird geladen …",
+      "empty": "Keine Aktivitäten vorhanden."
+    },
+    "hist_dialog": {
+      "title": "Einwilligungshistorie",
+      "description": "Änderungen an Ihren erteilten und widerrufenen Einwilligungen.",
+      "empty": "Noch keine Einwilligungsänderungen erfasst."
+    },
     "log": {
       "einwilligung_geaendert": "Einwilligung geändert"
+    },
+    "export": {
+      "hinweis": "[MOCK] Speculative-Design-Demo — keine echten personenbezogenen Daten."
     },
     "toast": {
       "einwilligung_error": "Einwilligung konnte nicht gespeichert werden."
@@ -2801,7 +2953,13 @@
       "vater": "Vater",
       "partner": "Partner:in",
       "kind": "Kind",
+      "erwachsen": "Erwachsen",
+      "sie": "Sie",
       "hauptperson": "Hauptperson"
+    },
+    "person": {
+      "sie_name": "{name} (Sie)",
+      "geb": "Geb. {datum}"
     },
     "cta": {
       "haushalt_verwalten": "Haushalt verwalten"
@@ -2809,11 +2967,14 @@
     "verwalten_dialog": {
       "title": "Haushalt verwalten",
       "body": "Das Verwalten von Haushaltsmitgliedern und Vertretungsrechten ist eine 2027-Vision dieser Demo. Die Funktion folgt.",
+      "mock_hint": "[MOCK] Demo-Daten. Hinzufügen, Entfernen und Anpassen von Berechtigungen ist in dieser Vorschau noch nicht aktiv.",
       "close": "Schließen"
     },
     "vertretung_banner": {
       "title": "Vertretung",
-      "body": "Sie können Vorgänge für Mitglieder Ihres Haushalts vertretungsweise bearbeiten."
+      "body": "Sie können Vorgänge für Mitglieder Ihres Haushalts vertretungsweise bearbeiten.",
+      "titel": "Sie sind berechtigte Vertretung für {name}.",
+      "text": "Sie können Vorgänge für {vorname} einsehen und verwalten."
     },
     "vorgaenge": {
       "title": "Gemeinsame Vorgänge",
@@ -2856,10 +3017,14 @@
       "nachweise": "Nachweise",
       "vertretungen": "Vertretungen"
     },
+    "rail_foot": {
+      "titel": "Änderungen im Haushalt oder bei Berechtigungen?",
+      "cta": "Haushaltseinstellungen öffnen"
+    },
     "sicher": {
       "title": "Sicher & geschützt",
-      "body": "Familiendaten werden nur im erforderlichen Umfang verarbeitet. Vertretungsrechte sind eine 2027-Vision dieser Demo.",
-      "more": "Mehr zu Datenschutz"
+      "body": "Ihre Daten und Nachweise werden sicher verwaltet. Nur Personen mit entsprechenden Berechtigungen können Einsicht nehmen.",
+      "more": "Mehr zum Datenschutz"
     },
     "empty": {
       "title": "Kein Haushalt hinterlegt",
@@ -2967,8 +3132,15 @@
       "posteingang_landing": "{count, plural, =0 {Noch keine Bestätigung im Posteingang} one {# Bestätigung im Posteingang} other {# Bestätigungen im Posteingang}}",
       "posteingang_cta": "Posteingang öffnen",
       "disclaimer": "[MOCK] — simuliert; keine reale Übermittlung.",
+      "eid_confirm_cta": "Mit eID bestätigen",
+      "eid_confirm_cta_aria": "Mit eID bestätigen: {behoerde}",
+      "eid_confirming": "Wird bestätigt …",
+      "eid_confirm_error": "Bestätigung fehlgeschlagen. Bitte erneut versuchen.",
+      "eid_gate_hint": "Die folgenden zwei Stellen verlangen Ihre ausdrückliche Bestätigung mit dem Ausweis — diese zwei übermitteln nichts ohne Ihren Tipp.",
+      "row_status_sr_prefix": "Status: ",
       "row_status": {
         "in_progress": "Wird übermittelt",
+        "needs_eid": "Ihre Bestätigung nötig",
         "confirmed": "Bestätigt",
         "pending": "Wartet",
         "failed": "Fehlgeschlagen"

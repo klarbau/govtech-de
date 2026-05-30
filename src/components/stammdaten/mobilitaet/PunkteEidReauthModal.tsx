@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl';
 import { wrapNormZitate } from '@/components/posteingang/wrapNormZitate';
 import { Button } from '@/components/ui/button';
 import { useStripBaseUiFocusGuardAriaHidden } from '@/components/ui/use-strip-base-ui-focus-guard-aria-hidden';
+import { useInertOutsideModal } from '@/components/ui/use-inert-outside-modal';
 import { cn } from '@/lib/utils';
 
 interface PunkteEidReauthModalProps {
@@ -42,6 +43,7 @@ export function PunkteEidReauthModal({
   const t = useTranslations();
   const tModal = useTranslations('stammdaten.mobilitaet.punkte.modal');
   useStripBaseUiFocusGuardAriaHidden(open);
+  useInertOutsideModal(open);
 
   const [consentChecked, setConsentChecked] = React.useState(false);
 

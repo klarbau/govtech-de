@@ -8,6 +8,7 @@ import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useStripBaseUiFocusGuardAriaHidden } from './use-strip-base-ui-focus-guard-aria-hidden';
+import { useInertOutsideModal } from './use-inert-outside-modal';
 
 /**
  * Side-anchored Sheet — auf shadcn/ui-Konvention, gebaut auf base-ui-`Dialog`.
@@ -77,6 +78,7 @@ function SheetContent({
   ...props
 }: SheetContentProps) {
   useStripBaseUiFocusGuardAriaHidden(true);
+  useInertOutsideModal(true);
   const t = useTranslations('shell.sheet');
   const resolvedCloseAriaLabel = closeAriaLabel ?? t('close');
   const startSide = side === 'inline-start' || side === 'left';

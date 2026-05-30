@@ -418,7 +418,8 @@
     "all": "Tümü",
     "show_all": "Tümünü göster",
     "actions": {
-      "close": "Kapat"
+      "close": "Kapat",
+      "abbrechen": "İptal"
     },
     "pagination": {
       "label": "Sayfalama",
@@ -672,6 +673,28 @@
       "sgb_iv_28a": "§ 28a SGB IV: işverenin sosyal güvenlik kurumlarına yönelik DEÜV bildirimleri.",
       "detail_title": "Yasal dayanak",
       "open_cta": "Yasal dayanağı göster"
+    }
+  },
+  "vorgang": {
+    "detail": {
+      "next_step_title": "Bir sonraki adımınız",
+      "next_step_basis_label": "Yasal dayanak",
+      "next_step_cta": "Adımı tamamla",
+      "step_done_toast": "Adım tamamlandı olarak işaretlendi.",
+      "step_done_busy": "Tamamlanıyor …",
+      "step_done_error": "Tamamlanamadı. Lütfen tekrar deneyin.",
+      "next_step_brief_cta": "İlgili yazıyı aç",
+      "summary_title": "Genel bakış",
+      "summary_status_label": "Durum",
+      "summary_angelegt_label": "Oluşturuldu",
+      "summary_stichtag_label": "Yürürlük tarihi",
+      "summary_behoerden_label": "İlgili makamlar",
+      "summary_frist_label": "Sonraki süre sonu",
+      "summary_frist_template": "{datum}",
+      "datenschutz_title": "Veri koruma",
+      "datenschutz_sub": "Bu işlem için neyin işlendiği — ve hangi yasal dayanağa göre.",
+      "termine_title": "Bu işleme ait randevular ({count})",
+      "no_next_step": "Şu anda sizden bir şey istenmiyor. İlgili makamlar işlemi yürütüyor."
     }
   },
   "assistent": {
@@ -2226,6 +2249,19 @@
       "familie": "Aile",
       "vertraege": "Sözleşmeler"
     },
+    "tab": {
+      "alle": "Tümü",
+      "ausweise": "Kimlik belgeleri",
+      "bescheide": "Resmî kararlar (Bescheide)",
+      "familie": "Aile",
+      "vertraege": "Sözleşmeler"
+    },
+    "status": {
+      "verifiziert": "Doğrulandı",
+      "neu": "Yeni",
+      "ablauf_bald": "Yakında dolacak",
+      "abgelaufen": "Süresi doldu"
+    },
     "col": {
       "dokument": "Belge",
       "kategorie": "Kategori",
@@ -2237,32 +2273,67 @@
     "daten": {
       "ausgestellt": "Düzenlenme: {datum}",
       "gueltig_bis": "Geçerlilik: {datum}",
-      "unbefristet": "süresiz"
+      "unbefristet": "süresiz",
+      "ausgestellt_label": "Düzenlenme",
+      "gueltig_bis_label": "Geçerlilik"
     },
     "action": {
       "ansehen": "«{name}» belgesini görüntüle",
       "herunterladen": "«{name}» belgesini indir",
       "mehr": "«{name}» için diğer işlemler",
+      "ansehen_title": "Görüntüle",
+      "herunterladen_title": "İndir",
       "menu_ansehen": "Görüntüle",
       "menu_teilen": "Paylaş ve kullan"
+    },
+    "download": {
+      "mock_header": "[MOCK] Bu belge bir demonun parçasıdır. Gerçek bir resmî belge değildir.",
+      "dokument": "Belge:",
+      "typ": "Tür:",
+      "nr": "Belge numarası:",
+      "aussteller": "Düzenleyen kurum:",
+      "ausgestellt": "Düzenlenme tarihi:",
+      "gueltig_bis": "Geçerlilik tarihi:",
+      "watermark": "Filigran:",
+      "toast_title": "[MOCK] İndirme başladı",
+      "toast_description": "«{titel}» demo dosyası olarak indirildi."
+    },
+    "pagination": {
+      "empty": "0 belge",
+      "range": "{total} belgeden {von}–{bis}",
+      "prev": "Önceki sayfa",
+      "next": "Sonraki sayfa",
+      "per_page_label": "Sayfa başına belge",
+      "per_page_option": "Sayfa başına {count}"
     },
     "schnellzugriff": {
       "title": "Hızlı erişim",
       "upload": "Belge yükle",
+      "upload_sub": "Dosyadan veya taramadan ekle",
+      "upload_toast": "Demoda kullanılamaz — yeni belgeler adres değişikliği gibi işlemler üzerinden oluşur.",
       "ordner": "Yeni klasör",
-      "vorlagen": "Şablonlar",
-      "papier": "Kâğıt belge gönder"
+      "ordner_sub": "Belgeleri düzenle",
+      "ordner_toast": "Klasör yönetimi bu demoda planlanıyor.",
+      "vorlagen": "Şablonlar ve formlar",
+      "vorlagen_sub": "Resmî formları kullanın",
+      "vorlagen_toast": "Form kitaplığı bu demoda planlanıyor.",
+      "papier": "Kâğıt belge gönder",
+      "papier_sub": "Kuruma posta ile gönder",
+      "papier_toast": "Kurumlara posta ile gönderim bu demoda planlanıyor."
     },
     "zuletzt": {
-      "title": "Son eklenenler"
+      "title": "Son eklenenler",
+      "show_all": "Tümünü göster"
     },
     "teilen": {
       "title": "Paylaş ve kullan",
-      "hint": "Belgeler QR koduyla doğrulanabilir ve EUDI cüzdanına (EUDI Wallet) aktarılabilir.",
-      "cta": "Belgeyi kullan"
+      "hint": "Seçili belgeleri kurumlarla güvenle paylaşabilir veya işlemlere ek olarak kullanabilirsiniz.",
+      "cta": "Belgeyi kullan",
+      "cta_toast": "Bu demoda belgeler doğrudan bir işlem içinde ek olarak seçilir."
     },
     "preview": {
       "title": "Belge önizlemesi",
+      "description": "Kayıtlı belge meta verilerinin önizlemesi. Bu demo gerçek bir belge göstermez.",
       "qr_label": "QR doğrulama kodu",
       "eudi_yes": "EUDI cüzdanına (EUDI Wallet) aktarılabilir",
       "eudi_no": "EUDI'ye aktarılamaz",
@@ -2301,7 +2372,6 @@
     "calendar": {
       "prev": "Önceki ay",
       "next": "Sonraki ay",
-      "today": "Bugün",
       "label": "Aylık takvim",
       "weekday_long": {
         "mo": "Pazartesi",
@@ -2321,7 +2391,6 @@
         "sa": "Cmt",
         "so": "Paz"
       },
-      "has_events": "{count, plural, =1 {1 randevu} other {# randevu}}",
       "day_aria": "{datum}{events}",
       "day_events_suffix": " — {count, plural, =1 {1 randevu} other {# randevu}}"
     },
@@ -2333,20 +2402,57 @@
       "abgeschlossen": "Tamamlanan"
     },
     "naechste": {
-      "title": "Yaklaşan randevular"
+      "title": "Yaklaşan randevular",
+      "details_aria": "Ayrıntılar: {betreff}"
     },
     "weitere": {
       "title": "Diğer randevular ve hatırlatmalar"
     },
+    "row": {
+      "details_cta": "Ayrıntılar",
+      "zum_vorgang_cta": "İşleme git",
+      "details_aria": "Ayrıntılar: {betreff}",
+      "zum_vorgang_aria": "İşleme git: {titel}"
+    },
     "card": {
       "buchungsreferenz": "Rezervasyon numarası {ref}",
-      "ics": "ICS dışa aktar",
-      "ics_aria": "«{betreff}» randevusunu ICS olarak dışa aktar",
-      "details": "Ayrıntılar",
-      "details_anzeigen": "Ayrıntıları göster"
+      "buchungsreferenz_label": "Rezervasyon numarası",
+      "ics": "Takvime ekle",
+      "ics_aria_all": "Tüm yaklaşan randevuları ICS olarak dışa aktar"
+    },
+    "status": {
+      "gebucht": "Rezervasyon yapıldı",
+      "bestaetigt": "Onaylandı",
+      "verschoben": "Ertelendi",
+      "abgesagt": "İptal edildi"
+    },
+    "marker": {
+      "erinnerung": "Hatırlatma"
+    },
+    "auswahl": {
+      "label": "Seçildi: {datum}",
+      "aufheben": "Seçimi kaldır"
+    },
+    "alle_anzeigen": {
+      "show": "Tamamlanan randevuları göster",
+      "hide": "Tamamlanan randevuları gizle"
+    },
+    "detail": {
+      "status_label": "Durum: {status}"
+    },
+    "reschedule": {
+      "title": "Randevuyu ertele",
+      "intro": "Yeni bir randevu seçin. Kurum, değişikliği otomatik olarak alır.",
+      "confirm": "Bu randevuya ertele"
     },
     "naechster_schritt": {
-      "title": "Sonraki adım"
+      "title": "Sonraki adım",
+      "untertitel": "Randevunuza nasıl hazırlanırsınız.",
+      "kein_termin": "Açık randevu yok",
+      "vorerinnerung_titel": "Yeterince zaman ayırın",
+      "vorerinnerung_text": "Lütfen randevunuzdan 10–15 dakika önce gelin.",
+      "storno_titel": "Katılamıyor musunuz?",
+      "storno_text": "Randevunuzu 48 saat öncesine kadar çevrimiçi iptal edebilir veya erteleyebilirsiniz."
     },
     "vorbereitung": {
       "title": "Randevunuza iyi hazırlanın",
@@ -2373,12 +2479,18 @@
       "naechster_schritt": "Ayrıntıları görmek için bir randevu seçin."
     },
     "error": "Randevular yüklenemedi.",
+    "retry": "Tekrar dene",
+    "fristen_offen": "{count, plural, =0 {Açık süre yok} =1 {1 açık süre} other {# açık süre}}",
+    "frist_praefix": "Süre: {datum}",
+    "faellig_praefix": "Son tarih: {datum}",
+    "uhr_dauer": "{zeit} ({dauer} dk.)",
     "action": {
       "bestaetigen": "Onayla",
       "verschieben": "Ertele",
       "absagen": "İptal et",
       "confirm_cancel": "Randevu gerçekten iptal edilsin mi?",
       "verschoben_um": "7 gün ertelendi",
+      "verschoben": "Ertelendi",
       "bestaetigt": "Onaylandı",
       "abgesagt": "İptal edildi",
       "vorschlag": "Önerildi"
@@ -2390,6 +2502,8 @@
     "hero": {
       "steuerjahr": "Vergi yılı {jahr}",
       "entwurf_badge": "Taslak",
+      "stand": "Güncellik: {datum}",
+      "basis_hint": "Hâlihazırda bilinen verilerinize dayalı",
       "erstattung_label": "Tahmini iade",
       "erstattung_aria": "Tahmini iade {betrag}",
       "nachzahlung_label": "Tahmini ek ödeme",
@@ -2404,10 +2518,14 @@
       "herkunft": "{herkunft} kaynağından"
     },
     "fortschritt": {
-      "title": "İlerleme",
+      "title": "İlerlemeniz",
       "geprueft": "Veriler kontrol edildi",
-      "ergaenzen": "Belgeleri tamamlayın",
+      "geprueft_desc": "Veriler tamamen kontrol edildi",
+      "ergaenzen": "Belgeler eklendi",
+      "ergaenzen_desc": "Hâlâ 3 belge eksik",
+      "anzeigen": "Görüntüle",
       "abgabe": "Teslime hazır",
+      "abgabe_desc": "Kontrolü tamamlayın ve beyannamenizi teslim edin",
       "schritt_aria": "Adım {n} / 3: {label}",
       "status_done": "tamamlandı",
       "status_active": "etkin",
@@ -2444,16 +2562,20 @@
       "sonderausgaben": "Özel giderler (Sonderausgaben)"
     },
     "fristen": {
-      "title": "Önemli süreler"
+      "title": "Önemli süreler",
+      "show_all": "Tüm süreleri göster"
     },
     "frist": {
       "abgabe": "{jahr} beyannamesi teslim süresi",
       "einspruch": "Son tebligata itiraz süresi",
       "in_tagen": "{count, plural, =0 {bugün} =1 {1 gün} other {# gün}} içinde",
-      "ueberfaellig": "gecikmiş"
+      "ueberfaellig": "Gecikmiş"
     },
     "nachweise": {
-      "title": "Kullanılan belgeler"
+      "title": "Kullanılan belgeler",
+      "verwendet": "Kullanıldı",
+      "ausgestellt_am": "Düzenlenme: {datum}",
+      "show_all": "Tüm belgeleri göster"
     },
     "datenschutz": {
       "title": "Veri koruma bilgilendirmesi",
@@ -2474,20 +2596,24 @@
     },
     "error": "Vergi genel görünümü yüklenemedi.",
     "retry": "Tekrar dene",
-    "demo_action_toast": "Demo işlevi — belge eklemesi bu prototipte tanımlı değil.",
+    "loading": "Yükleniyor…",
+    "demo_action_toast": "Demo işlevi — bu prototipte tanımlı değil.",
     "alle_bereiche": "Tüm alanları göster",
     "weniger_bereiche": "Daha az göster"
   },
   "datenschutz": {
     "page": {
       "title": "Veri koruma",
-      "subtitle": "Veri erişimlerine, onaylara ve idari işlemlere genel bakış"
+      "subtitle": "Veri erişimlerine, onaylara ve kullanım amaçlarına genel bakış.",
+      "tag": "Spekülatif demo özelliği"
     },
     "vision_banner": {
       "heading": "2027 vizyonu",
       "title": "2027 vizyonu",
       "body": "Bu panel, veri koruma şeffaflığınızı ve kontrolünüzü bir araya getirir. Gerçek dünyada bu işlevler bugün hâlâ birden fazla kuruma dağılmış durumda.",
-      "dismiss": "2027 vizyonu bildirimini kapat"
+      "body_1": "Bu işlevler, verileriniz üzerinde daha fazla şeffaflık ve öz belirleme vizyonumuzun bir parçasıdır.",
+      "body_2": "Kullanılabilirlik ve içerik, kullanıma sunulana kadar değişebilir.",
+      "dismiss": "Bildirimi kapat"
     },
     "aktivitaet": {
       "title": "Son etkinlikler",
@@ -2498,10 +2624,11 @@
     "activity": {
       "typ": {
         "uebermittlung": "İletim",
-        "eingang": "Gelen",
+        "eingang": "Gelen kutusu",
         "app": "Uygulama etkinliği",
-        "vision": "Vizyon"
+        "vision": "Spekülatif 2027"
       },
+      "fallback": "Etkinlik",
       "brief_geoeffnet": "Mektup açıldı",
       "ki_zusammenfassung": "Yapay zekâ özeti oluşturuldu",
       "adresse_uebermittelt": "Adres kuruma iletildi",
@@ -2510,13 +2637,21 @@
     },
     "einwilligungen": {
       "title": "Onaylar",
-      "subtitle": "Verilerinize hangi kurumların erişebileceğine siz karar verirsiniz",
+      "subtitle": "Hangi kurum ve hizmetlerin verilerinize erişebileceğini siz yönetirsiniz.",
       "krankenkasse": "Hastalık kasası (Krankenkasse)",
+      "krankenkasse_sub": "Fatura ve hizmetler için veri iletimi",
       "bank": "Banka",
+      "bank_sub": "İadeler için hesap verilerinin kontrolü",
       "arbeitgeber": "İşveren",
+      "arbeitgeber_sub": "Maaş vergisi ve belgeler için veri paylaşımı",
       "weitere_dienste": "Diğer hizmetler",
+      "weitere_dienste_sub": "Diğer kurum ve kuruluşlar",
+      "verwalten": "Yönet",
+      "historie_anzeigen": "Onay geçmişini göster",
       "ein": "Açık",
       "aus": "Kapalı",
+      "toggle_ein": "«{empfaenger}» onayını aç",
+      "toggle_aus": "«{empfaenger}» onayını kapat",
       "rechtsgrundlage_label": "Hukuki dayanak",
       "switch_aria": "Onay: {empfaenger}",
       "announce_ein": "{empfaenger} onayı açıldı",
@@ -2524,26 +2659,43 @@
     },
     "quellen": {
       "title": "Veri kaynakları ve alıcılar",
-      "col_stelle": "Kurum",
+      "subtitle": "Hangi kurumların verilerinize nasıl eriştiğine dair genel bakış.",
+      "col_stelle": "Kurum / hizmet",
       "col_zugriffsart": "Erişim türü",
       "col_aktualitaet": "Güncellik",
-      "automatisch": "otomatik senkronize",
-      "einwilligungsbasiert": "onaya dayalı",
+      "automatisch": "Otomatik senkronize",
+      "einwilligungsbasiert": "Onaya dayalı",
       "aktuell": "güncel",
+      "angezeigt": "{total} veri kaynağından {shown} tanesi gösteriliyor.",
       "show_all": "Tüm alıcıları göster"
     },
     "kontrolle": {
       "title": "Veri koruma kontrolünüz",
+      "subtitle": "Verilerinizi kimin nasıl kullanabileceğine siz karar verirsiniz.",
       "zugriffsprotokoll": "Erişim günlüğü",
       "zugriffsprotokoll_desc": "Tüm veri erişimlerini izleyin",
       "datenexport": "Veri dışa aktarımı",
+      "export_bereit": "Dışa aktarım hazır",
       "datenexport_desc": "Verilerinizi GDPR (DSGVO) Madde 20 uyarınca yanınızda götürün",
       "einstellungen": "Ayarlar",
       "einstellungen_desc": "Tercihleri ve engellemeleri yönetin",
       "vision_hint": "Bu işlev, bu demonun 2027 vizyonunun bir parçasıdır."
     },
+    "log_dialog": {
+      "description": "Veri erişimlerinin ve iletimlerinin tam günlüğü.",
+      "loading": "Yükleniyor …",
+      "empty": "Etkinlik yok."
+    },
+    "hist_dialog": {
+      "title": "Onay geçmişi",
+      "description": "Verdiğiniz ve geri çektiğiniz onaylardaki değişiklikler.",
+      "empty": "Henüz onay değişikliği kaydedilmedi."
+    },
     "log": {
       "einwilligung_geaendert": "Onay değiştirildi"
+    },
+    "export": {
+      "hinweis": "[MOCK] Spekülatif tasarım demosu — gerçek kişisel veri yoktur."
     },
     "toast": {
       "einwilligung_error": "Onay kaydedilemedi."
@@ -2569,7 +2721,13 @@
       "vater": "Baba",
       "partner": "Eş / partner",
       "kind": "Çocuk",
+      "erwachsen": "Yetişkin",
+      "sie": "Siz",
       "hauptperson": "Ana kişi"
+    },
+    "person": {
+      "sie_name": "{name} (siz)",
+      "geb": "Doğum tarihi: {datum}"
     },
     "cta": {
       "haushalt_verwalten": "Haneyi yönet"
@@ -2577,11 +2735,14 @@
     "verwalten_dialog": {
       "title": "Haneyi yönet",
       "body": "Hane üyelerinin ve temsil yetkilerinin (Vertretungsrechte) yönetimi, bu demonun 2027 vizyonudur. Bu özellik ilerleyen aşamada gelecektir.",
+      "mock_hint": "[MOCK] Demo verileri. İzinlerin eklenmesi, kaldırılması ve düzenlenmesi bu önizlemede henüz etkin değildir.",
       "close": "Kapat"
     },
     "vertretung_banner": {
       "title": "Temsil",
-      "body": "Hanenizdeki üyeler adına temsilci sıfatıyla (Vertretung) işlemleri yürütebilirsiniz."
+      "body": "Hanenizdeki üyeler adına temsilci sıfatıyla (Vertretung) işlemleri yürütebilirsiniz.",
+      "titel": "{name} için yetkili temsilcisiniz.",
+      "text": "{vorname} için işlemleri görüntüleyebilir ve yönetebilirsiniz."
     },
     "vorgaenge": {
       "title": "Ortak işlemler",
@@ -2624,9 +2785,13 @@
       "nachweise": "Belgeler/kanıtlar",
       "vertretungen": "Temsiller"
     },
+    "rail_foot": {
+      "titel": "Hanenizde veya izinlerde değişiklik mi var?",
+      "cta": "Hane ayarlarını aç"
+    },
     "sicher": {
       "title": "Güvenli ve korumalı",
-      "body": "Aile verileri yalnızca gerekli ölçüde işlenir. Temsil yetkileri (Vertretungsrechte), bu demonun 2027 vizyonudur.",
+      "body": "Verileriniz ve belgeleriniz güvenli biçimde yönetilir. Bunları yalnızca uygun yetkiye sahip kişiler görüntüleyebilir.",
       "more": "Veri koruma hakkında daha fazlası"
     },
     "empty": {
@@ -2735,8 +2900,15 @@
       "posteingang_landing": "{count, plural, =0 {Gelen kutusunda henüz onay yok} other {Gelen kutusunda # onay}}",
       "posteingang_cta": "Gelen kutusunu aç",
       "disclaimer": "[MOCK] — benzetim; gerçek bir iletim yapılmaz.",
+      "eid_confirm_cta": "eID ile onayla",
+      "eid_confirm_cta_aria": "eID ile onayla: {behoerde}",
+      "eid_confirming": "Onaylanıyor …",
+      "eid_confirm_error": "Onay başarısız oldu. Lütfen tekrar deneyin.",
+      "eid_gate_hint": "Aşağıdaki iki kurum, kimlik kartınızla açık onayınızı gerektirir — bu iki kurum, dokunmanız olmadan hiçbir şey iletmez.",
+      "row_status_sr_prefix": "Durum: ",
       "row_status": {
         "in_progress": "İletiliyor",
+        "needs_eid": "Onayınız gerekli",
         "confirmed": "Onaylandı",
         "pending": "Bekliyor",
         "failed": "Başarısız"

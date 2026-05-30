@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { useTranslations } from 'next-intl';
+import { toast } from 'sonner';
 import {
   Bell,
   Briefcase,
@@ -124,8 +125,8 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
   return (
     <main className="gt-content">
       <div className="gt-page-head">
-        <h1>Steuer</h1>
-        <div className="sub">Vorausgefüllte Steuerübersicht aus bereits vorhandenen Daten.</div>
+        <h1>{t('steuer.title')}</h1>
+        <div className="sub">{t('steuer.subtitle')}</div>
       </div>
 
       <div className="st-layout">
@@ -134,20 +135,23 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
             <div className="st-year-row">
               <div>
                 <h2>
-                  Steuerjahr {uebersicht?.steuerjahr ?? steuerjahr} <span className="badge brand">Entwurf</span>
+                  {t('steuer.hero.steuerjahr', {
+                    jahr: uebersicht?.steuerjahr ?? steuerjahr,
+                  })}{' '}
+                  <span className="badge brand">{t('steuer.hero.entwurf_badge')}</span>
                 </h2>
-                <div className="stand">Stand: {formatStand(nowIso)}</div>
-                <div className="vor">Voraussichtliche Erstattung</div>
+                <div className="stand">{t('steuer.hero.stand', { datum: formatStand(nowIso) })}</div>
+                <div className="vor">{t('steuer.hero.erstattung_label')}</div>
                 <div className="erstattung" style={{ whiteSpace: 'nowrap' }}>
                   {erstattung}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--green-700)', fontSize: 13 }}>
                   <CheckCircle2 style={{ width: 16, height: 16, color: 'var(--green-600)' }} />
-                  Auf Basis Ihrer bereits bekannten Daten
+                  {t('steuer.hero.basis_hint')}
                 </div>
               </div>
               <div className="quellen-grid">
-                <div className="lbl">Datenquellen</div>
+                <div className="lbl">{t('steuer.hero.datenquellen_label')}</div>
                 {datenquellen.map((q, i) => {
                   const visual = quelleVisual(i, datenquellen.length);
                   return (
@@ -166,16 +170,16 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
             </div>
 
             <div className="progress-row">
-              <h4>Ihr Fortschritt</h4>
+              <h4>{t('steuer.fortschritt.title')}</h4>
               <div className="pr-steps">
                 <div className={`pr-step${activeStep > 0 ? '' : ' current'}`}>
                   <span className="dot">
                     {activeStep > 0 ? <Check style={{ width: 14, height: 14 }} /> : '1'}
                   </span>
                   <div>
-                    <div className="t">Daten geprüft</div>
+                    <div className="t">{t('steuer.fortschritt.geprueft')}</div>
                     <div className="s">
-                      Daten vollständig geprüft
+                      {t('steuer.fortschritt.geprueft_desc')}
                       <br />
                       {formatStand(nowIso)}
                     </div>
@@ -186,12 +190,12 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
                     {activeStep > 1 ? <Check style={{ width: 14, height: 14 }} /> : '2'}
                   </span>
                   <div>
-                    <div className="t">Belege ergänzt</div>
+                    <div className="t">{t('steuer.fortschritt.ergaenzen')}</div>
                     <div className="s">
-                      3 Belege fehlen noch
+                      {t('steuer.fortschritt.ergaenzen_desc')}
                       <br />
                       <a className="link" href="#nachweise">
-                        Anzeigen
+                        {t('steuer.fortschritt.anzeigen')}
                       </a>
                     </div>
                   </div>
@@ -199,12 +203,8 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
                 <div className={`pr-step${activeStep === 2 ? ' current' : activeStep < 2 ? ' pending' : ''}`}>
                   <span className="dot">3</span>
                   <div>
-                    <div className="t">Zur Abgabe bereit</div>
-                    <div className="s">
-                      Prüfung abschließen und
-                      <br />
-                      Erklärung abgeben
-                    </div>
+                    <div className="t">{t('steuer.fortschritt.abgabe')}</div>
+                    <div className="s">{t('steuer.fortschritt.abgabe_desc')}</div>
                   </div>
                 </div>
               </div>
@@ -212,14 +212,14 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
           </div>
 
           <div className="st-card uberblick" id="steuerbereiche">
-            <h3>Übersicht der Steuerbereiche</h3>
+            <h3>{t('steuer.bereiche.title')}</h3>
             <table>
               <thead>
                 <tr>
-                  <th>Bereich</th>
-                  <th style={{ textAlign: 'right' }}>Betrag</th>
-                  <th>Status</th>
-                  <th style={{ textAlign: 'right' }}>Aktion</th>
+                  <th>{t('steuer.col.bereich')}</th>
+                  <th style={{ textAlign: 'right' }}>{t('steuer.col.betrag')}</th>
+                  <th>{t('steuer.col.status')}</th>
+                  <th style={{ textAlign: 'right' }}>{t('steuer.col.aktion')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -227,10 +227,14 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
                   const visual = bereichVisual(idx);
                   const badgeClass =
                     b.status === 'geprueft' ? 'green' : b.status === 'ergaenzen' ? 'amber' : 'outline';
-                  const badgeLabel =
-                    b.status === 'geprueft' ? 'Geprüft' : b.status === 'ergaenzen' ? 'Ergänzen' : 'Nicht vorhanden';
-                  const action =
-                    b.status === 'ergaenzen' ? 'Bearbeiten' : b.status === 'nicht_vorhanden' ? 'Hinzufügen' : 'Anzeigen';
+                  const badgeLabel = t(`steuer.status.${b.status}`);
+                  const actionKey =
+                    b.status === 'ergaenzen'
+                      ? 'ergaenzen'
+                      : b.status === 'nicht_vorhanden'
+                        ? 'hinzufuegen'
+                        : 'ansehen';
+                  const bereichName = t(b.name_i18n_key);
                   return (
                     <tr key={b.id}>
                       <td>
@@ -239,7 +243,7 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
                             <visual.Icon />
                           </span>
                           <div>
-                            <div className="t">{t(b.name_i18n_key)}</div>
+                            <div className="t">{bereichName}</div>
                           </div>
                         </div>
                       </td>
@@ -255,12 +259,17 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
                         <button
                           type="button"
                           className="right-link"
-                          disabled
-                          aria-disabled="true"
-                          title="In dieser Demo nicht aktiv"
-                          style={{ background: 'none', border: 0, cursor: 'not-allowed', opacity: 0.55 }}
+                          aria-label={t(`steuer.aktion.${actionKey}_aria`, {
+                            bereich: bereichName,
+                          })}
+                          onClick={() =>
+                            toast(bereichName, {
+                              description: t('steuer.demo_action_toast'),
+                            })
+                          }
+                          style={{ background: 'none', border: 0, cursor: 'pointer' }}
                         >
-                          {action}
+                          {t(`steuer.aktion.${actionKey}`)}
                         </button>
                       </td>
                     </tr>
@@ -273,14 +282,14 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
               href="#steuerbereiche"
               style={{ marginTop: 12, display: 'inline-flex' }}
             >
-              Alle Bereiche anzeigen <ChevronRight style={{ width: 12, height: 12 }} />
+              {t('steuer.alle_bereiche')} <ChevronRight style={{ width: 12, height: 12 }} />
             </a>
           </div>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
           <div className="st-card frist-card">
-            <h3 style={{ margin: '0 0 14px', fontSize: 16, fontWeight: 600 }}>Wichtige Fristen</h3>
+            <h3 style={{ margin: '0 0 14px', fontSize: 16, fontWeight: 600 }}>{t('steuer.fristen.title')}</h3>
             {fristen.map((f) => {
               const days = daysUntil(f.datum, nowIso);
               const label = t(f.label_i18n_key, {
@@ -293,7 +302,11 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
                     <div className="t">{label}</div>
                     <div className="d">{formatStand(f.datum)}</div>
                   </div>
-                  <span className="badge brand">{days >= 0 ? `In ${days} Tagen` : 'Überfällig'}</span>
+                  <span className="badge brand">
+                    {days >= 0
+                      ? t('steuer.frist.in_tagen', { count: days })
+                      : t('steuer.frist.ueberfaellig')}
+                  </span>
                 </div>
               );
             })}
@@ -302,12 +315,12 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
               href="/termine"
               style={{ display: 'inline-flex', alignItems: 'center', gap: 4, marginTop: 12 }}
             >
-              Alle Fristen anzeigen <ChevronRight style={{ width: 12, height: 12 }} />
+              {t('steuer.fristen.show_all')} <ChevronRight style={{ width: 12, height: 12 }} />
             </Link>
           </div>
 
           <div className="st-card nachweise" id="nachweise">
-            <h3 style={{ margin: '0 0 14px', fontSize: 16, fontWeight: 600 }}>Verwendete Nachweise</h3>
+            <h3 style={{ margin: '0 0 14px', fontSize: 16, fontWeight: 600 }}>{t('steuer.nachweise.title')}</h3>
             {verwendeteNachweise.map((n) => (
               <div key={n.id} className="item">
                 <span className="av">
@@ -318,10 +331,10 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
                   <div className="s">
                     {behoerdenNameById[n.ausstellende_behoerde_id] ?? n.ausstellende_behoerde_id}
                     <br />
-                    Ausgestellt am {formatStand(n.ausgestellt_am)}
+                    {t('steuer.nachweise.ausgestellt_am', { datum: formatStand(n.ausgestellt_am) })}
                   </div>
                 </div>
-                <span className="badge green">Verwendet</span>
+                <span className="badge green">{t('steuer.nachweise.verwendet')}</span>
               </div>
             ))}
             <Link
@@ -329,7 +342,7 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
               href="/dokumente"
               style={{ display: 'inline-flex', alignItems: 'center', gap: 4, marginTop: 12 }}
             >
-              Alle Nachweise anzeigen <ChevronRight style={{ width: 12, height: 12 }} />
+              {t('steuer.nachweise.show_all')} <ChevronRight style={{ width: 12, height: 12 }} />
             </Link>
           </div>
         </div>
@@ -337,7 +350,7 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
 
       {!loaded ? (
         <div className="muted" style={{ marginTop: 12, fontSize: 12 }}>
-          Lädt…
+          {t('steuer.loading')}
         </div>
       ) : null}
 

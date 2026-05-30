@@ -1,4 +1,4 @@
-import { LetterDetailLoader } from '@/components/posteingang/LetterDetailLoader';
+import { PosteingangInbox } from '@/components/posteingang/PosteingangInbox';
 
 export const dynamic = 'force-dynamic';
 
@@ -7,10 +7,22 @@ interface PageProps {
 }
 
 /**
- * Client-only-Loader (Mock-Backend lebt in localStorage; Server hat keinen
- * Zugriff). Server-Komponente reicht nur die `id` in den Loader.
+ * Deep-Link auf einen einzelnen Brief. Rendert dieselbe Zwei-Spalten-Inbox wie
+ * `/posteingang`, nur mit dem adressierten Brief vorausgewählt. Das Mock-Backend
+ * lebt im `localStorage`; die Liste wird nach Hydration befüllt und die
+ * `find ?? letters[0]`-Logik wählt den Deep-Link-Brief automatisch aus.
  */
 export default async function LetterDetailPage({ params }: PageProps) {
   const { id } = await params;
-  return <LetterDetailLoader id={id} />;
+  return (
+    <PosteingangInbox
+      initial={{
+        letters: [],
+        behoerdenById: {},
+        vorgaengeById: {},
+        nowIso: new Date().toISOString(),
+      }}
+      initialSelectedLetterId={id}
+    />
+  );
 }

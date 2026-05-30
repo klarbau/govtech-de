@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl';
 import { wrapNormZitate } from '@/components/posteingang/wrapNormZitate';
 import { Button } from '@/components/ui/button';
 import { useStripBaseUiFocusGuardAriaHidden } from '@/components/ui/use-strip-base-ui-focus-guard-aria-hidden';
+import { useInertOutsideModal } from '@/components/ui/use-inert-outside-modal';
 import { cn } from '@/lib/utils';
 
 const MIN_BEGRUENDUNG = 30;
@@ -52,6 +53,7 @@ export function SperrenAktivierenConfirmDialog({
   const t = useTranslations();
   const tModal = useTranslations('stammdaten.modal.sperren_aktivieren');
   useStripBaseUiFocusGuardAriaHidden(open);
+  useInertOutsideModal(open);
 
   const [begruendung, setBegruendung] = React.useState('');
   const textareaRef = React.useRef<HTMLTextAreaElement | null>(null);

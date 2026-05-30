@@ -154,6 +154,39 @@ check(
   !extraField.ok,
 );
 
+/* ── lese_posteingang filter validator ─────────────────────────────────── */
+
+const lese = toolsByName.get('lese_posteingang');
+check('tools[] has lese_posteingang def', Boolean(lese));
+
+const okLeseEmpty = validatePosteingangToolInput('lese_posteingang', {});
+check('lese_posteingang accepts {} (list everything)', okLeseEmpty.ok);
+
+const okLeseStatus = validatePosteingangToolInput('lese_posteingang', {
+  filter: { status: 'ungelesen' },
+});
+check('lese_posteingang accepts {filter:{status:"ungelesen"}}', okLeseStatus.ok);
+
+const okLeseFull = validatePosteingangToolInput('lese_posteingang', {
+  filter: { absender: 'finanzamt', status: 'gelesen', vorgang_id: 'vg-x', max: 5 },
+});
+check('lese_posteingang accepts full filter', okLeseFull.ok);
+
+const badLeseStatus = validatePosteingangToolInput('lese_posteingang', {
+  filter: { status: 'archiviert' },
+});
+check('lese_posteingang rejects unknown status value', !badLeseStatus.ok);
+
+const badLeseMax = validatePosteingangToolInput('lese_posteingang', {
+  filter: { max: 0 },
+});
+check('lese_posteingang rejects max < 1', !badLeseMax.ok);
+
+const badLeseExtra = validatePosteingangToolInput('lese_posteingang', {
+  filter: { vorlesen: true },
+});
+check('lese_posteingang rejects unknown filter field (strict)', !badLeseExtra.ok);
+
 /* ── preview_umzug tool registration ───────────────────────────────────── */
 
 const previewUmzug = toolsByName.get('preview_umzug');

@@ -3,7 +3,8 @@
 import * as React from 'react';
 
 /**
- * WORKAROUND for `@base-ui/react@1.4.1` (current latest, 2026-05-09):
+ * WORKAROUND for `@base-ui/react@1.5.0` (resolved/installed version; package.json
+ * still pins `^1.4.1` but the lockfile resolves 1.5.0, where this still reproduces):
  * `<FocusGuard>` sentinels (`[data-base-ui-focus-guard]`) are rendered with
  * both `aria-hidden="true"` and `tabindex="0"` on non-Safari browsers, which
  * trips axe-core's `aria-hidden-focus` rule (WCAG 4.1.2). The guards are

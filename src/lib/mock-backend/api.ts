@@ -22,6 +22,7 @@
  *   cancelUmzug(vorgangId: string): Promise<void>
  *   markiereLetterGelesen(id: string): Promise<void>
  *   bestaetigeAutopilotSchritt(vorgangId: string, schrittId: string): Promise<void>
+ *   erledigeVorgangSchritt(vorgangId: string, schrittId: string): Promise<void>
  *
  *   subscribe(listener: (e: MockBackendEvent) => void): () => void
  *
@@ -833,6 +834,15 @@ export interface MockBackendApi {
     vorgangId: string,
     schrittId: string,
   ): Promise<void>;
+  /**
+   * Generischer Bürger:innen-Schritt-Abschluss (WoW-1, „Schritt erledigen").
+   * Markiert einen Vorgangs-Schritt als vom Bürger erledigt (`confirmed` +
+   * `completed_at`). KEIN Block-D-/eID-Gate (anders als
+   * `bestaetigeAutopilotSchritt`); idempotent bei bereits `confirmed` Schritt.
+   * Lässt den Gesamt-`vorgang.status` unverändert (Behörde prüft weiter).
+   * Emittiert `autopilot_step` für Live-Subscriber.
+   */
+  erledigeVorgangSchritt(vorgangId: string, schrittId: string): Promise<void>;
 
   // Posteingang-Capability — Write (NEW)
   /**
@@ -1425,15 +1435,17 @@ async function bestaetigeImpl(
       : step.behoerde_id === 'kfz-berlin-labo'
         ? '§ 15 FZV i.V.m. § 36 BMG'
         : step.behoerde_id === 'abh-berlin-lea'
-          ? '§ 86 AufenthG i.V.m. § 36 BMG'
+          // D2 — eID-Basis § 18 PAuswG; §86/§87 AufenthG entfernt (Strafverfolgungs-/
+          // Erhebungskanal, NICHT Adresspflege). Kein Melderegister→ABH-Push, daher
+          // KEIN § 36 BMG anhängen. Verbatim aus docs/domain/umzug-konvenienz-und-normen.md §2 D2
+          // und kanonisch in autopilot/umzug.ts (BLOCK_D + emitStammdatenLogForCascadeStep).
+          ? '§ 18 PAuswG'
           : '§ 36 BMG';
-    const zweck = step.behoerde_id.startsWith('familienkasse-')
-      ? 'stammdaten.aktivitaet.zweck.adressuebermittlung_buergeramt_finanzamt'
-      : step.behoerde_id === 'kfz-berlin-labo'
-        ? 'stammdaten.aktivitaet.zweck.adressuebermittlung_buergeramt_finanzamt'
-        : step.behoerde_id === 'abh-berlin-lea'
-          ? 'stammdaten.aktivitaet.zweck.adressuebermittlung_buergeramt_bapersbw'
-          : 'stammdaten.aktivitaet.zweck.adressuebermittlung_buergeramt_finanzamt';
+    // Generischer Fallback-zweck-Key für alle Block-D-Empfänger (Familienkasse, KFZ,
+    // ABH) — es gibt keine empfängerspezifischen zweck-Keys; der kanonische Emitter in
+    // autopilot/umzug.ts nutzt denselben Fallback für unzugeordnete Empfänger. (Die ABH-
+    // Variante war fälschlich `…_bapersbw` = Bundeswehr-Wehrerfassung; korrigiert.)
+    const zweck = 'stammdaten.aktivitaet.zweck.adressuebermittlung_buergeramt_finanzamt';
     appendLogEntry(persona.id, {
       id: `log-${uuid()}`,
       timestamp: new Date().toISOString(),
@@ -1465,6 +1477,49 @@ async function bestaetigeImpl(
     const done = loadVorgaenge().find((v) => v.id === vorgangId);
     if (done && done.typ === 'umzug') applyUmzugRipple(done, persona);
   }
+}
+
+/**
+ * Generischer Bürger:innen-Schritt-Abschluss (WoW-1). Markiert einen einzelnen
+ * Vorgangs-Schritt als vom Bürger erledigt — z. B. „Nachweis zur Fortzahlung
+ * einreichen" bei der Familienkasse.
+ *
+ * Abgrenzung zu `bestaetigeImpl`: KEIN Block-D-/eID-Gate. Dies ist ein vom
+ * Bürger selbst abgeschlossener Schritt (typischerweise `block: 'C'`,
+ * `status: 'self_assigned'`). Der Gesamt-`vorgang.status` bleibt UNVERÄNDERT:
+ * der Bürger hat SEINEN Teil erledigt, die Behörde prüft weiterhin (ehrliche
+ * Rahmung). Idempotent: ein bereits `confirmed` Schritt bleibt unverändert.
+ */
+async function erledigeVorgangSchrittImpl(
+  vorgangId: string,
+  schrittId: string,
+): Promise<void> {
+  const vorgang = loadVorgaenge().find((v) => v.id === vorgangId);
+  if (!vorgang) {
+    throw new MockBackendError(`Vorgang "${vorgangId}" nicht gefunden.`, {
+      code: 'VORGANG_NOT_FOUND',
+      retryable: false,
+    });
+  }
+  const step = vorgang.schritte.find((s) => s.id === schrittId);
+  if (!step) {
+    throw new MockBackendError(`Schritt "${schrittId}" nicht gefunden.`, {
+      code: 'STEP_NOT_FOUND',
+      retryable: false,
+    });
+  }
+
+  // Idempotenz: bereits erledigte Schritte unverändert lassen.
+  if (step.status === 'confirmed') return;
+
+  // Nur den einen Schritt bestätigen; `upsertStep` emittiert `autopilot_step`,
+  // sodass Live-Subscriber (Detail-Screen) refetchen können. Der Gesamt-Status
+  // des Vorgangs wird bewusst NICHT angefasst (Behörde prüft weiter).
+  upsertStep(vorgangId, {
+    ...step,
+    status: 'confirmed',
+    completed_at: new Date().toISOString(),
+  });
 }
 
 async function runAutopilotInBackground(ctx: {
@@ -1814,6 +1869,9 @@ export const api: MockBackendApi & {
 
   bestätigeAutopilotSchritt: (vorgangId: string, schrittId: string) =>
     withLatency(() => bestaetigeImpl(vorgangId, schrittId)),
+
+  erledigeVorgangSchritt: (vorgangId: string, schrittId: string) =>
+    withLatency(() => erledigeVorgangSchrittImpl(vorgangId, schrittId)),
 
   // ---------- Posteingang-Capability — Read ----------
   extrahiereAktion: (letterId: string) => {

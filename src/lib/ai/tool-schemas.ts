@@ -18,10 +18,16 @@
  * docs/specs/posteingang.md §7.1. The redesign-assistent.md §7.2/§7.3 work
  * adds zod mirrors for the two Umzug write/preview tools (`preview_umzug`,
  * `starte_umzug`) plus a machine-readable dispatch table (`TOOL_DISPATCH`)
- * and the irreversible-action gate (`requiresConfirmation`). The remaining
- * legacy read tools (`lese_posteingang`, `hole_vorgang`, `hole_profil`,
- * `liste_termine`) stay pass-through (no zod) — they take only optional
- * filters and a malformed input degrades to "no filter", not a write.
+ * and the irreversible-action gate (`requiresConfirmation`). `lese_posteingang`
+ * now also carries a zod mirror (`lesePosteingangInput`) because its public
+ * JSONSchema shape (`{absender, status, max}`) deliberately differs from the
+ * internal `LetterFilter` and the dispatch layer must translate it — an
+ * unvalidated blind-cast silently returned EMPTY results (a single-string
+ * `status: 'ungelesen'` was iterated char-by-char by `getLetters`). The
+ * remaining legacy read tools (`hole_vorgang`, `hole_profil`, `liste_termine`)
+ * stay pass-through (no zod) — they take only a required id or optional
+ * filters the dispatcher reads field-by-field, so a malformed input degrades
+ * to "no filter", not a write.
  */
 
 import { z } from 'zod';
@@ -69,6 +75,35 @@ export type VorschlageNaechstenSchrittInput = z.infer<
   typeof vorschlageNaechstenSchrittInput
 >;
 
+/* ───────────────────────────── lese_posteingang ──────────────────────────── */
+
+/**
+ * Input for the `lese_posteingang` read tool. ALL fields are optional (a bare
+ * `{}` lists everything). This validator exists because the tool's public
+ * JSONSchema (`tools.ts`) advertises an `absender` / single-`status` / `max`
+ * shape that does NOT match `LetterFilter` — the dispatch layer translates the
+ * validated object into a real `LetterFilter`. `.strict()` so the model can't
+ * smuggle in an unknown filter that silently no-ops.
+ *
+ * `status` is the SINGLE-string contract the model fills (one of three letter
+ * states); the dispatcher lifts it into `LetterFilter.status: [status]`.
+ */
+export const lesePosteingangInput = z
+  .object({
+    filter: z
+      .object({
+        absender: z.string().min(1).optional(),
+        status: z.enum(['ungelesen', 'gelesen', 'erledigt']).optional(),
+        vorgang_id: z.string().min(1).optional(),
+        max: z.number().int().min(1).max(50).optional(),
+      })
+      .strict()
+      .optional(),
+  })
+  .strict();
+
+export type LesePosteingangInput = z.infer<typeof lesePosteingangInput>;
+
 /* ───────────────────────────── hole_ersparnis ────────────────────────────── */
 
 /**
@@ -91,9 +126,10 @@ export type HoleErsparnisInput = z.infer<typeof holeErsparnisInput>;
  * validator. Used by the client-side dispatch path before it hands the input
  * to the mock-backend.
  *
- * Existing five tools are not present here; the dispatcher should treat a
- * missing entry as "no zod validation, pass-through" — matching today's
- * behaviour for the five legacy tools.
+ * The remaining legacy read tools (`hole_vorgang`, `hole_profil`,
+ * `liste_termine`) are not present here; the dispatcher treats a missing entry
+ * as "no zod validation, pass-through" — matching today's behaviour for those
+ * required-id / optional-filter tools.
  */
 export const POSTEINGANG_TOOL_VALIDATORS = {
   erklaere_brief: erklaereBriefInput,
@@ -103,6 +139,10 @@ export const POSTEINGANG_TOOL_VALIDATORS = {
   // malformed input surfaces a clean error before `api.getValueReceipt` is hit.
   // `hole_autopilot_katalog` takes no input → no validator (pass-through).
   hole_ersparnis: holeErsparnisInput,
+  // Read-only inbox filter. Validated so the dispatch layer can safely translate
+  // the model's `{absender, status, max}` shape into a real `LetterFilter`
+  // (the two shapes deliberately differ — see lesePosteingangInput doc).
+  lese_posteingang: lesePosteingangInput,
 } as const;
 
 export type PosteingangToolName = keyof typeof POSTEINGANG_TOOL_VALIDATORS;
