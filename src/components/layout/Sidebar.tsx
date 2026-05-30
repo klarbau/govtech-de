@@ -86,7 +86,7 @@ export async function Sidebar() {
         <div className="gt-nav-divider" />
         <nav className="gt-nav">
           <SidebarNavItem
-            href="#"
+            href="/assistent"
             label={tShell('sidebar.help')}
             icon={<HelpCircle aria-hidden="true" />}
           />
