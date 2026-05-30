@@ -1,8 +1,26 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { ar, de, enUS, ru, tr, uk, type Locale } from "date-fns/locale"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
+}
+
+const DATE_FNS_LOCALES: Record<string, Locale> = {
+  de,
+  en: enUS,
+  ru,
+  uk,
+  ar,
+  tr,
+};
+
+/**
+ * Map a next-intl locale code to its `date-fns` Locale so month/day WORDS
+ * localize (numerals stay Latin). Falls back to German for unknown codes.
+ */
+export function dateFnsLocale(locale: string): Locale {
+  return DATE_FNS_LOCALES[locale] ?? de;
 }
 
 /** German civilian date `dd.MM.yyyy` (no timezone, no Locale-API drift). */

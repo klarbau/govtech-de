@@ -8,6 +8,7 @@ import { wrapNormZitate } from '@/components/posteingang/wrapNormZitate';
 import { RechtsprechungZitatSpan } from '@/components/posteingang/RechtsprechungZitatSpan';
 import { Button } from '@/components/ui/button';
 import { useStripBaseUiFocusGuardAriaHidden } from '@/components/ui/use-strip-base-ui-focus-guard-aria-hidden';
+import { useInertOutsideModal } from '@/components/ui/use-inert-outside-modal';
 import { cn } from '@/lib/utils';
 
 interface PflegegradConsentModalProps {
@@ -56,6 +57,7 @@ export function PflegegradConsentModal({
   const tModal = useTranslations('stammdaten.modal.pflegegrad_consent');
   // Lesson #4: base-ui-FocusGuard-Bug Workaround MUSS für jedes Modal.
   useStripBaseUiFocusGuardAriaHidden(open);
+  useInertOutsideModal(open);
 
   const [consentChecked, setConsentChecked] = React.useState(false);
 

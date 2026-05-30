@@ -58,7 +58,11 @@ export type VorgangTyp =
   | 'eheschliessung'
   | 'gewerbeanmeldung'
   | 'anmeldung'
-  | string;
+  // Keeps literal autocomplete + exhaustiveness on the known types while still
+  // accepting arbitrary future Vorgang-Typen (e.g. from mock JSON). The
+  // `string & {}` idiom prevents the union from collapsing to bare `string`,
+  // unlike `| string`. See types/vorgang.ts history.
+  | (string & {});
 
 export type VorgangStatus =
   | 'angelegt'

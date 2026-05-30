@@ -8,6 +8,7 @@ import { Beaker } from 'lucide-react';
 import { wrapNormZitate } from '@/components/posteingang/wrapNormZitate';
 import { Button } from '@/components/ui/button';
 import { useStripBaseUiFocusGuardAriaHidden } from '@/components/ui/use-strip-base-ui-focus-guard-aria-hidden';
+import { useInertOutsideModal } from '@/components/ui/use-inert-outside-modal';
 import { cn } from '@/lib/utils';
 import type { WalletAttestationPreview } from '@/types/stammdaten';
 
@@ -44,6 +45,7 @@ export function WalletAttestationPreviewModal({
   const tModal = useTranslations('stammdaten.modal.wallet_attestation_preview');
   const tBadge = useTranslations('stammdaten.badge');
   useStripBaseUiFocusGuardAriaHidden(open);
+  useInertOutsideModal(open);
 
   let bodyText: string;
   try {

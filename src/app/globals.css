@@ -184,9 +184,18 @@
   --brand-700: #173FA8;
   --brand-900: #0F1F4E;
 
+  /* Solid-fill brand tokens — used by every brand surface that carries WHITE
+     text (primary buttons, count pills, avatars, send button, today-marker…).
+     Kept SEPARATE from --brand-600/700 because those flip to a light tint in
+     dark mode to serve the nav-pill/label/icon-on-tint role; a light tint with
+     white text fails AA, so fills must stay saturated in both themes. */
+  --brand-fill: var(--brand-600);
+  --brand-fill-hover: var(--brand-700);
+
   /* Status ramps — verbatim from zip CSS; coexist with --color-success /
      --color-warning / --color-danger semantic tokens. */
   --green-50:  #E6F6EC;
+  --banner-success-bg: var(--green-50);  /* dark flips this; see .dark block */
   --green-100: #D5F0E0;
   --green-500: #1FA864;
   --green-600: #178A52;
@@ -257,6 +266,35 @@
   --color-danger-soft: #3A1714;
   --color-info: #5B8DEF;
   --color-info-soft: #152038;
+
+  /* ── prototype-v2 chrome tokens (DARK) ──────────────────────────────────
+     These alias tokens are declared only in :root (light) above, so without
+     a .dark override the app-chrome (Topbar wordmark + crest on --brand-900,
+     sidebar nav labels + header buttons on --ink-2, hover fills on
+     --surface-soft, active-nav pill on --brand-50/700) kept their light
+     values against the dark surface — ~1.06:1 (logo) / ~1.41:1 (nav) — far
+     below WCAG AA. Flip them to dark-mode-appropriate values that clear AA.
+     --ink-2 / --surface-soft also drive page-content (badges, banners, rows,
+     sub-cards), so these overrides fix those in dark mode at the same time. */
+  --ink-2: #C4CBD8;            /* nav labels + header btns: 10.1:1 vs surface */
+  --surface-soft: #212633;     /* hover fill + sub-cards: ink at 12.5:1 on it */
+
+  --brand-50:  #1B2740;        /* active-nav pill bg: brand-700 text 7.2:1 */
+  --brand-700: #9DBBFF;        /* active-nav label: 7.2:1 vs brand-50 pill */
+  --brand-600: #9DBBFF;        /* active-nav icon: 7.2:1 vs brand-50 pill */
+  --brand-900: #AFC4FF;        /* logo wordmark + crest: 9.5:1 vs surface */
+
+  /* Solid brand fills stay saturated so WHITE text clears AA. The light flip of
+     --brand-600/700 above (correct for nav text/icon-on-tint) would otherwise
+     drop primary buttons to white-on-#9DBBFF ≈ 1.9:1. */
+  --brand-fill: #2D6BE0;       /* white text 4.88:1 */
+  --brand-fill-hover: #2559C4; /* white text 6.34:1 */
+
+  /* Success banner that carries theme-aware --ink text (e.g. /termine Fristen
+     banner). --green-50 keeps its light value for the badge/icon-tint pairings
+     it shares; this dedicated dark tint isolates the one surface whose text is
+     the near-white dark --ink (#ECEFF4): 12.4:1 on the tint. */
+  --banner-success-bg: #14301F;
 }
 
 @layer base {

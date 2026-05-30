@@ -26,6 +26,7 @@
  * error injection (latency.ts / umzug.ts), so Block A never randomly fails.
  */
 import { test, expect, type Page, type Route } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
 
 const LOCALE_COOKIE_NAME = 'govtech-de:v1:locale';
 const NS = 'govtech-de:v1:';
@@ -309,5 +310,108 @@ test.describe('SPINE — assistant → autopilot → posteingang (demo-shipped g
     await expect(
       page.getByText(/Mitteilung über die örtliche Zuständigkeit/i).first(),
     ).toBeVisible();
+  });
+
+  /* ── Step 4c (wow #1 inline-cascade-fixes §3): the hero COMPLETES inline ──
+   * Isolated from the main journey on purpose. The main test asserts the /run
+   * page shows EXACTLY 4 confirmed cards (its 5th card, Familienkasse/Block-D,
+   * stays pending there). Confirming Block-D inline mutates the SAME persisted
+   * Vorgang, which would flip that 5th /run card to confirmed and break the
+   * "exactly 4" assertion. So this test runs in its own fresh page/storage
+   * context and NEVER navigates to /run — proving the consent-gate + climax
+   * entirely in the assistant thread without weakening Step 5. */
+  test('Anna: inline cascade COMPLETES in-thread after two eID confirmations', async ({
+    page,
+  }) => {
+    test.setTimeout(120_000);
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await setupAuthenticatedAnna(page);
+    await mockAssistantRoute(page);
+
+    // Drive the assistant to surface + confirm the Umzug (same as Steps 3–4).
+    await gotoAndWait(page, '/assistent?reliable=1', async () => {
+      await expect(page.getByText(/Hallo Anna/).first()).toBeVisible({
+        timeout: 20_000,
+      });
+    });
+
+    const composer = page.getByPlaceholder(/.+/).first();
+    await composer.click();
+    await composer.fill('leite meinen Umzug ein');
+    await composer.press('Enter');
+
+    const confirmCard = page.getByRole('group', { name: 'Umzug bestätigen' });
+    await expect(confirmCard).toBeVisible({ timeout: 20_000 });
+    await confirmCard.getByRole('button', { name: 'Umzug starten' }).click();
+
+    // The inline cascade plays in the thread.
+    const inlineCascade = page.getByTestId('inline-cascade');
+    await expect(inlineCascade).toBeVisible({ timeout: 20_000 });
+
+    /* The two sensitive Block-D rows (Familienkasse + ABH) gate completion:
+     * nothing for them completes until the citizen taps "Mit eID bestätigen".
+     * The button carries data-testid="inline-eid-confirm"; its row's status
+     * span carries data-status, which flips to "confirmed" after the tap. */
+    const eidButtons = inlineCascade.getByTestId('inline-eid-confirm');
+    await expect(eidButtons).toHaveCount(2, { timeout: 20_000 });
+
+    /* The step the user is about to confirm — pin its row-status span by
+     * data-step-id so we can assert IT (not a racy global confirmed-count that
+     * Block-A/B rows also increment) reaches `confirmed` after the tap. */
+    const firstStepId = await eidButtons.first().getAttribute('data-step-id');
+    await eidButtons.first().click();
+    // Button unmounts once its row leaves the gate state → count shrinks.
+    await expect(eidButtons).toHaveCount(1, { timeout: 20_000 });
+    await expect(
+      inlineCascade.locator(
+        `[data-testid="inline-cascade-row-status"][data-step-id="${firstStepId}"][data-status="confirmed"]`,
+      ),
+    ).toHaveCount(1, { timeout: 20_000 });
+
+    const secondStepId = await eidButtons.first().getAttribute('data-step-id');
+    await eidButtons.first().click();
+    await expect(eidButtons).toHaveCount(0, { timeout: 20_000 });
+    await expect(
+      inlineCascade.locator(
+        `[data-testid="inline-cascade-row-status"][data-step-id="${secondStepId}"][data-status="confirmed"]`,
+      ),
+    ).toHaveCount(1, { timeout: 20_000 });
+
+    /* Climax IN-THREAD: Block-A auto + both Block-D eID-confirmed + Block-B
+     * resolved → isVorgangFullyResolved → status `abgeschlossen` → the value
+     * receipt mounts inline (the payoff the audit found was never reached). */
+    const inlineReceipt = inlineCascade.getByTestId('inline-cascade-receipt');
+    await expect(inlineReceipt).toBeVisible({ timeout: 30_000 });
+
+    // Once-Only counter line (value_receipt.ca_prefix + N + once_only_label).
+    await expect(
+      inlineCascade.getByText(/Felder, die Sie nicht ausfüllen mussten/i),
+    ).toBeVisible({ timeout: 30_000 });
+    // Stammdaten source line (convenience.inline_cascade.source_line).
+    await expect(
+      inlineCascade.getByText(/Quelle:\s*Ihre Stammdaten/i),
+    ).toBeVisible();
+    // The kept "Kaskade ansehen" link survives the inline completion (C1).
+    await expect(
+      page.getByRole('link', { name: 'Kaskade ansehen' }),
+    ).toBeVisible();
+
+    /* a11y guard (a11y-tester recommended): the completed inline-cascade
+     * subtree carries no serious/critical axe violations at the climax.
+     * Scoped to the component; the dedicated report covers it in depth
+     * (docs/a11y-reports/inline-cascade-eid-2026-05-30.md). */
+    const inlineAxe = await new AxeBuilder({ page })
+      .include('[data-testid="inline-cascade"]')
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+      .analyze();
+    const inlineBlockers = inlineAxe.violations.filter(
+      (v) => v.impact === 'serious' || v.impact === 'critical',
+    );
+    expect(
+      inlineBlockers,
+      `inline-cascade serious/critical: ${JSON.stringify(
+        inlineBlockers.map((v) => ({ id: v.id, target: v.nodes[0]?.target })),
+      )}`,
+    ).toHaveLength(0);
   });
 });

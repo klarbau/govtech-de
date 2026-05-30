@@ -32,6 +32,13 @@ import {
   staticRefusal,
 } from '@/lib/ai/safety';
 import {
+  approxByteLength,
+  ASSISTANT_RATE_LIMIT,
+  CAPS,
+  checkRateLimit,
+  rateLimitKeyFromRequest,
+} from '@/lib/ai/rate-limit';
+import {
   type AssistantStreamEvent,
   SSE_HEADERS,
   toReadableStream,
@@ -79,6 +86,20 @@ type CachedSystemBlock = {
 /* ───────────────────────────── handler ──────────────────────────────────── */
 
 export async function POST(req: Request): Promise<Response> {
+  // ── Rate limit (audit defect #1) ────────────────────────────────────────
+  // Keyed by the `mock_sid` session cookie (IP fallback). Best-effort,
+  // in-memory, per-instance — proportionate to a demo's API-spend blast radius.
+  // Checked BEFORE parsing the body so an oversize-spam loop can't even pay the
+  // JSON-parse cost once throttled.
+  const limit = checkRateLimit(
+    'assistant',
+    rateLimitKeyFromRequest(req),
+    ASSISTANT_RATE_LIMIT,
+  );
+  if (!limit.ok) {
+    return rateLimited(limit.retryAfterSeconds);
+  }
+
   let body: AssistantRequestBody;
   try {
     body = (await req.json()) as AssistantRequestBody;
@@ -88,10 +109,17 @@ export async function POST(req: Request): Promise<Response> {
 
   const validation = validateBody(body);
   if (!validation.ok) {
-    return jsonError(400, 'invalid_body', validation.message);
+    return jsonError(validation.status ?? 400, validation.code, validation.message);
   }
 
-  const { messages, persona } = body;
+  const { messages } = body;
+  // Defensively clamp the only unbounded persona free-text so it can't bloat
+  // the (cached) persona system block. validateBody already rejects gross
+  // overruns; this is the belt-and-braces trim that actually reaches the model.
+  const persona: PersonaContextInput =
+    body.persona.notizen && body.persona.notizen.length > CAPS.maxNotizenChars
+      ? { ...body.persona, notizen: body.persona.notizen.slice(0, CAPS.maxNotizenChars) }
+      : body.persona;
   const latestUserText = extractLatestUserText(messages);
   const locale = resolveLocale(latestUserText, body.locale);
 
@@ -237,27 +265,109 @@ async function* toAssistantEvents(
 
 /* ─────────────────────────── validation + utils ──────────────────────────── */
 
-function validateBody(
-  body: unknown,
-): { ok: true } | { ok: false; message: string } {
+type ValidationResult =
+  | { ok: true }
+  | { ok: false; code: string; message: string; status?: number };
+
+/**
+ * Shape + SIZE validation (audit defect #1). Beyond the structural checks, this
+ * rejects oversize requests so a public crawler/attacker can't drive unbounded
+ * token spend or smuggle a megabyte of text into the (cached) prompt. Limits
+ * live in `CAPS` and are tuned to clear the real Umzug conversation with
+ * headroom. Errors return a structured `{code,message}` and never leak
+ * internals.
+ */
+function validateBody(body: unknown): ValidationResult {
   if (!body || typeof body !== 'object') {
-    return { ok: false, message: 'Body fehlt oder ist kein Objekt.' };
+    return { ok: false, code: 'invalid_body', message: 'Body fehlt oder ist kein Objekt.' };
   }
+
+  // Total payload byte cap first — cheapest rejection for a bulk-spam body.
+  const totalBytes = approxByteLength(body);
+  if (totalBytes > CAPS.maxTotalBytes) {
+    return {
+      ok: false,
+      code: 'payload_too_large',
+      status: 413,
+      message: `Anfrage zu groß (max. ${CAPS.maxTotalBytes} Bytes).`,
+    };
+  }
+
   const b = body as Partial<AssistantRequestBody>;
   if (!Array.isArray(b.messages) || b.messages.length === 0) {
-    return { ok: false, message: '`messages` muss ein nicht-leeres Array sein.' };
+    return { ok: false, code: 'invalid_body', message: '`messages` muss ein nicht-leeres Array sein.' };
   }
+  if (b.messages.length > CAPS.maxMessages) {
+    return {
+      ok: false,
+      code: 'too_many_messages',
+      status: 413,
+      message: `Zu viele Nachrichten (max. ${CAPS.maxMessages}).`,
+    };
+  }
+
+  // Per-text-block length cap. Covers user text AND tool_result content blocks
+  // (Approach B feeds tool output back as text). A single overlong block is
+  // rejected rather than silently truncated, so the model never sees a half
+  // payload.
+  for (const m of b.messages) {
+    const tooLong = messageHasOverlongText(m, CAPS.maxCharsPerBlock);
+    if (tooLong) {
+      return {
+        ok: false,
+        code: 'message_too_long',
+        status: 413,
+        message: `Eine Nachricht überschreitet die Längengrenze (max. ${CAPS.maxCharsPerBlock} Zeichen pro Block).`,
+      };
+    }
+  }
+
   if (!b.persona || typeof b.persona !== 'object') {
-    return { ok: false, message: '`persona` ist erforderlich.' };
+    return { ok: false, code: 'invalid_body', message: '`persona` ist erforderlich.' };
   }
   const p = b.persona as Partial<PersonaContextInput>;
   if (!p.id || !p.vorname || !p.nachname) {
     return {
       ok: false,
+      code: 'invalid_body',
       message: '`persona` benötigt mindestens id, vorname, nachname.',
     };
   }
   return { ok: true };
+}
+
+/**
+ * True if any text in this message exceeds `maxChars`. Handles both the string
+ * `content` shape and the structured content-block array (text + tool_result
+ * blocks, whose content may itself be a string or nested blocks).
+ */
+function messageHasOverlongText(
+  m: Anthropic.MessageParam,
+  maxChars: number,
+): boolean {
+  if (typeof m.content === 'string') return m.content.length > maxChars;
+  if (!Array.isArray(m.content)) return false;
+  for (const block of m.content) {
+    if (block.type === 'text' && typeof block.text === 'string') {
+      if (block.text.length > maxChars) return true;
+    } else if (block.type === 'tool_result') {
+      const c = block.content;
+      if (typeof c === 'string') {
+        if (c.length > maxChars) return true;
+      } else if (Array.isArray(c)) {
+        for (const inner of c) {
+          if (
+            inner.type === 'text' &&
+            typeof inner.text === 'string' &&
+            inner.text.length > maxChars
+          ) {
+            return true;
+          }
+        }
+      }
+    }
+  }
+  return false;
 }
 
 /**
@@ -287,6 +397,26 @@ function jsonError(status: number, code: string, message: string): Response {
     status,
     headers: { 'content-type': 'application/json; charset=utf-8' },
   });
+}
+
+/** 429 with a `Retry-After` header. Friendly, leaks nothing. */
+function rateLimited(retryAfterSeconds: number): Response {
+  return new Response(
+    JSON.stringify({
+      error: {
+        code: 'rate_limited',
+        message:
+          'Zu viele Anfragen in kurzer Zeit. Bitte einen Moment warten und erneut versuchen.',
+      },
+    }),
+    {
+      status: 429,
+      headers: {
+        'content-type': 'application/json; charset=utf-8',
+        'retry-after': String(retryAfterSeconds),
+      },
+    },
+  );
 }
 
 /**

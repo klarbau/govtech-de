@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { XIcon } from "lucide-react"
 import { useStripBaseUiFocusGuardAriaHidden } from "./use-strip-base-ui-focus-guard-aria-hidden"
+import { useInertOutsideModal } from "./use-inert-outside-modal"
 
 function Dialog({ ...props }: DialogPrimitive.Root.Props) {
   return <DialogPrimitive.Root data-slot="dialog" modal {...props} />
@@ -50,6 +51,7 @@ function DialogContent({
   showCloseButton?: boolean
 }) {
   useStripBaseUiFocusGuardAriaHidden(true);
+  useInertOutsideModal(true);
   const t = useTranslations("common.actions")
   return (
     <DialogPortal>

@@ -46,6 +46,7 @@ interface InitialData {
 
 interface PosteingangInboxProps {
   initial: InitialData;
+  initialSelectedLetterId?: string | null;
 }
 
 type AvatarVariant = 'eagle' | 'aok' | 'ard' | 'lea' | 'jc' | 'default';
@@ -60,13 +61,18 @@ type SectionKey = 'neu' | 'frist7' | 'erledigt';
  * letter; actions reuse the existing ReplySheet + NeuerVorgangAusBriefModal +
  * OriginaltextBlock helpers.
  */
-export function PosteingangInbox({ initial }: PosteingangInboxProps) {
+export function PosteingangInbox({
+  initial,
+  initialSelectedLetterId,
+}: PosteingangInboxProps) {
   const [letters, setLetters] = React.useState<Letter[]>(initial.letters);
   const [behoerdenById, setBehoerdenById] = React.useState(initial.behoerdenById);
   const [hasLoaded, setHasLoaded] = React.useState(initial.letters.length > 0);
   const [searchQuery, setSearchQuery] = React.useState('');
   const [view, setView] = React.useState<'chronologisch' | 'vorgang'>('chronologisch');
-  const [selectedLetterId, setSelectedLetterId] = React.useState<string | null>(null);
+  const [selectedLetterId, setSelectedLetterId] = React.useState<string | null>(
+    initialSelectedLetterId ?? null,
+  );
   const [filterOpen, setFilterOpen] = React.useState(false);
   const [filterSelected, setFilterSelected] = React.useState<FilterKategorie[]>([]);
 
@@ -227,7 +233,7 @@ export function PosteingangInbox({ initial }: PosteingangInboxProps) {
                 height: '18px',
                 padding: '0 5px',
                 borderRadius: '9px',
-                background: 'var(--brand-600)',
+                background: 'var(--brand-fill)',
                 color: '#fff',
                 fontSize: '11px',
                 fontWeight: 600,

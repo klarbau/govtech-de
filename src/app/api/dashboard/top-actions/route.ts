@@ -24,6 +24,13 @@ import {
   prioritizeTopActionsAi,
   type PrioritizeOutcome,
 } from '@/lib/ai/dashboard-prioritize';
+import {
+  approxByteLength,
+  CAPS,
+  checkRateLimit,
+  rateLimitKeyFromRequest,
+  TOP_ACTIONS_RATE_LIMIT,
+} from '@/lib/ai/rate-limit';
 import type { PrioritizedTopAction, TopActionCandidateInput } from '@/types';
 
 export const runtime = 'nodejs';
@@ -40,6 +47,17 @@ interface TopActionsResponseBody {
 }
 
 export async function POST(req: Request): Promise<Response> {
+  // ── Rate limit (audit defect #1) ────────────────────────────────────────
+  // Same session-keyed best-effort throttle as /api/assistant, separate bucket.
+  const limit = checkRateLimit(
+    'top-actions',
+    rateLimitKeyFromRequest(req),
+    TOP_ACTIONS_RATE_LIMIT,
+  );
+  if (!limit.ok) {
+    return rateLimited(limit.retryAfterSeconds);
+  }
+
   let body: TopActionsRequestBody;
   try {
     body = (await req.json()) as TopActionsRequestBody;
@@ -50,6 +68,22 @@ export async function POST(req: Request): Promise<Response> {
   if (!body || !Array.isArray(body.candidates)) {
     return json(400, {
       error: { code: 'invalid_body', message: '`candidates` muss ein Array sein.' },
+    });
+  }
+
+  // Size caps (audit defect #1): reject oversize candidate sets / bodies before
+  // they reach the (cached) prompt. The real dashboard sends well under these.
+  if (approxByteLength(body) > CAPS.maxTotalBytes) {
+    return json(413, {
+      error: { code: 'payload_too_large', message: `Anfrage zu groß (max. ${CAPS.maxTotalBytes} Bytes).` },
+    });
+  }
+  if (body.candidates.length > CAPS.maxTopActionCandidates) {
+    return json(413, {
+      error: {
+        code: 'too_many_candidates',
+        message: `Zu viele Kandidaten (max. ${CAPS.maxTopActionCandidates}).`,
+      },
     });
   }
 
@@ -71,4 +105,24 @@ function json(status: number, payload: unknown): Response {
     status,
     headers: { 'content-type': 'application/json; charset=utf-8' },
   });
+}
+
+/** 429 with a `Retry-After` header. */
+function rateLimited(retryAfterSeconds: number): Response {
+  return new Response(
+    JSON.stringify({
+      error: {
+        code: 'rate_limited',
+        message:
+          'Zu viele Anfragen in kurzer Zeit. Bitte einen Moment warten und erneut versuchen.',
+      },
+    }),
+    {
+      status: 429,
+      headers: {
+        'content-type': 'application/json; charset=utf-8',
+        'retry-after': String(retryAfterSeconds),
+      },
+    },
+  );
 }

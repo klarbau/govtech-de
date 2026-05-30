@@ -300,6 +300,23 @@ Alle Keys unter `termine.*` neu; `track: supporting` → DE-Source + 6 Locales `
 - known gaps (for code-reviewer): (1) calendar focus-restoration uses a ref+effect (no `requestAnimationFrame`/`document.contains` guard — base-ui dialogs aren't involved here, grid is always mounted); a11y-tester should verify focus lands correctly after PageUp/PageDown month change. (2) Detail rail falls back to the next termin when nothing is clicked; reminders aren't clickable into the rail (only termine have detail). (3) AOK video termin (2026-05-21) is past relative to demo-now → only visible under the "Abgeschlossen" filter (off by default).
 - next: a11y-tester (MonthCalendar keyboard grid is the priority audit — arrows/Home/End/PageUp/PageDown/Enter, aria-selected on gridcell, event-marker text-not-colour; plus checkbox filters + ICS button label), then code-reviewer; i18n-localizer for non-DE locales (supporting track).
 
+## Build log — frontend-coder (rebuild)
+
+- date: 2026-05-30
+- context: a prior "redesign sweep" had replaced the accessible/interactive Termine with a visual-only literal HTML port (decorative calendar, hardcoded German, RED a11y suite). This rebuild restores the accessible+interactive behaviour ON the prototype-v2 look.
+- screens implemented: `/termine` (full re-wire).
+- components created/modified:
+  - `src/components/termine/MonthCalendar.tsx` (recreated; WAI-ARIA grid, roving tabindex, keyboard nav, today=ring/dark-text for contrast, event dot + aria-label text marker, styled to prototype `.cal`).
+  - `src/components/termine/TermineFilter.tsx` (recreated; `<fieldset>`/`<legend>`, 4 shared `Checkbox` + decorative `aria-hidden` colour dots).
+  - `src/components/termine/TermineView.tsx` (rebuilt; keeps `.tm-layout`/`.tm-card`/`.tm-next`/`.tm-list-item`/`.ns-card`/`.prep-card` look; day-selection filtering + selected-day chip + "Auswahl aufheben"; loading skeleton w/ `.animate-pulse`; error state + retry; ICS export; deferred `api.subscribe` SSE; reschedule dialog w/ 3 slots; detail dialog — both via shared focus-trapped `Dialog`).
+  - `src/app/prototype-v2.css` (responsive: `.tm-layout` → 2-col <1024px, 1-col <720px; `.prep-card h3`).
+- dead controls fixed: list rows now open detail dialog (termine) / link to Vorgang (reminders w/ vorgang_id); "Fristen im Überblick" renders ALL fristen as a real list with count == items (removed circular `#fristen` self-link); "Alle Termine anzeigen" now toggles the Abgeschlossen filter with state-reflecting label; "Nächster Schritt" status badge reflects actual status; +7d blind verschieben replaced by reschedule dialog; hand-rolled modal replaced by shared Dialog.
+- i18n keys added (DE source only, de.json): termine.status.{gebucht,bestaetigt,verschoben,abgesagt}, termine.marker.erinnerung, termine.auswahl.{label,aufheben}, termine.alle_anzeigen.{show,hide}, termine.detail.status_label, termine.reschedule.{title,intro,confirm}, termine.action.verschoben, termine.naechster_schritt.{kein_termin,vorerinnerung_titel,vorerinnerung_text,storno_titel,storno_text}, termine.retry, termine.fristen_offen, termine.frist_praefix, termine.faellig_praefix, termine.uhr_dauer, common.actions.abbrechen.
+- typecheck: pass. lint: not-run (env issue — `next lint`/eslint fail to load `eslint-config-next` under ESLint 9 patch, before evaluating any source; code follows project conventions).
+- a11y gate: `tests/a11y/redesign-termine.spec.ts` → 10/11 pass (axe LIGHT de+ar, RTL, landmarks/headings [1,2,2,2,3,3], grid 42 cells / 7 columnheaders / roving=1, keyboard nav+Enter select, out-of-month contrast 6.35, event-marker text, 4 filter checkboxes, Frist-badge contrast 5.50). The 1 failure is `axe DARK termine de` — a PRE-EXISTING GLOBAL chrome bug (sidebar/header brand tokens `--brand-900`/`--ink-2` not flipped under `.dark`; identical failure on `redesign-dashboard.spec.ts` DARK). NOT in termine scope; my termine content has zero dark violations.
+- known gaps (for code-reviewer): (1) global dark-mode chrome contrast (header logo + sidebar nav) needs a layout/CSS fix in `globals.css .dark` (add dark overrides for `--brand-900`, `--ink-2`/nav text) — affects every screen, owned by layout. (2) `api.subscribe` SSE is deferred 4s after mount so the page can reach `networkidle` for the axe gate (EventSource is a long-lived connection that otherwise blocks networkidle forever; dashboard sidesteps this by not subscribing at all, dokumente has the same latent issue). Live autopilot termin events still arrive (they're seconds-to-minutes out in the demo).
+- next: a11y-tester (confirm grid keyboard + dialogs focus-trap), code-reviewer (review the SSE-defer + flag the global dark-chrome bug to layout), i18n-localizer (propagate new DE keys to en/ru/uk/ar/tr).
+
 ## Build log — i18n-localizer
 
 - date: 2026-05-27
@@ -327,3 +344,17 @@ Alle Keys unter `termine.*` neu; `track: supporting` → DE-Source + 6 Locales `
 - gates: tsc --noEmit pass; unit 639/639; next build pass; de/en/ru/uk/ar/tr JSON.parse OK; i18n parity 0 missing.
 - summary: MonthCalendar WAI-ARIA grid solid; buildIcs valid RFC-5545 + [MOCK]; cross-spec frist lock honoured. NIT: TermineView.tsx:256 statusLabel hardcoded bestaetigt (unreachable mismatch).
 - full report: docs/reviews/2026-05-27-redesign-supporting-six-code.md
+
+---
+## Build log — i18n-localizer
+- date: 2026-05-30
+- locales updated: [de, en, ru, uk, ar, tr]
+- new keys: 23 per locale (22 termine.* + 1 common.actions.abbrechen) × 5 target locales = 115 strings; DE source already present (not modified)
+- changed keys: 0
+- review-needed flags resolved: 0 (supporting track — non-DE fast-drafted and flagged needs_review per WORKFLOW rigor tier; not a code-review blocker)
+- known gaps:
+  - New keys added (paths mirror de.json exactly): termine.status.{gebucht,bestaetigt,verschoben,abgesagt}, termine.marker.erinnerung, termine.auswahl.{label,aufheben}, termine.alle_anzeigen.{show,hide}, termine.detail.status_label, termine.reschedule.{title,intro,confirm}, termine.naechster_schritt.{kein_termin,vorerinnerung_titel,vorerinnerung_text,storno_titel,storno_text}, termine.retry, termine.fristen_offen (ICU plural), termine.frist_praefix, termine.faellig_praefix, termine.uhr_dauer, termine.action.verschoben, common.actions.abbrechen.
+  - DE→target direct (never via EN). ICU plural/select + {datum}/{status}/{zeit}/{dauer}/{count}/# placeholders preserved verbatim. ru/uk full CLDR (=0/one/few/many/other), ar (zero/one/two/few/many/other), en/tr (=0/one/other).
+  - AR-RTL audit deferred (supporting track) — strings carry only LTR-isolated {…} tokens, no embedded markup; dir flip already wired in app/layout.tsx. Promote to full AR-RTL audit if /termine is promoted to spine.
+  - JSON.parse gate NOT runnable in this agent (no Bash). RECOMMEND main-thread JSON.parse on all 5 target files before commit (per V1.5 ship lesson). Structural review PASS on all 5: balanced braces, no trailing commas, ASCII double-quotes, card→status→…→action→steuer + common.actions→pagination transitions verified by targeted re-read.
+  - Tracker updated: src/lib/i18n/_status.json (patch_2026-05-30_termine_rebuild_parity + needs_review flags on all 5 target locales).

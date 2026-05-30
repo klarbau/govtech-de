@@ -5,6 +5,7 @@ import { AlertDialog as AlertDialogPrimitive } from '@base-ui/react/alert-dialog
 
 import { Button } from '@/components/ui/button';
 import { useStripBaseUiFocusGuardAriaHidden } from '@/components/ui/use-strip-base-ui-focus-guard-aria-hidden';
+import { useInertOutsideModal } from '@/components/ui/use-inert-outside-modal';
 import { cn } from '@/lib/utils';
 
 interface ReplyTemplateSwitchConfirmDialogProps {
@@ -47,6 +48,7 @@ export function ReplyTemplateSwitchConfirmDialog({
 }: ReplyTemplateSwitchConfirmDialogProps) {
   const t = useTranslations('posteingang.compose');
   useStripBaseUiFocusGuardAriaHidden(open);
+  useInertOutsideModal(open);
   return (
     <AlertDialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
       <AlertDialogPrimitive.Portal>

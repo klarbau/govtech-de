@@ -21,18 +21,20 @@ Das ist kein Formular-Problem, sondern ein Koordinations-Problem. Schnellere For
 
 Die Bürger:in sagt dem Assistenten **einmal** in natürlicher Sprache: **„leite meinen Umzug ein"**.
 
-Der Assistent fragt das Nötige nach — neue Adresse, Stichtag, für welche Empfänger eine Einwilligung erteilt wird —, zeigt eine **Bestätigungskarte**, und löst **erst nach ausdrücklichem „Umzug starten"** die Kaskade aus. Dann sieht die Bürger:in zu, wie die Bestätigungen eintreffen:
+Der Assistent fragt das Nötige nach — neue Adresse, Stichtag, für welche Empfänger eine Einwilligung erteilt wird —, zeigt eine **Bestätigungskarte**, und löst **erst nach ausdrücklichem „Umzug starten"** die Kaskade aus. Sie läuft **inline im Assistenten-Verlauf** — die Bürger:in sieht zu, wie die Bestätigungen eintreffen, gestaffelt nach Rechtsgrundlage:
 
 ```
-Einwohnermeldeamt   ✓ informiert
-Finanzamt           ✓ informiert
-KFZ-Zulassungsstelle ✓ informiert
-Krankenkasse        ✓ informiert  (mit Einwilligung)
-Rundfunkbeitrag     ✓ informiert
-Arbeitgeber         ✓ informiert  (mit Einwilligung)
+Einwohnermeldeamt   ✓ Bestätigt               automatisch · § 17 BMG
+Finanzamt           ✓ Bestätigt               automatisch · § 19 AO
+Beitragsservice     ✓ Bestätigt               automatisch · § 11 RBStV
+Bundesdruckerei     ✓ Bestätigt               automatisch · § 28 PAuswG
+Familienkasse       ⊙ Ihre Bestätigung nötig  → [Mit eID bestätigen] → ✓
+Ausländerbehörde    ⊙ Ihre Bestätigung nötig  → [Mit eID bestätigen] → ✓
+Krankenkasse        ✓ Bestätigt               mit Einwilligung · Art. 6 DSGVO
+Arbeitgeber         ✓ Bestätigt               mit Einwilligung · Art. 6 DSGVO
 ```
 
-Aus **sechs separaten Meldungen** wird **ein Satz**. Die Behörden werden nach Rechtsgrundlage gestaffelt — automatisch nach Bundesmeldegesetz (Block A), mit Einwilligung nach Art. 6 Abs. 1 lit. a DSGVO (Block B), selbst zu erledigen (Block C), mit eID-Bestätigung (Block D) —, und die Bestätigungsschreiben landen anschließend im Posteingang, jedes mit einer verständlichen KI-Zusammenfassung.
+Aus **vielen separaten Behördengängen** wird **ein Satz** — und die Bürger:in behält die Kontrolle über die sensiblen Schritte. Die Empfänger werden ehrlich nach Rechtsgrundlage gestaffelt: **automatisch** nach Bundesmeldegesetz (§ 36 BMG), **erst auf eID-Bestätigung** bei besonders sensiblen Stellen (§ 18 PAuswG — nutzergesteuert, *kein* automatischer Melderegister-Abgleich), und **nur mit Einwilligung** bei privaten Empfängern (Art. 6 Abs. 1 lit. a/b DSGVO). Zum Abschluss erscheinen inline ein **Once-Only-Zähler** („Felder, die Sie nicht ausfüllen mussten"), die Quelle (Ihre Stammdaten) und ein **Wert-Beleg** — danach landen die Bestätigungsschreiben im Posteingang, jedes mit einer verständlichen KI-Zusammenfassung.
 
 **Der Autopilot ist der Held.** Nicht das schnellere Formular, sondern das, was das System *für* die Bürger:in erledigt.
 
@@ -45,6 +47,20 @@ Dies ist ein **Speculative-Design-Prototyp** — ein portfolio-reifer Entwurf da
 - **Alle Daten sind erfunden** — Personas, Briefe, Aktenzeichen und Behörden-Antworten sind Mock-Daten. Sie sehen realistisch aus (echte Behörden-Bezeichnungen, reale PLZ, korrekte Aktenzeichen-Formate), sind aber synthetisch.
 - **Keine echte Behörde ist angebunden.** Es gibt keine Integration mit realen Fachverfahren. Das Mock-Backend simuliert REST-Antworten und persistiert lokal im Browser.
 - Es ist eine **Vision, kein Produkt** — ein Gesprächsangebot über das, was möglich wäre, nicht eine Behauptung, dass es das bereits gibt.
+
+> **Kein neues Zentralregister.** Ihre Daten bleiben dort, wo sie heute schon liegen — in den Registern der zuständigen Stellen. Diese Schicht *vermittelt* nur und ruft Nachweise bei Bedarf ab (Once-Only über NOOTS), statt sie in einem neuen Datentopf zu sammeln. Datenschutzrechtlich Verantwortliche bleiben die einzelnen Behörden.
+
+## Verhältnis zum Status quo
+
+Dieser Prototyp ist **informierte Spekulation auf bestehenden Schienen**, keine Behauptung, das Gezeigte existiere heute schon flächendeckend. Er setzt auf der für **2027 erwarteten Reife** der staatlichen Bausteine auf und entwirft die Bürger:innen-Interaktionsschicht darüber:
+
+- **DeutschlandID** — die heutige **BundID** (vormals *Nutzerkonto Bund*) wird schrittweise zur DeutschlandID weiterentwickelt; perspektivisch ein bundesweites Bürgerkonto. Wir mocken den Login in diese Richtung.
+- **Verwaltungsportal-Verbund + OZG** — Bund, Länder und Kommunen verknüpfen ihre Portale; das **OZG 2.0** (in Kraft seit Juli 2024) verzahnt Digitalisierung mit Registermodernisierung und digitalen Identitäten.
+- **Registermodernisierung + NOOTS (Once-Only)** — das **National-Once-Only-Technical-System** liefert die Grundlage, Nachweise aus den Quellregistern abzurufen statt sie erneut zu verlangen (erste Stufe Anfang 2026 gestartet, voller Rollout bis Ende 2026 angestrebt).
+- **Antragsloses Kindergeld** — **beschlossene Gesetzgebung** (Kabinettsbeschluss 18.03.2026), nicht Spekulation: ab 2027 zahlt die Familienkasse bei vorliegender IBAN automatisch, Trigger ist die Steuer-ID.
+- **EUDI Wallet (eIDAS 2.0)** — VO (EU) 2024/1183; nationale Pilotphasen seit Mai 2026, deutscher Start einer ersten Stufe zum 2. Januar 2027 angestrebt. Wir bilden Wallet-Flows (selektive Offenlegung, Datenminimierung) als 2027-Zielbild ab, mit `[MOCK]`-Kennzeichnung.
+
+**Was dieser Prototyp ist:** eine spekulative, bürgerzentrierte Interaktionsschicht auf DeutschlandID + EUDI Wallet + Deutschland-Stack, die deren Reife für 2027 annimmt. **Was er nicht ist:** eine reale Integration — es werden keine Daten an echte Behörden übermittelt oder aus echten Registern abgerufen; die Behörden-zu-Behörden-Kaskade ist simuliert und so gerahmt: *„wenn die Register angebunden wären …"*. Antragsgebundene Leistungen werden als *„Anspruch erkannt — Antrag vorbereitet"* dargestellt, nie als *„läuft bereits"* (das gilt allein für das antragslose Kindergeld).
 
 ## Die Oberflächen
 

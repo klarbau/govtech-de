@@ -178,8 +178,8 @@ button { font: inherit; cursor: pointer; }
   white-space: nowrap;
 }
 .btn svg { width: 16px; height: 16px; }
-.btn-primary { background: var(--brand-600); color: #fff; border-color: var(--brand-600); }
-.btn-primary:hover { background: var(--brand-700); border-color: var(--brand-700); }
+.btn-primary { background: var(--brand-fill); color: #fff; border-color: var(--brand-fill); }
+.btn-primary:hover { background: var(--brand-fill-hover); border-color: var(--brand-fill-hover); }
 .btn-secondary { background: var(--surface); border-color: var(--border-strong); color: var(--ink); }
 .btn-secondary:hover { background: var(--surface-soft); }
 .btn-ghost { color: var(--brand-600); }
@@ -262,7 +262,7 @@ button { font: inherit; cursor: pointer; }
 .icon-square {
   width: 44px; height: 44px; border-radius: 10px;
   display: inline-flex; align-items: center; justify-content: center;
-  background: var(--brand-600); color: #fff; flex: none;
+  background: var(--brand-fill); color: #fff; flex: none;
 }
 .icon-square svg { width: 22px; height: 22px; }
 
@@ -372,7 +372,7 @@ button { font: inherit; cursor: pointer; }
 .heute-item:hover { background: var(--surface-soft); }
 .heute-item .n {
   width: 28px; height: 28px; border-radius: 50%;
-  background: var(--brand-600); color: #fff;
+  background: var(--brand-fill); color: #fff;
   display: flex; align-items: center; justify-content: center;
   font-weight: 700; font-size: 13px;
 }
@@ -418,7 +418,7 @@ button { font: inherit; cursor: pointer; }
 }
 .post-section-head .label { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 13px; color: var(--ink-2); }
 .post-section-head .label .count {
-  background: var(--brand-600); color: #fff;
+  background: var(--brand-fill); color: #fff;
   padding: 0 8px; height: 20px; min-width: 20px; border-radius: var(--r-pill);
   display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600;
 }
@@ -467,7 +467,7 @@ button { font: inherit; cursor: pointer; }
   padding: 18px 20px;
   display: grid; grid-template-columns: 36px 1fr 100px; gap: 14px; align-items: start;
 }
-.ai-card .icon-circle { background: var(--brand-600); color: #fff; }
+.ai-card .icon-circle { background: var(--brand-fill); color: #fff; }
 .ai-card .h { font-weight: 600; color: var(--brand-700); font-size: 13px; }
 .ai-card h4 { margin: 4px 0 10px; font-size: 16px; font-weight: 600; }
 .ai-card ul { margin: 0; padding-left: 18px; font-size: 13px; color: var(--ink-2); line-height: 1.7; }
@@ -637,6 +637,12 @@ button { font: inherit; cursor: pointer; }
 .rail-item .lbl { color: var(--ink-2); font-size: 13px; line-height: 1.35; }
 .rail-item .link { color: var(--brand-600); font-weight: 500; font-size: 13px; display: inline-flex; align-items: center; gap: 4px; }
 
+/* The fixed 320px rail must stack under the main column on narrow viewports —
+   otherwise the Vorgang-Liste / Vorgang-Detail grids overflow below the
+   md breakpoint (sidebar collapses to a drawer at 768px). */
+@media (max-width: 880px) {
+  .vg-layout { grid-template-columns: minmax(0, 1fr); }
+}
 
 /* ============ umzug.html ============ */
 .umz-banner {
@@ -815,7 +821,7 @@ button { font: inherit; cursor: pointer; }
   display: inline-flex; align-items: center; justify-content: center;
   background: var(--surface); border: 1px solid var(--border); color: var(--ink-2);
 }
-.pagination .pg.active { background: var(--brand-600); color: #fff; border-color: var(--brand-600); }
+.pagination .pg.active { background: var(--brand-fill); color: #fff; border-color: var(--brand-fill); }
 .per-page { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; color: var(--ink-2); font-size: 13px; }
 .per-page svg { width: 14px; height: 14px; color: var(--ink-3); }
 
@@ -859,7 +865,7 @@ button { font: inherit; cursor: pointer; }
 .cal .d.today { color: #fff; }
 .cal .d.today::before {
   content: ''; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-  width: 28px; height: 28px; border-radius: 50%; background: var(--brand-600); z-index: -1;
+  width: 28px; height: 28px; border-radius: 50%; background: var(--brand-fill); z-index: -1;
 }
 .cal .d.today span { position: relative; z-index: 1; }
 .cal .d.has-event::after {
@@ -875,7 +881,7 @@ button { font: inherit; cursor: pointer; }
   display: inline-flex; align-items: center; justify-content: center; color: #fff;
   background: var(--surface);
 }
-.filter-row .cb.on { background: var(--brand-600); border-color: var(--brand-600); }
+.filter-row .cb.on { background: var(--brand-fill); border-color: var(--brand-fill); }
 .filter-row .cb.on svg { width: 12px; height: 12px; }
 .filter-row .dot { width: 8px; height: 8px; border-radius: 50%; }
 
@@ -887,6 +893,9 @@ button { font: inherit; cursor: pointer; }
 .tm-next .meta { color: var(--ink-3); font-size: 13px; margin-top: 4px; display: flex; flex-direction: column; gap: 2px; }
 .tm-next .meta span { display: inline-flex; align-items: center; gap: 6px; }
 .tm-next .actions { display: flex; gap: 10px; margin-top: 14px; }
+.tm-next .row1.is-clickable { cursor: pointer; border-radius: var(--r-md); margin: -6px; padding: 6px; transition: background .12s ease; }
+.tm-next .row1.is-clickable:hover { background: rgba(255,255,255,.55); }
+.tm-next .row1-end { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
 
 .tm-list-item {
   display: grid; grid-template-columns: 44px 1fr auto auto; gap: 14px; align-items: center;
@@ -900,6 +909,37 @@ button { font: inherit; cursor: pointer; }
 .tm-list-item .meta span { display: inline-flex; align-items: center; gap: 6px; }
 .tm-list-item .actions { display: inline-flex; align-items: center; gap: 8px; }
 
+/* Interactive rows (button / link) get a clear pointer + hover affordance.
+   Static info rows render as a plain div and keep the default cursor. */
+.tm-list-item.is-interactive { cursor: pointer; transition: background .12s ease, border-color .12s ease; }
+.tm-list-item.is-interactive:hover { background: var(--brand-50); border-color: var(--brand-200); }
+
+/* Single, destination-accurate trailing affordance for interactive rows. */
+.tm-row-cta {
+  display: inline-flex; align-items: center; gap: 4px;
+  color: var(--brand-600); font-weight: 500; font-size: 13px; white-space: nowrap;
+}
+.tm-row-cta svg { width: 15px; height: 15px; }
+.tm-row-cta-btn { background: none; border: 0; padding: 2px; cursor: pointer; font: inherit; border-radius: var(--r-sm); }
+.tm-row-cta-btn:hover { text-decoration: underline; }
+
+/* Muted, clearly-informational notes in the "Nächster Schritt" rail — visually
+   distinct from the actionable document checklist (.prep-row). */
+.ns-note { display: grid; grid-template-columns: 18px 1fr; gap: 10px; align-items: start; padding: 6px 0; }
+.ns-note .icon { color: var(--ink-4); width: 15px; height: 15px; margin-top: 2px; }
+.ns-note .t { font-weight: 500; font-size: 12.5px; color: var(--ink-3); }
+.ns-note .s { color: var(--ink-4); font-size: 12px; line-height: 1.45; }
+.ns-notes { border-top: 1px solid var(--border); margin-top: 12px; padding-top: 10px; }
+
+/* Fristen-rail link rows: whole row clickable with a Zum-Vorgang affordance. */
+.frist-rail-link {
+  display: block; border-radius: var(--r-sm); margin: -4px -6px; padding: 4px 6px;
+  transition: background .12s ease;
+}
+.frist-rail-link:hover { background: rgba(0,0,0,.04); }
+.frist-rail-link .tm-row-cta { margin-top: 4px; font-size: 12px; }
+.dark .frist-rail-link:hover { background: rgba(255,255,255,.06); }
+
 .ns-card .heading { display: flex; align-items: center; justify-content: space-between; }
 .ns-card .t { font-weight: 600; }
 .ns-info { display: flex; flex-direction: column; gap: 10px; margin: 14px 0 18px; color: var(--ink-2); font-size: 13.5px; }
@@ -908,8 +948,37 @@ button { font: inherit; cursor: pointer; }
 .ns-info .link { color: var(--brand-600); font-weight: 500; }
 
 .prep-card { background: var(--surface-soft); border: 1px solid var(--border); border-radius: var(--r-md); padding: 18px; margin-top: 12px; }
+.prep-card h3 { margin: 0 0 14px; font-size: 14px; font-weight: 600; }
 .prep-card h4 { margin: 0 0 14px; font-size: 14px; font-weight: 600; }
 .prep-row { display: grid; grid-template-columns: 24px 1fr; gap: 12px; padding: 8px 0; align-items: start; }
+
+/* Responsive: collapse the 3-column Termine layout below the desktop breakpoint.
+   Two columns on tablet (calendar+filter span full width), single column on
+   phone — no horizontal overflow. Desktop look (>=1024px) unchanged. */
+@media (max-width: 1023px) {
+  .tm-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .tm-layout > :first-child {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 720px) {
+  .tm-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tm-layout > :first-child {
+    grid-column: auto;
+  }
+  .tm-list-item {
+    grid-template-columns: 40px minmax(0, 1fr);
+    grid-auto-rows: min-content;
+  }
+  .tm-list-item > :nth-child(n + 3) {
+    grid-column: 2;
+    justify-self: start;
+  }
+}
 .prep-row .icon { color: var(--ink-3); margin-top: 2px; }
 .prep-row .t { font-weight: 600; font-size: 13.5px; }
 .prep-row .s { color: var(--ink-3); font-size: 12.5px; line-height: 1.45; }
@@ -947,7 +1016,7 @@ button { font: inherit; cursor: pointer; }
   display: flex; align-items: center; justify-content: center;
   background: var(--green-600); color: #fff; font-weight: 700; font-size: 13px;
 }
-.pr-step.current .dot { background: var(--brand-600); }
+.pr-step.current .dot { background: var(--brand-fill); }
 .pr-step.pending .dot { background: var(--surface); border: 1.5px solid var(--border-strong); color: var(--ink-4); }
 .pr-step .t { font-weight: 600; }
 .pr-step.current .t { color: var(--brand-700); }
@@ -1100,7 +1169,7 @@ button { font: inherit; cursor: pointer; }
   box-shadow: 0 1px 2px rgba(0,0,0,0.15);
   transition: left .2s ease;
 }
-.ew-item .toggle.on { background: var(--brand-600); }
+.ew-item .toggle.on { background: var(--brand-fill); }
 .ew-item .toggle.on::after { left: 18px; }
 .ew-item .state { font-size: 13px; font-weight: 500; text-align: right; color: var(--ink-3); }
 .ew-item .state.on { color: var(--brand-700); }
@@ -1152,7 +1221,7 @@ button { font: inherit; cursor: pointer; }
 .msg .av {
   width: 36px; height: 36px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  background: var(--brand-600); color: #fff; flex: none;
+  background: var(--brand-fill); color: #fff; flex: none;
 }
 .msg .av svg { width: 16px; height: 16px; }
 .msg .bubble {
@@ -1178,7 +1247,7 @@ button { font: inherit; cursor: pointer; }
 .composer input { flex: 1; border: 0; outline: none; padding: 10px; font: inherit; background: transparent; }
 .composer .send {
   width: 38px; height: 38px; border-radius: 8px;
-  border: 0; background: var(--brand-600); color: #fff;
+  border: 0; background: var(--brand-fill); color: #fff;
   display: flex; align-items: center; justify-content: center;
 }
 
@@ -1299,7 +1368,7 @@ button { font: inherit; cursor: pointer; }
   display: flex; flex-direction: column; align-items: center; gap: 8px;
   text-align: center;
 }
-.flow-auto .icon-square { width: 56px; height: 56px; border-radius: 50%; background: var(--brand-600); }
+.flow-auto .icon-square { width: 56px; height: 56px; border-radius: 50%; background: var(--brand-fill); }
 .flow-auto .icon-square svg { width: 28px; height: 28px; }
 .flow-auto .name { font-weight: 700; color: var(--brand-700); font-size: 14px; }
 .flow-auto .desc { color: var(--ink-3); font-size: 11.5px; line-height: 1.45; max-width: 130px; }
@@ -1428,7 +1497,7 @@ button { font: inherit; cursor: pointer; }
 .step-list .step { display: grid; grid-template-columns: 40px 1fr; gap: 14px; position: relative; }
 .step-list .step .n {
   width: 32px; height: 32px; border-radius: 50%;
-  background: var(--brand-600); color: #fff;
+  background: var(--brand-fill); color: #fff;
   display: flex; align-items: center; justify-content: center;
   font-weight: 700; font-size: 14px; z-index: 1;
 }
@@ -1600,7 +1669,7 @@ button { font: inherit; cursor: pointer; }
 .katalog-card .kc-behoerden .kc-bh-label { font-weight:600; color: var(--ink-2); }
 
 /* neu dot (§C1 ripple) */
-.nav-neu-dot { display:inline-block; width:7px; height:7px; border-radius:999px; background: var(--brand-600); margin-left:6px; vertical-align:middle; }
+.nav-neu-dot { display:inline-block; width:7px; height:7px; border-radius:999px; background: var(--brand-fill); margin-left:6px; vertical-align:middle; }
 
 /* Gehört-zu chip (§A5) */
 .gehoert-zu-chip { display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; padding:3px 9px; border-radius:999px; background: var(--brand-50); color: var(--brand-700); text-decoration:none; }

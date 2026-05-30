@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 
 import { Button } from '@/components/ui/button';
 import { useStripBaseUiFocusGuardAriaHidden } from '@/components/ui/use-strip-base-ui-focus-guard-aria-hidden';
+import { useInertOutsideModal } from '@/components/ui/use-inert-outside-modal';
 import { cn } from '@/lib/utils';
 
 interface SaveConfirmDialogProps {
@@ -36,6 +37,7 @@ export function SaveConfirmDialog({
   const tModal = useTranslations('stammdaten.kontakt.modal.save_confirm');
   const tNotif = useTranslations('stammdaten.kontakt.notification');
   useStripBaseUiFocusGuardAriaHidden(open);
+  useInertOutsideModal(open);
 
   const titleId = 'kontakt-save-confirm-title';
   const bodyId = 'kontakt-save-confirm-body';

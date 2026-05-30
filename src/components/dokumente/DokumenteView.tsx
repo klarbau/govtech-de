@@ -19,7 +19,6 @@ import {
   IdCard,
   Landmark,
   Mail,
-  MoreVertical,
   Search,
   ShieldCheck,
   SquareArrowRight,
@@ -42,7 +41,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { api } from '@/lib/mock-backend';
-import type { Document, DocumentKategorie, DocumentTyp } from '@/types';
+import type { Behoerde, Document, DocumentKategorie, DocumentTyp } from '@/types';
 
 interface DocAvatar {
   cls: string; // empty string = default brand av (no extra class)
@@ -70,20 +69,20 @@ function avatarFor(typ: DocumentTyp): DocAvatar {
 
 interface KategorieBadge {
   cls: string;
-  label: string;
+  labelKey: DocumentKategorie;
 }
 
 function kategorieBadge(k: DocumentKategorie | undefined): KategorieBadge {
   switch (k) {
     case 'ausweise':
-      return { cls: 'violet', label: 'Ausweise' };
+      return { cls: 'violet', labelKey: 'ausweise' };
     case 'familie':
-      return { cls: 'pink', label: 'Familie' };
+      return { cls: 'pink', labelKey: 'familie' };
     case 'vertraege':
-      return { cls: 'amber', label: 'Verträge' };
+      return { cls: 'amber', labelKey: 'vertraege' };
     case 'bescheide':
     default:
-      return { cls: 'brand', label: 'Bescheide' };
+      return { cls: 'brand', labelKey: 'bescheide' };
   }
 }
 
@@ -110,13 +109,6 @@ function formatDe(iso: string): string {
   return `${day}.${month}.${d.getFullYear()}`;
 }
 
-const STATUS_LABEL: Record<DocStatusKind, string> = {
-  verifiziert: 'Verifiziert',
-  neu: 'Neu',
-  ablauf_bald: 'Ablauf bald',
-  abgelaufen: 'Abgelaufen',
-};
-
 type SortKey = 'dokument' | 'kategorie' | 'status' | 'ausgestellt';
 type SortDir = 'asc' | 'desc';
 
@@ -129,20 +121,18 @@ const STATUS_ORDER: Record<DocStatusKind, number> = {
 
 type TabId = 'alle' | DocumentKategorie;
 
-const TABS: Array<{ id: TabId; label: string }> = [
-  { id: 'alle', label: 'Alle' },
-  { id: 'ausweise', label: 'Ausweise' },
-  { id: 'bescheide', label: 'Bescheide' },
-  { id: 'familie', label: 'Familie' },
-  { id: 'vertraege', label: 'Verträge' },
-];
+const TAB_IDS: TabId[] = ['alle', 'ausweise', 'bescheide', 'familie', 'vertraege'];
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50] as const;
 
 export function DokumenteView({ nowIso }: { nowIso: string }) {
+  const t = useTranslations('dokumente');
   const tEudi = useTranslations('dokumente.eudi');
   const tShared = useTranslations('shared');
   const [docs, setDocs] = React.useState<Document[]>([]);
+  const [behoerdenById, setBehoerdenById] = React.useState<
+    Record<string, Behoerde>
+  >({});
   const [search, setSearch] = React.useState('');
   const [activeTab, setActiveTab] = React.useState<TabId>('alle');
   const [page, setPage] = React.useState(1);
@@ -159,8 +149,15 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
     let cancelled = false;
     void (async () => {
       try {
-        const data = await api.getDocuments();
-        if (!cancelled) setDocs(data);
+        const [data, behoerden] = await Promise.all([
+          api.getDocuments(),
+          api.getBehoerden(),
+        ]);
+        if (cancelled) return;
+        setDocs(data);
+        setBehoerdenById(
+          Object.fromEntries(behoerden.map((b) => [b.id, b])),
+        );
       } catch {
         if (!cancelled) setDocs([]);
       }
@@ -216,8 +213,8 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
           cmp = a.titel.localeCompare(b.titel, 'de');
           break;
         case 'kategorie':
-          cmp = kategorieBadge(a.kategorie).label.localeCompare(
-            kategorieBadge(b.kategorie).label,
+          cmp = t(`kategorie.${kategorieBadge(a.kategorie).labelKey}`).localeCompare(
+            t(`kategorie.${kategorieBadge(b.kategorie).labelKey}`),
             'de',
           );
           break;
@@ -233,7 +230,7 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
       return cmp * dir;
     });
     return sorted;
-  }, [docs, search, activeTab, sortKey, sortDir, now]);
+  }, [docs, search, activeTab, sortKey, sortDir, now, t]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const safePage = Math.min(page, totalPages);
@@ -254,16 +251,21 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
     sortKey === key ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none';
 
   function handleDownloadDoc(doc: Document) {
+    const behoerdeName =
+      behoerdenById[doc.ausstellende_behoerde_id]?.name_de ??
+      doc.ausstellende_behoerde_id;
     const lines = [
-      '[MOCK] Dieses Dokument ist Teil einer Demo. Keine echte Behörden-Urkunde.',
+      t('download.mock_header'),
       '',
-      `Dokument:      ${doc.titel}`,
-      `Typ:           ${doc.typ}`,
-      doc.dokument_nr ? `Dokumentnummer: ${doc.dokument_nr}` : null,
-      `Ausstellende Behörde: ${doc.ausstellende_behoerde_id}`,
-      `Ausgestellt am: ${formatDe(doc.ausgestellt_am)}`,
-      doc.gueltig_bis ? `Gültig bis:     ${formatDe(doc.gueltig_bis)}` : null,
-      `Watermark:      ${doc.watermark}`,
+      `${t('download.dokument')} ${doc.titel}`,
+      `${t('download.typ')} ${doc.typ}`,
+      doc.dokument_nr ? `${t('download.nr')} ${doc.dokument_nr}` : null,
+      `${t('download.aussteller')} ${behoerdeName}`,
+      `${t('download.ausgestellt')} ${formatDe(doc.ausgestellt_am)}`,
+      doc.gueltig_bis
+        ? `${t('download.gueltig_bis')} ${formatDe(doc.gueltig_bis)}`
+        : null,
+      `${t('download.watermark')} ${doc.watermark}`,
     ].filter((l): l is string => l !== null);
     const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -272,8 +274,8 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
     a.download = `MOCK-${doc.id}.txt`;
     a.click();
     URL.revokeObjectURL(url);
-    toast.success('[MOCK] Download gestartet', {
-      description: `${doc.titel} wurde als Demo-Datei heruntergeladen.`,
+    toast.success(t('download.toast_title'), {
+      description: t('download.toast_description', { titel: doc.titel }),
     });
   }
 
@@ -288,10 +290,8 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
   return (
     <>
       <div className="gt-page-head">
-        <h1>Dokumente</h1>
-        <div className="sub">
-          Ihr persönlicher Dokumentenordner mit Nachweisen und Bescheiden.
-        </div>
+        <h1>{t('title')}</h1>
+        <div className="sub">{t('subtitle')}</div>
       </div>
 
       <div className="dk-layout">
@@ -301,29 +301,29 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
               <Search />
               <input
                 className="input"
-                placeholder="Suche nach Dokumenten"
+                placeholder={t('search.placeholder')}
                 value={search}
                 onChange={(e) => {
                   setSearch(e.target.value);
                   setPage(1);
                 }}
-                aria-label="Suche nach Dokumenten"
+                aria-label={t('search.aria_label')}
               />
             </div>
             <div className="tab-chips">
-              {TABS.map((t) => {
-                const isActive = t.id === activeTab;
+              {TAB_IDS.map((tabId) => {
+                const isActive = tabId === activeTab;
                 return (
                   <button
-                    key={t.id}
+                    key={tabId}
                     type="button"
                     className={`chip${isActive ? ' active' : ''}`}
                     onClick={() => {
-                      setActiveTab(t.id);
+                      setActiveTab(tabId);
                       setPage(1);
                     }}
                   >
-                    {t.label} <span className="count">{counts[t.id]}</span>
+                    {t(`tab.${tabId}`)} <span className="count">{counts[tabId]}</span>
                   </button>
                 );
               })}
@@ -336,7 +336,7 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
                 <tr>
                   <th aria-sort={ariaSortFor('dokument')}>
                     <SortHeader
-                      label="Dokument"
+                      label={t('col.dokument')}
                       active={sortKey === 'dokument'}
                       dir={sortDir}
                       onClick={() => toggleSort('dokument')}
@@ -344,7 +344,7 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
                   </th>
                   <th aria-sort={ariaSortFor('kategorie')}>
                     <SortHeader
-                      label="Kategorie"
+                      label={t('col.kategorie')}
                       active={sortKey === 'kategorie'}
                       dir={sortDir}
                       onClick={() => toggleSort('kategorie')}
@@ -352,7 +352,7 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
                   </th>
                   <th aria-sort={ariaSortFor('status')}>
                     <SortHeader
-                      label="Status"
+                      label={t('col.status')}
                       active={sortKey === 'status'}
                       dir={sortDir}
                       onClick={() => toggleSort('status')}
@@ -360,20 +360,20 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
                   </th>
                   <th aria-sort={ariaSortFor('ausgestellt')}>
                     <SortHeader
-                      label="Ausgestellt / Gültig bis"
+                      label={t('col.daten')}
                       active={sortKey === 'ausgestellt'}
                       dir={sortDir}
                       onClick={() => toggleSort('ausgestellt')}
                     />
                   </th>
-                  <th>Aktionen</th>
+                  <th>{t('col.aktionen')}</th>
                 </tr>
               </thead>
               <tbody>
                 {pageItems.length === 0 ? (
                   <tr>
                     <td colSpan={5} style={{ color: 'var(--ink-3)', textAlign: 'center' }}>
-                      Keine Dokumente gefunden.
+                      {t('empty.filter_title')}
                     </td>
                   </tr>
                 ) : (
@@ -413,13 +413,15 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
                           </div>
                         </td>
                         <td>
-                          <span className={`badge ${kat.cls}`}>{kat.label}</span>
+                          <span className={`badge ${kat.cls}`}>
+                            {t(`kategorie.${kat.labelKey}`)}
+                          </span>
                         </td>
                         <td>
                           {status === 'verifiziert' ? (
                             <span className="badge green">
                               <ShieldCheck style={{ width: 12, height: 12 }} />
-                              Verifiziert
+                              {t('status.verifiziert')}
                             </span>
                           ) : status === 'neu' ? (
                             <span className="badge brand">
@@ -427,40 +429,48 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
                                 className="dot"
                                 style={{ background: 'var(--brand-500)' }}
                               />
-                              Neu
+                              {t('status.neu')}
                             </span>
                           ) : status === 'ablauf_bald' ? (
                             <span className="badge amber">
                               <Clock style={{ width: 12, height: 12 }} />
-                              Ablauf bald
+                              {t('status.ablauf_bald')}
                             </span>
                           ) : (
                             <span className="badge red">
                               <Clock style={{ width: 12, height: 12 }} />
-                              Abgelaufen
+                              {t('status.abgelaufen')}
                             </span>
                           )}
                         </td>
                         <td>
-                          <div>Ausgestellt &nbsp;&nbsp; {formatDe(doc.ausgestellt_am)}</div>
+                          <div>
+                            {t('daten.ausgestellt_label')} &nbsp;&nbsp;{' '}
+                            {formatDe(doc.ausgestellt_am)}
+                          </div>
                           {doc.gueltig_bis ? (
-                            <div>Gültig bis &nbsp;&nbsp;&nbsp;&nbsp; {formatDe(doc.gueltig_bis)}</div>
+                            <div>
+                              {t('daten.gueltig_bis_label')} &nbsp;&nbsp;&nbsp;&nbsp;{' '}
+                              {formatDe(doc.gueltig_bis)}
+                            </div>
                           ) : null}
                         </td>
                         <td>
                           <div className="dk-actions">
                             <button
                               type="button"
-                              aria-label={`Ansehen: ${doc.titel}`}
-                              title="Ansehen"
+                              aria-label={t('action.ansehen', { name: doc.titel })}
+                              title={t('action.ansehen_title')}
                               onClick={() => setPreviewDoc(doc)}
                             >
                               <Eye />
                             </button>
                             <button
                               type="button"
-                              aria-label={`Herunterladen: ${doc.titel}`}
-                              title="Herunterladen"
+                              aria-label={t('action.herunterladen', {
+                                name: doc.titel,
+                              })}
+                              title={t('action.herunterladen_title')}
                               onClick={() => handleDownloadDoc(doc)}
                             >
                               <Download />
@@ -474,17 +484,7 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
                               >
                                 <Wallet />
                               </button>
-                            ) : (
-                              <button
-                                type="button"
-                                aria-label="Mehr"
-                                title="Weitere Aktionen (in Planung)"
-                                disabled
-                                aria-disabled="true"
-                              >
-                                <MoreVertical />
-                              </button>
-                            )}
+                            ) : null}
                           </div>
                         </td>
                       </tr>
@@ -497,18 +497,19 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
             <div className="pagination">
               <div className="muted text-sm">
                 {filtered.length === 0
-                  ? '0 Dokumente'
-                  : `${pageStart + 1}–${Math.min(
-                      pageStart + pageSize,
-                      filtered.length,
-                    )} von ${filtered.length} Dokumenten`}
+                  ? t('pagination.empty')
+                  : t('pagination.range', {
+                      von: pageStart + 1,
+                      bis: Math.min(pageStart + pageSize, filtered.length),
+                      total: filtered.length,
+                    })}
               </div>
               <div className="pgs">
                 <button
                   type="button"
                   className="pg"
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  aria-label="Vorherige Seite"
+                  aria-label={t('pagination.prev')}
                 >
                   <ChevronLeft style={{ width: 14, height: 14 }} />
                 </button>
@@ -527,14 +528,14 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
                   type="button"
                   className="pg"
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                  aria-label="Nächste Seite"
+                  aria-label={t('pagination.next')}
                 >
                   <ChevronRight style={{ width: 14, height: 14 }} />
                 </button>
               </div>
               <div className="per-page">
                 <label htmlFor="dk-page-size" className="sr-only">
-                  Dokumente pro Seite
+                  {t('pagination.per_page_label')}
                 </label>
                 <select
                   id="dk-page-size"
@@ -555,7 +556,7 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
                 >
                   {PAGE_SIZE_OPTIONS.map((n) => (
                     <option key={n} value={n}>
-                      {n} pro Seite
+                      {t('pagination.per_page_option', { count: n })}
                     </option>
                   ))}
                 </select>
@@ -567,52 +568,51 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
 
         <div className="rail">
           <div className="card">
-            <h4>Schnellzugriff</h4>
+            <h4>{t('schnellzugriff.title')}</h4>
             <QuickAction
               Icon={Upload}
-              title="Dokument hochladen"
-              subtitle="Aus Datei oder Scan hinzufügen"
+              title={t('schnellzugriff.upload')}
+              subtitle={t('schnellzugriff.upload_sub')}
               onClick={() =>
-                toast('[MOCK] Dokument hochladen', {
-                  description:
-                    'In der Demo nicht verfügbar — neue Dokumente entstehen über Vorgänge wie den Umzug.',
+                toast(t('schnellzugriff.upload'), {
+                  description: t('schnellzugriff.upload_toast'),
                 })
               }
             />
             <QuickAction
               Icon={FolderPlus}
-              title="Neuer Ordner"
-              subtitle="Dokumente organisieren"
+              title={t('schnellzugriff.ordner')}
+              subtitle={t('schnellzugriff.ordner_sub')}
               onClick={() =>
-                toast('[MOCK] Neuer Ordner', {
-                  description: 'Ordnerverwaltung ist in dieser Demo in Planung.',
+                toast(t('schnellzugriff.ordner'), {
+                  description: t('schnellzugriff.ordner_toast'),
                 })
               }
             />
             <QuickAction
               Icon={File}
-              title="Vorlagen & Formulare"
-              subtitle="Offizielle Formulare nutzen"
+              title={t('schnellzugriff.vorlagen')}
+              subtitle={t('schnellzugriff.vorlagen_sub')}
               onClick={() =>
-                toast('[MOCK] Vorlagen & Formulare', {
-                  description: 'Die Formular-Bibliothek ist in dieser Demo in Planung.',
+                toast(t('schnellzugriff.vorlagen'), {
+                  description: t('schnellzugriff.vorlagen_toast'),
                 })
               }
             />
             <QuickAction
               Icon={Mail}
-              title="Papierdokument einreichen"
-              subtitle="Per Post an Behörde senden"
+              title={t('schnellzugriff.papier')}
+              subtitle={t('schnellzugriff.papier_sub')}
               onClick={() =>
-                toast('[MOCK] Papierdokument einreichen', {
-                  description: 'Der Postversand an Behörden ist in dieser Demo in Planung.',
+                toast(t('schnellzugriff.papier'), {
+                  description: t('schnellzugriff.papier_toast'),
                 })
               }
             />
           </div>
 
           <div className="card">
-            <h4>Zuletzt hinzugefügt</h4>
+            <h4>{t('zuletzt.title')}</h4>
             {recentlyAdded.map((doc) => {
               const av = avatarFor(doc.typ);
               const recCls =
@@ -646,29 +646,28 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
                 marginTop: 10,
               }}
             >
-              Alle anzeigen <ChevronRight style={{ width: 12, height: 12 }} />
+              {t('zuletzt.show_all')}{' '}
+              <ChevronRight style={{ width: 12, height: 12 }} />
             </Link>
           </div>
 
           <div className="card">
-            <h4>Teilen &amp; verwenden</h4>
+            <h4>{t('teilen.title')}</h4>
             <div className="muted text-sm" style={{ marginBottom: 14 }}>
-              Sie können ausgewählte Dokumente sicher mit Behörden teilen oder
-              als Anlage in Vorgängen verwenden.
+              {t('teilen.hint')}
             </div>
             <button
               type="button"
               className="btn btn-primary"
               style={{ width: '100%' }}
               onClick={() =>
-                toast('[MOCK] Dokument verwenden', {
-                  description:
-                    'Dokumente werden in dieser Demo direkt in einem Vorgang als Anlage ausgewählt.',
+                toast(t('teilen.cta'), {
+                  description: t('teilen.cta_toast'),
                 })
               }
             >
               <SquareArrowRight />
-              Dokument verwenden
+              {t('teilen.cta')}
             </button>
           </div>
         </div>
@@ -685,6 +684,7 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
       <DocumentPreviewDialog
         doc={previewDoc}
         now={now}
+        behoerdenById={behoerdenById}
         onClose={() => setPreviewDoc(null)}
         onDownload={handleDownloadDoc}
       />
@@ -768,14 +768,17 @@ function QuickAction({
 function DocumentPreviewDialog({
   doc,
   now,
+  behoerdenById,
   onClose,
   onDownload,
 }: {
   doc: Document | null;
   now: Date;
+  behoerdenById: Record<string, Behoerde>;
   onClose: () => void;
   onDownload: (doc: Document) => void;
 }) {
+  const t = useTranslations('dokumente');
   const status = doc ? deriveStatus(doc, now) : null;
   return (
     <Dialog
@@ -788,10 +791,7 @@ function DocumentPreviewDialog({
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>{doc.titel}</DialogTitle>
-            <DialogDescription>
-              Vorschau der hinterlegten Dokument-Metadaten. Diese Demo zeigt keine
-              echte Urkunde.
-            </DialogDescription>
+            <DialogDescription>{t('preview.description')}</DialogDescription>
           </DialogHeader>
 
           <div
@@ -823,33 +823,42 @@ function DocumentPreviewDialog({
                 fontSize: 13.5,
               }}
             >
-              <dt style={{ color: 'var(--ink-3)' }}>Kategorie</dt>
-              <dd style={{ margin: 0 }}>{kategorieBadge(doc.kategorie).label}</dd>
+              <dt style={{ color: 'var(--ink-3)' }}>{t('col.kategorie')}</dt>
+              <dd style={{ margin: 0 }}>
+                {t(`kategorie.${kategorieBadge(doc.kategorie).labelKey}`)}
+              </dd>
 
               {doc.dokument_nr ? (
                 <>
-                  <dt style={{ color: 'var(--ink-3)' }}>Dokumentnummer</dt>
+                  <dt style={{ color: 'var(--ink-3)' }}>{t('preview.nr_label')}</dt>
                   <dd style={{ margin: 0 }}>{doc.dokument_nr}</dd>
                 </>
               ) : null}
 
-              <dt style={{ color: 'var(--ink-3)' }}>Ausstellende Behörde</dt>
-              <dd style={{ margin: 0 }}>{doc.ausstellende_behoerde_id}</dd>
+              <dt style={{ color: 'var(--ink-3)' }}>{t('preview.aussteller')}</dt>
+              <dd style={{ margin: 0 }}>
+                {behoerdenById[doc.ausstellende_behoerde_id]?.name_de ??
+                  doc.ausstellende_behoerde_id}
+              </dd>
 
-              <dt style={{ color: 'var(--ink-3)' }}>Ausgestellt am</dt>
+              <dt style={{ color: 'var(--ink-3)' }}>
+                {t('preview.ausgestellt_label')}
+              </dt>
               <dd style={{ margin: 0 }}>{formatDe(doc.ausgestellt_am)}</dd>
 
               {doc.gueltig_bis ? (
                 <>
-                  <dt style={{ color: 'var(--ink-3)' }}>Gültig bis</dt>
+                  <dt style={{ color: 'var(--ink-3)' }}>
+                    {t('preview.gueltig_bis_label')}
+                  </dt>
                   <dd style={{ margin: 0 }}>{formatDe(doc.gueltig_bis)}</dd>
                 </>
               ) : null}
 
               {status ? (
                 <>
-                  <dt style={{ color: 'var(--ink-3)' }}>Status</dt>
-                  <dd style={{ margin: 0 }}>{STATUS_LABEL[status]}</dd>
+                  <dt style={{ color: 'var(--ink-3)' }}>{t('col.status')}</dt>
+                  <dd style={{ margin: 0 }}>{t(`status.${status}`)}</dd>
                 </>
               ) : null}
             </dl>
@@ -862,7 +871,7 @@ function DocumentPreviewDialog({
               onClick={() => onDownload(doc)}
             >
               <Download />
-              Herunterladen
+              {t('action.herunterladen_title')}
             </button>
           </DialogFooter>
         </DialogContent>

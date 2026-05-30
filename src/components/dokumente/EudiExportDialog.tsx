@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 import { AlertTriangle, Download, X } from 'lucide-react';
 
 import { useStripBaseUiFocusGuardAriaHidden } from '@/components/ui/use-strip-base-ui-focus-guard-aria-hidden';
+import { useInertOutsideModal } from '@/components/ui/use-inert-outside-modal';
 import { api } from '@/lib/mock-backend';
 import { cn } from '@/lib/utils';
 import type { Document, EudiExportPreview } from '@/types';
@@ -39,6 +40,7 @@ interface EudiExportDialogProps {
 export function EudiExportDialog({ open, onOpenChange, doc }: EudiExportDialogProps) {
   const t = useTranslations('dokumente.eudi');
   useStripBaseUiFocusGuardAriaHidden(open);
+  useInertOutsideModal(open);
 
   const [preview, setPreview] = React.useState<EudiExportPreview | null>(null);
   const [error, setError] = React.useState(false);
