@@ -21,6 +21,13 @@ import {
   X,
 } from 'lucide-react';
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { api } from '@/lib/mock-backend';
 import type {
   Behoerde,
@@ -134,6 +141,13 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
   const [einwilligungen, setEinwilligungen] = React.useState<DatenschutzEinwilligung[]>([]);
   const [quellen, setQuellen] = React.useState<DatenquellenEintrag[]>([]);
 
+  const [logDialogOpen, setLogDialogOpen] = React.useState(false);
+  const [histDialogOpen, setHistDialogOpen] = React.useState(false);
+  const [fullLog, setFullLog] = React.useState<UebermittlungsLogEntry[] | null>(null);
+  const [exportState, setExportState] = React.useState<'idle' | 'busy' | 'done'>('idle');
+
+  const einwRef = React.useRef<HTMLDivElement | null>(null);
+
   void nowIso;
 
   React.useEffect(() => {
@@ -182,6 +196,98 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
       }
     },
     [personaId],
+  );
+
+  const openLogDialog = React.useCallback(() => {
+    setLogDialogOpen(true);
+    if (fullLog !== null || !personaId) return;
+    void (async () => {
+      try {
+        const log = await api.getUebermittlungsLog(personaId, { limit: 50 });
+        setFullLog(log);
+      } catch {
+        setFullLog([]);
+      }
+    })();
+  }, [fullLog, personaId]);
+
+  const scrollToEinwilligungen = React.useCallback(() => {
+    const node = einwRef.current;
+    if (!node) return;
+    node.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const firstToggle = node.querySelector<HTMLElement>('[role="switch"]');
+    firstToggle?.focus({ preventScroll: true });
+  }, []);
+
+  const handleExport = React.useCallback(() => {
+    if (!personaId) return;
+    setExportState('busy');
+    const summary = {
+      hinweis: '[MOCK] Speculative-Design-Demo — keine echten personenbezogenen Daten.',
+      erstellt_am: new Date().toISOString(),
+      persona_id: personaId,
+      einwilligungen: einwilligungen.map((e) => ({
+        empfaenger: e.empfaenger,
+        erteilt: e.erteilt,
+        rechtsgrundlage: e.rechtsgrundlage,
+        geaendert_am: e.geaendert_am ?? null,
+      })),
+      datenquellen: quellen.map((q) => ({
+        stelle: behoerdenById[q.behoerde_id]?.name_de ?? q.behoerde_id,
+        zugriffsart: q.zugriffsart,
+        rechtsgrundlage: q.rechtsgrundlage,
+        aktualitaet: q.aktualitaet,
+      })),
+      letzte_aktivitaeten: activities.map((a) => ({
+        zeitpunkt: a.timestamp,
+        kategorie: a.kategorie,
+        zweck: a.zweck_i18n_key,
+        rechtsgrundlage: a.rechtsgrundlage,
+      })),
+    };
+    const blob = new Blob([JSON.stringify(summary, null, 2)], {
+      type: 'application/json',
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `MOCK-datenexport-${personaId}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    setExportState('done');
+    window.setTimeout(() => setExportState('idle'), 2500);
+  }, [activities, behoerdenById, einwilligungen, personaId, quellen]);
+
+  const consentHistory = (fullLog ?? activities).filter(
+    (e) => e.field_id === 'datenschutz_einwilligung',
+  );
+
+  const renderLogRow = React.useCallback(
+    (entry: UebermittlungsLogEntry) => {
+      const senderName = entry.absender_behoerde_id
+        ? behoerdenById[entry.absender_behoerde_id]?.name_de ?? entry.absender_behoerde_id
+        : undefined;
+      const badge = activityBadgeFor(entry.kategorie);
+      const title = t.has(entry.zweck_i18n_key)
+        ? t(entry.zweck_i18n_key)
+        : entry.zweck_i18n_key.split('.').pop() ?? 'Aktivität';
+      return (
+        <div key={entry.id} className="item">
+          <span className="icon-circle">
+            <Shield />
+          </span>
+          <div>
+            <div className="t">{title}</div>
+            <div className="s">{senderName ?? entry.rechtsgrundlage}</div>
+          </div>
+          <div className="meta">
+            <div className="when">{formatActivityWhen(entry.timestamp)}</div>
+            <span className={`badge ${badge.cls}`}>{badge.label}</span>
+          </div>
+        </div>
+      );
+    },
+    [behoerdenById, t],
   );
 
   const sortedEinw = EMPFAENGER_ORDER.map((emp) =>
@@ -270,9 +376,10 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
               </div>
             </div>
           ))}
-          <a
-            href="#"
+          <button
+            type="button"
             className="all-link"
+            onClick={openLogDialog}
             style={{
               color: 'var(--brand-600)',
               fontWeight: 500,
@@ -281,14 +388,18 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
               alignItems: 'center',
               gap: 4,
               marginTop: 14,
+              background: 'none',
+              border: 'none',
+              padding: 0,
+              cursor: 'pointer',
             }}
           >
             Alle Aktivitäten anzeigen{' '}
             <ChevronRight style={{ width: 12, height: 12 }} />
-          </a>
+          </button>
         </div>
 
-        <div className="ds-card">
+        <div className="ds-card" ref={einwRef}>
           <h3>
             <Shield />
             Einwilligungen
@@ -310,13 +421,21 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
                     <div className="s">{meta.sub}</div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <a
-                      href="#"
+                    <button
+                      type="button"
                       className="state on"
-                      style={{ color: 'var(--brand-600)' }}
+                      onClick={() => setHistDialogOpen(true)}
+                      style={{
+                        color: 'var(--brand-600)',
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer',
+                        font: 'inherit',
+                      }}
                     >
                       Verwalten
-                    </a>
+                    </button>
                   </div>
                   <ChevronRight className="chev" />
                 </div>
@@ -355,8 +474,9 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
               </div>
             );
           })}
-          <a
-            href="#"
+          <button
+            type="button"
+            onClick={() => setHistDialogOpen(true)}
             style={{
               color: 'var(--brand-600)',
               fontWeight: 500,
@@ -365,11 +485,15 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
               alignItems: 'center',
               gap: 4,
               marginTop: 12,
+              background: 'none',
+              border: 'none',
+              padding: 0,
+              cursor: 'pointer',
             }}
           >
             Einwilligungshistorie anzeigen{' '}
             <ChevronRight style={{ width: 12, height: 12 }} />
-          </a>
+          </button>
         </div>
       </div>
 
@@ -383,15 +507,25 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
             Sie entscheiden, wer Ihre Daten wie verwenden darf.
           </div>
           <div className="actions">
-            <button type="button" className="btn btn-secondary">
+            <button type="button" className="btn btn-secondary" onClick={openLogDialog}>
               <FileText />
               Zugriffsprotokoll
             </button>
-            <button type="button" className="btn btn-secondary">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={handleExport}
+              disabled={!personaId || exportState === 'busy'}
+              aria-disabled={!personaId || exportState === 'busy'}
+            >
               <Download />
-              Datenexport
+              {exportState === 'done' ? 'Export bereit' : 'Datenexport'}
             </button>
-            <button type="button" className="btn btn-secondary">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={scrollToEinwilligungen}
+            >
               <Settings />
               Einstellungen
             </button>
@@ -446,23 +580,78 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
               })}
             </tbody>
           </table>
-          <a
-            href="#"
+          <p
             style={{
-              color: 'var(--brand-600)',
-              fontWeight: 500,
-              fontSize: 13.5,
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 4,
+              color: 'var(--ink-3)',
+              fontWeight: 400,
+              fontSize: 13,
               marginTop: 12,
             }}
           >
-            Alle Datenquellen anzeigen{' '}
-            <ChevronRight style={{ width: 12, height: 12 }} />
-          </a>
+            {quellen.length} von {quellen.length} Datenquellen angezeigt.
+          </p>
         </div>
       </div>
+
+      <Dialog open={logDialogOpen} onOpenChange={setLogDialogOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Zugriffsprotokoll</DialogTitle>
+            <DialogDescription>
+              Vollständiges Protokoll der Datenzugriffe und -übermittlungen.
+            </DialogDescription>
+          </DialogHeader>
+          <div
+            className="ds-card act"
+            style={{
+              border: 'none',
+              padding: 0,
+              boxShadow: 'none',
+              maxHeight: '60vh',
+              overflowY: 'auto',
+            }}
+          >
+            {fullLog === null ? (
+              <p style={{ color: 'var(--ink-3)', fontSize: 13.5 }}>Wird geladen …</p>
+            ) : fullLog.length === 0 ? (
+              <p style={{ color: 'var(--ink-3)', fontSize: 13.5 }}>
+                Keine Aktivitäten vorhanden.
+              </p>
+            ) : (
+              fullLog.map(renderLogRow)
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={histDialogOpen} onOpenChange={setHistDialogOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Einwilligungshistorie</DialogTitle>
+            <DialogDescription>
+              Änderungen an Ihren erteilten und widerrufenen Einwilligungen.
+            </DialogDescription>
+          </DialogHeader>
+          <div
+            className="ds-card act"
+            style={{
+              border: 'none',
+              padding: 0,
+              boxShadow: 'none',
+              maxHeight: '60vh',
+              overflowY: 'auto',
+            }}
+          >
+            {consentHistory.length === 0 ? (
+              <p style={{ color: 'var(--ink-3)', fontSize: 13.5 }}>
+                Noch keine Einwilligungsänderungen erfasst.
+              </p>
+            ) : (
+              consentHistory.map(renderLogRow)
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

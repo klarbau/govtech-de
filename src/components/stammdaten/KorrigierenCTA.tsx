@@ -1,9 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { ArrowUpRight } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { wrapNormZitate } from '@/components/posteingang/wrapNormZitate';
@@ -41,7 +39,6 @@ export function KorrigierenCTA({
   fieldId,
   className,
 }: KorrigierenCTAProps) {
-  const router = useRouter();
   const t = useTranslations();
   const tCta = useTranslations('stammdaten.cta');
 
@@ -71,6 +68,11 @@ export function KorrigierenCTA({
     );
   }
 
+  // Latent-Route-Guard: Der Wizard-Hand-off zeigte auf `/vorgaenge/neu/<slug>`
+  // — eine Route, die in dieser Demo nicht existiert (404). Statt eines
+  // navigierenden Buttons rendern wir den Korrekturweg-Pointer + einen
+  // honestly-inerten Button (disabled, kein irreführendes Icon), bis ein
+  // echter Wizard existiert. i18n-followup: eigener „demnächst"-Hinweis-Key.
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
       <p className="text-xs leading-relaxed text-muted-foreground">
@@ -85,16 +87,11 @@ export function KorrigierenCTA({
         size="sm"
         className="self-start"
         data-testid={`korrigieren-cta-${fieldId}`}
-        onClick={() =>
-          router.push(
-            `/vorgaenge/neu/${wizardSlug}?from=stammdaten&field=${encodeURIComponent(
-              fieldId,
-            )}`,
-          )
-        }
+        disabled
+        aria-disabled="true"
+        title="Korrektur-Wizard folgt (Demo)"
       >
-        {tCta('korrigieren')}
-        <ArrowUpRight className="size-3.5" aria-hidden="true" />
+        {tCta('korrigieren')} (demnächst)
       </Button>
     </div>
   );

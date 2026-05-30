@@ -23,6 +23,15 @@ import {
 } from 'lucide-react';
 
 import { api } from '@/lib/mock-backend';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import type {
   Behoerde,
   Persona,
@@ -49,8 +58,37 @@ interface Loaded {
  * `timeline-card`, `sd-foot`); data wired via `api.getProfile()` +
  * `api.getStammdaten()` + `api.getUebermittlungsLog()` + `api.getWalletAttestations()`.
  */
+type AddFlow = { title: string; body: string };
+
+/**
+ * Shared Behörden-Hinweis: in this 2027-vision prototype, Stammdaten are a
+ * read-only single source of truth. Changes don't happen here — they flow
+ * through the responsible Behörde and sync back automatically.
+ */
+const BEHOERDEN_HINWEIS =
+  'In dieser Demo sind Stammdaten ein read-only Single-Source-of-Truth: Änderungen nehmen Sie nicht hier vor, sondern bei der zuständigen Behörde – die aktualisierten Daten fließen anschließend automatisch in Ihr Profil zurück.';
+
 export function StammdatenView(_props: StammdatenViewProps) {
   const [data, setData] = React.useState<Loaded | null>(null);
+  const [addFlow, setAddFlow] = React.useState<AddFlow | null>(null);
+  const [editFlow, setEditFlow] = React.useState<AddFlow | null>(null);
+  const [protokollOpen, setProtokollOpen] = React.useState(false);
+  const [fullLog, setFullLog] = React.useState<UebermittlungsLogEntry[] | null>(null);
+
+  const personaId = data?.persona.id ?? null;
+
+  const openProtokoll = React.useCallback(() => {
+    setProtokollOpen(true);
+    if (fullLog !== null || !personaId) return;
+    void (async () => {
+      try {
+        const log = await api.getUebermittlungsLog(personaId, { limit: 50 });
+        setFullLog(log);
+      } catch {
+        setFullLog([]);
+      }
+    })();
+  }, [fullLog, personaId]);
 
   React.useEffect(() => {
     let cancelled = false;
@@ -149,7 +187,16 @@ export function StammdatenView(_props: StammdatenViewProps) {
               <div className="title">
                 <User />Persönliches Profil
               </div>
-              <button type="button" className="btn btn-secondary btn-sm">
+              <button
+                type="button"
+                className="btn btn-secondary btn-sm"
+                onClick={() =>
+                  setEditFlow({
+                    title: 'Persönliches Profil ändern',
+                    body: `Name, Geburtsdatum, Staatsangehörigkeit und Familienstand werden von der zuständigen Behörde (Standesamt bzw. Bürgeramt) geführt. ${BEHOERDEN_HINWEIS}`,
+                  })
+                }
+              >
                 <Pencil />Bearbeiten
               </button>
             </div>
@@ -176,7 +223,16 @@ export function StammdatenView(_props: StammdatenViewProps) {
               <div className="title">
                 <User />Kontakt
               </div>
-              <button type="button" className="btn btn-secondary btn-sm">
+              <button
+                type="button"
+                className="btn btn-secondary btn-sm"
+                onClick={() =>
+                  setEditFlow({
+                    title: 'Kontaktdaten ändern',
+                    body: `E-Mail und Telefonnummer werden zentral über Ihr DeutschlandID-Konto verwaltet und nach jeder Änderung neu verifiziert. ${BEHOERDEN_HINWEIS}`,
+                  })
+                }
+              >
                 <Pencil />Bearbeiten
               </button>
             </div>
@@ -226,7 +282,16 @@ export function StammdatenView(_props: StammdatenViewProps) {
               <div className="title">
                 <Users />Familie &amp; Bezugspersonen
               </div>
-              <button type="button" className="btn btn-secondary btn-sm">
+              <button
+                type="button"
+                className="btn btn-secondary btn-sm"
+                onClick={() =>
+                  setEditFlow({
+                    title: 'Familie & Bezugspersonen ändern',
+                    body: `Familienstand und Bezugspersonen ergeben sich aus den beim Standesamt geführten Personenstandsdaten. ${BEHOERDEN_HINWEIS}`,
+                  })
+                }
+              >
                 <Pencil />Bearbeiten
               </button>
             </div>
@@ -265,9 +330,19 @@ export function StammdatenView(_props: StammdatenViewProps) {
                 </div>
               ))
             )}
-            <a className="add-link" href="#">
+            <button
+              type="button"
+              className="add-link"
+              style={{ background: 'transparent', border: 0, padding: 0, cursor: 'pointer' }}
+              onClick={() =>
+                setAddFlow({
+                  title: 'Weitere Person hinzufügen',
+                  body: 'Das Hinterlegen weiterer Bezugspersonen (Kinder, betreute Personen) ist eine 2027-Vision dieser Demo. In der echten App würde hier ein geführter Dialog mit DeutschlandID-Verknüpfung und Nachweis-Upload starten.',
+                })
+              }
+            >
               <PlusCircle />Weitere Person hinzufügen
-            </a>
+            </button>
           </div>
         </div>
 
@@ -277,7 +352,16 @@ export function StammdatenView(_props: StammdatenViewProps) {
               <div className="title">
                 <Home />Anschrift
               </div>
-              <button type="button" className="btn btn-secondary btn-sm">
+              <button
+                type="button"
+                className="btn btn-secondary btn-sm"
+                onClick={() =>
+                  setEditFlow({
+                    title: 'Anschrift ändern',
+                    body: `Ihre Meldeanschrift wird vom Bürgeramt im Melderegister geführt. Eine Adressänderung erfolgt über die Ummeldung – in dieser Demo als Umzug-Autopilot abgebildet. ${BEHOERDEN_HINWEIS}`,
+                  })
+                }
+              >
                 <Pencil />Ändern
               </button>
             </div>
@@ -320,7 +404,16 @@ export function StammdatenView(_props: StammdatenViewProps) {
               <div className="title">
                 <IdCard />Identitätsdokumente
               </div>
-              <button type="button" className="btn btn-secondary btn-sm">
+              <button
+                type="button"
+                className="btn btn-secondary btn-sm"
+                onClick={() =>
+                  setEditFlow({
+                    title: 'Identitätsdokumente verwalten',
+                    body: `Reisepass, Personalausweis und Aufenthaltstitel werden von der ausstellenden Behörde geführt. Neuausstellung oder Verlängerung erfolgt dort. ${BEHOERDEN_HINWEIS}`,
+                  })
+                }
+              >
                 <Settings />Verwalten
               </button>
             </div>
@@ -382,7 +475,16 @@ export function StammdatenView(_props: StammdatenViewProps) {
               <div className="title">
                 <Shield />Versicherung &amp; Vorsorge
               </div>
-              <button type="button" className="btn btn-secondary btn-sm">
+              <button
+                type="button"
+                className="btn btn-secondary btn-sm"
+                onClick={() =>
+                  setEditFlow({
+                    title: 'Versicherung & Vorsorge ändern',
+                    body: `Krankenkasse und Rentenversicherung werden von den jeweiligen Trägern geführt. Ein Kassenwechsel oder eine Statusänderung wird dort beantragt. ${BEHOERDEN_HINWEIS}`,
+                  })
+                }
+              >
                 <Pencil />Bearbeiten
               </button>
             </div>
@@ -420,9 +522,19 @@ export function StammdatenView(_props: StammdatenViewProps) {
                 <ChevronRight style={{ color: 'var(--ink-4)', width: '14px', height: '14px' }} />
               </div>
             )}
-            <a className="add-link" href="#">
+            <button
+              type="button"
+              className="add-link"
+              style={{ background: 'transparent', border: 0, padding: 0, cursor: 'pointer' }}
+              onClick={() =>
+                setAddFlow({
+                  title: 'Weitere Vorsorge hinzufügen',
+                  body: 'Das Verknüpfen weiterer Vorsorge- und Versicherungsverhältnisse (private Altersvorsorge, Zusatzversicherungen) ist eine 2027-Vision dieser Demo. In der echten App würde hier ein Anbieter-Abgleich über die EUDI-Wallet starten.',
+                })
+              }
+            >
               <PlusCircle />Weitere Vorsorge hinzufügen
-            </a>
+            </button>
           </div>
         </div>
 
@@ -466,6 +578,7 @@ export function StammdatenView(_props: StammdatenViewProps) {
             type="button"
             className="btn btn-secondary"
             style={{ marginTop: '16px', width: '100%' }}
+            onClick={openProtokoll}
           >
             <FileText />Vollständiges Protokoll anzeigen
           </button>
@@ -484,10 +597,121 @@ export function StammdatenView(_props: StammdatenViewProps) {
             <Link href="/datenschutz">Mehr zu Ihren Rechten und zur Datenverwendung.</Link>
           </div>
         </div>
-        <button type="button" className="btn btn-secondary">
+        <Link href="/datenschutz" className="btn btn-secondary">
           <Lock />Datennutzung verwalten
-        </button>
+        </Link>
       </div>
+
+      <Dialog
+        open={addFlow !== null}
+        onOpenChange={(open) => {
+          if (!open) setAddFlow(null);
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{addFlow?.title ?? ''}</DialogTitle>
+            <DialogDescription>{addFlow?.body ?? ''}</DialogDescription>
+          </DialogHeader>
+          <p className="text-xs text-muted-foreground">[MOCK] — Demo-Funktion, demnächst verfügbar.</p>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setAddFlow(null)}
+            >
+              Schließen
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={editFlow !== null}
+        onOpenChange={(open) => {
+          if (!open) setEditFlow(null);
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{editFlow?.title ?? ''}</DialogTitle>
+            <DialogDescription>{editFlow?.body ?? ''}</DialogDescription>
+          </DialogHeader>
+          <p className="text-xs text-muted-foreground">
+            [MOCK] — Geführte Behörden-Änderung in Vorbereitung.
+          </p>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setEditFlow(null)}
+            >
+              Schließen
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={protokollOpen} onOpenChange={setProtokollOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Vollständiges Änderungsprotokoll</DialogTitle>
+            <DialogDescription>
+              Alle Änderungen und Übermittlungen Ihrer Stammdaten.
+            </DialogDescription>
+          </DialogHeader>
+          <div style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+            {fullLog === null ? (
+              <p className="muted text-sm" style={{ padding: '14px 0' }}>
+                Wird geladen …
+              </p>
+            ) : fullLog.length === 0 ? (
+              <p className="muted text-sm" style={{ padding: '14px 0' }}>
+                Keine Änderungen vorhanden.
+              </p>
+            ) : (
+              fullLog.map((entry) => {
+                const ts = parseISO(entry.timestamp);
+                return (
+                  <div
+                    key={entry.id}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      justifyContent: 'space-between',
+                      gap: '12px',
+                      padding: '10px 0',
+                      borderTop: '1px solid var(--border)',
+                    }}
+                  >
+                    <div>
+                      <div className="fw-600">{timelineTitle(entry)}</div>
+                      <div className="muted text-xs">
+                        {behoerdenName(entry, data.behoerdenById)}
+                        {entry.note ? ` · ${entry.note}` : ''}
+                      </div>
+                    </div>
+                    <div className="muted text-xs" style={{ whiteSpace: 'nowrap' }}>
+                      {formatDDMMYYYY(ts)}
+                      <br />
+                      {formatHHMM(ts)} Uhr
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setProtokollOpen(false)}
+            >
+              Schließen
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

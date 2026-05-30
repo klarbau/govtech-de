@@ -8,7 +8,6 @@ import {
   Check,
   CheckCircle2,
   ChevronRight,
-  ChevronsUpDown,
   Clock,
   Clock3,
   FileText,
@@ -27,6 +26,7 @@ import { ErledigtFeed } from '@/components/dashboard/ErledigtFeed';
 import { TriumphBanner } from '@/components/dashboard/TriumphBanner';
 import { api } from '@/lib/mock-backend';
 import type { Behoerde, DashboardSnapshot, Persona } from '@/types';
+import type { DashboardSortMode, TopActionItem } from '@/types/dashboard';
 
 interface DashboardViewProps {
   nowIso: string;
@@ -48,6 +48,7 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
   const [persona, setPersona] = React.useState<Persona | null>(null);
   const [behoerdenNames, setBehoerdenNames] = React.useState<Record<string, string>>({});
   const [dismissed, setDismissed] = React.useState<Set<string>>(() => new Set());
+  const [activeTab, setActiveTab] = React.useState<DashboardSortMode>('ki');
   const [error, setError] = React.useState<string | null>(null);
   const lastSeenWrittenRef = React.useRef(false);
 
@@ -71,6 +72,12 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
         if (!lastSeenWrittenRef.current) {
           lastSeenWrittenRef.current = true;
           await api.setLastSeen(p.id, nowIso);
+        }
+        try {
+          const mode = await api.getDashboardSortMode(p.id);
+          if (!cancelled) setActiveTab(mode);
+        } catch {
+          /* sort mode falls back to 'ki' */
         }
         try {
           const behoerden = (await api.getBehoerden()) as Behoerde[];
@@ -98,12 +105,23 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
   const highlight = snapshot?.autopilot_highlight;
   const erledigtFeed = snapshot?.erledigt_feed ?? [];
 
-  const visibleTodos = (snapshot?.top_actions ?? [])
-    .filter((a) => !dismissed.has(a.id))
-    .slice(0, 3);
+  const visibleTodos = sortTopActions(
+    (snapshot?.top_actions ?? []).filter((a) => !dismissed.has(a.id)),
+    activeTab,
+    behoerdenNames,
+  ).slice(0, 3);
   const todosEmpty = visibleTodos.length === 0;
 
   const loginDays = computeLoginDays(snapshot, nowIso) ?? DEMO_PRIOR_LOGIN_DAYS;
+
+  function handleTabChange(mode: DashboardSortMode) {
+    setActiveTab(mode);
+    if (persona) {
+      void api.setDashboardSortMode(persona.id, mode).catch(() => {
+        /* in-memory order already applied; persistence is best-effort */
+      });
+    }
+  }
 
   async function handleDone(reminderId: string) {
     setDismissed((prev) => new Set(prev).add(reminderId));
@@ -181,13 +199,40 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
       <div className="heute-card" style={{ marginTop: '24px' }}>
         <div className="heute-head">
           <h3>{t('heute.titel')}</h3>
-          <div className="tab-chips">
-            <button type="button" className="chip active"><Sparkles />{t('heute.tab_ki')}</button>
-            <button type="button" className="chip">
-              {t('heute.tab_frist')} <ChevronsUpDown style={{ width: '12px', height: '12px' }} />
+          <div className="tab-chips" role="group" aria-label={t('heute.titel')}>
+            <button
+              type="button"
+              className={`chip${activeTab === 'ki' ? ' active' : ''}`}
+              aria-pressed={activeTab === 'ki'}
+              onClick={() => handleTabChange('ki')}
+            >
+              <Sparkles />
+              {t('heute.tab_ki')}
             </button>
-            <button type="button" className="chip">{t('heute.tab_behoerde')}</button>
-            <button type="button" className="chip">{t('heute.tab_vorgang')}</button>
+            <button
+              type="button"
+              className={`chip${activeTab === 'frist' ? ' active' : ''}`}
+              aria-pressed={activeTab === 'frist'}
+              onClick={() => handleTabChange('frist')}
+            >
+              {t('heute.tab_frist')}
+            </button>
+            <button
+              type="button"
+              className={`chip${activeTab === 'behoerde' ? ' active' : ''}`}
+              aria-pressed={activeTab === 'behoerde'}
+              onClick={() => handleTabChange('behoerde')}
+            >
+              {t('heute.tab_behoerde')}
+            </button>
+            <button
+              type="button"
+              className={`chip${activeTab === 'vorgang' ? ' active' : ''}`}
+              aria-pressed={activeTab === 'vorgang'}
+              onClick={() => handleTabChange('vorgang')}
+            >
+              {t('heute.tab_vorgang')}
+            </button>
           </div>
         </div>
 
@@ -358,6 +403,68 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
 }
 
 // ── helpers ───────────────────────────────────────────────────────────────
+
+/**
+ * Reordnet die „Heute zu tun"-Aktionen nach dem aktiven Sortier-Modus.
+ * - `ki`     → KI-Reihenfolge (Backend-`rank`, 1 = oben).
+ * - `frist`  → aufsteigend nach Frist-Datum; Aktionen ohne Frist ans Ende.
+ * - `behoerde` → gruppiert/sortiert nach Behörden-Anzeigename (Fallback: ID).
+ * - `vorgang`  → gruppiert/sortiert nach zugehörigem Vorgang (Quelle/Folgevorgang).
+ * Innerhalb jeder Gruppe bleibt die KI-Reihenfolge (`rank`) als Tiebreak erhalten.
+ */
+function sortTopActions(
+  actions: TopActionItem[],
+  mode: DashboardSortMode,
+  behoerdenNames: Record<string, string>,
+): TopActionItem[] {
+  const byRank = (a: TopActionItem, b: TopActionItem) => a.rank - b.rank;
+  const sorted = [...actions];
+
+  if (mode === 'frist') {
+    sorted.sort((a, b) => {
+      const da = a.frist_datum ? new Date(a.frist_datum).getTime() : Number.POSITIVE_INFINITY;
+      const db = b.frist_datum ? new Date(b.frist_datum).getTime() : Number.POSITIVE_INFINITY;
+      if (da !== db) return da - db;
+      return byRank(a, b);
+    });
+    return sorted;
+  }
+
+  if (mode === 'behoerde') {
+    const key = (a: TopActionItem) =>
+      (behoerdenNames[a.behoerde_id] ?? a.behoerde_id ?? '').toLowerCase();
+    sorted.sort((a, b) => {
+      const cmp = key(a).localeCompare(key(b), 'de');
+      if (cmp !== 0) return cmp;
+      return byRank(a, b);
+    });
+    return sorted;
+  }
+
+  if (mode === 'vorgang') {
+    sorted.sort((a, b) => {
+      const cmp = vorgangKey(a).localeCompare(vorgangKey(b), 'de');
+      if (cmp !== 0) return cmp;
+      return byRank(a, b);
+    });
+    return sorted;
+  }
+
+  // mode === 'ki'
+  sorted.sort(byRank);
+  return sorted;
+}
+
+/**
+ * Leitet einen stabilen Gruppierungs-Schlüssel je Vorgang ab. Direkt
+ * vorgangs-basierte Aktionen nutzen `source_id`; Folgevorgänge den Titel des
+ * auslösenden Vorgangs (`reason_context`); sonst den eigenen Titel als Fallback.
+ */
+function vorgangKey(a: TopActionItem): string {
+  if (a.source_typ === 'vorgang') return `0:${a.source_id}`;
+  if (a.reason_context) return `1:${a.reason_context.toLowerCase()}`;
+  return `2:${a.titel.toLowerCase()}`;
+}
 
 function greetingAnrede(
   snapshot: DashboardSnapshot | null,

@@ -19,6 +19,7 @@ import {
   MapPin,
   ReceiptText,
   Stethoscope,
+  X,
 } from 'lucide-react';
 
 import { api } from '@/lib/mock-backend';
@@ -135,6 +136,7 @@ export function TermineView({ nowIso }: TermineViewProps) {
     abgeschlossen: false,
   });
   const [loaded, setLoaded] = React.useState(false);
+  const [detailTermin, setDetailTermin] = React.useState<Termin | null>(null);
 
   React.useEffect(() => {
     let cancelled = false;
@@ -188,13 +190,63 @@ export function TermineView({ nowIso }: TermineViewProps) {
     [behoerdenById],
   );
 
+  /* WCAG 2.4.3: Detail-Dialog merkt sich den Trigger und stellt den Fokus zurück. */
+  const detailTriggerRef = React.useRef<HTMLElement | null>(null);
+  const detailCloseRef = React.useRef<HTMLButtonElement | null>(null);
+  React.useEffect(() => {
+    if (detailTermin) {
+      const active = typeof document !== 'undefined' ? document.activeElement : null;
+      if (active instanceof HTMLElement) detailTriggerRef.current = active;
+      requestAnimationFrame(() => detailCloseRef.current?.focus());
+      return;
+    }
+    const trigger = detailTriggerRef.current;
+    if (trigger && typeof document !== 'undefined' && document.contains(trigger)) {
+      requestAnimationFrame(() => trigger.focus());
+    }
+    detailTriggerRef.current = null;
+  }, [detailTermin]);
+
   const now = React.useMemo(() => new Date(nowIso), [nowIso]);
-  const monthLabel = `${MONTH_LABELS[now.getMonth()]} ${now.getFullYear()}`;
+
+  /* Calendar navigation: which month the grid currently shows (default = now). */
+  const [viewedMonth, setViewedMonth] = React.useState(
+    () => ({ year: new Date(nowIso).getFullYear(), month: new Date(nowIso).getMonth() }),
+  );
+  const monthLabel = `${MONTH_LABELS[viewedMonth.month]} ${viewedMonth.year}`;
+
+  const stepMonth = React.useCallback((delta: number) => {
+    setViewedMonth((prev) => {
+      const d = new Date(prev.year, prev.month + delta, 1);
+      return { year: d.getFullYear(), month: d.getMonth() };
+    });
+  }, []);
+
+  /**
+   * Filter-Gate für einen Termin. Behördentermine (`behoerdentermin`) und
+   * Buchungen (`buchung`) werden über die Kategorie unterschieden; fehlt sie,
+   * leiten wir aus `ort.typ` ab (Präsenz ⇒ Behördentermin, sonst Buchung).
+   * "Abgeschlossen" steuert, ob abgesagte/erledigte Termine sichtbar sind.
+   */
+  const isTerminVisible = React.useCallback(
+    (termin: Termin): boolean => {
+      const istBuchung = (termin.kategorie ?? (termin.ort.typ === 'praesenz' ? 'behoerdentermin' : 'buchung')) === 'buchung';
+      if (istBuchung) {
+        if (!filters.buchungen) return false;
+      } else if (!filters.behoerden) {
+        return false;
+      }
+      const istAbgeschlossen = termin.status === 'abgesagt';
+      if (istAbgeschlossen && !filters.abgeschlossen) return false;
+      return true;
+    },
+    [filters],
+  );
 
   /* Build calendar grid: Mon–Sun rows. */
   const calendarCells = React.useMemo(() => {
-    const year = now.getFullYear();
-    const month = now.getMonth();
+    const year = viewedMonth.year;
+    const month = viewedMonth.month;
     const firstOfMonth = new Date(year, month, 1);
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     // Monday-first weekday index of day 1 (0 = Mon).
@@ -210,7 +262,9 @@ export function TermineView({ nowIso }: TermineViewProps) {
     // Current month.
     const todayKey = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}`;
     const eventKeys = new Set<string>();
-    [...termine, ...reminders].forEach((x) => {
+    const calendarTermine = termine.filter(isTerminVisible);
+    const calendarReminders = filters.erinnerungen ? reminders : [];
+    [...calendarTermine, ...calendarReminders].forEach((x) => {
       const d = new Date(x.datum);
       eventKeys.add(`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`);
     });
@@ -233,14 +287,15 @@ export function TermineView({ nowIso }: TermineViewProps) {
       cells.push({ key: `n-${d.getTime()}`, label: d.getDate(), date: d, mute: true, today: false, hasEvent: false });
     }
     return cells;
-  }, [now, termine, reminders]);
+  }, [viewedMonth, now, termine, reminders, filters.erinnerungen, isTerminVisible]);
 
   const futureTermine = React.useMemo(
     () =>
       [...termine]
-        .filter((t) => t.status !== 'abgesagt' && new Date(t.datum).getTime() >= now.getTime() - 24 * 3600 * 1000)
+        .filter(isTerminVisible)
+        .filter((t) => new Date(t.datum).getTime() >= now.getTime() - 24 * 3600 * 1000)
         .sort((a, b) => a.datum.localeCompare(b.datum)),
-    [termine, now],
+    [termine, now, isTerminVisible],
   );
 
   const naechster = futureTermine[0] ?? null;
@@ -248,10 +303,10 @@ export function TermineView({ nowIso }: TermineViewProps) {
 
   const futureFristen = React.useMemo(
     () =>
-      reminders
+      (filters.erinnerungen ? reminders : [])
         .filter((r) => new Date(r.datum).getTime() >= now.getTime() - 24 * 3600 * 1000)
         .sort((a, b) => a.datum.localeCompare(b.datum)),
-    [reminders, now],
+    [reminders, now, filters.erinnerungen],
   );
 
   function toggleFilter(key: FilterKey) {
@@ -264,6 +319,51 @@ export function TermineView({ nowIso }: TermineViewProps) {
     if (lower.includes('finanz') || lower.includes('steuer')) return { tone: 'green', Icon: ReceiptText };
     if (lower.includes('beitragsservice') || lower.includes('rundfunk')) return { tone: 'green', Icon: Euro };
     return { tone: '', Icon: Landmark };
+  }
+
+  /* Mock-ICS-Export: VCALENDAR aus den aktuell sichtbaren Terminen, Client-Blob. */
+  function handleIcsExport() {
+    if (futureTermine.length === 0) return;
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    const toIcsStamp = (d: Date) =>
+      `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())}Z`;
+    const escapeIcs = (s: string) => s.replace(/[\\;,]/g, (m) => `\\${m}`).replace(/\n/g, '\\n');
+
+    const lines = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//GovTech DE [MOCK]//Termine//DE',
+      'CALSCALE:GREGORIAN',
+    ];
+    futureTermine.forEach((termin) => {
+      const start = new Date(termin.datum);
+      const end = new Date(start.getTime() + 45 * 60 * 1000);
+      lines.push(
+        'BEGIN:VEVENT',
+        `UID:MOCK-${termin.id}@govtech.de`,
+        `DTSTAMP:${toIcsStamp(now)}`,
+        `DTSTART:${toIcsStamp(start)}`,
+        `DTEND:${toIcsStamp(end)}`,
+        `SUMMARY:${escapeIcs(`[MOCK] ${behoerdeName(termin.behoerde_id)} — ${termin.betreff}`)}`,
+        `LOCATION:${escapeIcs(termin.ort.details)}`,
+        termin.buchungsreferenz ? `DESCRIPTION:${escapeIcs(`Buchungsreferenz: ${termin.buchungsreferenz}`)}` : 'DESCRIPTION:',
+        'END:VEVENT',
+      );
+    });
+    lines.push('END:VCALENDAR');
+
+    const blob = new Blob([lines.join('\r\n')], { type: 'text/calendar' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'MOCK-termine.ics';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function scrollToId(id: string) {
+    if (typeof document === 'undefined') return;
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   return (
@@ -280,10 +380,10 @@ export function TermineView({ nowIso }: TermineViewProps) {
             <div className="cal-head">
               <div className="m">{monthLabel}</div>
               <div className="nav">
-                <button type="button" aria-label="Vorheriger Monat">
+                <button type="button" aria-label="Vorheriger Monat" onClick={() => stepMonth(-1)}>
                   <ChevronLeft />
                 </button>
-                <button type="button" aria-label="Nächster Monat">
+                <button type="button" aria-label="Nächster Monat" onClick={() => stepMonth(1)}>
                   <ChevronRight />
                 </button>
               </div>
@@ -315,6 +415,7 @@ export function TermineView({ nowIso }: TermineViewProps) {
             <button
               type="button"
               className="filter-row"
+              aria-pressed={filters.behoerden}
               onClick={() => toggleFilter('behoerden')}
               style={{ background: 'none', border: 0, padding: '6px 0', width: '100%', textAlign: 'left' }}
             >
@@ -327,6 +428,7 @@ export function TermineView({ nowIso }: TermineViewProps) {
             <button
               type="button"
               className="filter-row"
+              aria-pressed={filters.erinnerungen}
               onClick={() => toggleFilter('erinnerungen')}
               style={{ background: 'none', border: 0, padding: '6px 0', width: '100%', textAlign: 'left' }}
             >
@@ -339,6 +441,7 @@ export function TermineView({ nowIso }: TermineViewProps) {
             <button
               type="button"
               className="filter-row"
+              aria-pressed={filters.buchungen}
               onClick={() => toggleFilter('buchungen')}
               style={{ background: 'none', border: 0, padding: '6px 0', width: '100%', textAlign: 'left' }}
             >
@@ -351,6 +454,7 @@ export function TermineView({ nowIso }: TermineViewProps) {
             <button
               type="button"
               className="filter-row"
+              aria-pressed={filters.abgeschlossen}
               onClick={() => toggleFilter('abgeschlossen')}
               style={{ background: 'none', border: 0, padding: '6px 0', width: '100%', textAlign: 'left' }}
             >
@@ -447,7 +551,11 @@ export function TermineView({ nowIso }: TermineViewProps) {
             <div className="tm-card">Keine bevorstehenden Termine.</div>
           )}
 
-          <div className="text-md fw-600" style={{ margin: '22px 0 12px' }}>
+          <div
+            id="termine-liste"
+            className="text-md fw-600"
+            style={{ margin: '22px 0 12px', scrollMarginTop: 24 }}
+          >
             Weitere Termine und Erinnerungen
           </div>
 
@@ -510,7 +618,12 @@ export function TermineView({ nowIso }: TermineViewProps) {
             );
           })}
 
-          <button type="button" className="btn btn-secondary" style={{ marginTop: 14 }}>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            style={{ marginTop: 14 }}
+            onClick={() => scrollToId('termine-liste')}
+          >
             <Calendar />
             Alle Termine anzeigen
           </button>
@@ -568,11 +681,23 @@ export function TermineView({ nowIso }: TermineViewProps) {
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-              <button type="button" className="btn btn-secondary">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                disabled={futureTermine.length === 0}
+                aria-disabled={futureTermine.length === 0}
+                onClick={handleIcsExport}
+              >
                 <CalendarPlus />
                 ICS exportieren
               </button>
-              <button type="button" className="btn btn-secondary">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                disabled={!naechster}
+                aria-disabled={!naechster}
+                onClick={() => naechster && setDetailTermin(naechster)}
+              >
                 Details anzeigen <ChevronRight />
               </button>
             </div>
@@ -617,6 +742,7 @@ export function TermineView({ nowIso }: TermineViewProps) {
             </div>
 
             <div
+              id="fristen"
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -625,6 +751,7 @@ export function TermineView({ nowIso }: TermineViewProps) {
                 padding: 14,
                 background: 'var(--green-50)',
                 borderRadius: 'var(--r-md)',
+                scrollMarginTop: 24,
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -644,6 +771,127 @@ export function TermineView({ nowIso }: TermineViewProps) {
           </div>
         </div>
       </div>
+
+      {detailTermin ? (
+        <div
+          role="presentation"
+          onClick={() => setDetailTermin(null)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 50,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 16,
+            background: 'rgba(0,0,0,0.4)',
+          }}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="termin-detail-title"
+            onClick={(event) => event.stopPropagation()}
+            onKeyDown={(event) => {
+              if (event.key === 'Escape') {
+                event.preventDefault();
+                setDetailTermin(null);
+              }
+            }}
+            style={{
+              width: 'min(520px, 100%)',
+              maxHeight: '85vh',
+              overflowY: 'auto',
+              background: 'var(--surface-1, #fff)',
+              borderRadius: 'var(--r-lg, 12px)',
+              border: '1px solid var(--border)',
+              boxShadow: '0 12px 40px rgba(0,0,0,0.18)',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                justifyContent: 'space-between',
+                gap: 16,
+                padding: 20,
+                borderBottom: '1px solid var(--border)',
+              }}
+            >
+              <h2 id="termin-detail-title" className="text-md fw-600" style={{ margin: 0 }}>
+                {behoerdeName(detailTermin.behoerde_id)} — {detailTermin.betreff}
+              </h2>
+              <button
+                ref={detailCloseRef}
+                type="button"
+                className="btn btn-secondary btn-sm"
+                aria-label="Schließen"
+                onClick={() => setDetailTermin(null)}
+                style={{ flexShrink: 0 }}
+              >
+                <X />
+              </button>
+            </div>
+            <div className="ns-info" style={{ padding: 20 }}>
+              <div className="row">
+                <Calendar />
+                {formatDate(detailTermin.datum)}
+              </div>
+              <div className="row">
+                <Clock />
+                {`${formatTimeRange(detailTermin.datum)} (45 Min.)`}
+              </div>
+              <div className="row">
+                <MapPin />
+                <div>
+                  <span className="link">{behoerdeName(detailTermin.behoerde_id)}</span>
+                  <br />
+                  {detailTermin.ort.details}
+                </div>
+              </div>
+              {detailTermin.buchungsreferenz ? (
+                <div className="row" style={{ marginTop: 6 }}>
+                  <Bookmark style={{ opacity: 0 }} />
+                  <div>
+                    Buchungsreferenz
+                    <br />
+                    <span className="mono">{detailTermin.buchungsreferenz}</span>
+                  </div>
+                </div>
+              ) : null}
+              <div className="row" style={{ marginTop: 6 }}>
+                <Info />
+                <div>
+                  Status: {detailTermin.status === 'bestaetigt'
+                    ? 'Bestätigt'
+                    : detailTermin.status === 'abgesagt'
+                      ? 'Abgesagt'
+                      : detailTermin.status === 'verschoben'
+                        ? 'Verschoben'
+                        : 'Gebucht'}
+                </div>
+              </div>
+            </div>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                gap: 10,
+                padding: 16,
+                borderTop: '1px solid var(--border)',
+              }}
+            >
+              <button
+                type="button"
+                className="btn btn-primary btn-sm"
+                onClick={() => setDetailTermin(null)}
+              >
+                Schließen
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
