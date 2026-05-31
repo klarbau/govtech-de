@@ -207,9 +207,6 @@ export function FamilieView() {
                         <span className="badge brand">
                           {t(`vorgaenge.status.${v.status}`)}
                         </span>
-                        <ChevronRight
-                          style={{ width: 14, height: 14, color: 'var(--ink-4)' }}
-                        />
                       </div>
                     );
                   },
@@ -247,7 +244,6 @@ export function FamilieView() {
                           {t(`nachweise.status.${n.status}`)}
                         </div>
                       </div>
-                      <ChevronRight style={{ color: 'var(--ink-4)' }} />
                     </div>
                   );
                 })

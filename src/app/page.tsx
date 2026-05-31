@@ -18,12 +18,12 @@ import {
   Lock,
   Shield,
   Sparkles,
-  Sun,
   User,
   Wallet,
 } from 'lucide-react';
 
 import { ParthenonCrest } from '@/components/layout/ParthenonCrest';
+import { ThemeToggle } from '@/components/layout/ThemeToggle';
 
 // Rendered at request time: see (app)/layout.tsx — the next-intl@3 + Next 15.5
 // client IntlProvider is not statically prerenderable in this setup.
@@ -42,17 +42,14 @@ export default function HomePage() {
           <span className="gt-tagline">Verwaltung neu gedacht.</span>
         </Link>
         <nav className="landing-nav">
-          <span className="menu">
+          <a href="#leistungen" className="menu">
             Leistungen <ChevronDown aria-hidden="true" />
-          </span>
-          <a href="#">Für Bürger:innen</a>
-          <a href="#">Für Behörden</a>
-          <a href="#">Sicherheit &amp; Datenschutz</a>
-          <a href="#">Über uns</a>
+          </a>
+          <a href="#leistungen">Für Bürger:innen</a>
+          <a href="#sicherheit">Sicherheit &amp; Datenschutz</a>
+          <a href="#screens">Alle Screens</a>
         </nav>
-        <button type="button" className="gt-header-btn icon">
-          <Sun aria-hidden="true" />
-        </button>
+        <ThemeToggle />
         <Link href="/onboarding" className="gt-user-pill">
           <User aria-hidden="true" />
           Anmelden
@@ -74,13 +71,16 @@ export default function HomePage() {
               Ein Bürgerportal für Deutschland, das Vorgänge vorbereitet, Daten vorausfüllt und den nächsten Schritt erklärt.
             </p>
             <div className="cta">
-              <Link href="/dashboard" className="btn btn-primary btn-lg">
+              <Link href="/onboarding" className="btn btn-primary btn-lg">
                 Demo starten <ArrowRight aria-hidden="true" />
               </Link>
               <a href="#screens" className="btn btn-secondary btn-lg">
                 Mehr erfahren <ArrowRight aria-hidden="true" />
               </a>
             </div>
+            <Link href="/dashboard" className="hero-shortcut">
+              Direkt zum Dashboard <ArrowRight aria-hidden="true" />
+            </Link>
             <span className="trust">
               <Shield aria-hidden="true" /> Sicher. Vertrauenswürdig. Deutschlandweit.
             </span>
@@ -158,7 +158,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <div className="feature-row">
+        <div className="feature-row" id="leistungen">
           <Link href="/vorgaenge/umzug/run" className="feature-card">
             <div className="body">
               <span className="icon-circle">
@@ -209,7 +209,7 @@ export default function HomePage() {
           </Link>
         </div>
 
-        <div className="feature-row muted" style={{ marginTop: 12 }}>
+        <div className="feature-row muted" id="sicherheit" style={{ marginTop: 12 }}>
           <Link href="/vorgaenge/umzug/identitaet" className="feature-card">
             <div className="body">
               <span className="icon-circle">
@@ -234,7 +234,7 @@ export default function HomePage() {
             </div>
             <ChevronRight className="chev" aria-hidden="true" />
           </Link>
-          <a href="#" className="feature-card">
+          <div className="feature-card is-static">
             <div className="body">
               <span className="icon-circle">
                 <Accessibility aria-hidden="true" />
@@ -244,9 +244,8 @@ export default function HomePage() {
                 <div className="sub">Barrierefrei, verständlich und für alle zugänglich.</div>
               </div>
             </div>
-            <ChevronRight className="chev" aria-hidden="true" />
-          </a>
-          <a href="#" className="feature-card">
+          </div>
+          <div className="feature-card is-static">
             <div className="body">
               <span className="icon-circle">
                 <Box aria-hidden="true" />
@@ -256,8 +255,7 @@ export default function HomePage() {
                 <div className="sub">Ein Blick in die Zukunft der Verwaltung in Deutschland.</div>
               </div>
             </div>
-            <ChevronRight className="chev" aria-hidden="true" />
-          </a>
+          </div>
         </div>
 
         <section className="screens-section" id="screens">
@@ -365,6 +363,34 @@ export default function HomePage() {
           </div>
         </section>
       </main>
+
+      <footer className="landing-footer">
+        <div className="landing-footer-inner">
+          <div className="landing-footer-brand">
+            <div className="gt-brand-logo">
+              <ParthenonCrest />
+              <span>GovTech DE</span>
+            </div>
+            <p className="landing-footer-disclaimer">
+              <span className="mock-tag">[MOCK]</span> Spekulativer Design-Prototyp · keine
+              echte Behördenanbindung. Alle Daten sind synthetisch und dienen nur der
+              Demonstration.
+            </p>
+          </div>
+          <nav className="landing-footer-nav" aria-label="Rechtliche Hinweise">
+            <a href="#sicherheit">Sicherheit &amp; Datenschutz</a>
+            <a href="#leistungen">Leistungen</a>
+            <a href="#screens">Alle Screens</a>
+          </nav>
+        </div>
+        <div className="landing-footer-meta">
+          <span>
+            <Shield aria-hidden="true" /> Konzept im Stil von BSI-Grundschutz &amp; BITV 2.0 ·
+            Datenminimierung by Design
+          </span>
+          <span className="landing-footer-legal">Impressum · Datenschutzerklärung (Demo)</span>
+        </div>
+      </footer>
     </>
   );
 }

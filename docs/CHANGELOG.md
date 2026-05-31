@@ -52,4 +52,17 @@ Goal: make the autopilot's convenience undeniable + the platform feel real (not 
 - [ ] Extract the base-ui inert-promotion into the shared `ui/dialog` / strip-hook layer and re-verify ALL ~10 base-ui modals (PunkteEidReauthModal, MobilOtpMockModal, SaveConfirmDialog, Pflegegrad/Religion/Sperren confirm dialogs, …) for the same `aria-hidden`-not-`inert` Tab-leak.
 - [ ] **Loom note:** Anna's live cascade fans out to 7 stops (6 Behörden + Beitragsservice + Arbeitgeber as "private Stelle") — the recording must name **Familienkasse**; Beitragsservice (Anstalt) + Arbeitgeber (private Stelle) are NOT Behörden, don't count them in "sechs Behörden".
 
-**Next (decided 2026-05-30):** wow-backlog **#1 "Kontinuierlicher Kaskaden-Moment"** — cascade inline in the assistant (+ consequence receipt + Once-Only counter + Stammdaten source line + Posteingang landing). Full ranked, realism-filtered backlog: `docs/research/wow-backlog.md`. Then #2 antragsloses Kindergeld, #3 Wohngeld.
+## wow-backlog #1 — "Kontinuierlicher Kaskaden-Moment" (shipped 2026-05-30, branch `feat/wow-1-inline-cascade`)
+
+Goal: amplify the hero — make the autopilot's cascade *continuous* inside the assistant thread instead of hiding it behind a link. Ranked, realism-filtered backlog: `docs/research/wow-backlog.md`. Realism guardrails per `docs/demo-spine.md`.
+
+**DONE & verified — all gates green:**
+- **wow #1 inline cascade.** The cascade now streams **inline in the assistant thread** (`src/components/autopilot/InlineCascade.tsx`) instead of on the separate `/vorgaenge/umzug/run` page: the four statutory recipients confirm automatically (§ 36 BMG / § 28 PAuswG), the two sensitive ones (**Familienkasse, Ausländerbehörde**) gate behind a real **"Mit eID bestätigen"** tap (§ 18 PAuswG — user-driven, no Melderegister→ABH push), two private recipients (Krankenkasse, Arbeitgeber) run on consent — then the **Once-Only counter**, the **Stammdaten source line** and the **value-receipt** render in-thread, and confirmations land in Posteingang. Honest per-row Rechtsgrundlage micro-line + a consent-gate hint scoped to the two eID rows.
+- **a11y: PASS.** `docs/a11y-reports/wow-1-inline-cascade-2026-05-30.md` + `docs/a11y-reports/inline-cascade-eid-2026-05-30.md`.
+- **Authoritative gates (main thread):** vitest **726/726** · spine e2e green **2/2** (incl. Step-4c inline eID confirm → receipt) · `next build` green · 6-locale i18n at parity.
+
+## Onboarding/Login + Landing re-skin (shipped, branch `feat/wow-1-inline-cascade`)
+
+- **DeutschlandID + EUDI Wallet onboarding + Landing re-skin** — `src/app/page.tsx` (~370-line static DE-inline landing, intentionally not i18n'd per CLAUDE.md) + `src/app/(auth)/onboarding/**`. a11y PASS: `docs/a11y-reports/onboarding-landing-2026-05-27.md`.
+
+**Next (decided 2026-05-30):** Pass-2 verticals — #2 antragsloses Kindergeld (legislated, 2027), #3 Wohngeld — now that the hero is continuous. Full ranked, realism-filtered backlog: `docs/research/wow-backlog.md`.

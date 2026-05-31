@@ -710,6 +710,7 @@
       "fehlende_unterlagen": "Welche Unterlagen fehlen?"
     },
     "log_label": "Unterhaltung mit dem Assistenten",
+    "unavailable": "Der Assistent ist gerade nicht erreichbar. Bitte versuchen Sie es erneut.",
     "composer": {
       "label": "Nachricht an den Assistenten",
       "placeholder": "Schreiben Sie eine Nachricht …",
@@ -794,11 +795,6 @@
       "datenschutz_link": "Mehr zu Datenschutz"
     }
   },
-  "placeholder": {
-    "section_title": "{section}",
-    "wip": "Diese Sektion ist in Vorbereitung.",
-    "wip_helper": "Diese Konzept-Demo fokussiert sich zunächst auf den Umzug-Autopilot. Weitere Vorgänge folgen."
-  },
   "posteingang": {
     "skip_link": {
       "zur_brief_liste": "Zum Brief-Listen-Bereich springen"
@@ -833,6 +829,7 @@
     "search": {
       "placeholder": "Aktenzeichen oder Behörde suchen …",
       "aria_label": "Aktenzeichen oder Behörde durchsuchen",
+      "view_aria": "Ansicht",
       "hits_count_template": "{count, plural, =0 {Keine Treffer} =1 {1 Treffer} other {# Treffer}}"
     },
     "filter": {

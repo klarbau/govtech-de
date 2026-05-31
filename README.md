@@ -185,8 +185,23 @@ pnpm dev
 
 **Zwei Hinweise für eine reibungslose Vorführung:**
 
-- **`ANTHROPIC_API_KEY` ist optional.** Ohne Key degradiert der Assistent würdevoll: statische Refusal-Texte und die Datenschutz-Hinweise funktionieren weiter; ein normaler KI-Turn zeigt sauber „Antwort konnte nicht geladen werden" statt abzustürzen. Für die volle Wow-Demo (natürlichsprachiger Umzug → Bestätigungskarte → Kaskade) wird ein gültiger Key benötigt.
+- **`ANTHROPIC_API_KEY` ist optional.** Ohne Key degradiert der Assistent würdevoll: statische Refusal-Texte und die Datenschutz-Hinweise funktionieren weiter; ein normaler KI-Turn zeigt sauber eine freundliche „Assistent derzeit nicht verfügbar"-Meldung statt abzustürzen. Für die volle Wow-Demo (natürlichsprachiger Umzug → Bestätigungskarte → Kaskade) wird ein gültiger Key benötigt.
 - **`?reliable=1`** an die URL hängen schaltet die simulierten Backend-Fehler (5%-Fehlerquote, künstliche Latenz) ab — empfohlen für Screencasts und Loom-Aufnahmen.
+
+**Qualitäts-Gates lokal nachvollziehen** (dieselben Prüfungen, die das Projekt grün hält):
+
+```bash
+pnpm typecheck   # TypeScript (strict), keine Fehler
+pnpm test:unit   # Vitest — Unit-Tests (Mock-Backend, KI-Hilfslogik, Rate-Limit)
+pnpm test:e2e    # Playwright — End-to-End, inkl. Spine-Flow (Umzug-Kaskade)
+pnpm test:a11y   # Playwright + axe-core — Barrierefreiheits-Audit (WCAG 2.1 AA)
+```
+
+### Kosten & Missbrauch
+
+- **Kosten.** Ein normaler KI-Turn ruft `/api/assistant` auf, was die Anthropic-API mit **Ihrem** `ANTHROPIC_API_KEY` anspricht — bei einem eigenen Deployment entstehen also reale Token-Kosten auf Ihrer Rechnung. Modell ist Claude Haiku 4.5 mit aktivem Prompt-Caching, die Kosten pro Turn sind gering; ein offenes öffentliches Deployment ohne Limits kann sie dennoch summieren.
+- **Schutz.** Die KI-Routen sind als Demo bewusst ohne Login, aber **rate-limitiert** (`src/lib/ai/rate-limit.ts`: ~20 Anfragen/Minute pro Session, plus Größen-Caps auf Nachrichten und Payload). Das deckt die API-Spend-/Verfügbarkeits-Angriffsfläche ab — es ist kein Ersatz für ein echtes Gateway/WAF im Produktivbetrieb.
+- **Empfehlung für Self-Deployer.** Setzen Sie zusätzlich eigene Budget-Limits direkt in der Anthropic-Console und passen Sie die Werte in `rate-limit.ts` an Ihre Erwartungen an. Der Key ist **optional** — ohne ihn läuft die Demo weiter (siehe oben), nur der live-KI-Turn ruht.
 
 ---
 
@@ -204,7 +219,9 @@ This is a **speculative-design prototype** for ~2027, built on Germany's planned
 
 **Stack:** Next.js 15 (App Router) · TypeScript strict · Tailwind v4 + shadcn/ui · framer-motion · next-intl · `@anthropic-ai/sdk` + Claude Haiku 4.5 (prompt caching + tool use) · Playwright + axe.
 
-**Run it:** `pnpm install && pnpm dev`, open http://localhost:3000. `ANTHROPIC_API_KEY` is optional — the assistant degrades gracefully without it; append `?reliable=1` to disable simulated errors for screencasts.
+**Run it:** `pnpm install && pnpm dev`, open http://localhost:3000. `ANTHROPIC_API_KEY` is optional — the assistant degrades gracefully without it (a normal AI turn shows a friendly „assistant currently unavailable" message instead of crashing); append `?reliable=1` to disable simulated errors for screencasts. Reproduce the quality gates with `pnpm typecheck`, `pnpm test:unit`, `pnpm test:e2e`, and `pnpm test:a11y`.
+
+**Cost & abuse:** a normal AI turn calls `/api/assistant`, which hits the Anthropic API on the deployer's own `ANTHROPIC_API_KEY` — so a self-hosted deployment incurs real token cost on your account (Claude Haiku 4.5 with prompt caching; cheap per turn, but an open public deployment can add up). The AI routes are intentionally login-less for the demo but **rate-limited** (`src/lib/ai/rate-limit.ts`: ~20 req/min per session, plus message/payload size caps) — enough for the API-spend/availability blast radius, not a substitute for a real gateway/WAF. **Self-deployers should set their own budget limits** in the Anthropic console and tune the values in `rate-limit.ts`. The key is optional; without it the demo still runs, only the live AI turn rests.
 
 **Who it's for & the ask:** built for people rethinking German public administration around the citizen — DigitalService, BMDS, Tech4Germany, GovTech Deutschland, GovStart. I'm looking for roles and programs in the German GovTech ecosystem where this kind of citizen-first product thinking is needed. If this opens a door, let's talk.
 

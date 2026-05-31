@@ -707,6 +707,7 @@
       "fehlende_unterlagen": "Hangi belgeler eksik?"
     },
     "log_label": "Asistanla görüşme",
+    "unavailable": "Asistan şu anda erişilemiyor. Lütfen tekrar deneyin.",
     "composer": {
       "label": "Asistana mesaj",
       "placeholder": "Bir mesaj yazın …",
@@ -791,11 +792,6 @@
       "datenschutz_link": "Veri koruma hakkında daha fazlası"
     }
   },
-  "placeholder": {
-    "section_title": "{section}",
-    "wip": "Bu bölüm hazırlanıyor.",
-    "wip_helper": "Bu kavram demosu öncelikle adres değişikliği otomatik pilotuna odaklanır. Diğer işlemler ardından gelecektir."
-  },
   "posteingang": {
     "skip_link": {
       "zur_brief_liste": "Yazı listesine geç"
@@ -830,6 +826,7 @@
     "search": {
       "placeholder": "Dosya numarası (Aktenzeichen) veya kurum ara …",
       "aria_label": "Dosya numarası (Aktenzeichen) veya kurum arama",
+      "view_aria": "Görünüm",
       "hits_count_template": "{count, plural, =0 {Sonuç yok} =1 {1 sonuç} other {# sonuç}}"
     },
     "filter": {

@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
 import {
   Briefcase,
@@ -65,6 +66,7 @@ export function PosteingangInbox({
   initial,
   initialSelectedLetterId,
 }: PosteingangInboxProps) {
+  const t = useTranslations('posteingang');
   const [letters, setLetters] = React.useState<Letter[]>(initial.letters);
   const [behoerdenById, setBehoerdenById] = React.useState(initial.behoerdenById);
   const [hasLoaded, setHasLoaded] = React.useState(initial.letters.length > 0);
@@ -191,14 +193,14 @@ export function PosteingangInbox({
           <Search />
           <input
             className="input"
-            placeholder="Suche nach Aktenzeichen oder Behörde"
-            aria-label="Suche nach Aktenzeichen oder Behörde"
+            placeholder={t('search.placeholder')}
+            aria-label={t('search.aria_label')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
         <div style={{ flex: 1 }} />
-        <div className="view-toggle" role="tablist" aria-label="Ansicht">
+        <div className="view-toggle" role="tablist" aria-label={t('search.view_aria')}>
           <button
             type="button"
             role="tab"

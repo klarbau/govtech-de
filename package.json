@@ -2,6 +2,24 @@
   "name": "govtech-de-demo",
   "version": "0.1.0",
   "private": true,
+  "description": "A speculative-design prototype of a citizen-first interaction layer for German public administration; all data is mocked.",
+  "license": "MIT",
+  "keywords": [
+    "govtech",
+    "germany",
+    "next.js",
+    "prototype",
+    "accessibility",
+    "eudi-wallet",
+    "deutschland-id",
+    "civic-tech"
+  ],
+  "author": "GovTech DE Demo contributors",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "homepage": "",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

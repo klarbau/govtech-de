@@ -707,6 +707,7 @@
       "fehlende_unterlagen": "Which documents are missing?"
     },
     "log_label": "Conversation with the assistant",
+    "unavailable": "The assistant is currently unavailable. Please try again.",
     "composer": {
       "label": "Message to the assistant",
       "placeholder": "Write a message …",
@@ -791,11 +792,6 @@
       "datenschutz_link": "More on data protection"
     }
   },
-  "placeholder": {
-    "section_title": "{section}",
-    "wip": "This section is being prepared.",
-    "wip_helper": "This concept demo focuses first on the change-of-address autopilot. Further cases will follow."
-  },
   "posteingang": {
     "skip_link": {
       "zur_brief_liste": "Skip to letter list"
@@ -830,6 +826,7 @@
     "search": {
       "placeholder": "Search file reference (Aktenzeichen) or authority …",
       "aria_label": "Search file reference (Aktenzeichen) or authority",
+      "view_aria": "View",
       "hits_count_template": "{count, plural, =0 {No matches} =1 {1 match} other {# matches}}"
     },
     "filter": {
