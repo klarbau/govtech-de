@@ -1286,6 +1286,11 @@ button { font: inherit; cursor: pointer; }
 }
 .landing-header .gt-brand-logo svg { width: 26px; height: 26px; color: var(--brand-700); }
 .landing-header .gt-brand-logo { font-size: 18px; }
+/* Touch targets ≥40px in the landing header (BITV 2.0 / onboarding-landing.spec.ts).
+   Scoped here so the in-app topbar keeps its compact 36/38px chrome. */
+.landing-header .gt-header-btn { height: 40px; }
+.landing-header .gt-header-btn.icon { width: 40px; }
+.landing-header .gt-user-pill { height: 40px; }
 .landing-nav { display: flex; gap: 28px; flex: 1; margin-left: 18px; }
 .landing-nav a, .landing-nav .menu {
   display: inline-flex; align-items: center; gap: 6px;

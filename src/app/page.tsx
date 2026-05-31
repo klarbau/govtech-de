@@ -86,7 +86,7 @@ export default function HomePage() {
             </span>
           </div>
 
-          <div className="flow-card">
+          <figure role="group" aria-label="So arbeitet der Autopilot: von Ihrer Angabe bis zur Behörde" className="flow-card">
             <div className="flow-grid">
               <div className="col-head">Sie als Bürger:in</div>
               <div className="col-head" style={{ textAlign: 'center' }} />
@@ -152,13 +152,13 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
-            <div className="flow-foot">
+            <figcaption className="flow-foot">
               <CheckCircle2 aria-hidden="true" /> Sie behalten jederzeit den Überblick und die Kontrolle.
-            </div>
-          </div>
+            </figcaption>
+          </figure>
         </section>
 
-        <div className="feature-row" id="leistungen">
+        <section className="feature-row" id="leistungen">
           <Link href="/vorgaenge/umzug/run" className="feature-card">
             <div className="body">
               <span className="icon-circle">
@@ -207,7 +207,7 @@ export default function HomePage() {
             </div>
             <ChevronRight className="chev" aria-hidden="true" />
           </Link>
-        </div>
+        </section>
 
         <div className="feature-row muted" id="sicherheit" style={{ marginTop: 12 }}>
           <Link href="/vorgaenge/umzug/identitaet" className="feature-card">
