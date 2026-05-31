@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useTranslations } from 'next-intl';
 import { CheckCheck, Sparkles } from 'lucide-react';
 
 import { MessageMarkdown } from './MessageMarkdown';
@@ -17,6 +18,7 @@ function formatTime(iso: string): string {
 }
 
 export function MessageBubble({ message }: MessageBubbleProps) {
+  const t = useTranslations('assistent.message');
   const isUser = message.role === 'user';
   const time = formatTime(message.at);
 
@@ -35,7 +37,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
             <MessageMarkdown text={message.text} />
           </div>
           <div className="time">
-            {time} <CheckCheck aria-label="Gesendet" />
+            {time} <CheckCheck aria-label={t('user_sent')} />
           </div>
         </div>
       </div>

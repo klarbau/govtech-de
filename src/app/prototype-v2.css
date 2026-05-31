@@ -1429,6 +1429,114 @@ button { font: inherit; cursor: pointer; }
 .screen-link .lbl { font-weight: 600; }
 .screen-link .desc { font-size: 12px; color: var(--ink-3); }
 
+/* Static (non-link) info cards: no hover-lift, default cursor — they are badges, not destinations. */
+.feature-card.is-static { cursor: default; }
+.feature-card.is-static:hover { border-color: var(--border); transform: none; }
+
+/* Secondary hero shortcut to /dashboard (keeps the fast path next to the primary /onboarding CTA). */
+.hero-shortcut {
+  display: flex; align-items: center; gap: 6px;
+  width: fit-content;
+  margin: 14px 0 18px;
+  color: var(--brand-600); font-size: 13px; font-weight: 500;
+}
+.hero-shortcut svg { width: 14px; height: 14px; }
+.hero-shortcut:hover { color: var(--brand-700); text-decoration: underline; }
+
+/* ============ landing footer ============ */
+.landing-footer {
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  padding: 40px 56px 48px;
+}
+.landing-footer-inner {
+  max-width: 1440px; margin: 0 auto;
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 40px; flex-wrap: wrap;
+}
+.landing-footer-brand { max-width: 520px; }
+.landing-footer-brand .gt-brand-logo { font-size: 17px; color: var(--brand-900); margin-bottom: 12px; }
+.landing-footer-brand .gt-brand-logo svg { width: 22px; height: 22px; color: var(--brand-700); }
+.landing-footer-disclaimer {
+  font-size: 13px; color: var(--ink-3); line-height: 1.6; margin: 0;
+}
+.landing-footer-disclaimer .mock-tag {
+  font-weight: 700; color: var(--ink-2); font-variant-numeric: tabular-nums;
+}
+.landing-footer-nav { display: flex; flex-direction: column; gap: 10px; }
+.landing-footer-nav a { color: var(--ink-2); font-size: 13px; font-weight: 500; }
+.landing-footer-nav a:hover { color: var(--ink); }
+.landing-footer-meta {
+  max-width: 1440px; margin: 28px auto 0;
+  padding-top: 20px; border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+  font-size: 12px; color: var(--ink-4);
+}
+.landing-footer-meta > span { display: inline-flex; align-items: center; gap: 8px; }
+.landing-footer-meta svg { width: 14px; height: 14px; }
+
+/* ============ landing responsive ============ */
+/* Tablet / small-desktop: 4-up feature grid → 2-up; keep desktop layout intact ≥1024px. */
+@media (max-width: 1023px) {
+  .landing-page { padding: 40px 32px 64px; }
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 36px;
+    margin-bottom: 48px;
+  }
+  .hero p.lede { max-width: none; }
+  .feature-row { grid-template-columns: repeat(2, 1fr); }
+  .landing-footer { padding: 36px 32px 40px; }
+}
+
+/* Phone: single-column everything, fluid H1, wrapping header nav, no horizontal overflow. */
+@media (max-width: 768px) {
+  .landing-header {
+    flex-wrap: wrap;
+    gap: 12px 18px;
+    padding: 14px 20px;
+  }
+  .landing-header .gt-brand { gap: 12px; }
+  .gt-tagline { display: none; }
+  .landing-nav {
+    order: 3; flex-basis: 100%;
+    flex-wrap: wrap; gap: 14px 18px;
+    margin-left: 0;
+  }
+  .landing-nav a, .landing-nav .menu { font-size: 13px; }
+
+  .landing-page { padding: 28px 20px 48px; }
+  .hero h1 { font-size: clamp(34px, 7vw, 64px); }
+  .hero .cta { flex-wrap: wrap; }
+  .hero .cta .btn { flex: 1 1 auto; justify-content: center; }
+
+  /* Flow card: stack the 3-col diagram into one column, drop the spacer head. */
+  .flow-card { padding: 22px 20px 20px; }
+  .flow-grid { grid-template-columns: 1fr; gap: 16px; }
+  .flow-grid > .col-head { display: none; }
+  .flow-grid > .col-head:first-child { display: block; }
+  .flow-auto { padding: 8px 0; }
+  .flow-auto .desc { max-width: none; }
+
+  .feature-row { grid-template-columns: 1fr; }
+  .feature-card .sub { max-width: none; }
+
+  .screens-grid { grid-template-columns: 1fr; }
+  .screens-section { margin-top: 56px; }
+
+  .landing-footer { padding: 32px 20px 36px; }
+  .landing-footer-inner { gap: 28px; }
+  .landing-footer-meta { flex-direction: column; align-items: flex-start; gap: 10px; }
+}
+
+/* Very narrow (≤360px): make sure long German nouns never force horizontal scroll. */
+@media (max-width: 380px) {
+  .landing-header { padding: 12px 14px; }
+  .landing-page { padding: 24px 14px 40px; }
+  .hero .cta .btn { flex-basis: 100%; }
+}
+
 
 /* ============ login.html ============ */
 .auth-page { padding: 40px 56px 24px; max-width: 1320px; margin: 0 auto; }

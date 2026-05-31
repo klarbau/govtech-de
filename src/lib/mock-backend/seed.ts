@@ -424,3 +424,40 @@ export function getActivePersonaId(): string {
   const meta = read('meta' as CollectionKey, metaSchema);
   return meta?.active_persona_id ?? DEFAULT_PERSONA_ID;
 }
+
+/**
+ * Macht den Reliable-Mode session-sticky: Steht `?reliable=1` in der URL,
+ * wird das Flag EINMAL in den `meta`-Bucket geschrieben — danach überlebt es
+ * die Navigation weg von `?reliable=1` (z. B. /assistent?reliable=1 →
+ * /vorgaenge/umzug/run), während die Kaskade im Browser noch tickt.
+ *
+ * Hintergrund: Seit das Mock-Backend in-process im Browser läuft, lösen die
+ * drei Resolver (latency.ts / client.ts / autopilot/umzug.ts) das Flag bei
+ * JEDEM Tick LIVE aus `window.location.search` auf. Navigiert der Nutzer
+ * (oder der e2e-Run) während eines laufenden Autopilots auf eine Seite OHNE
+ * `?reliable=1`, würde sonst mitten in der Kaskade wieder Fehler-Injektion
+ * greifen und einer der 4 statutorischen Block-A-Schritte könnte ausfallen.
+ * Die Resolver lesen `meta.reliable_mode` bereits als zweite Quelle — hier
+ * fehlte nur der SCHREIBVORGANG.
+ *
+ * Read-modify-write: bestehende Meta-Felder (insb. `active_persona_id` und
+ * `seeded_at` = Persona-/Seed-Version) bleiben erhalten. Vollständig
+ * defensiv (kein Throw), idempotent, no-op außerhalb des Browsers. Nutzt die
+ * vorhandenen Persistenz-Helfer (`read`/`write`) — kein direkter
+ * localStorage-Zugriff. Wird beim Client-Boot aufgerufen (siehe
+ * `Providers`), NACH `seedIfEmpty`, damit ein Reseed das Flag nicht abräumt.
+ */
+export function syncReliableModeFromUrl(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('reliable') !== '1') return;
+    const meta = read('meta' as CollectionKey, metaSchema);
+    if (!meta) return;
+    if (meta.reliable_mode === true) return;
+    write('meta' as CollectionKey, { ...meta, reliable_mode: true });
+  } catch {
+    // URL-/Persistenz-Lesefehler ignorieren — Reliable-Mode ist nur ein
+    // Demo-/Loom-Komfort, niemals ein harter Pfad.
+  }
+}

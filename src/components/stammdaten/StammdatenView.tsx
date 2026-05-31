@@ -430,7 +430,6 @@ export function StammdatenView(_props: StammdatenViewProps) {
                   </div>
                 </div>
                 <span className="badge green">Gültig</span>
-                <ChevronRight style={{ color: 'var(--ink-4)', width: '14px', height: '14px' }} />
               </div>
             )}
             {personalausweis && (
@@ -446,7 +445,6 @@ export function StammdatenView(_props: StammdatenViewProps) {
                   </div>
                 </div>
                 <span className="badge green">Gültig</span>
-                <ChevronRight style={{ color: 'var(--ink-4)', width: '14px', height: '14px' }} />
               </div>
             )}
             {aufenthalt && (
@@ -462,7 +460,6 @@ export function StammdatenView(_props: StammdatenViewProps) {
                   </div>
                 </div>
                 <span className="badge green">Gültig</span>
-                <ChevronRight style={{ color: 'var(--ink-4)', width: '14px', height: '14px' }} />
               </div>
             )}
             <Link className="add-link" href="/dokumente">
@@ -504,7 +501,6 @@ export function StammdatenView(_props: StammdatenViewProps) {
                   </div>
                 </div>
                 <span className="badge green">Aktiv</span>
-                <ChevronRight style={{ color: 'var(--ink-4)', width: '14px', height: '14px' }} />
               </div>
             )}
             {persona.rentenversicherungsnummer && (
@@ -519,7 +515,6 @@ export function StammdatenView(_props: StammdatenViewProps) {
                   </div>
                 </div>
                 <span className="badge green">Aktiv</span>
-                <ChevronRight style={{ color: 'var(--ink-4)', width: '14px', height: '14px' }} />
               </div>
             )}
             <button

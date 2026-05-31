@@ -707,6 +707,7 @@
       "fehlende_unterlagen": "Яких документів бракує?"
     },
     "log_label": "Розмова з асистентом",
+    "unavailable": "Асистент зараз недоступний. Будь ласка, спробуйте ще раз.",
     "composer": {
       "label": "Повідомлення асистенту",
       "placeholder": "Напишіть повідомлення …",
@@ -791,11 +792,6 @@
       "datenschutz_link": "Докладніше про захист даних"
     }
   },
-  "placeholder": {
-    "section_title": "{section}",
-    "wip": "Цей розділ у підготовці.",
-    "wip_helper": "Демо-концепт зосереджений спершу на автопілоті переїзду. Інші сценарії зʼявляться згодом."
-  },
   "posteingang": {
     "skip_link": {
       "zur_brief_liste": "Перейти до списку листів"
@@ -830,6 +826,7 @@
     "search": {
       "placeholder": "Пошук за номером справи (Aktenzeichen) або відомством …",
       "aria_label": "Пошук за номером справи (Aktenzeichen) або відомством",
+      "view_aria": "Вигляд",
       "hits_count_template": "{count, plural, =0 {Збігів немає} =1 {1 збіг} few {# збіги} many {# збігів} other {# збігу}}"
     },
     "filter": {

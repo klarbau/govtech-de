@@ -40,7 +40,8 @@ The complete folder structure is documented in `CLAUDE.md`. This file describes 
             ▼
 ┌──────────────────────────────────────────────────┐
 │ Next.js Route Handler (Node runtime)             │
-│  src/app/api/assistant/route.ts                  │
+│  src/app/api/assistant/route.ts  (STATELESS LLM  │
+│                                    proxy only)   │
 │                                                  │
 │  ┌────────────────────────────────────────┐      │
 │  │ @anthropic-ai/sdk                      │      │
@@ -50,15 +51,53 @@ The complete folder structure is documented in `CLAUDE.md`. This file describes 
 │  │ stream: true → SSE → client            │      │
 │  └────────────────────────────────────────┘      │
 │                                                  │
-│  Tool execution loop:                            │
-│   - emits tool_use blocks                        │
-│   - server dispatches to mock-backend-mirror     │
-│   - feeds tool_result back into the model        │
+│  Tool execution loop (Approach B):               │
+│   - streams tool_use blocks to the client        │
+│   - CLIENT dispatches against in-process api.ts  │
+│   - client posts next turn back with tool_result │
 │   - until stop_reason !== 'tool_use'             │
 └──────────────────────────────────────────────────┘
+
+(Optional, NOT the browser default) A second server-side mock-backend exists at
+`/api/mock` (RPC) + `/api/mock/events` (SSE), backed by a per-session in-memory
+store. The HTTP/SSE fetch-client (`mock-backend/client.ts`) can target it, but the
+deployed browser path does not — see "Mock-backend deployment topology" below.
 ```
 
-The mock backend lives entirely in the browser. The AI assistant route is the only server-side piece. This keeps the demo deployable as a static-ish Next.js app on Vercel with one route handler.
+### Mock-backend deployment topology
+
+**Deployed default = client-side state.** The barrel `src/lib/mock-backend/index.ts`
+re-exports the **in-process core `api`** (`mock-backend/api.ts`). Every component's
+`api.*` call therefore runs in the browser: reads/writes hit a `LocalStorageStore`
+(resolved by `mock-backend/store-context.ts` when `window.localStorage` exists) and
+events stream over an in-process `EventBus` (`mock-backend/events.ts`). The headline
+Umzug cascade — `api.previewUmzug`, `api.startUmzug`, `api.bestaetigeAutopilotSchritt`,
+`api.getVorgang`, `api.getLetterThread`, `api.subscribe` — runs entirely client-side,
+so it needs no server session affinity.
+
+**Tools are executed client-side** (Approach B). `/api/assistant` is a *stateless* LLM
+proxy that streams `tool_use` blocks back; the client dispatches them against the
+in-process `api` (`src/components/assistent/dispatch-tool.ts`). The assistant route
+holds no application state.
+
+**Retained but not the default:** the HTTP/SSE fetch-client (`mock-backend/client.ts`)
+and the server route handlers under `src/app/api/mock/**` remain in the tree for tests
+and an optional server-store path. They expose the identical `MockBackendApi` surface
+(including `subscribe`), so swapping the barrel back to `apiClient` is a one-line change.
+
+**SSR-safety:** `getCurrentStore()` guards `window.localStorage` and falls back to a
+process-wide `InMemoryStore` during prerender/SSR; `api.subscribe` only registers an
+in-memory listener (no `window` access). Importing `api` from a Server Component or
+during prerender is therefore safe, and `subscribe` no-ops gracefully under SSR.
+
+### Vercel deployment
+
+Because all application state is client-side (`localStorage` + in-process event bus),
+the demo is robust on Vercel's stateless serverless functions — there is no server
+session to lose between cold starts. The only server piece is `/api/assistant`, which
+needs `ANTHROPIC_API_KEY` to drive the conversational assistant; without it the
+assistant degrades gracefully (the rest of the demo, including the Umzug cascade
+triggered from the Vorgänge flow, is unaffected because tool execution is client-side).
 
 ## Mock-backend contract
 
@@ -127,9 +166,10 @@ On version bump, all keys under prior namespace are purged and reseeded.
 
 ## AI assistant execution model
 
-Two equally valid approaches; pick one and document it here once chosen:
+**Decision: Approach B — client-executes-tools** (see the dated decision note below).
+The two approaches that were on the table:
 
-### Approach A — server-side mirror
+### Approach A — server-side mirror (NOT chosen)
 
 The route handler imports a server-side mirror of `mock-backend/api.ts` (same logic, in-memory, request-scoped). When the model emits `tool_use`, the route handler executes the call against the mirror, feeds the result back. Result includes any side-effects to be mirrored back to the client (e.g. new letters), serialised in a final SSE event the client applies to its own mock-backend.
 

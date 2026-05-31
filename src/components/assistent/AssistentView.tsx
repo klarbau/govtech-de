@@ -83,6 +83,7 @@ interface KontextCounts {
 
 export function AssistentView() {
   const locale = useLocale();
+  const t = useTranslations('assistent');
   const tGreeting = useTranslations('assistent.greeting');
 
   const [persona, setPersona] = React.useState<Persona | null>(null);
@@ -282,7 +283,7 @@ export function AssistentView() {
             m.id === assistantId && !m.text
               ? {
                   ...m,
-                  text: 'Der Assistent ist gerade nicht erreichbar. Bitte versuchen Sie es erneut.',
+                  text: t('unavailable'),
                   error: true,
                 }
               : m,
@@ -296,7 +297,7 @@ export function AssistentView() {
 
       await handleToolUsesRef.current(assistantId, toolUses, round);
     },
-    [locale],
+    [locale, t],
   );
 
   const handleToolUses = React.useCallback(
@@ -523,7 +524,7 @@ export function AssistentView() {
         </div>
       </div>
 
-      <div className="quick-chips" role="group" aria-label="Vorgeschlagene Fragen">
+      <div className="quick-chips" role="group" aria-label={t('quick.label')}>
         <button
           type="button"
           className="chip"
@@ -531,7 +532,7 @@ export function AssistentView() {
           onClick={() => void sendUserMessage('Erkläre meinen Brief.')}
         >
           <FileText />
-          Erkläre meinen Brief
+          {t('quick.erklaere_brief')}
         </button>
         <button
           type="button"
@@ -540,7 +541,7 @@ export function AssistentView() {
           onClick={() => void sendUserMessage('Was ist als Nächstes zu tun?')}
         >
           <ListChecks />
-          Was ist als Nächstes zu tun?
+          {t('quick.naechster_schritt')}
         </button>
         <button
           type="button"
@@ -549,13 +550,13 @@ export function AssistentView() {
           onClick={() => void sendUserMessage('Welche Unterlagen fehlen?')}
         >
           <FolderOpen />
-          Welche Unterlagen fehlen?
+          {t('quick.fehlende_unterlagen')}
         </button>
       </div>
 
       <div className="as-layout">
         <div className="chat-card">
-          <ol className="chat-thread" aria-label="Konversation mit dem Assistenten">
+          <ol className="chat-thread" aria-label={t('log_label')}>
             {messages.map((message) => (
               <li key={message.id} style={{ display: 'contents' }}>
                 <MessageBubble message={message} />

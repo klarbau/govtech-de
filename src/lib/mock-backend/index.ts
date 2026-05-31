@@ -1,21 +1,39 @@
 /**
  * Barrel-Export der Mock-Backend-Schicht.
  *
- * Stage 3 (HTTP-Migration): `api` ist hier der **Fetch-Client** (`./client`),
- * der jede Methode über `fetch('/api/mock')` / `EventSource('/api/mock/events')`
- * an die Server-Route-Handler delegiert. Komponenten importieren `api` von hier
- * und sprechen damit das echte HTTP-Backend an.
+ * Deployment-Default (Browser): `api` ist hier die **In-Process-Core-`api`**
+ * (`./api`). Sie schreibt/liest gegen den `LocalStorageStore` (Auflösung in
+ * `store-context.ts` über `window.localStorage`) und streamt Events über den
+ * In-Process-`EventBus` (`./events`). Damit ist der gesamte Demo-Zustand
+ * client-seitig — robust auf Vercels zustandslosen Serverless-Funktionen, ohne
+ * Server-Session-Affinität für die headline Umzug-Kaskade.
  *
- * WICHTIG: Server-Route-Handler (`src/app/api/mock/**`) und Unit-Tests dürfen
- * NICHT den Fetch-Client verwenden — sie importieren die In-Process-Core-`api`
- * direkt aus `./api` (bzw. spezifische Submodule). Dieser Index zeigt
- * ausschließlich auf den Client.
+ * Tool-Ausführung läuft ebenfalls client-seitig (z. B. `AssistentView` →
+ * `api.previewUmzug`, `InlineCascade` → `api.bestaetigeAutopilotSchritt` /
+ * `getVorgang` / `getLetterThread` / `subscribe`). `/api/assistant` ist nur der
+ * zustandslose LLM-Proxy und unberührt.
+ *
+ * RETAINED, aber NICHT der Browser-Default: der HTTP/SSE-Fetch-Client
+ * (`./client`) und die Server-Route-Handler (`src/app/api/mock/**`) bleiben im
+ * Baum (für Tests / optionalen Server-Pfad). Wer den Server-Pfad braucht,
+ * importiert `apiClient` direkt aus `./client`. Die Oberfläche beider ist
+ * identisch (`MockBackendApi`, inkl. `subscribe`), das Re-Pointing ist drop-in.
+ *
+ * SSR-Sicherheit: `getCurrentStore()` (store-context.ts) guardet
+ * `window.localStorage` und fällt unter SSR/Prerender auf einen
+ * Prozess-`InMemoryStore` zurück; `api.subscribe` registriert nur einen
+ * In-Memory-Listener (kein `window`-Zugriff) und ist damit no-op-sicher.
  */
-export { apiClient as api } from './client';
+export { api } from './api';
 export { getMockKanalForBehoerde, MockBackendError } from './api';
 export type { MockBackendApi } from './api';
 export type { MockBackendEvent, MockBackendEventListener } from '@/types/mock-event';
-export { seedIfEmpty, reseedForActivePersona, getActivePersonaId } from './seed';
+export {
+  seedIfEmpty,
+  reseedForActivePersona,
+  getActivePersonaId,
+  syncReliableModeFromUrl,
+} from './seed';
 export {
   resolveReplyBody,
   resolveReplyBodySync,
