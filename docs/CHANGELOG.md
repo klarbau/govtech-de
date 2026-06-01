@@ -2,6 +2,25 @@
 
 Detailed ship history. **This file is NOT mandatory startup reading** — `CLAUDE.md` carries the short current-state summary. Read here only when you need the followup list or ship details of a specific feature.
 
+## Release hardening + deferrals (2026-05-31, branch `feat/wow-1-inline-cascade`)
+
+Pre-GitHub-release pass. Shipped (committed `37f8d8b`, `fc73d9b`):
+- **Deploy-blocker fixed** — the mock-backend barrel (`src/lib/mock-backend/index.ts`) was re-pointed from the Stage-3 server-side HTTP client back to the in-process **browser store** (`export { api } from './api'`). The server-HTTP variant (per-session `globalThis` store + SSE + fire-and-forget timers) was fragile on Vercel serverless; the browser store is robust there. Server routes + `client.ts` retained, just not the default.
+- **Cascade determinism** — `umzug.ts` autopilot now pins reliable-mode **once at cascade start** (`const reliable = isReliable()`), because the browser's `NoopAsyncStore` can't carry request context across the cascade's deferred ticks. Proven `tests/e2e/spine.spec.ts` 5/5 deterministic. `seed.ts` `syncReliableModeFromUrl()` makes `?reliable=1` sticky via the `meta` bucket; wired into `Providers` client-boot.
+- **i18n spine-fixes** — hardcoded Assistent/Posteingang strings routed through `t()`; +2 keys × 6 locales; `_status.json` made honest (`partial` + `de_fallback` list).
+- **Landing a11y contract** — `src/app/page.tsx` now satisfies `tests/a11y/onboarding-landing.spec.ts`: `#leistungen` is a `<section>` (4 feature links resolve), the hero flow diagram is a `<figure role="group">` + `<figcaption>`, landing-header touch targets ≥40px (scoped, in-app topbar untouched). All 8 landing tests green.
+- **Repo files** — `LICENSE` (MIT), `CONTRIBUTING.md`, `SECURITY.md`, `package.json` metadata. Dead code removed (`DokumentPreviewDialog`, `PlaceholderSection`). Inert chevrons dropped in Familie/Stammdaten.
+
+### Deferred — Stammdaten + Familie redesign integration (decided 2026-05-31)
+
+**Finding:** the 2026-05-27 redesign sweep (re-skin) **stripped every `data-testid`** from the live `StammdatenView` (788 lines, 0 testids) and `FamilieView`. The hero/section/wallet/v2 anchors the a11y specs depend on now live in **orphaned, never-imported** components: `src/components/stammdaten/v2/*`, `src/components/stammdaten/StammdatenHero.tsx` (holds `data-testid="stammdaten-hero"`), `src/components/stammdaten/mobilitaet/MobilitaetSektion.tsx`, plus the familie monogram-avatar / "Was betrifft wen" aside / Vertretung `role=note` features. Because `warm()` in 6 `stammdaten-*` specs waits 15 s for the absent `stammdaten-hero` testid, **all 6 files + 4 `redesign-familie` tests were silently RED** — and the prior "a11y PASS" claim was false (classic literal-port regression; see `redesign-prototype-sweep` line 29 "kept `<details>` to preserve shipped tests").
+
+**Verification (this pass):** the **live** `/stammdaten` and `/familie` pages were audited directly with axe (`@axe-core/playwright`, wcag2a/2aa/21a/21aa) in a real browser with the `anna-petrov` persona — **0 violations of any impact, 0 runtime errors**. The pages render and are accessible; only the redesign-structural specs are red.
+
+**Decision (user, 2026-05-31): document & defer** — do NOT block the release on re-integrating the orphaned redesign. The 6 `stammdaten-*` specs are `test.beforeEach(() => test.fixme(...))`-deferred; the 4 `redesign-familie` tests are `test.fixme`-declared. Each carries an inline reason pointing here. **Followup to un-defer:** wire the `v2/*` + `StammdatenHero` + `MobilitaetSektion` components (and the familie features) into the live views, then flip the `fixme`s back to `test`. This is visual-consistency + spec-coverage debt, **not** an accessibility blocker.
+
+**Also flagged (separate workstream):** 4 `onboarding-landing.spec.ts` tests covering the **/onboarding** screen (`axe onboarding A de light/dark`, `onboarding full keyboard flow`, `axe onboarding D dark`) are RED as of 2026-05-31 — left for the onboarding workstream; the landing half of that file is green.
+
 ## Foundation
 
 - [x] Project context + agent roster defined
