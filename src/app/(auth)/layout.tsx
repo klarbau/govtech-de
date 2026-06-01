@@ -4,6 +4,7 @@ import { getTranslations } from 'next-intl/server';
 
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 import { ThemeToggle } from '@/components/layout/ThemeToggle';
+import { Button } from '@/components/ui/button';
 
 // The onboarding flow hydrates and reseeds from localStorage at request time,
 // so static prerendering yields nothing and trips the next-intl@3 + Next 15.5
@@ -49,14 +50,19 @@ export default async function AuthLayout({
         <div className="ms-auto flex items-center gap-2">
           <LanguageSwitcher />
           <ThemeToggle />
-          <Link
-            href="#main-content"
-            aria-label={tOnboarding('topbar.login_label')}
-            className="inline-flex min-h-[40px] items-center gap-1 rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          <Button
+            size="sm"
+            className="min-h-[40px] gap-1 rounded-full px-4 text-primary-foreground!"
+            render={
+              <Link
+                href="#main-content"
+                aria-label={tOnboarding('topbar.login_label')}
+              />
+            }
           >
             {tOnboarding('topbar.login_label')}
             <ChevronDown className="size-4 rtl:-scale-x-100" aria-hidden="true" />
-          </Link>
+          </Button>
         </div>
       </header>
 
