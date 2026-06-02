@@ -415,6 +415,7 @@
     "filter": "Filtre",
     "filter_active": "{count} filtre etkin",
     "search": "Ara",
+    "loading": "Yükleniyor …",
     "all": "Tümü",
     "show_all": "Tümünü göster",
     "actions": {

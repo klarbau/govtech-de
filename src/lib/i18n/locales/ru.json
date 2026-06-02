@@ -415,6 +415,7 @@
     "filter": "Фильтр",
     "filter_active": "Фильтров активно: {count}",
     "search": "Поиск",
+    "loading": "Загрузка …",
     "all": "Все",
     "show_all": "Показать все",
     "actions": {

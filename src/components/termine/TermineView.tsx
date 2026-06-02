@@ -45,6 +45,8 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 
+import { Skeleton } from '@/components/shared/Skeleton';
+
 import { MonthCalendar } from './MonthCalendar';
 import { TermineFilter, type TermineFilterKey } from './TermineFilter';
 
@@ -484,11 +486,10 @@ export function TermineView({ nowIso }: TermineViewProps) {
         <div>
           <div className="tm-card">
             {loading ? (
-              <div
-                className="animate-pulse rounded-md bg-surface-muted"
-                style={{ height: 280 }}
-                aria-hidden="true"
-              />
+              <div role="status" aria-busy="true">
+                <span className="sr-only">{t('common.loading')}</span>
+                <Skeleton className="rounded-md" style={{ height: 280 }} />
+              </div>
             ) : (
               <MonthCalendar
                 selectedIso={selectedIso}
@@ -541,23 +542,18 @@ export function TermineView({ nowIso }: TermineViewProps) {
           ) : null}
 
           {loading ? (
-            <>
-              <div
-                className="animate-pulse tm-next"
-                style={{ minHeight: 120 }}
-                aria-hidden="true"
-              />
-              <div
-                className="animate-pulse tm-list-item"
+            <div role="status" aria-busy="true">
+              <span className="sr-only">{t('common.loading')}</span>
+              <Skeleton className="rounded-lg" style={{ minHeight: 120 }} />
+              <Skeleton
+                className="rounded-lg"
                 style={{ marginTop: 22, height: 72 }}
-                aria-hidden="true"
               />
-              <div
-                className="animate-pulse tm-list-item"
+              <Skeleton
+                className="rounded-lg"
                 style={{ marginTop: 10, height: 72 }}
-                aria-hidden="true"
               />
-            </>
+            </div>
           ) : naechster ? (
             <div className="tm-next">
               {/* Info area = details entry point. The whole block is clickable

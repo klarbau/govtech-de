@@ -415,6 +415,7 @@
     "filter": "تصفية",
     "filter_active": "عدد عوامل التصفية النشطة: {count}",
     "search": "بحث",
+    "loading": "جارٍ التحميل …",
     "all": "الكل",
     "show_all": "عرض الكل",
     "actions": {

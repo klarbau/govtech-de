@@ -25,6 +25,7 @@ import { BehoerdenBadge } from '@/components/shared/BehoerdenBadge';
 import { DatenschutzCockpitLink } from '@/components/shared/DatenschutzCockpitLink';
 import { FristDetailModal } from '@/components/shared/FristDetailModal';
 import { PrototypeDisclaimer } from '@/components/shared/PrototypeDisclaimer';
+import { Skeleton } from '@/components/shared/Skeleton';
 import { TerminCard } from '@/components/shared/TerminCard';
 import { api } from '@/lib/mock-backend';
 import { cn } from '@/lib/utils';
@@ -158,21 +159,7 @@ export function VorgangDetailLoader({ id }: VorgangDetailLoaderProps) {
   }, [load]);
 
   if (state.kind === 'loading') {
-    return (
-      <div aria-busy="true">
-        <div className="gt-page-head">
-          <div className="h-8 w-64 animate-pulse rounded-md bg-muted/60" />
-          <div className="mt-2 h-4 w-48 animate-pulse rounded-md bg-muted/50" />
-        </div>
-        <div className="vg-layout">
-          <div className="flex flex-col gap-6">
-            <div className="h-40 animate-pulse rounded-2xl bg-muted/40" />
-            <div className="h-56 animate-pulse rounded-2xl bg-muted/40" />
-          </div>
-          <div className="h-72 animate-pulse rounded-2xl bg-muted/40" />
-        </div>
-      </div>
-    );
+    return <VorgangDetailSkeleton />;
   }
 
   if (state.kind === 'not-found') {
@@ -180,6 +167,26 @@ export function VorgangDetailLoader({ id }: VorgangDetailLoaderProps) {
   }
 
   return <VorgangDetail data={state.data} id={id} reload={load} />;
+}
+
+function VorgangDetailSkeleton() {
+  const tCommon = useTranslations('common');
+  return (
+    <div role="status" aria-busy="true">
+      <span className="sr-only">{tCommon('loading')}</span>
+      <div className="gt-page-head">
+        <Skeleton shape="text" className="h-8 w-64" />
+        <Skeleton shape="text" className="mt-2 w-48" />
+      </div>
+      <div className="vg-layout">
+        <div className="flex flex-col gap-6">
+          <Skeleton className="h-40 rounded-2xl" />
+          <Skeleton className="h-56 rounded-2xl" />
+        </div>
+        <Skeleton className="h-72 rounded-2xl" />
+      </div>
+    </div>
+  );
 }
 
 function VorgangDetailNotFound() {

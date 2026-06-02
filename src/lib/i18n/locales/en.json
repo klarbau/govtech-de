@@ -415,6 +415,7 @@
     "filter": "Filter",
     "filter_active": "{count} filters active",
     "search": "Search",
+    "loading": "Loading …",
     "all": "All",
     "show_all": "Show all",
     "actions": {
