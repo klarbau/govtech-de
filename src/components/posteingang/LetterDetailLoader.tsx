@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { ArrowLeft, RefreshCw } from 'lucide-react';
 
+import { Skeleton, SkeletonText } from '@/components/shared/Skeleton';
 import { Button } from '@/components/ui/button';
 import { api } from '@/lib/mock-backend';
 import type { Behoerde, Letter } from '@/types';
@@ -25,6 +26,7 @@ interface LoadedState {
 export function LetterDetailLoader({ id }: LetterDetailLoaderProps) {
   const t = useTranslations('posteingang.reader');
   const tList = useTranslations('posteingang.list');
+  const tCommon = useTranslations('common');
   const [state, setState] = React.useState<
     | { kind: 'loading' }
     | { kind: 'ready'; data: LoadedState }
@@ -76,16 +78,13 @@ export function LetterDetailLoader({ id }: LetterDetailLoaderProps) {
 
   if (state.kind === 'loading') {
     return (
-      <div
-        aria-busy="true"
-        className="flex flex-col gap-3"
-      >
-        <div className="h-6 w-48 animate-pulse rounded-md bg-muted/60" />
-        <div className="h-4 w-72 animate-pulse rounded-md bg-muted/60" />
-        <div className="h-4 w-64 animate-pulse rounded-md bg-muted/60" />
+      <div role="status" aria-busy="true" className="flex flex-col gap-3">
+        <span className="sr-only">{tCommon('loading')}</span>
+        <Skeleton shape="text" className="h-6 w-48" />
+        <SkeletonText lines={2} className="max-w-md" />
         <div className="grid gap-4 md:grid-cols-2">
-          <div className="h-64 animate-pulse rounded-lg bg-muted/40" />
-          <div className="h-64 animate-pulse rounded-lg bg-muted/40" />
+          <Skeleton className="h-64 rounded-lg" />
+          <Skeleton className="h-64 rounded-lg" />
         </div>
       </div>
     );

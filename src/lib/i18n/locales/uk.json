@@ -415,6 +415,7 @@
     "filter": "Фільтр",
     "filter_active": "Активних фільтрів: {count}",
     "search": "Пошук",
+    "loading": "Завантаження …",
     "all": "Усі",
     "show_all": "Показати всі",
     "actions": {

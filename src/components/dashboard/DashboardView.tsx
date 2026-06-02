@@ -24,6 +24,7 @@ import {
 import { AutopilotKatalogTeaser } from '@/components/autopilot/AutopilotKatalogTeaser';
 import { ErledigtFeed } from '@/components/dashboard/ErledigtFeed';
 import { TriumphBanner } from '@/components/dashboard/TriumphBanner';
+import { Skeleton } from '@/components/shared/Skeleton';
 import { api } from '@/lib/mock-backend';
 import type { Behoerde, DashboardSnapshot, Persona } from '@/types';
 import type { DashboardSortMode, TopActionItem } from '@/types/dashboard';
@@ -44,6 +45,7 @@ type ChipTone = 'red' | 'brand' | 'amber';
  */
 export function DashboardView({ nowIso }: DashboardViewProps) {
   const t = useTranslations('dashboard');
+  const tCommon = useTranslations('common');
   const [snapshot, setSnapshot] = React.useState<DashboardSnapshot | null>(null);
   const [persona, setPersona] = React.useState<Persona | null>(null);
   const [behoerdenNames, setBehoerdenNames] = React.useState<Record<string, string>>({});
@@ -141,6 +143,18 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
     } catch {
       /* optimistic dismiss already applied */
     }
+  }
+
+  if (snapshot === null && error === null) {
+    return (
+      <>
+        <div className="gt-page-head">
+          <h1>{t('titel')}</h1>
+          <div className="sub">{t('untertitel')}</div>
+        </div>
+        <DashboardSkeleton label={tCommon('loading')} />
+      </>
+    );
   }
 
   return (
@@ -399,6 +413,28 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
         <p style={{ marginTop: '12px', color: 'var(--red-600)', fontSize: '13px' }}>{error}</p>
       )}
     </>
+  );
+}
+
+/**
+ * Ruhiger Lade-Zustand für das Dashboard: spiegelt grob das `dash-grid`-Layout
+ * (Begrüßungskarte links, zwei gestapelte Karten rechts) plus zwei breite
+ * Folge-Karten. Dekorative Shimmer-Blöcke; das sr-only-Label trägt die Semantik.
+ */
+function DashboardSkeleton({ label }: { label: string }) {
+  return (
+    <div role="status" aria-busy="true">
+      <span className="sr-only">{label}</span>
+      <div className="dash-grid">
+        <Skeleton className="h-64 rounded-2xl" />
+        <div className="flex flex-col gap-4">
+          <Skeleton className="h-28 rounded-2xl" />
+          <Skeleton className="h-28 rounded-2xl" />
+        </div>
+      </div>
+      <Skeleton className="mt-6 h-40 rounded-2xl" />
+      <Skeleton className="mt-6 h-32 rounded-2xl" />
+    </div>
   );
 }
 
