@@ -38,6 +38,22 @@ export function useInertOutsideModal(open: boolean): void {
     if (!('inert' in HTMLElement.prototype)) return;
 
     const marked = new Set<HTMLElement>();
+    // Hintergrund-Modals (z. B. ein offenes Sheet, über dem ein AlertDialog
+    // erscheint) tragen weiterhin `aria-modal="true"`, obwohl sie jetzt inert
+    // sind. Zwei zugleich als „modal" annoncierte Regionen sind a11y-widersprüchlich
+    // (nur der oberste Dialog ist aktiv). Wir parken `aria-modal` auf inerten
+    // Regionen und stellen es beim Schließen wieder her.
+    const ariaModalParked = new Map<HTMLElement, string | null>();
+
+    function parkAriaModal(el: HTMLElement) {
+      const target = el.matches('[aria-modal="true"]')
+        ? el
+        : el.querySelector<HTMLElement>('[aria-modal="true"]');
+      if (target && !ariaModalParked.has(target)) {
+        ariaModalParked.set(target, target.getAttribute('aria-modal'));
+        target.removeAttribute('aria-modal');
+      }
+    }
 
     function sync() {
       document
@@ -47,6 +63,7 @@ export function useInertOutsideModal(open: boolean): void {
             el.inert = true;
             marked.add(el);
           }
+          parkAriaModal(el);
         });
       // An element that lost its marker (e.g. a nested modal closed and base-ui
       // un-marked it) must lose our `inert` too.
@@ -74,6 +91,11 @@ export function useInertOutsideModal(open: boolean): void {
         el.inert = false;
       });
       marked.clear();
+      ariaModalParked.forEach((value, el) => {
+        if (value === null) el.removeAttribute('aria-modal');
+        else el.setAttribute('aria-modal', value);
+      });
+      ariaModalParked.clear();
     };
   }, [open]);
 }

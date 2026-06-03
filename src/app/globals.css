@@ -213,7 +213,10 @@
   --red-600: #B62121;
 
   --pink-50:  #FBE8F2;
-  --pink-500: #C53A88;
+  /* Darkened from #C53A88 (4.14:1, AA-fail as badge text on --pink-50) to clear
+     WCAG AA: #A82B72 = 5.51:1 on --pink-50. Only ever used as text/icon on the
+     light --pink-50 tint, so darkening strictly improves every pairing. */
+  --pink-500: #A82B72;
 
   --violet-50: #ECE9FB;
   --violet-500: #6049D6;

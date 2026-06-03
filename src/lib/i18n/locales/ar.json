@@ -357,7 +357,8 @@
       "done": "منجَز",
       "snooze": "ذكِّرني لاحقاً",
       "snooze_days": "مؤجَّل لمدة {days} يوماً",
-      "actions_label": "إجراءات {titel}"
+      "actions_label": "إجراءات {titel}",
+      "sort_aria": "ترتيب توصيات الإجراءات"
     },
     "triumph": {
       "title": "أُنجز نيابةً عنك",
@@ -718,7 +719,8 @@
     },
     "message": {
       "user_sent": "تم الإرسال",
-      "assistant_label": "المساعد"
+      "assistant_label": "المساعد",
+      "user_label": "أنت"
     },
     "empty": {
       "title": "كيف يمكنني مساعدتك؟",
@@ -790,7 +792,8 @@
       "stammdaten_value": "محدّثة",
       "datenschutz_title": "بياناتك محمية",
       "datenschutz_body": "تُعالَج فقط البيانات اللازمة لسؤالك. وتبقى النسخ الأصلية في صناديق البريد الرسمية.",
-      "datenschutz_link": "مزيد عن حماية البيانات"
+      "datenschutz_link": "مزيد عن حماية البيانات",
+      "aside_label": "سياق المساعد"
     }
   },
   "posteingang": {
@@ -2302,7 +2305,8 @@
       "prev": "الصفحة السابقة",
       "next": "الصفحة التالية",
       "per_page_label": "مستندات لكل صفحة",
-      "per_page_option": "{count} لكل صفحة"
+      "per_page_option": "{count} لكل صفحة",
+      "nav_label": "تنقل صفحات قائمة المستندات"
     },
     "schnellzugriff": {
       "title": "وصول سريع",
@@ -2352,7 +2356,8 @@
       "sort_name": "الاسم (أ–ي)",
       "sort_ausgestellt": "تاريخ الإصدار (الأحدث أولًا)",
       "sort_gueltig": "الصلاحية (المنتهية قريبًا أولًا)",
-      "status_label": "الحالة"
+      "status_label": "الحالة",
+      "button": "تصفية"
     },
     "eudi": {
       "button": "التصدير إلى EUDI Wallet (معاينة)",
@@ -2362,6 +2367,9 @@
       "mock_badge": "[MOCK]",
       "close": "إغلاق",
       "payload_label": "معاينة المستند (اصطناعية)"
+    },
+    "rail": {
+      "aside_label": "وصول سريع للمستندات والمضافة حديثًا"
     }
   },
   "termine": {
@@ -2665,7 +2673,8 @@
       "einwilligungsbasiert": "قائم على الموافقة",
       "aktuell": "مُحدَّث",
       "angezeigt": "عرض {shown} من {total} من مصادر البيانات.",
-      "show_all": "عرض جميع المستلِمين"
+      "show_all": "عرض جميع المستلِمين",
+      "col_aktion": "إجراء"
     },
     "kontrolle": {
       "title": "تحكّمك في حماية البيانات",

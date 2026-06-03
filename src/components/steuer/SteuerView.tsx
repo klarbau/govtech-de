@@ -122,8 +122,11 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
     .map((id) => documentsById[id])
     .filter((d): d is Document => Boolean(d));
 
+  const datenschutz = uebersicht?.datenschutz;
+  const watermark = uebersicht?.watermark ?? '[MOCK]';
+
   return (
-    <main className="gt-content">
+    <>
       <div className="gt-page-head">
         <h1>{t('steuer.title')}</h1>
         <div className="sub">{t('steuer.subtitle')}</div>
@@ -138,15 +141,29 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
                   {t('steuer.hero.steuerjahr', {
                     jahr: uebersicht?.steuerjahr ?? steuerjahr,
                   })}{' '}
-                  <span className="badge brand">{t('steuer.hero.entwurf_badge')}</span>
+                  <span className="badge brand">{t('steuer.hero.entwurf_badge')}</span>{' '}
+                  <span
+                    className="badge outline"
+                    role="note"
+                    style={{ fontFamily: 'var(--mono, monospace)' }}
+                  >
+                    {watermark}
+                  </span>
                 </h2>
                 <div className="stand">{t('steuer.hero.stand', { datum: formatStand(nowIso) })}</div>
                 <div className="vor">{t('steuer.hero.erstattung_label')}</div>
-                <div className="erstattung" style={{ whiteSpace: 'nowrap' }}>
+                <div
+                  className="erstattung"
+                  style={{ whiteSpace: 'nowrap' }}
+                  aria-label={t('steuer.hero.erstattung_aria', { betrag: erstattung })}
+                >
                   {erstattung}
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--green-700)', fontSize: 13 }}>
-                  <CheckCircle2 style={{ width: 16, height: 16, color: 'var(--green-600)' }} />
+                <div
+                  className="st-basis-hint"
+                  style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13 }}
+                >
+                  <CheckCircle2 style={{ width: 16, height: 16 }} aria-hidden="true" />
                   {t('steuer.hero.basis_hint')}
                 </div>
               </div>
@@ -170,27 +187,63 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
             </div>
 
             <div className="progress-row">
-              <h4>{t('steuer.fortschritt.title')}</h4>
-              <div className="pr-steps">
-                <div className={`pr-step${activeStep > 0 ? '' : ' current'}`}>
+              <h3>{t('steuer.fortschritt.title')}</h3>
+              <ol className="pr-steps">
+                <li
+                  className={`pr-step${activeStep > 0 ? '' : ' current'}`}
+                  aria-current={activeStep === 0 ? 'step' : undefined}
+                >
                   <span className="dot">
-                    {activeStep > 0 ? <Check style={{ width: 14, height: 14 }} /> : '1'}
+                    {activeStep > 0 ? (
+                      <Check style={{ width: 14, height: 14 }} aria-hidden="true" />
+                    ) : (
+                      '1'
+                    )}
                   </span>
                   <div>
-                    <div className="t">{t('steuer.fortschritt.geprueft')}</div>
+                    <div className="t">
+                      {t('steuer.fortschritt.geprueft')}
+                      <span className="sr-only">
+                        {' '}
+                        {t(
+                          activeStep > 0
+                            ? 'steuer.fortschritt.status_done'
+                            : 'steuer.fortschritt.status_active',
+                        )}
+                      </span>
+                    </div>
                     <div className="s">
                       {t('steuer.fortschritt.geprueft_desc')}
                       <br />
                       {formatStand(nowIso)}
                     </div>
                   </div>
-                </div>
-                <div className={`pr-step${activeStep === 1 ? ' current' : activeStep > 1 ? '' : ' pending'}`}>
+                </li>
+                <li
+                  className={`pr-step${activeStep === 1 ? ' current' : activeStep > 1 ? '' : ' pending'}`}
+                  aria-current={activeStep === 1 ? 'step' : undefined}
+                >
                   <span className="dot">
-                    {activeStep > 1 ? <Check style={{ width: 14, height: 14 }} /> : '2'}
+                    {activeStep > 1 ? (
+                      <Check style={{ width: 14, height: 14 }} aria-hidden="true" />
+                    ) : (
+                      '2'
+                    )}
                   </span>
                   <div>
-                    <div className="t">{t('steuer.fortschritt.ergaenzen')}</div>
+                    <div className="t">
+                      {t('steuer.fortschritt.ergaenzen')}
+                      <span className="sr-only">
+                        {' '}
+                        {t(
+                          activeStep > 1
+                            ? 'steuer.fortschritt.status_done'
+                            : activeStep === 1
+                              ? 'steuer.fortschritt.status_active'
+                              : 'steuer.fortschritt.status_pending',
+                        )}
+                      </span>
+                    </div>
                     <div className="s">
                       {t('steuer.fortschritt.ergaenzen_desc')}
                       <br />
@@ -199,15 +252,28 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
                       </a>
                     </div>
                   </div>
-                </div>
-                <div className={`pr-step${activeStep === 2 ? ' current' : activeStep < 2 ? ' pending' : ''}`}>
+                </li>
+                <li
+                  className={`pr-step${activeStep === 2 ? ' current' : activeStep < 2 ? ' pending' : ''}`}
+                  aria-current={activeStep === 2 ? 'step' : undefined}
+                >
                   <span className="dot">3</span>
                   <div>
-                    <div className="t">{t('steuer.fortschritt.abgabe')}</div>
+                    <div className="t">
+                      {t('steuer.fortschritt.abgabe')}
+                      <span className="sr-only">
+                        {' '}
+                        {t(
+                          activeStep === 2
+                            ? 'steuer.fortschritt.status_active'
+                            : 'steuer.fortschritt.status_pending',
+                        )}
+                      </span>
+                    </div>
                     <div className="s">{t('steuer.fortschritt.abgabe_desc')}</div>
                   </div>
-                </div>
-              </div>
+                </li>
+              </ol>
             </div>
           </div>
 
@@ -216,10 +282,10 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
             <table>
               <thead>
                 <tr>
-                  <th>{t('steuer.col.bereich')}</th>
-                  <th style={{ textAlign: 'right' }}>{t('steuer.col.betrag')}</th>
-                  <th>{t('steuer.col.status')}</th>
-                  <th style={{ textAlign: 'right' }}>{t('steuer.col.aktion')}</th>
+                  <th scope="col">{t('steuer.col.bereich')}</th>
+                  <th scope="col" style={{ textAlign: 'right' }}>{t('steuer.col.betrag')}</th>
+                  <th scope="col">{t('steuer.col.status')}</th>
+                  <th scope="col" style={{ textAlign: 'right' }}>{t('steuer.col.aktion')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -247,7 +313,7 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
                           </div>
                         </div>
                       </td>
-                      <td style={{ textAlign: 'right' }} className="mono">
+                      <td style={{ textAlign: 'right' }} className="mono text-end">
                         {b.betrag_cent !== undefined
                           ? euroFormatter.format(b.betrag_cent / 100)
                           : '—'}
@@ -345,6 +411,32 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
               {t('steuer.nachweise.show_all')} <ChevronRight style={{ width: 12, height: 12 }} />
             </Link>
           </div>
+
+          <div className="st-card st-privacy">
+            <h3 style={{ margin: '0 0 14px', fontSize: 16, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Shield style={{ width: 16, height: 16 }} aria-hidden="true" />
+              {t('steuer.datenschutz.title')}
+            </h3>
+            <dl className="st-privacy-dl">
+              <dt>{t('steuer.datenschutz.verarbeitet_label')}</dt>
+              <dd>
+                {(datenschutz?.verarbeitete_daten_i18n_keys ?? []).map((k) => t(k)).join(', ') || '—'}
+              </dd>
+              <dt>{t('steuer.datenschutz.rechtsgrundlage_label')}</dt>
+              <dd>{datenschutz?.rechtsgrundlage ?? '—'}</dd>
+              <dt>{t('steuer.datenschutz.empfaenger_label')}</dt>
+              <dd>
+                {datenschutz
+                  ? behoerdenNameById[datenschutz.empfaenger_behoerde_id] ??
+                    datenschutz.empfaenger_behoerde_id
+                  : '—'}
+              </dd>
+            </dl>
+            <p className="st-privacy-hint">{t('steuer.datenschutz.minimierung_hint')}</p>
+            <Link className="right-link" href="/datenschutz" style={{ display: 'inline-flex', alignItems: 'center', gap: 4, marginTop: 6 }}>
+              {t('steuer.datenschutz.mehr')} <ChevronRight style={{ width: 12, height: 12 }} />
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -358,6 +450,6 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
       <span hidden>
         <Bell />
       </span>
-    </main>
+    </>
   );
 }

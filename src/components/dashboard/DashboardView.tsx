@@ -179,9 +179,9 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
         </div>
 
         <div className="since-last">
-          <h4>{t('seit_login.titel')}</h4>
+          <h3>{t('seit_login.titel')}</h3>
           <div className="since-stat">
-            <span className="icon-circle"><Mail /></span>
+            <span className="icon-circle"><Mail aria-hidden="true" /></span>
             <div>
               <div className="n">{diff?.neue_briefe ?? 0}</div>
               <div className="l">{t('seit_login.neue_briefe')}</div>
@@ -210,10 +210,14 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
         </div>
       ) : null}
 
-      <div className="heute-card" style={{ marginTop: '24px' }}>
+      <section
+        aria-labelledby="dashboard-heute-zu-tun"
+        className="heute-card"
+        style={{ marginTop: '24px' }}
+      >
         <div className="heute-head">
-          <h3>{t('heute.titel')}</h3>
-          <div className="tab-chips" role="group" aria-label={t('heute.titel')}>
+          <h3 id="dashboard-heute-zu-tun">{t('heute.titel')}</h3>
+          <div className="tab-chips" role="group" aria-label={t('heute.sort_aria')}>
             <button
               type="button"
               className={`chip${activeTab === 'ki' ? ' active' : ''}`}
@@ -262,11 +266,11 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
             </div>
           </div>
         ) : (
-          <div className="heute-list">
+          <ol className="heute-list">
             {visibleTodos.map((item, idx) => {
               const view = mapToHeuteItem(item, idx);
               return (
-                <div key={view.id} className="heute-item">
+                <li key={view.id} className="heute-item">
                   <Link
                     href={view.href}
                     style={{
@@ -309,12 +313,12 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
                       <Clock3 />
                     </button>
                   </div>
-                </div>
+                </li>
               );
             })}
-          </div>
+          </ol>
         )}
-      </div>
+      </section>
 
       <section
         aria-labelledby="erledigt-feed-title"
@@ -332,28 +336,28 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
       </div>
 
       <div className="grid-cards" style={{ marginTop: '24px' }}>
-        <div className="small-card">
-          <span className="icon-circle"><Clock /></span>
+        <Link className="small-card" href="/posteingang">
+          <span className="icon-circle"><Clock aria-hidden="true" /></span>
           <div>
             <h3 className="t">{t('kacheln.fristen.titel')}</h3>
             <div className="s">{t('kacheln.fristen.offen', { count: snapshot?.frist_tile.length ?? 0 })}</div>
-            <Link className="link" href="/termine">
-              {t('kacheln.fristen.cta')} <ChevronRight />
-            </Link>
+            <span className="link">
+              {t('kacheln.fristen.cta')} <ChevronRight aria-hidden="true" />
+            </span>
           </div>
-        </div>
-        <div className="small-card">
-          <span className="icon-circle"><Mail /></span>
+        </Link>
+        <Link className="small-card" href="/posteingang">
+          <span className="icon-circle"><Mail aria-hidden="true" /></span>
           <div>
             <h3 className="t">{t('kacheln.posteingang.titel')}</h3>
             <div className="s">{t('kacheln.posteingang.ungelesen', { count: snapshot?.posteingang_tile.ungelesen ?? 0 })}</div>
-            <Link className="link" href="/posteingang">
-              {t('kacheln.posteingang.cta')} <ChevronRight />
-            </Link>
+            <span className="link">
+              {t('kacheln.posteingang.cta')} <ChevronRight aria-hidden="true" />
+            </span>
           </div>
-        </div>
-        <div className="small-card">
-          <span className="icon-circle"><Folder /></span>
+        </Link>
+        <Link className="small-card" href="/vorgaenge">
+          <span className="icon-circle"><Folder aria-hidden="true" /></span>
           <div>
             <h3 className="t">{t('kacheln.vorgaenge.titel')}</h3>
             <div className="s">
@@ -364,23 +368,23 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
                   })
                 : '—'}
             </div>
-            <Link className="link" href="/vorgaenge">
-              {t('kacheln.vorgaenge.cta')} <ChevronRight />
-            </Link>
+            <span className="link">
+              {t('kacheln.vorgaenge.cta')} <ChevronRight aria-hidden="true" />
+            </span>
           </div>
-        </div>
-        <div className="small-card">
-          <span className="icon-circle"><Calendar /></span>
+        </Link>
+        <Link className="small-card" href="/termine">
+          <span className="icon-circle"><Calendar aria-hidden="true" /></span>
           <div>
             <h3 className="t">{t('kacheln.termine.titel')}</h3>
             <div className="s">{terminSubtitle}</div>
-            <Link className="link" href="/termine">
-              {t('kacheln.termine.cta')} <ChevronRight />
-            </Link>
+            <span className="link">
+              {t('kacheln.termine.cta')} <ChevronRight aria-hidden="true" />
+            </span>
           </div>
-        </div>
-        <div className="small-card">
-          <span className="icon-circle"><Shield /></span>
+        </Link>
+        <Link className="small-card" href="/datenschutz">
+          <span className="icon-circle"><Shield aria-hidden="true" /></span>
           <div>
             <h3 className="t">{t('kacheln.datenschutz.titel')}</h3>
             <div className="s">
@@ -392,21 +396,21 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
                   })
                 : '—'}
             </div>
-            <Link className="link" href="/datenschutz">
-              {t('kacheln.datenschutz.cta')} <ChevronRight />
-            </Link>
+            <span className="link">
+              {t('kacheln.datenschutz.cta')} <ChevronRight aria-hidden="true" />
+            </span>
           </div>
-        </div>
-        <div className="small-card">
-          <span className="icon-circle"><User /></span>
+        </Link>
+        <Link className="small-card" href="/stammdaten">
+          <span className="icon-circle"><User aria-hidden="true" /></span>
           <div>
             <h3 className="t">{t('kacheln.stammdaten.titel')}</h3>
             <div className="s">{stammdatenSubtitle}</div>
-            <Link className="link" href="/stammdaten">
-              {t('kacheln.stammdaten.cta')} <ChevronRight />
-            </Link>
+            <span className="link">
+              {t('kacheln.stammdaten.cta')} <ChevronRight aria-hidden="true" />
+            </span>
           </div>
-        </div>
+        </Link>
       </div>
 
       {error && (
