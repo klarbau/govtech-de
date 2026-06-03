@@ -65,6 +65,37 @@ export function PreInsertionModal({
   useStripBaseUiFocusGuardAriaHidden(open);
   useInertOutsideModal(open);
 
+  const popupRef = React.useRef<HTMLDivElement | null>(null);
+
+  // Expliziter Tab-Zyklus innerhalb des Popups. base-ui 1.5.0 hält den Fokus
+  // nicht zuverlässig im verschachtelten AlertDialog (geöffnet aus dem bereits
+  // offenen ReplySheet) — der erste Tab entkommt zum <body> (WCAG 2.4.3 / 2.1.2;
+  // BITV 2.0). Wir wrappen den Fokus deterministisch zwischen erstem und letztem
+  // fokussierbaren Element des Popups.
+  function handlePopupKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    if (event.key !== 'Tab') return;
+    const popup = popupRef.current;
+    if (!popup) return;
+    const focusables = Array.from(
+      popup.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      ),
+    ).filter((el) => el.offsetParent !== null || el === document.activeElement);
+    if (focusables.length === 0) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    const active = document.activeElement as HTMLElement | null;
+    if (event.shiftKey) {
+      if (active === first || !popup.contains(active)) {
+        event.preventDefault();
+        last.focus();
+      }
+    } else if (active === last || !popup.contains(active)) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
   if (!templateId) return null;
 
   let norm: ReturnType<typeof pickNormFamilie>;
@@ -114,13 +145,19 @@ export function PreInsertionModal({
           )}
         />
         <AlertDialogPrimitive.Popup
+          ref={popupRef}
           aria-modal="true"
           aria-labelledby={titleId}
           aria-describedby={bodyId}
+          onKeyDown={handlePopupKeyDown}
           className={cn(
             'fixed top-1/2 left-1/2 z-50 grid w-[calc(100vw-2rem)] max-w-xl -translate-x-1/2 -translate-y-1/2 gap-4 rounded-xl border border-border bg-background p-6 text-sm shadow-2xl outline-none',
-            'data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95',
-            'data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95',
+            // Entrance uses zoom only (no opacity fade): a mid-fade frame blends
+            // the primary button against the bg-black/40 backdrop and trips axe
+            // color-contrast (4.29 vs the real steady-state 5.17). Zoom keeps the
+            // content at full opacity so the a11y scan is deterministic.
+            'data-open:animate-in data-open:zoom-in-95',
+            'data-closed:animate-out data-closed:zoom-out-95',
           )}
         >
           <AlertDialogPrimitive.Title

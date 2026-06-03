@@ -348,6 +348,7 @@
     },
     "heute": {
       "titel": "Heute zu tun",
+      "sort_aria": "Sortierung der Aktionsempfehlungen",
       "tab_ki": "KI",
       "tab_frist": "Frist",
       "tab_behoerde": "Behörde",
@@ -721,7 +722,8 @@
     },
     "message": {
       "user_sent": "Gesendet",
-      "assistant_label": "Assistent"
+      "assistant_label": "Assistent",
+      "user_label": "Sie"
     },
     "empty": {
       "title": "Wie kann ich Ihnen helfen?",
@@ -793,7 +795,8 @@
       "stammdaten_value": "Aktuell",
       "datenschutz_title": "Ihre Daten sind geschützt",
       "datenschutz_body": "Es werden nur die für Ihre Frage nötigen Daten verarbeitet. Originale bleiben in den amtlichen Postfächern.",
-      "datenschutz_link": "Mehr zu Datenschutz"
+      "datenschutz_link": "Mehr zu Datenschutz",
+      "aside_label": "Kontext des Assistenten"
     }
   },
   "posteingang": {
@@ -2534,7 +2537,11 @@
       "prev": "Vorherige Seite",
       "next": "Nächste Seite",
       "per_page_label": "Dokumente pro Seite",
-      "per_page_option": "{count} pro Seite"
+      "per_page_option": "{count} pro Seite",
+      "nav_label": "Seitennavigation der Dokumentenliste"
+    },
+    "rail": {
+      "aside_label": "Dokument-Schnellzugriff und zuletzt hinzugefügt"
     },
     "schnellzugriff": {
       "title": "Schnellzugriff",
@@ -2580,6 +2587,7 @@
     "error": "Dokumente konnten nicht geladen werden.",
     "demo_action_toast": "Demo-Funktion — in diesem Prototyp nicht hinterlegt.",
     "filter": {
+      "button": "Filter",
       "sort_label": "Sortieren nach",
       "sort_name": "Name (A–Z)",
       "sort_ausgestellt": "Ausgestellt (neueste zuerst)",
@@ -2893,6 +2901,7 @@
       "col_stelle": "Stelle / Dienst",
       "col_zugriffsart": "Zugriffsart",
       "col_aktualitaet": "Aktualität",
+      "col_aktion": "Aktion",
       "automatisch": "Automatisch synchronisiert",
       "einwilligungsbasiert": "Einwilligungsbasiert",
       "aktuell": "aktuell",

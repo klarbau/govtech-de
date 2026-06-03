@@ -339,6 +339,7 @@ export function PosteingangInbox({
           <PostDetail
             letter={selectedLetter}
             absender={selectedAbsender}
+            replyLabel={t('sticky_action.cta_reply')}
             onAntwortVorbereiten={() => setReplyLetter(selectedLetter)}
             onEinspruch={() => setReplyLetter(selectedLetter)}
             onVorgangErstellen={() => setVorgangModalLetter(selectedLetter)}
@@ -457,9 +458,13 @@ function PostItemRow({
       href={`/posteingang/${letter.id}`}
       className={`post-item${active ? ' active' : ''}`}
       onClick={(e) => {
-        // Inline preview on ≥ lg: prevent navigation when modifier-less click,
-        // so the right-pane detail updates without a full route change.
+        // Inline preview on ≥ lg: prevent navigation on a modifier-less POINTER
+        // click, so the right-pane detail updates without a full route change.
+        // Keyboard activation (Enter) fires a synthetic click with `detail === 0`
+        // — for those we let the real navigation happen, so keyboard users reach
+        // the letter route (and deep-linking / back works). WCAG 2.1.1.
         if (
+          e.detail !== 0 &&
           typeof window !== 'undefined' &&
           window.matchMedia('(min-width: 1024px)').matches &&
           !e.metaKey &&
@@ -511,6 +516,7 @@ function PostItemRow({
 function PostDetail({
   letter,
   absender,
+  replyLabel,
   onAntwortVorbereiten,
   onEinspruch,
   onVorgangErstellen,
@@ -519,6 +525,7 @@ function PostDetail({
 }: {
   letter: Letter;
   absender: Behoerde | null;
+  replyLabel: string;
   onAntwortVorbereiten: () => void;
   onEinspruch: () => void;
   onVorgangErstellen: () => void;
@@ -617,7 +624,8 @@ function PostDetail({
           className="btn btn-primary"
           onClick={onAntwortVorbereiten}
         >
-          <PenSquare />Antwort vorbereiten
+          <PenSquare />
+          {replyLabel}
         </button>
         <button
           type="button"
