@@ -786,6 +786,29 @@ export function ReplySheet({
                     role="radiogroup"
                     aria-labelledby="template-picker-title"
                     className="grid gap-2 sm:grid-cols-1"
+                    onKeyDown={(event) => {
+                      if (
+                        event.key !== 'ArrowDown' &&
+                        event.key !== 'ArrowRight' &&
+                        event.key !== 'ArrowUp' &&
+                        event.key !== 'ArrowLeft'
+                      ) {
+                        return;
+                      }
+                      event.preventDefault();
+                      const current = pickerOrder.indexOf(
+                        formState.template,
+                      );
+                      const base = current < 0 ? 0 : current;
+                      const delta =
+                        event.key === 'ArrowDown' || event.key === 'ArrowRight'
+                          ? 1
+                          : -1;
+                      const nextIndex =
+                        (base + delta + pickerOrder.length) % pickerOrder.length;
+                      const nextId = pickerOrder[nextIndex];
+                      if (nextId) onTemplateClick(nextId);
+                    }}
                   >
                     {pickerOrder.map((id) => {
                       // Solange eine Skelett-Empfehlung vorliegt (= User hat
@@ -823,23 +846,43 @@ export function ReplySheet({
                           return '';
                         }
                       })();
+                      // Roving-Tabindex (WAI-ARIA radiogroup): genau ein
+                      // fokussierbarer Eintrag. Ist nichts gewählt (Skelett-
+                      // Empfehlung aktiv), erhält der erste Eintrag tabindex 0.
+                      const focusIndex =
+                        pickerOrder.indexOf(formState.template) >= 0
+                          ? pickerOrder.indexOf(formState.template)
+                          : 0;
+                      const isTabStop = pickerOrder[focusIndex] === id;
                       return (
-                        <label
+                        <button
                           key={id}
+                          type="button"
+                          role="radio"
+                          aria-checked={checked}
+                          tabIndex={isTabStop ? 0 : -1}
+                          onClick={() => onTemplateClick(id)}
                           className={cn(
-                            'flex cursor-pointer items-start gap-2 rounded-lg border p-3 text-sm transition-colors',
+                            'flex cursor-pointer items-start gap-2 rounded-lg border p-3 text-left text-sm transition-colors',
+                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
                             highlighted
                               ? 'border-foreground/40 bg-muted'
                               : 'border-border hover:bg-muted/40',
                           )}
                         >
-                          <input
-                            type="radio"
-                            name="reply-template"
-                            checked={checked}
-                            onChange={() => onTemplateClick(id)}
-                            className="mt-1 size-4 cursor-pointer"
-                          />
+                          <span
+                            aria-hidden="true"
+                            className={cn(
+                              'mt-1 flex size-4 shrink-0 items-center justify-center rounded-full border',
+                              checked
+                                ? 'border-foreground'
+                                : 'border-muted-foreground/50',
+                            )}
+                          >
+                            {checked && (
+                              <span className="size-2 rounded-full bg-foreground" />
+                            )}
+                          </span>
                           <span className="flex flex-col gap-0.5">
                             <span className="font-medium">
                               <span aria-hidden="true">{icon}</span>{' '}
@@ -858,7 +901,7 @@ export function ReplySheet({
                               </span>
                             )}
                           </span>
-                        </label>
+                        </button>
                       );
                     })}
                   </div>

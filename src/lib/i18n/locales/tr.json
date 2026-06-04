@@ -357,7 +357,8 @@
       "done": "Tamamlandı",
       "snooze": "Daha sonra hatırlat",
       "snooze_days": "{days} gün ertelendi",
-      "actions_label": "{titel} için işlemler"
+      "actions_label": "{titel} için işlemler",
+      "sort_aria": "Eylem önerilerinin sıralaması"
     },
     "triumph": {
       "title": "Sizin için halledildi",
@@ -415,6 +416,7 @@
     "filter": "Filtre",
     "filter_active": "{count} filtre etkin",
     "search": "Ara",
+    "loading": "Yükleniyor …",
     "all": "Tümü",
     "show_all": "Tümünü göster",
     "actions": {
@@ -717,7 +719,8 @@
     },
     "message": {
       "user_sent": "Gönderildi",
-      "assistant_label": "Asistan"
+      "assistant_label": "Asistan",
+      "user_label": "Siz"
     },
     "empty": {
       "title": "Size nasıl yardımcı olabilirim?",
@@ -789,7 +792,8 @@
       "stammdaten_value": "Güncel",
       "datenschutz_title": "Verileriniz korunuyor",
       "datenschutz_body": "Yalnızca sorunuz için gereken veriler işlenir. Asıllar resmî posta kutularında kalır.",
-      "datenschutz_link": "Veri koruma hakkında daha fazlası"
+      "datenschutz_link": "Veri koruma hakkında daha fazlası",
+      "aside_label": "Asistan bağlamı"
     }
   },
   "posteingang": {
@@ -2301,7 +2305,8 @@
       "prev": "Önceki sayfa",
       "next": "Sonraki sayfa",
       "per_page_label": "Sayfa başına belge",
-      "per_page_option": "Sayfa başına {count}"
+      "per_page_option": "Sayfa başına {count}",
+      "nav_label": "Belge listesi sayfa gezinmesi"
     },
     "schnellzugriff": {
       "title": "Hızlı erişim",
@@ -2351,7 +2356,8 @@
       "sort_name": "Ad (A–Z)",
       "sort_ausgestellt": "Düzenlenme tarihi (en yeni önce)",
       "sort_gueltig": "Geçerlilik (yakında dolacak önce)",
-      "status_label": "Durum"
+      "status_label": "Durum",
+      "button": "Filtre"
     },
     "eudi": {
       "button": "EUDI Wallet'a aktar (önizleme)",
@@ -2361,6 +2367,9 @@
       "mock_badge": "[MOCK]",
       "close": "Kapat",
       "payload_label": "Belge önizlemesi (sentetik)"
+    },
+    "rail": {
+      "aside_label": "Belge hızlı erişimi ve son eklenenler"
     }
   },
   "termine": {
@@ -2664,7 +2673,8 @@
       "einwilligungsbasiert": "Onaya dayalı",
       "aktuell": "güncel",
       "angezeigt": "{total} veri kaynağından {shown} tanesi gösteriliyor.",
-      "show_all": "Tüm alıcıları göster"
+      "show_all": "Tüm alıcıları göster",
+      "col_aktion": "İşlem"
     },
     "kontrolle": {
       "title": "Veri koruma kontrolünüz",
