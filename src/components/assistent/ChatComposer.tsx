@@ -21,7 +21,8 @@ export function ChatComposer({ onSend, disabled }: ChatComposerProps) {
     setValue('');
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    // Enter sends; Shift+Enter inserts a newline (textarea default).
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       submit();
@@ -30,12 +31,21 @@ export function ChatComposer({ onSend, disabled }: ChatComposerProps) {
 
   return (
     <div className="composer">
-      <Paperclip aria-hidden="true" />
+      <button
+        type="button"
+        className="attach"
+        disabled
+        aria-label={t('attach')}
+        title={t('attach_disabled')}
+      >
+        <Paperclip aria-hidden="true" />
+      </button>
       <label htmlFor={inputId} className="sr-only">
         {t('label')}
       </label>
-      <input
+      <textarea
         id={inputId}
+        rows={1}
         placeholder={t('placeholder')}
         value={value}
         disabled={disabled}
@@ -49,7 +59,7 @@ export function ChatComposer({ onSend, disabled }: ChatComposerProps) {
         disabled={disabled || value.trim().length === 0}
         aria-label={t('send')}
       >
-        <Send />
+        <Send aria-hidden="true" />
       </button>
     </div>
   );

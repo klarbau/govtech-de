@@ -6,8 +6,9 @@
 >
 > **Alle Daten sind erfunden. Keine echte Behörde ist angebunden.**
 
-<!-- ⬇ Nach Vercel-Deploy (#1) + Loom-Aufnahme (#2): die Zeile darunter einkommentieren und beide URLs einsetzen. -->
-<!-- **▶ [Live-Demo ausprobieren](https://<DEINE-VERCEL-URL>.vercel.app)**  ·  **🎬 [3-Minuten-Walkthrough ansehen (Loom)](https://www.loom.com/share/<DEINE-LOOM-ID>)** -->
+**▶ [Live-Demo ausprobieren](https://govtech-de.vercel.app/)**
+<!-- 🎬 Nach Loom-Aufnahme die nächste Zeile einkommentieren und die Loom-ID einsetzen. -->
+<!-- ·  **🎬 [3-Minuten-Walkthrough ansehen (Loom)](https://www.loom.com/share/<DEINE-LOOM-ID>)** -->
 
 ---
 

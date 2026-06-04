@@ -85,6 +85,7 @@ export function AssistentView() {
   const locale = useLocale();
   const t = useTranslations('assistent');
   const tGreeting = useTranslations('assistent.greeting');
+  const tKontext = useTranslations('assistent.kontext');
 
   const [persona, setPersona] = React.useState<Persona | null>(null);
   const [counts, setCounts] = React.useState<KontextCounts | null>(null);
@@ -518,10 +519,8 @@ export function AssistentView() {
   return (
     <>
       <div className="gt-page-head">
-        <h1>Assistent</h1>
-        <div className="sub">
-          Fragen stellen, Briefe verstehen und nächste Schritte finden.
-        </div>
+        <h1>{t('title')}</h1>
+        <div className="sub">{t('subtitle')}</div>
       </div>
 
       <div className="quick-chips" role="group" aria-label={t('quick.label')}>
@@ -531,7 +530,7 @@ export function AssistentView() {
           disabled={interactionDisabled}
           onClick={() => void sendUserMessage('Erkläre meinen Brief.')}
         >
-          <FileText />
+          <FileText aria-hidden="true" />
           {t('quick.erklaere_brief')}
         </button>
         <button
@@ -540,7 +539,7 @@ export function AssistentView() {
           disabled={interactionDisabled}
           onClick={() => void sendUserMessage('Was ist als Nächstes zu tun?')}
         >
-          <ListChecks />
+          <ListChecks aria-hidden="true" />
           {t('quick.naechster_schritt')}
         </button>
         <button
@@ -549,7 +548,7 @@ export function AssistentView() {
           disabled={interactionDisabled}
           onClick={() => void sendUserMessage('Welche Unterlagen fehlen?')}
         >
-          <FolderOpen />
+          <FolderOpen aria-hidden="true" />
           {t('quick.fehlende_unterlagen')}
         </button>
       </div>
@@ -574,8 +573,8 @@ export function AssistentView() {
                 ) : null}
               </li>
             ))}
-            <div ref={threadEndRef} />
           </ol>
+          <div ref={threadEndRef} />
           <div className="sr-only" role="status" aria-live="polite">
             {liveAnnouncement}
           </div>
@@ -583,68 +582,72 @@ export function AssistentView() {
           <ChatComposer onSend={sendUserMessage} disabled={interactionDisabled} />
         </div>
 
-        <div className="ctx-card">
-          <h3>Kontext</h3>
-          <div className="sub">Ich beziehe mich auf:</div>
+        <aside className="ctx-card" aria-label={tKontext('aside_label')}>
+          <h2>{tKontext('title')}</h2>
+          <div className="sub">{tKontext('subtitle')}</div>
           <Link className="ctx-row" href="/posteingang">
             <span className="icon-circle">
-              <Mail />
+              <Mail aria-hidden="true" />
             </span>
             <div className="grow">
-              <div className="t">Posteingang</div>
+              <div className="t">{tKontext('posteingang')}</div>
               <div className="s">
-                {counts ? `${counts.ungeleseneBriefe} ungelesen` : '—'}
+                {counts
+                  ? tKontext('posteingang_value', { ungelesen: counts.ungeleseneBriefe })
+                  : '—'}
               </div>
             </div>
-            <ChevronRight />
+            <ChevronRight aria-hidden="true" />
           </Link>
           <Link className="ctx-row" href="/dokumente">
             <span className="icon-circle">
-              <FileText />
+              <FileText aria-hidden="true" />
             </span>
             <div className="grow">
-              <div className="t">Dokumente</div>
-              <div className="s">{counts ? `${counts.dokumente} Dokumente` : '—'}</div>
+              <div className="t">{tKontext('dokumente')}</div>
+              <div className="s">
+                {counts ? tKontext('dokumente_value', { count: counts.dokumente }) : '—'}
+              </div>
             </div>
-            <ChevronRight />
+            <ChevronRight aria-hidden="true" />
           </Link>
           <Link className="ctx-row" href="/termine">
             <span className="icon-circle">
-              <Calendar />
+              <Calendar aria-hidden="true" />
             </span>
             <div className="grow">
-              <div className="t">Termine</div>
-              <div className="s">{counts ? `${counts.termine} anstehend` : '—'}</div>
+              <div className="t">{tKontext('termine')}</div>
+              <div className="s">
+                {counts ? tKontext('termine_value', { count: counts.termine }) : '—'}
+              </div>
             </div>
-            <ChevronRight />
+            <ChevronRight aria-hidden="true" />
           </Link>
           <Link className="ctx-row" href="/stammdaten">
             <span className="icon-circle">
-              <User />
+              <User aria-hidden="true" />
             </span>
             <div className="grow">
-              <div className="t">Stammdaten</div>
-              <div className="s">Aktuell</div>
+              <div className="t">{tKontext('stammdaten')}</div>
+              <div className="s">{tKontext('stammdaten_value')}</div>
             </div>
-            <ChevronRight />
+            <ChevronRight aria-hidden="true" />
           </Link>
 
           <div className="ctx-foot">
             <div className="row">
-              <Shield />
+              <Shield aria-hidden="true" />
               <div>
-                <div className="t">Ihre Daten sind geschützt.</div>
-                <div className="s">
-                  Der Assistent verarbeitet Ihre Daten vertraulich und sicher.
-                </div>
+                <div className="t">{tKontext('datenschutz_title')}</div>
+                <div className="s">{tKontext('datenschutz_body')}</div>
                 <Link href="/datenschutz">
-                  Mehr zum Datenschutz{' '}
-                  <ExternalLink style={{ width: 11, height: 11 }} />
+                  {tKontext('datenschutz_link')}{' '}
+                  <ExternalLink aria-hidden="true" style={{ width: 11, height: 11 }} />
                 </Link>
               </div>
             </div>
           </div>
-        </div>
+        </aside>
       </div>
     </>
   );

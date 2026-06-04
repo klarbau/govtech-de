@@ -21,6 +21,7 @@ import {
   Mail,
   Search,
   ShieldCheck,
+  SlidersHorizontal,
   SquareArrowRight,
   Upload,
   Users,
@@ -139,6 +140,10 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
   const [pageSize, setPageSize] = React.useState<number>(PAGE_SIZE_OPTIONS[0]);
   const [sortKey, setSortKey] = React.useState<SortKey>('ausgestellt');
   const [sortDir, setSortDir] = React.useState<SortDir>('desc');
+  const [filterOpen, setFilterOpen] = React.useState(false);
+  const [statusFilter, setStatusFilter] = React.useState<Set<DocStatusKind>>(
+    () => new Set(),
+  );
   const [eudiDoc, setEudiDoc] = React.useState<Document | null>(null);
   const [previewDoc, setPreviewDoc] = React.useState<Document | null>(null);
   const [newDocIds, setNewDocIds] = React.useState<Set<string>>(() => new Set());
@@ -201,6 +206,9 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
     const q = search.trim().toLowerCase();
     const matched = docs.filter((d) => {
       if (activeTab !== 'alle' && kategorieOf(d) !== activeTab) return false;
+      if (statusFilter.size > 0 && !statusFilter.has(deriveStatus(d, now))) {
+        return false;
+      }
       if (!q) return true;
       const hay = `${d.titel} ${d.dokument_nr ?? ''}`.toLowerCase();
       return hay.includes(q);
@@ -230,7 +238,7 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
       return cmp * dir;
     });
     return sorted;
-  }, [docs, search, activeTab, sortKey, sortDir, now, t]);
+  }, [docs, search, activeTab, sortKey, sortDir, statusFilter, now, t]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const safePage = Math.min(page, totalPages);
@@ -249,6 +257,45 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
 
   const ariaSortFor = (key: SortKey): 'ascending' | 'descending' | 'none' =>
     sortKey === key ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none';
+
+  type SortChoice = 'name' | 'ausgestellt' | 'gueltig';
+  const sortChoice: SortChoice =
+    sortKey === 'dokument'
+      ? 'name'
+      : sortKey === 'status'
+        ? 'gueltig'
+        : 'ausgestellt';
+
+  function applySortChoice(choice: SortChoice) {
+    setPage(1);
+    if (choice === 'name') {
+      setSortKey('dokument');
+      setSortDir('asc');
+    } else if (choice === 'gueltig') {
+      setSortKey('status');
+      setSortDir('asc');
+    } else {
+      setSortKey('ausgestellt');
+      setSortDir('desc');
+    }
+  }
+
+  function toggleStatusFilter(status: DocStatusKind) {
+    setPage(1);
+    setStatusFilter((prev) => {
+      const next = new Set(prev);
+      if (next.has(status)) next.delete(status);
+      else next.add(status);
+      return next;
+    });
+  }
+
+  const STATUS_FILTER_IDS: DocStatusKind[] = [
+    'verifiziert',
+    'neu',
+    'ablauf_bald',
+    'abgelaufen',
+  ];
 
   function handleDownloadDoc(doc: Document) {
     const behoerdeName =
@@ -310,23 +357,89 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
                 aria-label={t('search.aria_label')}
               />
             </div>
-            <div className="tab-chips">
-              {TAB_IDS.map((tabId) => {
-                const isActive = tabId === activeTab;
-                return (
-                  <button
-                    key={tabId}
-                    type="button"
-                    className={`chip${isActive ? ' active' : ''}`}
-                    onClick={() => {
-                      setActiveTab(tabId);
-                      setPage(1);
-                    }}
+            <div className="dk-filterbar">
+              <div className="tab-chips">
+                {TAB_IDS.map((tabId) => {
+                  const isActive = tabId === activeTab;
+                  return (
+                    <button
+                      key={tabId}
+                      type="button"
+                      className={`chip${isActive ? ' active' : ''}`}
+                      onClick={() => {
+                        setActiveTab(tabId);
+                        setPage(1);
+                      }}
+                    >
+                      {t(`tab.${tabId}`)} <span className="count">{counts[tabId]}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="dk-filter">
+                <button
+                  type="button"
+                  className="chip"
+                  aria-expanded={filterOpen}
+                  aria-controls="dk-filter-panel"
+                  onClick={() => setFilterOpen((v) => !v)}
+                >
+                  <SlidersHorizontal aria-hidden="true" />
+                  {t('filter.button')}
+                </button>
+                {filterOpen ? (
+                  <div
+                    id="dk-filter-panel"
+                    className="dk-filter-panel"
+                    role="group"
+                    aria-label={t('filter.button')}
                   >
-                    {t(`tab.${tabId}`)} <span className="count">{counts[tabId]}</span>
-                  </button>
-                );
-              })}
+                    <fieldset
+                      className="dk-filter-group"
+                      role="radiogroup"
+                      aria-label={t('filter.sort_label')}
+                    >
+                      <legend className="dk-filter-legend">
+                        {t('filter.sort_label')}
+                      </legend>
+                      {(['name', 'ausgestellt', 'gueltig'] as const).map((choice) => {
+                        const id = `dk-sort-${choice}`;
+                        return (
+                          <div key={choice} className="dk-filter-row">
+                            <input
+                              type="radio"
+                              id={id}
+                              name="dk-sort"
+                              checked={sortChoice === choice}
+                              onChange={() => applySortChoice(choice)}
+                            />
+                            <label htmlFor={id}>{t(`filter.sort_${choice}`)}</label>
+                          </div>
+                        );
+                      })}
+                    </fieldset>
+                    <fieldset className="dk-filter-group">
+                      <legend className="dk-filter-legend">
+                        {t('filter.status_label')}
+                      </legend>
+                      {STATUS_FILTER_IDS.map((status) => {
+                        const id = `dk-status-${status}`;
+                        return (
+                          <div key={status} className="dk-filter-row">
+                            <input
+                              type="checkbox"
+                              id={id}
+                              checked={statusFilter.has(status)}
+                              onChange={() => toggleStatusFilter(status)}
+                            />
+                            <label htmlFor={id}>{t(`status.${status}`)}</label>
+                          </div>
+                        );
+                      })}
+                    </fieldset>
+                  </div>
+                ) : null}
+              </div>
             </div>
           </div>
 
@@ -334,7 +447,7 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
             <table>
               <thead>
                 <tr>
-                  <th aria-sort={ariaSortFor('dokument')}>
+                  <th scope="col" aria-sort={ariaSortFor('dokument')}>
                     <SortHeader
                       label={t('col.dokument')}
                       active={sortKey === 'dokument'}
@@ -342,7 +455,7 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
                       onClick={() => toggleSort('dokument')}
                     />
                   </th>
-                  <th aria-sort={ariaSortFor('kategorie')}>
+                  <th scope="col" aria-sort={ariaSortFor('kategorie')}>
                     <SortHeader
                       label={t('col.kategorie')}
                       active={sortKey === 'kategorie'}
@@ -350,7 +463,7 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
                       onClick={() => toggleSort('kategorie')}
                     />
                   </th>
-                  <th aria-sort={ariaSortFor('status')}>
+                  <th scope="col" aria-sort={ariaSortFor('status')}>
                     <SortHeader
                       label={t('col.status')}
                       active={sortKey === 'status'}
@@ -358,7 +471,7 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
                       onClick={() => toggleSort('status')}
                     />
                   </th>
-                  <th aria-sort={ariaSortFor('ausgestellt')}>
+                  <th scope="col" aria-sort={ariaSortFor('ausgestellt')}>
                     <SortHeader
                       label={t('col.daten')}
                       active={sortKey === 'ausgestellt'}
@@ -366,7 +479,7 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
                       onClick={() => toggleSort('ausgestellt')}
                     />
                   </th>
-                  <th>{t('col.aktionen')}</th>
+                  <th scope="col">{t('col.aktionen')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -494,8 +607,8 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
               </tbody>
             </table>
 
-            <div className="pagination">
-              <div className="muted text-sm">
+            <nav className="pagination" aria-label={t('pagination.nav_label')}>
+              <div className="muted text-sm" aria-live="polite">
                 {filtered.length === 0
                   ? t('pagination.empty')
                   : t('pagination.range', {
@@ -562,13 +675,13 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
                 </select>
                 <ChevronDown aria-hidden="true" />
               </div>
-            </div>
+            </nav>
           </div>
         </div>
 
-        <div className="rail">
+        <aside className="rail" aria-label={t('rail.aside_label')}>
           <div className="card">
-            <h4>{t('schnellzugriff.title')}</h4>
+            <h2>{t('schnellzugriff.title')}</h2>
             <QuickAction
               Icon={Upload}
               title={t('schnellzugriff.upload')}
@@ -612,7 +725,7 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
           </div>
 
           <div className="card">
-            <h4>{t('zuletzt.title')}</h4>
+            <h2>{t('zuletzt.title')}</h2>
             {recentlyAdded.map((doc) => {
               const av = avatarFor(doc.typ);
               const recCls =
@@ -652,7 +765,7 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
           </div>
 
           <div className="card">
-            <h4>{t('teilen.title')}</h4>
+            <h2>{t('teilen.title')}</h2>
             <div className="muted text-sm" style={{ marginBottom: 14 }}>
               {t('teilen.hint')}
             </div>
@@ -670,7 +783,7 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
               {t('teilen.cta')}
             </button>
           </div>
-        </div>
+        </aside>
       </div>
 
       <EudiExportDialog
@@ -807,6 +920,7 @@ function DocumentPreviewDialog({
           >
             <span
               className="badge"
+              role="note"
               style={{
                 alignSelf: 'flex-start',
                 fontFamily: 'var(--mono, monospace)',
