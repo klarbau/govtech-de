@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { parseISO } from 'date-fns';
 import {
   CheckCircle2,
@@ -32,6 +33,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/shared/Skeleton';
 import type {
   Behoerde,
   Persona,
@@ -121,15 +123,7 @@ export function StammdatenView(_props: StammdatenViewProps) {
   }, []);
 
   if (!data) {
-    return (
-      <>
-        <div className="gt-page-head">
-          <h1>Stammdaten</h1>
-          <div className="sub">Persönliche Daten, Kontakte und Nachweise an einem Ort.</div>
-        </div>
-        <div className="muted" style={{ marginTop: '12px' }}>Daten werden geladen …</div>
-      </>
-    );
+    return <StammdatenSkeleton />;
   }
 
   const { persona, stammdaten, log, wallet } = data;
@@ -708,6 +702,26 @@ export function StammdatenView(_props: StammdatenViewProps) {
         </DialogContent>
       </Dialog>
     </>
+  );
+}
+
+function StammdatenSkeleton() {
+  const tCommon = useTranslations('common');
+  return (
+    <div role="status" aria-busy="true">
+      <span className="sr-only">{tCommon('loading')}</span>
+      <div className="gt-page-head">
+        <Skeleton shape="text" className="h-8 w-64" />
+        <Skeleton shape="text" className="mt-2 w-80" />
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '18px', marginTop: '14px' }}>
+        <Skeleton className="h-28 rounded-2xl" />
+        <Skeleton className="h-36 rounded-2xl" />
+        <Skeleton className="h-32 rounded-2xl" />
+        <Skeleton className="h-32 rounded-2xl" />
+        <Skeleton className="h-28 rounded-2xl" />
+      </div>
+    </div>
   );
 }
 

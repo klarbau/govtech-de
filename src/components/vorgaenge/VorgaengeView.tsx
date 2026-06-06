@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import {
   AlertCircle,
   AlertTriangle,
@@ -19,6 +20,7 @@ import {
 } from 'lucide-react';
 
 import { api } from '@/lib/mock-backend';
+import { Skeleton } from '@/components/shared/Skeleton';
 import type { Behoerde, BehoerdeId, Vorgang } from '@/types';
 
 /* Literal port of docs/design-prototype-v2/vorgaenge.html. */
@@ -105,6 +107,7 @@ export function VorgaengeView() {
   const [behoerdenById, setBehoerdenById] = React.useState<Record<BehoerdeId, Pick<Behoerde, 'name_de'>>>({});
   const [activeTab, setActiveTab] = React.useState<FilterId>('alle');
   const [nowIso] = React.useState(() => new Date().toISOString());
+  const [loaded, setLoaded] = React.useState(false);
 
   React.useEffect(() => {
     let cancelled = false;
@@ -122,7 +125,9 @@ export function VorgaengeView() {
           await new Promise((r) => setTimeout(r, 200));
         }
       }
-    })();
+    })().finally(() => {
+      if (!cancelled) setLoaded(true);
+    });
     return () => {
       cancelled = true;
     };
@@ -229,6 +234,10 @@ export function VorgaengeView() {
     const warten = counts.warten;
     return { offen, fristen14, warten };
   }, [vorgaenge, nowIso, counts.warten]);
+
+  if (!loaded) {
+    return <VorgaengeSkeleton />;
+  }
 
   return (
     <main className="gt-content">
@@ -491,6 +500,25 @@ export function VorgaengeView() {
             Alle Vorgänge ansehen <ChevronRight style={{ width: 12, height: 12 }} />
           </a>
         </div>
+      </div>
+    </main>
+  );
+}
+
+function VorgaengeSkeleton() {
+  const tCommon = useTranslations('common');
+  return (
+    <main className="gt-content" role="status" aria-busy="true">
+      <span className="sr-only">{tCommon('loading')}</span>
+      <div className="gt-page-head">
+        <Skeleton shape="text" className="h-8 w-48" />
+        <Skeleton shape="text" className="mt-2 w-72" />
+      </div>
+      <div className="flex flex-col gap-6">
+        <Skeleton className="h-56 rounded-2xl" />
+        <Skeleton className="h-24 rounded-2xl" />
+        <Skeleton className="h-24 rounded-2xl" />
+        <Skeleton className="h-24 rounded-2xl" />
       </div>
     </main>
   );

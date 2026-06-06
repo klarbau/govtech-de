@@ -33,6 +33,7 @@ import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 
 import { EudiExportDialog } from '@/components/dokumente/EudiExportDialog';
+import { Skeleton } from '@/components/shared/Skeleton';
 import {
   Dialog,
   DialogContent,
@@ -147,6 +148,7 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
   const [eudiDoc, setEudiDoc] = React.useState<Document | null>(null);
   const [previewDoc, setPreviewDoc] = React.useState<Document | null>(null);
   const [newDocIds, setNewDocIds] = React.useState<Set<string>>(() => new Set());
+  const [loaded, setLoaded] = React.useState(false);
 
   const now = React.useMemo(() => new Date(nowIso), [nowIso]);
 
@@ -165,6 +167,8 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
         );
       } catch {
         if (!cancelled) setDocs([]);
+      } finally {
+        if (!cancelled) setLoaded(true);
       }
     })();
     return () => {
@@ -333,6 +337,10 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
         .slice(0, 3),
     [docs],
   );
+
+  if (!loaded) {
+    return <DokumenteSkeleton />;
+  }
 
   return (
     <>
@@ -802,6 +810,21 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
         onDownload={handleDownloadDoc}
       />
     </>
+  );
+}
+
+function DokumenteSkeleton() {
+  const tCommon = useTranslations('common');
+  return (
+    <div role="status" aria-busy="true">
+      <span className="sr-only">{tCommon('loading')}</span>
+      <Skeleton className="h-10 rounded-xl" />
+      <div className="mt-4 flex flex-col gap-3">
+        {Array.from({ length: 5 }, (_, i) => (
+          <Skeleton key={i} className="h-16 rounded-xl" />
+        ))}
+      </div>
+    </div>
   );
 }
 
