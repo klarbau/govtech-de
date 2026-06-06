@@ -2,6 +2,17 @@
 
 Detailed ship history. **This file is NOT mandatory startup reading** — `CLAUDE.md` carries the short current-state summary. Read here only when you need the followup list or ship details of a specific feature.
 
+## Posteingang „Antwort verfassen" re-skin + KI-Aktionen (2026-06-04)
+
+Integrated the donated *GovTech DE Design System* „Antwort verfassen" panel into the live reply `Sheet` and added a new RDG-safe **KI-Umformulieren** capability. Spec: `docs/specs/posteingang-antwort-verfassen-reskin.md`. Orchestrated via workflow (frontend-coder ‖ assistant-engineer → i18n-localizer → code-reviewer ‖ a11y-tester), with all authoritative gates re-run in the main thread.
+
+- **Re-skin** of `ReplySheet.tsx` compose mode (a11y-certified `Sheet` kept — it is already the docked right column; archive `govtech.css` NOT imported, every color mapped to existing tokens): stacked header meta with `[MOCK]` Aktenzeichen watermark; amber `Info` disclaimer (`--ds-color-warning*`); brand-selected template radio **cards** (radiogroup semantics untouched); bordered **editor frame + live char count** (no decorative toolbar — plain-text Behörden letters); **drag-drop dropzone** reusing the existing `validateNewFiles` path; re-skinned footer. All 5 regression-guard `data-testid`s + V1.5.1 §9.1 render order preserved.
+- **KI-Aktionen chips** — „Mit KI umformulieren / Kürzer / Formeller / Einfacher". New `POST /api/reply/rewrite` (`runtime=nodejs`, prompt-cached Haiku 4.5 via `src/lib/ai/reply-rewrite.ts`, new `REPLY_REWRITE_RATE_LIMIT` bucket + `CAPS.maxReplyBodyChars`), one-shot, **never throws** → 200 `{body, source:'fallback'}` offline. **RDG gate:** chips hard-disabled on Rechtsbehelf-Skelett templates (visible § 2 RDG reason) + a tone/length-only system prompt that never adds facts or legal arguments (defense-in-depth).
+- **i18n:** 16 new keys × 6 locales (DE source + EN/RU/UK/AR/TR), JSON-validated; `§ 2 RDG` preserved verbatim, AR RTL-correct.
+- **Bug fixed (pre-existing, `6797e659`):** `FristCitedFormatHeader`/`FristAbgelaufenWarnung` were hidden on open for *recommended* (unselected) Skelett templates — now show the § -Frist context via a derived `contextTemplate` without checking the radio/filling the body. Repaired `v1-5-1-widerspruch-sgg`, `-widerspruch-vwgo`, `-einspruch-aussetzung:64`.
+- **Gates:** `tsc` clean · `next build` green (`/api/reply/rewrite` registered) · `vitest` 732/732 · `test:a11y` **131 passed / 0 failed / 48 fixme-skipped** on reliable PROD (`docs/a11y-reports/posteingang-antwort-verfassen-reskin-2026-06-04.md`) · spine e2e green. Code review: 2 blockers resolved (`safeT` hardcoded-fallback wrapper removed; a11y report produced); double-cast nit deferred (mirrors `dashboard-prioritize.ts`).
+- **Known pre-existing (NOT this work — task #60):** `v1-5-1-einspruch-aussetzung:130` (Skelett body-resolve) + `:184` (dual-send dialog) fail identically on pristine HEAD — fragile `[aria-modal="true"] … button.first()` confirm selector matches the inert Sheet + the modal. Followups: harden that selector; the optional `text-amber-950`→token nicety; verify KI happy-path + prompt-cache hits on a real preview deploy (no key in CI).
+
 ## Release hardening + deferrals (2026-05-31, branch `feat/wow-1-inline-cascade`)
 
 Pre-GitHub-release pass. Shipped (committed `37f8d8b`, `fc73d9b`):

@@ -1135,6 +1135,21 @@
       "sheet_close_aria": "إغلاق لوحة الرد",
       "recipient_label_template": "إلى: {behoerde}",
       "bezug_label_template": "بشأن: {aktenzeichen}",
+      "betreff_label_template": "الموضوع: {betreff}",
+      "aktenzeichen_label_template": "رقم الملف (Aktenzeichen): {aktenzeichen}",
+      "char_count_template": "عدد الأحرف: {n}",
+      "ai_rewrite": {
+        "section_label": "إجراءات الذكاء الاصطناعي",
+        "umformulieren": "إعادة الصياغة بالذكاء الاصطناعي",
+        "kuerzer": "أقصر",
+        "formeller": "أكثر رسمية",
+        "einfacher": "أبسط",
+        "busy": "جارٍ المعالجة …",
+        "done": "تم تحديث النص.",
+        "error": "تعذّرت إعادة الصياغة – يُرجى المحاولة مرة أخرى.",
+        "offline_fallback": "الذكاء الاصطناعي غير متصل – النص دون تغيير.",
+        "disabled_skelett_hint": "غير متاح لقوالب وسائل الطعن القانونية: لا يصوغ التطبيق أي تسبيب قانوني (§ 2 RDG — قانون الخدمات القانونية)."
+      },
       "outbound_speculative": "حتى عام 2027 — تصميم افتراضي. في هذا العرض نُحاكي تواصلاً ثنائي الاتجاه مرتبطاً بخيط الطلب (antrags-thread-gebunden) قائماً على نموذج ZBP/BundID: تعيش الردود دائماً في خيط رسالة بعينها (مع تثبيت برقم الملف Aktenzeichen)، لا كصندوق بريد مفتوح. اليوم (مايو 2026) يختلف قناة الرد بحسب الجهة: Mein ELSTER لمصلحة الضرائب (Finanzamt)، بوابة التأمين الصحي لصناديق التأمين، بوابة خدمة الولاية (Landes-Service-Portal) لمكاتب المواطن وشؤون الأجانب، وغالباً ما تزال البريد الورقي. لا يُرسل شيء إلى {behoerde}.",
       "behoerde_kanal": {
         "bundid_postfach_2027": "صندوق BundID (BundID-Postfach، افتراضياً 2027)",
@@ -1306,7 +1321,10 @@
         "error_too_many": "تم بلوغ الحد الأقصى لعدد الملفات ({maxFiles}).",
         "error_total_too_large": "إجمالي حجم المرفقات يتجاوز {maxTotalMb} م.ب.",
         "error_mime_not_allowed": "نوع الملف ‚{name}' غير مسموح. المسموح: {allowedTypes}.",
-        "errors_heading": "تم رفض هذه المرفقات:"
+        "errors_heading": "تم رفض هذه المرفقات:",
+        "dropzone_cta": "اختيار الملفات",
+        "dropzone_hint": "أو أفلِتها هنا",
+        "dropzone_aria": "اختيار الملفات أو إفلاتها هنا بالسحب والإفلات"
       },
       "draft_saved_template": "تم حفظ المسودة قبل {n} ث",
       "draft_saving": "جارٍ حفظ المسودة …",
