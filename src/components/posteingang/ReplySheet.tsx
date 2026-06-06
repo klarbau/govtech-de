@@ -4,7 +4,19 @@ import * as React from 'react';
 import { useTranslations } from 'next-intl';
 import { parseISO } from 'date-fns';
 import { toast } from 'sonner';
-import { FileText, Paperclip, Trash2, X } from 'lucide-react';
+import {
+  Feather,
+  FileText,
+  Info,
+  Loader2,
+  Minimize2,
+  Paperclip,
+  ScrollText,
+  Send,
+  Sparkles,
+  Trash2,
+  X,
+} from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -88,6 +100,14 @@ function relTimeAgo(date: Date, now: Date): { kind: 'now' | 'sec' | 'min'; n: nu
   return { kind: 'min', n: Math.max(1, Math.floor(ms / 60_000)) };
 }
 
+/** Aktionen der KI-Umformulieren-Chips (Spec §4.1). */
+type ReplyRewriteAction = 'umformulieren' | 'kuerzer' | 'formeller' | 'einfacher';
+
+interface ReplyRewriteResponse {
+  body: string;
+  source: 'ai' | 'fallback';
+}
+
 /**
  * Compose-Sheet (Spec V1.5 §4.3 + V1.5.1 §§ 6, 7, 8, 9).
  *
@@ -154,6 +174,7 @@ export function ReplySheet({
   );
   const [personaId, setPersonaId] = React.useState<string | null>(null);
   const [templatePending, setTemplatePending] = React.useState(false);
+  const [rewritePending, setRewritePending] = React.useState(false);
   const [confirmation, setConfirmation] = React.useState<Reply | null>(
     existingReply,
   );
@@ -270,6 +291,7 @@ export function ReplySheet({
     setAttachmentErrors([]);
     setReadOnlyReply(null);
     setReplies(existingReply ? [existingReply] : []);
+    setRewritePending(false);
   }, [open, existingReply]);
 
   const lastSaveRef = React.useRef<{
@@ -514,15 +536,19 @@ export function ReplySheet({
     return { valid, errors };
   }
 
-  function onAttachmentSelect(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = e.target.files ? Array.from(e.target.files) : [];
-    e.target.value = '';
+  function ingestFiles(files: File[]) {
     if (files.length === 0) return;
     const { valid, errors } = validateNewFiles(files);
     setAttachmentErrors(errors);
     if (valid.length > 0) {
       setFormState((s) => ({ ...s, attachments: [...s.attachments, ...valid] }));
     }
+  }
+
+  function onAttachmentSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = e.target.files ? Array.from(e.target.files) : [];
+    e.target.value = '';
+    ingestFiles(files);
   }
 
   function removePersistedAttachment(index: number) {
@@ -675,6 +701,19 @@ export function ReplySheet({
 
   const currentIsSkelett = isSkelettTemplate(formState.template);
 
+  /**
+   * Template, dessen Frist-Kontext (FristAbgelaufenWarnung + FristCitedFormat-
+   * Header) angezeigt wird. Solange ein Skelett nur *empfohlen* ist (Radio noch
+   * nicht aktiv, Body leer — recommended-vs-checked-Split), bleibt
+   * `formState.template` auf `'freitext'`; der Frist-Hinweis soll aber bereits
+   * beim Öffnen sichtbar sein (§ 9.2). Sobald die Nutzerin bewusst wählt, gilt
+   * wieder `formState.template`.
+   */
+  const contextTemplate: ReplyTemplateChoice =
+    formState.template === 'freitext' && recommendedTemplate
+      ? recommendedTemplate
+      : formState.template;
+
   // Inline-Disclaimer-Render (V1.5.0-Verhalten erhalten + V1.5.1 Skelett-Footer).
   const disclaimerInline = (() => {
     if (formState.template === 'freitext') return null;
@@ -706,12 +745,24 @@ export function ReplySheet({
                 ? t('confirmation.headline')
                 : t('sheet_title', { behoerde: empfaengerName })}
             </SheetTitle>
-            <p className="text-xs text-muted-foreground">
-              {t('recipient_label_template', { behoerde: empfaengerName })}
-            </p>
-            <p className="font-mono text-[11px] text-muted-foreground">
-              {t('bezug_label_template', { aktenzeichen: letter.aktenzeichen })}
-            </p>
+            <div className="flex flex-col gap-0.5 text-xs text-text-muted">
+              <p>{t('recipient_label_template', { behoerde: empfaengerName })}</p>
+              <p>{t('betreff_label_template', { betreff: letter.betreff })}</p>
+              <p className="flex flex-wrap items-center gap-1">
+                <span>
+                  {t('aktenzeichen_label_template', { aktenzeichen: '' }).replace(
+                    /\s*$/,
+                    '',
+                  )}
+                </span>
+                <span className="rounded bg-surface-muted px-1 font-mono text-[10px] uppercase tracking-wide text-text-muted">
+                  [MOCK]
+                </span>
+                <span className="font-mono tabular-nums text-text-primary">
+                  {letter.aktenzeichen}
+                </span>
+              </p>
+            </div>
           </SheetHeader>
 
           {confirmation ? (
@@ -757,14 +808,20 @@ export function ReplySheet({
               <SheetBody>
                 <SpeculativeBanner empfaenger={empfaengerName} />
 
+                {/* Frist-Kontext (Warnung + zitierter Frist-Header) gilt dem
+                    Skelett, das der Picker empfiehlt — auch solange dessen Radio
+                    noch nicht aktiv gewählt ist (recommended-vs-checked-Split, §
+                    9.2). Sonst bliebe der § -Frist-Hinweis bis zum ersten Klick
+                    unsichtbar, obwohl er die wichtigste Information beim Öffnen
+                    ist. Body/Radio bleiben unberührt (Hard-Line § 11.13). */}
                 <FristAbgelaufenWarnung
                   letter={letter}
-                  templateId={formState.template}
+                  templateId={contextTemplate}
                 />
 
                 <FristCitedFormatHeader
                   letter={letter}
-                  templateId={formState.template}
+                  templateId={contextTemplate}
                 />
 
                 <BekanntgabeCaveatDetails letter={letter} />
@@ -786,6 +843,29 @@ export function ReplySheet({
                     role="radiogroup"
                     aria-labelledby="template-picker-title"
                     className="grid gap-2 sm:grid-cols-1"
+                    onKeyDown={(event) => {
+                      if (
+                        event.key !== 'ArrowDown' &&
+                        event.key !== 'ArrowRight' &&
+                        event.key !== 'ArrowUp' &&
+                        event.key !== 'ArrowLeft'
+                      ) {
+                        return;
+                      }
+                      event.preventDefault();
+                      const current = pickerOrder.indexOf(
+                        formState.template,
+                      );
+                      const base = current < 0 ? 0 : current;
+                      const delta =
+                        event.key === 'ArrowDown' || event.key === 'ArrowRight'
+                          ? 1
+                          : -1;
+                      const nextIndex =
+                        (base + delta + pickerOrder.length) % pickerOrder.length;
+                      const nextId = pickerOrder[nextIndex];
+                      if (nextId) onTemplateClick(nextId);
+                    }}
                   >
                     {pickerOrder.map((id) => {
                       // Solange eine Skelett-Empfehlung vorliegt (= User hat
@@ -823,25 +903,52 @@ export function ReplySheet({
                           return '';
                         }
                       })();
+                      // Roving-Tabindex (WAI-ARIA radiogroup): genau ein
+                      // fokussierbarer Eintrag. Ist nichts gewählt (Skelett-
+                      // Empfehlung aktiv), erhält der erste Eintrag tabindex 0.
+                      const focusIndex =
+                        pickerOrder.indexOf(formState.template) >= 0
+                          ? pickerOrder.indexOf(formState.template)
+                          : 0;
+                      const isTabStop = pickerOrder[focusIndex] === id;
                       return (
-                        <label
+                        <button
                           key={id}
+                          type="button"
+                          role="radio"
+                          aria-checked={checked}
+                          tabIndex={isTabStop ? 0 : -1}
+                          onClick={() => onTemplateClick(id)}
                           className={cn(
-                            'flex cursor-pointer items-start gap-2 rounded-lg border p-3 text-sm transition-colors',
+                            'grid cursor-pointer grid-cols-[auto_1fr] items-start gap-2.5 rounded-lg border p-3 text-left text-sm transition-colors',
+                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
                             highlighted
-                              ? 'border-foreground/40 bg-muted'
+                              ? 'border-brand-500 bg-brand-50 ring-1 ring-brand-500 dark:bg-brand-50/15'
                               : 'border-border hover:bg-muted/40',
                           )}
                         >
-                          <input
-                            type="radio"
-                            name="reply-template"
-                            checked={checked}
-                            onChange={() => onTemplateClick(id)}
-                            className="mt-1 size-4 cursor-pointer"
-                          />
+                          <span
+                            aria-hidden="true"
+                            className={cn(
+                              'mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border',
+                              checked
+                                ? 'border-primary'
+                                : 'border-border-strong',
+                            )}
+                          >
+                            {checked && (
+                              <span className="size-2 rounded-full bg-primary" />
+                            )}
+                          </span>
                           <span className="flex flex-col gap-0.5">
-                            <span className="font-medium">
+                            <span
+                              className={cn(
+                                'font-medium',
+                                highlighted
+                                  ? 'text-brand-700'
+                                  : 'text-text-primary',
+                              )}
+                            >
                               <span aria-hidden="true">{icon}</span>{' '}
                               {label}
                             </span>
@@ -850,7 +957,7 @@ export function ReplySheet({
                                 className={cn(
                                   'text-xs',
                                   highlighted
-                                    ? 'text-foreground/85'
+                                    ? 'text-brand-700/90'
                                     : 'text-muted-foreground',
                                 )}
                               >
@@ -858,7 +965,7 @@ export function ReplySheet({
                               </span>
                             )}
                           </span>
-                        </label>
+                        </button>
                       );
                     })}
                   </div>
@@ -947,20 +1054,31 @@ export function ReplySheet({
                       {tReply('skeleton_disclaimer')}
                     </div>
                   )}
-                  <textarea
-                    id="reply-body"
-                    aria-describedby="reply-body-hint"
-                    aria-busy={templatePending}
-                    dir="ltr"
-                    lang="de"
-                    rows={Math.max(8, Math.min(20, formState.body.split('\n').length + 1))}
-                    value={formState.body}
-                    placeholder={placeholder}
-                    onChange={(e) =>
-                      setFormState((s) => ({ ...s, body: e.target.value }))
-                    }
-                    className="min-h-[12rem] w-full resize-y rounded-lg border border-border bg-background p-3 font-sans text-sm leading-relaxed shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
-                  />
+                  <div className="relative overflow-hidden rounded-lg border border-border-strong bg-background shadow-sm focus-within:ring-2 focus-within:ring-ring/60">
+                    <textarea
+                      id="reply-body"
+                      aria-describedby="reply-body-hint"
+                      aria-busy={templatePending || rewritePending}
+                      dir="ltr"
+                      lang="de"
+                      rows={Math.max(
+                        8,
+                        Math.min(20, formState.body.split('\n').length + 1),
+                      )}
+                      value={formState.body}
+                      placeholder={placeholder}
+                      onChange={(e) =>
+                        setFormState((s) => ({ ...s, body: e.target.value }))
+                      }
+                      className="min-h-[12rem] w-full resize-y border-0 bg-transparent p-3 pb-7 font-sans text-sm leading-relaxed outline-none"
+                    />
+                    <span
+                      aria-hidden="true"
+                      className="pointer-events-none absolute bottom-1.5 right-2.5 font-mono text-[10px] tabular-nums text-text-muted"
+                    >
+                      {t('char_count_template', { n: formState.body.length })}
+                    </span>
+                  </div>
                   <p
                     id="reply-body-hint"
                     className="text-[11px] leading-relaxed text-muted-foreground"
@@ -980,6 +1098,19 @@ export function ReplySheet({
                       {skelettFooter}
                     </p>
                   )}
+
+                  <KiAktionenChips
+                    body={formState.body}
+                    disabledForSkelett={currentIsSkelett}
+                    disabledOther={
+                      formState.body.trim().length === 0 || templatePending
+                    }
+                    pending={rewritePending}
+                    onPendingChange={setRewritePending}
+                    onApply={(nextBody) =>
+                      setFormState((s) => ({ ...s, body: nextBody }))
+                    }
+                  />
                 </div>
 
                 <AttachmentInput
@@ -988,6 +1119,7 @@ export function ReplySheet({
                   stagedAttachments={formState.attachments}
                   errors={attachmentErrors}
                   onAdd={onAttachmentSelect}
+                  onDropFiles={ingestFiles}
                   onRemovePersisted={removePersistedAttachment}
                   onRemoveStaged={removeStagedAttachment}
                   onDismissErrors={() => setAttachmentErrors([])}
@@ -1023,9 +1155,8 @@ export function ReplySheet({
                   <Button
                     type="button"
                     variant="ghost"
-                    size="sm"
                     onClick={() => setDiscardOpen(true)}
-                    className="text-destructive hover:bg-destructive/10"
+                    className="rounded-[11px] text-destructive hover:bg-destructive/10"
                     disabled={!draftId && formState.body.trim().length === 0}
                   >
                     <Trash2 className="size-4" aria-hidden="true" />
@@ -1035,15 +1166,14 @@ export function ReplySheet({
                     <Button
                       type="button"
                       variant="outline"
-                      size="sm"
                       onClick={() => void persistDraft().then(() => onOpenChange(false))}
                       disabled={savingState === 'saving'}
+                      className="rounded-[11px]"
                     >
                       {t('save_and_close_button')}
                     </Button>
                     <Button
                       type="button"
-                      size="sm"
                       onClick={() => setVersandModalOpen(true)}
                       disabled={
                         formState.body.trim().length === 0 ||
@@ -1051,7 +1181,9 @@ export function ReplySheet({
                         versandPending ||
                         templatePending
                       }
+                      className="rounded-[11px]"
                     >
+                      <Send className="size-4" aria-hidden="true" />
                       {t('versand_button')}
                     </Button>
                   </div>
@@ -1132,10 +1264,19 @@ interface SpeculativeBannerProps {
 function SpeculativeBanner({ empfaenger }: SpeculativeBannerProps) {
   const t = useTranslations('posteingang.compose');
   return (
-    <p className="rounded-lg border border-amber-300/60 bg-amber-50/60 p-3 text-xs leading-relaxed text-amber-900 dark:border-amber-700/60 dark:bg-amber-900/20 dark:text-amber-100">
-      <span className="font-semibold">{t('speculative_banner_title')}.</span>{' '}
-      {t('outbound_speculative', { behoerde: empfaenger })}
-    </p>
+    <div
+      role="note"
+      className="flex items-start gap-2.5 rounded-lg border border-[var(--ds-color-warning)]/40 bg-[var(--ds-color-warning-soft)] p-3 text-xs leading-relaxed text-amber-950 dark:text-[var(--ds-color-text-primary)]"
+    >
+      <Info
+        className="mt-0.5 size-4 shrink-0 text-[var(--ds-color-warning)]"
+        aria-hidden="true"
+      />
+      <p>
+        <span className="font-semibold">{t('speculative_banner_title')}.</span>{' '}
+        {t('outbound_speculative', { behoerde: empfaenger })}
+      </p>
+    </div>
   );
 }
 
@@ -1145,6 +1286,7 @@ interface AttachmentInputProps {
   stagedAttachments: File[];
   errors: AttachmentError[];
   onAdd: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onDropFiles: (files: File[]) => void;
   onRemovePersisted: (i: number) => void;
   onRemoveStaged: (i: number) => void;
   onDismissErrors: () => void;
@@ -1156,12 +1298,14 @@ function AttachmentInput({
   stagedAttachments,
   errors,
   onAdd,
+  onDropFiles,
   onRemovePersisted,
   onRemoveStaged,
   onDismissErrors,
 }: AttachmentInputProps) {
   const t = useTranslations('posteingang.compose.attachments');
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const [dragging, setDragging] = React.useState(false);
   const allowedTypes = LETTER_ATTACHMENT_LIMITS.ALLOWED_MIME.map((m) =>
     m.replace('application/', '').replace('image/', '').toUpperCase(),
   ).join(', ');
@@ -1190,17 +1334,50 @@ function AttachmentInput({
         id="reply-attachments"
         aria-label={t('add_button')}
       />
-      <Button
+      <button
         type="button"
-        variant="outline"
-        size="sm"
         onClick={() => inputRef.current?.click()}
         disabled={limitReached}
-        className="self-start"
+        aria-label={t('dropzone_aria')}
+        data-drag={dragging ? 'true' : undefined}
+        onDragEnter={(e) => {
+          if (limitReached) return;
+          e.preventDefault();
+          setDragging(true);
+        }}
+        onDragOver={(e) => {
+          if (limitReached) return;
+          e.preventDefault();
+          setDragging(true);
+        }}
+        onDragLeave={(e) => {
+          e.preventDefault();
+          setDragging(false);
+        }}
+        onDrop={(e) => {
+          e.preventDefault();
+          setDragging(false);
+          if (limitReached) return;
+          const files = e.dataTransfer?.files
+            ? Array.from(e.dataTransfer.files)
+            : [];
+          onDropFiles(files);
+        }}
+        className={cn(
+          'flex w-full flex-col items-center justify-center gap-1 rounded-lg border border-dashed px-3 py-6 text-center text-sm transition-colors',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
+          'disabled:cursor-not-allowed disabled:opacity-50',
+          dragging
+            ? 'border-brand-500 bg-brand-50 dark:bg-brand-50/15'
+            : 'border-border-strong hover:bg-muted/40',
+        )}
       >
-        <Paperclip className="size-4" aria-hidden="true" />
-        {t('add_button')}
-      </Button>
+        <Paperclip className="size-5 text-text-muted" aria-hidden="true" />
+        <span className="font-medium text-text-primary">
+          {t('dropzone_cta')}
+        </span>
+        <span className="text-[11px] text-text-muted">{t('dropzone_hint')}</span>
+      </button>
 
       {errors.length > 0 && (
         <div
@@ -1229,20 +1406,29 @@ function AttachmentInput({
           {persistedAttachments.map((a, i) => (
             <li
               key={`p-${a.name}-${i}`}
-              className="flex items-center justify-between gap-2 rounded-md border border-border bg-muted/30 px-2 py-1"
+              className="flex items-center justify-between gap-2 rounded-md border border-border bg-muted/30 px-2 py-1.5"
             >
-              <span className="flex min-w-0 items-center gap-1 truncate font-mono text-[11px]">
-                <FileText className="size-3" aria-hidden="true" />
-                {a.name}
-                <span className="text-muted-foreground">
-                  · {Math.round(a.size_bytes / 1024).toLocaleString('de-DE')} KB
+              <span className="flex min-w-0 items-center gap-2 truncate">
+                <span
+                  className="flex size-7 shrink-0 items-center justify-center rounded-md border border-border bg-surface text-text-muted"
+                  aria-hidden="true"
+                >
+                  <FileText className="size-3.5" />
+                </span>
+                <span className="flex min-w-0 flex-col">
+                  <span className="truncate font-mono text-[11px] text-text-primary">
+                    {a.name}
+                  </span>
+                  <span className="font-mono text-[10px] tabular-nums text-text-muted">
+                    {Math.round(a.size_bytes / 1024).toLocaleString('de-DE')} KB
+                  </span>
                 </span>
               </span>
               <button
                 type="button"
                 onClick={() => onRemovePersisted(i)}
                 aria-label={t('remove_template', { name: a.name })}
-                className="inline-flex size-6 items-center justify-center rounded-md text-muted-foreground hover:bg-foreground/10 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ring"
+                className="inline-flex size-6 shrink-0 items-center justify-center rounded-md text-muted-foreground hover:bg-foreground/10 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ring"
               >
                 <X className="size-3" aria-hidden="true" />
               </button>
@@ -1251,20 +1437,29 @@ function AttachmentInput({
           {stagedAttachments.map((f, i) => (
             <li
               key={`s-${f.name}-${i}`}
-              className="flex items-center justify-between gap-2 rounded-md border border-dashed border-border bg-muted/20 px-2 py-1"
+              className="flex items-center justify-between gap-2 rounded-md border border-dashed border-border bg-muted/20 px-2 py-1.5"
             >
-              <span className="flex min-w-0 items-center gap-1 truncate font-mono text-[11px]">
-                <FileText className="size-3" aria-hidden="true" />
-                {f.name}
-                <span className="text-muted-foreground">
-                  · {Math.round(f.size / 1024).toLocaleString('de-DE')} KB
+              <span className="flex min-w-0 items-center gap-2 truncate">
+                <span
+                  className="flex size-7 shrink-0 items-center justify-center rounded-md border border-dashed border-border bg-surface text-text-muted"
+                  aria-hidden="true"
+                >
+                  <FileText className="size-3.5" />
+                </span>
+                <span className="flex min-w-0 flex-col">
+                  <span className="truncate font-mono text-[11px] text-text-primary">
+                    {f.name}
+                  </span>
+                  <span className="font-mono text-[10px] tabular-nums text-text-muted">
+                    {Math.round(f.size / 1024).toLocaleString('de-DE')} KB
+                  </span>
                 </span>
               </span>
               <button
                 type="button"
                 onClick={() => onRemoveStaged(i)}
                 aria-label={t('remove_template', { name: f.name })}
-                className="inline-flex size-6 items-center justify-center rounded-md text-muted-foreground hover:bg-foreground/10 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ring"
+                className="inline-flex size-6 shrink-0 items-center justify-center rounded-md text-muted-foreground hover:bg-foreground/10 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ring"
               >
                 <X className="size-3" aria-hidden="true" />
               </button>
@@ -1273,6 +1468,126 @@ function AttachmentInput({
         </ul>
       )}
     </fieldset>
+  );
+}
+
+interface KiAktionenChipsProps {
+  body: string;
+  /** RDG-Gate: bei Skelett-Templates (Einspruch/Widerspruch/Aussetzung) hart aus. */
+  disabledForSkelett: boolean;
+  /** Body leer ODER Template wird gerade geladen. */
+  disabledOther: boolean;
+  pending: boolean;
+  onPendingChange: (next: boolean) => void;
+  onApply: (nextBody: string) => void;
+}
+
+interface ChipDef {
+  action: ReplyRewriteAction;
+  labelKey: string;
+  icon: React.ComponentType<{ className?: string; 'aria-hidden'?: boolean }>;
+  primary: boolean;
+}
+
+const KI_CHIPS: readonly ChipDef[] = [
+  { action: 'umformulieren', labelKey: 'umformulieren', icon: Sparkles, primary: true },
+  { action: 'kuerzer', labelKey: 'kuerzer', icon: Minimize2, primary: false },
+  { action: 'formeller', labelKey: 'formeller', icon: ScrollText, primary: false },
+  { action: 'einfacher', labelKey: 'einfacher', icon: Feather, primary: false },
+] as const;
+
+/**
+ * KI-Aktionen-Chips (Spec §3.5 + §4.2). RDG-sicher: bei Rechtsbehelf-Skeletten
+ * komplett gesperrt (die App formuliert keine rechtlichen Begründungen,
+ * § 2 RDG). Sonst: POST /api/reply/rewrite → ersetzt den Body. Fehler lassen
+ * den Body unverändert.
+ */
+function KiAktionenChips({
+  body,
+  disabledForSkelett,
+  disabledOther,
+  pending,
+  onPendingChange,
+  onApply,
+}: KiAktionenChipsProps) {
+  const t = useTranslations('posteingang.compose.ai_rewrite');
+  const [busyAction, setBusyAction] = React.useState<ReplyRewriteAction | null>(
+    null,
+  );
+  const [announcement, setAnnouncement] = React.useState('');
+
+  const rowDisabled = disabledForSkelett || disabledOther || pending;
+
+  async function runRewrite(action: ReplyRewriteAction) {
+    if (rowDisabled) return;
+    setBusyAction(action);
+    onPendingChange(true);
+    setAnnouncement('');
+    try {
+      const res = await fetch('/api/reply/rewrite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ body, action }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = (await res.json()) as ReplyRewriteResponse;
+      if (typeof data.body !== 'string') throw new Error('malformed');
+      onApply(data.body);
+      if (data.source === 'fallback') {
+        toast(t('offline_fallback'));
+      }
+      setAnnouncement(t('done'));
+    } catch {
+      toast.error(t('error'));
+    } finally {
+      setBusyAction(null);
+      onPendingChange(false);
+    }
+  }
+
+  return (
+    <div className="flex flex-col gap-2">
+      <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+        {t('section_label')}
+      </p>
+      <div className="flex flex-wrap gap-2">
+        {KI_CHIPS.map(({ action, labelKey, icon: Icon, primary }) => {
+          const isBusy = busyAction === action;
+          return (
+            <button
+              key={action}
+              type="button"
+              onClick={() => void runRewrite(action)}
+              disabled={rowDisabled}
+              aria-busy={isBusy}
+              className={cn(
+                'inline-flex min-h-8 items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
+                'disabled:cursor-not-allowed disabled:opacity-50',
+                primary
+                  ? 'border-brand-200 bg-brand-50 text-brand-700 hover:bg-brand-50/70 dark:bg-brand-50/15'
+                  : 'border-border-strong text-text-primary hover:bg-muted/40',
+              )}
+            >
+              {isBusy ? (
+                <Loader2 className="size-3.5 animate-spin" aria-hidden="true" />
+              ) : (
+                <Icon className="size-3.5" aria-hidden={true} />
+              )}
+              {isBusy ? t('busy') : t(labelKey)}
+            </button>
+          );
+        })}
+      </div>
+      {disabledForSkelett && (
+        <p className="text-[11px] leading-relaxed text-muted-foreground">
+          {t('disabled_skelett_hint')}
+        </p>
+      )}
+      <div className="sr-only" role="status" aria-live="polite">
+        {announcement}
+      </div>
+    </div>
   );
 }
 

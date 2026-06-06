@@ -9,6 +9,11 @@ dist/
 .vercel
 *.tsbuildinfo
 next-env.d.ts
+
+# Single-lockfile policy: pnpm-lock.yaml is canonical (matches the Vercel build + base-ui 1.5.0).
+# npm's package-lock.json is intentionally untracked so Vercel's package-manager inference
+# stays deterministic (sole lockfile → pnpm). Run `npm install` locally if pnpm is unavailable.
+package-lock.json
 .DS_Store
 .idea/
 .vscode/

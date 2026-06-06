@@ -26,6 +26,7 @@ import {
 import { toast } from 'sonner';
 
 import { api } from '@/lib/mock-backend';
+import { Skeleton } from '@/components/shared/Skeleton';
 import type { Behoerde, Letter, Vorgang } from '@/types';
 
 import { NeuerVorgangAusBriefModal } from './NeuerVorgangAusBriefModal';
@@ -67,9 +68,13 @@ export function PosteingangInbox({
   initialSelectedLetterId,
 }: PosteingangInboxProps) {
   const t = useTranslations('posteingang');
+  const tCommon = useTranslations('common');
   const [letters, setLetters] = React.useState<Letter[]>(initial.letters);
   const [behoerdenById, setBehoerdenById] = React.useState(initial.behoerdenById);
   const [hasLoaded, setHasLoaded] = React.useState(initial.letters.length > 0);
+  // Distinguishes „erster Refresh noch unterwegs" von „Posteingang ist leer":
+  // flippt erst, wenn der initiale Refresh abgeschlossen ist (Erfolg ODER Fehler).
+  const [loaded, setLoaded] = React.useState(initial.letters.length > 0);
   const [searchQuery, setSearchQuery] = React.useState('');
   const [view, setView] = React.useState<'chronologisch' | 'vorgang'>('chronologisch');
   const [selectedLetterId, setSelectedLetterId] = React.useState<string | null>(
@@ -99,8 +104,10 @@ export function PosteingangInbox({
         setLetters(next);
         setBehoerdenById(map);
         setHasLoaded(true);
+        setLoaded(true);
       } catch {
         // swallowed — UI shows an empty inbox.
+        if (!cancelled) setLoaded(true);
       }
     })();
     return () => {
@@ -179,6 +186,10 @@ export function PosteingangInbox({
   const selectedAbsender = selectedLetter
     ? behoerdenById[selectedLetter.absender_behoerde_id] ?? null
     : null;
+
+  if (!loaded) {
+    return <PosteingangInboxSkeleton loadingLabel={tCommon('loading')} />;
+  }
 
   return (
     <>
@@ -339,6 +350,7 @@ export function PosteingangInbox({
           <PostDetail
             letter={selectedLetter}
             absender={selectedAbsender}
+            replyLabel={t('sticky_action.cta_reply')}
             onAntwortVorbereiten={() => setReplyLetter(selectedLetter)}
             onEinspruch={() => setReplyLetter(selectedLetter)}
             onVorgangErstellen={() => setVorgangModalLetter(selectedLetter)}
@@ -383,6 +395,31 @@ export function PosteingangInbox({
 }
 
 export type { InitialData };
+
+// ── PosteingangInboxSkeleton ────────────────────────────────────────────────
+
+function PosteingangInboxSkeleton({ loadingLabel }: { loadingLabel: string }) {
+  return (
+    <div role="status" aria-busy="true">
+      <span className="sr-only">{loadingLabel}</span>
+      <div className="gt-page-head">
+        <Skeleton shape="text" className="h-8 w-64" />
+        <Skeleton shape="text" className="mt-2 w-80" />
+      </div>
+      <div className="post-toolbar">
+        <Skeleton className="h-10 w-full max-w-sm rounded-xl" />
+      </div>
+      <div className="post-layout">
+        <div className="flex flex-col gap-3">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Skeleton key={i} className="h-24 rounded-xl" />
+          ))}
+        </div>
+        <Skeleton className="h-72 rounded-2xl" />
+      </div>
+    </div>
+  );
+}
 
 // ── PostSection ─────────────────────────────────────────────────────────────
 
@@ -457,9 +494,13 @@ function PostItemRow({
       href={`/posteingang/${letter.id}`}
       className={`post-item${active ? ' active' : ''}`}
       onClick={(e) => {
-        // Inline preview on ≥ lg: prevent navigation when modifier-less click,
-        // so the right-pane detail updates without a full route change.
+        // Inline preview on ≥ lg: prevent navigation on a modifier-less POINTER
+        // click, so the right-pane detail updates without a full route change.
+        // Keyboard activation (Enter) fires a synthetic click with `detail === 0`
+        // — for those we let the real navigation happen, so keyboard users reach
+        // the letter route (and deep-linking / back works). WCAG 2.1.1.
         if (
+          e.detail !== 0 &&
           typeof window !== 'undefined' &&
           window.matchMedia('(min-width: 1024px)').matches &&
           !e.metaKey &&
@@ -511,6 +552,7 @@ function PostItemRow({
 function PostDetail({
   letter,
   absender,
+  replyLabel,
   onAntwortVorbereiten,
   onEinspruch,
   onVorgangErstellen,
@@ -519,6 +561,7 @@ function PostDetail({
 }: {
   letter: Letter;
   absender: Behoerde | null;
+  replyLabel: string;
   onAntwortVorbereiten: () => void;
   onEinspruch: () => void;
   onVorgangErstellen: () => void;
@@ -617,7 +660,8 @@ function PostDetail({
           className="btn btn-primary"
           onClick={onAntwortVorbereiten}
         >
-          <PenSquare />Antwort vorbereiten
+          <PenSquare />
+          {replyLabel}
         </button>
         <button
           type="button"

@@ -357,7 +357,8 @@
       "done": "Done",
       "snooze": "Remind me later",
       "snooze_days": "Postponed by {days} days",
-      "actions_label": "Actions for {titel}"
+      "actions_label": "Actions for {titel}",
+      "sort_aria": "Sort order of action recommendations"
     },
     "triumph": {
       "title": "Done for you",
@@ -415,6 +416,7 @@
     "filter": "Filter",
     "filter_active": "{count} filters active",
     "search": "Search",
+    "loading": "Loading …",
     "all": "All",
     "show_all": "Show all",
     "actions": {
@@ -717,7 +719,8 @@
     },
     "message": {
       "user_sent": "Sent",
-      "assistant_label": "Assistant"
+      "assistant_label": "Assistant",
+      "user_label": "You"
     },
     "empty": {
       "title": "How can I help you?",
@@ -789,7 +792,8 @@
       "stammdaten_value": "Up to date",
       "datenschutz_title": "Your data is protected",
       "datenschutz_body": "Only the data needed for your question is processed. Originals stay in the official mailboxes.",
-      "datenschutz_link": "More on data protection"
+      "datenschutz_link": "More on data protection",
+      "aside_label": "Assistant context"
     }
   },
   "posteingang": {
@@ -1131,6 +1135,21 @@
       "sheet_close_aria": "Close reply sheet",
       "recipient_label_template": "To: {behoerde}",
       "bezug_label_template": "Re: {aktenzeichen}",
+      "betreff_label_template": "Subject: {betreff}",
+      "aktenzeichen_label_template": "File reference (Aktenzeichen): {aktenzeichen}",
+      "char_count_template": "Characters: {n}",
+      "ai_rewrite": {
+        "section_label": "AI actions",
+        "umformulieren": "Rewrite with AI",
+        "kuerzer": "Shorter",
+        "formeller": "More formal",
+        "einfacher": "Simpler",
+        "busy": "Working …",
+        "done": "Text updated.",
+        "error": "Rewrite failed – please try again.",
+        "offline_fallback": "AI offline – text unchanged.",
+        "disabled_skelett_hint": "Not available for legal-remedy templates: the app does not draft legal reasoning (§ 2 RDG, German Legal Services Act)."
+      },
       "outbound_speculative": "As of 2027 — speculative design. In this demo we simulate request-thread-bound bidirectional communication on the ZBP/BundID model: replies always live in the thread of a specific letter (anchored by file reference / Aktenzeichen), never as an open mailbox. Today (May 2026) the reply channel would differ by authority: Mein ELSTER for the tax office (Finanzamt), the health insurance portal for health insurance funds, a state service portal (Landes-Service-Portal) for citizens' offices and immigration authorities, often still postal mail. Nothing is sent to {behoerde}.",
       "behoerde_kanal": {
         "bundid_postfach_2027": "BundID mailbox (BundID-Postfach, speculative 2027)",
@@ -1302,7 +1321,10 @@
         "error_too_many": "Maximum number of files ({maxFiles}) reached.",
         "error_total_too_large": "Total size of all attachments exceeds {maxTotalMb} MB.",
         "error_mime_not_allowed": "File type ‚{name}' not allowed. Allowed: {allowedTypes}.",
-        "errors_heading": "These attachments were rejected:"
+        "errors_heading": "These attachments were rejected:",
+        "dropzone_cta": "Choose files",
+        "dropzone_hint": "or drop them here",
+        "dropzone_aria": "Choose files or drop them here via drag and drop"
       },
       "draft_saved_template": "Draft saved {n}s ago",
       "draft_saving": "Saving draft …",
@@ -2301,7 +2323,8 @@
       "prev": "Previous page",
       "next": "Next page",
       "per_page_label": "Documents per page",
-      "per_page_option": "{count} per page"
+      "per_page_option": "{count} per page",
+      "nav_label": "Document list pagination"
     },
     "schnellzugriff": {
       "title": "Quick access",
@@ -2351,7 +2374,8 @@
       "sort_name": "Name (A–Z)",
       "sort_ausgestellt": "Issue date (newest first)",
       "sort_gueltig": "Validity (expiring soon first)",
-      "status_label": "Status"
+      "status_label": "Status",
+      "button": "Filter"
     },
     "eudi": {
       "button": "Export to EUDI Wallet (preview)",
@@ -2361,6 +2385,9 @@
       "mock_badge": "[MOCK]",
       "close": "Close",
       "payload_label": "Credential preview (synthetic)"
+    },
+    "rail": {
+      "aside_label": "Document quick access and recently added"
     }
   },
   "termine": {
@@ -2664,7 +2691,8 @@
       "einwilligungsbasiert": "Consent-based",
       "aktuell": "up to date",
       "angezeigt": "Showing {shown} of {total} data sources.",
-      "show_all": "Show all recipients"
+      "show_all": "Show all recipients",
+      "col_aktion": "Action"
     },
     "kontrolle": {
       "title": "Your data-protection controls",

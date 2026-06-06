@@ -28,6 +28,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Skeleton } from '@/components/shared/Skeleton';
 import { api } from '@/lib/mock-backend';
 import type {
   Behoerde,
@@ -115,6 +116,7 @@ function quellenAvatar(behoerdeId: string, name: string): React.ReactNode {
 export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
   const t = useTranslations();
   const [personaId, setPersonaId] = React.useState<PersonaId | null>(null);
+  const [loaded, setLoaded] = React.useState(false);
   const [bannerOpen, setBannerOpen] = React.useState(true);
   const [activities, setActivities] = React.useState<UebermittlungsLogEntry[]>([]);
   const [behoerdenById, setBehoerdenById] = React.useState<Record<string, Behoerde>>({});
@@ -125,6 +127,7 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
   const [histDialogOpen, setHistDialogOpen] = React.useState(false);
   const [fullLog, setFullLog] = React.useState<UebermittlungsLogEntry[] | null>(null);
   const [exportState, setExportState] = React.useState<'idle' | 'busy' | 'done'>('idle');
+  const [liveAnnouncement, setLiveAnnouncement] = React.useState('');
 
   const einwRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -149,6 +152,8 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
         setQuellen(qs);
       } catch {
         if (!cancelled) setActivities([]);
+      } finally {
+        if (!cancelled) setLoaded(true);
       }
     })();
     return () => {
@@ -164,8 +169,25 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
           e.empfaenger === empfaenger ? { ...e, erteilt: next } : e,
         ),
       );
+      const empfLabel = t(`datenschutz.einwilligungen.${empfaenger}`);
       try {
         await api.setDatenschutzEinwilligung(personaId, empfaenger, next);
+        // Announce the new state and surface the freshly emitted
+        // "Einwilligung geändert" activity at the top of the timeline.
+        setLiveAnnouncement(
+          t(
+            next
+              ? 'datenschutz.einwilligungen.announce_ein'
+              : 'datenschutz.einwilligungen.announce_aus',
+            { empfaenger: empfLabel },
+          ),
+        );
+        try {
+          const log = await api.getUebermittlungsLog(personaId, { limit: 8 });
+          setActivities(log);
+        } catch {
+          /* the optimistic toggle already reflects the new state */
+        }
       } catch {
         // Revert silently — demo grade.
         setEinwilligungen((prev) =>
@@ -175,7 +197,7 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
         );
       }
     },
-    [personaId],
+    [personaId, t],
   );
 
   const openLogDialog = React.useCallback(() => {
@@ -302,12 +324,20 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
     };
   });
 
+  if (!loaded) {
+    return <DatenschutzSkeleton />;
+  }
+
   return (
     <>
       <div className="gt-page-head">
         <h1>{t('datenschutz.page.title')}</h1>
         <div className="sub">{t('datenschutz.page.subtitle')}</div>
         <span className="gt-page-tag">{t('datenschutz.page.tag')}</span>
+      </div>
+
+      <div aria-live="polite" role="status" className="sr-only">
+        {liveAnnouncement}
       </div>
 
       {bannerOpen ? (
@@ -336,27 +366,29 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
 
       <div className="ds-grid">
         <div className="ds-card act">
-          <h3>
-            <Clock />
+          <h2>
+            <Clock aria-hidden="true" />
             {t('datenschutz.aktivitaet.title')}
-          </h3>
-          {activityRows.map((row) => (
-            <div key={row.id} className="item">
-              <span className={`icon-circle${row.iconCls ? ` ${row.iconCls}` : ''}`}>
-                {row.icon}
-              </span>
-              <div>
-                <div className="t">{row.title}</div>
-                <div className="s">{row.sub}</div>
-              </div>
-              <div className="meta">
-                <div className="when">{row.when}</div>
-                <span className={`badge ${row.badge.cls}`}>
-                  {t(`datenschutz.activity.typ.${row.badge.labelKey}`)}
+          </h2>
+          <ul className="act-list">
+            {activityRows.map((row) => (
+              <li key={row.id} className="item">
+                <span className={`icon-circle${row.iconCls ? ` ${row.iconCls}` : ''}`}>
+                  {row.icon}
                 </span>
-              </div>
-            </div>
-          ))}
+                <div>
+                  <div className="t">{row.title}</div>
+                  <div className="s">{row.sub}</div>
+                </div>
+                <div className="meta">
+                  <div className="when">{row.when}</div>
+                  <span className={`badge ${row.badge.cls}`}>
+                    {t(`datenschutz.activity.typ.${row.badge.labelKey}`)}
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ul>
           <button
             type="button"
             className="all-link"
@@ -381,46 +413,15 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
         </div>
 
         <div className="ds-card" ref={einwRef}>
-          <h3>
-            <Shield />
+          <h2>
+            <Shield aria-hidden="true" />
             {t('datenschutz.einwilligungen.title')}
-          </h3>
+          </h2>
           <div className="sub">{t('datenschutz.einwilligungen.subtitle')}</div>
           {sortedEinw.map((e) => {
             const meta = EMPFAENGER_ICONS[e.empfaenger];
             const empfLabel = t(`datenschutz.einwilligungen.${e.empfaenger}`);
             const empfSub = t(`datenschutz.einwilligungen.${e.empfaenger}_sub`);
-            if (e.empfaenger === 'weitere_dienste') {
-              return (
-                <div key={e.empfaenger} className="ew-item">
-                  <span className="icon-circle">
-                    <meta.Icon />
-                  </span>
-                  <div>
-                    <div className="t">{empfLabel}</div>
-                    <div className="s">{empfSub}</div>
-                  </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <button
-                      type="button"
-                      className="state on"
-                      onClick={() => setHistDialogOpen(true)}
-                      style={{
-                        color: 'var(--brand-600)',
-                        background: 'none',
-                        border: 'none',
-                        padding: 0,
-                        cursor: 'pointer',
-                        font: 'inherit',
-                      }}
-                    >
-                      {t('datenschutz.einwilligungen.verwalten')}
-                    </button>
-                  </div>
-                  <ChevronRight className="chev" />
-                </div>
-              );
-            }
             return (
               <div key={e.empfaenger} className="ew-item">
                 <span className={`icon-circle${meta.iconCls ? ` ${meta.iconCls}` : ''}`}>
@@ -486,10 +487,10 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
 
       <div className="ds-bottom">
         <div className="ds-card ds-control">
-          <h3>
-            <Shield />
+          <h2>
+            <Shield aria-hidden="true" />
             {t('datenschutz.kontrolle.title')}
-          </h3>
+          </h2>
           <div className="sub">{t('datenschutz.kontrolle.subtitle')}</div>
           <div className="actions">
             <button type="button" className="btn btn-secondary" onClick={openLogDialog}>
@@ -520,15 +521,17 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
         </div>
 
         <div className="ds-card ds-quellen">
-          <h3>{t('datenschutz.quellen.title')}</h3>
+          <h2>{t('datenschutz.quellen.title')}</h2>
           <div className="sub">{t('datenschutz.quellen.subtitle')}</div>
           <table>
             <thead>
               <tr>
-                <th>{t('datenschutz.quellen.col_stelle')}</th>
-                <th>{t('datenschutz.quellen.col_zugriffsart')}</th>
-                <th>{t('datenschutz.quellen.col_aktualitaet')}</th>
-                <th />
+                <th scope="col">{t('datenschutz.quellen.col_stelle')}</th>
+                <th scope="col">{t('datenschutz.quellen.col_zugriffsart')}</th>
+                <th scope="col">{t('datenschutz.quellen.col_aktualitaet')}</th>
+                <th scope="col">
+                  <span className="sr-only">{t('datenschutz.quellen.col_aktion')}</span>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -643,5 +646,25 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
         </DialogContent>
       </Dialog>
     </>
+  );
+}
+
+function DatenschutzSkeleton() {
+  const tCommon = useTranslations('common');
+  return (
+    <div role="status" aria-busy="true">
+      <span className="sr-only">{tCommon('loading')}</span>
+      <div className="gt-page-head">
+        <Skeleton shape="text" className="h-8 w-64" />
+        <Skeleton shape="text" className="mt-2 w-80" />
+      </div>
+      <Skeleton className="mb-6 h-20 rounded-2xl" />
+      <div className="flex flex-col gap-6">
+        <Skeleton className="h-32 rounded-2xl" />
+        <Skeleton className="h-32 rounded-2xl" />
+        <Skeleton className="h-32 rounded-2xl" />
+        <Skeleton className="h-32 rounded-2xl" />
+      </div>
+    </div>
   );
 }

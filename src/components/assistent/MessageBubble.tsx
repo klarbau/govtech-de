@@ -25,6 +25,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
   if (isUser) {
     return (
       <div className="msg user">
+        <span className="sr-only">{t('user_label')}: </span>
         <span
           className="av"
           aria-hidden="true"
@@ -46,8 +47,9 @@ export function MessageBubble({ message }: MessageBubbleProps) {
 
   return (
     <div className="msg">
+      <span className="sr-only">{t('assistant_label')}: </span>
       <span className="av" aria-hidden="true">
-        <Sparkles />
+        <Sparkles aria-hidden="true" />
       </span>
       <div>
         <div className="bubble">

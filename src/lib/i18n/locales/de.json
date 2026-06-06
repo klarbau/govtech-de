@@ -348,6 +348,7 @@
     },
     "heute": {
       "titel": "Heute zu tun",
+      "sort_aria": "Sortierung der Aktionsempfehlungen",
       "tab_ki": "KI",
       "tab_frist": "Frist",
       "tab_behoerde": "Behörde",
@@ -415,6 +416,7 @@
     "filter": "Filter",
     "filter_active": "{count} Filter aktiv",
     "search": "Suchen",
+    "loading": "Wird geladen …",
     "all": "Alle",
     "show_all": "Alle anzeigen",
     "actions": {
@@ -720,7 +722,8 @@
     },
     "message": {
       "user_sent": "Gesendet",
-      "assistant_label": "Assistent"
+      "assistant_label": "Assistent",
+      "user_label": "Sie"
     },
     "empty": {
       "title": "Wie kann ich Ihnen helfen?",
@@ -792,7 +795,8 @@
       "stammdaten_value": "Aktuell",
       "datenschutz_title": "Ihre Daten sind geschützt",
       "datenschutz_body": "Es werden nur die für Ihre Frage nötigen Daten verarbeitet. Originale bleiben in den amtlichen Postfächern.",
-      "datenschutz_link": "Mehr zu Datenschutz"
+      "datenschutz_link": "Mehr zu Datenschutz",
+      "aside_label": "Kontext des Assistenten"
     }
   },
   "posteingang": {
@@ -1134,6 +1138,21 @@
       "sheet_close_aria": "Antwort-Sheet schließen",
       "recipient_label_template": "An: {behoerde}",
       "bezug_label_template": "Bezug: {aktenzeichen}",
+      "betreff_label_template": "Betreff: {betreff}",
+      "aktenzeichen_label_template": "Aktenzeichen: {aktenzeichen}",
+      "char_count_template": "Zeichen: {n}",
+      "ai_rewrite": {
+        "section_label": "KI-Aktionen",
+        "umformulieren": "Mit KI umformulieren",
+        "kuerzer": "Kürzer",
+        "formeller": "Formeller",
+        "einfacher": "Einfacher",
+        "busy": "Wird bearbeitet …",
+        "done": "Text aktualisiert.",
+        "error": "Umformulieren fehlgeschlagen – bitte erneut versuchen.",
+        "offline_fallback": "KI offline – Text unverändert.",
+        "disabled_skelett_hint": "Für Rechtsbehelf-Vorlagen nicht verfügbar: Die App formuliert keine rechtlichen Begründungen (§ 2 RDG)."
+      },
       "outbound_speculative": "Stand 2027 — Speculative Design. In dieser Demo simulieren wir antrags-thread-gebundene bidirektionale Kommunikation auf Basis des ZBP/BundID-Modells: Antworten leben immer im Thread eines konkreten Briefs (Aktenzeichen-Anker), nie als freies Postfach. Heute (Mai 2026) wäre der Antwort-Kanal je nach Behörde unterschiedlich: Mein ELSTER für das Finanzamt, das Kassen-Portal für Krankenkassen, ein Landes-Service-Portal für Bürger- und Ausländerbehörden, häufig noch der Briefweg. Es wird nichts an {behoerde} gesendet.",
       "behoerde_kanal": {
         "bundid_postfach_2027": "BundID-Postfach (Speculative 2027)",
@@ -1314,7 +1333,10 @@
         "error_too_many": "Maximale Anzahl Dateien ({maxFiles}) erreicht.",
         "error_total_too_large": "Gesamtgröße aller Anhänge überschreitet {maxTotalMb} MB.",
         "error_mime_not_allowed": "Dateityp ‚{name}' nicht erlaubt. Zulässig: {allowedTypes}.",
-        "errors_heading": "Diese Anhänge wurden abgelehnt:"
+        "errors_heading": "Diese Anhänge wurden abgelehnt:",
+        "dropzone_cta": "Dateien auswählen",
+        "dropzone_hint": "oder hier ablegen",
+        "dropzone_aria": "Dateien auswählen oder per Drag-and-drop ablegen"
       },
       "draft_saved_template": "Entwurf gespeichert vor {n}s",
       "draft_saving": "Entwurf wird gespeichert …",
@@ -2533,7 +2555,11 @@
       "prev": "Vorherige Seite",
       "next": "Nächste Seite",
       "per_page_label": "Dokumente pro Seite",
-      "per_page_option": "{count} pro Seite"
+      "per_page_option": "{count} pro Seite",
+      "nav_label": "Seitennavigation der Dokumentenliste"
+    },
+    "rail": {
+      "aside_label": "Dokument-Schnellzugriff und zuletzt hinzugefügt"
     },
     "schnellzugriff": {
       "title": "Schnellzugriff",
@@ -2579,6 +2605,7 @@
     "error": "Dokumente konnten nicht geladen werden.",
     "demo_action_toast": "Demo-Funktion — in diesem Prototyp nicht hinterlegt.",
     "filter": {
+      "button": "Filter",
       "sort_label": "Sortieren nach",
       "sort_name": "Name (A–Z)",
       "sort_ausgestellt": "Ausgestellt (neueste zuerst)",
@@ -2892,6 +2919,7 @@
       "col_stelle": "Stelle / Dienst",
       "col_zugriffsart": "Zugriffsart",
       "col_aktualitaet": "Aktualität",
+      "col_aktion": "Aktion",
       "automatisch": "Automatisch synchronisiert",
       "einwilligungsbasiert": "Einwilligungsbasiert",
       "aktuell": "aktuell",

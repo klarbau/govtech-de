@@ -102,16 +102,26 @@ test.describe('Posteingang ReplySheet focus-trap', () => {
     page,
   }) => {
     await setLocaleCookie(page, 'de');
+    // Warm the client store first. A cold deep-link to a letter detail can render
+    // the empty-seeded inbox before localStorage seeds, so the reply CTA never
+    // mounts (a test-only hydration race — a real user navigates from a warmed
+    // inbox). Mirror the reliable warm-up the other Posteingang specs use, then
+    // wait for the CTA explicitly instead of a fixed timeout + bare click.
+    await page.goto('/posteingang', { waitUntil: 'networkidle' });
+    await page
+      .locator('a[href^="/posteingang/letter-"]')
+      .first()
+      .waitFor({ state: 'visible', timeout: 20_000 });
     await page.goto(
       '/posteingang/letter-anna-standesamt-eheschliessung-termin',
       { waitUntil: 'networkidle' },
     );
-    await page.waitForTimeout(2500);
 
     // Open the ReplySheet via the StickyFristAction reply-button.
     const replyButton = page.getByRole('button', {
       name: /Antwort verfassen|Erneut antworten|Entwurf weiter schreiben/i,
     });
+    await replyButton.first().waitFor({ state: 'visible', timeout: 20_000 });
     await replyButton.first().click();
 
     const sheet = page.locator('[data-slot="sheet-content"]');

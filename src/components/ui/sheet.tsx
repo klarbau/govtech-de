@@ -82,10 +82,50 @@ function SheetContent({
   const t = useTranslations('shell.sheet');
   const resolvedCloseAriaLabel = closeAriaLabel ?? t('close');
   const startSide = side === 'inline-start' || side === 'left';
+
+  const popupRef = React.useRef<HTMLDivElement | null>(null);
+
+  // Deterministic Tab-cycle inside the Sheet popup. base-ui 1.5.0 already inerts
+  // the background (we promote its `data-base-ui-inert` markers to real `inert`),
+  // but its own FocusGuard sentinels round-trip focus through `<body>` for one
+  // tick when Tab leaves the last focusable — so `document.activeElement` lands
+  // on `<body>` (outside the modal) on the wrap-around Tab before being pulled
+  // back (WCAG 2.4.3 / 2.1.2; BITV 2.0). `<body>` can never be inert, so we wrap
+  // focus ourselves between the first and last focusable of the popup and never
+  // let it pass through the guards. Same approach as PreInsertionModal's nested
+  // AlertDialog. A nested modal (PreInsertion/PreVersand) renders in its own
+  // sibling portal, so its keydown never bubbles through this popup — this guard
+  // does not interfere with nested-modal focus.
+  function handlePopupKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    if (event.key !== 'Tab') return;
+    const popup = popupRef.current;
+    if (!popup) return;
+    const focusables = Array.from(
+      popup.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      ),
+    ).filter((el) => el.offsetParent !== null || el === document.activeElement);
+    if (focusables.length === 0) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    const active = document.activeElement as HTMLElement | null;
+    if (event.shiftKey) {
+      if (active === first || !popup.contains(active)) {
+        event.preventDefault();
+        last.focus();
+      }
+    } else if (active === last || !popup.contains(active)) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
   return (
     <SheetPortal>
       <SheetOverlay />
       <DialogPrimitive.Popup
+        ref={popupRef}
+        onKeyDown={handlePopupKeyDown}
         data-slot="sheet-content"
         data-side={startSide ? 'inline-start' : 'inline-end'}
         aria-modal="true"

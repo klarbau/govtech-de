@@ -213,7 +213,10 @@
   --red-600: #B62121;
 
   --pink-50:  #FBE8F2;
-  --pink-500: #C53A88;
+  /* Darkened from #C53A88 (4.14:1, AA-fail as badge text on --pink-50) to clear
+     WCAG AA: #A82B72 = 5.51:1 on --pink-50. Only ever used as text/icon on the
+     light --pink-50 tint, so darkening strictly improves every pairing. */
+  --pink-500: #A82B72;
 
   --violet-50: #ECE9FB;
   --violet-500: #6049D6;
@@ -332,6 +335,40 @@
    Kennzeichen / Renten-Nr / Pagination-Zahlen. */
 .tabular-nums {
   font-variant-numeric: tabular-nums;
+}
+
+/* ── Skeleton-Shimmer ────────────────────────────────────────────────
+   Ruhiger Lade-Platzhalter im gov.uk-Register: gedaempfte Grundflaeche mit
+   einem weichen Licht-Band, das von links nach rechts wandert. Respektiert
+   prefers-reduced-motion (statische Flaeche statt eingefrorenem Band). */
+@keyframes gt-skeleton-shimmer {
+  0%   { background-position: -150% 0; }
+  100% { background-position: 150% 0; }
+}
+
+.gt-skeleton {
+  --gt-skeleton-highlight: rgba(255, 255, 255, 0.6);
+  background-color: var(--muted);
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--gt-skeleton-highlight) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  animation: gt-skeleton-shimmer 1.6s ease-in-out infinite;
+}
+
+.dark .gt-skeleton {
+  --gt-skeleton-highlight: rgba(255, 255, 255, 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gt-skeleton {
+    animation: none !important;
+    background-image: none;
+  }
 }
 
 @theme inline {

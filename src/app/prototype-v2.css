@@ -242,6 +242,10 @@ button { font: inherit; cursor: pointer; }
   background: var(--brand-50); border-color: var(--brand-100); color: var(--brand-700);
 }
 .tab-chips .chip.active .count { background: var(--brand-100); color: var(--brand-700); }
+/* In dark mode --brand-100 stays the light tint (#DCE6FD) while --brand-700
+   flips light (#9DBBFF) → 1.53:1. Give the count pill a dark tint so the
+   light brand text clears AA: #9DBBFF on #1B2740 = 7.79:1. */
+.dark .tab-chips .chip.active .count { background: var(--brand-50); }
 
 /* ============ ICON BADGES ============ */
 .icon-circle {
@@ -351,7 +355,7 @@ button { font: inherit; cursor: pointer; }
   padding: 20px;
   box-shadow: var(--shadow-1);
 }
-.since-last h4 { grid-column: 1 / -1; margin: 0 0 14px; font-size: 14px; color: var(--ink-3); font-weight: 500; }
+.since-last :is(h2, h3, h4) { grid-column: 1 / -1; margin: 0 0 14px; font-size: 14px; color: var(--ink-3); font-weight: 500; }
 .since-stat { display: flex; align-items: center; gap: 12px; }
 .since-stat .icon-circle { width: 36px; height: 36px; }
 .since-stat .icon-circle svg { width: 16px; height: 16px; }
@@ -361,7 +365,7 @@ button { font: inherit; cursor: pointer; }
 .heute-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 22px; box-shadow: var(--shadow-1); }
 .heute-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
 .heute-head h3 { font-size: 17px; font-weight: 600; margin: 0; }
-.heute-list { display: flex; flex-direction: column; gap: 10px; }
+.heute-list { display: flex; flex-direction: column; gap: 10px; list-style: none; margin: 0; padding: 0; }
 .heute-item {
   display: flex; align-items: center; gap: 16px;
   padding: 16px 18px;
@@ -438,9 +442,11 @@ button { font: inherit; cursor: pointer; }
   font-size: 12px; font-weight: 600;
 }
 .post-item .av.eagle { background: #0E1A36; color: #fff; }
-.post-item .av.aok { background: var(--green-600); color: #fff; }
+.post-item .av.aok { background: var(--green-700); color: #fff; }
 .post-item .av.ard { background: #1B47C2; color: #fff; font-size: 9px; padding: 4px; line-height: 1.1; text-align: center; }
-.post-item .av.lea { background: var(--ink); color: #fff; font-size: 9px; padding: 4px; line-height: 1.1; text-align: center; }
+/* Fixed dark monogram (was var(--ink), which flips near-white in dark → white
+   text on white). #303744 holds white at 11.96:1 in both themes. */
+.post-item .av.lea { background: #303744; color: #fff; font-size: 9px; padding: 4px; line-height: 1.1; text-align: center; }
 .post-item .av.jc { background: #C03B41; color: #fff; }
 .post-item .body .t { font-weight: 600; color: var(--ink); }
 .post-item .body .s { color: var(--ink-3); font-size: 12.5px; }
@@ -458,7 +464,11 @@ button { font: inherit; cursor: pointer; }
 .post-detail-head .av { width: 40px; height: 40px; border-radius: 50%; background: var(--ink); color: #fff; display: flex; align-items: center; justify-content: center; }
 .post-detail-head .who { font-weight: 600; color: var(--ink); }
 .post-detail-head .what { color: var(--ink-3); font-size: 13px; }
-.post-detail-head .verify { display: inline-flex; align-items: center; gap: 6px; color: var(--green-600); font-size: 13px; font-weight: 500; }
+/* --green-600 (#178A52) as 13px text = 4.38:1 on white / 3.8:1 on dark surface,
+   both AA-fail. green-700 clears AA in light (6.57:1); dark flips to the lighter
+   success token (8.08:1). */
+.post-detail-head .verify { display: inline-flex; align-items: center; gap: 6px; color: var(--green-700); font-size: 13px; font-weight: 500; }
+.dark .post-detail-head .verify { color: var(--color-success); }
 .post-detail h2 { margin: 6px 0 8px; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
 .post-detail .meta-row { display: flex; justify-content: space-between; color: var(--ink-3); font-size: 13px; margin-bottom: 14px; }
 
@@ -536,7 +546,7 @@ button { font: inherit; cursor: pointer; }
 .timeline-card .item:first-child { border-top: 0; }
 .timeline-card .item .av { width: 36px; height: 36px; border-radius: 50%; background: var(--surface-muted); display: flex; align-items: center; justify-content: center; color: var(--ink-3); }
 .timeline-card .item.ard .av { background: #1B47C2; color: #fff; font-size: 9px; font-weight: 700; line-height: 1; }
-.timeline-card .item.aok .av { background: var(--green-600); color: #fff; font-size: 10px; font-weight: 700; }
+.timeline-card .item.aok .av { background: var(--green-700); color: #fff; font-size: 10px; font-weight: 700; }
 .timeline-card .item .t { font-weight: 600; font-size: 13.5px; }
 .timeline-card .item .s { color: var(--ink-3); font-size: 12px; }
 .timeline-card .item .when { color: var(--ink-3); font-size: 12px; text-align: right; }
@@ -781,6 +791,30 @@ button { font: inherit; cursor: pointer; }
 .dk-layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; align-items: start; margin-top: 18px; }
 .dk-search { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 22px; box-shadow: var(--shadow-1); }
 .dk-search .input-icon { margin-bottom: 16px; }
+.dk-filterbar { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.dk-filterbar .tab-chips { flex: 1; }
+.dk-filter { position: relative; }
+.dk-filter > .chip {
+  height: 36px; padding: 0 14px;
+  display: inline-flex; align-items: center; gap: 8px;
+  border-radius: var(--r-md);
+  background: transparent; border: 1px solid var(--border);
+  color: var(--ink-2); font-weight: 500; font-size: 13px;
+}
+.dk-filter > .chip svg { width: 16px; height: 16px; color: var(--ink-3); }
+.dk-filter-panel {
+  position: absolute; right: 0; top: calc(100% + 8px); z-index: 30;
+  width: 280px; padding: 16px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-md); box-shadow: var(--shadow-2);
+  display: flex; flex-direction: column; gap: 16px;
+}
+.dk-filter-group { border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.dk-filter-legend { font-size: 12.5px; font-weight: 600; color: var(--ink-2); padding: 0; margin-bottom: 4px; }
+.dk-filter-row { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: var(--ink-2); }
+.dk-filter-row input { width: 16px; height: 16px; accent-color: var(--brand-fill); flex: none; }
+.dk-filter-row label { cursor: pointer; }
+
 .dk-table {
   background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
   padding: 8px 0 12px; margin-top: 16px; box-shadow: var(--shadow-1);
@@ -817,7 +851,7 @@ button { font: inherit; cursor: pointer; }
 .pagination { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; }
 .pagination .pgs { display: inline-flex; gap: 6px; }
 .pagination .pg {
-  width: 32px; height: 32px; border-radius: 6px;
+  min-width: 44px; min-height: 44px; padding: 0 6px; border-radius: 8px;
   display: inline-flex; align-items: center; justify-content: center;
   background: var(--surface); border: 1px solid var(--border); color: var(--ink-2);
 }
@@ -827,7 +861,7 @@ button { font: inherit; cursor: pointer; }
 
 .rail { display: flex; flex-direction: column; gap: 16px; }
 .rail .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 20px; box-shadow: var(--shadow-1); }
-.rail h4 { margin: 0 0 14px; font-size: 14px; font-weight: 600; }
+.rail .card :is(h2, h3, h4) { margin: 0 0 14px; font-size: 14px; font-weight: 600; }
 .rail .qa-row { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; }
 .rail .qa-row .icon-circle { width: 34px; height: 34px; }
 .rail .qa-row .icon-circle svg { width: 16px; height: 16px; }
@@ -992,6 +1026,11 @@ button { font: inherit; cursor: pointer; }
 .st-year-row .stand { color: var(--ink-3); font-size: 13px; margin: 4px 0 12px; }
 .st-year-row .vor { color: var(--ink-3); font-size: 13.5px; }
 .st-year-row .erstattung { font-size: 44px; font-weight: 700; letter-spacing: -0.025em; margin: 4px 0 8px; }
+/* Basis-Hinweis unter dem Erstattungsbetrag. --green-700 (#0F6B40) klärt AA
+   auf hellem Surface (6.57:1), bleibt aber im Dark gleich dunkel (2.53:1) →
+   im Dark auf den helleren Success-Token wechseln (8.08:1 auf der Dark-Surface). */
+.st-basis-hint { color: var(--green-700); }
+.dark .st-basis-hint { color: var(--color-success); }
 
 .quellen-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
 .quellen-grid .lbl { grid-column: 1 / -1; font-weight: 500; }
@@ -1008,8 +1047,8 @@ button { font: inherit; cursor: pointer; }
 
 /* progress row */
 .progress-row { margin-top: 22px; padding: 18px 20px; background: var(--surface-soft); border: 1px solid var(--border); border-radius: var(--r-md); }
-.progress-row h4 { margin: 0 0 14px; font-size: 14px; font-weight: 600; }
-.pr-steps { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; position: relative; }
+.progress-row :is(h3, h4) { margin: 0 0 14px; font-size: 14px; font-weight: 600; }
+.pr-steps { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; position: relative; list-style: none; margin: 0; padding: 0; }
 .pr-step { display: grid; grid-template-columns: 32px 1fr; gap: 12px; position: relative; }
 .pr-step .dot {
   width: 28px; height: 28px; border-radius: 50%;
@@ -1058,6 +1097,11 @@ button { font: inherit; cursor: pointer; }
 .nachweise .item .av svg { width: 18px; height: 18px; }
 .nachweise .item .t { font-weight: 600; font-size: 13.5px; }
 .nachweise .item .s { color: var(--ink-3); font-size: 12px; }
+
+.st-privacy-dl { display: grid; grid-template-columns: max-content 1fr; gap: 8px 14px; margin: 0; font-size: 13px; }
+.st-privacy-dl dt { color: var(--ink-2); font-weight: 600; }
+.st-privacy-dl dd { margin: 0; color: var(--ink); }
+.st-privacy-hint { margin: 14px 0 0; font-size: 12.5px; color: var(--ink-2); line-height: 1.5; }
 
 
 /* ============ familie.html ============ */
@@ -1143,10 +1187,11 @@ button { font: inherit; cursor: pointer; }
 
 .ds-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 18px; align-items: start; margin-top: 18px; }
 .ds-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 22px 24px; box-shadow: var(--shadow-1); }
-.ds-card h3 { margin: 0 0 4px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
-.ds-card h3 svg { color: var(--ink-3); width: 18px; height: 18px; }
+.ds-card :is(h2, h3) { margin: 0 0 4px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+.ds-card :is(h2, h3) svg { color: var(--ink-3); width: 18px; height: 18px; }
 .ds-card .sub { color: var(--ink-3); font-size: 13px; margin-bottom: 14px; }
 
+.act ul.act-list { list-style: none; margin: 0; padding: 0; }
 .act .item { display: grid; grid-template-columns: 40px 1fr auto; gap: 14px; padding: 14px 0; border-top: 1px solid var(--border); align-items: center; }
 .act .item:first-of-type { border-top: 0; }
 .act .item .t { font-weight: 600; font-size: 14px; }
@@ -1192,10 +1237,13 @@ button { font: inherit; cursor: pointer; }
 }
 .ds-quellen .org .av.eagle { background: #0E1A36; color: #fff; }
 .ds-quellen .org .av.ard { background: #1B47C2; color: #fff; font-size: 8px; line-height: 1.05; padding: 2px; text-align: center; }
-.ds-quellen .org .av.aok { background: var(--green-600); color: #fff; }
+.ds-quellen .org .av.aok { background: var(--green-700); color: #fff; }
 .ds-quellen .zugriff { display: inline-flex; align-items: center; gap: 6px; color: var(--green-700); font-weight: 500; font-size: 13px; }
 .ds-quellen .zugriff svg { width: 14px; height: 14px; }
 .ds-quellen .zugriff.eink { color: var(--brand-700); }
+/* --green-700 (#0F6B40) is a dark green that does not flip in dark mode →
+   2.54:1 on the dark surface. Use the lighter success token in dark: 8.08:1. */
+.dark .ds-quellen .zugriff { color: var(--color-success); }
 
 
 /* ============ assistent.html ============ */
@@ -1203,7 +1251,7 @@ button { font: inherit; cursor: pointer; }
 .quick-chips { display: flex; gap: 10px; margin-bottom: 16px; }
 .quick-chips .chip {
   display: inline-flex; align-items: center; gap: 8px;
-  padding: 10px 14px; background: var(--surface); border: 1px solid var(--border);
+  min-height: 40px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--r-md); color: var(--ink-2); font-size: 13.5px; font-weight: 500;
 }
 .quick-chips .chip svg { color: var(--ink-3); width: 16px; height: 16px; }
@@ -1243,16 +1291,28 @@ button { font: inherit; cursor: pointer; }
   border: 1px solid var(--border-strong); border-radius: var(--r-md);
   padding: 6px 8px 6px 14px; background: var(--surface);
 }
-.composer i[data-lucide="paperclip"] { color: var(--ink-3); }
-.composer input { flex: 1; border: 0; outline: none; padding: 10px; font: inherit; background: transparent; }
+.composer input,
+.composer textarea {
+  flex: 1; border: 0; outline: none; padding: 10px; font: inherit;
+  background: transparent; color: var(--ink); resize: none;
+  line-height: 1.45; max-height: 160px; min-width: 0;
+}
 .composer .send {
-  width: 38px; height: 38px; border-radius: 8px;
+  width: 40px; height: 40px; border-radius: 8px;
   border: 0; background: var(--brand-fill); color: #fff;
   display: flex; align-items: center; justify-content: center;
+  flex: none;
 }
+.composer .attach {
+  width: 40px; height: 40px; border-radius: 8px; flex: none;
+  border: 0; background: transparent; color: var(--ink-3);
+  display: flex; align-items: center; justify-content: center;
+}
+.composer .attach:disabled { cursor: not-allowed; }
+.composer .attach svg { width: 18px; height: 18px; }
 
 .ctx-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 22px; box-shadow: var(--shadow-1); }
-.ctx-card h3 { margin: 0 0 6px; font-size: 16px; font-weight: 600; }
+.ctx-card :is(h2, h3) { margin: 0 0 6px; font-size: 16px; font-weight: 600; }
 .ctx-card .sub { color: var(--ink-3); font-size: 13px; margin-bottom: 14px; }
 
 .ctx-row {

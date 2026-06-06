@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Inbox, RefreshCw } from 'lucide-react';
 
 import { EmptyState } from '@/components/shared/EmptyState';
+import { Skeleton } from '@/components/shared/Skeleton';
 import { Button } from '@/components/ui/button';
 import { api } from '@/lib/mock-backend';
 import type { Behoerde, Letter } from '@/types';
@@ -38,6 +39,7 @@ export function InlineLetterReader({
 }: InlineLetterReaderProps) {
   const t = useTranslations('posteingang.reader');
   const tList = useTranslations('posteingang.list');
+  const tCommon = useTranslations('common');
   const headingRef = React.useRef<HTMLDivElement>(null);
 
   const [state, setState] = React.useState<
@@ -99,10 +101,11 @@ export function InlineLetterReader({
 
   if (state.kind === 'loading') {
     return (
-      <div aria-busy="true" className="flex flex-col gap-3">
-        <div className="h-6 w-48 animate-pulse rounded-md bg-surface-muted" />
-        <div className="h-4 w-72 animate-pulse rounded-md bg-surface-muted" />
-        <div className="h-64 animate-pulse rounded-lg bg-surface-muted/60" />
+      <div role="status" aria-busy="true" className="flex flex-col gap-3">
+        <span className="sr-only">{tCommon('loading')}</span>
+        <Skeleton shape="text" className="h-6 w-48" />
+        <Skeleton shape="text" className="h-4 w-72" />
+        <Skeleton className="h-64 rounded-lg" />
       </div>
     );
   }

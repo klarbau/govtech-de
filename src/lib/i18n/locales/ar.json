@@ -357,7 +357,8 @@
       "done": "منجَز",
       "snooze": "ذكِّرني لاحقاً",
       "snooze_days": "مؤجَّل لمدة {days} يوماً",
-      "actions_label": "إجراءات {titel}"
+      "actions_label": "إجراءات {titel}",
+      "sort_aria": "ترتيب توصيات الإجراءات"
     },
     "triumph": {
       "title": "أُنجز نيابةً عنك",
@@ -415,6 +416,7 @@
     "filter": "تصفية",
     "filter_active": "عدد عوامل التصفية النشطة: {count}",
     "search": "بحث",
+    "loading": "جارٍ التحميل …",
     "all": "الكل",
     "show_all": "عرض الكل",
     "actions": {
@@ -717,7 +719,8 @@
     },
     "message": {
       "user_sent": "تم الإرسال",
-      "assistant_label": "المساعد"
+      "assistant_label": "المساعد",
+      "user_label": "أنت"
     },
     "empty": {
       "title": "كيف يمكنني مساعدتك؟",
@@ -789,7 +792,8 @@
       "stammdaten_value": "محدّثة",
       "datenschutz_title": "بياناتك محمية",
       "datenschutz_body": "تُعالَج فقط البيانات اللازمة لسؤالك. وتبقى النسخ الأصلية في صناديق البريد الرسمية.",
-      "datenschutz_link": "مزيد عن حماية البيانات"
+      "datenschutz_link": "مزيد عن حماية البيانات",
+      "aside_label": "سياق المساعد"
     }
   },
   "posteingang": {
@@ -1131,6 +1135,21 @@
       "sheet_close_aria": "إغلاق لوحة الرد",
       "recipient_label_template": "إلى: {behoerde}",
       "bezug_label_template": "بشأن: {aktenzeichen}",
+      "betreff_label_template": "الموضوع: {betreff}",
+      "aktenzeichen_label_template": "رقم الملف (Aktenzeichen): {aktenzeichen}",
+      "char_count_template": "عدد الأحرف: {n}",
+      "ai_rewrite": {
+        "section_label": "إجراءات الذكاء الاصطناعي",
+        "umformulieren": "إعادة الصياغة بالذكاء الاصطناعي",
+        "kuerzer": "أقصر",
+        "formeller": "أكثر رسمية",
+        "einfacher": "أبسط",
+        "busy": "جارٍ المعالجة …",
+        "done": "تم تحديث النص.",
+        "error": "تعذّرت إعادة الصياغة – يُرجى المحاولة مرة أخرى.",
+        "offline_fallback": "الذكاء الاصطناعي غير متصل – النص دون تغيير.",
+        "disabled_skelett_hint": "غير متاح لقوالب وسائل الطعن القانونية: لا يصوغ التطبيق أي تسبيب قانوني (§ 2 RDG — قانون الخدمات القانونية)."
+      },
       "outbound_speculative": "حتى عام 2027 — تصميم افتراضي. في هذا العرض نُحاكي تواصلاً ثنائي الاتجاه مرتبطاً بخيط الطلب (antrags-thread-gebunden) قائماً على نموذج ZBP/BundID: تعيش الردود دائماً في خيط رسالة بعينها (مع تثبيت برقم الملف Aktenzeichen)، لا كصندوق بريد مفتوح. اليوم (مايو 2026) يختلف قناة الرد بحسب الجهة: Mein ELSTER لمصلحة الضرائب (Finanzamt)، بوابة التأمين الصحي لصناديق التأمين، بوابة خدمة الولاية (Landes-Service-Portal) لمكاتب المواطن وشؤون الأجانب، وغالباً ما تزال البريد الورقي. لا يُرسل شيء إلى {behoerde}.",
       "behoerde_kanal": {
         "bundid_postfach_2027": "صندوق BundID (BundID-Postfach، افتراضياً 2027)",
@@ -1302,7 +1321,10 @@
         "error_too_many": "تم بلوغ الحد الأقصى لعدد الملفات ({maxFiles}).",
         "error_total_too_large": "إجمالي حجم المرفقات يتجاوز {maxTotalMb} م.ب.",
         "error_mime_not_allowed": "نوع الملف ‚{name}' غير مسموح. المسموح: {allowedTypes}.",
-        "errors_heading": "تم رفض هذه المرفقات:"
+        "errors_heading": "تم رفض هذه المرفقات:",
+        "dropzone_cta": "اختيار الملفات",
+        "dropzone_hint": "أو أفلِتها هنا",
+        "dropzone_aria": "اختيار الملفات أو إفلاتها هنا بالسحب والإفلات"
       },
       "draft_saved_template": "تم حفظ المسودة قبل {n} ث",
       "draft_saving": "جارٍ حفظ المسودة …",
@@ -2301,7 +2323,8 @@
       "prev": "الصفحة السابقة",
       "next": "الصفحة التالية",
       "per_page_label": "مستندات لكل صفحة",
-      "per_page_option": "{count} لكل صفحة"
+      "per_page_option": "{count} لكل صفحة",
+      "nav_label": "تنقّل بين صفحات قائمة المستندات"
     },
     "schnellzugriff": {
       "title": "وصول سريع",
@@ -2351,7 +2374,8 @@
       "sort_name": "الاسم (أ–ي)",
       "sort_ausgestellt": "تاريخ الإصدار (الأحدث أولًا)",
       "sort_gueltig": "الصلاحية (المنتهية قريبًا أولًا)",
-      "status_label": "الحالة"
+      "status_label": "الحالة",
+      "button": "تصفية"
     },
     "eudi": {
       "button": "التصدير إلى EUDI Wallet (معاينة)",
@@ -2361,6 +2385,9 @@
       "mock_badge": "[MOCK]",
       "close": "إغلاق",
       "payload_label": "معاينة المستند (اصطناعية)"
+    },
+    "rail": {
+      "aside_label": "وصول سريع للمستندات والمضافة حديثًا"
     }
   },
   "termine": {
@@ -2664,7 +2691,8 @@
       "einwilligungsbasiert": "قائم على الموافقة",
       "aktuell": "مُحدَّث",
       "angezeigt": "عرض {shown} من {total} من مصادر البيانات.",
-      "show_all": "عرض جميع المستلِمين"
+      "show_all": "عرض جميع المستلِمين",
+      "col_aktion": "إجراء"
     },
     "kontrolle": {
       "title": "تحكّمك في حماية البيانات",

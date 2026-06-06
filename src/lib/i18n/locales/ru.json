@@ -357,7 +357,8 @@
       "done": "Готово",
       "snooze": "Напомнить позже",
       "snooze_days": "Отложено на {days} дн.",
-      "actions_label": "Действия для {titel}"
+      "actions_label": "Действия для {titel}",
+      "sort_aria": "Порядок сортировки рекомендаций"
     },
     "triumph": {
       "title": "Сделано за Вас",
@@ -415,6 +416,7 @@
     "filter": "Фильтр",
     "filter_active": "Фильтров активно: {count}",
     "search": "Поиск",
+    "loading": "Загрузка …",
     "all": "Все",
     "show_all": "Показать все",
     "actions": {
@@ -717,7 +719,8 @@
     },
     "message": {
       "user_sent": "Отправлено",
-      "assistant_label": "Ассистент"
+      "assistant_label": "Ассистент",
+      "user_label": "Вы"
     },
     "empty": {
       "title": "Чем я могу Вам помочь?",
@@ -789,7 +792,8 @@
       "stammdaten_value": "Актуальны",
       "datenschutz_title": "Ваши данные защищены",
       "datenschutz_body": "Обрабатываются только данные, нужные для Вашего вопроса. Оригиналы остаются в официальных почтовых ящиках.",
-      "datenschutz_link": "Подробнее о защите данных"
+      "datenschutz_link": "Подробнее о защите данных",
+      "aside_label": "Контекст ассистента"
     }
   },
   "posteingang": {
@@ -1131,6 +1135,21 @@
       "sheet_close_aria": "Закрыть панель ответа",
       "recipient_label_template": "Кому: {behoerde}",
       "bezug_label_template": "К делу: {aktenzeichen}",
+      "betreff_label_template": "Тема: {betreff}",
+      "aktenzeichen_label_template": "Номер дела (Aktenzeichen): {aktenzeichen}",
+      "char_count_template": "Символов: {n}",
+      "ai_rewrite": {
+        "section_label": "Действия ИИ",
+        "umformulieren": "Переформулировать с ИИ",
+        "kuerzer": "Короче",
+        "formeller": "Официальнее",
+        "einfacher": "Проще",
+        "busy": "Обрабатываем …",
+        "done": "Текст обновлён.",
+        "error": "Не удалось переформулировать — попробуйте ещё раз.",
+        "offline_fallback": "ИИ недоступен — текст без изменений.",
+        "disabled_skelett_hint": "Недоступно для шаблонов правовых средств защиты: приложение не составляет юридическое обоснование (§ 2 RDG — Закон об оказании юридических услуг)."
+      },
       "outbound_speculative": "По состоянию на 2027 — умозрительный сценарий. В этом демо мы моделируем двунаправленную связь, привязанную к нити заявки (antrags-thread-gebunden), на основе модели ZBP/BundID: ответы всегда живут в нити конкретного письма (якорь — номер дела, Aktenzeichen), а не в свободном почтовом ящике. Сегодня (май 2026) канал ответа зависит от ведомства: Mein ELSTER для налоговой (Finanzamt), портал больничной кассы для медстраховщиков, земельный сервис-портал (Landes-Service-Portal) для бюро по делам граждан и иностранцев, нередко — бумажная почта. В {behoerde} ничего не отправляется.",
       "behoerde_kanal": {
         "bundid_postfach_2027": "Ящик BundID (BundID-Postfach, умозрительно 2027)",
@@ -1302,7 +1321,10 @@
         "error_too_many": "Достигнуто максимальное число файлов ({maxFiles}).",
         "error_total_too_large": "Общий размер вложений превышает {maxTotalMb} МБ.",
         "error_mime_not_allowed": "Тип файла ‚{name}' не разрешён. Разрешено: {allowedTypes}.",
-        "errors_heading": "Эти вложения отклонены:"
+        "errors_heading": "Эти вложения отклонены:",
+        "dropzone_cta": "Выбрать файлы",
+        "dropzone_hint": "или перетащите их сюда",
+        "dropzone_aria": "Выбрать файлы или перетащить их сюда"
       },
       "draft_saved_template": "Черновик сохранён {n} с назад",
       "draft_saving": "Черновик сохраняется …",
@@ -2301,7 +2323,8 @@
       "prev": "Предыдущая страница",
       "next": "Следующая страница",
       "per_page_label": "Документов на странице",
-      "per_page_option": "{count} на странице"
+      "per_page_option": "{count} на странице",
+      "nav_label": "Навигация по страницам списка документов"
     },
     "schnellzugriff": {
       "title": "Быстрый доступ",
@@ -2351,7 +2374,8 @@
       "sort_name": "Имя (А–Я)",
       "sort_ausgestellt": "Дата выдачи (сначала новые)",
       "sort_gueltig": "Срок действия (сначала истекающие)",
-      "status_label": "Статус"
+      "status_label": "Статус",
+      "button": "Фильтр"
     },
     "eudi": {
       "button": "Экспортировать в EUDI Wallet (предпросмотр)",
@@ -2361,6 +2385,9 @@
       "mock_badge": "[MOCK]",
       "close": "Закрыть",
       "payload_label": "Предпросмотр документа (синтетический)"
+    },
+    "rail": {
+      "aside_label": "Быстрый доступ к документам и недавно добавленные"
     }
   },
   "termine": {
@@ -2664,7 +2691,8 @@
       "einwilligungsbasiert": "На основе согласия",
       "aktuell": "актуально",
       "angezeigt": "Показано {shown} из {total} источников данных.",
-      "show_all": "Показать всех получателей"
+      "show_all": "Показать всех получателей",
+      "col_aktion": "Действие"
     },
     "kontrolle": {
       "title": "Ваш контроль защиты данных",

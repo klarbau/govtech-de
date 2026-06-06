@@ -6,6 +6,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { RefreshCw, Sparkles, Coins, FileText } from 'lucide-react';
 
 import { NormTooltip } from '@/components/shared/NormTooltip';
+import { Skeleton } from '@/components/shared/Skeleton';
 import { cn } from '@/lib/utils';
 import type { LetterAiSummaryPostOpen, LetterCitation } from '@/types';
 
@@ -88,6 +89,7 @@ export function AiErklaererCard({
 }: AiErklaererCardProps) {
   const t = useTranslations('posteingang.reader');
   const tDisclaimer = useTranslations('posteingang.disclaimer');
+  const tCommon = useTranslations('common');
   const prefersReducedMotion = useReducedMotion();
 
   const variants = {
@@ -136,14 +138,12 @@ export function AiErklaererCard({
       </div>
 
       {loading && (
-        <ul className="mt-3 flex flex-col gap-2" aria-busy="true">
+        <div role="status" aria-busy="true" className="mt-3 flex flex-col gap-2">
+          <span className="sr-only">{tCommon('loading')}</span>
           {Array.from({ length: 5 }).map((_, i) => (
-            <li
-              key={`sk-${i}`}
-              className="h-4 animate-pulse rounded-md bg-surface/70"
-            />
+            <Skeleton key={`sk-${i}`} shape="text" className="h-4" />
           ))}
-        </ul>
+        </div>
       )}
 
       {!loading && error && (
