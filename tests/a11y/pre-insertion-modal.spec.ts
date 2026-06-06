@@ -94,7 +94,7 @@ async function openModalFor(
       name: /Antwort verfassen|Erneut antworten|Entwurf weiter schreiben/i,
     })
     .first();
-  await replyButton.waitFor({ state: 'visible', timeout: 10_000 });
+  await replyButton.waitFor({ state: 'visible', timeout: 20_000 });
   await replyButton.click();
   await page.locator('[data-slot="sheet-content"]').waitFor();
 
@@ -106,7 +106,7 @@ async function openModalFor(
   await page
     .locator('[aria-modal="true"]')
     .first()
-    .waitFor({ state: 'visible', timeout: 10_000 });
+    .waitFor({ state: 'visible', timeout: 20_000 });
 }
 
 test.describe('V1.5.1 PreInsertionModal a11y', () => {
@@ -134,7 +134,7 @@ test.describe('V1.5.1 PreInsertionModal a11y', () => {
               name: /Antwort verfassen|Erneut antworten|Entwurf weiter schreiben/i,
             })
             .first();
-          await replyButton.waitFor({ state: 'visible', timeout: 10_000 });
+          await replyButton.waitFor({ state: 'visible', timeout: 20_000 });
           await replyButton.click();
           await page.locator('[data-slot="sheet-content"]').waitFor();
 
@@ -167,7 +167,7 @@ test.describe('V1.5.1 PreInsertionModal a11y', () => {
           await page
             .locator('[aria-modal="true"]')
             .first()
-            .waitFor({ state: 'visible', timeout: 10_000 });
+            .waitFor({ state: 'visible', timeout: 20_000 });
         } else {
           await openModalFor(page, setup);
         }
@@ -226,7 +226,7 @@ test.describe('V1.5.1 PreInsertionModal a11y', () => {
         name: /Antwort verfassen|Erneut antworten|Entwurf weiter schreiben/i,
       })
       .first();
-    await reply.waitFor({ state: 'visible', timeout: 10_000 });
+    await reply.waitFor({ state: 'visible', timeout: 20_000 });
     await reply.click();
     await page.locator('[data-slot="sheet-content"]').waitFor();
 

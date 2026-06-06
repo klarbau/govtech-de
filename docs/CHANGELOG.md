@@ -2,6 +2,17 @@
 
 Detailed ship history. **This file is NOT mandatory startup reading** — `CLAUDE.md` carries the short current-state summary. Read here only when you need the followup list or ship details of a specific feature.
 
+## Release-hardening — Sheet focus-trap (WCAG 2.4.3) + a11y-gate stabilization + lockfile dedup (2026-06-06)
+
+A release-readiness audit found the certified "test:a11y 131/0/48" claim did **not** reproduce: a fresh full run gave 125 passed / 2 failed / 5 flaky. The hard failure was a **deterministic focus escape** from the Posteingang `ReplySheet` consent modal — focus reached `<body>` on the 6th Tab via base-ui 1.5.0's FocusGuard wrap-around cycle. (`<body>` can never be `inert`, so the existing `data-base-ui-inert`-promotion hook could not fix it — markers *are* present and the background *is* inerted; the leak is the guard tick, not the background.)
+
+- **Fix (`src/components/ui/sheet.tsx`):** deterministic Tab-cycle on `SheetContent` (wrap first↔last focusable, `preventDefault` the wrap-around) — mirrors the proven `PreInsertionModal` pattern, covers every Sheet, nested modals (PreInsertion/Versand) render in sibling portals so there is no double-trap.
+- **a11y-gate stabilization:** the residual 2-failed / 5-flaky were *all* test-harness warm-up timeouts (deep-link CTA / heavy modal chain not mounting within the spec `waitFor` budget), never an a11y assertion. Hardened root-cause (not retry-masking): `posteingang.spec.ts:101` now warms the store + `waitFor`s the CTA (was a fixed `waitForTimeout` + bare click); `pre-insertion-modal.spec.ts` `waitFor` budgets 10s→20s.
+- **Lockfile dedup:** dropped the stale `package-lock.json` (base-ui 1.4.1) + gitignored it; `pnpm-lock.yaml` (1.5.0) is the sole canonical lockfile → deterministic Vercel package-manager inference.
+- **Gates (final tree, reliable-mode PROD `next build && next start`):** `tsc` clean · `next build` green · focus-trap `posteingang.spec.ts:101` **5/5** deterministic (~2s each, no timeouts) · `pre-insertion-modal` **22/22** · full `test:a11y` **132 passed / 0 failed / 0 flaky / 47 skipped**, 0 axe serious/critical. The corrected deterministic baseline is **132/0/47** (the earlier "131/0/48" was the non-deterministic count). A11y report: `docs/a11y-reports/release-hardening-focustrap-2026-06-06.md`.
+- **Reverted on review:** a prototyped 184-line "Tier-2" self-computed inert fallback in `use-inert-outside-modal.ts` was **dead code** (markers are present) **and incorrect if it ran** (its live-region exclusion would skip the whole app wrapper) → fully reverted; the hook is back at its certified HEAD form.
+- **Deferred NITs (proven-safe as-is):** extract the duplicated Tab-cycle into a shared `useTabCycle` hook (`sheet.tsx` + `PreInsertionModal.tsx`); tighten the focusable query to drop roving `tabindex="-1"` radios.
+
 ## Posteingang „Antwort verfassen" re-skin + KI-Aktionen (2026-06-04)
 
 Integrated the donated *GovTech DE Design System* „Antwort verfassen" panel into the live reply `Sheet` and added a new RDG-safe **KI-Umformulieren** capability. Spec: `docs/specs/posteingang-antwort-verfassen-reskin.md`. Orchestrated via workflow (frontend-coder ‖ assistant-engineer → i18n-localizer → code-reviewer ‖ a11y-tester), with all authoritative gates re-run in the main thread.
