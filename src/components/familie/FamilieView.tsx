@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 
 import { api } from '@/lib/mock-backend';
+import { Skeleton } from '@/components/shared/Skeleton';
 import {
   Dialog,
   DialogContent,
@@ -108,6 +109,10 @@ export function FamilieView() {
   const hauptName = hauptperson
     ? `${hauptperson.vorname} ${hauptperson.nachname}`.trim()
     : '';
+
+  if (view === null) {
+    return <FamilieSkeleton />;
+  }
 
   return (
     <>
@@ -433,5 +438,24 @@ export function FamilieView() {
         </DialogContent>
       </Dialog>
     </>
+  );
+}
+
+function FamilieSkeleton() {
+  const tCommon = useTranslations('common');
+  return (
+    <div role="status" aria-busy="true">
+      <span className="sr-only">{tCommon('loading')}</span>
+      <div className="gt-page-head">
+        <Skeleton shape="text" className="h-8 w-64" />
+        <Skeleton shape="text" className="mt-2 w-48" />
+      </div>
+      <div className="flex flex-col gap-4">
+        <Skeleton className="h-28 rounded-2xl" />
+        <Skeleton className="h-28 rounded-2xl" />
+        <Skeleton className="h-28 rounded-2xl" />
+        <Skeleton className="h-56 rounded-2xl" />
+      </div>
+    </div>
   );
 }

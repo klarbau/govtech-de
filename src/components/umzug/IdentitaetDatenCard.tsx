@@ -18,6 +18,7 @@ import { api } from '@/lib/mock-backend';
 import { formatDateDe } from '@/lib/utils';
 import type { Persona } from '@/types';
 import { SectionCard } from '@/components/shared/SectionCard';
+import { Skeleton } from '@/components/shared/Skeleton';
 import { IdentitaetDatenRow } from './IdentitaetDatenRow';
 
 function formatAnschrift(adresse: Persona['adresse']): string {
@@ -27,6 +28,7 @@ function formatAnschrift(adresse: Persona['adresse']): string {
 
 export function IdentitaetDatenCard() {
   const t = useTranslations('umzug.identitaet.daten');
+  const tCommon = useTranslations('common');
   const [persona, setPersona] = useState<Persona | null>(null);
   const [walletCount, setWalletCount] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
@@ -55,12 +57,10 @@ export function IdentitaetDatenCard() {
   if (loading) {
     return (
       <SectionCard title={t('title')} icon={<Database />} as="h2" padding="md">
-        <div className="flex flex-col gap-3" aria-hidden="true">
+        <div role="status" aria-busy="true" className="flex flex-col gap-3">
+          <span className="sr-only">{tCommon('loading')}</span>
           {Array.from({ length: 4 }).map((_, i) => (
-            <div
-              key={i}
-              className="h-12 w-full animate-pulse rounded-md bg-surface-muted motion-reduce:animate-none"
-            />
+            <Skeleton key={i} className="h-12 w-full rounded-md" />
           ))}
         </div>
       </SectionCard>

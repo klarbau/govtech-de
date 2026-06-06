@@ -41,12 +41,18 @@ function Button({
   className,
   variant = "default",
   size = "default",
+  nativeButton,
   ...props
 }: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
   return (
     <ButtonPrimitive
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
+      // A `render` prop substitutes the element — in this app always a
+      // Link/anchor, never a native <button>. Tell Base UI so it applies the
+      // correct (non-native-button) a11y semantics instead of warning. An
+      // explicit `nativeButton` always wins.
+      nativeButton={nativeButton ?? props.render === undefined}
       {...props}
     />
   )

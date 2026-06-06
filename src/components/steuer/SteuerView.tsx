@@ -20,6 +20,7 @@ import {
 import Link from 'next/link';
 
 import { api } from '@/lib/mock-backend';
+import { Skeleton } from '@/components/shared/Skeleton';
 import type { Document, SteuerBereich, SteuerUebersicht } from '@/types';
 
 /* Literal port of docs/design-prototype-v2/steuer.html. */
@@ -124,6 +125,10 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
 
   const datenschutz = uebersicht?.datenschutz;
   const watermark = uebersicht?.watermark ?? '[MOCK]';
+
+  if (!loaded) {
+    return <SteuerSkeleton />;
+  }
 
   return (
     <>
@@ -440,16 +445,34 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
         </div>
       </div>
 
-      {!loaded ? (
-        <div className="muted" style={{ marginTop: 12, fontSize: 12 }}>
-          {t('steuer.loading')}
-        </div>
-      ) : null}
-
       {/* Suppress unused warnings for icons we keep import-pinned to the design palette. */}
       <span hidden>
         <Bell />
       </span>
     </>
+  );
+}
+
+function SteuerSkeleton() {
+  const tCommon = useTranslations('common');
+  return (
+    <div role="status" aria-busy="true">
+      <span className="sr-only">{tCommon('loading')}</span>
+      <div className="gt-page-head">
+        <Skeleton shape="text" className="h-8 w-64" />
+        <Skeleton shape="text" className="mt-2 w-80" />
+      </div>
+      <div className="st-layout">
+        <div className="flex flex-col gap-[18px]">
+          <Skeleton className="h-40 rounded-2xl" />
+          <Skeleton className="h-28 rounded-2xl" />
+        </div>
+        <div className="flex flex-col gap-[18px]">
+          <Skeleton className="h-28 rounded-2xl" />
+          <Skeleton className="h-28 rounded-2xl" />
+          <Skeleton className="h-28 rounded-2xl" />
+        </div>
+      </div>
+    </div>
   );
 }

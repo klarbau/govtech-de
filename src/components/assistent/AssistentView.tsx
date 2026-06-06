@@ -27,6 +27,8 @@ import type { AssistantStreamEvent } from '@/lib/ai/stream';
 import type { PersonaContextInput } from '@/lib/ai/system-prompt';
 import type { Behoerde, Persona } from '@/types';
 
+import { Skeleton } from '@/components/shared/Skeleton';
+
 import { ChatComposer } from './ChatComposer';
 import { MessageBubble } from './MessageBubble';
 import { ToolCallCard } from './ToolCallCard';
@@ -86,6 +88,7 @@ export function AssistentView() {
   const t = useTranslations('assistent');
   const tGreeting = useTranslations('assistent.greeting');
   const tKontext = useTranslations('assistent.kontext');
+  const tCommon = useTranslations('common');
 
   const [persona, setPersona] = React.useState<Persona | null>(null);
   const [counts, setCounts] = React.useState<KontextCounts | null>(null);
@@ -582,9 +585,18 @@ export function AssistentView() {
           <ChatComposer onSend={sendUserMessage} disabled={interactionDisabled} />
         </div>
 
-        <aside className="ctx-card" aria-label={tKontext('aside_label')}>
+        <aside
+          className="ctx-card"
+          aria-label={tKontext('aside_label')}
+          aria-busy={counts === null}
+        >
           <h2>{tKontext('title')}</h2>
           <div className="sub">{tKontext('subtitle')}</div>
+          {counts === null ? (
+            <span className="sr-only" role="status">
+              {tCommon('loading')}
+            </span>
+          ) : null}
           <Link className="ctx-row" href="/posteingang">
             <span className="icon-circle">
               <Mail aria-hidden="true" />
@@ -592,9 +604,11 @@ export function AssistentView() {
             <div className="grow">
               <div className="t">{tKontext('posteingang')}</div>
               <div className="s">
-                {counts
-                  ? tKontext('posteingang_value', { ungelesen: counts.ungeleseneBriefe })
-                  : '—'}
+                {counts ? (
+                  tKontext('posteingang_value', { ungelesen: counts.ungeleseneBriefe })
+                ) : (
+                  <Skeleton shape="text" className="w-28" />
+                )}
               </div>
             </div>
             <ChevronRight aria-hidden="true" />
@@ -606,7 +620,11 @@ export function AssistentView() {
             <div className="grow">
               <div className="t">{tKontext('dokumente')}</div>
               <div className="s">
-                {counts ? tKontext('dokumente_value', { count: counts.dokumente }) : '—'}
+                {counts ? (
+                  tKontext('dokumente_value', { count: counts.dokumente })
+                ) : (
+                  <Skeleton shape="text" className="w-24" />
+                )}
               </div>
             </div>
             <ChevronRight aria-hidden="true" />
@@ -618,7 +636,11 @@ export function AssistentView() {
             <div className="grow">
               <div className="t">{tKontext('termine')}</div>
               <div className="s">
-                {counts ? tKontext('termine_value', { count: counts.termine }) : '—'}
+                {counts ? (
+                  tKontext('termine_value', { count: counts.termine })
+                ) : (
+                  <Skeleton shape="text" className="w-24" />
+                )}
               </div>
             </div>
             <ChevronRight aria-hidden="true" />

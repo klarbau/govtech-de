@@ -28,6 +28,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Skeleton } from '@/components/shared/Skeleton';
 import { api } from '@/lib/mock-backend';
 import type {
   Behoerde,
@@ -115,6 +116,7 @@ function quellenAvatar(behoerdeId: string, name: string): React.ReactNode {
 export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
   const t = useTranslations();
   const [personaId, setPersonaId] = React.useState<PersonaId | null>(null);
+  const [loaded, setLoaded] = React.useState(false);
   const [bannerOpen, setBannerOpen] = React.useState(true);
   const [activities, setActivities] = React.useState<UebermittlungsLogEntry[]>([]);
   const [behoerdenById, setBehoerdenById] = React.useState<Record<string, Behoerde>>({});
@@ -150,6 +152,8 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
         setQuellen(qs);
       } catch {
         if (!cancelled) setActivities([]);
+      } finally {
+        if (!cancelled) setLoaded(true);
       }
     })();
     return () => {
@@ -319,6 +323,10 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
       badge: activityBadgeFor(entry.kategorie),
     };
   });
+
+  if (!loaded) {
+    return <DatenschutzSkeleton />;
+  }
 
   return (
     <>
@@ -638,5 +646,25 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
         </DialogContent>
       </Dialog>
     </>
+  );
+}
+
+function DatenschutzSkeleton() {
+  const tCommon = useTranslations('common');
+  return (
+    <div role="status" aria-busy="true">
+      <span className="sr-only">{tCommon('loading')}</span>
+      <div className="gt-page-head">
+        <Skeleton shape="text" className="h-8 w-64" />
+        <Skeleton shape="text" className="mt-2 w-80" />
+      </div>
+      <Skeleton className="mb-6 h-20 rounded-2xl" />
+      <div className="flex flex-col gap-6">
+        <Skeleton className="h-32 rounded-2xl" />
+        <Skeleton className="h-32 rounded-2xl" />
+        <Skeleton className="h-32 rounded-2xl" />
+        <Skeleton className="h-32 rounded-2xl" />
+      </div>
+    </div>
   );
 }
