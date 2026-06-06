@@ -1135,6 +1135,21 @@
       "sheet_close_aria": "Закрыть панель ответа",
       "recipient_label_template": "Кому: {behoerde}",
       "bezug_label_template": "К делу: {aktenzeichen}",
+      "betreff_label_template": "Тема: {betreff}",
+      "aktenzeichen_label_template": "Номер дела (Aktenzeichen): {aktenzeichen}",
+      "char_count_template": "Символов: {n}",
+      "ai_rewrite": {
+        "section_label": "Действия ИИ",
+        "umformulieren": "Переформулировать с ИИ",
+        "kuerzer": "Короче",
+        "formeller": "Официальнее",
+        "einfacher": "Проще",
+        "busy": "Обрабатываем …",
+        "done": "Текст обновлён.",
+        "error": "Не удалось переформулировать — попробуйте ещё раз.",
+        "offline_fallback": "ИИ недоступен — текст без изменений.",
+        "disabled_skelett_hint": "Недоступно для шаблонов правовых средств защиты: приложение не составляет юридическое обоснование (§ 2 RDG — Закон об оказании юридических услуг)."
+      },
       "outbound_speculative": "По состоянию на 2027 — умозрительный сценарий. В этом демо мы моделируем двунаправленную связь, привязанную к нити заявки (antrags-thread-gebunden), на основе модели ZBP/BundID: ответы всегда живут в нити конкретного письма (якорь — номер дела, Aktenzeichen), а не в свободном почтовом ящике. Сегодня (май 2026) канал ответа зависит от ведомства: Mein ELSTER для налоговой (Finanzamt), портал больничной кассы для медстраховщиков, земельный сервис-портал (Landes-Service-Portal) для бюро по делам граждан и иностранцев, нередко — бумажная почта. В {behoerde} ничего не отправляется.",
       "behoerde_kanal": {
         "bundid_postfach_2027": "Ящик BundID (BundID-Postfach, умозрительно 2027)",
@@ -1306,7 +1321,10 @@
         "error_too_many": "Достигнуто максимальное число файлов ({maxFiles}).",
         "error_total_too_large": "Общий размер вложений превышает {maxTotalMb} МБ.",
         "error_mime_not_allowed": "Тип файла ‚{name}' не разрешён. Разрешено: {allowedTypes}.",
-        "errors_heading": "Эти вложения отклонены:"
+        "errors_heading": "Эти вложения отклонены:",
+        "dropzone_cta": "Выбрать файлы",
+        "dropzone_hint": "или перетащите их сюда",
+        "dropzone_aria": "Выбрать файлы или перетащить их сюда"
       },
       "draft_saved_template": "Черновик сохранён {n} с назад",
       "draft_saving": "Черновик сохраняется …",

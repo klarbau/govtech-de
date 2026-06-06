@@ -1135,6 +1135,21 @@
       "sheet_close_aria": "Закрити панель відповіді",
       "recipient_label_template": "Кому: {behoerde}",
       "bezug_label_template": "До справи: {aktenzeichen}",
+      "betreff_label_template": "Тема: {betreff}",
+      "aktenzeichen_label_template": "Номер справи (Aktenzeichen): {aktenzeichen}",
+      "char_count_template": "Символів: {n}",
+      "ai_rewrite": {
+        "section_label": "Дії ШІ",
+        "umformulieren": "Переформулювати за допомогою ШІ",
+        "kuerzer": "Коротше",
+        "formeller": "Офіційніше",
+        "einfacher": "Простіше",
+        "busy": "Опрацьовуємо …",
+        "done": "Текст оновлено.",
+        "error": "Не вдалося переформулювати — спробуйте ще раз.",
+        "offline_fallback": "ШІ недоступний — текст без змін.",
+        "disabled_skelett_hint": "Недоступно для шаблонів правових засобів захисту: застосунок не складає юридичного обґрунтування (§ 2 RDG — Закон про надання юридичних послуг)."
+      },
       "outbound_speculative": "Станом на 2027 — умоглядний сценарій. У цьому демо ми моделюємо двосторонню комунікацію, привʼязану до нитки заявки (antrags-thread-gebunden), на основі моделі ZBP/BundID: відповіді завжди живуть у нитці конкретного листа (якір — номер справи, Aktenzeichen), а не у вільній скриньці. Сьогодні (травень 2026) канал відповіді залежить від відомства: Mein ELSTER для податкової (Finanzamt), портал лікарняної каси для медстраховиків, земельний сервіс-портал (Landes-Service-Portal) для бюро у справах громадян та іноземців, нерідко — паперова пошта. До {behoerde} нічого не надсилається.",
       "behoerde_kanal": {
         "bundid_postfach_2027": "Скринька BundID (BundID-Postfach, умоглядно 2027)",
@@ -1306,7 +1321,10 @@
         "error_too_many": "Досягнуто максимальної кількості файлів ({maxFiles}).",
         "error_total_too_large": "Загальний розмір вкладень перевищує {maxTotalMb} МБ.",
         "error_mime_not_allowed": "Тип файлу ‚{name}' не дозволено. Дозволено: {allowedTypes}.",
-        "errors_heading": "Ці вкладення відхилено:"
+        "errors_heading": "Ці вкладення відхилено:",
+        "dropzone_cta": "Вибрати файли",
+        "dropzone_hint": "або перетягніть їх сюди",
+        "dropzone_aria": "Вибрати файли або перетягнути їх сюди"
       },
       "draft_saved_template": "Чернетку збережено {n} с тому",
       "draft_saving": "Збереження чернетки …",

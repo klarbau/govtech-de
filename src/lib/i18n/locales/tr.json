@@ -1135,6 +1135,21 @@
       "sheet_close_aria": "Yanıt panelini kapat",
       "recipient_label_template": "Alıcı: {behoerde}",
       "bezug_label_template": "Konu: {aktenzeichen}",
+      "betreff_label_template": "Konu (Betreff): {betreff}",
+      "aktenzeichen_label_template": "Dosya numarası (Aktenzeichen): {aktenzeichen}",
+      "char_count_template": "Karakter: {n}",
+      "ai_rewrite": {
+        "section_label": "Yapay zeka işlemleri",
+        "umformulieren": "Yapay zeka ile yeniden yaz",
+        "kuerzer": "Daha kısa",
+        "formeller": "Daha resmî",
+        "einfacher": "Daha basit",
+        "busy": "İşleniyor …",
+        "done": "Metin güncellendi.",
+        "error": "Yeniden yazma başarısız oldu – lütfen tekrar deneyin.",
+        "offline_fallback": "Yapay zeka çevrimdışı – metin değişmedi.",
+        "disabled_skelett_hint": "Hukuki itiraz şablonları için kullanılamaz: Uygulama hukuki gerekçe yazmaz (§ 2 RDG — Hukuki Hizmetler Kanunu)."
+      },
       "outbound_speculative": "2027 itibarıyla — kavramsal tasarım. Bu demoda ZBP/BundID modeli üzerine kurulu, başvuru ipliğine bağlı (antrags-thread-gebunden) iki yönlü iletişimi simüle ediyoruz: yanıtlar her zaman somut bir yazının ipliğinde yaşar (dosya numarası / Aktenzeichen ile sabitlenir), serbest bir posta kutusu olarak değil. Bugün (Mayıs 2026) yanıt kanalı kuruma göre değişir: Vergi dairesi (Finanzamt) için Mein ELSTER, sağlık sigortaları için sigorta portalı, vatandaş ve yabancılar daireleri için eyalet hizmet portalı (Landes-Service-Portal), sıklıkla hâlâ posta. {behoerde} kurumuna hiçbir şey gönderilmez.",
       "behoerde_kanal": {
         "bundid_postfach_2027": "BundID posta kutusu (BundID-Postfach, kavramsal 2027)",
@@ -1306,7 +1321,10 @@
         "error_too_many": "Azami dosya sayısına ({maxFiles}) ulaşıldı.",
         "error_total_too_large": "Tüm eklerin toplam boyutu {maxTotalMb} MB sınırını aşıyor.",
         "error_mime_not_allowed": "‚{name}' dosya türüne izin verilmiyor. İzin verilen: {allowedTypes}.",
-        "errors_heading": "Bu ekler reddedildi:"
+        "errors_heading": "Bu ekler reddedildi:",
+        "dropzone_cta": "Dosya seçin",
+        "dropzone_hint": "ya da buraya bırakın",
+        "dropzone_aria": "Dosya seçin veya sürükleyip buraya bırakın"
       },
       "draft_saved_template": "Taslak {n} sn önce kaydedildi",
       "draft_saving": "Taslak kaydediliyor …",

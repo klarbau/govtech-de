@@ -76,6 +76,18 @@ export const TOP_ACTIONS_RATE_LIMIT: RateLimitConfig = {
 };
 
 /**
+ * Budget for the Posteingang reply-rewrite one-shot (`/api/reply/rewrite`).
+ * A human drafting a reply taps a KI-chip a handful of times per draft; this
+ * is generous for that while still capping a scripted abuser that hammers the
+ * (real-key) rewrite path. Distinct bucket → heavy rewriting does not starve
+ * the assistant or the dashboard sort.
+ */
+export const REPLY_REWRITE_RATE_LIMIT: RateLimitConfig = {
+  limit: 20,
+  windowMs: 60_000,
+};
+
+/**
  * Fixed-window check. Distinct `bucket` namespaces keep the two endpoints'
  * counters separate even when they share a `key` (the session id), so heavy
  * assistant use doesn't starve the dashboard sort.
@@ -176,6 +188,12 @@ export const CAPS = {
   maxNotizenChars: 2_000,
   /** Max dashboard top-action candidates in one ranking request. */
   maxTopActionCandidates: 50,
+  /**
+   * Max characters in a reply body sent to `/api/reply/rewrite`. A real
+   * Behörden-Antwort is a page or two of plain text; 16k chars is comfortable
+   * headroom while keeping a megabyte of text out of the (cached) prompt.
+   */
+  maxReplyBodyChars: 16_000,
 } as const;
 
 /**
