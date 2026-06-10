@@ -8,7 +8,7 @@
 
 GovTech DE is a **speculative-design prototype** showing how a citizen-first interaction layer for German public administration could feel in 2027, sitting on top of DeutschlandID + EUDI Wallet + the Deutschland-Stack. **It is not a real integration. All data is mocked.** The artefact is portfolio-grade: demo to GovTech stakeholders (DigitalService DE, BMDS, Tech4Germany, GovTech Deutschland, GovStart), live URL, GitHub repo, Loom walkthrough.
 
-**Repo**: `https://github.com/loneliness-is-repulsive/govtech-de` (private).
+**Repo**: `https://github.com/klarbau/govtech-de` (private).
 **Tree**: `C:\Users\iaiaa\govtech` on Windows 11.
 
 **One-sentence pitch (working)**: "The state works for you — your identity, your documents, your bureaucratic life in one calm, premium, citizen-respectful interface."
@@ -223,7 +223,7 @@ If you (the next AI) are picking up this project, here's the priority stack:
 4. **Then run product-architect → frontend-coder pipeline**. Per-screen agents must respect strict file-scope boundaries (Layout / Posteingang / Stammdaten don't cross).
 5. **Never break the hard-lines in § 9**. Verifier and code-reviewer will catch most, but design your spec around them from the start.
 6. **Run main-thread gates after agents**: JSON.parse on 6 locales, typecheck, vitest 636+/636+ (the baseline grows with each phase). Don't trust agent self-reports.
-7. **Commit small + push**. Repo is `loneliness-is-repulsive/govtech-de` (private). git user.email is the GitHub noreply for that account.
+7. **Commit small + push**. Repo is `klarbau/govtech-de` (private). git user.email is the GitHub noreply for that account.
 
 ---
 

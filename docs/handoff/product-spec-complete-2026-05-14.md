@@ -3,7 +3,7 @@
 **Date**: 2026-05-14
 **Status**: Handoff to external LLM (Non-Claude)
 **Scope**: Self-contained implementation brief — sufficient to rebuild the product from zero
-**Repo**: `https://github.com/loneliness-is-repulsive/govtech-de` (private)
+**Repo**: `https://github.com/klarbau/govtech-de` (private)
 **Root**: `C:\Users\iaiaa\govtech`
 **This file**: `docs/handoff/product-spec-complete-2026-05-14.md`
 
@@ -1688,7 +1688,7 @@ These have NOT been resolved by the user. External LLM should NOT guess — ask 
 
 ### 15.1 Repo + paths
 
-- **Repo URL**: `https://github.com/loneliness-is-repulsive/govtech-de` (private)
+- **Repo URL**: `https://github.com/klarbau/govtech-de` (private)
 - **Project root**: `C:\Users\iaiaa\govtech` on Windows 11
 - **Git user.email**: GitHub noreply for that account
 - **Spec docs**: `docs/specs/` — one MD per feature, status-tracked (`spec | building | shipped`)
