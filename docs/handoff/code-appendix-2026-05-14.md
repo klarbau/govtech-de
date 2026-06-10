@@ -1202,7 +1202,7 @@ Full per-version slicing (V1.0 / V1.1 / V1.2 / V1.3) in master spec `product-spe
 ## § 10 — Status & Verification
 
 **Generated**: 2026-05-14
-**Source repo**: `C:\Users\iaiaa\govtech` / `loneliness-is-repulsive/govtech-de`
+**Source repo**: `C:\Users\iaiaa\govtech` / `klarbau/govtech-de`
 **Coverage**:
 
 | Section | Source | Status |

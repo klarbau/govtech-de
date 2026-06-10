@@ -17,5 +17,5 @@ or human reviewer.
 Both files run offline once their respective CDNs are cached. Drag-and-drop
 into a browser to open, or upload directly to a reviewer.
 
-Source repo: https://github.com/loneliness-is-repulsive/govtech-de
+Source repo: https://github.com/klarbau/govtech-de
 All data shown is synthetic. No real Behörden are integrated.

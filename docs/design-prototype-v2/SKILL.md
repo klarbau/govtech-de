@@ -19,7 +19,7 @@ Then explore the other files:
 ## When generating artefacts
 
 - **Slides, mocks, throwaway prototypes:** Copy `colors_and_type.css` (or its `:root` block) into the artefact. Use `.ds-*` classes for headings + body. Reference Lucide via CDN. Never emit emoji. Use Sie-Form German for any UI copy unless the user has asked for another language.
-- **Production code:** The upstream Next.js app is at <https://github.com/loneliness-is-repulsive/govtech-de>. Read its `CLAUDE.md` for tech-stack constraints (Next.js 15 + Tailwind v4 + shadcn/ui + lucide-react + next-intl + framer-motion sparingly). Apply the same `--ds-*` tokens — they map 1:1 to `src/app/globals.css` in the live app.
+- **Production code:** The upstream Next.js app is at <https://github.com/klarbau/govtech-de>. Read its `CLAUDE.md` for tech-stack constraints (Next.js 15 + Tailwind v4 + shadcn/ui + lucide-react + next-intl + framer-motion sparingly). Apply the same `--ds-*` tokens — they map 1:1 to `src/app/globals.css` in the live app.
 
 ## Default behaviour on plain invocation
 

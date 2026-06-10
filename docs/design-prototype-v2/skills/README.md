@@ -1,4 +1,4 @@
-# Skills — imported from `loneliness-is-repulsive/govtech-de/.claude/skills/`
+# Skills — imported from `klarbau/govtech-de/.claude/skills/`
 
 17 design-related skill packages, copied verbatim from the upstream repo so a Claude Code agent (or any human) working in this project has them on hand. Each folder is a self-contained skill with its own `SKILL.md` + `references/` + occasionally `templates/`.
 
@@ -32,4 +32,4 @@ For the project-local design system you already have, see `../SKILL.md` (`govtec
 
 ## Provenance
 
-All 250 files in this folder are imported verbatim from `loneliness-is-repulsive/govtech-de/.claude/skills/` on `main` (commit `746f2550`). No edits — if you find a typo, fix it upstream and re-import.
+All 250 files in this folder are imported verbatim from `klarbau/govtech-de/.claude/skills/` on `main` (commit `746f2550`). No edits — if you find a typo, fix it upstream and re-import.

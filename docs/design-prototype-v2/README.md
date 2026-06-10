@@ -10,7 +10,7 @@ This design system encodes the visual language, content register, components and
 
 | Source | Where to look |
 |---|---|
-| **Upstream codebase (GitHub)** | <https://github.com/loneliness-is-repulsive/govtech-de> — `main` branch. Read this if you need pixel-level fidelity beyond what's transcribed here. |
+| **Upstream codebase (GitHub)** | <https://github.com/klarbau/govtech-de> — `main` branch. Read this if you need pixel-level fidelity beyond what's transcribed here. |
 | Project context (verbatim) | `CLAUDE.md` in upstream repo — mission, tech stack, folder map, naming conventions, status log. |
 | Visual foundations | `docs/research/2026-05-14-design-direction-premium-minimal.md` in upstream — full 70k token research brief; Hard-Lines HL-DS-1..HL-DS-14 enforced here. |
 | Personas | `docs/personas.md` in upstream — Anna Petrov, Familie Schmidt, Mehmet Yıldız. |
