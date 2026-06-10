@@ -79,7 +79,7 @@ Diese Screenshots zeigen das **tatsächlich umgesetzte Design** der zehn Oberfl�
 
 ![Assistent](docs/design-prototype/06-assistent.png)
 
-*Konversationelle KI mit Tool-Use. „leite meinen Umzug ein" → Rückfragen → Bestätigungskarte → echte Autopilot-Kaskade. Rechts: der Kontext, auf den sich der Assistent bezieht, plus „Ihre Daten sind geschützt".*
+*Konversationelle KI mit Tool-Use — hier mitten in der Kaskade, inline im Verlauf: die statutarischen Stellen sind bereits „Bestätigt“ (jede Zeile mit ihrer Rechtsgrundlage), das Landesamt für Einwanderung wartet auf die ausdrückliche **„Mit eID bestätigen“**-Freigabe, private Empfänger laufen nur mit Einwilligung. Ein Satz — „leite meinen Umzug ein“ — hat das ausgelöst; die Kontrolle über die sensiblen Schritte bleibt bei der Bürger:in.*
 
 ### Posteingang
 
