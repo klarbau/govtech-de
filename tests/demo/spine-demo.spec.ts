@@ -64,6 +64,25 @@ async function glide(
   cursor = { x, y };
 }
 
+/**
+ * README still-frame capture — only when DEMO_SHOT=1 (e.g.
+ * `$env:DEMO_SHOT='1'; npm run demo:record`). Hides the injected cursor for
+ * the frame, writes demo-recording/still-<name>.png, restores the cursor.
+ * A no-op in normal video takes.
+ */
+async function still(page: Page, name: string): Promise<void> {
+  if (!process.env.DEMO_SHOT) return;
+  await page.evaluate(() => {
+    const c = document.getElementById('__demo_cursor');
+    if (c) c.style.display = 'none';
+  });
+  await page.screenshot({ path: `demo-recording/still-${name}.png` });
+  await page.evaluate(() => {
+    const c = document.getElementById('__demo_cursor');
+    if (c) c.style.display = '';
+  });
+}
+
 /** Smooth-scroll a target to centre, then glide the cursor onto it. */
 async function focusOn(page: Page, locator: Locator): Promise<void> {
   await locator.scrollIntoViewIfNeeded().catch(() => {});
@@ -288,6 +307,7 @@ test('DEMO - Umzug-Autopilot walkthrough (Anna)', async ({ page }) => {
   await clickAt(page, eidButtons.first());
   await expect(eidButtons).toHaveCount(1, { timeout: 20_000 });
   await beat(page, 2400);
+  await still(page, 'cascade-eid'); // README frame: Block A bestätigt, 1× eID offen
   await clickAt(page, eidButtons.first());
   await expect(eidButtons).toHaveCount(0, { timeout: 20_000 });
   await beat(page, 2200);
@@ -300,6 +320,7 @@ test('DEMO - Umzug-Autopilot walkthrough (Anna)', async ({ page }) => {
   ).toBeVisible({ timeout: 30_000 });
   await focusOn(page, receipt);
   await beat(page, 5200); // den Payoff wirken lassen
+  await still(page, 'cascade-receipt'); // README frame: Wert-Beleg + Once-Only
 
   /* ── Szene 8 — Posteingang: die Bestätigungsschreiben sind eingetroffen ─── */
   await page.goto('/posteingang?reliable=1', { waitUntil: 'domcontentloaded' });
