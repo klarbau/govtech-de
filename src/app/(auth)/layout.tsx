@@ -1,10 +1,10 @@
 import Link from 'next/link';
-import { ChevronDown, Landmark, Lock } from 'lucide-react';
+import { Lock, User } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
+import { ParthenonCrest } from '@/components/layout/ParthenonCrest';
 import { ThemeToggle } from '@/components/layout/ThemeToggle';
-import { Button } from '@/components/ui/button';
 
 // The onboarding flow hydrates and reseeds from localStorage at request time,
 // so static prerendering yields nothing and trips the next-intl@3 + Next 15.5
@@ -30,39 +30,30 @@ export default async function AuthLayout({
         {tApp('skip_to_content')}
       </a>
 
-      <header className="sticky top-0 z-30 flex h-14 items-center border-b border-border bg-surface px-4 md:px-6">
-        <Link href="/" className="flex items-center gap-2">
-          <Landmark className="size-5 text-text-secondary" aria-hidden="true" />
-          <span className="text-sm font-semibold text-text-primary">
-            {tApp('name')}
-          </span>
-          <span
-            aria-hidden="true"
-            className="hidden text-text-muted md:inline"
-          >
-            ·
-          </span>
-          <span className="hidden text-xs text-text-muted md:inline">
-            {tApp('tagline')}
-          </span>
+      {/* Same chrome as the landing header (`landing-header` + `gt-brand`),
+          so / → /onboarding reads as one product. Sticky is kept from the
+          previous auth header — the transparency step scrolls. */}
+      <header className="landing-header sticky top-0 z-30">
+        <Link href="/" className="gt-brand">
+          <div className="gt-brand-logo">
+            <ParthenonCrest />
+            <span>{tApp('name')}</span>
+          </div>
+          <span className="gt-tagline">{tApp('tagline')}</span>
         </Link>
 
-        <div className="ms-auto flex items-center gap-2">
+        <div className="gt-header-spacer" />
+        <div className="gt-header-actions">
           <LanguageSwitcher />
           <ThemeToggle />
-          <Button
-            size="sm"
-            className="min-h-[40px] gap-1 rounded-full px-4 text-primary-foreground!"
-            render={
-              <Link
-                href="#main-content"
-                aria-label={tOnboarding('topbar.login_label')}
-              />
-            }
+          <Link
+            href="#main-content"
+            className="gt-user-pill"
+            aria-label={tOnboarding('topbar.login_label')}
           >
+            <User aria-hidden="true" />
             {tOnboarding('topbar.login_label')}
-            <ChevronDown className="size-4 rtl:-scale-x-100" aria-hidden="true" />
-          </Button>
+          </Link>
         </div>
       </header>
 
