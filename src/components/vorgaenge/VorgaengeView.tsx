@@ -240,7 +240,10 @@ export function VorgaengeView() {
   }
 
   return (
-    <main className="gt-content">
+    // Kein eigenes <main className="gt-content"> — das (app)-Layout stellt
+    // bereits main#main-content.gt-content; doppelt = doppeltes Padding +
+    // doppelte main-Landmark.
+    <div>
       <div className="gt-page-head">
         <h1>Vorgänge</h1>
         <div className="sub">Laufende und abgeschlossene Verwaltungsprozesse im Überblick.</div>
@@ -501,14 +504,14 @@ export function VorgaengeView() {
           </a>
         </div>
       </div>
-    </main>
+    </div>
   );
 }
 
 function VorgaengeSkeleton() {
   const tCommon = useTranslations('common');
   return (
-    <main className="gt-content" role="status" aria-busy="true">
+    <div role="status" aria-busy="true">
       <span className="sr-only">{tCommon('loading')}</span>
       <div className="gt-page-head">
         <Skeleton shape="text" className="h-8 w-48" />
@@ -520,6 +523,6 @@ function VorgaengeSkeleton() {
         <Skeleton className="h-24 rounded-2xl" />
         <Skeleton className="h-24 rounded-2xl" />
       </div>
-    </main>
+    </div>
   );
 }

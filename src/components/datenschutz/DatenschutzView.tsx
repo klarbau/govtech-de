@@ -523,6 +523,15 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
         <div className="ds-card ds-quellen">
           <h2>{t('datenschutz.quellen.title')}</h2>
           <div className="sub">{t('datenschutz.quellen.subtitle')}</div>
+          {/* tabIndex 0: die Tabelle pannt unterhalb ~1240px horizontal und
+              enthält selbst nichts Fokussierbares (WCAG 2.1.1 / axe
+              scrollable-region-focusable). */}
+          <div
+            className="ds-quellen-scroll"
+            tabIndex={0}
+            role="region"
+            aria-label={t('datenschutz.quellen.title')}
+          >
           <table>
             <thead>
               <tr>
@@ -568,6 +577,7 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
               })}
             </tbody>
           </table>
+          </div>
           <p
             style={{
               color: 'var(--ink-3)',

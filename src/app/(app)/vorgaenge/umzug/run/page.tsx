@@ -310,7 +310,10 @@ function UmzugRunInner() {
   }, [cascadeNodes, vorgang]);
 
   return (
-    <main className="gt-content">
+    // Kein eigenes <main className="gt-content"> — das (app)-Layout stellt
+    // bereits main#main-content.gt-content; doppelt = doppeltes Padding +
+    // doppelte main-Landmark.
+    <div>
       <div className="gt-page-head">
         <h1>Umzug auf Autopilot</h1>
         <div className="sub">Sie bestätigen einmal – das System koordiniert die nächsten Schritte.</div>
@@ -483,7 +486,7 @@ function UmzugRunInner() {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }
 

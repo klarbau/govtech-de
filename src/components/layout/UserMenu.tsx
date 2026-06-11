@@ -31,7 +31,7 @@ export function UserMenu({ personaName }: UserMenuProps) {
         <span className="av">
           <User aria-hidden="true" />
         </span>
-        {name}
+        <span className="name">{name}</span>
         <ChevronDown aria-hidden="true" />
       </MenuPrimitive.Trigger>
       <MenuContent />
