@@ -6,10 +6,13 @@ import { defineConfig, devices } from '@playwright/test';
  *
  *   npm run demo:record
  *
- * Output: one .webm under `demo-recording/` (convert to mp4 with ffmpeg, see
- * README note below). The assistant SSE is MOCKED in the spec, so NO
- * ANTHROPIC_API_KEY is needed and the run is deterministic; `?reliable=1`
- * disables the 5% mock-error injection.
+ * Output: one .webm under `demo-recording/` that is ALREADY the finished cut —
+ * the spec does the whole edit in-take (intro/outro title cards, lower-third
+ * scene captions, white cross-fades on route changes, pacing). Convert to mp4
+ * for GitHub/Loom upload with `npm run demo:render` (needs ffmpeg; supports
+ * `-- --speed 1.15` for a global speed-up). The assistant SSE is MOCKED in the
+ * spec, so NO ANTHROPIC_API_KEY is needed and the run is deterministic;
+ * `?reliable=1` disables the 5% mock-error injection.
  *
  * For the cleanest visuals (no Next dev overlay / no cold-compile reload mid-take),
  * start a PROD server first, then record (the recorder reuses it):

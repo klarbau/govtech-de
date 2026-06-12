@@ -29,7 +29,8 @@
     "test:unit": "vitest run",
     "test:e2e": "playwright test",
     "test:a11y": "playwright test --project=a11y",
-    "demo:record": "playwright test --config=playwright.demo.config.ts"
+    "demo:record": "playwright test --config=playwright.demo.config.ts",
+    "demo:render": "node scripts/render-demo.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",
