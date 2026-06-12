@@ -6,11 +6,9 @@
 >
 > **Alle Daten sind erfunden. Keine echte Behörde ist angebunden.**
 
-**▶ [Live-Demo ausprobieren](https://govtech-de.vercel.app/)**
-<!-- 🎬 Nach Loom-Aufnahme die nächste Zeile einkommentieren und die Loom-ID einsetzen. -->
-<!-- ·  **🎬 [3-Minuten-Walkthrough ansehen (Loom)](https://www.loom.com/share/<DEINE-LOOM-ID>)** -->
+**▶ [Live-Demo ausprobieren](https://govtech-de.vercel.app/)** · **🎬 [Video-Walkthrough ansehen (3 Min)](https://youtu.be/sFbvv2xuozg)**
 
-> **Ehrliche Notiz zur Live-Demo:** Der frei formulierte KI-Turn des Assistenten **ruht im öffentlichen Deployment — bewusst.** Hinter jeder Antwort stünde ein echter Claude-API-Aufruf, und ein Prototyp, der Datenminimierung predigt, lebt auch Kostenminimierung vor. Alles andere läuft vollständig im Browser auf dem Mock-Backend: alle zehn Oberflächen, der Posteingang mit verständlichen Zusammenfassungen und die komplette **Umzug-Kaskade** über *Vorgänge → „Umzug melden“*. Den natürlichsprachigen Weg („leite meinen Umzug ein“) zeigt das Walkthrough-Video — oder Sie klonen das Repo und hinterlegen den eigenen `ANTHROPIC_API_KEY` ([Lokal starten](#lokal-starten), fünf Minuten).
+> **Ehrliche Notiz zur Live-Demo:** Der frei formulierte KI-Turn des Assistenten **ruht im öffentlichen Deployment — bewusst.** Hinter jeder Antwort stünde ein echter Claude-API-Aufruf, und ein Prototyp, der Datenminimierung predigt, lebt auch Kostenminimierung vor. Alles andere läuft vollständig im Browser auf dem Mock-Backend: alle zehn Oberflächen, der Posteingang mit verständlichen Zusammenfassungen und die komplette **Umzug-Kaskade** über *Vorgänge → „Umzug melden“*. Den natürlichsprachigen Weg („leite meinen Umzug ein“) zeigt das [Walkthrough-Video](https://youtu.be/sFbvv2xuozg) — oder Sie klonen das Repo und hinterlegen den eigenen `ANTHROPIC_API_KEY` ([Lokal starten](#lokal-starten), fünf Minuten).
 
 ---
 
@@ -189,7 +187,7 @@ pnpm dev
 **Zwei Hinweise für eine reibungslose Vorführung:**
 
 - **`ANTHROPIC_API_KEY` ist optional.** Ohne Key degradiert der Assistent würdevoll: statische Refusal-Texte und die Datenschutz-Hinweise funktionieren weiter; ein normaler KI-Turn zeigt sauber eine freundliche „Assistent derzeit nicht verfügbar"-Meldung statt abzustürzen. Für die volle Wow-Demo (natürlichsprachiger Umzug → Bestätigungskarte → Kaskade) wird ein gültiger Key benötigt.
-- **`?reliable=1`** an die URL hängen schaltet die simulierten Backend-Fehler (5%-Fehlerquote, künstliche Latenz) ab — empfohlen für Screencasts und Loom-Aufnahmen.
+- **`?reliable=1`** an die URL hängen schaltet die simulierten Backend-Fehler (5%-Fehlerquote, künstliche Latenz) ab — empfohlen für Screencasts und Video-Aufnahmen.
 
 **Qualitäts-Gates lokal nachvollziehen** (dieselben Prüfungen, die das Projekt grün hält):
 
@@ -212,6 +210,8 @@ pnpm test:a11y   # Playwright + axe-core — Barrierefreiheits-Audit (WCAG 2.1 A
 ## In English (condensed)
 
 **GovTech DE — public administration, rethought.**
+
+**▶ [Try the live demo](https://govtech-de.vercel.app/)** · **🎬 [Watch the walkthrough (3 min)](https://youtu.be/sFbvv2xuozg)**
 
 A citizen says **„ich ziehe um"** (*I'm moving*) **once**, and the system notifies every competent authority for them — registration office, tax office, vehicle registration, health insurer, broadcasting fee, employer — while they watch the confirmations arrive. **The autopilot is the hero**, not a faster form.
 
