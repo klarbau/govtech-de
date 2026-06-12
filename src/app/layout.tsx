@@ -13,9 +13,25 @@ import './prototype-v2.css';
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://govtech-de.vercel.app'),
   title: 'GovTech DE — Concept Demo',
   description:
     'Speculative-design prototype: how a citizen-first interaction layer for German public administration could feel in 2027.',
+  openGraph: {
+    title: 'GovTech DE — Verwaltung neu gedacht',
+    description:
+      'Ein:e Bürger:in sagt einmal „ich ziehe um" — und das System informiert jede zuständige Behörde. Speculative-Design-Prototyp, alle Daten erfunden.',
+    images: ['/og.png'],
+    locale: 'de_DE',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'GovTech DE — Verwaltung neu gedacht',
+    description:
+      'Ein Satz statt sechs Behördengängen — Speculative-Design-Prototyp für die deutsche Verwaltung 2027.',
+    images: ['/og.png'],
+  },
 };
 
 export default async function RootLayout({
