@@ -6,9 +6,9 @@
 >
 > **Alle Daten sind erfunden. Keine echte Behörde ist angebunden.**
 
-**▶ [Live-Demo ausprobieren](https://govtech-de.vercel.app/)** · **🎬 [Video-Walkthrough ansehen (1 Min)](https://youtu.be/sFbvv2xuozg)**
+**▶ [Live-Demo ausprobieren](https://govtech-de.vercel.app/)** · **🎬 [Video-Walkthrough ansehen (1 Min)](https://youtu.be/Zid0JAsaQXg)**
 
-> **Ehrliche Notiz zur Live-Demo:** Der frei formulierte KI-Turn des Assistenten **ruht im öffentlichen Deployment — bewusst.** Hinter jeder Antwort stünde ein echter Claude-API-Aufruf, und ein Prototyp, der Datenminimierung predigt, lebt auch Kostenminimierung vor. Alles andere läuft vollständig im Browser auf dem Mock-Backend: alle zehn Oberflächen, der Posteingang mit verständlichen Zusammenfassungen und die komplette **Umzug-Kaskade** über *Vorgänge → „Umzug melden“*. Den natürlichsprachigen Weg („leite meinen Umzug ein“) zeigt das [Walkthrough-Video](https://youtu.be/sFbvv2xuozg) — oder Sie klonen das Repo und hinterlegen den eigenen `ANTHROPIC_API_KEY` ([Lokal starten](#lokal-starten), fünf Minuten).
+> **Ehrliche Notiz zur Live-Demo:** Der frei formulierte KI-Turn des Assistenten **ruht im öffentlichen Deployment — bewusst.** Hinter jeder Antwort stünde ein echter Claude-API-Aufruf, und ein Prototyp, der Datenminimierung predigt, lebt auch Kostenminimierung vor. Alles andere läuft vollständig im Browser auf dem Mock-Backend: alle zehn Oberflächen, der Posteingang mit verständlichen Zusammenfassungen und die komplette **Umzug-Kaskade** über *Vorgänge → „Umzug melden“*. Den natürlichsprachigen Weg („leite meinen Umzug ein“) zeigt das [Walkthrough-Video](https://youtu.be/Zid0JAsaQXg) — oder Sie klonen das Repo und hinterlegen den eigenen `ANTHROPIC_API_KEY` ([Lokal starten](#lokal-starten), fünf Minuten).
 
 ---
 
@@ -211,7 +211,7 @@ pnpm test:a11y   # Playwright + axe-core — Barrierefreiheits-Audit (WCAG 2.1 A
 
 **GovTech DE — public administration, rethought.**
 
-**▶ [Try the live demo](https://govtech-de.vercel.app/)** · **🎬 [Watch the walkthrough (1 min)](https://youtu.be/sFbvv2xuozg)**
+**▶ [Try the live demo](https://govtech-de.vercel.app/)** · **🎬 [Watch the walkthrough (1 min)](https://youtu.be/Zid0JAsaQXg)**
 
 A citizen says **„ich ziehe um"** (*I'm moving*) **once**, and the system notifies every competent authority for them — registration office, tax office, vehicle registration, health insurer, broadcasting fee, employer — while they watch the confirmations arrive. **The autopilot is the hero**, not a faster form.
 
