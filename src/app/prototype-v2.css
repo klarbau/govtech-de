@@ -1994,24 +1994,24 @@ button { font: inherit; cursor: pointer; }
 .heute-empty .he-body { color: var(--ink-3); font-size:13px; }
 .heute-empty .he-achievement { color: var(--ink-3); font-size:12.5px; margin-top:4px; }
 
-/* Autopilot-Katalog cards (§A-katalog rebuild — uniform, link-as-card) */
+/* Autopilot-Katalog cards (§A-katalog — icon-left header + single-row meta) */
 .katalog-grid { display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap:14px; }
 @media (max-width: 900px){ .katalog-grid { grid-template-columns: 1fr; } }
 .katalog-card {
-  position:relative;
   background: var(--surface-1); border:1px solid var(--line); border-radius:14px;
-  padding:18px; display:flex; flex-direction:column; gap:8px;
+  padding:16px 18px; display:flex; flex-direction:column; gap:14px;
   text-decoration:none; color:inherit; transition: background .12s, box-shadow .12s;
 }
 .katalog-card:hover { background: var(--surface-2); box-shadow: var(--shadow-1); }
-.katalog-card .icon-circle.lg { width:48px; height:48px; }
-.katalog-card .kc-title { font-weight:650; font-size:15px; }
-.katalog-card .kc-desc { font-size:13px; color: var(--ink-3); margin:0; flex:1; }
-.katalog-card .kc-meta { display:flex; align-items:center; flex-wrap:wrap; gap:5px; font-size:12.5px; color: var(--ink-3); margin-top:4px; }
+.katalog-card .kc-head { display:flex; align-items:flex-start; gap:13px; }
+.katalog-card .icon-circle.lg { width:46px; height:46px; flex:none; }
+.katalog-card .kc-text { min-width:0; display:flex; flex-direction:column; gap:3px; }
+.katalog-card .kc-title { font-weight:650; font-size:15px; line-height:1.25; }
+.katalog-card .kc-desc { font-size:13px; line-height:1.4; color: var(--ink-3); margin:0; }
+.katalog-card .kc-meta { display:flex; align-items:center; flex-wrap:wrap; gap:8px 14px; font-size:12.5px; color: var(--ink-3); margin-top:auto; }
+.katalog-card .kc-m { display:inline-flex; align-items:center; gap:6px; white-space:nowrap; }
 .katalog-card .kc-meta svg { width:14px; height:14px; flex:none; }
-.katalog-card .kc-meta .kc-dot { padding:0 2px; }
-.katalog-card .kc-meta .kc-chev { margin-left:auto; color: var(--ink-4); }
-.katalog-card .kc-soon { position:absolute; top:14px; right:14px; }
+.katalog-card .kc-chev { margin-left:auto; color: var(--ink-4); flex:none; }
 
 /* neu dot (§C1 ripple) */
 .nav-neu-dot { display:inline-block; width:7px; height:7px; border-radius:999px; background: var(--brand-fill); margin-left:6px; vertical-align:middle; }

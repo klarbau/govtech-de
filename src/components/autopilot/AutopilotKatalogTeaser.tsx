@@ -75,31 +75,31 @@ export function AutopilotKatalogTeaser() {
           const href = isLive ? '/vorgaenge/umzug/start' : '/vorgaenge';
           const title = safe(t, `${entry.id}.titel`);
           const meta = ICON_BY_ID[entry.id];
+          // Single beteiligte Stelle → ihr Kurzname (erstes Wort, z. B.
+          // „Finanzamt"); sonst der konservative „ca. N Behörden"-Zähler.
+          const singleName = behoerdenNames[entry.behoerden_preview[0] ?? ''];
           const behoerdenMetric =
-            entry.behoerden_count > 1
-              ? t('behoerden_count', { count: entry.behoerden_count })
-              : behoerdenNames[entry.behoerden_preview[0] ?? ''] ??
-                entry.behoerden_preview[0] ??
-                t('behoerden_count', { count: entry.behoerden_count });
+            entry.behoerden_count === 1 && singleName
+              ? singleName.split(' ')[0]
+              : t('behoerden_count', { count: entry.behoerden_count });
           return (
-            <Link
-              key={entry.id}
-              href={href}
-              className="katalog-card"
-              aria-label={isLive ? undefined : `${title} – ${t('status.demnaechst')}`}
-            >
-              {!isLive ? (
-                <span className="badge outline kc-soon">{t('status.demnaechst')}</span>
-              ) : null}
-              <span className={`icon-circle lg ${meta.tone}`}>{meta.icon}</span>
-              <div className="kc-title">{title}</div>
-              <p className="kc-desc">{safe(t, `${entry.id}.beschreibung`)}</p>
+            <Link key={entry.id} href={href} className="katalog-card">
+              <div className="kc-head">
+                <span className={`icon-circle lg ${meta.tone}`}>{meta.icon}</span>
+                <div className="kc-text">
+                  <div className="kc-title">{title}</div>
+                  <p className="kc-desc">{safe(t, `${entry.id}.beschreibung`)}</p>
+                </div>
+              </div>
               <div className="kc-meta">
-                <Building2 aria-hidden="true" />
-                <span>{behoerdenMetric}</span>
-                <span className="kc-dot" aria-hidden="true">·</span>
-                <Clock aria-hidden="true" />
-                <span>{t('zeit_gespart', { min: entry.geschaetzte_zeitersparnis_min })}</span>
+                <span className="kc-m">
+                  <Building2 aria-hidden="true" />
+                  <span>{behoerdenMetric}</span>
+                </span>
+                <span className="kc-m">
+                  <Clock aria-hidden="true" />
+                  <span>{t('zeit_gespart', { min: entry.geschaetzte_zeitersparnis_min })}</span>
+                </span>
                 <ChevronRight className="kc-chev" aria-hidden="true" />
               </div>
             </Link>
