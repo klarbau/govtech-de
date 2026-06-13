@@ -252,8 +252,6 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
               pending={erledigtPending}
             />
           </section>
-
-          <AutopilotKatalogTeaser />
         </div>
 
         <div className="dash-col">
@@ -336,6 +334,10 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
             </Link>
           </section>
         </div>
+      </div>
+
+      <div style={{ marginTop: 24 }}>
+        <AutopilotKatalogTeaser />
       </div>
 
       {error && (
