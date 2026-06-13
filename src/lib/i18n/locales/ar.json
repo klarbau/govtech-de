@@ -2962,6 +2962,87 @@
       "demnaechst": "قريباً"
     }
   },
+  "orchestration": {
+    "mock_tag": "[MOCK]",
+    "panel": {
+      "title": "سجل المحرّك",
+      "mock_line": "سلسلة تجزئة (hash) قابلة لكشف التلاعب [MOCK] — محلية، SHA-256، دون OSCI/XTA حقيقي.",
+      "laufzettel_label": "بطاقة المسار (Laufzettel)",
+      "empty": "لا توجد قيود في السجل بعد.",
+      "seq_label": "القيد رقم {seq}",
+      "hash_chain_label": "سلسلة التجزئة (hash)",
+      "hash_link_aria": "الربط: التجزئة السابقة {prev} تشير إلى {hash}.",
+      "toggle_inspector": "عرض سجل المحرّك",
+      "chain_intact_hint": "كل قيد مرتبط بالقيد السابق عبر SHA-256."
+    },
+    "quittung": {
+      "positive": "إيصال (Quittung): إيجابي (تم تنفيذ الطلب)",
+      "negative": "إيصال (Quittung): سلبي (تعذّر التسليم)",
+      "accepted_at": "بطاقة المسار (Laufzettel): مقبولة {ts}",
+      "transport_code": "رمز النقل: {code}"
+    },
+    "event": {
+      "saga_started": "بدأت المعاملة",
+      "step_enqueued": "تمت إضافة الخطوة إلى الطابور",
+      "step_started": "بدأ الإرسال",
+      "step_receipt": "تم استلام الإيصال (Quittung)",
+      "retry_scheduled": "تمت جدولة محاولة جديدة",
+      "dead_lettered": "نُقلت إلى الطابور لاتخاذ إجراء",
+      "compensating": "يجري التراجع عن الإرسال",
+      "compensated": "تم التراجع عن الإرسال",
+      "breaker_opened": "الجهة غير متاحة مؤقتاً — تم عزلها",
+      "breaker_half_open": "تجري إعادة فحص الجهة",
+      "breaker_closed": "الجهة متاحة من جديد",
+      "saga_completed": "اكتملت المعاملة",
+      "saga_compensated": "تم التراجع عن المعاملة جزئياً",
+      "recovery_replayed": "تمت الاستعادة من السجل"
+    },
+    "verify": {
+      "cta": "التحقق من السجل",
+      "checking": "جارٍ التحقق …",
+      "ok": "السجل سليم — سلسلة التجزئة غير منقطعة ({count} قيد).",
+      "broken": "تم تغيير السجل — تنقطع سلسلة التجزئة عند القيد رقم {seq}."
+    },
+    "dlq": {
+      "title": "إجراء مطلوب",
+      "reason_unreachable": "تعذّر الوصول إلى الجهة (استُنفدت المحاولات).",
+      "reason_permanent": "المستلِم غير معروف — دون إعادة محاولة تلقائية.",
+      "replay_cta": "إعادة الإرسال",
+      "replaying": "جارٍ إعادة الإرسال …",
+      "empty": "لا توجد إجراءات مفتوحة."
+    },
+    "breaker": {
+      "section_title": "توافر الجهات",
+      "closed": "مغلق",
+      "open": "مفتوح",
+      "half_open": "نصف مفتوح",
+      "chip_aria": "{behoerde}: حالة المفتاح {state}"
+    },
+    "retry": {
+      "countdown": "إعادة المحاولة خلال {seconds} ث"
+    },
+    "compensation": {
+      "summary": "اكتملت جزئياً — تم التراجع عن إرسال واحد [MOCK].",
+      "remediation": "كيفية المعالجة: راجِع الإرسال المُعلَّم وأعِد تشغيله عند الحاجة.",
+      "not_reversible": "غير قابل للتراجع الكامل [MOCK]"
+    },
+    "recovery": {
+      "banner": "تمت الاستعادة بعد إعادة التشغيل — أُعيد بناء {count} معاملة جارية من السجل [MOCK].",
+      "degraded_suffix": "(تعذّر تأكيد سلامة السجل)",
+      "dismiss": "إغلاق التنبيه"
+    },
+    "row": {
+      "compensated_badge": "تم التراجع"
+    },
+    "status": {
+      "section_title": "حالة المرونة",
+      "saga_label": "حالة المعاملة (Saga)"
+    },
+    "aria": {
+      "audit_live": "سجل المحرّك، تحديثات مباشرة",
+      "resilience_live": "حالة المرونة، تحديثات مباشرة"
+    }
+  },
   "shared": {
     "gehoert_zu": "تابعة لـ: {vorgang}",
     "neu_badge": "جديد"

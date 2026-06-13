@@ -2962,6 +2962,87 @@
       "demnaechst": "coming soon"
     }
   },
+  "orchestration": {
+    "mock_tag": "[MOCK]",
+    "panel": {
+      "title": "Engine log",
+      "mock_line": "Tamper-evident hash chain [MOCK] — local, SHA-256, no real OSCI/XTA.",
+      "laufzettel_label": "Delivery record (Laufzettel)",
+      "empty": "No log entries yet.",
+      "seq_label": "Entry #{seq}",
+      "hash_chain_label": "Hash chain",
+      "hash_link_aria": "Chaining: previous hash {prev} points to {hash}.",
+      "toggle_inspector": "Show engine log",
+      "chain_intact_hint": "Each entry is chained to the previous one via SHA-256."
+    },
+    "quittung": {
+      "positive": "Receipt (Quittung): positive (request executed)",
+      "negative": "Receipt (Quittung): negative (could not be delivered)",
+      "accepted_at": "Delivery record (Laufzettel): accepted {ts}",
+      "transport_code": "Transport code: {code}"
+    },
+    "event": {
+      "saga_started": "Process started",
+      "step_enqueued": "Step queued",
+      "step_started": "Transmission started",
+      "step_receipt": "Receipt (Quittung) received",
+      "retry_scheduled": "Retry scheduled",
+      "dead_lettered": "Moved to queue for action",
+      "compensating": "Transmission is being undone",
+      "compensated": "Transmission undone",
+      "breaker_opened": "Authority temporarily unreachable — isolated",
+      "breaker_half_open": "Authority being re-checked",
+      "breaker_closed": "Authority reachable again",
+      "saga_completed": "Process completed",
+      "saga_compensated": "Process partly undone",
+      "recovery_replayed": "Restored from log"
+    },
+    "verify": {
+      "cta": "Verify log",
+      "checking": "Verifying …",
+      "ok": "Log intact — hash chain unbroken ({count} entries).",
+      "broken": "Log altered — the hash chain breaks at entry #{seq}."
+    },
+    "dlq": {
+      "title": "Action required",
+      "reason_unreachable": "Authority was unreachable (retries exhausted).",
+      "reason_permanent": "Recipient unknown — no automatic retry.",
+      "replay_cta": "Send again",
+      "replaying": "Sending again …",
+      "empty": "No open actions."
+    },
+    "breaker": {
+      "section_title": "Authority availability",
+      "closed": "closed",
+      "open": "open",
+      "half_open": "half-open",
+      "chip_aria": "{behoerde}: switch state {state}"
+    },
+    "retry": {
+      "countdown": "Retry in {seconds} s"
+    },
+    "compensation": {
+      "summary": "Partly completed — one transmission was undone [MOCK].",
+      "remediation": "How to resolve this: review the flagged transmission and trigger it again if needed.",
+      "not_reversible": "not fully reversible [MOCK]"
+    },
+    "recovery": {
+      "banner": "Restored after restart — {count} running processes reconstructed from the log [MOCK].",
+      "degraded_suffix": "(log integrity could not be confirmed)",
+      "dismiss": "Dismiss notice"
+    },
+    "row": {
+      "compensated_badge": "undone"
+    },
+    "status": {
+      "section_title": "Resilience status",
+      "saga_label": "Saga status"
+    },
+    "aria": {
+      "audit_live": "Engine log, live updates",
+      "resilience_live": "Resilience status, live updates"
+    }
+  },
   "shared": {
     "gehoert_zu": "Belongs to: {vorgang}",
     "neu_badge": "new"

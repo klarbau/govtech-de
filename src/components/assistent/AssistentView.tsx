@@ -29,6 +29,8 @@ import type { Behoerde, Persona } from '@/types';
 
 import { Skeleton } from '@/components/shared/Skeleton';
 
+import { OrchestrationTestBridge } from '@/components/orchestration';
+
 import { ChatComposer } from './ChatComposer';
 import { MessageBubble } from './MessageBubble';
 import { ToolCallCard } from './ToolCallCard';
@@ -521,6 +523,10 @@ export function AssistentView() {
 
   return (
     <>
+      {/* Test-only window seam for the resilience e2e (no-op unless the
+          NEXT_PUBLIC_ENABLE_ORCH_TEST flag is set) — mounted here so faults can
+          be armed before the user confirms the Umzug. */}
+      <OrchestrationTestBridge />
       <div className="gt-page-head">
         <h1>{t('title')}</h1>
         <div className="sub">{t('subtitle')}</div>

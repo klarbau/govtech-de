@@ -41,3 +41,15 @@ response.html
 
 # Demo-video takes (regenerate with `npm run demo:record`)
 demo-recording/
+
+# Internal working material — local pipeline only, NOT part of the public artefact.
+# docs/design-prototype/ (README screenshots) stays tracked; everything else under docs/ is local.
+/docs/*
+!/docs/design-prototype
+!/docs/design-prototype/**
+/CLAUDE.md
+/.claude/
+/src/lib/i18n/_status.json
+
+# One-off local probe/screenshot scripts
+tmp-*

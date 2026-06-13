@@ -12,6 +12,11 @@ import {
 import { useReducedMotion } from 'framer-motion';
 
 import { InlineCascade } from '@/components/autopilot/InlineCascade';
+import {
+  LaufzettelPanel,
+  OrchestrationTestBridge,
+  RecoveryBanner,
+} from '@/components/orchestration';
 import { IconCircle } from '@/components/shared/IconCircle';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import { cn } from '@/lib/utils';
@@ -90,7 +95,13 @@ export function ToolCallCard({ call }: ToolCallCardProps) {
         </div>
         {isUmzugStart && call.vorgangId ? (
           <>
+            <OrchestrationTestBridge />
+            <RecoveryBanner sagaId={call.vorgangId} />
             <InlineCascade vorgangId={call.vorgangId} variant="live" />
+            {/* Resilient Orchestration Engine (Spec § 6.1): the Laufzettel travels
+                with the in-thread cascade — additive, collapsible, never weakening
+                the hero rows above. sagaId === vorgangId (§ 5.1). */}
+            <LaufzettelPanel sagaId={call.vorgangId} variant="inline" />
             <Link
               href={`/vorgaenge/umzug/run?vorgangId=${encodeURIComponent(call.vorgangId)}`}
               className="inline-flex items-center gap-1 self-start text-sm font-medium text-primary hover:text-primary-hover"

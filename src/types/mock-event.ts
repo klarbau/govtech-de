@@ -14,6 +14,12 @@ import type {
   UebermittlungsLogEntry,
 } from './stammdaten';
 import type { AutopilotStep, VorgangStatus } from './vorgang';
+import type {
+  AuditLogEntry,
+  CircuitBreakerState,
+  DeadLetterEntry,
+  SagaStatus,
+} from './orchestration';
 
 /**
  * Stammdaten-Events (Spec § 5.3). Ergänzen den globalen Mock-Backend-Bus
@@ -162,6 +168,18 @@ export type MockBackendEvent =
   // `termin_created`; `termin_updated` deckt die Termine-Ops (§C2).
   | { type: 'termin_created'; termin: Termin }
   | { type: 'termin_updated'; termin: Termin }
+  // Resilient Orchestration Engine (Spec resilient-orchestration-engine.md
+  // § 6.6). Additive zur bestehenden `autopilot_step`-Projektion: die
+  // Laufzettel-/Resilienz-Panels abonnieren diese parallel; `autopilot_step`
+  // bleibt der primäre Treiber der Kaskaden-Zeilen.
+  | { type: 'audit_appended'; sagaId: string; entry: AuditLogEntry }
+  | { type: 'dlq_changed'; sagaId: string; dlq: DeadLetterEntry[] }
+  | {
+      type: 'breaker_changed';
+      behoerdeId: BehoerdeId;
+      state: CircuitBreakerState;
+    }
+  | { type: 'saga_status_changed'; sagaId: string; status: SagaStatus }
   | StammdatenEvent;
 
 export type MockBackendEventListener = (event: MockBackendEvent) => void;

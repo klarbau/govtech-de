@@ -3194,6 +3194,87 @@
       "demnaechst": "demnächst"
     }
   },
+  "orchestration": {
+    "mock_tag": "[MOCK]",
+    "panel": {
+      "title": "Engine-Protokoll",
+      "mock_line": "Fälschungs-evidente Hash-Kette [MOCK] — lokal, SHA-256, kein echtes OSCI/XTA.",
+      "laufzettel_label": "Laufzettel",
+      "empty": "Noch keine Protokoll-Einträge.",
+      "seq_label": "Eintrag #{seq}",
+      "hash_chain_label": "Hash-Kette",
+      "hash_link_aria": "Verkettung: vorheriger Hash {prev} verweist auf {hash}.",
+      "toggle_inspector": "Engine-Protokoll anzeigen",
+      "chain_intact_hint": "Jeder Eintrag ist über SHA-256 mit dem vorherigen verkettet."
+    },
+    "quittung": {
+      "positive": "Quittung: positiv (Auftrag ausgeführt)",
+      "negative": "Quittung: negativ (nicht zustellbar)",
+      "accepted_at": "Laufzettel: angenommen {ts}",
+      "transport_code": "Transportcode: {code}"
+    },
+    "event": {
+      "saga_started": "Vorgang gestartet",
+      "step_enqueued": "Schritt eingereiht",
+      "step_started": "Übermittlung begonnen",
+      "step_receipt": "Quittung empfangen",
+      "retry_scheduled": "Erneuter Versuch geplant",
+      "dead_lettered": "In Warteschlange für Aktion verschoben",
+      "compensating": "Übermittlung wird zurückgenommen",
+      "compensated": "Übermittlung zurückgenommen",
+      "breaker_opened": "Behörde vorübergehend nicht erreichbar — isoliert",
+      "breaker_half_open": "Behörde wird erneut geprüft",
+      "breaker_closed": "Behörde wieder erreichbar",
+      "saga_completed": "Vorgang abgeschlossen",
+      "saga_compensated": "Vorgang teilweise zurückgenommen",
+      "recovery_replayed": "Aus Protokoll wiederhergestellt"
+    },
+    "verify": {
+      "cta": "Protokoll prüfen",
+      "checking": "Wird geprüft …",
+      "ok": "Protokoll intakt — Hash-Kette ungebrochen ({count} Einträge).",
+      "broken": "Protokoll verändert — die Hash-Kette bricht bei Eintrag #{seq}."
+    },
+    "dlq": {
+      "title": "Aktion erforderlich",
+      "reason_unreachable": "Behörde war nicht erreichbar (Versuche erschöpft).",
+      "reason_permanent": "Empfänger unbekannt — keine automatische Wiederholung.",
+      "replay_cta": "Erneut senden",
+      "replaying": "Wird erneut gesendet …",
+      "empty": "Keine offenen Aktionen."
+    },
+    "breaker": {
+      "section_title": "Behörden-Erreichbarkeit",
+      "closed": "geschlossen",
+      "open": "offen",
+      "half_open": "halb-offen",
+      "chip_aria": "{behoerde}: Schaltzustand {state}"
+    },
+    "retry": {
+      "countdown": "Erneuter Versuch in {seconds} s"
+    },
+    "compensation": {
+      "summary": "Teilweise abgeschlossen — eine Übermittlung wurde zurückgenommen [MOCK].",
+      "remediation": "So beheben Sie das: Prüfen Sie die markierte Übermittlung und stoßen Sie sie bei Bedarf erneut an.",
+      "not_reversible": "nicht vollständig zurücknehmbar [MOCK]"
+    },
+    "recovery": {
+      "banner": "Wiederhergestellt nach Neustart — {count} laufende Vorgänge aus dem Protokoll rekonstruiert [MOCK].",
+      "degraded_suffix": "(Protokoll-Integrität konnte nicht bestätigt werden)",
+      "dismiss": "Hinweis schließen"
+    },
+    "row": {
+      "compensated_badge": "zurückgenommen"
+    },
+    "status": {
+      "section_title": "Resilienz-Status",
+      "saga_label": "Saga-Status"
+    },
+    "aria": {
+      "audit_live": "Engine-Protokoll, Live-Aktualisierungen",
+      "resilience_live": "Resilienz-Status, Live-Aktualisierungen"
+    }
+  },
   "shared": {
     "gehoert_zu": "Gehört zu: {vorgang}",
     "neu_badge": "neu"

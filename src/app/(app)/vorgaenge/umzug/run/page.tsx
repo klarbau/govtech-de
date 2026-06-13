@@ -18,6 +18,11 @@ import {
 } from 'lucide-react';
 
 import { ValueReceiptCard } from '@/components/autopilot/ValueReceiptCard';
+import {
+  LaufzettelPanel,
+  OrchestrationTestBridge,
+  RecoveryBanner,
+} from '@/components/orchestration';
 import { api } from '@/lib/mock-backend';
 import type {
   AutopilotStep,
@@ -325,6 +330,15 @@ function UmzugRunInner() {
         </div>
       ) : null}
 
+      {vorgangId ? (
+        <>
+          <OrchestrationTestBridge />
+          <div style={{ marginBottom: 16 }}>
+            <RecoveryBanner sagaId={vorgangId} />
+          </div>
+        </>
+      ) : null}
+
       <div className="umz-banner">
         <span className="icon-square">
           <Sparkles />
@@ -486,6 +500,16 @@ function UmzugRunInner() {
           </div>
         </div>
       </div>
+
+      {vorgangId ? (
+        <div style={{ marginTop: 20 }}>
+          <LaufzettelPanel
+            sagaId={vorgangId}
+            variant="inspector"
+            behoerdenById={behoerdenById}
+          />
+        </div>
+      ) : null}
     </div>
   );
 }

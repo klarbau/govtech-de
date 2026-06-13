@@ -2962,6 +2962,87 @@
       "demnaechst": "yakında"
     }
   },
+  "orchestration": {
+    "mock_tag": "[MOCK]",
+    "panel": {
+      "title": "Motor günlüğü",
+      "mock_line": "Kurcalamayı belli eden hash zinciri [MOCK] — yerel, SHA-256, gerçek OSCI/XTA yok.",
+      "laufzettel_label": "Teslim fişi (Laufzettel)",
+      "empty": "Henüz günlük kaydı yok.",
+      "seq_label": "Kayıt #{seq}",
+      "hash_chain_label": "Hash zinciri",
+      "hash_link_aria": "Zincirleme: önceki hash {prev}, {hash} değerine işaret eder.",
+      "toggle_inspector": "Motor günlüğünü göster",
+      "chain_intact_hint": "Her kayıt, SHA-256 ile bir öncekine zincirlenir."
+    },
+    "quittung": {
+      "positive": "Makbuz (Quittung): olumlu (talep yürütüldü)",
+      "negative": "Makbuz (Quittung): olumsuz (teslim edilemedi)",
+      "accepted_at": "Teslim fişi (Laufzettel): kabul edildi {ts}",
+      "transport_code": "Taşıma kodu: {code}"
+    },
+    "event": {
+      "saga_started": "İşlem başlatıldı",
+      "step_enqueued": "Adım sıraya alındı",
+      "step_started": "İletim başladı",
+      "step_receipt": "Makbuz (Quittung) alındı",
+      "retry_scheduled": "Yeniden deneme planlandı",
+      "dead_lettered": "İşlem için kuyruğa taşındı",
+      "compensating": "İletim geri alınıyor",
+      "compensated": "İletim geri alındı",
+      "breaker_opened": "Kurum geçici olarak erişilemez — yalıtıldı",
+      "breaker_half_open": "Kurum yeniden denetleniyor",
+      "breaker_closed": "Kuruma yeniden erişilebiliyor",
+      "saga_completed": "İşlem tamamlandı",
+      "saga_compensated": "İşlem kısmen geri alındı",
+      "recovery_replayed": "Günlükten geri yüklendi"
+    },
+    "verify": {
+      "cta": "Günlüğü doğrula",
+      "checking": "Doğrulanıyor …",
+      "ok": "Günlük sağlam — hash zinciri kesintisiz ({count} kayıt).",
+      "broken": "Günlük değiştirilmiş — hash zinciri #{seq} numaralı kayıtta kopuyor."
+    },
+    "dlq": {
+      "title": "İşlem gerekli",
+      "reason_unreachable": "Kuruma erişilemedi (denemeler tükendi).",
+      "reason_permanent": "Alıcı bilinmiyor — otomatik yeniden deneme yok.",
+      "replay_cta": "Yeniden gönder",
+      "replaying": "Yeniden gönderiliyor …",
+      "empty": "Açık işlem yok."
+    },
+    "breaker": {
+      "section_title": "Kurum erişilebilirliği",
+      "closed": "kapalı",
+      "open": "açık",
+      "half_open": "yarı açık",
+      "chip_aria": "{behoerde}: anahtar durumu {state}"
+    },
+    "retry": {
+      "countdown": "{seconds} sn içinde yeniden deneme"
+    },
+    "compensation": {
+      "summary": "Kısmen tamamlandı — bir iletim geri alındı [MOCK].",
+      "remediation": "Nasıl çözülür: işaretli iletimi inceleyin ve gerekirse yeniden başlatın.",
+      "not_reversible": "tamamen geri alınamaz [MOCK]"
+    },
+    "recovery": {
+      "banner": "Yeniden başlatmadan sonra geri yüklendi — {count} süren işlem günlükten yeniden oluşturuldu [MOCK].",
+      "degraded_suffix": "(günlük bütünlüğü doğrulanamadı)",
+      "dismiss": "Bildirimi kapat"
+    },
+    "row": {
+      "compensated_badge": "geri alındı"
+    },
+    "status": {
+      "section_title": "Dayanıklılık durumu",
+      "saga_label": "Saga durumu"
+    },
+    "aria": {
+      "audit_live": "Motor günlüğü, canlı güncellemeler",
+      "resilience_live": "Dayanıklılık durumu, canlı güncellemeler"
+    }
+  },
   "shared": {
     "gehoert_zu": "Şuna ait: {vorgang}",
     "neu_badge": "yeni"

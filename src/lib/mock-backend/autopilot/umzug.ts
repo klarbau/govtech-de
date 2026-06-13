@@ -38,7 +38,7 @@ import type { UebermittlungsLogEntry } from '@/types';
 const MOCK_FOOTER =
   '[MOCK – Verwaltungsdemo, keine echten Daten]';
 
-interface BlockAEntry {
+export interface BlockAEntry {
   behoerdeId: string;
   aktion: string;
   rechtsgrundlage: string;
@@ -60,7 +60,7 @@ interface BlockAEntry {
   visibleIf?: (persona: Persona) => boolean;
 }
 
-interface BlockBEntry {
+export interface BlockBEntry {
   behoerdeId: string;
   aktion: string;
   rechtsgrundlage: string;
@@ -80,7 +80,7 @@ interface BlockBEntry {
   };
 }
 
-interface BlockDEntry {
+export interface BlockDEntry {
   behoerdeId: string;
   aktion: string;
   rechtsgrundlage: string;
@@ -102,7 +102,12 @@ interface BlockDEntry {
 // Block A — Anker (Einwohnermeldeamt) + Wohnsitz-Finanzamt + Beitragsservice +
 // Bundesdruckerei. Normen + Datenkategorien verbatim aus
 // docs/domain/umzug-konvenienz-und-normen.md (§2 D0/D1/D5, §D7).
-const BLOCK_A: BlockAEntry[] = [
+// Exported so the Resilient Orchestration Engine (`orchestration/saga-defs.ts`)
+// reuses the SAME Behörden list / Normen / Datenkategorien — one source of
+// truth (Spec resilient-orchestration-engine.md § 3.2). The legacy
+// async-generator path keeps using them too; the engine wraps them in saga
+// steps without re-authoring the data.
+export const BLOCK_A: BlockAEntry[] = [
   {
     behoerdeId: 'buergeramt-berlin-mitte',
     // D0 — §17 BMG; Wohnungsgeberbestätigung §19 BMG als erfüllte Voraussetzung (D4).
@@ -176,7 +181,7 @@ const BLOCK_A: BlockAEntry[] = [
 // Block B — privat/anstaltlich + Arbeitgeber, einwilligungsbasiert.
 // D3 (Krankenkasse) eine Basis: Art. 6 Abs. 1 lit. a DSGVO + § 206 SGB V.
 // D6 (Arbeitgeber) Art. 6 Abs. 1 lit. b DSGVO — spine-kritischer 6. Hop.
-const BLOCK_B: BlockBEntry[] = [
+export const BLOCK_B: BlockBEntry[] = [
   {
     behoerdeId: 'aok-nordost',
     aktion: 'Adressänderung Versichertenkonto',
@@ -242,7 +247,7 @@ const BLOCK_B: BlockBEntry[] = [
 // der i-Kfz-Adressänderung gemäß § 15 FZV. Der Frist-Wortlaut im Brief ist
 // „unverzüglich (i.d.R. innerhalb einer Woche)" (VL-2). Forbidden phrases
 // (per ban-list-grep test): siehe Spec § 11.13 + § 11.14.
-const BLOCK_D: BlockDEntry[] = [
+export const BLOCK_D: BlockDEntry[] = [
   {
     behoerdeId: 'kfz-berlin-labo',
     aktion: 'Pre-Fill der i-Kfz-Adressänderung gemäß § 15 FZV',
@@ -734,6 +739,54 @@ export async function* umzugAutopilot(
       block: 'B',
     });
   }
+}
+
+/**
+ * Erzeugt — falls der Empfänger ein Brieftemplate trägt — ein Bestätigungs-
+ * schreiben für einen beliebigen Kaskaden-Schritt (Block A/B/D). Wird vom
+ * Resilient-Orchestration-Engine-Hook `onStepSucceeded` aufgerufen, damit der
+ * Letter-Mint-Pfad identisch zum bisherigen Generator-Verhalten bleibt (gleiche
+ * Briefe in Posteingang → Spine-Assertion unverändert, Spec § 5.5).
+ */
+export function buildCascadeConfirmationLetter(opts: {
+  behoerdeId: string;
+  block: 'A' | 'B' | 'D';
+  input: UmzugInput;
+  persona: Persona;
+  vorgangId: string;
+}): Letter | undefined {
+  const { behoerdeId, block, input, persona, vorgangId } = opts;
+  const source =
+    block === 'A' ? BLOCK_A : block === 'B' ? BLOCK_B : BLOCK_D;
+  const entry = source.find((e) => e.behoerdeId === behoerdeId);
+  if (!entry || !entry.briefTemplate) return undefined;
+  return buildLetter({
+    behoerdeId,
+    personaId: persona.id,
+    vorgangId,
+    neueAdresseFormatted: formatAdresse(input.neue_adresse),
+    stichtagFormatted: formatStichtag(input.stichtag),
+    empfaengerName: persona.nachname,
+    template: entry.briefTemplate,
+  });
+}
+
+/**
+ * Stammdaten-Activity-Log-Hook für einen erfolgreichen Kaskaden-Schritt
+ * (Block A/B). Re-exportiert die interne Emitter-Funktion, damit der
+ * Orchestration-Engine-Hook denselben Log-Eintrag schreibt wie der Generator.
+ */
+export function emitStammdatenLogForStep(opts: {
+  personaId: string;
+  empfaengerBehoerdeId: string;
+  block: 'A' | 'B' | 'D';
+}): void {
+  emitStammdatenLogForCascadeStep({
+    personaId: opts.personaId,
+    absenderBehoerdeId: 'buergeramt-berlin-mitte',
+    empfaengerBehoerdeId: opts.empfaengerBehoerdeId,
+    block: opts.block,
+  });
 }
 
 /**

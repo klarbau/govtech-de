@@ -69,7 +69,17 @@ export type CollectionKey =
   | 'datenschutz:vision-banner-dismissed'
   // Redesign-Dashboard — deviceLocal-State (`dashboard.md` § 5.4).
   | 'dashboard:last-seen'
-  | 'dashboard:sort-mode';
+  | 'dashboard:sort-mode'
+  // Resilient Orchestration Engine (`resilient-orchestration-engine.md` § 2.5).
+  // Eigener Schema-Version-Marker (`orchestration:schema-version`, start `1`) —
+  // bleibt im bestehenden `v1`-Namespace; KEIN globaler v1→v2-Bump (der würde
+  // alles purgen). Bei zod-Fehler reseedet `read()` nur den betroffenen Bucket.
+  | 'orchestration:sagas'
+  | 'orchestration:outbox'
+  | 'orchestration:audit-log'
+  | 'orchestration:dlq'
+  | 'orchestration:breakers'
+  | 'orchestration:schema-version';
 
 const fullKey = (key: CollectionKey): string => `${NAMESPACE}${key}`;
 

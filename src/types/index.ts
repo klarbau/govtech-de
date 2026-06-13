@@ -88,6 +88,26 @@ export type {
   SelfTask,
 } from './umzug';
 export type { MockBackendEvent, MockBackendEventListener } from './mock-event';
+// Resilient Orchestration Engine (Spec resilient-orchestration-engine.md § 2).
+export type {
+  AuditEventType,
+  AuditLogEntry,
+  BreakerState,
+  CircuitBreakerState,
+  DeadLetterEntry,
+  OutboxEntry,
+  OutboxStatus,
+  Quittung,
+  SagaInstance,
+  SagaStatus,
+  SagaStep,
+  SagaType,
+  StepGate,
+  StepStatus,
+  TransportEnvelope,
+  TransportReceipt,
+  UmzugSagaDefinition,
+} from './orchestration';
 // Convenience-Pass-1 — Wertquittung / EUDI-Vorschau / Autopilot-Katalog (§1.3/§1.7/§1.8).
 export type {
   ValueReceipt,

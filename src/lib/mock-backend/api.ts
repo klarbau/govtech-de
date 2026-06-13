@@ -102,9 +102,31 @@ import letterSummariesFixture from '@/data/letter-summaries.json';
 import { z } from 'zod';
 import {
   buildBlockDConfirmation,
+  buildCascadeConfirmationLetter,
   buildUmzugPreview,
+  emitStammdatenLogForStep,
   umzugAutopilot,
 } from './autopilot/umzug';
+import {
+  buildUmzugSaga,
+  getEngine,
+  runRecoverOnBoot,
+  setEngineHooks,
+  verifyChain as engineVerifyChain,
+  COMPENSATION_TARGET_BEHOERDE,
+  __setEngineClock,
+  makeFakeClock,
+} from './orchestration';
+import { isReliableModeForEngine } from './orchestration/reliable';
+import type { EngineHooks } from './orchestration';
+import { projectStep as projectSagaStep } from './orchestration/projection';
+import type {
+  AuditLogEntry,
+  CircuitBreakerState,
+  DeadLetterEntry,
+  SagaInstance,
+  SagaStep,
+} from '@/types/orchestration';
 import { appendLogEntry, stammdatenApi } from './stammdaten/api';
 import { dashboardApi } from './dashboard/api';
 import { datenschutzApi } from './datenschutz/api';
@@ -157,6 +179,7 @@ import type { AutopilotStep, VorgangStatus } from '@/types/vorgang';
 // ----------------------------------------------------------------------------
 
 let booted = false;
+let recoveryRan = false;
 function ensureBooted(): void {
   if (booted) return;
   booted = true;
@@ -165,6 +188,27 @@ function ensureBooted(): void {
   } catch (err) {
     if (typeof console !== 'undefined') {
       console.error('[mock-backend] seed failed', err);
+    }
+  }
+  // Resilient Orchestration Engine recovery-on-boot (Spec § 5.4): runs once per
+  // page load, after seedIfEmpty, guarded by a sentinel. Fire-and-forget inside
+  // the captured request context so deferred emits land on the right bus. On an
+  // empty store (Node/test, no in-flight saga) it is a no-op.
+  if (!recoveryRan) {
+    recoveryRan = true;
+    try {
+      const snapshot = captureContext();
+      void runWithCapturedContext(snapshot, () =>
+        runRecoverOnBoot().catch((err) => {
+          if (typeof console !== 'undefined') {
+            console.warn('[mock-backend] recoverOnBoot failed', err);
+          }
+        }),
+      );
+    } catch (err) {
+      if (typeof console !== 'undefined') {
+        console.warn('[mock-backend] recoverOnBoot bootstrap failed', err);
+      }
     }
   }
 }
@@ -1320,6 +1364,35 @@ export interface MockBackendApi {
   /** Persistiert den Vision-Banner-Dismiss. */
   dismissVisionBanner(personaId: PersonaId): Promise<void>;
 
+  // ---------------------- Resilient Orchestration Engine — Read ----------------
+  // Locked read-contract the UI builds against (Spec § 6). Reads run through
+  // `withLatency` (no fault-injection on reads); verify/replay/recovery are
+  // direct engine calls (synchronous side-effects + their own events).
+  //
+  // Hand-off note für frontend-coder:
+  //   getSaga(vorgangId)            → SagaInstance | null (sagaId === vorgangId)
+  //   getOrchestrationAuditLog(id?) → AuditLogEntry[]   (the Laufzettel/hash-chain)
+  //   getDlq()                      → DeadLetterEntry[]  ("Aktion erforderlich")
+  //   getBreakers()                 → CircuitBreakerState[] (per-authority chips)
+  //   verifyChain()                 → { ok, brokenAtSeq?, count } (tamper proof)
+  //   replayDeadLetter(dlqId)       → void (one-tap "Erneut senden")
+  //   recoverOnBoot()               → { recovered, degraded } (DR banner)
+
+  /** Saga state machine for a Vorgang (sagaId === vorgangId). `null` if none. */
+  getSaga(vorgangId: string): Promise<SagaInstance | null>;
+  /** Append-only audit log (hash chain); optionally filtered to one saga. */
+  getOrchestrationAuditLog(sagaId?: string): Promise<AuditLogEntry[]>;
+  /** Dead-letter queue ("Aktion erforderlich"); replayable entries. */
+  getDlq(): Promise<DeadLetterEntry[]>;
+  /** Per-authority circuit-breaker states. */
+  getBreakers(): Promise<CircuitBreakerState[]>;
+  /** Tamper check on the audit hash chain. `ok:false` + brokenAtSeq on break. */
+  verifyChain(): Promise<{ ok: boolean; brokenAtSeq?: number; count: number }>;
+  /** One-tap DLQ replay: resets attempts → pending, re-enqueues, re-drives. */
+  replayDeadLetter(dlqId: string): Promise<void>;
+  /** Replay-on-boot recovery; returns count of in-flight sagas reconstructed. */
+  recoverOnBoot(): Promise<{ recovered: number; degraded: boolean }>;
+
   // Subscribe
   subscribe(listener: MockBackendEventListener): () => void;
 }
@@ -1350,6 +1423,22 @@ async function bestaetigeImpl(
     );
   }
 
+  // Resilient Orchestration Engine (Spec § 5.2): die eID-Gate-Freigabe läuft
+  // jetzt über `engine.authorizeStep` — der den Schritt in die Outbox einreiht,
+  // durch den Transport treibt und auf positive Quittung die Block-D-Side-
+  // Effects über den `onStepSucceeded`-Hook ausführt (identisch zum bisherigen
+  // Verhalten: Brief, KFZ-Marker, Stammdaten-Log, Ripple, Completion-Check).
+  // Wenn eine Saga für diesen Vorgang existiert, gewinnt der Engine-Pfad.
+  const engine = getEngine();
+  const saga = engine.getSaga(vorgangId);
+  if (saga && saga.steps.some((s) => s.autopilotStepId === schrittId)) {
+    const sagaStep = saga.steps.find((s) => s.autopilotStepId === schrittId)!;
+    await engine.authorizeStep(vorgangId, sagaStep.stepId);
+    return;
+  }
+
+  // Legacy-Pfad (kein Engine-Saga vorhanden — z. B. geseedeter Vorgang):
+  // unverändertes bisheriges Verhalten.
   const eidConfirmedAt = new Date().toISOString();
   upsertStep(vorgangId, {
     ...step,
@@ -1390,6 +1479,19 @@ async function bestaetigeImpl(
     letter_id: letterId,
   });
 
+  await applyBlockDSideEffectsLegacy(vorgangId, step, persona);
+}
+
+/**
+ * Block-D-Side-Effects (KFZ-Marker, Stammdaten-Log, Ripple, Completion-Check) —
+ * extrahiert aus `bestaetigeImpl`, damit BEIDE Pfade (Legacy-Generator +
+ * Engine-`onStepSucceeded`-Hook) identisches Verhalten haben. Idempotent.
+ */
+async function applyBlockDSideEffectsLegacy(
+  vorgangId: string,
+  step: AutopilotStep,
+  persona: Persona,
+): Promise<void> {
   // V1.3 VL-13 (Spec § 9.3): nach erfolgreicher Block-D-eID-Bestätigung für
   // eine KFZ-Behörde setzt der Autopilot den Übergangs-Marker auf der
   // Halter-Adresse + Activity-Log-Eintrag `kfz_halter_adresse_prefilled_via_umzug`.
@@ -1479,6 +1581,130 @@ async function bestaetigeImpl(
   }
 }
 
+// ----------------------------------------------------------------------------
+// Resilient Orchestration Engine — Hooks (Spec § 5.1–§ 5.2).
+//
+// Der Engine ruft diese Hooks, um seinen Saga-State auf den bestehenden
+// `AutopilotStep`-Stream zu projizieren (`upsertStep` → `autopilot_step`-Event)
+// und die bestehenden Umzug-Side-Effects (Brief-Mint, Block-D-Ripple,
+// Stammdaten-Log, Completion) UNVERÄNDERT auszuführen. So sieht die UI denselben
+// Event-Stream wie heute — die Engine ist für sie unsichtbar.
+// ----------------------------------------------------------------------------
+
+function sagaInputFor(saga: SagaInstance): UmzugInput | undefined {
+  const neue = saga.context?.neue_adresse as
+    | UmzugInput['neue_adresse']
+    | undefined;
+  const stichtag = saga.context?.stichtag as string | undefined;
+  if (!neue || !stichtag) return undefined;
+  return {
+    neue_adresse: neue,
+    stichtag,
+    betroffene_personen: [saga.personaId],
+    consents: (saga.context?.consents as string[] | undefined) ?? [],
+  };
+}
+
+const engineHooks: EngineHooks = {
+  projectStep(saga: SagaInstance, step: SagaStep): void {
+    // Project the saga step onto the existing AutopilotStep and persist via
+    // the unchanged upsertStep (which emits `autopilot_step`).
+    upsertStep(saga.vorgangId, projectSagaStep(step));
+  },
+
+  async onStepSucceeded(
+    saga: SagaInstance,
+    step: SagaStep,
+  ): Promise<string | undefined> {
+    const persona = loadProfile();
+    const input = sagaInputFor(saga);
+    let letterId: string | undefined;
+
+    // Mint the confirmation letter (Block A/B/D) exactly as the generator did.
+    if (input && (step.block === 'A' || step.block === 'B' || step.block === 'D')) {
+      const letter = buildCascadeConfirmationLetter({
+        behoerdeId: step.behoerdeId,
+        block: step.block,
+        input,
+        persona,
+        vorgangId: saga.vorgangId,
+      });
+      if (letter) {
+        const finalLetter: Letter = { ...letter, vorgang_id: saga.vorgangId };
+        appendLetter(finalLetter);
+        letterId = finalLetter.id;
+      }
+    }
+
+    // Stammdaten-Activity-Log (Block A/B). Block D runs its dedicated log inside
+    // applyBlockDSideEffectsLegacy below.
+    if (step.block === 'A' || step.block === 'B') {
+      emitStammdatenLogForStep({
+        personaId: persona.id,
+        empfaengerBehoerdeId: step.behoerdeId,
+        block: step.block,
+      });
+    }
+
+    // Block-D side-effects: KFZ marker, Block-D stammdaten log, ripple,
+    // completion check (idempotent). The projected AutopilotStep already has
+    // letter_id assigned by the engine; pass a confirmed AutopilotStep shape.
+    if (step.block === 'D') {
+      const autopilotStep: AutopilotStep = {
+        ...projectSagaStep(step),
+        status: 'confirmed',
+        letter_id: letterId,
+        completed_at: step.completedAt ?? new Date().toISOString(),
+        eid_confirmed_at: step.startedAt ?? new Date().toISOString(),
+      };
+      // Persist the letter_id onto the projected step before side-effects read it.
+      upsertStep(saga.vorgangId, autopilotStep);
+      try {
+        await applyBlockDSideEffectsLegacy(saga.vorgangId, autopilotStep, persona);
+      } catch (err) {
+        if (typeof console !== 'undefined') {
+          console.warn('[mock-backend] engine Block-D side-effects failed', err);
+        }
+      }
+    }
+
+    return letterId;
+  },
+
+  async onSagaTerminal(saga: SagaInstance): Promise<void> {
+    // Ripple after Block A/B (Meldebestätigung document etc.) + completion. The
+    // Block-D ripple already ran per-step in applyBlockDSideEffectsLegacy.
+    const persona = loadProfile();
+    const v = loadVorgaenge().find((x) => x.id === saga.vorgangId);
+    if (v && v.typ === 'umzug') applyUmzugRipple(v, persona);
+
+    if (saga.status === 'completed') {
+      // The SAGA itself is the completion authority: `completed` already means
+      // all REQUIRED steps (Block-A statutory + Block-D eID) are terminal AND no
+      // ENQUEUED optional step is in flight (engine.evaluateSaga, BLOCKER 1).
+      // Do NOT re-gate on `isVorgangFullyResolved` over the projected steps here:
+      // a consented-but-never-authorised Block-B recipient (Krankenkasse /
+      // Arbeitgeber) stays projected as `pending_eid_confirmation`/pending — that
+      // is the citizen's SEPARATE later action, not an unfinished required step,
+      // and must not stop the value receipt / `abgeschlossen` transition from
+      // mounting once the required cascade is done. (The legacy non-saga path
+      // keeps its own `isVorgangFullyResolved` guard, unchanged.)
+      const fresh = loadVorgaenge().find((x) => x.id === saga.vorgangId);
+      if (fresh && fresh.status !== 'abgeschlossen') {
+        changeVorgangStatus(saga.vorgangId, 'abgeschlossen');
+        const done = loadVorgaenge().find((x) => x.id === saga.vorgangId);
+        if (done && done.typ === 'umzug') applyUmzugRipple(done, persona);
+      }
+    }
+  },
+};
+
+// Wire the hooks into the engine once at module init.
+setEngineHooks(engineHooks);
+// Suppress unused-import lint for the compensation-target re-export (referenced
+// in tests + documents which Behörde carries the demo compensation).
+void COMPENSATION_TARGET_BEHOERDE;
+
 /**
  * Generischer Bürger:innen-Schritt-Abschluss (WoW-1). Markiert einen einzelnen
  * Vorgangs-Schritt als vom Bürger erledigt — z. B. „Nachweis zur Fortzahlung
@@ -1557,12 +1783,29 @@ async function runAutopilotInBackground(ctx: {
   }
 }
 
+/**
+ * TEST-ONLY seam for the six resilience e2e proofs (Spec § 7). Delegates to the
+ * SAME `getEngine()` singleton `startUmzug`/`authorizeStep` drive — so a re-drive
+ * across the `'use client'` boundary reaches the live saga (proofs b/c/d). It is
+ * NEVER attached in prod: see `attachOrchestrationTestSeam()` below, gated on the
+ * orch-test/reliable flag.
+ */
+export interface OrchestrationTestSeam {
+  /** Install + advance the fake engine clock so scheduled retries become drainable. */
+  installFakeClock(): void;
+  tick(ms: number): void;
+  /** Re-drive the live saga's outbox on the engine `startUmzug` uses. */
+  drain(sagaId: string): Promise<void>;
+}
+
 export const api: MockBackendApi & {
   /** Architecture.md-konformer Alias mit Umlaut. */
   bestätigeAutopilotSchritt(
     vorgangId: string,
     schrittId: string,
   ): Promise<void>;
+  /** TEST-ONLY (§ 7) — present only behind the orch-test/reliable flag. */
+  __orchestrationTest?: OrchestrationTestSeam;
 } = {
   // ---------- Read ----------
   getProfile: () => withLatency(() => loadProfile()),
@@ -1794,15 +2037,29 @@ export const api: MockBackendApi & {
 
       recordConsent(input.consents ?? [], 'umzug:adressaenderung');
 
-      // Deferred-Emit-Fix (Stage 2): der Autopilot läuft fire-and-forget über
-      // Timer/`await`; wir kapseln den aktuellen Request-Kontext (Session-Store
-      // + Session-Bus + Reliable-Flag) und re-binden ihn für den gesamten
-      // Hintergrund-Lauf. Dadurch landen auch verzögerte `emit()`-Aufrufe auf
-      // dem Session-Bus (den die SSE-Route abhört) und im Session-Store.
+      // Resilient Orchestration Engine (Spec § 5.1): statt des fire-and-forget
+      // Async-Generators (`runAutopilotInBackground`) baut + startet
+      // `startUmzug` jetzt eine echte Saga. Der Engine treibt die Kaskade,
+      // projiziert jeden Saga-Schritt über `upsertStep` zurück auf den
+      // bestehenden `AutopilotStep`-Stream (`autopilot_step`-Event) und mintet
+      // dieselben Briefe an denselben Erfolgs-Punkten — die UI sieht den
+      // identischen Event-Stream. Block-A (auto) läuft sofort durch; Block-D
+      // (eID) + Block-B (consent) warten auf `engine.authorizeStep`.
+      //
+      // Deferred-Emit-Fix (Stage 2) bleibt: der Saga-Lauf wird im gekapselten
+      // Request-Kontext (Store + Bus + Reliable-Flag) ausgeführt, damit
+      // verzögerte `emit()`-Aufrufe auf dem Session-Bus / Session-Store landen.
       // Im Browser/Default-Pfad ist der Snapshot leer → identisches Verhalten.
+      const { saga } = buildUmzugSaga(persona, input, vorgangId);
       const ctxSnapshot = captureContext();
       void runWithCapturedContext(ctxSnapshot, () =>
-        runAutopilotInBackground({ vorgangId, input, persona }),
+        getEngine()
+          .startSaga(saga)
+          .catch((err) => {
+            if (typeof console !== 'undefined') {
+              console.error('[mock-backend] umzug saga crashed', err);
+            }
+          }),
       );
 
       return { vorgangId };
@@ -2747,9 +3004,102 @@ export const api: MockBackendApi & {
     return datenschutzApi.dismissVisionBanner(personaId);
   },
 
+  // ---------- Resilient Orchestration Engine — Read ----------
+  getSaga: (vorgangId: string) =>
+    withLatency<SagaInstance | null>(() => {
+      ensureBooted();
+      return getEngine().getSaga(vorgangId) ?? null;
+    }),
+
+  getOrchestrationAuditLog: (sagaId?: string) =>
+    withLatency<AuditLogEntry[]>(() => {
+      ensureBooted();
+      return getEngine().getAuditLog(sagaId);
+    }),
+
+  getDlq: () =>
+    withLatency<DeadLetterEntry[]>(() => {
+      ensureBooted();
+      return getEngine().getDlq();
+    }),
+
+  getBreakers: () =>
+    withLatency<CircuitBreakerState[]>(() => {
+      ensureBooted();
+      return getEngine().getBreakers();
+    }),
+
+  // verify/replay/recovery are direct (no fault injection): they are integrity
+  // actions, not Behörden-reads. They emit their own events for live panels.
+  verifyChain: async () => {
+    ensureBooted();
+    return engineVerifyChain();
+  },
+
+  replayDeadLetter: async (dlqId: string) => {
+    ensureBooted();
+    await getEngine().replayDeadLetter(dlqId);
+  },
+
+  recoverOnBoot: async () => {
+    ensureBooted();
+    return runRecoverOnBoot();
+  },
+
   // ---------- Subscribe ----------
   subscribe: (listener: MockBackendEventListener) => subscribe(listener),
 };
+
+// ── TEST-ONLY orchestration seam (Spec § 7) ──────────────────────────────────
+//
+// BLOCKER 2 fix: the e2e harness re-drives the live saga across the `'use client'`
+// boundary. The frontend test bridge previously imported `getEngine()` /
+// `makeFakeClock` itself; under code-splitting that can resolve a DIFFERENT
+// module instance than `api`'s, so its `drainAll` ran on an engine the saga is
+// not on (transport singleton is shared — forceFail worked — but the draining
+// engine was unreachable). Exposing the seam HERE, in api.ts's own module scope,
+// guarantees `drain`/`tick` hit the exact `getEngine()` singleton that
+// `startUmzug`/`authorizeStep` drive.
+//
+// Gated behind the orch-test/reliable flag so it is NEVER attached in prod: the
+// reliable prod build the resilience e2e runs against sets
+// NEXT_PUBLIC_ENABLE_ORCH_TEST=1; absent that (and absent reliable mode) the
+// property stays `undefined` and no test code path ships.
+function shouldAttachOrchestrationTestSeam(): boolean {
+  if (
+    typeof process !== 'undefined' &&
+    process.env?.NEXT_PUBLIC_ENABLE_ORCH_TEST === '1'
+  ) {
+    return true;
+  }
+  // Defensive fallback: reliable mode (Loom/spine prod build) also enables it.
+  try {
+    return isReliableModeForEngine();
+  } catch {
+    return false;
+  }
+}
+
+if (shouldAttachOrchestrationTestSeam()) {
+  const fakeClock = makeFakeClock();
+  let clockInstalled = false;
+  api.__orchestrationTest = {
+    installFakeClock() {
+      if (clockInstalled) return;
+      clockInstalled = true;
+      __setEngineClock(fakeClock);
+    },
+    tick(ms: number) {
+      fakeClock.tick(ms);
+    },
+    async drain(sagaId: string) {
+      // Run inside the captured request context so deferred emit()s land on the
+      // same Store/Bus the saga writes to (the Stage-2 deferred-emit fix).
+      const snapshot = captureContext();
+      await runWithCapturedContext(snapshot, () => getEngine().drainAll(sagaId));
+    },
+  };
+}
 
 // Re-exports.
 export { MockBackendError } from './errors';
