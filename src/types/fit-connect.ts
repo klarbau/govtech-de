@@ -39,6 +39,19 @@ export interface FitConnectSubmissionInput {
   loa: 'high';
 }
 
+/**
+ * The MINIMAL, serializable input the CLIENT passes to the `submitViaFitConnect`
+ * server action (Spec § 6.6 client-safety). The client never knows the LeiKa
+ * placeholder, its catalogue-confirmed flag, the ARS, or the LoA — those are
+ * derived SERVER-side from `behoerdeId` (via the config placeholder map), so no
+ * server-only module is ever pulled into the client bundle. `datenkategorien`
+ * carries the step's Datenminimierung set.
+ */
+export interface FitConnectClientInput {
+  behoerdeId: FitConnectBehoerdeId;
+  datenkategorien: string[];
+}
+
 export interface FitConnectReceipt {
   tier: 1 | 2;
   /** Structural honesty marker — ALWAYS `true` in this demo (Spec § 7). */

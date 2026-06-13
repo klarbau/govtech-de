@@ -18,8 +18,13 @@ import {
   buildSubmission,
   sendLiveSubmission,
 } from '@/lib/fit-connect';
-import { readTier2Env } from '@/lib/fit-connect/config';
+import {
+  BLOCK_D_PLACEHOLDER_LEIKA_KEYS,
+  MOCK_ARS,
+  readTier2Env,
+} from '@/lib/fit-connect/config';
 import type {
+  FitConnectClientInput,
   FitConnectReceipt,
   FitConnectSubmissionInput,
 } from '@/types/fit-connect';
@@ -36,22 +41,39 @@ const ALLOWED_BEHOERDE_IDS: ReadonlySet<FitConnectSubmissionInput['behoerdeId']>
  * Build (Tier-1) or send (Tier-2, flag-gated) a FIT-Connect submission for one
  * Block-D row, returning the receipt the panel renders.
  *
+ * The CLIENT passes only `{ behoerdeId, datenkategorien }` (Spec § 6.6
+ * client-safety) — the LeiKa placeholder, its catalogue-confirmed flag, the ARS
+ * and the LoA are derived HERE, server-side, from `behoerdeId` via the config
+ * placeholder map. No server-only module is ever pulled into the client bundle.
+ *
  * Defensive guard: a non-Block-D id is rejected before any build runs — only
  * the three legitimate rows ever reach the adapter (Spec § 12 edge case).
  */
 export async function submitViaFitConnect(
-  input: FitConnectSubmissionInput,
+  input: FitConnectClientInput,
 ): Promise<FitConnectReceipt> {
   if (!ALLOWED_BEHOERDE_IDS.has(input.behoerdeId)) {
     // No PII, no leikaKey echo — just refuse the off-list id.
     throw new Error('FIT_CONNECT_BEHOERDE_NOT_ELIGIBLE');
   }
 
+  // Server-side derivation: the LeiKa key is the §6.5 placeholder (never
+  // invented, never catalogue-confirmed for rows 7–9); the ARS is the synthetic
+  // [MOCK] Berlin value; the LoA is always our schema-allowed `high`.
+  const submission: FitConnectSubmissionInput = {
+    behoerdeId: input.behoerdeId,
+    leikaKey: BLOCK_D_PLACEHOLDER_LEIKA_KEYS[input.behoerdeId],
+    leikaKeyConfirmed: false,
+    datenkategorien: input.datenkategorien,
+    ars: MOCK_ARS,
+    loa: 'high',
+  };
+
   // Tier-2 only when the flag + creds are present; otherwise Tier-1 (offline,
   // deterministic). `sendLiveSubmission` itself falls back if creds are absent,
   // but we branch here to keep the Tier-1 path free of any env read on the hot
   // path of the deployed build.
   return readTier2Env().enabled
-    ? sendLiveSubmission(input)
-    : buildSubmission(input);
+    ? sendLiveSubmission(submission)
+    : buildSubmission(submission);
 }

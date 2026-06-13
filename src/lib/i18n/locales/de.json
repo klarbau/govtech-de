@@ -3172,6 +3172,49 @@
       }
     }
   },
+  "umzug_cascade": {
+    "transport": {
+      "label": "Übermittlungsweg",
+      "osci_xmeld": "OSCI-XMeld",
+      "fit_connect": "FIT-Connect",
+      "einwilligung": "Einwilligung (privat)",
+      "frist_3wt": "≤ 3 Werktage",
+      "osci_xmeld_aria": "Übermittlungsweg: OSCI-XMeld",
+      "fit_connect_aria": "Übermittlungsweg: FIT-Connect",
+      "einwilligung_aria": "Übermittlungsweg: Einwilligung, private Stelle"
+    },
+    "zukunft_label": "[ZUKUNFT]",
+    "zukunft_hint": "Diese register-übergreifende Weiterleitung ist heute nur teilweise automatisiert. Die vollständige Vernetzung ist Ziel der Registermodernisierung (NOOTS/IDNr).",
+    "rueckmeldung_label": "Rückmeldung an die bisherige Meldebehörde (§ 33 BMG)",
+    "disclaimer_long": "Hinweis: Dieser Prototyp simuliert die Übermittlung. Die Wohnsitzanmeldung selbst läuft real über das mandatierte Format OSCI-XMeld (§ 2 BMeldDigiV), nicht über FIT-Connect. FIT-Connect ist der OZG-Transportweg für Bürger-Anträge — in dieser Demo nur für die antragsförmigen, eID-bestätigten Schritte (i-Kfz, Familienkasse, Ausländerbehörde) und ausschließlich gegen eine TEST-Umgebung mit selbst registriertem [MOCK destination]. Es wurde keine reale Behörde adressiert. Die register-zu-register-Weiterleitungen (§§ 33, 36 BMG) sind heute nur teilweise automatisiert; die vollständige Vernetzung ist Ziel der Registermodernisierung (NOOTS/IDNr) — hier als [ZUKUNFT] markiert."
+  },
+  "fit_connect": {
+    "panel_title": "Übermittlung via FIT-Connect",
+    "mock_destination": "[MOCK destination]",
+    "leistung_label": "Leistung",
+    "leika_unconfirmed": "nicht aus dem Katalog bestätigt",
+    "loa_label": "Vertrauensniveau",
+    "loa_high": "eIDAS LoA hoch (LoA/high) — schema-konform",
+    "loa_honesty": "Von uns gewählter, schema-erlaubter Wert (die eID-Vertrauensstufe); das FITKO-Beispiel zeigt LoA/niedrig.",
+    "schema_label": "Schema",
+    "schema_value": "FIT-Connect Metadaten 2.1.0",
+    "schema_valid": "gültig",
+    "schema_invalid": "Schema-Validierung fehlgeschlagen",
+    "encryption_label": "Verschlüsselung",
+    "encryption_value": "JWE Compact · RSA-OAEP-256 / A256GCM",
+    "jwe_excerpt_label": "JWE (Auszug)",
+    "jwe_region_aria": "Verschlüsselter JWE-Auszug, scrollbar",
+    "submission_id_label": "Submission-ID",
+    "status_label": "Status",
+    "status": {
+      "submitted": "übermittelt",
+      "received": "empfangen",
+      "error": "Fehler"
+    },
+    "disclaimer_short": "TEST-Umgebung, selbst registriertes Ziel. Keine reale Behörde adressiert.",
+    "tier1_offline_note": "Standards-treue Wire-Form, schema-validiert — keine Netzübermittlung.",
+    "live_region_label": "FIT-Connect-Übermittlung erstellt"
+  },
   "katalog": {
     "titel": "Autopilot-Katalog",
     "untertitel": "Lebenslagen, die der Autopilot für Sie übernimmt.",

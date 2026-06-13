@@ -15,7 +15,9 @@ import {
 } from 'lucide-react';
 
 import { ValueReceiptCard } from '@/components/autopilot/ValueReceiptCard';
+import { FitConnectReceiptPanel } from '@/components/autopilot/FitConnectReceiptPanel';
 import { BehoerdenBadge } from '@/components/shared/BehoerdenBadge';
+import { submitViaFitConnect } from '@/app/actions/fit-connect';
 import { api, MockBackendError } from '@/lib/mock-backend';
 import { cn } from '@/lib/utils';
 import type {
@@ -27,6 +29,10 @@ import type {
   ValueReceipt,
   Vorgang,
 } from '@/types';
+import type {
+  FitConnectBehoerdeId,
+  FitConnectReceipt,
+} from '@/types/fit-connect';
 
 interface InlineCascadeProps {
   /** Live run id. Subscribes to api tick stream for this vorgang. */
@@ -43,6 +49,58 @@ interface InlineCascadeProps {
  * run/page.tsx keeps its own .slice(0,5); the inline hero intentionally does not.
  */
 const BLOCK_RANK: Record<BlockTyp, number> = { A: 0, D: 1, B: 2, C: 99 };
+
+/**
+ * Per-row transport layer (Spec § 5.1, Domain § 5 Layer A–E). DERIVED purely on
+ * the frontend from `behoerdeId` — the mapping is static and fixed, so no new
+ * backend field is needed. HARD RULE (Spec § 5.1, Domain § 3 #1/#2/#5): ONLY the
+ * three Block-D rows may carry `fit_connect`; anchor / §33-row / FA /
+ * Beitragsservice / Bundesdruckerei = `osci_xmeld`; every Block-B row =
+ * `einwilligung`.
+ */
+type TransportLayer = 'osci_xmeld' | 'fit_connect' | 'einwilligung';
+
+const TRANSPORT_LAYER: Record<string, TransportLayer> = {
+  'buergeramt-berlin-mitte': 'osci_xmeld',
+  'meldebehoerde-rueckmeldung': 'osci_xmeld',
+  'finanzamt-berlin-mitte-tiergarten': 'osci_xmeld',
+  'beitragsservice-koeln': 'osci_xmeld',
+  bundesdruckerei: 'osci_xmeld',
+  'kfz-berlin-labo': 'fit_connect',
+  'familienkasse-berlin-brandenburg': 'fit_connect',
+  'abh-berlin-lea': 'fit_connect',
+};
+
+/** Block-B fallback: any private recipient rides on consent (Spec § 5.1 Layer E). */
+function transportLayerFor(behoerdeId: string, block: BlockTyp): TransportLayer {
+  return TRANSPORT_LAYER[behoerdeId] ?? (block === 'B' ? 'einwilligung' : 'osci_xmeld');
+}
+
+/**
+ * Rows that carry the `[ZUKUNFT: Registermodernisierung/NOOTS]` marker (Spec
+ * § 4.4): the register-driven fan-out is only partially automated today. NOT a
+ * defect — an honest roadmap hint. NOT on the §33 row (its statutory loop is
+ * real) and NOT on Beitragsservice (the one reliable statutory onward line).
+ */
+const ZUKUNFT_ROWS: ReadonlySet<string> = new Set([
+  'finanzamt-berlin-mitte-tiergarten',
+  'familienkasse-berlin-brandenburg',
+  'abh-berlin-lea',
+]);
+
+/** The §33 BMG MB↔MB row that additionally shows the "≤ 3 Werktage" Frist chip. */
+const RUECKMELDUNG_BEHOERDE_ID = 'meldebehoerde-rueckmeldung';
+
+/** The three Block-D ids that may trigger a FIT-Connect submission (Spec § 6.6). */
+const FIT_CONNECT_BEHOERDE_IDS: ReadonlySet<string> = new Set<FitConnectBehoerdeId>([
+  'kfz-berlin-labo',
+  'familienkasse-berlin-brandenburg',
+  'abh-berlin-lea',
+]);
+
+function isFitConnectBehoerdeId(id: string): id is FitConnectBehoerdeId {
+  return FIT_CONNECT_BEHOERDE_IDS.has(id);
+}
 
 /** Status icon + tone, mirroring `BehoerdenStatusRow`'s visual language. */
 const STATUS_VIZ: Record<
@@ -92,11 +150,20 @@ const STATUS_LABEL_KEY: Record<AutopilotStepStatus, string> = {
 
 interface CascadeNode {
   stepId: string;
+  behoerdeId: string;
   behoerdeName: string;
   status: AutopilotStepStatus;
   primary: string;
   block: BlockTyp;
   rechtsgrundlage: string;
+  /** Derived (Spec § 5.2) — NOT from the backend; from `TRANSPORT_LAYER`. */
+  transportLayer: TransportLayer;
+  /** Derived (Spec § 5.2) — NOT from the backend; from `ZUKUNFT_ROWS`. */
+  zukunft: boolean;
+  /** §33 BMG row gets the "≤ 3 Werktage" Frist chip (Spec § 5.3). */
+  showFrist3wt: boolean;
+  /** Datenkategorien carried through for the FIT-Connect submission (Datenminimierung). */
+  datenkategorien: string[];
 }
 
 /**
@@ -113,6 +180,7 @@ export function InlineCascade({
 }: InlineCascadeProps) {
   const t = useTranslations('convenience.inline_cascade');
   const tCa = useTranslations('convenience.value_receipt');
+  const tTransport = useTranslations('umzug_cascade');
   const reduceMotion = useReducedMotion();
 
   const [vorgang, setVorgang] = useState<Vorgang | null>(null);
@@ -128,6 +196,19 @@ export function InlineCascade({
   const receiptFetchedRef = useRef(false);
   const seenLetterIdsRef = useRef<Set<string>>(new Set());
   const receiptCardRef = useRef<HTMLDivElement | null>(null);
+
+  /**
+   * FIT-Connect receipts (Spec § 6.6, § 9), keyed by `behoerdeId`. Only the three
+   * Block-D rows ever land here. The receipt is built by the server action AFTER
+   * the row's eID confirmation flips it to `confirmed`; the panel then renders
+   * inline BELOW that row. Transient (in-session) — no new localStorage key (§ 8).
+   * `fitConnectRequestedRef` makes the build idempotent: a second eID tap on the
+   * same row re-renders the stored receipt and never fires a second submission.
+   */
+  const [fitConnectReceipts, setFitConnectReceipts] = useState<
+    Record<string, FitConnectReceipt>
+  >({});
+  const fitConnectRequestedRef = useRef<Set<string>>(new Set());
 
   /**
    * Task 1 (focus-continuity): when a Block-D eID button is activated and the
@@ -341,11 +422,16 @@ export function InlineCascade({
       })
       .map(({ step }) => ({
         stepId: step.id,
+        behoerdeId: step.behoerde_id,
         behoerdeName: behoerdenById[step.behoerde_id]?.name_de ?? step.behoerde_id,
         status: step.status,
         primary: step.agent_label ?? step.aktion,
         block: step.block,
         rechtsgrundlage: step.rechtsgrundlage,
+        transportLayer: transportLayerFor(step.behoerde_id, step.block),
+        zukunft: ZUKUNFT_ROWS.has(step.behoerde_id),
+        showFrist3wt: step.behoerde_id === RUECKMELDUNG_BEHOERDE_ID,
+        datenkategorien: step.datenkategorien ?? [],
       }));
   }, [vorgang, behoerdenById]);
 
@@ -367,6 +453,27 @@ export function InlineCascade({
   const firstBlockDStepId = useMemo(
     () => cascadeNodes.find((n) => n.block === 'D')?.stepId ?? null,
     [cascadeNodes],
+  );
+
+  /* Spec § 5.3 / § 10.3: the long legal disclaimer renders ONCE at the cascade
+   * foot whenever any FIT-Connect chip is present (any Block-D row visible). */
+  const hasFitConnectChips = useMemo(
+    () => cascadeNodes.some((n) => n.transportLayer === 'fit_connect'),
+    [cascadeNodes],
+  );
+
+  /* The Block-D rows that already carry a built FIT-Connect receipt, in the
+   * A→D→B render order, for the receipt panels rendered below the cascade. */
+  const fitConnectPanels = useMemo(
+    () =>
+      cascadeNodes
+        .filter((n) => fitConnectReceipts[n.behoerdeId])
+        .map((n) => ({
+          behoerdeId: n.behoerdeId,
+          behoerdeName: n.behoerdeName,
+          receipt: fitConnectReceipts[n.behoerdeId],
+        })),
+    [cascadeNodes, fitConnectReceipts],
   );
 
   const sourceDatum = useMemo(() => {
@@ -402,6 +509,48 @@ export function InlineCascade({
       return;
     }
     statusRefs.current.get(justConfirmed)?.focus();
+  }, [cascadeNodes]);
+
+  /* Spec § 6.6 — the eID hook. Once a Block-D FIT-Connect row flips to
+   * `confirmed` (the user's "Mit eID bestätigen" tap landed), build the
+   * standards-true FIT-Connect submission via the server action and store the
+   * receipt keyed by `behoerdeId`; the panel then renders inline below the row.
+   * Only the three Block-D rows ever reach here. Idempotent: a row is requested
+   * exactly once (`fitConnectRequestedRef`), so a second tap re-renders the
+   * stored receipt without a duplicate effect. The build runs server-side; the
+   * client passes only `{ behoerdeId, datenkategorien }` (no server-only import,
+   * no secret). Does NOT touch focus — the panel appears below the row. */
+  useEffect(() => {
+    let cancelled = false;
+    for (const node of cascadeNodes) {
+      if (
+        node.block !== 'D' ||
+        node.status !== 'confirmed' ||
+        !isFitConnectBehoerdeId(node.behoerdeId) ||
+        fitConnectRequestedRef.current.has(node.behoerdeId)
+      ) {
+        continue;
+      }
+      fitConnectRequestedRef.current.add(node.behoerdeId);
+      const behoerdeId = node.behoerdeId;
+      const datenkategorien = node.datenkategorien;
+      void (async () => {
+        try {
+          const built = await submitViaFitConnect({ behoerdeId, datenkategorien });
+          if (!cancelled) {
+            setFitConnectReceipts((prev) => ({ ...prev, [behoerdeId]: built }));
+          }
+        } catch {
+          // FIT-Connect is additive — a build failure must NOT break the cascade
+          // (the eID confirmation + Saga step stay `confirmed`). Allow a retry on
+          // a later tick by releasing the request marker.
+          fitConnectRequestedRef.current.delete(behoerdeId);
+        }
+      })();
+    }
+    return () => {
+      cancelled = true;
+    };
   }, [cascadeNodes]);
 
   return (
@@ -459,6 +608,47 @@ export function InlineCascade({
                           {node.rechtsgrundlage}
                         </p>
                       ) : null}
+                      {/* Spec § 5.3: per-row transport chip + (§33 only) Frist chip
+                       * + [ZUKUNFT] chip. Static — sits in the existing aria-live
+                       * row, never re-announces on a status tick. AA-safe tokens. */}
+                      <div className="ml-9 flex flex-wrap items-center gap-1.5">
+                        <span
+                          data-testid="inline-cascade-transport-chip"
+                          data-transport={node.transportLayer}
+                          aria-label={tTransport(
+                            `transport.${node.transportLayer}_aria`,
+                          )}
+                          className={cn(
+                            'inline-flex items-center rounded-md px-1.5 py-0.5 text-xs font-medium',
+                            node.transportLayer === 'fit_connect'
+                              ? 'bg-accent-soft text-primary'
+                              : 'bg-surface-muted text-text-secondary',
+                          )}
+                        >
+                          {tTransport(`transport.${node.transportLayer}`)}
+                        </span>
+                        {node.showFrist3wt ? (
+                          <span
+                            data-testid="inline-cascade-frist-chip"
+                            className="inline-flex items-center rounded-md bg-surface-muted px-1.5 py-0.5 text-xs font-medium text-text-secondary"
+                          >
+                            {tTransport('transport.frist_3wt')}
+                          </span>
+                        ) : null}
+                        {node.zukunft ? (
+                          <span
+                            data-testid="inline-cascade-zukunft-chip"
+                            title={tTransport('zukunft_hint')}
+                            className="inline-flex items-center rounded-md bg-surface-muted px-1.5 py-0.5 text-xs font-medium text-text-secondary"
+                          >
+                            {tTransport('zukunft_label')}
+                            <span className="sr-only">
+                              {' '}
+                              {tTransport('zukunft_hint')}
+                            </span>
+                          </span>
+                        ) : null}
+                      </div>
                       {/* Decision A: the per-step eID-confirm affordance. */}
                       {isEidGate ? (
                         <div className="ml-9 mt-1 flex flex-col gap-1">
@@ -549,6 +739,19 @@ export function InlineCascade({
         </Link>
       </div>
 
+      {/* Spec § 9 / § 11: each FIT-Connect receipt panel OWNS its own aria-live
+       * region → rendered OUTSIDE the cascade's aria-live region (mirror of the
+       * ValueReceiptCard separation, C7). One panel per Block-D row that the
+       * user has eID-confirmed, in A→D→B order. */}
+      {fitConnectPanels.map((panel) => (
+        <FitConnectReceiptPanel
+          key={panel.behoerdeId}
+          receipt={panel.receipt}
+          behoerdeName={panel.behoerdeName}
+          variant="live"
+        />
+      ))}
+
       {/* C7: receipt OWNS its own aria-live region → rendered OUTSIDE ours. */}
       {receipt ? (
         <div ref={receiptCardRef} data-testid="inline-cascade-receipt">
@@ -556,8 +759,20 @@ export function InlineCascade({
         </div>
       ) : null}
 
-      {/* C3: the [MOCK] disclaimer travels with the inline beat. */}
-      <p className="text-xs text-text-muted">{t('disclaimer')}</p>
+      {/* Spec § 5.3 / § 10.3: the long legal-realism disclaimer, ONCE at the
+       * cascade foot, whenever FIT-Connect chips are present. Replaces the short
+       * [MOCK] line in that case (the long text subsumes it). */}
+      {hasFitConnectChips ? (
+        <p
+          data-testid="inline-cascade-disclaimer-long"
+          className="text-xs text-text-muted"
+        >
+          {tTransport('disclaimer_long')}
+        </p>
+      ) : (
+        /* C3: the short [MOCK] disclaimer travels with the inline beat. */
+        <p className="text-xs text-text-muted">{t('disclaimer')}</p>
+      )}
     </div>
   );
 }
