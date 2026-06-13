@@ -112,7 +112,8 @@ export const BLOCK_A: BlockAEntry[] = [
     behoerdeId: 'buergeramt-berlin-mitte',
     // D0 — §17 BMG; Wohnungsgeberbestätigung §19 BMG als erfüllte Voraussetzung (D4).
     aktion: 'Anmeldung neuer Wohnort nach § 17 BMG',
-    rechtsgrundlage: '§ 17 Abs. 1 BMG (Voraussetzung: § 19 BMG erfüllt)',
+    rechtsgrundlage:
+      '§ 17 Abs. 1 BMG (Voraussetzung: § 19 BMG erfüllt); Übermittlung BMeldDigiV § 9/§ 10, Transport § 2 BMeldDigiV (OSCI-XMeld)',
     agentLabel: 'Wir melden Sie beim Einwohnermeldeamt an',
     datenkategorien: ['neue_anschrift', 'einzugsdatum', 'familienstand'],
     latencyMs: 900,
@@ -127,10 +128,32 @@ export const BLOCK_A: BlockAEntry[] = [
     },
   },
   {
+    // § 33 BMG — Rückmeldung zwischen Meldebehörden (Zuzugs-MB ↔ bisherige MB).
+    // OSCI-XMeld (rueckmeldung.anmeldunginland.0201), NICHT FIT-Connect (Domain
+    // § 5 Layer B). Statutarische ≤-3-Werktage-Schleife — KEINE Echtzeit-
+    // Kopplung behaupten (Domain § 7). behoerdeId siehe behoerden.json.
+    behoerdeId: 'meldebehoerde-rueckmeldung',
+    aktion: 'Rückmeldung an die bisherige Meldebehörde (§ 33 BMG)',
+    rechtsgrundlage:
+      '§ 33 BMG (OSCI-XMeld rueckmeldung.anmeldunginland.0201, spätestens 3 Werktage)',
+    agentLabel:
+      'Wir lösen die gesetzliche Rückmeldung an Ihre bisherige Meldebehörde aus',
+    datenkategorien: ['neue_anschrift', 'wegzugsdatum'],
+    latencyMs: 1000,
+    briefTemplate: {
+      absender: 'Bürgeramt — Meldebehörde (Zuzug)\n[MOCK – Verwaltungsdemo]',
+      betreffTemplate:
+        'Rückmeldung an die bisherige Meldebehörde nach § 33 BMG — {az}',
+      floskel:
+        'im Rahmen Ihrer Anmeldung wurde die gesetzliche Rückmeldung an Ihre bisherige Meldebehörde ausgelöst (§ 33 BMG). Die Übermittlung erfolgt im Format OSCI-XMeld (Nachricht „rueckmeldung.anmeldunginland.0201") und ist spätestens innerhalb von drei Werktagen abzuschließen.',
+      abschluss: 'Mit freundlichen Grüßen\nIm Auftrag\nMeldebehörde',
+    },
+  },
+  {
     // D1 — Wohnsitz-Finanzamt (§ 19 AO), NICHT Körperschaften-FA. §39 AO entfernt.
     behoerdeId: 'finanzamt-berlin-mitte-tiergarten',
     aktion: 'Mitteilung örtliche Zuständigkeit nach § 19 AO',
-    rechtsgrundlage: '§ 19 AO i.V.m. § 36 BMG',
+    rechtsgrundlage: '§ 19 AO i.V.m. § 36 BMG i.V.m. MeldDÜV',
     agentLabel: 'Wir melden Ihre neue Anschrift an Ihr Wohnsitz-Finanzamt',
     datenkategorien: ['neue_anschrift', 'steuer_id'],
     latencyMs: 1400,
@@ -147,8 +170,8 @@ export const BLOCK_A: BlockAEntry[] = [
   {
     // D7 — Beitragsservice = Vorzeige-Beat (nur Anschrift+Einzugsdatum+Beitragsnr.).
     behoerdeId: 'beitragsservice-koeln',
-    aktion: 'Adressänderung Beitragskonto nach § 11 Abs. 4 RBStV',
-    rechtsgrundlage: '§ 11 Abs. 4 RBStV i.V.m. § 36 BMG',
+    aktion: 'Adressänderung Beitragskonto (Meldedatenübermittlung)',
+    rechtsgrundlage: '§ 36 BMG i.V.m. MeldDÜV (vgl. § 11 Abs. 5 RBStV)',
     agentLabel: 'Wir melden Ihre neue Anschrift dem Beitragsservice',
     datenkategorien: ['neue_anschrift', 'einzugsdatum', 'beitragsnummer'],
     latencyMs: 1100,
@@ -163,8 +186,9 @@ export const BLOCK_A: BlockAEntry[] = [
   },
   {
     behoerdeId: 'bundesdruckerei',
-    aktion: 'Beauftragung Personalausweis-Adressaufkleber nach § 28 PAuswG',
-    rechtsgrundlage: '§ 28 PAuswG',
+    aktion:
+      'Beauftragung Personalausweis-Adressaufkleber (Personalausweisbehörde)',
+    rechtsgrundlage: '§ 19 PAuswV (Personalausweisbehörde)',
     agentLabel: 'Wir beauftragen den Adressaufkleber für Ihren Personalausweis',
     datenkategorien: ['neue_anschrift'],
     latencyMs: 1700,
@@ -172,7 +196,7 @@ export const BLOCK_A: BlockAEntry[] = [
       absender: 'Bundesdruckerei GmbH\nKommandantenstraße 18, 10969 Berlin',
       betreffTemplate: 'Versandbestätigung Adressaufkleber Personalausweis — Auftrag {az}',
       floskel:
-        'in oben genannter Angelegenheit bestätigen wir, dass der Adressaufkleber für Ihren Personalausweis nach § 28 PAuswG hergestellt und versendet wurde. Sie erhalten den Aufkleber innerhalb der nächsten 5–10 Werktage.',
+        'in oben genannter Angelegenheit bestätigen wir, dass der Adressaufkleber für Ihren Personalausweis (§ 19 PAuswV) hergestellt und versendet wurde. Sie erhalten den Aufkleber innerhalb der nächsten 5–10 Werktage.',
       abschluss: 'Mit freundlichen Grüßen\nBundesdruckerei GmbH',
     },
   },

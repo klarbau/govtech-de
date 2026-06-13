@@ -22,6 +22,26 @@
     "bundid_postfach_anbindung": "in_pilotierung"
   },
   {
+    "id": "meldebehoerde-rueckmeldung",
+    "name_de": "[MOCK] Meldebehörde (Rückmeldung Wegzug)",
+    "kategorie": "kommune",
+    "zustaendige_themen": [
+      "meldewesen",
+      "rueckmeldung"
+    ],
+    "adresse": {
+      "strasse": "—",
+      "hausnummer": "—",
+      "plz": "00000",
+      "ort": "—",
+      "land": "DE"
+    },
+    "online": {
+      "supports_eudi": false
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
+  },
+  {
     "id": "finanzamt-koerperschaften-i-berlin",
     "name_de": "Finanzamt für Körperschaften I Berlin",
     "kategorie": "land",
