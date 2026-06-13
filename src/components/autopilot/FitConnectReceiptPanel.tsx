@@ -52,9 +52,6 @@ export function FitConnectReceiptPanel({
         className,
       )}
     >
-      {/* sr-only single announce of the panel's appearance. */}
-      <span className="sr-only">{t('live_region_label')}</span>
-
       <header className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <span
@@ -79,16 +76,21 @@ export function FitConnectReceiptPanel({
         <BehoerdenBadge name={behoerdeName} />
       </div>
 
-      <dl className="flex flex-col gap-1.5 text-xs">
+      {/* Label:value rows. NOT a <dl>: the rows are interleaved with free-text
+       * honesty/warning notes (leika-unconfirmed under Leistung, loa_honesty
+       * under Vertrauensniveau), which a definition list cannot contain as
+       * direct children. Plain semantic div/span rows keep the same visual
+       * layout + label styling while staying valid HTML (axe 1.3.1). */}
+      <div className="flex flex-col gap-1.5 text-xs">
         {/* Leistung (LeiKa) — placeholder, with the not-catalogue-confirmed warn. */}
         <div className="flex flex-col gap-0.5">
           <div className="flex flex-wrap items-baseline gap-x-2">
-            <dt className="font-medium text-text-secondary">
+            <span className="font-medium text-text-secondary">
               {t('leistung_label')}
-            </dt>
-            <dd className="min-w-0 break-all font-mono text-text-primary">
+            </span>
+            <span className="min-w-0 break-all font-mono text-text-primary">
               {receipt.metadataPreview.publicServiceIdentifier}
-            </dd>
+            </span>
           </div>
           {!receipt.routing.leikaKeyConfirmed ? (
             <p className="flex items-center gap-1 text-text-secondary">
@@ -101,18 +103,20 @@ export function FitConnectReceiptPanel({
         {/* Vertrauensniveau (eIDAS LoA) + honesty line. */}
         <div className="flex flex-col gap-0.5">
           <div className="flex flex-wrap items-baseline gap-x-2">
-            <dt className="font-medium text-text-secondary">{t('loa_label')}</dt>
-            <dd className="text-text-primary">{t('loa_high')}</dd>
+            <span className="font-medium text-text-secondary">
+              {t('loa_label')}
+            </span>
+            <span className="text-text-primary">{t('loa_high')}</span>
           </div>
           <p className="text-text-muted">{t('loa_honesty')}</p>
         </div>
 
         {/* Schema — valid/invalid. */}
         <div className="flex flex-wrap items-baseline gap-x-2">
-          <dt className="font-medium text-text-secondary">
+          <span className="font-medium text-text-secondary">
             {t('schema_label')}
-          </dt>
-          <dd className="flex items-center gap-1.5 text-text-primary">
+          </span>
+          <span className="flex items-center gap-1.5 text-text-primary">
             <span>{t('schema_value')}</span>
             {schemaOk ? (
               <span className="inline-flex items-center gap-1 font-medium text-success">
@@ -125,18 +129,18 @@ export function FitConnectReceiptPanel({
                 {t('schema_invalid')}
               </span>
             )}
-          </dd>
+          </span>
         </div>
 
         {/* Verschlüsselung. */}
         <div className="flex flex-wrap items-baseline gap-x-2">
-          <dt className="flex items-center gap-1 font-medium text-text-secondary">
+          <span className="flex items-center gap-1 font-medium text-text-secondary">
             <Lock className="size-3.5" aria-hidden="true" />
             {t('encryption_label')}
-          </dt>
-          <dd className="text-text-primary">{t('encryption_value')}</dd>
+          </span>
+          <span className="text-text-primary">{t('encryption_value')}</span>
         </div>
-      </dl>
+      </div>
 
       {/* JWE Compact excerpt — scrollable, focusable region (axe scrollable-region-focusable). */}
       <figure className="flex flex-col gap-1">
@@ -154,25 +158,25 @@ export function FitConnectReceiptPanel({
         </pre>
       </figure>
 
-      {/* Tier-2-only fields. */}
+      {/* Tier-2-only fields. Plain div/span rows (same rationale as above). */}
       {isTier2 ? (
-        <dl className="flex flex-col gap-1 border-t border-border pt-2 text-xs">
+        <div className="flex flex-col gap-1 border-t border-border pt-2 text-xs">
           {receipt.submissionId ? (
             <div className="flex flex-wrap items-baseline gap-x-2">
-              <dt className="font-medium text-text-secondary">
+              <span className="font-medium text-text-secondary">
                 {t('submission_id_label')}
-              </dt>
-              <dd className="min-w-0 break-all font-mono text-text-primary">
+              </span>
+              <span className="min-w-0 break-all font-mono text-text-primary">
                 {receipt.submissionId}
-              </dd>
+              </span>
             </div>
           ) : null}
           {receipt.status ? (
             <div className="flex flex-wrap items-baseline gap-x-2">
-              <dt className="font-medium text-text-secondary">
+              <span className="font-medium text-text-secondary">
                 {t('status_label')}
-              </dt>
-              <dd
+              </span>
+              <span
                 className={cn(
                   'font-medium',
                   receipt.status === 'error'
@@ -181,10 +185,10 @@ export function FitConnectReceiptPanel({
                 )}
               >
                 {t(`status.${receipt.status}`)}
-              </dd>
+              </span>
             </div>
           ) : null}
-        </dl>
+        </div>
       ) : (
         <p className="text-xs text-text-muted">{t('tier1_offline_note')}</p>
       )}

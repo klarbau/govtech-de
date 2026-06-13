@@ -273,18 +273,20 @@ test.describe('SPINE — assistant → autopilot → posteingang (demo-shipped g
       });
     }
 
-    // The four Block-A Behörden cascade cards progress to "Abgeschlossen" — the
+    // The five Block-A Behörden cascade cards progress to "Abgeschlossen" — the
     // redesign's `statusLabel('confirmed')` label, the equivalent of the old
-    // "bestätigt". Reliable mode guarantees no random failure, so all four
-    // resolve. Scope strictly to `.cascade-cards .cas-card .badge`: "Abgeschlossen"
+    // "bestätigt". Reliable mode guarantees no random failure, so all five
+    // resolve. (Block-A gained the § 33 BMG MB↔MB-Rückmeldung row in
+    // feat/fit-connect-cascade-realism, taking the auto-confirmed count 4 → 5.)
+    // Scope strictly to `.cascade-cards .cas-card .badge`: "Abgeschlossen"
     // ALSO appears in the hero badge and the Live-Aktivitäten feed rows, so a
-    // page-wide matcher would over-count. The 5th card (first Block-D step) may
-    // remain in_progress/pending, so we assert exactly 4 confirmed.
+    // page-wide matcher would over-count. The 6th card (first Block-D step) may
+    // remain in_progress/pending, so we assert exactly 5 confirmed.
     await expect(
       page.locator('.cascade-cards .cas-card .badge', {
         hasText: 'Abgeschlossen',
       }),
-    ).toHaveCount(4, { timeout: 30_000 });
+    ).toHaveCount(5, { timeout: 30_000 });
 
     // The Finanzamt + Beitragsservice cards render (scoped to the cascade so the
     // Übersicht auth-list / Live-feed copies don't satisfy the assertion).

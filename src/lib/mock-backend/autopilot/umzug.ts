@@ -466,38 +466,46 @@ function emitStammdatenLogForCascadeStep(opts: {
     return 'stammdaten.aktivitaet.zweck.adressuebermittlung_buergeramt_finanzamt';
   })();
 
-  // Normen verbatim aus docs/domain/umzug-konvenienz-und-normen.md §2 (D1–D6).
+  // Normen verbatim aus den BLOCK_A/B/D-Einträgen (Part A) — der Log MUSS
+  // dieselbe Rechtsgrundlage je Empfänger zeigen wie die Kaskaden-Zeile, sonst
+  // widerspricht der Stammdaten-Übermittlungs-Log (RechtsgrundlageTag) der
+  // Kaskade nach einem Lauf. Strings 1:1 zu BLOCK_A/B/D gehalten.
   const rechtsgrundlage = (() => {
     if (empfaengerBehoerdeId === 'beitragsservice-koeln') {
-      return '§ 11 Abs. 4 RBStV i.V.m. § 36 BMG';
+      // BLOCK_A beitragsservice-koeln.
+      return '§ 36 BMG i.V.m. MeldDÜV (vgl. § 11 Abs. 5 RBStV)';
     }
     if (
       empfaengerBehoerdeId.startsWith('aok-') ||
       empfaengerBehoerdeId === 'tk-hamburg'
     ) {
-      // D3 — §28a SGB IV (Arbeitgeberpflicht) entfernt; eine Basis: lit. a + §206 SGB V.
+      // BLOCK_B aok-nordost — D3: §28a SGB IV (Arbeitgeberpflicht) entfernt;
+      // eine Basis: lit. a + §206 SGB V.
       return 'Art. 6 Abs. 1 lit. a DSGVO i.V.m. § 206 SGB V';
     }
     if (empfaengerBehoerdeId.startsWith('finanzamt-')) {
-      // D1 — Wohnsitz-FA §19 AO; §139b AO nur für IdNr-Unveränderlichkeit.
-      return '§ 19 AO i.V.m. § 36 BMG';
+      // BLOCK_A finanzamt-berlin-mitte-tiergarten — D1: Wohnsitz-FA §19 AO.
+      return '§ 19 AO i.V.m. § 36 BMG i.V.m. MeldDÜV';
     }
     if (empfaengerBehoerdeId === 'arbeitgeber-mittelstand-software') {
-      // D6 — privatrechtlich.
-      return 'Art. 6 Abs. 1 lit. b DSGVO';
+      // BLOCK_B arbeitgeber — D6: privatrechtlich.
+      return 'Art. 6 Abs. 1 lit. b DSGVO — Durchführung des Arbeitsverhältnisses';
     }
     if (empfaengerBehoerdeId === 'bundesdruckerei') {
-      return '§ 28 PAuswG';
+      // BLOCK_A bundesdruckerei — Personalausweis-Adressaufkleber.
+      return '§ 19 PAuswV (Personalausweisbehörde)';
     }
     if (empfaengerBehoerdeId === 'kfz-berlin-labo') {
-      return '§ 15 FZV';
+      // BLOCK_D kfz-berlin-labo.
+      return '§ 15 FZV + § 18 PAuswG eID';
     }
     if (empfaengerBehoerdeId === 'abh-berlin-lea') {
-      // D2 — §86/§87 AufenthG entfernt; eID-Basis §18 PAuswG.
+      // BLOCK_D abh-berlin-lea — D2: §86/§87 AufenthG entfernt; eID-Basis §18 PAuswG.
       return '§ 18 PAuswG';
     }
     if (empfaengerBehoerdeId.startsWith('familienkasse-')) {
-      return '§§ 67/68 EStG + § 36 BMG';
+      // BLOCK_D familienkasse-berlin-brandenburg.
+      return '§§ 67/68 EStG + § 18 PAuswG eID';
     }
     return '§ 36 BMG';
   })();
