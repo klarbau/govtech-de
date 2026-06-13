@@ -539,10 +539,12 @@ test('DEMO - Umzug-Autopilot walkthrough (Anna)', async ({ page }) => {
   await still(page, 'intro', { chrome: true });
   await fadeOverlayOut(page);
 
-  /* ── Szene 1 — Dashboard: „Heute zu tun" + der Umzug-Anstoß ─────────────── */
+  /* ── Szene 1 — Dashboard: „Was heute Ihre Aufmerksamkeit braucht" + der Umzug-Anstoß ─ */
   await page.mouse.move(cursor.x, cursor.y); // reveal the cursor
   await beat(page, 700);
-  const heuteZuTun = page.getByRole('heading', { name: 'Heute zu tun' });
+  const heuteZuTun = page.getByRole('heading', {
+    name: 'Was heute Ihre Aufmerksamkeit braucht',
+  });
   await expect(heuteZuTun).toBeVisible();
   await caption(page, 'Dashboard', 'Nicht alles auf einmal — sondern was heute zählt.');
   await focusOn(page, heuteZuTun);

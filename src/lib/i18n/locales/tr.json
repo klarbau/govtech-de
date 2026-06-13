@@ -347,7 +347,7 @@
       "vorgang_abgeschlossen": "işlem tamamlandı"
     },
     "heute": {
-      "titel": "Bugün yapılacaklar",
+      "titel": "Bugün dikkatinizi gerektirenler",
       "tab_ki": "Yapay Zekâ",
       "tab_frist": "Süre",
       "tab_behoerde": "Makam",
@@ -358,18 +358,50 @@
       "snooze": "Daha sonra hatırlat",
       "snooze_days": "{days} gün ertelendi",
       "actions_label": "{titel} için işlemler",
-      "sort_aria": "Eylem önerilerinin sıralaması"
+      "sort_aria": "Eylem önerilerinin sıralaması",
+      "frist_bald": "Süre yaklaşıyor",
+      "frist_am": "Son tarih: {datum}"
     },
     "triumph": {
       "title": "Sizin için halledildi",
       "subtitle": "Taşınma {count} kuruma bildirildi — hiçbir şey yapmanıza gerek kalmadı.",
       "zeitersparnis": "yaklaşık {min} dk kazanıldı",
       "link": "İşlemi görüntüle",
-      "gerade_eben": "az önce"
+      "gerade_eben": "az önce",
+      "koordiniert": "Taşınmanız sizin için koordine edildi",
+      "body": "Yeni adresiniz birçok makama iletildi. Başka bir şey yapmanıza gerek yok.",
+      "badge_abgeschlossen": "Tamamlandı",
+      "zeit_label": "Kazanılan zaman",
+      "std_value": "yaklaşık {hours} saat",
+      "min_value": "yaklaşık {min} dk",
+      "zeit_caption": "tek tek bildirime kıyasla",
+      "stellen_label": "Bilgilendirilen makamlar",
+      "stellen_caption": "Daireler ve kurumlar"
     },
     "erledigt_feed": {
       "title": "Sizin için otomatik halledildi",
-      "empty": "Henüz otomatik olarak hiçbir şey halledilmedi."
+      "empty": "Henüz otomatik olarak hiçbir şey halledilmedi.",
+      "alle_schritte": "Tüm adımları göster",
+      "termin_pending": "Randevu onayı gerekli",
+      "termin_bestaetigen": "Randevuyu onayla"
+    },
+    "tiles": {
+      "posteingang_sub": "Yeni mesajlar",
+      "posteingang_cta": "Gelen kutusuna git",
+      "fristen_sub": "Önümüzdeki 14 gündeki süreler",
+      "fristen_cta": "Süreleri görüntüle",
+      "termine_sub": "Sonraki randevu: {datum}",
+      "termine_cta": "Tüm randevular",
+      "vorgaenge_sub": "İşlemde",
+      "vorgaenge_cta": "İşlemleri görüntüle"
+    },
+    "kontrolle": {
+      "title": "Kontrol sizde",
+      "subtitle": "Kimin neyi alacağına siz karar verirsiniz — güvenli ve şeffaf.",
+      "punkt_einwilligung": "Özel alıcılara yalnızca onayınızla",
+      "punkt_eid": "Hassas adım yalnızca eID onayıyla",
+      "punkt_rechtsgrundlage": "Hukuki dayanak olmadan veri yok",
+      "mehr": "Veri koruması hakkında daha fazlası"
     },
     "achievement": {
       "jahr": "Bu yıl sizin için {count} işlem halledildi"
@@ -2960,7 +2992,11 @@
     "status": {
       "live": "kullanılabilir",
       "demnaechst": "yakında"
-    }
+    },
+    "lebenslagen_titel": "Yaşam durumları / Autopilot kataloğu",
+    "alle_lebenslagen": "Tüm yaşam durumlarını görüntüle",
+    "behoerden_count": "yaklaşık {count} kurum",
+    "zeit_gespart": "yaklaşık {min} dk kazanıldı"
   },
   "orchestration": {
     "mock_tag": "[MOCK]",

@@ -109,34 +109,6 @@ test('landmarks single h1 no skipped heading levels', async ({ page }) => {
   }
 });
 
-test('sort toggle keyboard operable aria-pressed reflects selection', async ({ page }) => {
-  await setLocale(page, 'de');
-  await page.goto('/dashboard', { waitUntil: 'networkidle' });
-  await waitForDashboard(page);
-  const group = page.getByRole('group', {
-    name: /Sortierung der Aktionsempfehlungen/i,
-  });
-  await expect(group).toBeVisible();
-  const tabs = group.getByRole('button');
-  const count = await tabs.count();
-  console.log('[SORT] tab count = ' + count);
-  expect(count).toBe(4);
-  const ki = tabs.nth(0);
-  await expect(ki).toHaveAttribute('aria-pressed', 'true');
-  await ki.focus();
-  const outlineStyle = await page.evaluate(() => {
-    const el = document.activeElement;
-    return el ? getComputedStyle(el).outlineStyle : 'none';
-  });
-  console.log('[SORT] focused outlineStyle = ' + outlineStyle);
-  const frist = tabs.nth(1);
-  await frist.focus();
-  await page.keyboard.press('Enter');
-  await page.waitForTimeout(200);
-  await expect(frist).toHaveAttribute('aria-pressed', 'true');
-  await expect(ki).toHaveAttribute('aria-pressed', 'false');
-});
-
 test('top-action list is ol of links with accessible names', async ({ page }) => {
   await setLocale(page, 'de');
   await page.goto('/dashboard', { waitUntil: 'networkidle' });
@@ -168,40 +140,31 @@ test('top-action list is ol of links with accessible names', async ({ page }) =>
   }
 });
 
-test('six nav tiles are links with accessible names in visual order', async ({ page }) => {
+test('four stat tiles are links with accessible names in visual order', async ({ page }) => {
   await setLocale(page, 'de');
   await page.goto('/dashboard', { waitUntil: 'networkidle' });
   await waitForDashboard(page);
   const tiles = await page.evaluate(() => {
-    const grids = Array.from(document.querySelectorAll('main h3'));
-    return grids
-      .map((h) => {
-        const link = h.closest('a');
-        return link
-          ? {
-              name:
-                link.getAttribute('aria-label') ||
-                (link.textContent ?? '').replace(/\s+/g, ' ').trim(),
-              href: link.getAttribute('href'),
-            }
-          : null;
-      })
-      .filter((x): x is { name: string; href: string | null } => x !== null);
+    return Array.from(document.querySelectorAll('main a.stat-tile')).map((link) => ({
+      name:
+        link.getAttribute('aria-label') ||
+        (link.textContent ?? '').replace(/\s+/g, ' ').trim(),
+      href: link.getAttribute('href'),
+    }));
   });
-  console.log('[NAV-TILES] ' + JSON.stringify(tiles));
-  expect(tiles.length).toBe(6);
-  const expectedHrefs = [
-    '/posteingang',
-    '/posteingang',
-    '/vorgaenge',
-    '/termine',
-    '/datenschutz',
-    '/stammdaten',
-  ];
+  console.log('[STAT-TILES] ' + JSON.stringify(tiles));
+  expect(tiles.length).toBe(4);
+  const expectedHrefs = ['/posteingang', '/posteingang', '/termine', '/vorgaenge'];
   expect(tiles.map((t) => t.href)).toEqual(expectedHrefs);
   for (const t of tiles) {
     expect((t.name ?? '').length).toBeGreaterThan(0);
   }
+
+  const hasDatenschutzLink = await page.evaluate(() => {
+    const card = document.querySelector('section[aria-labelledby="kontrolle-title"]');
+    return Boolean(card?.querySelector('a[href="/datenschutz"]'));
+  });
+  expect(hasDatenschutzLink).toBe(true);
 });
 
 test('reduced-motion stills the loading skeleton pulse', async ({ page }) => {

@@ -347,7 +347,7 @@
       "vorgang_abgeschlossen": "case completed"
     },
     "heute": {
-      "titel": "To do today",
+      "titel": "What needs your attention today",
       "tab_ki": "AI",
       "tab_frist": "Deadline",
       "tab_behoerde": "Authority",
@@ -358,18 +358,50 @@
       "snooze": "Remind me later",
       "snooze_days": "Postponed by {days} days",
       "actions_label": "Actions for {titel}",
-      "sort_aria": "Sort order of action recommendations"
+      "sort_aria": "Sort order of action recommendations",
+      "frist_bald": "Deadline soon",
+      "frist_am": "Deadline: {datum}"
     },
     "triumph": {
       "title": "Done for you",
       "subtitle": "Move reported to {count} authorities — you didn't have to do anything.",
       "zeitersparnis": "approx. {min} min saved",
       "link": "View case",
-      "gerade_eben": "just now"
+      "gerade_eben": "just now",
+      "koordiniert": "Your move has been coordinated for you",
+      "body": "Your new address has been sent to several offices. There's nothing more for you to do.",
+      "badge_abgeschlossen": "Completed",
+      "zeit_label": "Time saved",
+      "std_value": "approx. {hours} hrs",
+      "min_value": "approx. {min} min",
+      "zeit_caption": "compared to filing individually",
+      "stellen_label": "Offices informed",
+      "stellen_caption": "Authorities & institutions"
     },
     "erledigt_feed": {
       "title": "Done automatically for you",
-      "empty": "Nothing done automatically yet."
+      "empty": "Nothing done automatically yet.",
+      "alle_schritte": "Show all steps",
+      "termin_pending": "Appointment confirmation required",
+      "termin_bestaetigen": "Confirm appointment"
+    },
+    "tiles": {
+      "posteingang_sub": "New messages",
+      "posteingang_cta": "Go to inbox",
+      "fristen_sub": "Deadlines within the next 14 days",
+      "fristen_cta": "View deadlines",
+      "termine_sub": "Next appointment: {datum}",
+      "termine_cta": "All appointments",
+      "vorgaenge_sub": "In progress",
+      "vorgaenge_cta": "View cases"
+    },
+    "kontrolle": {
+      "title": "Your control",
+      "subtitle": "You decide who receives what — securely and transparently.",
+      "punkt_einwilligung": "Private recipients only with your consent",
+      "punkt_eid": "Sensitive steps only with eID confirmation",
+      "punkt_rechtsgrundlage": "No data without a legal basis",
+      "mehr": "More about data protection"
     },
     "achievement": {
       "jahr": "{count} cases handled for you this year"
@@ -2960,7 +2992,11 @@
     "status": {
       "live": "available",
       "demnaechst": "coming soon"
-    }
+    },
+    "lebenslagen_titel": "Life situations / Autopilot catalogue",
+    "alle_lebenslagen": "View all life situations",
+    "behoerden_count": "approx. {count} authorities",
+    "zeit_gespart": "approx. {min} min saved"
   },
   "orchestration": {
     "mock_tag": "[MOCK]",
