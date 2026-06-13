@@ -1,0 +1,9 @@
+{
+  "_comment": "[MOCK destination] — synthetic, public-only RSA-4096 JWK used as the Tier-1 JWE recipient key. There is NO private material here (no `d`/`p`/`q`), so this is safe to commit and addresses no real Behörde. Spec § 6.2/§ 13.2 #4. Generated once via jose generateKeyPair('RSA-OAEP-256',{modulusLength:4096}); the matching private key was discarded.",
+  "kty": "RSA",
+  "n": "m-YOGVvCGB72MaSylq7WPC6eVZraJ5yEj35OK7T6K8REGMG7daKWcLqUeWi-1n5DyF2WP_G4F8Q1qnYTmt9dW13l0AYMcK_xGgttQAk_BeF24M5L21AjaDV49VLDGaVYmpSZpJDPkBjC5aWwKQCbtJWB0Bkr8ub_0MP1iZeLwYzVNkMs5sMzPXmVVacsOpygteZhl5dl9nMRfq7jCFXJ3kxDhnwdXIVi8l5mQ-FLhcUnIkybcpohCQMfFr4W8NcLmKARIM-MlavN-8373IGJKca05qxIJJo0xn6FN8FR4Je50gmNhJlOMbZuw6tcdpR3Vpz_nfsRwOdJNT3bLHETZMt-asaVmrYrP04Fu0sRCIny0MYToAZGVKbtZRM_d0jayVBSQQosT4MKjqPsUiUkkUKhbGuNclkgh9oGdDeDeEvhl8l-39VQH9-0doEv2POVPUPV_JhtaS3Rgj84m_9ZGblviiZEaSFjrd826GvO3sTFWZXmjt0IjltnHDji1Wpesv4rwCE85-XkoDkzo8tKF2J64CjVQQxn_H7IC5VlBLS32aOnDnS5sYkqGLnu9mGJfo3POxYAZkSW4eFkVDJ6pwKb6v0F6VRj-W_KKyi9FCPFmxt3CtLo19P36qMKeLnCzcQwXLIIEhuWHsvFnxM8BaTiH0zYVzsgu_wfbJSbJO0",
+  "e": "AQAB",
+  "alg": "RSA-OAEP-256",
+  "use": "enc",
+  "kid": "mock-destination-tier1"
+}
