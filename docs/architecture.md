@@ -302,6 +302,8 @@ Seed-richness note (2026-05-28): the 6 redesign screens (Dashboard, Vorgänge, T
 
 AI additions: read-only tool `preview_umzug` (proposes Umzug params without writing) feeding a confirm-gated UI flow — `starte_umzug` (irreversible) fires only after the user clicks; the gate is structural (`requiresConfirmation()` in `lib/ai/tool-schemas.ts`), not prompt-only. Separate one-shot surface `POST /api/dashboard/top-actions` (`prioritize_top_actions`) ranks the dashboard "Heute zu tun" list, with a deterministic Frist-fallback when no API key is present.
 
+Autopilot-Katalog teaser fields (2026-06-13): `AutopilotKatalogEntry` (`src/types/value-receipt.ts`, served by `api.getAutopilotKatalog`) gained two required `ca.`-teaser estimates — `behoerden_count` and `geschaetzte_zeitersparnis_min` — for the dashboard catalog preview cards; these are intentionally distinct from the realized `ValueReceipt` numbers of a completed run and are always rendered with „ca.".
+
 ## Update protocol
 
 When any of the following change, this file must be updated by the responsible agent in the same review pass:

@@ -347,7 +347,7 @@
       "vorgang_abgeschlossen": "Vorgang abgeschlossen"
     },
     "heute": {
-      "titel": "Heute zu tun",
+      "titel": "Was heute Ihre Aufmerksamkeit braucht",
       "sort_aria": "Sortierung der Aktionsempfehlungen",
       "tab_ki": "KI",
       "tab_frist": "Frist",
@@ -358,18 +358,50 @@
       "done": "Erledigt",
       "snooze": "Später erinnern",
       "snooze_days": "Um {days} Tage verschoben",
-      "actions_label": "Aktionen für {titel}"
+      "actions_label": "Aktionen für {titel}",
+      "frist_bald": "Frist bald",
+      "frist_am": "Frist: {datum}"
     },
     "triumph": {
       "title": "Erledigt für Sie",
       "subtitle": "Umzug an {count} Behörden gemeldet — Sie mussten nichts tun.",
       "zeitersparnis": "ca. {min} Min gespart",
       "link": "Vorgang ansehen",
-      "gerade_eben": "gerade eben"
+      "gerade_eben": "gerade eben",
+      "koordiniert": "Umzug wurde für Sie koordiniert",
+      "body": "Ihre neue Adresse wurde an mehrere Stellen übermittelt. Sie müssen nichts weiter tun.",
+      "badge_abgeschlossen": "Abgeschlossen",
+      "zeit_label": "Zeit gespart",
+      "std_value": "ca. {hours} Std.",
+      "min_value": "ca. {min} Min.",
+      "zeit_caption": "gegenüber Einzelmeldungen",
+      "stellen_label": "Informierte Stellen",
+      "stellen_caption": "Ämter & Institutionen"
     },
     "erledigt_feed": {
       "title": "Automatisch erledigt für Sie",
-      "empty": "Noch nichts automatisch erledigt."
+      "empty": "Noch nichts automatisch erledigt.",
+      "alle_schritte": "Alle Schritte anzeigen",
+      "termin_pending": "Terminbestätigung erforderlich",
+      "termin_bestaetigen": "Termin bestätigen"
+    },
+    "tiles": {
+      "posteingang_sub": "Neue Nachrichten",
+      "posteingang_cta": "Zum Posteingang",
+      "fristen_sub": "Fristen in den nächsten 14 Tagen",
+      "fristen_cta": "Fristen ansehen",
+      "termine_sub": "Nächster Termin: {datum}",
+      "termine_cta": "Alle Termine",
+      "vorgaenge_sub": "In Bearbeitung",
+      "vorgaenge_cta": "Vorgänge ansehen"
+    },
+    "kontrolle": {
+      "title": "Ihre Kontrolle",
+      "subtitle": "Sie entscheiden, wer was erhält – sicher und transparent.",
+      "punkt_einwilligung": "Private Empfänger nur mit Einwilligung",
+      "punkt_eid": "Sensibler Schritt nur mit eID-Bestätigung",
+      "punkt_rechtsgrundlage": "Keine Daten ohne Rechtsgrundlage",
+      "mehr": "Mehr zum Datenschutz"
     },
     "achievement": {
       "jahr": "{count} Vorgänge dieses Jahr für Sie erledigt"
@@ -3218,6 +3250,10 @@
   "katalog": {
     "titel": "Autopilot-Katalog",
     "untertitel": "Lebenslagen, die der Autopilot für Sie übernimmt.",
+    "lebenslagen_titel": "Lebenslagen / Autopilot-Katalog",
+    "alle_lebenslagen": "Alle Lebenslagen ansehen",
+    "behoerden_count": "ca. {count} Behörden",
+    "zeit_gespart": "ca. {min} Min. gespart",
     "behoerden_label": "Beteiligte Stellen",
     "starten": "Umzug starten",
     "umzug": {

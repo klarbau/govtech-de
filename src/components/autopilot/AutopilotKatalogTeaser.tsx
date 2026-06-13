@@ -3,16 +3,32 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import {
+  Baby,
+  Building2,
+  ChevronRight,
+  Clock,
+  Euro,
+  Home,
+} from 'lucide-react';
 
 import { api } from '@/lib/mock-backend';
 import type { AutopilotKatalogEntry, Behoerde } from '@/types';
 
+const ICON_BY_ID: Record<
+  AutopilotKatalogEntry['id'],
+  { icon: React.ReactNode; tone: string }
+> = {
+  umzug: { icon: <Home aria-hidden="true" />, tone: '' },
+  kindergeburt: { icon: <Baby aria-hidden="true" />, tone: 'green' },
+  steuererklaerung: { icon: <Euro aria-hidden="true" />, tone: 'violet' },
+};
+
 /**
- * `<AutopilotKatalogTeaser>` (§A-katalog) — surfaces `getAutopilotKatalog()`:
- * Umzug `live` (actionable), Kindergeburt/Steuererklärung `demnächst` (disabled),
- * jeweils mit echten Behörden-Namen aus `behoerden.json`. Preview-only — keine
- * Orchestrierung für die „demnächst"-Verticals (Pass-2).
+ * `<AutopilotKatalogTeaser>` (§A-katalog) — rendert die vollständige
+ * „Lebenslagen / Autopilot-Katalog"-Karte aus `getAutopilotKatalog()`. Umzug ist
+ * `live` (Karte verlinkt auf den Start); Kindergeburt/Steuererklärung sind
+ * `demnächst`-Vorschau (Karte verlinkt auf /vorgaenge, dezenter „demnächst"-Chip).
  */
 export function AutopilotKatalogTeaser() {
   const t = useTranslations('katalog');
@@ -44,58 +60,49 @@ export function AutopilotKatalogTeaser() {
   if (entries.length === 0) return null;
 
   return (
-    <section aria-labelledby="katalog-title" className="flex flex-col gap-3">
-      <div>
-        <h2 id="katalog-title" style={{ fontSize: 16, fontWeight: 650 }}>
-          {t('titel')}
-        </h2>
-        <p style={{ fontSize: 13, color: 'var(--ink-3)', marginTop: 2 }}>
-          {t('untertitel')}
-        </p>
+    <section aria-labelledby="katalog-title" className="heute-card">
+      <div className="heute-head">
+        <h2 id="katalog-title">{t('lebenslagen_titel')}</h2>
+        <Link href="/vorgaenge" className="card-head-link">
+          {t('alle_lebenslagen')}
+          <ChevronRight aria-hidden="true" />
+        </Link>
       </div>
 
       <div className="katalog-grid">
         {entries.map((entry) => {
           const isLive = entry.status === 'live';
-          const behoerden = entry.behoerden_preview
-            .map((id) => behoerdenNames[id] ?? id)
-            .join(', ');
+          const href = isLive ? '/vorgaenge/umzug/start' : '/vorgaenge';
           const title = safe(t, `${entry.id}.titel`);
+          const meta = ICON_BY_ID[entry.id];
+          // Single beteiligte Stelle → ihr Kurzname (erstes Wort, z. B.
+          // „Finanzamt"); sonst der konservative „ca. N Behörden"-Zähler.
+          const singleName = behoerdenNames[entry.behoerden_preview[0] ?? ''];
+          const behoerdenMetric =
+            entry.behoerden_count === 1 && singleName
+              ? singleName.split(' ')[0]
+              : t('behoerden_count', { count: entry.behoerden_count });
           return (
-            <div
-              key={entry.id}
-              className={`katalog-card${isLive ? '' : ' demnaechst'}`}
-              aria-label={isLive ? undefined : `${title} – ${t('status.demnaechst')}`}
-            >
+            <Link key={entry.id} href={href} className="katalog-card">
               <div className="kc-head">
-                <span className="kc-title">{title}</span>
-                <span className={`badge ${isLive ? 'green' : 'eagle'}`}>
-                  {isLive ? (
-                    <>
-                      <Sparkles style={{ width: 12, height: 12 }} aria-hidden="true" />
-                      {t('status.live')}
-                    </>
-                  ) : (
-                    t('status.demnaechst')
-                  )}
+                <span className={`icon-circle lg ${meta.tone}`}>{meta.icon}</span>
+                <div className="kc-text">
+                  <div className="kc-title">{title}</div>
+                  <p className="kc-desc">{safe(t, `${entry.id}.beschreibung`)}</p>
+                </div>
+              </div>
+              <div className="kc-meta">
+                <span className="kc-m">
+                  <Building2 aria-hidden="true" />
+                  <span>{behoerdenMetric}</span>
                 </span>
+                <span className="kc-m">
+                  <Clock aria-hidden="true" />
+                  <span>{t('zeit_gespart', { min: entry.geschaetzte_zeitersparnis_min })}</span>
+                </span>
+                <ChevronRight className="kc-chev" aria-hidden="true" />
               </div>
-              <p className="kc-desc">{safe(t, `${entry.id}.beschreibung`)}</p>
-              <div className="kc-behoerden">
-                <span className="kc-bh-label">{t('behoerden_label')}: </span>
-                {behoerden}
-              </div>
-              {isLive ? (
-                <Link
-                  href="/vorgaenge/umzug/start"
-                  className="btn btn-primary btn-sm"
-                  style={{ width: 'fit-content', marginTop: 4 }}
-                >
-                  {t('starten')}
-                  <ArrowRight aria-hidden="true" />
-                </Link>
-              ) : null}
-            </div>
+            </Link>
           );
         })}
       </div>

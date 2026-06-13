@@ -2878,6 +2878,8 @@ export const api: MockBackendApi & {
           'familienkasse-berlin-brandenburg',
           'abh-berlin-lea',
         ],
+        behoerden_count: 6,
+        geschaetzte_zeitersparnis_min: 45,
       },
       {
         id: 'kindergeburt',
@@ -2889,6 +2891,8 @@ export const api: MockBackendApi & {
           'familienkasse-berlin-brandenburg',
           'aok-nordost',
         ],
+        behoerden_count: 7,
+        geschaetzte_zeitersparnis_min: 60,
       },
       {
         id: 'steuererklaerung',
@@ -2896,6 +2900,8 @@ export const api: MockBackendApi & {
         titel_key: 'katalog.steuererklaerung.titel',
         beschreibung_key: 'katalog.steuererklaerung.beschreibung',
         behoerden_preview: ['finanzamt-berlin-mitte-tiergarten'],
+        behoerden_count: 1,
+        geschaetzte_zeitersparnis_min: 90,
       },
     ]),
 

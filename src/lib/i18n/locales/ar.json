@@ -347,7 +347,7 @@
       "vorgang_abgeschlossen": "معاملة مكتملة"
     },
     "heute": {
-      "titel": "مهام اليوم",
+      "titel": "ما يتطلّب انتباهك اليوم",
       "tab_ki": "الذكاء الاصطناعي",
       "tab_frist": "الموعد النهائي",
       "tab_behoerde": "الجهة",
@@ -358,18 +358,50 @@
       "snooze": "ذكِّرني لاحقاً",
       "snooze_days": "مؤجَّل لمدة {days} يوماً",
       "actions_label": "إجراءات {titel}",
-      "sort_aria": "ترتيب توصيات الإجراءات"
+      "sort_aria": "ترتيب توصيات الإجراءات",
+      "frist_bald": "الموعد النهائي قريب",
+      "frist_am": "الموعد النهائي: {datum}"
     },
     "triumph": {
       "title": "أُنجز نيابةً عنك",
       "subtitle": "تم إبلاغ {count} جهة بالانتقال — لم تضطر إلى فعل أي شيء.",
       "zeitersparnis": "تم توفير {min} دقيقة تقريباً",
       "link": "عرض المعاملة",
-      "gerade_eben": "للتو"
+      "gerade_eben": "للتو",
+      "koordiniert": "تمّ تنسيق انتقالك نيابةً عنك",
+      "body": "تمّ إرسال عنوانك الجديد إلى عدّة جهات. لا يلزمك فعل أي شيء آخر.",
+      "badge_abgeschlossen": "مكتمل",
+      "zeit_label": "الوقت الموفَّر",
+      "std_value": "{hours} ساعة تقريباً",
+      "min_value": "{min} دقيقة تقريباً",
+      "zeit_caption": "مقارنةً بالإبلاغ الفردي",
+      "stellen_label": "الجهات المُبلَّغة",
+      "stellen_caption": "الدوائر والمؤسسات"
     },
     "erledigt_feed": {
       "title": "أُنجز تلقائياً نيابةً عنك",
-      "empty": "لم يُنجَز أي شيء تلقائياً بعد."
+      "empty": "لم يُنجَز أي شيء تلقائياً بعد.",
+      "alle_schritte": "عرض جميع الخطوات",
+      "termin_pending": "يلزم تأكيد الموعد",
+      "termin_bestaetigen": "تأكيد الموعد"
+    },
+    "tiles": {
+      "posteingang_sub": "رسائل جديدة",
+      "posteingang_cta": "إلى صندوق الوارد",
+      "fristen_sub": "المواعيد النهائية خلال الـ 14 يوماً القادمة",
+      "fristen_cta": "عرض المواعيد النهائية",
+      "termine_sub": "الموعد التالي: {datum}",
+      "termine_cta": "جميع المواعيد",
+      "vorgaenge_sub": "قيد المعالجة",
+      "vorgaenge_cta": "عرض المعاملات"
+    },
+    "kontrolle": {
+      "title": "تحكُّمك",
+      "subtitle": "أنت من يقرّر مَن يتلقّى ماذا — بأمان وشفافية.",
+      "punkt_einwilligung": "المستلِمون الخاصّون بموافقتك فقط",
+      "punkt_eid": "الخطوة الحسّاسة بتأكيد eID فقط",
+      "punkt_rechtsgrundlage": "لا بيانات بدون أساس قانوني",
+      "mehr": "مزيد عن حماية البيانات"
     },
     "achievement": {
       "jahr": "{count} معاملة أُنجزت نيابةً عنك هذا العام"
@@ -3003,7 +3035,11 @@
     "status": {
       "live": "متاح",
       "demnaechst": "قريباً"
-    }
+    },
+    "lebenslagen_titel": "المواقف الحياتية / كتالوج Autopilot",
+    "alle_lebenslagen": "عرض جميع المواقف الحياتية",
+    "behoerden_count": "نحو {count} جهة",
+    "zeit_gespart": "تم توفير {min} دقيقة تقريباً"
   },
   "orchestration": {
     "mock_tag": "[MOCK]",
