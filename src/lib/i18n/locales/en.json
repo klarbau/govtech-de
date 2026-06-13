@@ -2940,6 +2940,49 @@
       }
     }
   },
+  "umzug_cascade": {
+    "transport": {
+      "label": "Transmission channel",
+      "osci_xmeld": "OSCI-XMeld",
+      "fit_connect": "FIT-Connect",
+      "einwilligung": "Consent (private)",
+      "frist_3wt": "≤ 3 working days",
+      "osci_xmeld_aria": "Transmission channel: OSCI-XMeld",
+      "fit_connect_aria": "Transmission channel: FIT-Connect",
+      "einwilligung_aria": "Transmission channel: consent, private body"
+    },
+    "zukunft_label": "[ZUKUNFT]",
+    "zukunft_hint": "This cross-register forwarding is only partially automated today. Full interconnection is the goal of the register modernisation (Registermodernisierung — NOOTS/IDNr).",
+    "rueckmeldung_label": "Feedback to the previous registration authority (§ 33 BMG)",
+    "disclaimer_long": "Note: this prototype simulates the transmission. The residence registration itself runs in reality via the mandated format OSCI-XMeld (§ 2 BMeldDigiV), not via FIT-Connect. FIT-Connect is the OZG transport channel for citizen applications — in this demo used only for the application-based, eID-confirmed steps (i-Kfz, Familienkasse, Ausländerbehörde) and exclusively against a TEST environment with a self-registered [MOCK destination]. No real authority was addressed. The register-to-register forwardings (§§ 33, 36 BMG) are only partially automated today; full interconnection is the goal of the register modernisation (Registermodernisierung — NOOTS/IDNr) — marked here as [ZUKUNFT]."
+  },
+  "fit_connect": {
+    "panel_title": "Transmission via FIT-Connect",
+    "mock_destination": "[MOCK destination]",
+    "leistung_label": "Service",
+    "leika_unconfirmed": "not confirmed from the catalogue",
+    "loa_label": "Level of assurance",
+    "loa_high": "eIDAS LoA high (LoA/high) — schema-compliant",
+    "loa_honesty": "A value we selected that is permitted by the schema (the eID level of assurance); the FITKO example shows LoA/low.",
+    "schema_label": "Schema",
+    "schema_value": "FIT-Connect Metadaten 2.1.0",
+    "schema_valid": "valid",
+    "schema_invalid": "Schema validation failed",
+    "encryption_label": "Encryption",
+    "encryption_value": "JWE Compact · RSA-OAEP-256 / A256GCM",
+    "jwe_excerpt_label": "JWE (excerpt)",
+    "jwe_region_aria": "Encrypted JWE excerpt, scrollable",
+    "submission_id_label": "Submission ID",
+    "status_label": "Status",
+    "status": {
+      "submitted": "submitted",
+      "received": "received",
+      "error": "Error"
+    },
+    "disclaimer_short": "TEST environment, self-registered destination. No real authority addressed.",
+    "tier1_offline_note": "Standards-compliant wire form, schema-validated — no network transmission.",
+    "live_region_label": "FIT-Connect transmission created"
+  },
   "katalog": {
     "titel": "Autopilot catalogue",
     "untertitel": "Life situations the autopilot handles for you.",

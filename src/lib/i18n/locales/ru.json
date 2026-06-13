@@ -2940,6 +2940,49 @@
       }
     }
   },
+  "umzug_cascade": {
+    "transport": {
+      "label": "Канал передачи",
+      "osci_xmeld": "OSCI-XMeld",
+      "fit_connect": "FIT-Connect",
+      "einwilligung": "Согласие (частная организация)",
+      "frist_3wt": "≤ 3 рабочих дней",
+      "osci_xmeld_aria": "Канал передачи: OSCI-XMeld",
+      "fit_connect_aria": "Канал передачи: FIT-Connect",
+      "einwilligung_aria": "Канал передачи: согласие, частная организация"
+    },
+    "zukunft_label": "[ZUKUNFT]",
+    "zukunft_hint": "Эта передача между реестрами сегодня автоматизирована лишь частично. Полное объединение реестров — цель модернизации реестров (Registermodernisierung — NOOTS/IDNr).",
+    "rueckmeldung_label": "Уведомление прежнему органу регистрации (§ 33 BMG)",
+    "disclaimer_long": "Примечание: этот прототип лишь моделирует передачу. Сама регистрация по месту жительства в реальности проходит через обязательный формат OSCI-XMeld (§ 2 BMeldDigiV), а не через FIT-Connect. FIT-Connect — это транспортный канал OZG для заявлений граждан; в этой демонстрации он используется только для шагов в форме заявления с подтверждением через eID (i-Kfz, Familienkasse, Ausländerbehörde) и исключительно в ТЕСТОВОЙ среде с самостоятельно зарегистрированным получателем [MOCK destination]. Ни один реальный орган не был адресован. Передача данных между реестрами (§§ 33, 36 BMG) сегодня автоматизирована лишь частично; полное объединение — цель модернизации реестров (Registermodernisierung — NOOTS/IDNr), здесь обозначена как [ZUKUNFT]."
+  },
+  "fit_connect": {
+    "panel_title": "Передача через FIT-Connect",
+    "mock_destination": "[MOCK destination]",
+    "leistung_label": "Услуга",
+    "leika_unconfirmed": "не подтверждена по каталогу",
+    "loa_label": "Уровень доверия",
+    "loa_high": "eIDAS LoA высокий (LoA/high) — соответствует схеме",
+    "loa_honesty": "Выбранное нами значение, допустимое схемой (уровень доверия eID); в примере FITKO указан LoA/low.",
+    "schema_label": "Схема",
+    "schema_value": "FIT-Connect Metadaten 2.1.0",
+    "schema_valid": "действительна",
+    "schema_invalid": "Проверка по схеме не пройдена",
+    "encryption_label": "Шифрование",
+    "encryption_value": "JWE Compact · RSA-OAEP-256 / A256GCM",
+    "jwe_excerpt_label": "JWE (фрагмент)",
+    "jwe_region_aria": "Зашифрованный фрагмент JWE, с прокруткой",
+    "submission_id_label": "Идентификатор отправки (Submission-ID)",
+    "status_label": "Статус",
+    "status": {
+      "submitted": "отправлено",
+      "received": "получено",
+      "error": "Ошибка"
+    },
+    "disclaimer_short": "ТЕСТОВАЯ среда, самостоятельно зарегистрированный получатель. Ни один реальный орган не адресован.",
+    "tier1_offline_note": "Соответствует стандартам формат передачи, проверен по схеме — без передачи по сети.",
+    "live_region_label": "Передача через FIT-Connect создана"
+  },
   "katalog": {
     "titel": "Каталог автопилота",
     "untertitel": "Жизненные ситуации, которые автопилот берёт на себя.",

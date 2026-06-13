@@ -2940,6 +2940,49 @@
       }
     }
   },
+  "umzug_cascade": {
+    "transport": {
+      "label": "قناة الإرسال",
+      "osci_xmeld": "OSCI-XMeld",
+      "fit_connect": "FIT-Connect",
+      "einwilligung": "الموافقة (جهة خاصة)",
+      "frist_3wt": "≤ 3 أيام عمل",
+      "osci_xmeld_aria": "قناة الإرسال: OSCI-XMeld",
+      "fit_connect_aria": "قناة الإرسال: FIT-Connect",
+      "einwilligung_aria": "قناة الإرسال: الموافقة، جهة خاصة"
+    },
+    "zukunft_label": "[ZUKUNFT]",
+    "zukunft_hint": "هذا التحويل بين السجلات ليس آليًا بالكامل اليوم، بل جزئيًا فقط. والربط الكامل بين السجلات هو هدف تحديث السجلات (Registermodernisierung — NOOTS/IDNr).",
+    "rueckmeldung_label": "إشعار إلى سلطة التسجيل السابقة (§ 33 BMG)",
+    "disclaimer_long": "ملاحظة: يحاكي هذا النموذج الأولي عملية الإرسال فقط. أما تسجيل محل الإقامة نفسه فيتم في الواقع عبر الصيغة الإلزامية OSCI-XMeld (§ 2 BMeldDigiV)، وليس عبر FIT-Connect. إن FIT-Connect هو قناة النقل ضمن OZG لطلبات المواطنين — ويُستخدم في هذا العرض التوضيحي فقط للخطوات ذات الطابع الطلبي المؤكَّدة عبر eID (i-Kfz، Familienkasse، Ausländerbehörde) وحصريًا في بيئة اختبار (TEST) بمستلِم مُسجَّل ذاتيًا [MOCK destination]. لم تُخاطَب أي سلطة حقيقية. أما عمليات التحويل بين السجلات (§§ 33, 36 BMG) فليست آلية بالكامل اليوم، بل جزئيًا فقط؛ والربط الكامل هو هدف تحديث السجلات (Registermodernisierung — NOOTS/IDNr) — وهو موسوم هنا بـ [ZUKUNFT]."
+  },
+  "fit_connect": {
+    "panel_title": "الإرسال عبر FIT-Connect",
+    "mock_destination": "[MOCK destination]",
+    "leistung_label": "الخدمة",
+    "leika_unconfirmed": "غير مؤكَّدة من الكتالوج",
+    "loa_label": "مستوى الثقة",
+    "loa_high": "eIDAS LoA عالٍ (LoA/high) — مطابق للمخطط",
+    "loa_honesty": "قيمة اخترناها ومسموح بها وفق المخطط (مستوى ثقة eID)؛ ويُظهر مثال FITKO المستوى LoA/low.",
+    "schema_label": "المخطط",
+    "schema_value": "FIT-Connect Metadaten 2.1.0",
+    "schema_valid": "صالح",
+    "schema_invalid": "فشل التحقق من المخطط",
+    "encryption_label": "التشفير",
+    "encryption_value": "JWE Compact · RSA-OAEP-256 / A256GCM",
+    "jwe_excerpt_label": "JWE (مقتطف)",
+    "jwe_region_aria": "مقتطف JWE مشفَّر، قابل للتمرير",
+    "submission_id_label": "معرّف الإرسال (Submission-ID)",
+    "status_label": "الحالة",
+    "status": {
+      "submitted": "تم الإرسال",
+      "received": "تم الاستلام",
+      "error": "خطأ"
+    },
+    "disclaimer_short": "بيئة اختبار (TEST)، مستلِم مُسجَّل ذاتيًا. لم تُخاطَب أي سلطة حقيقية.",
+    "tier1_offline_note": "صيغة إرسال مطابقة للمعايير ومُتحقَّق منها وفق المخطط — دون إرسال عبر الشبكة.",
+    "live_region_label": "تم إنشاء الإرسال عبر FIT-Connect"
+  },
   "katalog": {
     "titel": "كتالوج الطيار الآلي",
     "untertitel": "مواقف حياتية يتولّاها الطيار الآلي نيابةً عنك.",

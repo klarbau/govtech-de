@@ -2940,6 +2940,49 @@
       }
     }
   },
+  "umzug_cascade": {
+    "transport": {
+      "label": "Канал передавання",
+      "osci_xmeld": "OSCI-XMeld",
+      "fit_connect": "FIT-Connect",
+      "einwilligung": "Згода (приватна установа)",
+      "frist_3wt": "≤ 3 робочих дні",
+      "osci_xmeld_aria": "Канал передавання: OSCI-XMeld",
+      "fit_connect_aria": "Канал передавання: FIT-Connect",
+      "einwilligung_aria": "Канал передавання: згода, приватна установа"
+    },
+    "zukunft_label": "[ZUKUNFT]",
+    "zukunft_hint": "Це передавання між реєстрами сьогодні автоматизоване лише частково. Повне об'єднання реєстрів — мета модернізації реєстрів (Registermodernisierung — NOOTS/IDNr).",
+    "rueckmeldung_label": "Повідомлення попередньому органу реєстрації (§ 33 BMG)",
+    "disclaimer_long": "Примітка: цей прототип лише моделює передавання. Сама реєстрація місця проживання насправді відбувається через обов'язковий формат OSCI-XMeld (§ 2 BMeldDigiV), а не через FIT-Connect. FIT-Connect — це транспортний канал OZG для заяв громадян; у цій демонстрації він використовується лише для кроків у формі заяви з підтвердженням через eID (i-Kfz, Familienkasse, Ausländerbehörde) і виключно в ТЕСТОВОМУ середовищі із самостійно зареєстрованим одержувачем [MOCK destination]. Жоден реальний орган не був адресований. Передавання даних між реєстрами (§§ 33, 36 BMG) сьогодні автоматизоване лише частково; повне об'єднання — мета модернізації реєстрів (Registermodernisierung — NOOTS/IDNr), тут позначене як [ZUKUNFT]."
+  },
+  "fit_connect": {
+    "panel_title": "Передавання через FIT-Connect",
+    "mock_destination": "[MOCK destination]",
+    "leistung_label": "Послуга",
+    "leika_unconfirmed": "не підтверджена за каталогом",
+    "loa_label": "Рівень довіри",
+    "loa_high": "eIDAS LoA високий (LoA/high) — відповідає схемі",
+    "loa_honesty": "Обране нами значення, дозволене схемою (рівень довіри eID); у прикладі FITKO вказано LoA/low.",
+    "schema_label": "Схема",
+    "schema_value": "FIT-Connect Metadaten 2.1.0",
+    "schema_valid": "дійсна",
+    "schema_invalid": "Перевірку за схемою не пройдено",
+    "encryption_label": "Шифрування",
+    "encryption_value": "JWE Compact · RSA-OAEP-256 / A256GCM",
+    "jwe_excerpt_label": "JWE (фрагмент)",
+    "jwe_region_aria": "Зашифрований фрагмент JWE, з прокручуванням",
+    "submission_id_label": "Ідентифікатор подання (Submission-ID)",
+    "status_label": "Статус",
+    "status": {
+      "submitted": "надіслано",
+      "received": "отримано",
+      "error": "Помилка"
+    },
+    "disclaimer_short": "ТЕСТОВЕ середовище, самостійно зареєстрований одержувач. Жоден реальний орган не адресований.",
+    "tier1_offline_note": "Відповідний стандартам формат передавання, перевірений за схемою — без передавання мережею.",
+    "live_region_label": "Передавання через FIT-Connect створено"
+  },
   "katalog": {
     "titel": "Каталог автопілота",
     "untertitel": "Життєві ситуації, які автопілот бере на себе.",

@@ -2940,6 +2940,49 @@
       }
     }
   },
+  "umzug_cascade": {
+    "transport": {
+      "label": "İletim kanalı",
+      "osci_xmeld": "OSCI-XMeld",
+      "fit_connect": "FIT-Connect",
+      "einwilligung": "Onay (özel kuruluş)",
+      "frist_3wt": "≤ 3 iş günü",
+      "osci_xmeld_aria": "İletim kanalı: OSCI-XMeld",
+      "fit_connect_aria": "İletim kanalı: FIT-Connect",
+      "einwilligung_aria": "İletim kanalı: onay, özel kuruluş"
+    },
+    "zukunft_label": "[ZUKUNFT]",
+    "zukunft_hint": "Sicil sistemleri arası bu yönlendirme bugün yalnızca kısmen otomatiktir. Tam bağlantı, sicil modernizasyonunun (Registermodernisierung — NOOTS/IDNr) hedefidir.",
+    "rueckmeldung_label": "Önceki kayıt makamına geri bildirim (§ 33 BMG)",
+    "disclaimer_long": "Not: Bu prototip iletimi yalnızca simüle eder. İkamet kaydının kendisi gerçekte FIT-Connect üzerinden değil, zorunlu format olan OSCI-XMeld (§ 2 BMeldDigiV) üzerinden yürür. FIT-Connect, vatandaş başvuruları için OZG taşıma kanalıdır — bu demoda yalnızca başvuru biçimindeki, eID ile onaylanan adımlar (i-Kfz, Familienkasse, Ausländerbehörde) için ve yalnızca, kendi kaydettiğimiz bir alıcıya [MOCK destination] karşı bir TEST ortamında kullanılır. Gerçek hiçbir makama başvurulmamıştır. Sicil sistemleri arası yönlendirmeler (§§ 33, 36 BMG) bugün yalnızca kısmen otomatiktir; tam bağlantı, sicil modernizasyonunun (Registermodernisierung — NOOTS/IDNr) hedefidir — burada [ZUKUNFT] olarak işaretlenmiştir."
+  },
+  "fit_connect": {
+    "panel_title": "FIT-Connect üzerinden iletim",
+    "mock_destination": "[MOCK destination]",
+    "leistung_label": "Hizmet",
+    "leika_unconfirmed": "katalogdan doğrulanmadı",
+    "loa_label": "Güven düzeyi",
+    "loa_high": "eIDAS LoA yüksek (LoA/high) — şemaya uygun",
+    "loa_honesty": "Şemanın izin verdiği, bizim seçtiğimiz bir değer (eID güven düzeyi); FITKO örneği LoA/low gösterir.",
+    "schema_label": "Şema",
+    "schema_value": "FIT-Connect Metadaten 2.1.0",
+    "schema_valid": "geçerli",
+    "schema_invalid": "Şema doğrulaması başarısız",
+    "encryption_label": "Şifreleme",
+    "encryption_value": "JWE Compact · RSA-OAEP-256 / A256GCM",
+    "jwe_excerpt_label": "JWE (alıntı)",
+    "jwe_region_aria": "Şifrelenmiş JWE alıntısı, kaydırılabilir",
+    "submission_id_label": "Gönderim kimliği (Submission-ID)",
+    "status_label": "Durum",
+    "status": {
+      "submitted": "iletildi",
+      "received": "alındı",
+      "error": "Hata"
+    },
+    "disclaimer_short": "TEST ortamı, kendi kaydettiğimiz alıcı. Gerçek hiçbir makama başvurulmadı.",
+    "tier1_offline_note": "Standartlara uygun iletim biçimi, şema ile doğrulanmış — ağ üzerinden iletim yok.",
+    "live_region_label": "FIT-Connect iletimi oluşturuldu"
+  },
   "katalog": {
     "titel": "Otomatik pilot kataloğu",
     "untertitel": "Otomatik pilotun sizin için üstlendiği yaşam durumları.",
