@@ -522,6 +522,10 @@ button { font: inherit; cursor: pointer; }
 .post-item .meta .un { width: 8px; height: 8px; border-radius: 50%; background: var(--brand-500); display: inline-block; margin-left: 6px; }
 .post-item .meta .un.red { background: var(--red-500); }
 .post-item .meta .frist { color: var(--red-600); font-weight: 600; }
+/* Dark mode: --red-600 (#B62121) on the dark post-section bg (#1a1e27) is only
+   2.56:1 (WCAG 1.4.3 fail). Lighten just the Frist text — the badge/icon reds
+   keep --red-600 on their light --red-50 fill, so we must NOT touch the token. */
+.dark .post-item .meta .frist { color: #f87171; }
 
 /* Right detail */
 .post-detail {
