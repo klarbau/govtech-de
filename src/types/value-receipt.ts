@@ -64,4 +64,10 @@ export interface AutopilotKatalogEntry {
   beschreibung_key: string;
   /** Statische Teaser-Liste echter Behörden-IDs aus behoerden.json. */
   behoerden_preview: BehoerdeId[];
+  /** Konservative `ca.`-Teaser-Schätzung: Anzahl beteiligter Stellen für diese Lebenslage.
+   *  Teaser-Wert (kann von behoerden_preview.length abweichen). UI rendert immer mit „ca.". */
+  behoerden_count: number;
+  /** Konservative `ca.`-Teaser-Schätzung gesparter Aufwand in Minuten für diese Lebenslage.
+   *  Teaser-Wert, KEINE realisierte Quittungszahl (die liegt in ValueReceipt). UI rendert immer mit „ca.". */
+  geschaetzte_zeitersparnis_min: number;
 }
