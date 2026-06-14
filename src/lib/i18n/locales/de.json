@@ -3483,7 +3483,8 @@
       "rechtsgrundlage": "§ 24 Abs. 2 BMG · elektronisch i. V. m. § 10 BMeldDigiV, § 23a BMG",
       "loading": "Bestätigung wird geprüft …",
       "not_yet_issued": "Noch nicht ausgestellt — schliessen Sie zuerst den Umzug ab.",
-      "reference_ecosystem_badge": "reference-ecosystem"
+      "reference_ecosystem_badge": "reference-ecosystem",
+      "simple_status": "Echtheit automatisch geprüft"
     },
     "once_only": {
       "wallet_path_note": "Sie halten die Bestätigung und legen sie selbst vor; die nächste Stelle prüft die Signatur."
