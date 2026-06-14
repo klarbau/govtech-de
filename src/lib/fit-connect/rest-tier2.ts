@@ -17,17 +17,28 @@
  * Tier-2 receipt `status: 'error'`, framed as the TEST sandbox failing.
  *
  * ── What is LIVE-VERIFIED (orchestrator + this module, 2026-06-14) ──────────
- *  - token (client_secret_post) → Bearer/1800/send-submissions scope
+ *  - token (client_secret_post) → sender Bearer/1800/send-submissions scope;
+ *    subscriber Bearer/1800/(manage+subscribe)-destinations scope
  *  - GET /v2/destinations/{id} → status:active, encryptionKid, region
- *  - GET /v2/destinations/{id}/keys/{kid} → RSA-OAEP-256 4096-bit public JWK
- *  - POST /v2/submissions {destinationId, announcedAttachments, publicService:{name,identifier}, region} → 201 {submissionId, caseId}
+ *  - GET /v2/destinations/{id}/keys/{kid} → public JWK (RSA-OAEP-256 enc key by
+ *    encryptionKid; PS512 sig key by a SET's '-verify' kid, key_ops:["verify"])
+ *  - POST /v2/submissions {…} → 201 {submissionId, caseId} (caseId IS returned)
  *  - PUT  /v2/submissions/{id}/attachments/{aid} (application/jose) → 204
  *  - PUT  /v2/submissions/{id} {encryptedMetadata, encryptedData} → 200  (JWE needs cty:application/json)
- *  - GET  /v2/cases/{caseId}/events → {eventLog:[JWS SET…]} — real PS512 SETs, signatures verified against /.well-known/jwks.json
- * The subscriber pull/decrypt (GET /v2/submissions/{id}) requires a manual
- * Self-Service-Portal step to connect the subscriber client to the destination
- * (returns 403 "connect client and destination there" until then) — left as a
- * documented follow-up; it does not block the sender round-trip + SET evidence.
+ *  - GET  /v2/submissions/{id} (subscriber token) → encryptedMetadata/Data →
+ *    decryptCompact (private JWK) → ASSERT equal to what was sent (round-trip OK)
+ *  - POST /v2/cases/{caseId}/events (application/jose, raw compact JWS SET) → 204
+ *    SET: {alg:PS512, typ:secevent+jwt, kid}, iss=destinationId,
+ *    sub=submission:{id}, txn=case:{id}, $schema MIRRORS the delivery-service
+ *    submit-submission SET ($schema set-payload/1.2.2; the docs' 1.0.0 is
+ *    "Payload Schema not supported"), events[accept-submission].authenticationTags
+ *    = the JWE 5th-segment GCM tags (which MATCH the published submit-submission tags)
+ *  - GET  /v2/cases/{caseId}/events → {eventLog:[JWS SET…]} — real PS512 SETs,
+ *    verified per-issuer: delivery-service (create/submit/notify) against
+ *    /.well-known/jwks.json; our accept-submission against the destination sig key
+ * The 403 that previously blocked the subscriber pull cleared once the
+ * Verwaltungssystem client was connected to the TEST Zustellpunkt in the FITKO
+ * Self-Service-Portal.
  */
 
 import { readFile } from 'node:fs/promises';
@@ -36,7 +47,10 @@ import {
   createRemoteJWKSet,
   decodeJwt,
   decodeProtectedHeader,
+  importJWK,
   jwtVerify,
+  SignJWT,
+  type CryptoKey,
   type JWK,
 } from 'jose';
 
@@ -243,14 +257,29 @@ export async function runLiveSubmission(
   });
   if (!send.ok) throw new Error(`FIT_CONNECT_FINALIZE_${send.status}`);
 
-  // 9 — read + verify the event-log SETs (real FITKO-signed PS512 tokens).
-  const live = await readEventLogEvidence(caseId, senderToken);
-
-  // 10 — (optional) subscriber decrypt round-trip, if creds + JWK present and the
-  //      SSP subscriber-connect step has been done. Best-effort: never throws.
+  // 9 — (optional) subscriber receive + acknowledge round-trip, if creds + JWK
+  //     present and the SSP subscriber-connect step has been done. Best-effort:
+  //     never throws. Returns the JWE strings it observed (for tag derivation).
+  let recv: Awaited<ReturnType<typeof tryReceiveRoundTrip>> | undefined;
   if (env.canReceive) {
-    const recv = await tryReceiveRoundTrip(input, env, submissionId, metadata, fachdaten);
+    recv = await tryReceiveRoundTrip(env, submissionId, caseId, metadata, fachdaten, {
+      metadata: metadataJwe.compact,
+      data: dataJwe.compact,
+      attachments: Object.fromEntries(
+        announcedAttachmentIds.map((id, i) => [id, attachmentJwes[i].compact]),
+      ),
+    });
+  }
+
+  // 10 — read + verify the event-log SETs (real FITKO-signed PS512 tokens),
+  //      AFTER the acknowledge POST so our accept-submission SET is in the log.
+  //      Multi-key verify: delivery-service via well-known JWKS, subscriber
+  //      (accept-submission) via the destination's per-kid signature key.
+  const live = await readEventLogEvidence(caseId, destinationId, senderToken);
+  if (recv) {
     if (recv.decryptRoundTripOk !== undefined) live.decryptRoundTripOk = recv.decryptRoundTripOk;
+    if (recv.acknowledgeSetPosted !== undefined) live.acknowledgeSetPosted = recv.acknowledgeSetPosted;
+    if (recv.subscriberSetVerified !== undefined) live.subscriberSetVerified = recv.subscriberSetVerified;
     if (recv.note) live.note = recv.note;
   }
 
@@ -273,44 +302,123 @@ export async function runLiveSubmission(
 
 /* ───────────────────────── event-log SET evidence ─────────────────────── */
 
+const ACCEPT_EVENT_URI =
+  'https://schema.fitko.de/fit-connect/events/accept-submission';
+
+/**
+ * Read `GET /v2/cases/{caseId}/events` and verify every SET's PS512 signature
+ * against the CORRECT key by issuer (Tier-2 NIT #1 fix):
+ *  - delivery-service SETs (`create/submit/notify-submission`, `iss` = the FITKO
+ *    host) → the well-known JWKS;
+ *  - subscriber SETs (`accept-submission`, `iss` = destinationId) → the
+ *    destination's per-kid SIGNATURE-verification key at
+ *    `GET /v2/destinations/{id}/keys/{kid}` (a `…-verify`, `key_ops:["verify"]`
+ *    PS512 key — NOT the RSA-OAEP-256 enc key; there is no `…/keys` list endpoint,
+ *    it 404s, so we resolve per-kid from the SET header).
+ */
 async function readEventLogEvidence(
   caseId: string,
+  destinationId: string,
   token: string,
 ): Promise<NonNullable<FitConnectReceipt['live']>> {
   const ev = await api('GET', `${SUB}/v2/cases/${caseId}/events`, token);
   if (!ev.ok) return { note: `Event-Log nicht abrufbar (TEST sandbox, HTTP ${ev.status}).` };
   const log = (ev.json as { eventLog?: string[] })?.eventLog ?? [];
 
-  const jwks = createRemoteJWKSet(new URL(`${SUB}/.well-known/jwks.json`));
+  const deliveryJwks = createRemoteJWKSet(new URL(`${SUB}/.well-known/jwks.json`));
+  const destKeyCache = new Map<string, CryptoKey | Uint8Array>();
   const eventTypes: string[] = [];
   let allVerified = log.length > 0;
+  let subscriberSetVerified: boolean | undefined;
+
   for (const set of log) {
+    let isSubscriberEvent = false;
     try {
       const hdr = decodeProtectedHeader(set);
+      const claims = decodeJwt(set) as { iss?: string; events?: Record<string, unknown> };
+      const eventUris = Object.keys(claims.events ?? {});
+      for (const t of eventUris) eventTypes.push(t);
+      isSubscriberEvent = claims.iss === destinationId;
+
       // Defensive: only PS512 secevent+jwt are valid SETs here.
       if (hdr.alg !== SET_SIGNING.alg) {
         allVerified = false;
+        if (isSubscriberEvent) subscriberSetVerified = false;
         continue;
       }
-      await jwtVerify(set, jwks, { algorithms: [SET_SIGNING.alg] });
-      const claims = decodeJwt(set) as { events?: Record<string, unknown> };
-      for (const t of Object.keys(claims.events ?? {})) eventTypes.push(t);
+
+      if (isSubscriberEvent) {
+        const sigKey = await getDestinationSignatureKey(destinationId, hdr.kid!, token, destKeyCache);
+        await jwtVerify(set, sigKey, { algorithms: [SET_SIGNING.alg] });
+        subscriberSetVerified = true;
+      } else {
+        await jwtVerify(set, deliveryJwks, { algorithms: [SET_SIGNING.alg] });
+      }
     } catch {
       allVerified = false;
+      if (isSubscriberEvent) subscriberSetVerified = false;
     }
   }
-  return { eventLogCount: log.length, setVerified: allVerified, eventTypes };
+
+  return {
+    eventLogCount: log.length,
+    setVerified: allVerified,
+    eventTypes,
+    ...(subscriberSetVerified !== undefined ? { subscriberSetVerified } : {}),
+  };
 }
 
-/* ───────────────────────── subscriber decrypt round-trip ───────────────── */
+/**
+ * Resolve the destination's PS512 signature-verification key by kid (cached).
+ * Same endpoint shape as the encryption key, but the kid is a subscriber SET's
+ * `…-verify` kid. There is NO `…/keys` list endpoint (it 404s) — resolve per-kid.
+ */
+async function getDestinationSignatureKey(
+  destinationId: string,
+  kid: string,
+  token: string,
+  cache: Map<string, CryptoKey | Uint8Array>,
+): Promise<CryptoKey | Uint8Array> {
+  const cached = cache.get(kid);
+  if (cached) return cached;
+  const r = await api('GET', `${SUB}/v2/destinations/${destinationId}/keys/${kid}`, token);
+  if (!r.ok) throw new Error(`FIT_CONNECT_GET_SIG_KEY_${r.status}`);
+  const key = await importJWK(relaxJwkForSig(r.json as JWK), SET_SIGNING.alg);
+  cache.set(kid, key);
+  return key;
+}
 
+/** Drop op-restricting fields so jose imports a verify-only JWK with verify usage. */
+function relaxJwkForSig(jwk: JWK): JWK {
+  const { use: _use, key_ops: _ops, ext: _ext, ...rest } = jwk as JWK & { ext?: boolean };
+  return rest as JWK;
+}
+
+/* ───────────────── subscriber receive + acknowledge round-trip ─────────── */
+
+/** A JWE compact serialization's 5th segment is its base64url AEAD GCM tag. */
+const gcmTag = (jwe: string): string => jwe.split('.')[4];
+
+/**
+ * Subscriber side, live: get the submission, decrypt + assert the round-trip,
+ * then build + POST an RFC 8417 accept-submission SET. Best-effort — never
+ * throws, never leaks. `sentJwes` are the exact JWE strings the sender uploaded,
+ * so the authenticationTags are derived from them (and match the published
+ * submit-submission tags).
+ */
 async function tryReceiveRoundTrip(
-  _input: FitConnectSubmissionInput,
   env: Tier2Env,
   submissionId: string,
+  caseId: string,
   metadata: unknown,
   fachdaten: unknown,
-): Promise<{ decryptRoundTripOk?: boolean; note?: string }> {
+  sentJwes: { metadata: string; data: string; attachments: Record<string, string> },
+): Promise<{
+  decryptRoundTripOk?: boolean;
+  acknowledgeSetPosted?: boolean;
+  subscriberSetVerified?: boolean;
+  note?: string;
+}> {
   try {
     const subToken = await getToken(env.subscriberClientId!, env.subscriberClientSecret!);
     const getSub = await api('GET', `${SUB}/v2/submissions/${submissionId}`, subToken);
@@ -322,17 +430,100 @@ async function tryReceiveRoundTrip(
     }
     if (!getSub.ok) return { note: `Subscriber-Abruf fehlgeschlagen (TEST sandbox, HTTP ${getSub.status}).` };
 
+    // Decrypt + assert the round-trip equals what was sent.
     const { decryptCompact } = await import('./jwe');
     const privateJwk = await readJwk(env.decryptionJwkPath!);
     const body = getSub.json as { encryptedMetadata?: string; encryptedData?: string };
     const meta = await decryptCompact(body.encryptedMetadata!, privateJwk);
     const data = await decryptCompact(body.encryptedData!, privateJwk);
-    const ok =
+    const decryptRoundTripOk =
       JSON.stringify(meta) === JSON.stringify(metadata) &&
       JSON.stringify(data) === JSON.stringify(fachdaten);
-    return { decryptRoundTripOk: ok };
+
+    // Acknowledge: post a signed accept-submission SET. Mirror the delivery
+    // service's submit-submission SET `$schema` (the docs' 1.0.0 is rejected as
+    // "Payload Schema not supported"); echo its authenticationTags when present.
+    const ack = await acknowledgeSubmission(env, submissionId, caseId, subToken, sentJwes);
+    return { decryptRoundTripOk, ...ack };
   } catch {
     // Best-effort; never block or leak.
     return { note: 'Subscriber-Round-Trip übersprungen (TEST sandbox).' };
   }
+}
+
+/**
+ * Build + sign + POST the accept-submission SET (RFC 8417 / FITKO § set-creation).
+ * Returns whether the POST was accepted (HTTP 204). Never leaks the signing key.
+ */
+async function acknowledgeSubmission(
+  env: Tier2Env,
+  submissionId: string,
+  caseId: string,
+  subToken: string,
+  sentJwes: { metadata: string; data: string; attachments: Record<string, string> },
+): Promise<{ acknowledgeSetPosted?: boolean; note?: string }> {
+  if (!env.signingJwkPath) {
+    return { note: 'Acknowledge übersprungen: kein Signatur-JWK konfiguriert (TEST sandbox).' };
+  }
+
+  // Read the delivery-service submit-submission SET to mirror its $schema and
+  // (ground truth) authenticationTags. Fall back to locally-derived tags.
+  const ev = await api('GET', `${SUB}/v2/cases/${caseId}/events`, subToken);
+  let setSchema: string | undefined;
+  let publishedTags: unknown;
+  if (ev.ok) {
+    const log = (ev.json as { eventLog?: string[] })?.eventLog ?? [];
+    for (const set of log) {
+      try {
+        const claims = decodeJwt(set) as {
+          $schema?: string;
+          events?: Record<string, { authenticationTags?: unknown }>;
+        };
+        for (const [uri, payload] of Object.entries(claims.events ?? {})) {
+          if (uri.endsWith('/submit-submission') && payload?.authenticationTags) {
+            publishedTags = payload.authenticationTags;
+            setSchema = claims.$schema;
+          }
+        }
+      } catch {
+        /* ignore unparsable log entries */
+      }
+    }
+  }
+
+  const localTags = {
+    metadata: gcmTag(sentJwes.metadata),
+    data: gcmTag(sentJwes.data),
+    attachments: Object.fromEntries(
+      Object.entries(sentJwes.attachments).map(([id, jwe]) => [id, gcmTag(jwe)]),
+    ),
+  };
+  const authenticationTags = publishedTags ?? localTags;
+
+  // Sign the SET with the private signing JWK (PS512). Never logged/returned.
+  const signingJwk = await readJwk(env.signingJwkPath);
+  const signingKey = await importJWK(signingJwk, SET_SIGNING.alg);
+  const setPayload: Record<string, unknown> = {
+    ...(setSchema ? { $schema: setSchema } : {}),
+    iss: env.destinationId,
+    sub: `submission:${submissionId}`,
+    txn: `case:${caseId}`,
+    iat: Math.floor(Date.now() / 1000),
+    jti: crypto.randomUUID(),
+    events: { [ACCEPT_EVENT_URI]: { authenticationTags } },
+  };
+  const set = await new SignJWT(setPayload)
+    .setProtectedHeader({ alg: SET_SIGNING.alg, typ: SET_SIGNING.typ, kid: signingJwk.kid! })
+    .sign(signingKey);
+
+  // POST the raw compact JWS as application/jose (VERIFIED LIVE → 204).
+  const post = await api('POST', `${SUB}/v2/cases/${caseId}/events`, subToken, {
+    body: set,
+    contentType: 'application/jose',
+  });
+  if (post.status === 204 || post.ok) return { acknowledgeSetPosted: true };
+  return {
+    acknowledgeSetPosted: false,
+    note: `Acknowledge-SET vom TEST-Sandbox abgelehnt (HTTP ${post.status}).`,
+  };
 }

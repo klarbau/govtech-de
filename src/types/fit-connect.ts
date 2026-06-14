@@ -86,20 +86,36 @@ export interface FitConnectReceipt {
   /**
    * Tier-2 live evidence (the recordable round-trip). All optional — present
    * only on a real sandbox round-trip, all against our own `[MOCK destination]`
-   * TEST Zustellpunkt (never a real Behörde).
+   * TEST Zustellpunkt (never a real Behörde). This is the FINAL settled shape the
+   * frontend renders (verified live 2026-06-14: full sender→receive→acknowledge
+   * loop, all SETs signature-verified).
    */
   live?: {
     /** Number of JWS-signed SETs read from `GET /v2/cases/{caseId}/events`. */
     eventLogCount?: number;
-    /** Whether every SET's PS512 signature verified against the FITKO JWKS. */
-    setVerified?: boolean;
-    /** Event-type URIs of the SETs in the log (e.g. create/submit-submission). */
-    eventTypes?: string[];
-    /** Whether the subscriber decrypt round-trip asserted equal (when reachable). */
-    decryptRoundTripOk?: boolean;
     /**
-     * A human note when a sandbox step was blocked (e.g. SSP subscriber-connect)
-     * — framed as the TEST sandbox, never a real authority. No secrets.
+     * Whether every SET's PS512 signature verified — each against the CORRECT
+     * key by issuer: delivery-service SETs (create/submit/notify-submission,
+     * `iss` = FITKO host) against the well-known JWKS; subscriber SETs
+     * (accept-submission, `iss` = destinationId) against the destination's
+     * per-kid signature key.
+     */
+    setVerified?: boolean;
+    /** Event-type URIs of the SETs in the log (e.g. create/submit/notify/accept-submission). */
+    eventTypes?: string[];
+    /** Whether the subscriber decrypt round-trip asserted equal (metadata + Fachdaten). */
+    decryptRoundTripOk?: boolean;
+    /** Whether our `accept-submission` SET POST was accepted by the sandbox (HTTP 204). */
+    acknowledgeSetPosted?: boolean;
+    /**
+     * Whether OUR subscriber `accept-submission` SET, read back from the event
+     * log, verified against the destination's PS512 signature key. The
+     * subscriber-side counterpart of `setVerified`.
+     */
+    subscriberSetVerified?: boolean;
+    /**
+     * A human note when a sandbox step was blocked or skipped — framed as the
+     * TEST sandbox, never a real authority. No secrets.
      */
     note?: string;
   };
