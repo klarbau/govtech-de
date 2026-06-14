@@ -870,6 +870,13 @@ async function mintVerifiableOnceOnly(
         'deutschen Behörde — Format echt, Autorität Demo ([reference-ecosystem]). ' +
         'Wallet-Ausstellung durch Behörden = Zukunft ([ZUKUNFT], EUDI-Wallet ab ' +
         '2. Jan 2027). Once-Only hier wallet-basiert, nicht Register-Austausch (NOOTS).';
+      // Gender-aware salutation from the persona Stammdaten (anna=w, markus/mehmet=m).
+      const anrede =
+        persona.geschlecht === 'm'
+          ? `Sehr geehrter Herr ${persona.nachname}`
+          : persona.geschlecht === 'w'
+            ? `Sehr geehrte Frau ${persona.nachname}`
+            : `Guten Tag ${persona.vorname} ${persona.nachname}`;
       appendLetter({
         id: `letter-mb-vono-${vorgang.id}`,
         absender_behoerde_id: 'buergeramt-berlin-mitte',
@@ -879,7 +886,7 @@ async function mintVerifiableOnceOnly(
         body_de: [
           '[MOCK – Verwaltungsdemo, keine echten Daten]',
           '',
-          `Sehr geehrte Frau ${persona.nachname},`,
+          `${anrede},`,
           '',
           'Ihre amtliche Meldebestätigung (§ 24 Abs. 2 BMG · elektronisch i. V. m. ' +
             '§ 10 BMeldDigiV, § 23a BMG) liegt als re-verifizierbarer Wallet-Nachweis ' +

@@ -254,8 +254,10 @@ type Document = {
   ausstellende_behoerde_id: string;
   ausgestellt_am: string;
   gueltig_bis?: string;
-  // Synthetic QR payload — OR, for the Verifiable-Once-Only credential, the real
-  // ES256 SD-JWT VC string the Demo-Issuer minted (re-verifiable in-place).
+  // Synthetic QR payload. (For the Verifiable-Once-Only credential this is a
+  // [MOCK] marker, NOT the token: minting + offline re-verify run server-side in
+  // the verifyMeldebestaetigungCredential server action — node:crypto/jose must
+  // never enter the client bundle.)
   qr_payload: string;
   eudi_compatible: boolean;
   watermark: '[MOCK]';
@@ -279,7 +281,7 @@ The EUDI Tier-1 module (`src/lib/eudi`, SERVER-ONLY) gained an OUTGOING half: a 
 - **Issuer:** `src/lib/eudi/issue.ts` — `issueMeldebestaetigungSdJwtVc(claims, opts?)` / `issueMeldebestaetigungForPersona(personaId, vorgangId, ctx, opts?)`. Header `{alg:'ES256', typ:'dc+sd-jwt', x5c:[…]}`, payload `{iss, iat, exp(~90d), vct:'govtech-de.example/credentials/meldebestaetigung/1', _sd:[…], _sd_alg:'sha-256'}`, the (up to) 8 § 24 Abs. 2 fields as object-property `_sd` disclosures, NO KB-JWT, NO PID padding. Returns `<issuerJwt>~<d1>~…~`.
 - **Readout adapter:** `src/lib/eudi/meldebestaetigung-readout.ts` — `toMeldebestaetigungReadout(PidVerificationResult)` → `MeldebestaetigungVerificationResult` (a distinct type that never carries `mandatoryPresent`/`MANDATORY_PID_ATTRS`; "N von 8 Bestätigungsfeldern", never "PID-Pflichtattribute").
 - **Server actions** (`src/app/actions/eudi.ts`): `verifyMeldebestaetigungCredential(personaId?, vorgangId?)` (mint + re-verify) and `presentMeldebestaetigungSubset(fields, …)` (selective re-presentation = literal Datenminimierung proof). Deterministic + offline.
-- **Backend issuance hook** (`src/lib/mock-backend/api.ts`): at the Umzug success point (Vorgang `abgeschlossen`, after all eID taps) the backend mints a `Document` (`id: mb-vono-${vorgangId}`, `typ:'meldebestaetigung'`, `qr_payload` = the SD-JWT VC token, `eudi_compatible:true`) → `document_added`, plus a "liegt vor" `Letter` → Posteingang. Additive + idempotent (deterministic id; never breaks the cascade).
+- **Backend issuance hook** (`src/lib/mock-backend/api.ts`): at the Umzug success point (Vorgang `abgeschlossen`, after all eID taps) the client-side backend persists a durable vault `Document` SHELL (`id: mb-vono-${vorgangId}`, `typ:'meldebestaetigung'`, `qr_payload` = a `[MOCK]` marker, `eudi_compatible:true`) → `document_added`, plus a "liegt vor" `Letter` → Posteingang. It does NOT mint the token — the issuer is server-only; minting + offline re-verify run in the `verifyMeldebestaetigungCredential` server action (which Beat 1/3 call), keeping `node:crypto`/`jose` out of the client bundle. Additive + idempotent (deterministic id; never breaks the cascade).
 
 ## Redesign data-model additions (2026-05-27)
 

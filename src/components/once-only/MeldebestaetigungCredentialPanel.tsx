@@ -102,6 +102,15 @@ export function MeldebestaetigungCredentialPanel({
   const doktorgradAbsent =
     result !== null && !result.presentFields.includes('doktorgrad');
 
+  /* The field-count check passes when every APPLICABLE field is present.
+   * `doktorgrad` is statutorily optional (§ 24 Abs. 2 BMG), so a credential
+   * without it is COMPLETE at 7/8 — a green check, not a verification failure.
+   * Only a genuinely missing required field (e.g. anschrift) fails this row. */
+  const fieldsComplete =
+    result !== null &&
+    result.presentFields.length ===
+      (doktorgradAbsent ? result.totalFields - 1 : result.totalFields);
+
   return (
     <article
       aria-labelledby={headingId}
@@ -199,16 +208,12 @@ export function MeldebestaetigungCredentialPanel({
                   notOkText={t('credential.status_not_verified')}
                 />
                 <CheckRow
-                  ok={result.presentFields.length === result.totalFields}
+                  ok={fieldsComplete}
                   label={t('credential.check_fields', {
                     present: result.presentFields.length,
                     total: result.totalFields,
                   })}
-                  notOkText={
-                    doktorgradAbsent
-                      ? t('credential.no_doktorgrad_note')
-                      : t('credential.status_not_verified')
-                  }
+                  notOkText={t('credential.status_not_verified')}
                 />
               </ul>
 
