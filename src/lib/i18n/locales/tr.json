@@ -58,6 +58,11 @@
     "motion": {
       "label": "Hareketi azalt"
     },
+    "selection": {
+      "label": "Seçili metni sesli oku",
+      "hint": "Metni seçtiğinizde sesli okuma için bir düğme gösterir.",
+      "read": "Seçili metni sesli oku"
+    },
     "reset": {
       "label": "Sıfırla",
       "announce": "Erişilebilirlik ayarları sıfırlandı."

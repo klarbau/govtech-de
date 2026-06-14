@@ -10,6 +10,7 @@ export interface UseA11yPreferences {
   contrast: boolean;
   readable: boolean;
   reduceMotion: boolean;
+  selectionReadAloud: boolean;
   isDefault: boolean;
   canIncreaseFont: boolean;
   canDecreaseFont: boolean;
@@ -18,9 +19,11 @@ export interface UseA11yPreferences {
   toggleContrast: () => void;
   toggleReadable: () => void;
   toggleReduceMotion: () => void;
+  toggleSelectionReadAloud: () => void;
   setContrast: (value: boolean) => void;
   setReadable: (value: boolean) => void;
   setReduceMotion: (value: boolean) => void;
+  setSelectionReadAloud: (value: boolean) => void;
   reset: () => void;
 }
 
@@ -59,12 +62,17 @@ export function useA11yPreferences(): UseA11yPreferences {
     (value: boolean) => setPreferences({ ...prefs, reduceMotion: value }),
     [prefs, setPreferences],
   );
+  const setSelectionReadAloud = React.useCallback(
+    (value: boolean) => setPreferences({ ...prefs, selectionReadAloud: value }),
+    [prefs, setPreferences],
+  );
 
   return {
     fontScale: prefs.fontScale,
     contrast: prefs.contrast,
     readable: prefs.readable,
     reduceMotion: prefs.reduceMotion,
+    selectionReadAloud: prefs.selectionReadAloud,
     isDefault,
     canIncreaseFont,
     canDecreaseFont,
@@ -82,9 +90,14 @@ export function useA11yPreferences(): UseA11yPreferences {
       () => setReduceMotion(!prefs.reduceMotion),
       [prefs.reduceMotion, setReduceMotion],
     ),
+    toggleSelectionReadAloud: React.useCallback(
+      () => setSelectionReadAloud(!prefs.selectionReadAloud),
+      [prefs.selectionReadAloud, setSelectionReadAloud],
+    ),
     setContrast,
     setReadable,
     setReduceMotion,
+    setSelectionReadAloud,
     reset,
   };
 }

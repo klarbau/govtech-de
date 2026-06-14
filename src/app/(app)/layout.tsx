@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 
+import { SelectionVorlesen } from '@/components/a11y/SelectionVorlesen';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Topbar } from '@/components/layout/Topbar';
 
@@ -31,6 +32,7 @@ export default async function AppLayout({
           {children}
         </main>
       </div>
+      <SelectionVorlesen />
     </>
   );
 }

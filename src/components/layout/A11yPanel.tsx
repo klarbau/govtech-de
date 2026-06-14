@@ -36,6 +36,7 @@ export function A11yPanel({ id, open, onOpenChange }: A11yPanelProps) {
     contrast,
     readable,
     reduceMotion,
+    selectionReadAloud,
     isDefault,
     canIncreaseFont,
     canDecreaseFont,
@@ -44,6 +45,7 @@ export function A11yPanel({ id, open, onOpenChange }: A11yPanelProps) {
     setContrast,
     setReadable,
     setReduceMotion,
+    setSelectionReadAloud,
     reset,
   } = useA11yPreferences();
   const speech = useSpeech();
@@ -229,6 +231,13 @@ export function A11yPanel({ id, open, onOpenChange }: A11yPanelProps) {
             label={t('motion.label')}
             checked={reduceMotion}
             onCheckedChange={setReduceMotion}
+          />
+          <ToggleRow
+            id={`${id}-selection`}
+            label={t('selection.label')}
+            hint={t('selection.hint')}
+            checked={selectionReadAloud}
+            onCheckedChange={setSelectionReadAloud}
           />
         </div>
 
