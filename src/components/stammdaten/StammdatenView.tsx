@@ -34,6 +34,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/shared/Skeleton';
+import { EudiReferencePidCard } from '@/components/stammdaten/wallet/EudiReferencePidCard';
 import type {
   Behoerde,
   Persona,
@@ -460,6 +461,8 @@ export function StammdatenView(_props: StammdatenViewProps) {
               <PlusCircle />Dokument hinzufügen
             </Link>
           </div>
+
+          <EudiReferencePidCard />
 
           <div className="sd-card">
             <div className="sd-card-head">

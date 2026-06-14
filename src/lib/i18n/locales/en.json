@@ -1829,7 +1829,7 @@
     "disclaimer": {
       "lese_schicht": "This app is a **read-only signposting layer**. It does **not** make any changes to your data in the responsible registers itself. Corrections are made exclusively through the relevant authority's procedure — for example, at the citizens' office (Bürgeramt) under § 17 BMG for your address; at the registry office (Standesamt) under PStG for marital status and given names; at the registry office (Standesamt) under § 4 SBGG for the **registration** of a gender-entry change (orally or in writing, three months before the declaration) and under § 2 SBGG for the **in-person notarisation of the declaration** at the registry office; at the Federal Central Tax Office (Bundeszentralamt für Steuern) for the tax identification number (§ 139b AO). For each field we show you the right path.",
       "audit_log_app_internal": "The activity log shown here records only your activities within this app (views, filters, self-edits). It is **not** an official authority audit trail. The official audit layer for IDNr-based data transmissions between public bodies is provided by the Privacy Cockpit (Datenschutzcockpit) under § 9 IDNrG with a 24-month retention period — available at datenschutzcockpit.bund.de once the relevant registers are connected. As of May 2026: pilot phase with limited register coverage; the Federal Motor Transport Authority (Kraftfahrt-Bundesamt) joined the IDA procedure on 15 April 2026, with DSC connection to follow. A nationwide connection of all 51 RegMoG registers is on the 2026/2027 roadmap.",
-      "eudi_speculative": "The function shown here — releasing personal data as a wallet attestation to private recipients (e.g. bank, landlord, energy provider) at the click of a button — simulates a **vision for 2027**. It is based on the EUDI Wallet Regulation (EU) 2024/1183 and the Architecture and Reference Framework (as of May 2026: v2.0). The duty to provide an EUDI Wallet applies in Germany no earlier than 2026/2027; third-party acceptance, trust-service compliance and fee models are not yet finalised in law.",
+      "eudi_speculative": "The function shown here — releasing personal data as a wallet credential (attestation) to private recipients (e.g. bank, landlord, energy provider) at the click of a button — simulates a **vision for 2027**. It is based on the EUDI Wallet Regulation (EU) 2024/1183 and the Architecture and Reference Framework (as of May 2026: v2.9.0). The duty to provide an EUDI Wallet applies in Germany no earlier than 2026/2027; third-party acceptance, trust-service compliance and fee models are not yet finalised in law.",
       "iban_speculative": "A central IBAN record with automatic transfer to the family benefits office (Familienkasse), tax office (Finanzamt) and health insurer (Krankenkasse) is **not** available today (May 2026). This demo simulates a 2027 pattern. At present you must file your bank details with each authority separately.",
       "religion_art9": "Religious affiliation is a special category of personal data under Art. 9 GDPR. It is shown here only on click. Storage in the registration register is based on § 3 (1) no. 11 BMG; its use for income tax and church tax is based on § 51a EStG together with the church-tax procedure at the Federal Central Tax Office (KiStAM at BZSt).",
       "religion_consent_toggle_label": "I expressly consent to my religious affiliation being shown in this app (Art. 9 (2) (a) GDPR). This consent applies only to the current session.",
@@ -1854,7 +1854,11 @@
         },
         "cta_simulate": "Simulate request",
         "preview_error": "Preview could not be created — please try again.",
-        "arf_footer": "Data basis: EUDI Architecture and Reference Framework (as of May 2026: v2.0); PID Rulebook v1.4 — 8 mandatory attributes, 4 of 6 optional attributes."
+        "eudi_reference_section_title": "Real EUDI reference credential (verified offline)",
+        "eudi_reference_section_intro": "As proof of technical feasibility: a real PID credential from the EU reference ecosystem, fully verified cryptographically offline. It concerns a synthetic test identity, not the data of this demo persona.",
+        "mock_attestations_section_title": "Mock data sharing with private recipients ([MOCK])",
+        "mock_attestations_section_intro": "Simulated 2027 vision: share this demo persona's personal data as a wallet credential with a bank, landlord or energy provider at the click of a button. All values are [MOCK].",
+        "arf_footer": "Data basis: EUDI Architecture and Reference Framework (as of May 2026: v2.9.0); PID Rulebook in accordance with CIR (EU) 2024/2977 — 5 mandatory attributes (family_name, given_name, birth_date, birth_place, nationality), further attributes not mandatory."
       }
     },
     "aktivitaet": {
@@ -1943,8 +1947,8 @@
       "wallet_attestation_preview": {
         "title": "Wallet attestation preview",
         "empfaenger_label": "Recipient",
-        "section_pflicht": "PID mandatory attributes (8)",
-        "section_optional": "PID optional attributes (4 of 6)",
+        "section_pflicht": "PID mandatory attributes (5)",
+        "section_optional": "Further PID attributes (not mandatory)",
         "loading": "Creating preview …",
         "attestation_id_label": "Mock attestation ID",
         "cta_close": "Close"
@@ -2178,6 +2182,35 @@
       "toast": {
         "familienkasse_followup": "Follow-up decision now in your inbox (demo)",
         "familienkasse_angebunden": "Familienkasse Berlin-Brandenburg is connected to BundID — preference applied (demo)"
+      }
+    },
+    "wallet": {
+      "eudi_reference_pid": {
+      "title": "Verified EUDI reference credential",
+      "subject_note": "Reference test identity (Erika Mustermann) — not the identity of this demo persona.",
+      "reference_ecosystem_badge": "Reference ecosystem",
+      "loading": "Credential is being verified cryptographically offline …",
+      "error": "The reference credential could not be verified — please try again.",
+      "status_section_aria": "Verification status of the EUDI reference credential",
+      "status_verified": "Cryptographically verified",
+      "status_not_verified": "Not verified",
+      "check_signature_label": "Signature",
+      "check_signature_ok": "Issuer's {alg} signature valid",
+      "check_signature_not_ok": "Issuer signature invalid",
+      "check_chain_label": "Trust chain",
+      "check_chain_ok": "Chain to the demo trust anchor valid ({anchor})",
+      "check_chain_not_ok": "Trust chain to the demo trust anchor invalid",
+      "validity_not_before_label": "Valid from",
+      "validity_expires_label": "Valid until",
+      "expired_note": "Credential expired on {date} — signature and trust chain nonetheless cryptographically verified.",
+      "claims_heading": "Disclosed PID attributes",
+      "selective_disclosure_note": "Selective Disclosure: only the attributes shown below were disclosed from the credential and checked against the signature.",
+      "claim_family_name": "Family name",
+      "claim_given_name": "Given name",
+      "claim_birthdate": "Date of birth",
+      "claim_place_of_birth": "Place of birth",
+      "claim_nationalities": "Nationality",
+      "honesty_block": "[reference-ecosystem] — a real EU reference/development credential against a demo trust anchor with a synthetic test identity. Not verified by the German state, not eIDAS-/production-verified. A German state-issued EUDI Wallet is [ZUKUNFT] (at the earliest ~2 January 2027)."
       }
     },
     "chip": {

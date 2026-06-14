@@ -107,7 +107,7 @@ describe('getStammdaten — Anna Petrov', () => {
   test('disclaimer_meta carries pilot_phase + arf_version (Hard-Line §§ 11.10, 11.11)', async () => {
     const sd = await api.getStammdaten('anna-petrov');
     expect(sd.disclaimer_meta.pilot_phase).toBe('pilot');
-    expect(sd.disclaimer_meta.arf_version).toBe('v2.0');
+    expect(sd.disclaimer_meta.arf_version).toBe('v2.9.0');
     expect(sd.disclaimer_meta.lese_schicht_i18n_key).toBe(
       'stammdaten.disclaimer.lese_schicht',
     );

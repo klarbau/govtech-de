@@ -252,14 +252,15 @@ export interface WalletAttestation {
 
 /**
  * Vorschau-Payload für `getWalletAttestationPreview()`. PID-Felder gemäß
- * EUDI ARF v2.0 PID-Rulebook (8 Pflicht + 4-aus-6 Hilfsattribute).
+ * CIR (EU) 2024/2977 (PID-Rulebook, EUDI ARF v2.9.0): 5 verpflichtende
+ * Subjekt-Attribute + nicht-verpflichtende Wohnsitz-/Issuance-Attribute.
  */
 export interface WalletAttestationPreview {
   /** Empfänger-ID, identisch zur `WalletAttestation.empfaenger_id`. */
   empfaenger_id: BehoerdeId | string;
-  /** 8 PID-Pflicht-Attribute (key → label/value). */
+  /** 5 verpflichtende PID-Subjekt-Attribute (key → label/value). */
   pid_pflicht: Record<string, string>;
-  /** 4-aus-6 PID-Hilfs-Attribute (key → label/value). */
+  /** Nicht-verpflichtende PID-Attribute (Wohnsitz + Issuance-Metadaten). */
   pid_optional: Record<string, string>;
   /** Deterministisches Mock-Attestation-ID (per Persona × Empfänger). */
   mock_attestation_id: string;
@@ -280,12 +281,12 @@ export interface StammdatenDisclaimerMeta {
   lese_schicht_i18n_key: 'stammdaten.disclaimer.lese_schicht';
   /** Disclaimer-2 (audit_log_app_internal): App-Aktivität ≠ behördlicher Audit. */
   audit_log_app_internal_i18n_key: 'stammdaten.disclaimer.audit_log_app_internal';
-  /** Disclaimer-3 (eudi_speculative): ARF v2.0-Versionsangabe (Hard-Line § 11.11). */
+  /** Disclaimer-3 (eudi_speculative): ARF v2.9.0-Versionsangabe (Hard-Line § 11.11). */
   eudi_speculative_i18n_key: 'stammdaten.disclaimer.eudi_speculative';
   /** Pilot-Phase-Status — Hard-Line § 11.10. */
   pilot_phase: 'pilot' | 'rollout';
   /** ARF-Versionsangabe für Wallet-Sub-Tab — Hard-Line § 11.11. */
-  arf_version: 'v2.0';
+  arf_version: 'v2.9.0';
 }
 
 // ---------------------------------------------------------------------------

@@ -16,6 +16,7 @@ import type {
 } from '@/types/stammdaten';
 
 import { WalletAttestationPreviewModal } from './WalletAttestationPreviewModal';
+import { EudiReferencePidCard } from './wallet/EudiReferencePidCard';
 import { WalletMdlCard } from './wallet/WalletMdlCard';
 import type { MdlPreviewData } from './wallet/WalletMdlAttestationPreviewModal';
 
@@ -173,6 +174,38 @@ export function WalletSubTab({
           {wrapNormZitate(eudiDisclaimer)}
         </p>
       </details>
+
+      {/* Real, offline-verified EU-reference PID — a proof-of-capability about a
+          SYNTHETIC reference test subject, NOT the demo persona's own credential
+          and NOT a `[MOCK]` attestation. Visually distinct (emerald frame) from
+          the `[MOCK]` third-party cards below. Verification runs server-side. */}
+      <section
+        aria-labelledby="wallet-eudi-reference-heading"
+        className="flex flex-col gap-3"
+        data-testid="wallet-eudi-reference-section"
+      >
+        <div className="flex flex-col gap-1">
+          <h2
+            id="wallet-eudi-reference-heading"
+            className="text-base font-semibold tracking-tight text-foreground"
+          >
+            {tTab('eudi_reference_section_title')}
+          </h2>
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            {tTab('eudi_reference_section_intro')}
+          </p>
+        </div>
+        <EudiReferencePidCard />
+      </section>
+
+      <div className="flex flex-col gap-1">
+        <h2 className="text-base font-semibold tracking-tight text-foreground">
+          {tTab('mock_attestations_section_title')}
+        </h2>
+        <p className="text-sm leading-relaxed text-muted-foreground">
+          {tTab('mock_attestations_section_intro')}
+        </p>
+      </div>
 
       <ul className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
         {attestations.map((att) => {

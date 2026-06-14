@@ -1829,7 +1829,7 @@
     "disclaimer": {
       "lese_schicht": "Bu uygulama bir **okuma ve yönlendirme katmanıdır**. Yetkili sicillerdeki verilerinizde **kendi başına** hiçbir değişiklik yapmaz. Düzeltmeler yalnızca ilgili kurumun prosedürü üzerinden yapılır — örneğin adres için Bürgeramt'ta § 17 BMG uyarınca; medeni durum ve adlar için nüfus dairesinde (Standesamt) PStG uyarınca; cinsiyet kaydı değişikliğinin **kaydı** için nüfus dairesinde (Standesamt) § 4 SBGG uyarınca (sözlü veya yazılı, beyandan üç ay önce) ve **beyanın şahsen tasdiki** için § 2 SBGG uyarınca nüfus dairesinde; vergi kimlik numarası için Federal Merkez Vergi Dairesi'nde (Bundeszentralamt für Steuern) § 139b AO uyarınca. Her alan için size doğru yolu gösteriyoruz.",
       "audit_log_app_internal": "Burada görünen etkinlik günlüğü yalnızca sizin bu uygulama içindeki eylemlerinizi kaydeder (görüntülemeler, filtreler, kişisel düzenlemeler). Bu, **kurumsal** bir denetim izi **değildir**. IDNr tabanlı kamu kurumları arası veri aktarımları için kurumsal denetim katmanını veri koruma kokpiti (Datenschutzcockpit) § 9 IDNrG uyarınca 24 ay saklama süresiyle sağlar — ilgili siciller bağlandıkça datenschutzcockpit.bund.de adresinden erişilebilir. Mayıs 2026 itibarıyla: sınırlı sicil kapsamıyla pilot aşama; Federal Motorlu Taşıtlar Dairesi (Kraftfahrt-Bundesamt) 15.04.2026 tarihinde IDA prosedürüne katıldı, DSC bağlantısı bunu izleyecek. RegMoG'un 51 sicilinin tümünün kapsamlı bağlantısı 2026/2027 yol haritasındadır.",
-      "eudi_speculative": "Burada gösterilen işlev — kişisel verileri tek tıkla özel alıcılara (banka, ev sahibi, enerji tedarikçisi) cüzdan kanıtı (Attestation) olarak iletmek — **2027 vizyonunu** simüle eder. EUDI Cüzdan Tüzüğü (AB) 2024/1183 ile Architecture and Reference Framework'e (Mayıs 2026 itibarıyla: v2.0) dayanır. Almanya'nın EUDI cüzdanı sağlama yükümlülüğü en erken 2026/2027'de devreye girer; üçüncü taraf kabulü, güven hizmeti uyumluluğu ve ücret modelleri henüz bağlayıcı şekilde düzenlenmemiştir.",
+      "eudi_speculative": "Burada gösterilen işlev — kişisel verileri tek tıkla özel alıcılara (banka, ev sahibi, enerji tedarikçisi) cüzdan kanıtı (Attestation) olarak iletmek — **2027 vizyonunu** simüle eder. EUDI Cüzdan Tüzüğü (AB) 2024/1183 ile Architecture and Reference Framework'e (Mayıs 2026 itibarıyla: v2.9.0) dayanır. Almanya'nın EUDI cüzdanı sağlama yükümlülüğü en erken 2026/2027'de devreye girer; üçüncü taraf kabulü, güven hizmeti uyumluluğu ve ücret modelleri henüz bağlayıcı şekilde düzenlenmemiştir.",
       "iban_speculative": "IBAN'ın merkezi olarak kaydedilip aile yardımları kasasına (Familienkasse), vergi dairesine (Finanzamt) ve sağlık sigortasına (Krankenkasse) otomatik aktarılması bugün (Mayıs 2026) **mevcut değildir**. Bu demo bir 2027 senaryosunu simüle eder. Şu anda banka bilgilerinizi her kuruma ayrı ayrı bildirmek zorundasınız.",
       "religion_art9": "Dini aidiyet, GDPR'nin 9. maddesi anlamında özel nitelikli kişisel veridir. Burada yalnızca tıklamayla gösterilir. Nüfus sicilinde saklanması § 3 Abs. 1 Nr. 11 BMG'ye; gelir vergisi ve kilise vergisi için kullanımı § 51a EStG ile birlikte BZSt'deki KiStAM prosedürüne dayanır.",
       "religion_consent_toggle_label": "Dini aidiyetimin bu uygulamada gösterilmesine açıkça onay veriyorum (GDPR Madde 9 fıkra 2 bent a). Bu onay yalnızca mevcut oturum için geçerlidir.",
@@ -1854,7 +1854,11 @@
         },
         "cta_simulate": "Talebi simüle et",
         "preview_error": "Önizleme oluşturulamadı — lütfen tekrar deneyin.",
-        "arf_footer": "Veri tabanı: EUDI Architecture and Reference Framework (Mayıs 2026 itibarıyla: v2.0); PID Rulebook v1.4 — 8 zorunlu nitelik, 6 üzerinden 4 isteğe bağlı nitelik."
+        "eudi_reference_section_title": "Gerçek EUDI referans kanıtı (çevrimdışı doğrulandı)",
+        "eudi_reference_section_intro": "Teknik uygulanabilirliğin kanıtı olarak: AB referans ekosisteminden gerçek bir PID kanıtı, tamamen çevrimdışı kriptografik olarak doğrulanmış. Bu, sentetik bir test kimliğini ilgilendirir, bu demo kişisinin (Demo-Persona) verilerini değil.",
+        "mock_attestations_section_title": "Özel alıcılara demo veri paylaşımı ([MOCK])",
+        "mock_attestations_section_intro": "Simüle edilmiş 2027 vizyonu: bu demo kişisinin kişisel verilerini tek tıkla bankaya, ev sahibine veya enerji tedarikçisine cüzdan kanıtı olarak paylaşma. Tüm değerler [MOCK].",
+        "arf_footer": "Veri tabanı: EUDI Architecture and Reference Framework (Mayıs 2026 itibarıyla: v2.9.0); PID Rulebook, CIR (AB) 2024/2977 uyarınca — 5 zorunlu nitelik (family_name, given_name, birth_date, birth_place, nationality), diğer nitelikler zorunlu değildir."
       }
     },
     "aktivitaet": {
@@ -1943,8 +1947,8 @@
       "wallet_attestation_preview": {
         "title": "Cüzdan kanıt önizlemesi",
         "empfaenger_label": "Alıcı",
-        "section_pflicht": "PID zorunlu nitelikleri (8)",
-        "section_optional": "PID isteğe bağlı nitelikleri (6 üzerinden 4)",
+        "section_pflicht": "PID zorunlu nitelikleri (5)",
+        "section_optional": "Diğer PID nitelikleri (zorunlu değil)",
         "loading": "Önizleme oluşturuluyor …",
         "attestation_id_label": "Demo kanıt kimliği",
         "cta_close": "Kapat"
@@ -2178,6 +2182,35 @@
       "toast": {
         "familienkasse_followup": "Sonraki karar şimdi posta kutusunda (demo)",
         "familienkasse_angebunden": "Familienkasse Berlin-Brandenburg BundID'ye bağlı — tercih uygulandı (demo)"
+      }
+    },
+    "wallet": {
+      "eudi_reference_pid": {
+      "title": "Doğrulanmış EUDI referans kanıtı",
+      "subject_note": "Referans test kimliği (Erika Mustermann) — bu demo kişisinin (Demo-Persona) kimliği değil.",
+      "reference_ecosystem_badge": "Referans ekosistemi",
+      "loading": "Kanıt çevrimdışı kriptografik olarak doğrulanıyor …",
+      "error": "Referans kanıtı doğrulanamadı — lütfen tekrar deneyin.",
+      "status_section_aria": "EUDI referans kanıtının doğrulama durumu",
+      "status_verified": "Kriptografik olarak doğrulandı",
+      "status_not_verified": "Doğrulanmadı",
+      "check_signature_label": "İmza",
+      "check_signature_ok": "Düzenleyenin {alg} imzası geçerli",
+      "check_signature_not_ok": "Düzenleyenin imzası geçersiz",
+      "check_chain_label": "Güven zinciri",
+      "check_chain_ok": "Demo güven çıpasına (Trust Anchor) giden zincir geçerli ({anchor})",
+      "check_chain_not_ok": "Demo güven çıpasına (Trust Anchor) giden güven zinciri geçersiz",
+      "validity_not_before_label": "Geçerlilik başlangıcı",
+      "validity_expires_label": "Geçerlilik sonu",
+      "expired_note": "Kanıtın süresi {date} tarihinde doldu — buna rağmen imza ve güven zinciri kriptografik olarak doğrulandı.",
+      "claims_heading": "Açıklanan PID nitelikleri",
+      "selective_disclosure_note": "Selective Disclosure: kanıttan yalnızca aşağıda gösterilen nitelikler açıklandı ve imzaya karşı doğrulandı.",
+      "claim_family_name": "Soyadı",
+      "claim_given_name": "Ad",
+      "claim_birthdate": "Doğum tarihi",
+      "claim_place_of_birth": "Doğum yeri",
+      "claim_nationalities": "Uyruk",
+      "honesty_block": "[reference-ecosystem] — sentetik bir test kimliğiyle, demo güven çıpasına (Trust Anchor) karşı gerçek bir AB referans/geliştirme kanıtı. Alman devleti tarafından düzenlenmemiş ve doğrulanmamıştır, eIDAS uyarınca/üretim ortamında doğrulanmamıştır. Devlet eliyle düzenlenen bir Alman EUDI cüzdanı [ZUKUNFT] kapsamındadır (en erken ~2 Ocak 2027)."
       }
     },
     "chip": {

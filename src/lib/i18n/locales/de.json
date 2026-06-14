@@ -1851,7 +1851,7 @@
     "disclaimer": {
       "lese_schicht": "Diese App ist eine **Lese- und Wegweiser-Schicht**. Sie selbst nimmt **keine** Änderungen an Ihren Daten in den zuständigen Registern vor. Korrekturen erfolgen ausschließlich im jeweiligen Behörden-Verfahren — etwa beim Bürgeramt nach § 17 BMG für die Anschrift, beim Standesamt nach PStG für Familienstand und Vornamen, beim Standesamt nach § 4 SBGG für die Anmeldung der Geschlechtseintrag-Änderung (mündlich oder schriftlich, drei Monate vor der Erklärung) und nach § 2 SBGG für die persönliche Beurkundung der Erklärung beim Standesamt, beim Bundeszentralamt für Steuern für die Identifikationsnummer (§ 139b AO). Wir zeigen Ihnen pro Feld den richtigen Weg an.",
       "audit_log_app_internal": "Das hier sichtbare Aktivitätsprotokoll erfasst ausschließlich Ihre Aktivitäten in dieser App (Aufrufe, Filter, Selbst-Editierungen). Es ist **keine** behördliche Audit-Spur. Den behördlichen Audit-Layer für IDNr-basierte Datenübermittlungen zwischen öffentlichen Stellen liefert das Datenschutzcockpit nach § 9 IDNrG mit einer Speicherfrist von 24 Monaten — abrufbar unter datenschutzcockpit.bund.de, sobald die jeweiligen Register angebunden sind. Stand Mai 2026: Pilot-Phase mit punktueller Register-Abdeckung; das Kraftfahrt-Bundesamt hat sich zum 15.04.2026 an das IDA-Verfahren angeschlossen, die DSC-Anbindung folgt. Eine flächendeckende Anbindung der 51 RegMoG-Register ist Roadmap 2026/2027.",
-      "eudi_speculative": "Die hier gezeigte Funktion, Stammdaten als Wallet-Nachweis (Attestation) an private Empfänger — etwa Bank, Vermieter:in, Energieversorger — auf Klick freizugeben, simuliert eine **Vision für 2027**. Sie basiert auf der EUDI-Wallet-Verordnung (EU) 2024/1183 und dem Architecture and Reference Framework (Stand Mai 2026: v2.0). Die Pflicht zur Bereitstellung einer EUDI-Wallet greift in Deutschland frühestens 2026/2027; Drittanbieter-Akzeptanz, Trust-Service-Konformität und Gebührenmodelle sind noch nicht verbindlich geregelt.",
+      "eudi_speculative": "Die hier gezeigte Funktion, Stammdaten als Wallet-Nachweis (Attestation) an private Empfänger — etwa Bank, Vermieter:in, Energieversorger — auf Klick freizugeben, simuliert eine **Vision für 2027**. Sie basiert auf der EUDI-Wallet-Verordnung (EU) 2024/1183 und dem Architecture and Reference Framework (Stand Mai 2026: v2.9.0). Die Pflicht zur Bereitstellung einer EUDI-Wallet greift in Deutschland frühestens 2026/2027; Drittanbieter-Akzeptanz, Trust-Service-Konformität und Gebührenmodelle sind noch nicht verbindlich geregelt.",
       "iban_speculative": "Eine zentrale IBAN-Hinterlegung mit automatischer Übergabe an Familienkasse, Finanzamt und Krankenkasse ist heute (Mai 2026) **nicht** verfügbar. Diese Demo simuliert ein 2027-Pattern. Aktuell müssen Sie Ihre Bankverbindung pro Behörde separat hinterlegen.",
       "religion_art9": "Die Religionszugehörigkeit ist eine besondere Kategorie personenbezogener Daten nach Art. 9 DSGVO. Sie wird hier nur auf Klick eingeblendet. Speicherung im Melderegister beruht auf § 3 Abs. 1 Nr. 11 BMG; die Verwendung zur Lohn- und Einkommensteuer auf § 51a EStG i.V.m. KiStAM (BZSt).",
       "religion_consent_toggle_label": "Ich willige ausdrücklich in die Anzeige meines Religionsmerkmals in dieser App ein (Art. 9 Abs. 2 lit. a DSGVO). Diese Einwilligung gilt nur für die aktuelle Sitzung.",
@@ -1883,7 +1883,11 @@
         },
         "cta_simulate": "Anfrage simulieren",
         "preview_error": "Vorschau konnte nicht erstellt werden — bitte erneut versuchen.",
-        "arf_footer": "Datengrundlage: EUDI Architecture and Reference Framework (Stand Mai 2026: v2.0); PID-Rulebook v1.4 — 8 Pflichtattribute, 4 von 6 Hilfsattributen."
+        "eudi_reference_section_title": "Echter EUDI-Referenz-Nachweis (offline verifiziert)",
+        "eudi_reference_section_intro": "Zum Beleg der technischen Machbarkeit: ein realer PID-Nachweis aus dem EU-Referenz-Ökosystem, vollständig offline kryptografisch geprüft. Er betrifft eine synthetische Test-Identität, nicht die Daten dieser Demo-Persona.",
+        "mock_attestations_section_title": "Mock-Datenfreigabe an private Empfänger ([MOCK])",
+        "mock_attestations_section_intro": "Simulierte 2027-Vision: Stammdaten dieser Demo-Persona auf Klick als Wallet-Nachweis an Bank, Vermieter:in oder Energieversorger freigeben. Alle Werte sind [MOCK].",
+        "arf_footer": "Datengrundlage: EUDI Architecture and Reference Framework (Stand Mai 2026: v2.9.0); PID-Rulebook gemäß CIR (EU) 2024/2977 — 5 verpflichtende Pflichtattribute (family_name, given_name, birth_date, birth_place, nationality), weitere Attribute nicht verpflichtend."
       }
     },
     "aktivitaet": {
@@ -1982,8 +1986,8 @@
       "wallet_attestation_preview": {
         "title": "Wallet-Attestation-Vorschau",
         "empfaenger_label": "Empfänger",
-        "section_pflicht": "PID-Pflichtattribute (8)",
-        "section_optional": "PID-Hilfsattribute (4 von 6)",
+        "section_pflicht": "PID-Pflichtattribute (5)",
+        "section_optional": "Weitere PID-Attribute (nicht verpflichtend)",
         "loading": "Vorschau wird erstellt …",
         "attestation_id_label": "Mock-Attestation-ID",
         "cta_close": "Schließen"
@@ -2410,6 +2414,33 @@
             "un_distinguishing_sign": "UN-Unterscheidungszeichen (D)"
           }
         }
+      },
+      "eudi_reference_pid": {
+        "title": "Verifizierter EUDI-Referenz-Nachweis",
+        "subject_note": "Referenz-Testidentität (Erika Mustermann) — nicht die Identität dieser Demo-Persona.",
+        "reference_ecosystem_badge": "Referenz-Ökosystem",
+        "loading": "Nachweis wird offline kryptografisch geprüft …",
+        "error": "Der Referenz-Nachweis konnte nicht geprüft werden — bitte erneut versuchen.",
+        "status_section_aria": "Verifikationsstatus des EUDI-Referenz-Nachweises",
+        "status_verified": "Kryptografisch verifiziert",
+        "status_not_verified": "Nicht verifiziert",
+        "check_signature_label": "Signatur",
+        "check_signature_ok": "{alg}-Signatur des Ausstellers gültig",
+        "check_signature_not_ok": "Aussteller-Signatur ungültig",
+        "check_chain_label": "Vertrauenskette",
+        "check_chain_ok": "Kette zum Demo-Trust-Anchor gültig ({anchor})",
+        "check_chain_not_ok": "Vertrauenskette zum Demo-Trust-Anchor ungültig",
+        "validity_not_before_label": "Gültig ab",
+        "validity_expires_label": "Gültig bis",
+        "expired_note": "Nachweis abgelaufen am {date} — Signatur und Vertrauenskette dennoch kryptografisch verifiziert.",
+        "claims_heading": "Offengelegte PID-Attribute",
+        "selective_disclosure_note": "Selective Disclosure: ausschließlich die unten gezeigten Attribute wurden aus dem Nachweis offengelegt und gegen die Signatur geprüft.",
+        "claim_family_name": "Familienname",
+        "claim_given_name": "Vorname",
+        "claim_birthdate": "Geburtsdatum",
+        "claim_place_of_birth": "Geburtsort",
+        "claim_nationalities": "Staatsangehörigkeit",
+        "honesty_block": "[reference-ecosystem] — echter EU-Referenz-/Entwicklungs-Nachweis gegen einen Demo-Trust-Anchor mit einer synthetischen Test-Identität. Nicht vom deutschen Staat, nicht eIDAS-/produktiv-verifiziert. Eine deutsche staatliche EUDI-Wallet ist [ZUKUNFT] (frühestens ~2. Januar 2027)."
       }
     },
     "chip": {
