@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 
+import { A11yMenu } from './A11yMenu';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { MobileNav } from './MobileNav';
 import { ParthenonCrest } from './ParthenonCrest';
@@ -32,6 +33,7 @@ export async function Topbar() {
       </Link>
       <div className="gt-header-spacer" />
       <div className="gt-header-actions">
+        <A11yMenu />
         <LanguageSwitcher />
         <ThemeToggle />
         <UserMenu />

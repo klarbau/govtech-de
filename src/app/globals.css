@@ -240,6 +240,16 @@
   /* Layout chrome dimensions used by `.gt-header`, `.gt-sidebar`. */
   --header-h: 64px;
   --sidebar-w: 252px;
+
+  /* Bedienhilfen — font-scale via CSS `zoom` (NOT rem/font-size). The prototype
+     hardcodes px everywhere, so a rem-based root-scale would be a silent no-op.
+     `zoom` reflows cleanly and scales absolute px + `--header-h` proportionally.
+     Set imperatively by the no-FOUC inline script + A11yPreferencesProvider. */
+  --a11y-zoom: 1;
+}
+
+html {
+  zoom: var(--a11y-zoom);
 }
 
 /* ── Neutral scale + cobalt + semantic (DARK) ───────────────────────────── */
@@ -310,15 +320,27 @@
     outline-offset: 2px;
   }
 
+  /* Reduced-motion: shared by the OS media query AND the manual
+     `.a11y-reduce-motion` toggle (spec §6.3) — one source of truth, no
+     duplicated declarations. 0.01ms (NOT 0) so framer-motion `onComplete` /
+     `transitionend` listeners still fire and JS sequences don't hang. */
   @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
+    :where(html) *,
+    :where(html) *::before,
+    :where(html) *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
+  }
+  :where(html.a11y-reduce-motion) *,
+  :where(html.a11y-reduce-motion) *::before,
+  :where(html.a11y-reduce-motion) *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
   * {
     @apply border-border outline-ring/50;
@@ -369,6 +391,10 @@
     animation: none !important;
     background-image: none;
   }
+}
+:where(html.a11y-reduce-motion) .gt-skeleton {
+  animation: none !important;
+  background-image: none;
 }
 
 @theme inline {
@@ -652,57 +678,129 @@
 }
 
 /* design-system-v2 Phase 5e — High-contrast layer (BITV 2.0 § 1.4.6 AAA, >= 7:1).
-   Additive; only engages when the OS signals `prefers-contrast: more`. */
+   Spec §6.2: ONE source of truth for the values — the AA/AAA token overrides are
+   authored exactly once, in the `--hc-*` custom-property group below, and are
+   consumed by BOTH the OS `prefers-contrast: more` media query AND the manual
+   `<html class="a11y-contrast">` toggle. Both triggers map the same `--hc-*`
+   values onto the live tokens; they are not mutually exclusive (either or both
+   may engage). Editing a value here updates both paths. */
+:root {
+  /* Light high-contrast palette — single source of truth. */
+  --hc-foreground: #000000;
+  --hc-primary: #0B3FB0;
+  --hc-muted-foreground: #2A2F38;
+  --hc-border: #5B6472;
+  --hc-ring: #0B3FB0;
+  --hc-text-secondary: #1A1F2A;
+  --hc-text-muted: #2A2F38;
+  --hc-border-strong: #2A2F38;
+}
+.dark {
+  /* Dark high-contrast palette — single source of truth. */
+  --hc-foreground: #FFFFFF;
+  --hc-primary: #9DBBFF;
+  --hc-muted-foreground: #D5DAE2;
+  --hc-border: #8E97A6;
+  --hc-ring: #9DBBFF;
+  --hc-text-secondary: #ECEFF4;
+  --hc-text-muted: #D5DAE2;
+  --hc-border-strong: #D5DAE2;
+}
+
+/* The mapping block — applied identically by both triggers. */
 @media (prefers-contrast: more) {
-  :root {
-    --foreground: #000000;
-    --card-foreground: #000000;
-    --popover-foreground: #000000;
-    --primary: #0B3FB0;
-    --secondary-foreground: #000000;
-    --accent-foreground: #000000;
-    --muted-foreground: #2A2F38;
-    --border: #5B6472;
-    --input: #5B6472;
-    --ring: #0B3FB0;
-    --sidebar-foreground: #000000;
-    --sidebar-border: #5B6472;
-    --sidebar-ring: #0B3FB0;
-
-    --color-text-primary: #000000;
-    --color-text-secondary: #1A1F2A;
-    --color-text-muted: #2A2F38;
-    --color-border: #5B6472;
-    --color-border-strong: #2A2F38;
-    --color-primary: #0B3FB0;
-  }
-
+  :root,
   .dark {
-    --foreground: #FFFFFF;
-    --card-foreground: #FFFFFF;
-    --popover-foreground: #FFFFFF;
-    --primary: #9DBBFF;
-    --secondary-foreground: #FFFFFF;
-    --accent-foreground: #FFFFFF;
-    --muted-foreground: #D5DAE2;
-    --border: #8E97A6;
-    --input: #8E97A6;
-    --ring: #9DBBFF;
-    --sidebar-foreground: #FFFFFF;
-    --sidebar-border: #8E97A6;
-    --sidebar-ring: #9DBBFF;
+    --foreground: var(--hc-foreground);
+    --card-foreground: var(--hc-foreground);
+    --popover-foreground: var(--hc-foreground);
+    --primary: var(--hc-primary);
+    --secondary-foreground: var(--hc-foreground);
+    --accent-foreground: var(--hc-foreground);
+    --muted-foreground: var(--hc-muted-foreground);
+    --border: var(--hc-border);
+    --input: var(--hc-border);
+    --ring: var(--hc-ring);
+    --sidebar-foreground: var(--hc-foreground);
+    --sidebar-border: var(--hc-border);
+    --sidebar-ring: var(--hc-ring);
 
-    --color-text-primary: #FFFFFF;
-    --color-text-secondary: #ECEFF4;
-    --color-text-muted: #D5DAE2;
-    --color-border: #8E97A6;
-    --color-border-strong: #D5DAE2;
-    --color-primary: #9DBBFF;
+    --color-text-primary: var(--hc-foreground);
+    --color-text-secondary: var(--hc-text-secondary);
+    --color-text-muted: var(--hc-text-muted);
+    --color-border: var(--hc-border);
+    --color-border-strong: var(--hc-border-strong);
+    --color-primary: var(--hc-primary);
   }
 
   *:focus-visible {
     outline-width: 3px !important;
     outline-offset: 3px !important;
+  }
+}
+
+:where(html.a11y-contrast),
+:where(html.a11y-contrast) .dark,
+:where(html.a11y-contrast.dark) {
+  --foreground: var(--hc-foreground);
+  --card-foreground: var(--hc-foreground);
+  --popover-foreground: var(--hc-foreground);
+  --primary: var(--hc-primary);
+  --secondary-foreground: var(--hc-foreground);
+  --accent-foreground: var(--hc-foreground);
+  --muted-foreground: var(--hc-muted-foreground);
+  --border: var(--hc-border);
+  --input: var(--hc-border);
+  --ring: var(--hc-ring);
+  --sidebar-foreground: var(--hc-foreground);
+  --sidebar-border: var(--hc-border);
+  --sidebar-ring: var(--hc-ring);
+
+  --color-text-primary: var(--hc-foreground);
+  --color-text-secondary: var(--hc-text-secondary);
+  --color-text-muted: var(--hc-text-muted);
+  --color-border: var(--hc-border);
+  --color-border-strong: var(--hc-border-strong);
+  --color-primary: var(--hc-primary);
+}
+:where(html.a11y-contrast) *:focus-visible {
+  outline-width: 3px !important;
+  outline-offset: 3px !important;
+}
+
+/* Bedienhilfen — „Gut lesbare Schrift" (spec §6.4). Evidence-based readability
+   (line-/letter-/word-spacing, shorter measure, ragged-right) — NOT a font swap
+   (OpenDyslexic evidence is weak; brand-neutral label). Conservative selectors:
+   fließtext only, never chrome/tables/badges (they break at 1.8 line-height).
+   `text-align: start` (not `left`) so RTL locales (`ar`) are not fought. */
+:where(html.a11y-readable) body,
+:where(html.a11y-readable) p,
+:where(html.a11y-readable) li,
+:where(html.a11y-readable) .gt-card-sub,
+:where(html.a11y-readable) [data-readable] {
+  line-height: 1.8 !important;
+  letter-spacing: 0.03em;
+  word-spacing: 0.08em;
+  text-align: start;
+}
+:where(html.a11y-readable) p,
+:where(html.a11y-readable) li {
+  max-width: 66ch;
+}
+
+/* OS Windows-High-Contrast / forced-colors honoring (spec §6.2). Do NOT
+   override `forced-color-adjust`; keep panel borders + switch indicators visible
+   by deferring to system color keywords. Co-exists with the manual toggle. */
+@media (forced-colors: active) {
+  [data-slot='dialog-content'],
+  [data-slot='switch'] {
+    border: 1px solid CanvasText;
+  }
+  [data-slot='switch'][data-checked] {
+    background-color: Highlight;
+  }
+  *:focus-visible {
+    outline-color: Highlight !important;
   }
 }
 
@@ -771,6 +869,12 @@
     line-height: 1.4;
     color: #000;
     background: #fff;
+  }
+
+  /* Bedienhilfen font-scale must NOT scale the print output (spec §10) —
+     identical print image with/without active Bedienhilfen. */
+  html {
+    zoom: 1 !important;
   }
 
   *,

@@ -23,6 +23,48 @@
     "theme_toggle_system": "Systemeinstellung",
     "user_menu": "Benutzermenü"
   },
+  "a11y": {
+    "menu": {
+      "open": "Barrierefreiheit"
+    },
+    "panel": {
+      "title": "Barrierefreiheit",
+      "subtitle": "Stellen Sie die Anzeige auf Ihre Bedürfnisse ein."
+    },
+    "fontsize": {
+      "label": "Schriftgröße",
+      "decrease": "Schrift verkleinern",
+      "increase": "Schrift vergrößern",
+      "level": "{value} %",
+      "announce": "Schriftgröße {value} Prozent"
+    },
+    "vorlesen": {
+      "label": "Vorlesen",
+      "play": "Vorlesen",
+      "pause": "Pausieren",
+      "resume": "Fortsetzen",
+      "stop": "Stoppen",
+      "running": "Wird vorgelesen…",
+      "privacy": "Vorlesen erfolgt direkt auf Ihrem Gerät. Es werden keine Daten übertragen.",
+      "unsupported": "Vorlesen wird von Ihrem Browser nicht unterstützt. Bitte nutzen Sie die Vorlesefunktion Ihres Geräts."
+    },
+    "contrast": {
+      "label": "Kontrast erhöhen"
+    },
+    "readable": {
+      "label": "Gut lesbare Schrift",
+      "hint": "Mehr Zeilenabstand, kürzere Zeilen, linksbündig."
+    },
+    "motion": {
+      "label": "Bewegung reduzieren"
+    },
+    "reset": {
+      "label": "Zurücksetzen",
+      "announce": "Bedienhilfen zurückgesetzt."
+    },
+    "storage_note": "Ihre Einstellungen werden nur auf diesem Gerät gespeichert.",
+    "native_note": "Tipp: Die assistive Technik Ihres Geräts bleibt der zuverlässigste Weg."
+  },
   "footer": {
     "imprint": "Impressum",
     "privacy": "Datenschutz",
@@ -3405,5 +3447,65 @@
   "shared": {
     "gehoert_zu": "Gehört zu: {vorgang}",
     "neu_badge": "neu"
+  },
+  "vono": {
+    "inline": {
+      "present_title": "Ihre amtliche Meldebestätigung liegt vor.",
+      "reverified_line": "Re-verifiziert: Signatur kryptografisch geprüft (gegen Demo-Trust-Anchor).",
+      "view_in_dokumente": "In „Dokumente“ ansehen",
+      "issuing": "Bestätigung wird ausgestellt …",
+      "error": "Die Bestätigung konnte nicht ausgestellt werden. Die Übermittlungen oben bleiben davon unberührt."
+    },
+    "credential": {
+      "title": "Amtliche Meldebestätigung",
+      "issuer_label": "Ausgestellt von: Demo-Issuer (eigener Trust-Anchor) — nicht von einer deutschen Meldebehörde und nicht vom Staat",
+      "marker_badge": "Demo · Format echt · DE-Behörden-Ausstellung Zukunft",
+      "status_verified": "Signatur geprüft (Demo-Trust-Anchor)",
+      "status_not_verified": "Nicht verifiziert",
+      "check_signature": "Signatur kryptografisch geprüft",
+      "check_chain": "Kette gegen Demo-Trust-Anchor gültig",
+      "check_fields": "{present} von {total} Bestätigungsfeldern vorhanden",
+      "no_doktorgrad_note": "(Doktorgrad nicht vorhanden)",
+      "expired": "Abgelaufen am {datum}",
+      "valid_until": "Gültig bis {datum}",
+      "fields_heading": "Enthaltene Felder (§ 24 Abs. 2 BMG)",
+      "field": {
+        "familienname": "Familienname",
+        "vornamen": "Vornamen",
+        "doktorgrad": "Doktorgrad",
+        "geburtsdatum": "Geburtsdatum",
+        "einzugsdatum": "Einzugsdatum",
+        "datum_anmeldung": "Datum der Anmeldung",
+        "anschrift": "Anschrift",
+        "wohnungsstatus": "Wohnungsstatus (Haupt-/Neben-/alleinige Wohnung)"
+      },
+      "vct_label": "vct (Credential-Typ)",
+      "rechtsgrundlage": "§ 24 Abs. 2 BMG · elektronisch i. V. m. § 10 BMeldDigiV, § 23a BMG",
+      "loading": "Bestätigung wird geprüft …",
+      "not_yet_issued": "Noch nicht ausgestellt — schliessen Sie zuerst den Umzug ab.",
+      "reference_ecosystem_badge": "reference-ecosystem"
+    },
+    "once_only": {
+      "wallet_path_note": "Sie halten die Bestätigung und legen sie selbst vor; die nächste Stelle prüft die Signatur."
+    },
+    "letter": {
+      "subject": "Ihre amtliche Meldebestätigung liegt vor",
+      "body": "Nach Ihrer Anmeldung steht Ihnen die amtliche Meldebestätigung (§ 24 Abs. 2 BMG) als Nachweis zur Verfügung. Sie finden sie in „Dokumente“. {disclaimer_short}",
+      "ai_summary": "Ihre Meldebestätigung ist da. Sie können sie der nächsten Stelle vorlegen — diese prüft die Signatur, statt erneut zu fragen."
+    },
+    "disclosure": {
+      "sheet_title": "Der nächsten Stelle vorlegen",
+      "intro": "Sie legen nur diese Felder offen (Datenminimierung):",
+      "field_anschrift": "Anschrift",
+      "field_datum_anmeldung": "Datum der Anmeldung",
+      "next_office_note": "Die nächste Stelle prüft die Signatur — sie fragt nicht erneut. Sie holt sich nichts aus dem Register.",
+      "result": "Signatur geprüft · {present} von {total} Feldern offengelegt",
+      "cta": "Nur diese Felder vorlegen",
+      "cta_aria": "Ausgewählte Felder der nächsten Stelle vorlegen und Signatur prüfen"
+    },
+    "disclaimer": {
+      "short": "Hinweis: Dieser Prototyp simuliert die Ausstellung. Die amtliche Meldebestätigung beruht real auf § 24 Abs. 2 BMG (elektronisch: § 10 BMeldDigiV). Hier ausgestellt von einem Demo-Issuer, nicht von einer deutschen Behörde — Format echt, Autorität Demo ([reference-ecosystem]). Wallet-Ausstellung durch Behörden = Zukunft ([ZUKUNFT], EUDI-Wallet ab 2. Jan 2027). Once-Only hier wallet-basiert, nicht Register-Austausch (NOOTS).",
+      "long": "Hinweis: Die amtliche Meldebestätigung ist das Dokument, das Sie nach einer Anmeldung erhalten (§ 24 Abs. 2 BMG, elektronisch i. V. m. § 10 BMeldDigiV / § 23a BMG). In diesem Prototyp wird sie von einem Demo-Issuer mit eigenem Trust-Anchor als verifiable credential ausgestellt — nicht von einer deutschen Meldebehörde und nicht vom Staat; das Format und die Signaturprüfung sind echt ([reference-ecosystem]), die Autorität ist Demo. Dass eine deutsche Meldebehörde eine Meldebestätigung als Wallet-Nachweis (PuB-EAA) ausstellt, ist eine Zukunftsfunktion ([ZUKUNFT]); die deutsche EUDI-Wallet startet gemäss eIDAS 2.0 (VO (EU) 2024/1183) am 2. Januar 2027. Once-Only zeigt diese Demo über den wallet-basierten Weg (Sie präsentieren den Nachweis selbst) — nicht über register-zu-register-Austausch (NOOTS/Registermodernisierung)."
+    }
   }
 }

@@ -23,6 +23,48 @@
     "theme_toggle_system": "Sistem ayarı",
     "user_menu": "Kullanıcı menüsü"
   },
+  "a11y": {
+    "menu": {
+      "open": "Erişilebilirlik"
+    },
+    "panel": {
+      "title": "Erişilebilirlik",
+      "subtitle": "Görünümü ihtiyaçlarınıza göre ayarlayın."
+    },
+    "fontsize": {
+      "label": "Yazı boyutu",
+      "decrease": "Yazıyı küçült",
+      "increase": "Yazıyı büyüt",
+      "level": "{value} %",
+      "announce": "Yazı boyutu yüzde {value}"
+    },
+    "vorlesen": {
+      "label": "Sesli oku",
+      "play": "Sesli oku",
+      "pause": "Duraklat",
+      "resume": "Devam et",
+      "stop": "Durdur",
+      "running": "Sesli okunuyor…",
+      "privacy": "Sesli okuma doğrudan cihazınızda gerçekleşir. Hiçbir veri aktarılmaz.",
+      "unsupported": "Sesli okuma tarayıcınız tarafından desteklenmiyor. Lütfen cihazınızın kendi sesli okuma özelliğini kullanın."
+    },
+    "contrast": {
+      "label": "Kontrastı artır"
+    },
+    "readable": {
+      "label": "Kolay okunur yazı",
+      "hint": "Daha fazla satır aralığı, daha kısa satırlar, sola hizalı."
+    },
+    "motion": {
+      "label": "Hareketi azalt"
+    },
+    "reset": {
+      "label": "Sıfırla",
+      "announce": "Erişilebilirlik ayarları sıfırlandı."
+    },
+    "storage_note": "Ayarlarınız yalnızca bu cihazda saklanır.",
+    "native_note": "İpucu: Cihazınızın yardımcı teknolojisi en güvenilir yöntem olmaya devam eder."
+  },
   "footer": {
     "imprint": "Künye (Impressum)",
     "privacy": "Gizlilik",
@@ -3175,5 +3217,65 @@
   "shared": {
     "gehoert_zu": "Şuna ait: {vorgang}",
     "neu_badge": "yeni"
+  },
+  "vono": {
+    "inline": {
+      "present_title": "Resmî yerleşim belgeniz (Meldebestätigung) hazır.",
+      "reverified_line": "Yeniden doğrulandı: imza kriptografik olarak denetlendi (demo güven çıpasına karşı).",
+      "view_in_dokumente": "„Dokumente“ içinde görüntüle",
+      "issuing": "Belge düzenleniyor …",
+      "error": "Belge düzenlenemedi. Yukarıdaki iletimler bundan etkilenmez."
+    },
+    "credential": {
+      "title": "Resmî yerleşim belgesi (Meldebestätigung)",
+      "issuer_label": "Düzenleyen: demo düzenleyici (kendi güven çıpası) — bir Alman nüfus dairesi (Meldebehörde) değil ve devlet değil",
+      "marker_badge": "Demo · biçim gerçek · Alman makamlarınca düzenleme gelecekte",
+      "status_verified": "İmza doğrulandı (demo güven çıpası)",
+      "status_not_verified": "Doğrulanmadı",
+      "check_signature": "İmza kriptografik olarak denetlendi",
+      "check_chain": "Zincir demo güven çıpasına karşı geçerli",
+      "check_fields": "{total} belge alanından {present} tanesi mevcut",
+      "no_doktorgrad_note": "(doktora unvanı (Doktorgrad) yok)",
+      "expired": "{datum} tarihinde sona erdi",
+      "valid_until": "{datum} tarihine kadar geçerli",
+      "fields_heading": "İçerilen alanlar (§ 24 Abs. 2 BMG)",
+      "field": {
+        "familienname": "Soyadı",
+        "vornamen": "Adlar",
+        "doktorgrad": "Doktora unvanı",
+        "geburtsdatum": "Doğum tarihi",
+        "einzugsdatum": "Taşınma tarihi",
+        "datum_anmeldung": "Kayıt tarihi",
+        "anschrift": "Adres",
+        "wohnungsstatus": "Konut durumu (ana / yan / tek konut)"
+      },
+      "vct_label": "vct (kimlik bilgisi türü)",
+      "rechtsgrundlage": "§ 24 Abs. 2 BMG · elektronik olarak § 10 BMeldDigiV, § 23a BMG ile bağlantılı",
+      "loading": "Belge denetleniyor …",
+      "not_yet_issued": "Henüz düzenlenmedi — lütfen önce taşınmayı (Umzug) tamamlayın.",
+      "reference_ecosystem_badge": "reference-ecosystem"
+    },
+    "once_only": {
+      "wallet_path_note": "Belgeyi siz saklarsınız ve kendiniz sunarsınız; bir sonraki makam imzayı denetler."
+    },
+    "letter": {
+      "subject": "Resmî yerleşim belgeniz (Meldebestätigung) hazır",
+      "body": "Kaydınızdan (Anmeldung) sonra resmî yerleşim belgesi (Meldebestätigung, § 24 Abs. 2 BMG) kanıt olarak size sunulur. Bunu „Dokumente“ içinde bulabilirsiniz. {disclaimer_short}",
+      "ai_summary": "Yerleşim belgeniz hazır. Bunu bir sonraki makama sunabilirsiniz — makam yeniden sormak yerine imzayı denetler."
+    },
+    "disclosure": {
+      "sheet_title": "Bir sonraki makama sun",
+      "intro": "Yalnızca bu alanları açıklarsınız (veri minimizasyonu):",
+      "field_anschrift": "Adres",
+      "field_datum_anmeldung": "Kayıt tarihi",
+      "next_office_note": "Bir sonraki makam imzayı denetler — yeniden sormaz. Kayıttan (Register) hiçbir şey çekmez.",
+      "result": "İmza doğrulandı · {total} alandan {present} tanesi açıklandı",
+      "cta": "Yalnızca bu alanları sun",
+      "cta_aria": "Seçili alanları bir sonraki makama sun ve imzayı denetle"
+    },
+    "disclaimer": {
+      "short": "Not: Bu prototip düzenleme işlemini simüle eder. Resmî yerleşim belgesi (Meldebestätigung) gerçekte § 24 Abs. 2 BMG (elektronik: § 10 BMeldDigiV) hükmüne dayanır. Burada bir demo düzenleyici tarafından düzenlenmiştir, bir Alman makamı tarafından değil — biçim gerçek, yetki demo ([reference-ecosystem]). Makamlarca cüzdana düzenleme gelecekte gelecek bir işlevdir ([ZUKUNFT], EUDI-Wallet 2. Jan 2027 itibarıyla). Once-Only burada cüzdan tabanlıdır, kayıt değişimi (NOOTS) değil.",
+      "long": "Not: Resmî yerleşim belgesi (Meldebestätigung), bir kayıttan (Anmeldung) sonra aldığınız belgedir (§ 24 Abs. 2 BMG, elektronik olarak § 10 BMeldDigiV / § 23a BMG ile bağlantılı). Bu prototipte, kendi güven çıpası olan bir demo düzenleyici tarafından doğrulanabilir kimlik bilgisi (verifiable credential) olarak düzenlenir — bir Alman nüfus dairesi (Meldebehörde) tarafından değil ve devlet tarafından değil; biçim ve imza denetimi gerçektir ([reference-ecosystem]), yetki demodur. Bir Alman nüfus dairesinin yerleşim belgesini cüzdan kanıtı (PuB-EAA) olarak düzenlemesi gelecekte gelecek bir işlevdir ([ZUKUNFT]); Alman EUDI-Wallet, eIDAS 2.0 (Tüzük (AB) 2024/1183) uyarınca 2. Januar 2027 tarihinde başlar. Bu demo, Once-Only ilkesini cüzdan tabanlı yol üzerinden gösterir (kanıtı kendiniz sunarsınız) — kayıttan-kayıta değişim (NOOTS/Registermodernisierung) üzerinden değil."
+    }
   }
 }

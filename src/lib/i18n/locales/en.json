@@ -23,6 +23,48 @@
     "theme_toggle_system": "System setting",
     "user_menu": "User menu"
   },
+  "a11y": {
+    "menu": {
+      "open": "Accessibility"
+    },
+    "panel": {
+      "title": "Accessibility",
+      "subtitle": "Adjust the display to suit your needs."
+    },
+    "fontsize": {
+      "label": "Font size",
+      "decrease": "Decrease font size",
+      "increase": "Increase font size",
+      "level": "{value} %",
+      "announce": "Font size {value} percent"
+    },
+    "vorlesen": {
+      "label": "Read aloud",
+      "play": "Read aloud",
+      "pause": "Pause",
+      "resume": "Resume",
+      "stop": "Stop",
+      "running": "Reading aloud…",
+      "privacy": "Reading aloud runs directly on your device. No data is transmitted.",
+      "unsupported": "Read aloud is not supported by your browser. Please use your device's own read-aloud feature."
+    },
+    "contrast": {
+      "label": "Increase contrast"
+    },
+    "readable": {
+      "label": "Easy-to-read text",
+      "hint": "More line spacing, shorter lines, left-aligned."
+    },
+    "motion": {
+      "label": "Reduce motion"
+    },
+    "reset": {
+      "label": "Reset",
+      "announce": "Accessibility settings reset."
+    },
+    "storage_note": "Your settings are stored only on this device.",
+    "native_note": "Tip: Your device's assistive technology remains the most reliable option."
+  },
   "footer": {
     "imprint": "Imprint",
     "privacy": "Privacy",
@@ -3175,5 +3217,65 @@
   "shared": {
     "gehoert_zu": "Belongs to: {vorgang}",
     "neu_badge": "new"
+  },
+  "vono": {
+    "inline": {
+      "present_title": "Your official registration certificate (Meldebestätigung) is ready.",
+      "reverified_line": "Re-verified: signature checked cryptographically (against the demo trust anchor).",
+      "view_in_dokumente": "View in “Dokumente”",
+      "issuing": "Issuing your certificate …",
+      "error": "The certificate could not be issued. The submissions above are unaffected."
+    },
+    "credential": {
+      "title": "Official registration certificate (Meldebestätigung)",
+      "issuer_label": "Issued by: demo issuer (own trust anchor) — not by a German registration authority (Meldebehörde) and not by the state",
+      "marker_badge": "Demo · Format real · Issuance by German authorities is a future feature",
+      "status_verified": "Signature verified (demo trust anchor)",
+      "status_not_verified": "Not verified",
+      "check_signature": "Signature checked cryptographically",
+      "check_chain": "Chain valid against the demo trust anchor",
+      "check_fields": "{present} of {total} certificate fields present",
+      "no_doktorgrad_note": "(no doctoral degree on file)",
+      "expired": "Expired on {datum}",
+      "valid_until": "Valid until {datum}",
+      "fields_heading": "Included fields (§ 24 Abs. 2 BMG)",
+      "field": {
+        "familienname": "Family name",
+        "vornamen": "Given names",
+        "doktorgrad": "Doctoral degree",
+        "geburtsdatum": "Date of birth",
+        "einzugsdatum": "Move-in date",
+        "datum_anmeldung": "Date of registration",
+        "anschrift": "Address",
+        "wohnungsstatus": "Residence status (primary / secondary / sole residence)"
+      },
+      "vct_label": "vct (credential type)",
+      "rechtsgrundlage": "§ 24 Abs. 2 BMG · electronic, in conjunction with § 10 BMeldDigiV, § 23a BMG",
+      "loading": "Checking the certificate …",
+      "not_yet_issued": "Not issued yet — please complete the move (Umzug) first.",
+      "reference_ecosystem_badge": "reference-ecosystem"
+    },
+    "once_only": {
+      "wallet_path_note": "You hold the certificate and present it yourself; the next office checks the signature."
+    },
+    "letter": {
+      "subject": "Your official registration certificate (Meldebestätigung) is ready",
+      "body": "After your registration (Anmeldung), the official registration certificate (Meldebestätigung, § 24 Abs. 2 BMG) is available to you as proof. You will find it in “Dokumente”. {disclaimer_short}",
+      "ai_summary": "Your registration certificate is here. You can present it to the next office — they check the signature instead of asking again."
+    },
+    "disclosure": {
+      "sheet_title": "Present to the next office",
+      "intro": "You disclose only these fields (data minimisation):",
+      "field_anschrift": "Address",
+      "field_datum_anmeldung": "Date of registration",
+      "next_office_note": "The next office checks the signature — it does not ask again. It does not pull anything from the register.",
+      "result": "Signature verified · {present} of {total} fields disclosed",
+      "cta": "Present only these fields",
+      "cta_aria": "Present the selected fields to the next office and check the signature"
+    },
+    "disclaimer": {
+      "short": "Note: this prototype simulates the issuance. The official registration certificate (Meldebestätigung) is really based on § 24 Abs. 2 BMG (electronic: § 10 BMeldDigiV). Here it is issued by a demo issuer, not by a German authority — format real, authority demo ([reference-ecosystem]). Issuance into the wallet by authorities is a future feature ([ZUKUNFT], EUDI Wallet from 2. Jan 2027). Once-Only here is wallet-based, not register exchange (NOOTS).",
+      "long": "Note: the official registration certificate (Meldebestätigung) is the document you receive after a registration (Anmeldung) (§ 24 Abs. 2 BMG, electronic in conjunction with § 10 BMeldDigiV / § 23a BMG). In this prototype it is issued as a verifiable credential by a demo issuer with its own trust anchor — not by a German registration authority (Meldebehörde) and not by the state; the format and the signature check are real ([reference-ecosystem]), the authority is demo. That a German registration authority issues a registration certificate as a wallet credential (PuB-EAA) is a future feature ([ZUKUNFT]); the German EUDI Wallet launches under eIDAS 2.0 (Regulation (EU) 2024/1183) on 2. Januar 2027. This demo shows Once-Only via the wallet-based path (you present the proof yourself) — not via register-to-register exchange (NOOTS/Registermodernisierung)."
+    }
   }
 }
