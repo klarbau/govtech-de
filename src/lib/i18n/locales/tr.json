@@ -1165,6 +1165,10 @@
       "cta_open_sheet": "Yanıt yaz",
       "sheet_title": "{behoerde} kurumuna yanıt",
       "sheet_close_aria": "Yanıt panelini kapat",
+      "inline": {
+        "opened_announcement": "Yanıt paneli açıldı. Mektubu soldan okumaya devam edebilirsiniz.",
+        "closed_announcement": "Yanıt paneli kapatıldı."
+      },
       "recipient_label_template": "Alıcı: {behoerde}",
       "bezug_label_template": "Konu: {aktenzeichen}",
       "betreff_label_template": "Konu (Betreff): {betreff}",

@@ -1168,6 +1168,10 @@
       "cta_open_sheet": "Antwort verfassen",
       "sheet_title": "Antwort an {behoerde}",
       "sheet_close_aria": "Antwort-Sheet schließen",
+      "inline": {
+        "opened_announcement": "Antwortbereich geöffnet. Sie können den Brief weiterhin links lesen.",
+        "closed_announcement": "Antwortbereich geschlossen."
+      },
       "recipient_label_template": "An: {behoerde}",
       "bezug_label_template": "Bezug: {aktenzeichen}",
       "betreff_label_template": "Betreff: {betreff}",

@@ -114,8 +114,10 @@ test.describe('V1.5.1 Hero — Einspruch + Aussetzung (Mehmet)', () => {
     await replyButton.waitFor({ state: 'visible', timeout: 10_000 });
     await replyButton.click();
 
-    const sheet = page.locator('[data-slot="sheet-content"]');
-    await sheet.waitFor({ state: 'visible' });
+    // At ≥ 1100 px reply opens INLINE (Spec §6.2) — no modal Sheet. Wait for the
+    // inline panel instead of [data-slot=sheet-content].
+    const panel = page.locator('[data-testid="reply-inline-panel"]');
+    await panel.waitFor({ state: 'visible', timeout: 10_000 });
 
     const caveat = page.locator('[data-testid="bekanntgabe-caveat-details"]');
     await expect(caveat).toBeVisible();
@@ -143,7 +145,8 @@ test.describe('V1.5.1 Hero — Einspruch + Aussetzung (Mehmet)', () => {
       })
       .first();
     await replyButton.click();
-    await page.locator('[data-slot="sheet-content"]').waitFor();
+    // ≥ 1100 px → inline panel (Spec §6.2), not the modal Sheet.
+    await page.locator('[data-testid="reply-inline-panel"]').waitFor();
 
     // Click the Einspruch-Skelett radio. The label text comes from i18n; we
     // match by name in the radiogroup.
@@ -197,7 +200,8 @@ test.describe('V1.5.1 Hero — Einspruch + Aussetzung (Mehmet)', () => {
       })
       .first();
     await replyButton.click();
-    await page.locator('[data-slot="sheet-content"]').waitFor();
+    // ≥ 1100 px → inline panel (Spec §6.2), not the modal Sheet.
+    await page.locator('[data-testid="reply-inline-panel"]').waitFor();
 
     // 1. Einspruch radio click → PreInsertionModal → confirm.
     const einspruch = page

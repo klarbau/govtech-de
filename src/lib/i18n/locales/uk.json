@@ -1165,6 +1165,10 @@
       "cta_open_sheet": "Написати відповідь",
       "sheet_title": "Відповідь до {behoerde}",
       "sheet_close_aria": "Закрити панель відповіді",
+      "inline": {
+        "opened_announcement": "Панель відповіді відкрито. Ви, як і раніше, можете читати лист ліворуч.",
+        "closed_announcement": "Панель відповіді закрито."
+      },
       "recipient_label_template": "Кому: {behoerde}",
       "bezug_label_template": "До справи: {aktenzeichen}",
       "betreff_label_template": "Тема: {betreff}",

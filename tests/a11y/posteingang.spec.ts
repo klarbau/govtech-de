@@ -101,6 +101,10 @@ test.describe('Posteingang ReplySheet focus-trap', () => {
   test('Tab 0..30 keeps activeElement inside [data-slot=sheet-content]', async ({
     page,
   }) => {
+    // Reply opens INLINE (no focus trap) at ≥ 1100 px (Spec §6.2); the modal
+    // Sheet — and thus its focus-trap — is the < 1100 px path. Pin a narrow
+    // viewport so this trap test exercises the path it was written for.
+    await page.setViewportSize({ width: 1024, height: 768 });
     await setLocaleCookie(page, 'de');
     // Warm the client store first. A cold deep-link to a letter detail can render
     // the empty-seeded inbox before localStorage seeds, so the reply CTA never

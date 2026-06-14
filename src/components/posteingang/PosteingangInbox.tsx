@@ -26,11 +26,13 @@ import {
 import { toast } from 'sonner';
 
 import { api } from '@/lib/mock-backend';
+import { useMediaQuery } from '@/lib/hooks/use-media-query';
 import { Skeleton } from '@/components/shared/Skeleton';
 import type { Behoerde, Letter, Vorgang } from '@/types';
 
 import { NeuerVorgangAusBriefModal } from './NeuerVorgangAusBriefModal';
-import { ReplySheet } from './ReplySheet';
+import { ReplyInlinePanel } from './ReplyInlinePanel';
+import { ReplyModalSheet } from './ReplyModalSheet';
 import { OriginaltextBlock } from './OriginaltextBlock';
 import { VorgangsGruppe, SonstigeGruppe } from './VorgangsGruppe';
 import { FilterSheet } from './FilterSheet';
@@ -84,8 +86,45 @@ export function PosteingangInbox({
   const [filterSelected, setFilterSelected] = React.useState<FilterKategorie[]>([]);
 
   const [replyLetter, setReplyLetter] = React.useState<Letter | null>(null);
+  // Inline-Exit-Lifecycle (§4.1): beim Schließen läuft erst die Exit-Animation
+  // (replyLetter bleibt gesetzt, damit `letter` gültig ist), dann clears `onClosed`.
+  const [inlineReplyOpen, setInlineReplyOpen] = React.useState(false);
+  const lastTriggerRef = React.useRef<HTMLElement | null>(null);
   const [vorgangModalLetter, setVorgangModalLetter] = React.useState<Letter | null>(null);
   const [originalTextOpen, setOriginalTextOpen] = React.useState(false);
+
+  // Inline (≥ 1100 px, Spec §6.2) vs. modaler Sheet (< 1100 px). SSR-sicher
+  // (initial false → Modal), flippt nach Mount auf den echten Match.
+  const inlineBreakpoint = useMediaQuery('(min-width: 1100px)');
+  const inlineActive = replyLetter !== null && inlineBreakpoint;
+
+  function openReply(letter: Letter, event?: React.SyntheticEvent) {
+    const trigger = (event?.currentTarget ??
+      (typeof document !== 'undefined'
+        ? document.activeElement
+        : null)) as HTMLElement | null;
+    lastTriggerRef.current = trigger;
+    setReplyLetter(letter);
+    setInlineReplyOpen(true);
+  }
+
+  function requestCloseReply() {
+    // Inline: Exit-Animation; `onClosed` clears danach. Modal: sofort clearen.
+    if (inlineBreakpoint) {
+      setInlineReplyOpen(false);
+    } else {
+      setReplyLetter(null);
+    }
+  }
+
+  function handleInlineClosed() {
+    setReplyLetter(null);
+    const trigger = lastTriggerRef.current;
+    if (trigger && typeof trigger.focus === 'function') {
+      trigger.focus();
+    }
+    lastTriggerRef.current = null;
+  }
 
   const vorgaengeById = initial.vorgaengeById;
 
@@ -261,7 +300,9 @@ export function PosteingangInbox({
         </button>
       </div>
 
-      <div className="post-layout">
+      <div
+        className={`post-layout${inlineActive ? ' post-layout--reply-open' : ''}`}
+      >
         {view === 'chronologisch' ? (
           <div>
             <PostSection
@@ -351,11 +392,28 @@ export function PosteingangInbox({
             letter={selectedLetter}
             absender={selectedAbsender}
             replyLabel={t('sticky_action.cta_reply')}
-            onAntwortVorbereiten={() => setReplyLetter(selectedLetter)}
-            onEinspruch={() => setReplyLetter(selectedLetter)}
+            onAntwortVorbereiten={(e) => openReply(selectedLetter, e)}
+            onEinspruch={(e) => openReply(selectedLetter, e)}
             onVorgangErstellen={() => setVorgangModalLetter(selectedLetter)}
             onOriginaltextToggle={() => setOriginalTextOpen((v) => !v)}
             originaltextOpen={originalTextOpen}
+          />
+        )}
+
+        {/* Inline-Antwortpanel = drittes Grid-Kind (Spec §5/§6). Liegt im
+            `.post-layout`-Grid, damit es eine echte Spalte belegt; nur aktiv
+            ≥ 1100 px. Im Schmal-Fall rendert stattdessen der modale Sheet
+            außerhalb des Grids. */}
+        {inlineActive && replyLetter && (
+          <ReplyInlinePanel
+            open={inlineReplyOpen}
+            letter={replyLetter}
+            empfaengerBehoerde={
+              behoerdenById[replyLetter.absender_behoerde_id] ?? null
+            }
+            existingReply={null}
+            onRequestClose={requestCloseReply}
+            onClosed={handleInlineClosed}
           />
         )}
       </div>
@@ -379,8 +437,8 @@ export function PosteingangInbox({
         }}
       />
 
-      {replyLetter && (
-        <ReplySheet
+      {replyLetter && !inlineBreakpoint && (
+        <ReplyModalSheet
           letter={replyLetter}
           empfaengerBehoerde={behoerdenById[replyLetter.absender_behoerde_id] ?? null}
           existingReply={null}
@@ -562,8 +620,8 @@ function PostDetail({
   letter: Letter;
   absender: Behoerde | null;
   replyLabel: string;
-  onAntwortVorbereiten: () => void;
-  onEinspruch: () => void;
+  onAntwortVorbereiten: (e: React.SyntheticEvent) => void;
+  onEinspruch: (e: React.SyntheticEvent) => void;
   onVorgangErstellen: () => void;
   onOriginaltextToggle: () => void;
   originaltextOpen: boolean;
@@ -658,7 +716,7 @@ function PostDetail({
         <button
           type="button"
           className="btn btn-primary"
-          onClick={onAntwortVorbereiten}
+          onClick={(e) => onAntwortVorbereiten(e)}
         >
           <PenSquare />
           {replyLabel}
@@ -683,7 +741,7 @@ function PostDetail({
       <div className="post-followups">
         <div className="lbl">Was kann ich tun?</div>
         <div className="chips">
-          <button type="button" className="chip-btn" onClick={onEinspruch}>
+          <button type="button" className="chip-btn" onClick={(e) => onEinspruch(e)}>
             <Scale />Einspruch erklären
           </button>
           <button

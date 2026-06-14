@@ -54,10 +54,29 @@ export function ReplyConfirmationView({
       aria-live="polite"
     >
       <header className="flex items-start gap-3">
-        <CheckCircle2
-          className="mt-0.5 size-6 shrink-0 text-emerald-600 dark:text-emerald-400"
-          aria-hidden="true"
-        />
+        <span className="relative mt-0.5 inline-flex size-6 shrink-0 items-center justify-center">
+          <CheckCircle2
+            className="size-6 text-emerald-600 dark:text-emerald-400"
+            aria-hidden="true"
+          />
+          {/* M4b — gezeichneter Haken über dem statischen Icon (dekorativ). */}
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            className="pointer-events-none absolute inset-0 size-6 text-emerald-600 dark:text-emerald-400"
+            fill="none"
+          >
+            <path
+              className="gt-checkmark-path"
+              d="M6 12.5l3.5 3.5L18 7.5"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ ['--gt-checkmark-len' as string]: '24' }}
+            />
+          </svg>
+        </span>
         <div className="flex flex-col gap-1">
           <h2
             id="reply-confirmation-heading"

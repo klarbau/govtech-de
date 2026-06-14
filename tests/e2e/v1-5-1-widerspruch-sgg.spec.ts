@@ -67,8 +67,9 @@ test.describe('V1.5.1 Widerspruch SGG (Schmidt, TK)', () => {
     await replyButton.waitFor({ state: 'visible', timeout: 10_000 });
     await replyButton.click();
 
-    const sheet = page.locator('[data-slot="sheet-content"]');
-    await sheet.waitFor({ state: 'visible' });
+    // At ≥ 1100 px reply opens INLINE (Spec §6.2) — no modal Sheet.
+    const panel = page.locator('[data-testid="reply-inline-panel"]');
+    await panel.waitFor({ state: 'visible', timeout: 10_000 });
 
     // FristCitedFormat-Header rendert SGG-Wortlaut.
     const header = page.locator('[data-testid="frist-cited-format-header"]');

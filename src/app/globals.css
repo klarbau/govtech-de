@@ -371,6 +371,27 @@
   }
 }
 
+/* ── Reply-Confirmation-Haken (Spec reply-inline-panel §7 M4b) ───────────
+   Dekorativer, gezeichneter SVG-Haken neben der Versand-Bestätigung. Rein
+   transform/stroke (kein Layout), `aria-hidden` am SVG — die Bestätigung steht
+   bereits als Text mit aria-live in <ReplyConfirmationView>. Respektiert
+   prefers-reduced-motion (Pfad sofort vollständig sichtbar, keine Animation). */
+@keyframes gt-checkmark-draw {
+  from { stroke-dashoffset: var(--gt-checkmark-len, 24); }
+  to { stroke-dashoffset: 0; }
+}
+.gt-checkmark-path {
+  stroke-dasharray: var(--gt-checkmark-len, 24);
+  stroke-dashoffset: 0;
+  animation: gt-checkmark-draw 400ms ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gt-checkmark-path {
+    animation: none !important;
+    stroke-dashoffset: 0;
+  }
+}
+
 @theme inline {
   --font-heading:
     var(--font-sans);

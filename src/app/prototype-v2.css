@@ -467,8 +467,27 @@ button { font: inherit; cursor: pointer; }
 
 /* ============ posteingang.html ============ */
 .post-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 24px; align-items: start; }
+/* Reply-Inline-Panel (Spec reply-inline-panel §5/§7): bei offenem Panel
+   schaltet das Grid auf drei Spalten (Liste | Detail | Antwort), das Detail wird
+   geschoben statt überlagert. Nur ≥ 1100 px aktiv. C0: motion-safe Grid-Shift
+   220 ms ease-out (nur transform-freie Spaltenbreite; reduced-motion killt es
+   über die globale Collapse). */
+.post-layout--reply-open {
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr) minmax(360px, 0.95fr);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .post-layout { transition: grid-template-columns 220ms ease-out; }
+}
 @media (max-width: 880px) {
-  .post-layout { grid-template-columns: minmax(0, 1fr); }
+  .post-layout,
+  .post-layout--reply-open { grid-template-columns: minmax(0, 1fr); }
+}
+/* Unterhalb des Inline-Breakpoints (1100 px) rendert ohnehin der modale Sheet;
+   das Inline-Panel liegt dann nicht im Grid → Modifier zurücksetzen. */
+@media (max-width: 1099px) {
+  .post-layout--reply-open {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  }
 }
 .post-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 16px; }
 .post-toolbar .input-icon { flex: 1; max-width: 480px; }
