@@ -96,3 +96,55 @@ export interface VerifyPidOptions {
    */
   trustAnchorPem?: string;
 }
+
+/* ─────────────────────── Verifiable Once-Only (additive) ───────────────────────
+ *
+ * The amtliche Meldebestätigung credential (§ 24 Abs. 2 BMG) types. ADDITIVE —
+ * NOTHING above (PidVerificationResult / VerifyPidOptions / MANDATORY_PID_ATTRS)
+ * changes. The result type below is DELIBERATELY a distinct shape that does NOT
+ * carry `mandatoryPresent` / `MANDATORY_PID_ATTRS` (constraint C4), so the
+ * "X von 5 PID-Pflichtattributen" PID readout can never be pointed at this
+ * credential by accident. See `verifiable-once-only.md` §6.1.
+ */
+
+/** The 8 statutorily-closed fields of the amtliche Meldebestätigung, § 24 Abs. 2 BMG (C3). */
+export const MELDEBESTAETIGUNG_FIELDS = [
+  'familienname',
+  'vornamen', // with marking of the gebräuchlicher Vorname (in the value)
+  'doktorgrad', // optional — may be absent
+  'geburtsdatum',
+  'einzugsdatum', // resp. auszugsdatum on Abmeldung
+  'datum_anmeldung', // resp. datum_abmeldung
+  'anschrift',
+  'wohnungsstatus', // alleinige Wohnung / Hauptwohnung / Nebenwohnung
+] as const;
+
+export type MeldebestaetigungField = (typeof MELDEBESTAETIGUNG_FIELDS)[number];
+
+/**
+ * Adapter result (C4 / §6d): a credential-appropriate readout of the
+ * Meldebestätigung — NOT PID-shaped. Produced by `toMeldebestaetigungReadout`
+ * from the claim-agnostic {@link PidVerificationResult}. Never references
+ * `mandatoryPresent` / `MANDATORY_PID_ATTRS`.
+ */
+export interface MeldebestaetigungVerificationResult {
+  /** From the verifier: signature OK + all disclosures bound. */
+  verified: boolean;
+  reason?: string;
+  /** From the verifier: leaf → injected Demo-Trust-Anchor. */
+  chainValid: boolean;
+  /** From the verifier (informational). */
+  expired: boolean;
+  validity: { notBefore?: string; expiresAt?: string };
+  /** Demo-namespaced vct (`govtech-de.example/...`). */
+  vct: string;
+  alg: string; // 'ES256'
+  /** Subject-DN of the Demo-Trust-Anchor. */
+  trustAnchorSubject: string;
+  /** The disclosed 8-field subset (Selective Disclosure). NO PID fields. */
+  fields: Partial<Record<MeldebestaetigungField, string>>;
+  /** Which of the 8 fields are disclosed + digest-matched (for "N von 8"). */
+  presentFields: MeldebestaetigungField[];
+  /** Constant 8 (full mandatory set incl. optional doktorgrad → see §6d). */
+  totalFields: number;
+}

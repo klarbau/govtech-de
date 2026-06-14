@@ -800,6 +800,127 @@ function applyUmzugRipple(vorgang: Vorgang, persona: Persona): void {
   }
 }
 
+/**
+ * Verifiable Once-Only (§6c) — at the Umzug success point (Vorgang
+ * `abgeschlossen`), mint the amtliche Meldebestätigung (§ 24 Abs. 2 BMG) as a
+ * re-verifiable SD-JWT VC and land it in the vault + Posteingang.
+ *
+ * `[reference-ecosystem]` + `[ZUKUNFT]`: FORMAT + signature real (the Demo-Issuer
+ * signs an ES256 SD-JWT VC the Tier-1 verifier re-verifies offline), AUTHORITY
+ * Demo (not a German Meldebehörde, not eIDAS-trusted). Persona values per §6.2:
+ * `anschrift` = the NEW Umzug address from the Vorgang; dates = the Umzug date.
+ *
+ * ADDITIVE + idempotent: the document id is deterministic (`mb-vono-${vorgangId}`)
+ * so `upsertDocument` returns `false` on a duplicate run/re-open. Issuance runs
+ * server-side via a dynamic import of the server-only `src/lib/eudi/issue` module
+ * (keeps `node:crypto`/`jose` out of the client bundle). If ANYTHING throws, it
+ * is swallowed — the cascade must NOT break (mirrors the FIT-Connect additive
+ * pattern, `InlineCascade.tsx:543`).
+ */
+async function mintVerifiableOnceOnly(
+  vorgang: Vorgang,
+  persona: Persona,
+): Promise<void> {
+  // Only at the success point, and only for Umzug — no phantom credential.
+  if (vorgang.typ !== 'umzug' || vorgang.status !== 'abgeschlossen') return;
+
+  const docId = `mb-vono-${vorgang.id}`;
+  // Fast idempotency guard: skip the (async) mint entirely if already present.
+  if (loadDocuments().some((d) => d.id === docId)) return;
+
+  try {
+    const ctxNeueAdresse = vorgang.context?.neue_adresse as
+      | UmzugInput['neue_adresse']
+      | undefined;
+    const anschrift = ctxNeueAdresse
+      ? `${ctxNeueAdresse.strasse} ${ctxNeueAdresse.hausnummer}${
+          ctxNeueAdresse.zusatz ? ` (${ctxNeueAdresse.zusatz})` : ''
+        }, ${ctxNeueAdresse.plz} ${ctxNeueAdresse.ort}`
+      : // Persona ohne vollständige Stammdaten: anschrift weglassen (Edge case
+        // §9 — „N von 8" sinkt ehrlich; kein Crash).
+        '';
+    const umzugDatum =
+      (vorgang.context?.stichtag as string | undefined) ??
+      vorgang.fristen.find((f) => f.typ === 'stichtag')?.datum ??
+      new Date().toISOString().slice(0, 10);
+
+    // Server-only issuer (node:crypto + jose) — dynamic import keeps it out of
+    // the client bundle and makes a missing/failed import non-fatal.
+    const { issueMeldebestaetigungForPersona } = await import('@/lib/eudi/issue');
+
+    const token = await issueMeldebestaetigungForPersona(persona.id, vorgang.id, {
+      familienname: persona.nachname,
+      vornamen: persona.vorname,
+      ...(persona.doktorgrad ? { doktorgrad: persona.doktorgrad } : {}),
+      geburtsdatum: persona.geburtsdatum,
+      ...(anschrift ? { anschrift } : { anschrift: '' }),
+      einzugsdatum: umzugDatum,
+      datum_anmeldung: umzugDatum,
+      wohnungsstatus: 'hauptwohnung',
+    });
+
+    const stamp = new Date().toISOString();
+    const minted = upsertDocument({
+      id: docId,
+      typ: 'meldebestaetigung',
+      titel: 'Amtliche Meldebestätigung',
+      ausstellende_behoerde_id: 'buergeramt-berlin-mitte',
+      ausgestellt_am: stamp.slice(0, 10),
+      gueltig_bis: new Date(Date.now() + 90 * 86400000)
+        .toISOString()
+        .slice(0, 10),
+      kategorie: 'bescheide',
+      // The real SD-JWT VC token — the panel reads it from here and re-verifies.
+      qr_payload: token,
+      eudi_compatible: true,
+      watermark: '[MOCK]',
+      vorgang_id: vorgang.id,
+      owner_persona_id: persona.id,
+    });
+
+    // Posteingang „liegt vor"-Letter (only on a fresh mint — idempotent). The
+    // body carries the short disclaimer (C9) verbatim from domain §6.
+    if (minted) {
+      const disclaimerShort =
+        'Hinweis: Dieser Prototyp simuliert die Ausstellung. Die amtliche ' +
+        'Meldebestätigung beruht real auf § 24 Abs. 2 BMG (elektronisch: § 10 ' +
+        'BMeldDigiV). Hier ausgestellt von einem Demo-Issuer, nicht von einer ' +
+        'deutschen Behörde — Format echt, Autorität Demo ([reference-ecosystem]). ' +
+        'Wallet-Ausstellung durch Behörden = Zukunft ([ZUKUNFT], EUDI-Wallet ab ' +
+        '2. Jan 2027). Once-Only hier wallet-basiert, nicht Register-Austausch (NOOTS).';
+      appendLetter({
+        id: `letter-mb-vono-${vorgang.id}`,
+        absender_behoerde_id: 'buergeramt-berlin-mitte',
+        empfaenger_persona_id: persona.id,
+        aktenzeichen: aktenzeichenForBehoerde('buergeramt-berlin-mitte'),
+        betreff: 'Ihre amtliche Meldebestätigung liegt vor',
+        body_de: [
+          '[MOCK – Verwaltungsdemo, keine echten Daten]',
+          '',
+          `Sehr geehrte Frau ${persona.nachname},`,
+          '',
+          'Ihre amtliche Meldebestätigung (§ 24 Abs. 2 BMG · elektronisch i. V. m. ' +
+            '§ 10 BMeldDigiV, § 23a BMG) liegt als re-verifizierbarer Wallet-Nachweis ' +
+            'vor. Sie halten die Bestätigung und legen sie der nächsten Stelle selbst ' +
+            'vor; die nächste Stelle prüft die Signatur.',
+          '',
+          'Sie finden den Nachweis in „Dokumente".',
+          '',
+          disclaimerShort,
+        ].join('\n'),
+        status: 'ungelesen',
+        empfangen_am: stamp,
+        vorgang_id: vorgang.id,
+      });
+    }
+  } catch (err) {
+    // Additiv — Ausstellung/Verifikation darf den Run NICHT crashen.
+    if (typeof console !== 'undefined') {
+      console.warn('[mock-backend] verifiable once-only mint failed', err);
+    }
+  }
+}
+
 // ----------------------------------------------------------------------------
 // Public API surface
 // ----------------------------------------------------------------------------
@@ -1577,7 +1698,12 @@ async function applyBlockDSideEffectsLegacy(
   if (after && isVorgangFullyResolved(after) && after.status !== 'abgeschlossen') {
     changeVorgangStatus(vorgangId, 'abgeschlossen');
     const done = loadVorgaenge().find((v) => v.id === vorgangId);
-    if (done && done.typ === 'umzug') applyUmzugRipple(done, persona);
+    if (done && done.typ === 'umzug') {
+      applyUmzugRipple(done, persona);
+      // §6c — Verifiable Once-Only: mint the re-verifiable Meldebestätigung at
+      // the success point. Additive: never blocks the cascade.
+      await mintVerifiableOnceOnly(done, persona);
+    }
   }
 }
 
@@ -1693,7 +1819,11 @@ const engineHooks: EngineHooks = {
       if (fresh && fresh.status !== 'abgeschlossen') {
         changeVorgangStatus(saga.vorgangId, 'abgeschlossen');
         const done = loadVorgaenge().find((x) => x.id === saga.vorgangId);
-        if (done && done.typ === 'umzug') applyUmzugRipple(done, persona);
+        if (done && done.typ === 'umzug') {
+          applyUmzugRipple(done, persona);
+          // §6c — Verifiable Once-Only mint at the success point (additive).
+          await mintVerifiableOnceOnly(done, persona);
+        }
       }
     }
   },
@@ -1774,7 +1904,11 @@ async function runAutopilotInBackground(ctx: {
     if (v && isVorgangFullyResolved(v) && v.status !== 'abgeschlossen') {
       changeVorgangStatus(ctx.vorgangId, 'abgeschlossen');
       const done = loadVorgaenge().find((x) => x.id === ctx.vorgangId);
-      if (done && done.typ === 'umzug') applyUmzugRipple(done, ctx.persona);
+      if (done && done.typ === 'umzug') {
+        applyUmzugRipple(done, ctx.persona);
+        // §6c — Verifiable Once-Only mint at the success point (additive).
+        await mintVerifiableOnceOnly(done, ctx.persona);
+      }
     }
   } catch (err) {
     if (typeof console !== 'undefined') {

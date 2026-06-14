@@ -250,10 +250,12 @@ type AutopilotStep = {
 
 type Document = {
   id: string;
-  typ: 'aufenthaltstitel' | 'geburtsurkunde' | 'meldebescheinigung' | 'steuerbescheid' | string;
+  typ: 'aufenthaltstitel' | 'geburtsurkunde' | 'meldebestaetigung' | 'steuerbescheid' | string;
   ausstellende_behoerde_id: string;
   ausgestellt_am: string;
   gueltig_bis?: string;
+  // Synthetic QR payload — OR, for the Verifiable-Once-Only credential, the real
+  // ES256 SD-JWT VC string the Demo-Issuer minted (re-verifiable in-place).
   qr_payload: string;
   eudi_compatible: boolean;
   watermark: '[MOCK]';
@@ -268,6 +270,16 @@ type Termin = {
   status: 'gebucht' | 'bestätigt' | 'abgesagt';
 };
 ```
+
+## Verifiable Once-Only — Demo-Issuer + SD-JWT-VC return path (2026-06-14)
+
+The EUDI Tier-1 module (`src/lib/eudi`, SERVER-ONLY) gained an OUTGOING half: a synthetic **Demo-Issuer** that mints the amtliche Meldebestätigung (§ 24 Abs. 2 BMG) as a real ES256 **SD-JWT VC** and re-verifies it offline with the SAME verifier (`verifyPidSdJwtVc`) against an injected **Demo-Trust-Anchor** — ZERO changes to `verify.ts`. `[reference-ecosystem]` (format + signature real) + `[ZUKUNFT]` (authority Demo, not a German Meldebehörde).
+
+- **PKI (vendored, server-only):** `src/lib/eudi/fixtures/once-only-issuer.ts` carries `DEMO_ONCE_ONLY_CA_PEM` (the trust anchor), the leaf DS cert as base64-DER `x5c`, and the issuer's PKCS#8 signing key. Generated reproducibly + offline by `scripts/once-only-gen-pki.mjs` (copies under `docs/research/once-only-pki/`). No `.env`, no `fs`/network at runtime — Vercel- and Loom-safe, exactly like the verifier.
+- **Issuer:** `src/lib/eudi/issue.ts` — `issueMeldebestaetigungSdJwtVc(claims, opts?)` / `issueMeldebestaetigungForPersona(personaId, vorgangId, ctx, opts?)`. Header `{alg:'ES256', typ:'dc+sd-jwt', x5c:[…]}`, payload `{iss, iat, exp(~90d), vct:'govtech-de.example/credentials/meldebestaetigung/1', _sd:[…], _sd_alg:'sha-256'}`, the (up to) 8 § 24 Abs. 2 fields as object-property `_sd` disclosures, NO KB-JWT, NO PID padding. Returns `<issuerJwt>~<d1>~…~`.
+- **Readout adapter:** `src/lib/eudi/meldebestaetigung-readout.ts` — `toMeldebestaetigungReadout(PidVerificationResult)` → `MeldebestaetigungVerificationResult` (a distinct type that never carries `mandatoryPresent`/`MANDATORY_PID_ATTRS`; "N von 8 Bestätigungsfeldern", never "PID-Pflichtattribute").
+- **Server actions** (`src/app/actions/eudi.ts`): `verifyMeldebestaetigungCredential(personaId?, vorgangId?)` (mint + re-verify) and `presentMeldebestaetigungSubset(fields, …)` (selective re-presentation = literal Datenminimierung proof). Deterministic + offline.
+- **Backend issuance hook** (`src/lib/mock-backend/api.ts`): at the Umzug success point (Vorgang `abgeschlossen`, after all eID taps) the backend mints a `Document` (`id: mb-vono-${vorgangId}`, `typ:'meldebestaetigung'`, `qr_payload` = the SD-JWT VC token, `eudi_compatible:true`) → `document_added`, plus a "liegt vor" `Letter` → Posteingang. Additive + idempotent (deterministic id; never breaks the cascade).
 
 ## Redesign data-model additions (2026-05-27)
 

@@ -16,6 +16,7 @@ import {
 
 import { ValueReceiptCard } from '@/components/autopilot/ValueReceiptCard';
 import { FitConnectReceiptPanel } from '@/components/autopilot/FitConnectReceiptPanel';
+import { MeldebestaetigungInlineBeat } from '@/components/once-only/MeldebestaetigungInlineBeat';
 import { BehoerdenBadge } from '@/components/shared/BehoerdenBadge';
 import { submitViaFitConnect } from '@/app/actions/fit-connect';
 import { api, MockBackendError } from '@/lib/mock-backend';
@@ -757,6 +758,19 @@ export function InlineCascade({
         <div ref={receiptCardRef} data-testid="inline-cascade-receipt">
           <ValueReceiptCard receipt={receipt} variant={variant} />
         </div>
+      ) : null}
+
+      {/* Verifiable Once-Only coda (Beat 1): once the Umzug run is abgeschlossen,
+       * the cascade returns a re-verifiable amtliche Meldebestätigung. Owns its
+       * own polite region → rendered OUTSIDE the cascade's aria-live region
+       * (mirror of ValueReceiptCard, C7). Additive + quiet: an issuance/verify
+       * failure shows a calm note and NEVER breaks the cascade. Never steals
+       * focus (appears passively under the receipt). */}
+      {vorgang && vorgang.status === 'abgeschlossen' ? (
+        <MeldebestaetigungInlineBeat
+          personaId={vorgang.persona_id || undefined}
+          vorgangId={vorgang.id}
+        />
       ) : null}
 
       {/* Spec § 5.3 / § 10.3: the long legal-realism disclaimer, ONCE at the

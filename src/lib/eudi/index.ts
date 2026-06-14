@@ -31,4 +31,30 @@ export {
   type PlaceOfBirth,
   type CredentialValidity,
   type VerifyPidOptions,
+  // Verifiable Once-Only (additive)
+  MELDEBESTAETIGUNG_FIELDS,
+  type MeldebestaetigungField,
+  type MeldebestaetigungVerificationResult,
 } from './types';
+
+/**
+ * Verifiable Once-Only — Demo-Issuer surface. SERVER-ONLY. `[reference-ecosystem]`
+ * + `[ZUKUNFT]`: mints + re-verifies the amtliche Meldebestätigung (§ 24 Abs. 2
+ * BMG) credential offline with the synthetic Demo-CA — FORMAT real, AUTHORITY
+ * Demo. See `issue.ts` / `meldebestaetigung-readout.ts` / `once-only-issuer.ts`.
+ */
+export {
+  issueMeldebestaetigungSdJwtVc,
+  issueMeldebestaetigungForPersona,
+  MELDEBESTAETIGUNG_VCT,
+  MELDEBESTAETIGUNG_ISS,
+  type MeldebestaetigungClaims,
+  type IssueOptions,
+  type PersonaMeldeContext,
+} from './issue';
+export { toMeldebestaetigungReadout } from './meldebestaetigung-readout';
+export {
+  DEMO_ONCE_ONLY_CA_PEM,
+  DEMO_ONCE_ONLY_LEAF_PEM,
+  DEMO_ONCE_ONLY_LEAF_X5C_DER_B64,
+} from './fixtures/once-only-issuer';

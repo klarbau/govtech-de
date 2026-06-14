@@ -33,6 +33,7 @@ import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 
 import { EudiExportDialog } from '@/components/dokumente/EudiExportDialog';
+import { MeldebestaetigungCredentialPanel } from '@/components/once-only/MeldebestaetigungCredentialPanel';
 import { Skeleton } from '@/components/shared/Skeleton';
 import {
   Dialog,
@@ -1000,6 +1001,16 @@ function DocumentPreviewDialog({
               ) : null}
             </dl>
           </div>
+
+          {/* Verifiable Once-Only (Beat 3): the re-verifiable amtliche
+           * Meldebestätigung credential panel. Renders only for an EUDI-compatible
+           * Meldebestätigung — the credential the Umzug cascade returns. */}
+          {doc.typ === 'meldebestaetigung' && doc.eudi_compatible ? (
+            <MeldebestaetigungCredentialPanel
+              personaId={doc.owner_persona_id}
+              vorgangId={doc.vorgang_id}
+            />
+          ) : null}
 
           <DialogFooter showCloseButton>
             <button
