@@ -829,36 +829,15 @@ async function mintVerifiableOnceOnly(
   if (loadDocuments().some((d) => d.id === docId)) return;
 
   try {
-    const ctxNeueAdresse = vorgang.context?.neue_adresse as
-      | UmzugInput['neue_adresse']
-      | undefined;
-    const anschrift = ctxNeueAdresse
-      ? `${ctxNeueAdresse.strasse} ${ctxNeueAdresse.hausnummer}${
-          ctxNeueAdresse.zusatz ? ` (${ctxNeueAdresse.zusatz})` : ''
-        }, ${ctxNeueAdresse.plz} ${ctxNeueAdresse.ort}`
-      : // Persona ohne vollständige Stammdaten: anschrift weglassen (Edge case
-        // §9 — „N von 8" sinkt ehrlich; kein Crash).
-        '';
-    const umzugDatum =
-      (vorgang.context?.stichtag as string | undefined) ??
-      vorgang.fristen.find((f) => f.typ === 'stichtag')?.datum ??
-      new Date().toISOString().slice(0, 10);
-
-    // Server-only issuer (node:crypto + jose) — dynamic import keeps it out of
-    // the client bundle and makes a missing/failed import non-fatal.
-    const { issueMeldebestaetigungForPersona } = await import('@/lib/eudi/issue');
-
-    const token = await issueMeldebestaetigungForPersona(persona.id, vorgang.id, {
-      familienname: persona.nachname,
-      vornamen: persona.vorname,
-      ...(persona.doktorgrad ? { doktorgrad: persona.doktorgrad } : {}),
-      geburtsdatum: persona.geburtsdatum,
-      ...(anschrift ? { anschrift } : { anschrift: '' }),
-      einzugsdatum: umzugDatum,
-      datum_anmeldung: umzugDatum,
-      wohnungsstatus: 'hauptwohnung',
-    });
-
+    // NOTE: the credential is NOT minted here. The mock-backend `api` runs in the
+    // browser, and the issuer (`src/lib/eudi/issue`) pulls `node:crypto`/`jose`,
+    // which must never enter a client bundle (a dynamic `import()` does NOT prevent
+    // webpack from bundling it for a 'use client' graph). Minting + the offline
+    // re-verify both happen SERVER-SIDE in the `verifyMeldebestaetigungCredential`
+    // server action, which derives the SAME deterministic credential from the
+    // persona fixture + canonical demo Umzug address. Here we only persist the
+    // durable vault SHELL (+ the Posteingang Letter); Beat 1/3 fetch the crypto
+    // verdict via the server action, so `qr_payload` carries a marker, not a token.
     const stamp = new Date().toISOString();
     const minted = upsertDocument({
       id: docId,
@@ -870,8 +849,11 @@ async function mintVerifiableOnceOnly(
         .toISOString()
         .slice(0, 10),
       kategorie: 'bescheide',
-      // The real SD-JWT VC token — the panel reads it from here and re-verifies.
-      qr_payload: token,
+      // SD-JWT VC is minted + verified server-side (server action); the panel does
+      // NOT read a token from here. Marker only — keeps `node:crypto`/`jose` out of
+      // the client bundle.
+      qr_payload:
+        '[MOCK] SD-JWT VC — Signatur serverseitig geprüft (Panel „Verifizierbare Meldebestätigung")',
       eudi_compatible: true,
       watermark: '[MOCK]',
       vorgang_id: vorgang.id,
