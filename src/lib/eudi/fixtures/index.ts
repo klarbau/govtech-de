@@ -1,0 +1,57 @@
+/**
+ * EUDI Tier-1 fixtures — `[reference-ecosystem]`. SERVER-ONLY.
+ *
+ * Two vendored artefacts, inlined as constants so the verify path is purely
+ * in-memory (no `fs` read, no path resolution, no network) and ships cleanly on
+ * Vercel serverless:
+ *
+ *  1. {@link REFERENCE_PID_SD_JWT_VC} — a REAL PID SD-JWT VC, acquired headless
+ *     from the EU reference *development* issuer (`issuer.eudiw.dev`) on
+ *     2026-06-14 via the OpenID4VCI auth-code + PKCE flow against the "FormEU"
+ *     test PID source. Issuer JWT `~` 13 disclosures (no KB-JWT — this is the
+ *     issuer-output credential, key binding happens at OpenID4VP presentation
+ *     time). Identity: Erika Mustermann, 1990-01-01, Berlin/DE — fully
+ *     synthetic test data. Source-of-truth copy also kept at
+ *     `./pid-sd-jwt-vc.txt` for provenance.
+ *
+ *  2. {@link PID_ISSUER_CA_UT_02_PEM} — the GENUINE demo trust anchor
+ *     `CN=PID Issuer CA - UT 02, O=EUDI Wallet Reference Implementation, C=UT`
+ *     (the self-signed development IACA, valid 2025-03-24 → 2034-06-20).
+ *     Obtained from the EUDI reference verifier's bundled `trusted-issuers.jks`
+ *     and cryptographically confirmed to have issued the credential's leaf DS
+ *     cert (CA SubjectKeyIdentifier `62:C7:94:47:…` == leaf AuthorityKeyId, and
+ *     `openssl verify -partial_chain` / `X509Certificate.verify(ca.publicKey)`
+ *     both OK). This is the CA, NOT the leaf — the leaf is carried in the
+ *     credential's own `x5c[0]`. Source-of-truth copy at
+ *     `./pid-issuer-ca-ut-02.pem`.
+ *
+ * HONESTY: development IACA, NOT eIDAS-trusted, NOT German, NOT production.
+ */
+
+/** Real EU-reference PID SD-JWT VC (issuer JWT `~` 13 disclosures, trailing `~`). */
+export const REFERENCE_PID_SD_JWT_VC =
+  'eyJhbGciOiAiRVMyNTYiLCAidHlwIjogImRjK3NkLWp3dCIsICJ4NWMiOiBbIk1JSUMzekNDQW9XZ0F3SUJBZ0lVZjNsb2hUbURNQW1TL1lYL3E0aHFvUnlKQjU0d0NnWUlLb1pJemowRUF3SXdYREVlTUJ3R0ExVUVBd3dWVUVsRUlFbHpjM1ZsY2lCRFFTQXRJRlZVSURBeU1TMHdLd1lEVlFRS0RDUkZWVVJKSUZkaGJHeGxkQ0JTWldabGNtVnVZMlVnU1cxd2JHVnRaVzUwWVhScGIyNHhDekFKQmdOVkJBWVRBbFZVTUI0WERUSTFNRFF4TURFME16YzFNbG9YRFRJMk1EY3dOREUwTXpjMU1Wb3dVakVVTUJJR0ExVUVBd3dMVUVsRUlFUlRJQzBnTURFeExUQXJCZ05WQkFvTUpFVlZSRWtnVjJGc2JHVjBJRkpsWm1WeVpXNWpaU0JKYlhCc1pXMWxiblJoZEdsdmJqRUxNQWtHQTFVRUJoTUNWVlF3V1RBVEJnY3Foa2pPUFFJQkJnZ3Foa2pPUFFNQkJ3TkNBQVM3V0FBV3FQemUwVXMzejhwYWp5VlBXQlJtclJiQ2k1WDJzOUd2bHliUXl0d1R1bWNabmVqOUJrTGZBZ2xsb1g1dHYrTmdXZkRmZ3QvMDZzKzV0VjRsbzRJQkxUQ0NBU2t3SHdZRFZSMGpCQmd3Rm9BVVlzZVVSeWk5RDZJV0lLZWF3a21VUlBFQjA4Y3dHd1lEVlIwUkJCUXdFb0lRYVhOemRXVnlMbVYxWkdsM0xtUmxkakFXQmdOVkhTVUJBZjhFRERBS0JnZ3JnUUlDQUFBQkFqQkRCZ05WSFI4RVBEQTZNRGlnTnFBMGhqSm9kSFJ3Y3pvdkwzQnlaWEJ5YjJRdWNHdHBMbVYxWkdsM0xtUmxkaTlqY213dmNHbGtYME5CWDFWVVh6QXlMbU55YkRBZEJnTlZIUTRFRmdRVXFsL29weGtRbFl5MGxsYVRvUGJERS9teUVjRXdEZ1lEVlIwUEFRSC9CQVFEQWdlQU1GMEdBMVVkRWdSV01GU0dVbWgwZEhCek9pOHZaMmwwYUhWaUxtTnZiUzlsZFMxa2FXZHBkR0ZzTFdsa1pXNTBhWFI1TFhkaGJHeGxkQzloY21Ob2FYUmxZM1IxY21VdFlXNWtMWEpsWm1WeVpXNWpaUzFtY21GdFpYZHZjbXN3Q2dZSUtvWkl6ajBFQXdJRFNBQXdSUUloQU5KVlNEc3FUM0lrR2NLV1dnU2V1YmtET2RpNS9VRTliMUdGL1g1ZlFSRmFBaUJwNXQ2dEhoOFh3RmhQc3R6T0hNb3B2QkQvR3dtczBSQVVnbVNuNmt1OEdnPT0iXX0.eyJfc2QiOiBbIjRmZ0xiaDJTa0E4ZW9qUGQ5ZHFhbTRza0JMeW5MRUpzbGt6Rk1ZYXpYTjgiLCAiQklNMjJXeDBoQXJIbTlmbEdlMmtBblk1NVUtZnZQN3Z3anF5ZUV4d3lEayIsICJITGVPX1lqZ0o3TjlrMk5BZ1BWMXBhSFRBSDdXU0RFcUZQZV9vbkJwNlEwIiwgIlM0aF9UWDRQNm5FWkNUa3dMckxiZ2NNVVJoOW9xRFQ0bkpvZV9icWdUeHciLCAiVVNYVHRsRzN6TVh2RzF1ZnN1UWxkb0ZPaV85a25INjZBN0RIZjBKb1hzSSIsICJaOU05bGkxNExWcHdWNXNQRVQzTFZTVEFBMGZPLURfLU9fb204aHFxVUt3IiwgIl9JLTB2OTBLbTFXTkEzcXZTU2R3QWNVUXJVcXhOdUtuNENJcl91UU1PSGMiLCAiX1VHcnVRdEdQdGZ1Y0RlYVhBeTRGdmV2S1ZxajVFNTFXLTZZa0ZhQ1dncyIsICJyTjRwMVEwRjhzbUxOdDUtRFFwZWNETW1IQkV2TkhwUHdraGE3RktJNm04Il0sICJpc3MiOiAiaHR0cHM6Ly9iYWNrZW5kLmlzc3Vlci5ldWRpdy5kZXYiLCAiaWF0IjogMTc4MTM5MTYwMCwgImV4cCI6IDE3ODkxNjc2MDAsICJ2Y3QiOiAidXJuOmV1ZGk6cGlkOjEiLCAic3RhdHVzIjogeyJzdGF0dXNfbGlzdCI6IHsiaWR4IjogNjQzMSwgInVyaSI6ICJodHRwczovL2lzc3Vlci5ldWRpdy5kZXYvdG9rZW5fc3RhdHVzX2xpc3QvRkMvdXJuOmV1ZGk6cGlkOjEvMGQ3MDMxMDgtMDU0Ni00NGRmLTk5ZWUtYjBiY2M0YjQyYjMzIn19LCAiX3NkX2FsZyI6ICJzaGEtMjU2IiwgImNuZiI6IHsiandrIjogeyJrdHkiOiAiRUMiLCAiY3J2IjogIlAtMjU2IiwgIngiOiAiZ0tJZDh2Z2VkVnFoMmM4WC10eDV2YnJZTlVid1FrcWp3Wkp3cFhFVlZHMCIsICJ5IjogImZkcF9TZGdOT2QteDRTQ3ZmVnFPeHN1VnpzcUIyWVEtLXBBdjF2V2g4R2MifX19.959jwY4HRJXdc9ZxK_i75q-ATqVZZd_Fh-YSc4eSclqF5IsY8VVGMDM09sZ38HZfKDN0xcW1DTeg_snc2s_IaQ~WyJjN0t0UDNXSlRaUHRUeHMzSGpvZEdBIiwgImZhbWlseV9uYW1lIiwgIk11c3Rlcm1hbm4iXQ~WyJoYVlXS3RrU2hDTzBNaVp0NXVJSzZBIiwgImdpdmVuX25hbWUiLCAiRXJpa2EiXQ~WyJFWUVJNXY5ZTlnWUdLWGRoaEtlMjdnIiwgImJpcnRoZGF0ZSIsICIxOTkwLTAxLTAxIl0~WyI1bDcyeHk0QmdxWTQwaDkwYmwzejlnIiwgImNvdW50cnkiLCAiREUiXQ~WyJfMEJPWnh2eFV0eGZoamR0ZzFnUFhBIiwgImxvY2FsaXR5IiwgIkJlcmxpbiJd~WyI2Q0ZOdjh5amRXSmxEczVUYy1YWjBRIiwgInJlZ2lvbiIsICJCZXJsaW4iXQ~WyJqVDhSVUxfUUpseTdEVW5MaEVVZGtnIiwgInBsYWNlX29mX2JpcnRoIiwgeyJfc2QiOiBbIjhYbXZ4T2RfeTVUdXJUcGhqVEpQY05QSlllcVN6S2lKTDk5bF9rOThYSU0iLCAiTVVtcFQ0bjhiQ293am9vWkZoM042QzdSV2hyQVEzOEtSbGNMcExKLWIxQSIsICJ0LTZKTy1pNFItZUs4Q1gyVHgtWkUyNzBZWUxEUjlSZjRKOVMxX1I2aXI4Il19XQ~WyJkNHE3aGt6QmxDNWNOUnNWWTlWaG9BIiwgIkRFIl0~WyJzUENUeTJlWnE2QWlOb01VMExTYUh3IiwgIm5hdGlvbmFsaXRpZXMiLCBbeyIuLi4iOiAiY2M5MURyRlRxdVZHb2NBQWVRWkZzZGM5LUQwbmxYQ25POWlhV0pBZEdxcyJ9XV0~WyJNZWVwQWNZZXdybHYtMVgzaHJVTEd3IiwgImRhdGVfb2ZfaXNzdWFuY2UiLCAiMjAyNi0wNi0xNCJd~WyJMQUhPcjVQN29hSlZrWURYV1BwTGl3IiwgImRhdGVfb2ZfZXhwaXJ5IiwgIjIwMjYtMDktMTIiXQ~WyJvc1NCY2tCdTRqejRwbWxKMFZ2UVdnIiwgImlzc3VpbmdfYXV0aG9yaXR5IiwgIlRlc3QgUElEIGlzc3VlciJd~WyIzNjZtRjMwLW1yZHBNb1FjTDBoczNnIiwgImlzc3VpbmdfY291bnRyeSIsICJGQyJd~';
+
+/**
+ * Genuine demo trust anchor CA — `PID Issuer CA - UT 02` (self-signed IACA).
+ * NOT the leaf. Verified to have issued the credential's `x5c[0]` leaf DS cert.
+ */
+export const PID_ISSUER_CA_UT_02_PEM = `-----BEGIN CERTIFICATE-----
+MIIC3TCCAoOgAwIBAgIUEwybFc9Jw+az3r188OiHDaxCfHEwCgYIKoZIzj0EAwMw
+XDEeMBwGA1UEAwwVUElEIElzc3VlciBDQSAtIFVUIDAyMS0wKwYDVQQKDCRFVURJ
+IFdhbGxldCBSZWZlcmVuY2UgSW1wbGVtZW50YXRpb24xCzAJBgNVBAYTAlVUMB4X
+DTI1MDMyNDIwMjYxNFoXDTM0MDYyMDIwMjYxM1owXDEeMBwGA1UEAwwVUElEIElz
+c3VlciBDQSAtIFVUIDAyMS0wKwYDVQQKDCRFVURJIFdhbGxldCBSZWZlcmVuY2Ug
+SW1wbGVtZW50YXRpb24xCzAJBgNVBAYTAlVUMFkwEwYHKoZIzj0CAQYIKoZIzj0D
+AQcDQgAEesDKj9rCIcrGj0wbSXYvCV953bOPSYLZH5TNmhTz2xa7VdlvQgQeGZRg
+1PrF5AFwt070wvL9qr1DUDdvLp6a1qOCASEwggEdMBIGA1UdEwEB/wQIMAYBAf8C
+AQAwHwYDVR0jBBgwFoAUYseURyi9D6IWIKeawkmURPEB08cwEwYDVR0lBAwwCgYI
+K4ECAgAAAQcwQwYDVR0fBDwwOjA4oDagNIYyaHR0cHM6Ly9wcmVwcm9kLnBraS5l
+dWRpdy5kZXYvY3JsL3BpZF9DQV9VVF8wMi5jcmwwHQYDVR0OBBYEFGLHlEcovQ+i
+FiCnmsJJlETxAdPHMA4GA1UdDwEB/wQEAwIBBjBdBgNVHRIEVjBUhlJodHRwczov
+L2dpdGh1Yi5jb20vZXUtZGlnaXRhbC1pZGVudGl0eS13YWxsZXQvYXJjaGl0ZWN0
+dXJlLWFuZC1yZWZlcmVuY2UtZnJhbWV3b3JrMAoGCCqGSM49BAMDA0gAMEUCIQCe
+4R9rO4JhFp821kO8Gkb8rXm4qGG/e5/Oi2XmnTQqOQIgfFs+LDbnP2/j1MB4rwZ1
+FgGdpr4oyrFB9daZyRIcP90=
+-----END CERTIFICATE-----
+`;
