@@ -11,7 +11,8 @@
  * Tier-1 use here is RENDER-ONLY: we build a standards-true SET to show the
  * traceability shape; we do not post it anywhere. The signing key is an
  * ephemeral synthetic key — there is no real subscriber. Tier-2 (live receive)
- * would validate the subscriber's real SET; that path lives in `sdk-tier2.ts`.
+ * reads + verifies the real FITKO-issued SETs from the event log; that path
+ * lives in `rest-tier2.ts`.
  */
 
 import { generateKeyPair, SignJWT } from 'jose';

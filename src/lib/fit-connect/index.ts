@@ -98,10 +98,11 @@ export async function buildSubmission(
  *
  * Gracefully falls back to `buildSubmission` (Tier-1) when `FIT_CONNECT_LIVE`
  * is unset OR creds are missing (Spec § 12). The real round-trip lives in
- * `sdk-tier2.ts` behind a dynamic import so `@fitko/fit-connect` is NEVER
- * resolved at build time. Never logs or returns secret material; on sandbox
- * failure returns a Tier-2 receipt with `status: 'error'` (NOT framed as a real
- * Behörde failing — it is the TEST sandbox / our own destination).
+ * `rest-tier2.ts` (direct `fetch` + `jose`, no `@fitko/fit-connect`) behind a
+ * dynamic import so it stays out of the deployed build. Never logs or returns
+ * secret material; on sandbox failure returns a Tier-2 receipt with
+ * `status: 'error'` (NOT framed as a real Behörde failing — it is the TEST
+ * sandbox / our own destination).
  */
 export async function sendLiveSubmission(
   input: FitConnectSubmissionInput,
@@ -113,12 +114,9 @@ export async function sendLiveSubmission(
   }
 
   try {
-    // Dynamic, build-time-invisible import (see sdk-tier2.ts).
-    const { runLiveSubmission } = await import('./sdk-tier2');
-    return await runLiveSubmission(input, {
-      clientId: env.clientId!,
-      clientSecret: env.clientSecret!,
-    });
+    // Dynamic import keeps rest-tier2 off the deployed/Tier-1 paths.
+    const { runLiveSubmission } = await import('./rest-tier2');
+    return await runLiveSubmission(input, env);
   } catch {
     // Never surface secrets or the underlying error detail.
     const base = await buildSubmission(input);

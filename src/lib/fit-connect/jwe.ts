@@ -15,7 +15,13 @@
  * in the receipt panel; it is never sent over the network in Tier-1.
  */
 
-import { CompactEncrypt, importJWK, type CryptoKey, type JWK } from 'jose';
+import {
+  CompactEncrypt,
+  compactDecrypt,
+  importJWK,
+  type CryptoKey,
+  type JWK,
+} from 'jose';
 
 import { JWE_CRYPTO } from './config';
 import mockDestinationJwk from './schema/mock-destination-key.json';
@@ -92,4 +98,67 @@ export async function encryptThreeDatasets(input: {
 export function renderWireExcerpt(compact: string, head = 46, tail = 12): string {
   if (compact.length <= head + tail + 1) return compact;
   return `${compact.slice(0, head)}…⟨gekürzt⟩…${compact.slice(-tail)}`;
+}
+
+/* ───────────────────────── Tier-2 live JWE (direct REST) ─────────────────── */
+
+/**
+ * FIT-Connect publishes its destination wrap key with `key_ops: ["wrapKey"]`
+ * (and sometimes `use: "enc"`). `jose`'s WebCrypto backend maps those to key
+ * usages that EXCLUDE `encrypt`/`decrypt`, so a direct `importJWK` →
+ * `CompactEncrypt` throws "usages must include encrypt". Stripping the
+ * operation-restricting fields lets the key import with the default RSA-OAEP-256
+ * encrypt/decrypt usages. (VERIFIED LIVE 2026-06-14.)
+ */
+function relaxJwkForJwe(jwk: JWK): JWK {
+  const { use: _use, key_ops: _ops, ext: _ext, ...rest } = jwk as JWK & {
+    ext?: boolean;
+  };
+  return rest as JWK;
+}
+
+/**
+ * Encrypt a payload as a JWE Compact Serialization against a PROVIDED public JWK
+ * (the destination's fetched encryption key — Tier-2 live path), with the
+ * protected header `{ alg: RSA-OAEP-256, enc: A256GCM, kid }` and NO `zip`.
+ *
+ * `cty` is required by FITKO for the metadata + Fachdaten JWEs
+ * (`application/json` — VERIFIED LIVE: a finalize PUT without it returns
+ * `422 Invalid JWE Header 'cty'`). Pass `undefined` only where FITKO does not
+ * require it.
+ */
+export async function encryptCompactToJwk(
+  payload: unknown,
+  publicJwk: JWK,
+  kid: string,
+  cty?: 'application/json' | 'application/xml',
+): Promise<JweResult> {
+  const key = await importJWK(relaxJwkForJwe(publicJwk), JWE_CRYPTO.alg);
+  const plaintext = new TextEncoder().encode(JSON.stringify(payload));
+  // Object literal (not a cast) so tsc type-checks the header shape against
+  // jose's CompactJWEHeaderParameters — alg/enc are `as const` literals; cty is
+  // spread in only when FITKO requires it (metadata/Fachdaten). NO `zip`.
+  const compact = await new CompactEncrypt(plaintext)
+    .setProtectedHeader({
+      alg: JWE_CRYPTO.alg,
+      enc: JWE_CRYPTO.enc,
+      kid,
+      ...(cty ? { cty } : {}),
+    })
+    .encrypt(key);
+  return { compact, excerpt: renderWireExcerpt(compact) };
+}
+
+/**
+ * Decrypt a JWE Compact Serialization with a PROVIDED private JWK
+ * (the destination's decryption key — Tier-2 receive path) and return the
+ * parsed JSON plaintext. Used to assert the metadata/Fachdaten round-trip.
+ */
+export async function decryptCompact(
+  jwe: string,
+  privateJwk: JWK,
+): Promise<unknown> {
+  const key = await importJWK(relaxJwkForJwe(privateJwk), JWE_CRYPTO.alg);
+  const { plaintext } = await compactDecrypt(jwe, key);
+  return JSON.parse(new TextDecoder().decode(plaintext));
 }
