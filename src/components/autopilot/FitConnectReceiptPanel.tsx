@@ -193,9 +193,136 @@ export function FitConnectReceiptPanel({
         <p className="text-xs text-text-muted">{t('tier1_offline_note')}</p>
       )}
 
+      {/* Tier-2 LIVE round-trip evidence — present ONLY on a local flagged
+       * (FIT_CONNECT_LIVE=1) sandbox run; ABSENT on Vercel + Tier-1. Same
+       * verified/not-ok visual as the schema row above: CheckCircle2/AlertTriangle
+       * ALWAYS paired with text, never colour-only (axe 1.4.1). */}
+      {receipt.live ? (
+        <div
+          data-testid="fit-connect-live-roundtrip"
+          className="flex flex-col gap-1.5 border-t border-border pt-2 text-xs"
+        >
+          <h4 className="font-semibold text-text-primary">{t('live_heading')}</h4>
+
+          {receipt.caseId ? (
+            <div className="flex flex-wrap items-baseline gap-x-2">
+              <span className="font-medium text-text-secondary">
+                {t('live_case_id_label')}
+              </span>
+              <span className="min-w-0 break-all font-mono text-text-primary">
+                {receipt.caseId}
+              </span>
+            </div>
+          ) : null}
+
+          {receipt.live.decryptRoundTripOk !== undefined ? (
+            <LiveStatusRow
+              label={t('live_decrypt_label')}
+              ok={receipt.live.decryptRoundTripOk}
+              okText={t('live_decrypt_ok')}
+              notOkText={t('live_decrypt_not_ok')}
+            />
+          ) : null}
+
+          {receipt.live.acknowledgeSetPosted !== undefined ? (
+            <LiveStatusRow
+              label={t('live_acknowledge_label')}
+              ok={receipt.live.acknowledgeSetPosted}
+              okText={t('live_acknowledge_ok')}
+              notOkText={t('live_acknowledge_not_ok')}
+            />
+          ) : null}
+
+          {receipt.live.subscriberSetVerified !== undefined ? (
+            <LiveStatusRow
+              label={t('live_subscriber_set_label')}
+              ok={receipt.live.subscriberSetVerified}
+              okText={t('live_subscriber_set_ok')}
+              notOkText={t('live_subscriber_set_not_ok')}
+            />
+          ) : null}
+
+          {receipt.live.setVerified !== undefined ? (
+            <LiveStatusRow
+              label={t('live_set_verified_label')}
+              ok={receipt.live.setVerified}
+              okText={t('live_set_verified_ok')}
+              notOkText={t('live_set_verified_not_ok')}
+            />
+          ) : null}
+
+          {receipt.live.eventLogCount !== undefined ? (
+            <div className="flex flex-wrap items-baseline gap-x-2">
+              <span className="font-medium text-text-secondary">
+                {t('live_event_count_label')}
+              </span>
+              <span className="font-mono text-text-primary">
+                {receipt.live.eventLogCount}
+              </span>
+            </div>
+          ) : null}
+
+          {receipt.live.eventTypes && receipt.live.eventTypes.length > 0 ? (
+            <div className="flex flex-col gap-0.5">
+              <span className="font-medium text-text-secondary">
+                {t('live_event_types_label')}
+              </span>
+              <ul
+                aria-label={t('live_event_types_aria')}
+                className="flex flex-col gap-0.5 pl-1"
+              >
+                {receipt.live.eventTypes.map((eventType) => (
+                  <li
+                    key={eventType}
+                    className="min-w-0 break-all font-mono text-text-secondary"
+                  >
+                    {eventType}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+
+          {receipt.live.note ? (
+            <p className="text-text-muted">{receipt.live.note}</p>
+          ) : null}
+        </div>
+      ) : null}
+
       <p className="border-t border-border pt-2 text-xs text-text-muted">
         {t('disclaimer_short')}
       </p>
     </section>
+  );
+}
+
+interface LiveStatusRowProps {
+  label: string;
+  ok: boolean;
+  okText: string;
+  notOkText: string;
+}
+
+/**
+ * A label:status row for the Tier-2 live-roundtrip evidence. Mirrors the schema
+ * row's verified/not-ok visual exactly: CheckCircle2 (success) / AlertTriangle
+ * (not-ok), each ALWAYS paired with text — never colour-only (axe 1.4.1).
+ */
+function LiveStatusRow({ label, ok, okText, notOkText }: LiveStatusRowProps) {
+  return (
+    <div className="flex flex-wrap items-baseline gap-x-2">
+      <span className="font-medium text-text-secondary">{label}</span>
+      {ok ? (
+        <span className="inline-flex items-center gap-1 font-medium text-success">
+          <CheckCircle2 className="size-3.5" aria-hidden="true" />
+          {okText}
+        </span>
+      ) : (
+        <span className="inline-flex items-center gap-1 font-medium text-destructive">
+          <AlertTriangle className="size-3.5" aria-hidden="true" />
+          {notOkText}
+        </span>
+      )}
+    </div>
   );
 }
