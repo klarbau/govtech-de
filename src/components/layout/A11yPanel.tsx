@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/dialog';
 import { useA11yPreferences } from '@/lib/a11y/use-a11y-preferences';
 import { useSpeech } from '@/lib/a11y/use-speech';
+import { A11Y_DEFAULTS } from '@/lib/a11y/preferences';
 import { cn } from '@/lib/utils';
 
 interface A11yPanelProps {
@@ -50,29 +51,36 @@ export function A11yPanel({ id, open, onOpenChange }: A11yPanelProps) {
   // aria-live announcements for font-step + reset (status only — no visual row).
   const [announce, setAnnounce] = React.useState('');
 
+  // Reset also restores the default fontScale, which would re-fire the font
+  // announce effect below and overwrite the "Bedienhilfen zurückgesetzt" message.
+  // This flag tells that effect to skip the one tick triggered by a reset so the
+  // reset announcement stays final.
+  const fromResetRef = React.useRef(false);
+
   // Stop reading when the panel closes (and the cleanup in useSpeech catches
   // unmount / navigation). The transport reads the live `<main>` landmark.
   React.useEffect(() => {
     if (!open) speech.stop();
-  }, [open, speech]);
-
-  const handleDecrease = React.useCallback(() => {
-    decreaseFontScale();
-  }, [decreaseFontScale]);
-
-  const handleIncrease = React.useCallback(() => {
-    increaseFontScale();
-  }, [increaseFontScale]);
+  }, [open, speech.stop]);
 
   React.useEffect(() => {
+    if (fromResetRef.current) {
+      fromResetRef.current = false;
+      return;
+    }
     setAnnounce(t('fontsize.announce', { value: fontScale }));
   }, [fontScale, t]);
 
   const handleReset = React.useCallback(() => {
+    // Only arm the suppression flag when the reset will actually move fontScale
+    // (and thus re-fire the font announce effect). If fontScale is already at
+    // default, the effect won't run and an armed flag would wrongly swallow the
+    // NEXT genuine font change.
+    if (fontScale !== A11Y_DEFAULTS.fontScale) fromResetRef.current = true;
     reset();
     speech.stop();
     setAnnounce(t('reset.announce'));
-  }, [reset, speech, t]);
+  }, [fontScale, reset, speech, t]);
 
   const handlePlay = React.useCallback(() => {
     speech.play(readMainText());
@@ -103,7 +111,7 @@ export function A11yPanel({ id, open, onOpenChange }: A11yPanelProps) {
           <div className="flex items-center gap-3">
             <button
               type="button"
-              onClick={handleDecrease}
+              onClick={decreaseFontScale}
               disabled={!canDecreaseFont}
               aria-label={t('fontsize.decrease')}
               className="inline-flex size-9 items-center justify-center rounded-md border border-border bg-card text-text-primary transition-colors hover:bg-surface-muted disabled:cursor-not-allowed disabled:opacity-40"
@@ -118,7 +126,7 @@ export function A11yPanel({ id, open, onOpenChange }: A11yPanelProps) {
             </span>
             <button
               type="button"
-              onClick={handleIncrease}
+              onClick={increaseFontScale}
               disabled={!canIncreaseFont}
               aria-label={t('fontsize.increase')}
               className="inline-flex size-9 items-center justify-center rounded-md border border-border bg-card text-text-primary transition-colors hover:bg-surface-muted disabled:cursor-not-allowed disabled:opacity-40"
