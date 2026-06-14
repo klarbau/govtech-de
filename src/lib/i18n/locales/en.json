@@ -2187,7 +2187,7 @@
     "wallet": {
       "eudi_reference_pid": {
       "title": "Verified EUDI reference credential",
-      "subject_note": "Reference test identity (Erika Mustermann) — not the identity of this demo persona.",
+      "subject_note": "Synthetic reference test credential for the active demo persona — real cryptography, invented identity, not issued by the German state.",
       "reference_ecosystem_badge": "Reference ecosystem",
       "loading": "Credential is being verified cryptographically offline …",
       "error": "The reference credential could not be verified — please try again.",

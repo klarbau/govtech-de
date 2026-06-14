@@ -16,22 +16,31 @@ import { cn, formatDateDe } from '@/lib/utils';
 
 interface EudiReferencePidCardProps {
   className?: string;
+  /**
+   * The ACTIVE persona's id (e.g. `anna-petrov`). Selects which pre-issued
+   * reference PID to verify — each demo persona has its own real reference
+   * credential carrying that persona's synthetic attributes. Omitted / unknown
+   * falls back to the default (Erika Mustermann) credential server-side.
+   */
+  personaId?: string;
 }
 
 /**
  * `<EudiReferencePidCard>` — surfaces a REAL, offline-verified EU-reference PID
- * (SD-JWT VC) in the Stammdaten Wallet sub-tab.
+ * (SD-JWT VC) in the Stammdaten Wallet sub-tab, for the ACTIVE persona.
  *
- * Honesty contract (`[reference-ecosystem]`): this is a proof-of-capability
- * about a SYNTHETIC reference test subject (Erika Mustermann), verified against
- * the EUDI *development* demo IACA. It is NOT the demo persona's own credential,
+ * Honesty contract (`[reference-ecosystem]`): this is a proof-of-capability with
+ * a REAL EU reference/development credential whose attributes mirror the active
+ * demo persona — but it is a SYNTHETIC test identity issued by the EUDI
+ * *development* issuer and verified against the *development* demo IACA. It is
  * NOT German-state, NOT eIDAS-/production-verified. The German national EUDI
  * Wallet is `[ZUKUNFT]` (~2 Jan 2027). The honesty block at the foot is
  * load-bearing and must never be dropped.
  *
  * Architecture: `src/lib/eudi` is SERVER-ONLY (`node:crypto` + `jose` + vendored
  * cert). Verification runs in the `getVerifiedReferencePid` server action; this
- * client card only ever receives the plain serializable `PidVerificationResult`.
+ * client card only ever receives the plain serializable `PidVerificationResult`
+ * and forwards `personaId` to the action.
  *
  * a11y: status icons (`CheckCircle2`/`AlertTriangle`) are ALWAYS paired with
  * text — never colour-only (axe 1.4.1). Attribute rows use list semantics; the
@@ -39,7 +48,10 @@ interface EudiReferencePidCardProps {
  * alone). An expired-but-cryptographically-verified credential still renders the
  * verified signature/chain plus an honest „abgelaufen" line.
  */
-export function EudiReferencePidCard({ className }: EudiReferencePidCardProps) {
+export function EudiReferencePidCard({
+  className,
+  personaId,
+}: EudiReferencePidCardProps) {
   const t = useTranslations('stammdaten.wallet.eudi_reference_pid');
 
   const [result, setResult] = React.useState<PidVerificationResult | null>(null);
@@ -50,7 +62,7 @@ export function EudiReferencePidCard({ className }: EudiReferencePidCardProps) {
   React.useEffect(() => {
     let cancelled = false;
     setState('loading');
-    void getVerifiedReferencePid()
+    void getVerifiedReferencePid(personaId)
       .then((res) => {
         if (cancelled) return;
         setResult(res);
@@ -62,7 +74,7 @@ export function EudiReferencePidCard({ className }: EudiReferencePidCardProps) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [personaId]);
 
   const cryptoVerified =
     result !== null && result.verified && result.chainValid;

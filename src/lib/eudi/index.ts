@@ -9,12 +9,18 @@
  *  - `verifyPidSdJwtVc(token, opts?)` → fully offline (ZERO network) issuer-
  *    signature + leaf→CA chain + disclosure-digest verification. Always safe in
  *    the deployed build.
- *  - `REFERENCE_PID_SD_JWT_VC` → the vendored real reference credential.
+ *  - `pidSdJwtVcForPersona(personaId)` → the active persona's vendored real PID
+ *    (each demo persona has its own pre-issued reference credential), falling
+ *    back to `REFERENCE_PID_SD_JWT_VC` (Erika) for an unknown id.
+ *  - `PID_SD_JWT_VC_BY_PERSONA` → the personaId → credential registry.
+ *  - `REFERENCE_PID_SD_JWT_VC` → the default vendored real reference credential.
  */
 
 export { verifyPidSdJwtVc } from './verify';
 export {
   REFERENCE_PID_SD_JWT_VC,
+  PID_SD_JWT_VC_BY_PERSONA,
+  pidSdJwtVcForPersona,
   PID_ISSUER_CA_UT_02_PEM,
 } from './fixtures';
 export {

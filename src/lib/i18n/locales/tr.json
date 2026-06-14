@@ -2187,7 +2187,7 @@
     "wallet": {
       "eudi_reference_pid": {
       "title": "Doğrulanmış EUDI referans kanıtı",
-      "subject_note": "Referans test kimliği (Erika Mustermann) — bu demo kişisinin (Demo-Persona) kimliği değil.",
+      "subject_note": "Aktif demo kişisi (Demo-Persona) için sentetik referans test kanıtı — gerçek kriptografi, uydurma kimlik, Alman devleti tarafından verilmemiştir.",
       "reference_ecosystem_badge": "Referans ekosistemi",
       "loading": "Kanıt çevrimdışı kriptografik olarak doğrulanıyor …",
       "error": "Referans kanıtı doğrulanamadı — lütfen tekrar deneyin.",

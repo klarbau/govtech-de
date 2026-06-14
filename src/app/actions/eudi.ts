@@ -17,15 +17,23 @@
  * NOT production. The German national EUDI Wallet is `[ZUKUNFT]` (~2 Jan 2027).
  */
 
-import { REFERENCE_PID_SD_JWT_VC, verifyPidSdJwtVc } from '@/lib/eudi';
+import { pidSdJwtVcForPersona, verifyPidSdJwtVc } from '@/lib/eudi';
 import type { PidVerificationResult } from '@/lib/eudi';
 
 /**
- * Verify the vendored EU-reference PID SD-JWT VC offline and return the result.
+ * Verify the ACTIVE persona's vendored EU-reference PID SD-JWT VC offline and
+ * return the result.
+ *
+ * `personaId` selects which pre-issued reference credential to verify (each demo
+ * persona — anna-petrov / markus-schmidt / mehmet-yildiz — has its own real PID
+ * with that persona's synthetic attributes). An unknown / omitted id falls back
+ * to the default credential (Erika Mustermann) via `pidSdJwtVcForPersona`.
  *
  * The verifier never throws on bad input (it returns `{ verified: false }`), so
  * this action is render-safe: the card can always paint an honest state.
  */
-export async function getVerifiedReferencePid(): Promise<PidVerificationResult> {
-  return verifyPidSdJwtVc(REFERENCE_PID_SD_JWT_VC);
+export async function getVerifiedReferencePid(
+  personaId?: string,
+): Promise<PidVerificationResult> {
+  return verifyPidSdJwtVc(pidSdJwtVcForPersona(personaId));
 }

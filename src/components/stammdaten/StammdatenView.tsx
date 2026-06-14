@@ -462,7 +462,7 @@ export function StammdatenView(_props: StammdatenViewProps) {
             </Link>
           </div>
 
-          <EudiReferencePidCard />
+          <EudiReferencePidCard personaId={persona.id} />
 
           <div className="sd-card">
             <div className="sd-card-head">

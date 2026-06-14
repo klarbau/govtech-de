@@ -1,20 +1,57 @@
 /**
  * EUDI Tier-1 CORE — offline SD-JWT VC verifier (`src/lib/eudi/verify.ts`).
  *
- * `[reference-ecosystem]`: asserts the verifier against the VENDORED REAL EU
- * reference PID credential + genuine demo CA (`PID Issuer CA - UT 02`):
- *   - the real credential verifies (signature + chain + all 5 mandatory attrs),
+ * `[reference-ecosystem]`: asserts the verifier against the VENDORED REAL,
+ * PERSONA-AWARE EU reference PID credentials + genuine demo CA
+ * (`PID Issuer CA - UT 02`):
+ *   - each of the 3 demo personas' pre-issued PIDs verifies (signature + chain +
+ *     x5c + all 5 mandatory attrs) with that persona's exact synthetic attrs,
+ *   - the default (Erika) credential verifies,
+ *   - the registry / fallback selects the right credential per personaId,
  *   - a tampered token fails,
  *   - and verification makes ZERO network calls (the Tier-1 deploy-safety
  *     premise — `fetch` is trip-wired).
  *
  * Deterministic and offline: no live issuer, no PKI fetch, no clock dependence
- * (expiry is non-fatal — the fixture's `exp` is 2026-09-12).
+ * (expiry is non-fatal — the fixtures' `exp` is 2026-09-12).
  */
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
-import { verifyPidSdJwtVc, REFERENCE_PID_SD_JWT_VC } from '@/lib/eudi';
+import {
+  verifyPidSdJwtVc,
+  REFERENCE_PID_SD_JWT_VC,
+  PID_SD_JWT_VC_BY_PERSONA,
+  pidSdJwtVcForPersona,
+} from '@/lib/eudi';
 import { MANDATORY_PID_ATTRS } from '@/lib/eudi/types';
+
+/**
+ * Expected per-persona disclosed attrs (the SYNTHETIC FormEU identities entered
+ * at issuance). Each credential carries the real demo leaf DS cert in `x5c[0]`.
+ */
+const PERSONA_EXPECTATIONS = {
+  'anna-petrov': {
+    family_name: 'Petrov',
+    given_name: 'Anna',
+    birthdate: '1997-03-22',
+    nationalities: ['RU'],
+    place_of_birth: { country: 'BG', locality: 'Sofia', region: 'Sofia' },
+  },
+  'markus-schmidt': {
+    family_name: 'Schmidt',
+    given_name: 'Markus',
+    birthdate: '1988-02-14',
+    nationalities: ['DE'],
+    place_of_birth: { country: 'DE', locality: 'Hamburg', region: 'Hamburg' },
+  },
+  'mehmet-yildiz': {
+    family_name: 'Yıldız',
+    given_name: 'Mehmet',
+    birthdate: '1990-09-04',
+    nationalities: ['TR'],
+    place_of_birth: { country: 'TR', locality: 'Konya', region: 'Konya' },
+  },
+} as const;
 
 /* ── Network trip-wire — verification must make NO network call ──────────────── */
 
@@ -88,6 +125,68 @@ describe('EUDI Tier-1 verifyPidSdJwtVc — real reference credential', () => {
       // If/when the wall clock passes 2026-09-12, the deployed demo still renders.
       expect(r.validity.expiresAt).toBeTruthy();
     }
+    expect(networkAttempts).toEqual([]);
+  });
+});
+
+describe('EUDI Tier-1 verifyPidSdJwtVc — persona-aware reference credentials', () => {
+  const personaIds = Object.keys(PERSONA_EXPECTATIONS) as Array<
+    keyof typeof PERSONA_EXPECTATIONS
+  >;
+
+  test('the registry holds exactly the 3 demo personas', () => {
+    expect(Object.keys(PID_SD_JWT_VC_BY_PERSONA).sort()).toEqual(
+      [...personaIds].sort(),
+    );
+  });
+
+  test.each(personaIds)(
+    'verifies %s\'s pre-issued PID offline with that persona\'s attrs',
+    async (personaId) => {
+      const expected = PERSONA_EXPECTATIONS[personaId];
+      const token = pidSdJwtVcForPersona(personaId);
+      // the registry and the resolver agree for a known id
+      expect(token).toBe(PID_SD_JWT_VC_BY_PERSONA[personaId]);
+
+      const r = await verifyPidSdJwtVc(token);
+
+      // signature + chain + x5c-backed leaf all valid
+      expect(r.verified).toBe(true);
+      expect(r.reason).toBeUndefined();
+      expect(r.chainValid).toBe(true);
+      expect(r.alg).toBe('ES256');
+      expect(r.vct).toBe('urn:eudi:pid:1');
+      // x5c presence is implied by a passing signature check (verify.ts fails
+      // `missing-x5c` otherwise); the genuine demo CA is the trust anchor.
+      expect(r.trustAnchorSubject).toContain('PID Issuer CA - UT 02');
+      expect(r.trustAnchorSubject).not.toContain('PID DS - 01');
+
+      // all 5 ARF-mandatory attrs disclosed + digest-matched
+      for (const attr of MANDATORY_PID_ATTRS) {
+        expect(r.mandatoryPresent).toContain(attr);
+      }
+      expect(r.mandatoryPresent).toHaveLength(5);
+
+      // the disclosed values are THIS persona's synthetic identity
+      expect(r.claims.family_name).toBe(expected.family_name);
+      expect(r.claims.given_name).toBe(expected.given_name);
+      expect(r.claims.birthdate).toBe(expected.birthdate);
+      expect(r.claims.nationalities).toEqual(expected.nationalities);
+      expect(r.claims.place_of_birth).toMatchObject(expected.place_of_birth);
+
+      // ZERO network.
+      expect(networkAttempts).toEqual([]);
+    },
+  );
+
+  test('an unknown personaId falls back to the default (Erika) credential', async () => {
+    expect(pidSdJwtVcForPersona('not-a-persona')).toBe(REFERENCE_PID_SD_JWT_VC);
+    expect(pidSdJwtVcForPersona(undefined)).toBe(REFERENCE_PID_SD_JWT_VC);
+
+    const r = await verifyPidSdJwtVc(pidSdJwtVcForPersona('not-a-persona'));
+    expect(r.verified).toBe(true);
+    expect(r.claims.family_name).toBe('Mustermann');
+    expect(r.claims.given_name).toBe('Erika');
     expect(networkAttempts).toEqual([]);
   });
 });

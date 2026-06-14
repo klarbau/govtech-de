@@ -2417,7 +2417,7 @@
       },
       "eudi_reference_pid": {
         "title": "Verifizierter EUDI-Referenz-Nachweis",
-        "subject_note": "Referenz-Testidentität (Erika Mustermann) — nicht die Identität dieser Demo-Persona.",
+        "subject_note": "Synthetischer Referenz-Test-Nachweis für die aktive Demo-Persona — echte Krypto, erfundene Identität, nicht vom deutschen Staat.",
         "reference_ecosystem_badge": "Referenz-Ökosystem",
         "loading": "Nachweis wird offline kryptografisch geprüft …",
         "error": "Der Referenz-Nachweis konnte nicht geprüft werden — bitte erneut versuchen.",
