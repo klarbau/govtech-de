@@ -85,12 +85,12 @@ export function EudiReferencePidCard({ className }: EudiReferencePidCardProps) {
             <Fingerprint className="size-4" />
           </span>
           <div className="flex flex-col gap-0.5">
-            <h3
+            <h2
               id="eudi-reference-pid-card-title"
               className="text-sm font-semibold tracking-tight text-foreground"
             >
               {t('title')}
-            </h3>
+            </h2>
             <p className="text-xs text-muted-foreground">{t('subject_note')}</p>
           </div>
         </div>
@@ -198,12 +198,12 @@ export function EudiReferencePidCard({ className }: EudiReferencePidCardProps) {
             data-testid="eudi-reference-pid-claims"
           >
             <div className="flex flex-col gap-0.5">
-              <h4
+              <h3
                 id="eudi-reference-pid-claims-heading"
                 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground"
               >
                 {t('claims_heading')}
-              </h4>
+              </h3>
               <p className="text-[11px] leading-relaxed text-muted-foreground">
                 {t('selective_disclosure_note')}
               </p>
