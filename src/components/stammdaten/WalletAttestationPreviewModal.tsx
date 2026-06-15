@@ -26,8 +26,9 @@ interface WalletAttestationPreviewModalProps {
  * § 11.18 + § 11.20).
  *
  * Mock-Vorschau einer EUDI-Wallet-PID-Attestation:
- *   - 8 PID-Pflichtattribute (Family-Name, Given-Name, Birth-Date, …)
- *   - 4-aus-6 PID-Hilfsattribute
+ *   - 5 verpflichtende PID-Subjekt-Attribute (CIR (EU) 2024/2977: family_name,
+ *     given_name, birth_date, birth_place, nationality)
+ *   - weitere nicht-verpflichtende PID-Attribute (Wohnsitz + Issuance-Metadaten)
  *   - `[MOCK]`-Watermark prominent (Hard-Line § 11.8)
  *   - Disclaimer-3 (`eudi_speculative`) verbatim im Body
  *

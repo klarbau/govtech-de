@@ -35,6 +35,7 @@ import { RechtlicheHinweiseDetails } from './RechtlicheHinweiseDetails';
 import { RentenBridgeCTA } from './RentenBridgeCTA';
 import { ReplySheet } from './ReplySheet';
 import { StickyFristAction } from './StickyFristAction';
+import { VorlesenButton } from './VorlesenButton';
 import { WasKannIchTunFooter } from './WasKannIchTunFooter';
 import { VorgangsBuendelTagInitial } from './VorgangsBuendelTag';
 
@@ -267,6 +268,12 @@ export function LetterReader({
 
   const hasCitationMismatch = fristen.some((f) => f.citation_match === false);
 
+  // Höchstwertige Vorlesen-Fläche: die KI-Zusammenfassung (Bullets), sonst der
+  // Brieftext als Fallback. On-device, kein Datenfluss (siehe VorlesenButton).
+  const vorlesenText = summary
+    ? summary.bullets.map((b) => b.text).join('. ')
+    : letter.body_de;
+
   return (
     <article aria-labelledby="reader-title" className="flex flex-col gap-5">
       <div className="flex flex-col gap-3">
@@ -380,6 +387,8 @@ export function LetterReader({
           </div>
         )}
       </div>
+
+      <VorlesenButton text={vorlesenText} />
 
       {/* Mobile (< md): Tab-Switcher; Desktop (md+): side-by-side. */}
       <div className="md:hidden">

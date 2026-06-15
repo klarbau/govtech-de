@@ -3,7 +3,7 @@
  *
  * The concrete 7-step Submission-API-v2 flow. Tier-1 builds the **request
  * SHAPE** of each step with NO network call — deterministic and e2e-testable.
- * Tier-2 (in `sdk-tier2.ts`) performs the real HTTP round-trip against the TEST
+ * Tier-2 (in `rest-tier2.ts`) performs the real HTTP round-trip against the TEST
  * sandbox; only that path is reachable behind the `FIT_CONNECT_LIVE` flag.
  *
  * Honesty: Tier-1 addresses a synthetic `[MOCK destination]` (Spec § 13.2 #4).

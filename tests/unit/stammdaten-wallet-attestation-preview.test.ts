@@ -2,8 +2,9 @@
  * Wallet-Attestation-Preview-Tests (Spec § 11.1 Vitest #6).
  *
  * Coverage:
- *   - getWalletAttestationPreview('berliner-sparkasse') → 8 PID-Pflicht +
- *     4 Hilfsattribute aus Persona-Daten resolved.
+ *   - getWalletAttestationPreview('berliner-sparkasse') → 5 verpflichtende PID-
+ *     Subjekt-Attribute (CIR (EU) 2024/2977) + 8 nicht-verpflichtende Attribute
+ *     (Wohnsitz + Issuance-Metadaten) aus Persona-Daten resolved.
  *   - mock_attestation_id ist deterministisch pro Persona × Empfänger.
  *   - [MOCK]-Watermark mitgesendet (Hard-Line § 11.8).
  *   - Hard-Line § 11.18 — getWalletAttestations() liefert genau 3 Empfänger.
@@ -88,17 +89,25 @@ describe('getWalletAttestations — Hard-Line § 11.18 (minimal-statisch)', () =
 });
 
 describe('getWalletAttestationPreview — PID-Felder', () => {
-  test('berliner-sparkasse: 8 Pflicht + 4 Optional + Watermark', async () => {
+  test('berliner-sparkasse: 5 Pflicht + 8 Nicht-Pflicht + Watermark', async () => {
     const preview = await api.getWalletAttestationPreview(
       'anna-petrov',
       'berliner-sparkasse',
     );
-    expect(Object.keys(preview.pid_pflicht).length).toBe(8);
-    expect(Object.keys(preview.pid_optional).length).toBe(4);
+    // CIR (EU) 2024/2977: genau 5 verpflichtende Subjekt-Attribute.
+    expect(Object.keys(preview.pid_pflicht).length).toBe(5);
+    expect(Object.keys(preview.pid_optional).length).toBe(8);
     expect(preview.watermark).toBe('[MOCK]');
-    // Persona-derived Felder
+    // Persona-derived Pflichtfelder (inkl. zuvor fehlendes birth_place).
     expect(preview.pid_pflicht.family_name).toBe('Petrov');
     expect(preview.pid_pflicht.given_name).toBe('Anna');
+    expect(preview.pid_pflicht.birth_place).toBeDefined();
+    expect(preview.pid_pflicht.nationality).toBeDefined();
+    // Issuance-Metadaten sind NICHT-verpflichtend (nach pid_optional verschoben).
+    expect(preview.pid_pflicht.age_over_18).toBeUndefined();
+    expect(preview.pid_pflicht.issuing_country).toBeUndefined();
+    expect(preview.pid_optional.age_over_18).toBe('true');
+    expect(preview.pid_optional.issuing_country).toBe('DE');
     expect(preview.pid_optional.resident_postal_code).toBe('10117');
   });
 

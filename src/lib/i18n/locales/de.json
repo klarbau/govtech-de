@@ -23,6 +23,48 @@
     "theme_toggle_system": "Systemeinstellung",
     "user_menu": "Benutzermenü"
   },
+  "a11y": {
+    "menu": {
+      "open": "Barrierefreiheit"
+    },
+    "panel": {
+      "title": "Barrierefreiheit",
+      "subtitle": "Stellen Sie die Anzeige auf Ihre Bedürfnisse ein."
+    },
+    "fontsize": {
+      "label": "Schriftgröße",
+      "decrease": "Schrift verkleinern",
+      "increase": "Schrift vergrößern",
+      "level": "{value} %",
+      "announce": "Schriftgröße {value} Prozent"
+    },
+    "vorlesen": {
+      "label": "Vorlesen",
+      "play": "Vorlesen",
+      "pause": "Pausieren",
+      "resume": "Fortsetzen",
+      "stop": "Stoppen",
+      "running": "Wird vorgelesen…",
+      "privacy": "Vorlesen erfolgt direkt auf Ihrem Gerät. Es werden keine Daten übertragen.",
+      "unsupported": "Vorlesen wird von Ihrem Browser nicht unterstützt. Bitte nutzen Sie die Vorlesefunktion Ihres Geräts."
+    },
+    "contrast": {
+      "label": "Kontrast erhöhen"
+    },
+    "readable": {
+      "label": "Gut lesbare Schrift",
+      "hint": "Mehr Zeilenabstand, kürzere Zeilen, linksbündig."
+    },
+    "motion": {
+      "label": "Bewegung reduzieren"
+    },
+    "reset": {
+      "label": "Zurücksetzen",
+      "announce": "Bedienhilfen zurückgesetzt."
+    },
+    "storage_note": "Ihre Einstellungen werden nur auf diesem Gerät gespeichert.",
+    "native_note": "Tipp: Die assistive Technik Ihres Geräts bleibt der zuverlässigste Weg."
+  },
   "footer": {
     "imprint": "Impressum",
     "privacy": "Datenschutz",
@@ -1851,7 +1893,7 @@
     "disclaimer": {
       "lese_schicht": "Diese App ist eine **Lese- und Wegweiser-Schicht**. Sie selbst nimmt **keine** Änderungen an Ihren Daten in den zuständigen Registern vor. Korrekturen erfolgen ausschließlich im jeweiligen Behörden-Verfahren — etwa beim Bürgeramt nach § 17 BMG für die Anschrift, beim Standesamt nach PStG für Familienstand und Vornamen, beim Standesamt nach § 4 SBGG für die Anmeldung der Geschlechtseintrag-Änderung (mündlich oder schriftlich, drei Monate vor der Erklärung) und nach § 2 SBGG für die persönliche Beurkundung der Erklärung beim Standesamt, beim Bundeszentralamt für Steuern für die Identifikationsnummer (§ 139b AO). Wir zeigen Ihnen pro Feld den richtigen Weg an.",
       "audit_log_app_internal": "Das hier sichtbare Aktivitätsprotokoll erfasst ausschließlich Ihre Aktivitäten in dieser App (Aufrufe, Filter, Selbst-Editierungen). Es ist **keine** behördliche Audit-Spur. Den behördlichen Audit-Layer für IDNr-basierte Datenübermittlungen zwischen öffentlichen Stellen liefert das Datenschutzcockpit nach § 9 IDNrG mit einer Speicherfrist von 24 Monaten — abrufbar unter datenschutzcockpit.bund.de, sobald die jeweiligen Register angebunden sind. Stand Mai 2026: Pilot-Phase mit punktueller Register-Abdeckung; das Kraftfahrt-Bundesamt hat sich zum 15.04.2026 an das IDA-Verfahren angeschlossen, die DSC-Anbindung folgt. Eine flächendeckende Anbindung der 51 RegMoG-Register ist Roadmap 2026/2027.",
-      "eudi_speculative": "Die hier gezeigte Funktion, Stammdaten als Wallet-Nachweis (Attestation) an private Empfänger — etwa Bank, Vermieter:in, Energieversorger — auf Klick freizugeben, simuliert eine **Vision für 2027**. Sie basiert auf der EUDI-Wallet-Verordnung (EU) 2024/1183 und dem Architecture and Reference Framework (Stand Mai 2026: v2.0). Die Pflicht zur Bereitstellung einer EUDI-Wallet greift in Deutschland frühestens 2026/2027; Drittanbieter-Akzeptanz, Trust-Service-Konformität und Gebührenmodelle sind noch nicht verbindlich geregelt.",
+      "eudi_speculative": "Die hier gezeigte Funktion, Stammdaten als Wallet-Nachweis (Attestation) an private Empfänger — etwa Bank, Vermieter:in, Energieversorger — auf Klick freizugeben, simuliert eine **Vision für 2027**. Sie basiert auf der EUDI-Wallet-Verordnung (EU) 2024/1183 und dem Architecture and Reference Framework (Stand Mai 2026: v2.9.0). Die Pflicht zur Bereitstellung einer EUDI-Wallet greift in Deutschland frühestens 2026/2027; Drittanbieter-Akzeptanz, Trust-Service-Konformität und Gebührenmodelle sind noch nicht verbindlich geregelt.",
       "iban_speculative": "Eine zentrale IBAN-Hinterlegung mit automatischer Übergabe an Familienkasse, Finanzamt und Krankenkasse ist heute (Mai 2026) **nicht** verfügbar. Diese Demo simuliert ein 2027-Pattern. Aktuell müssen Sie Ihre Bankverbindung pro Behörde separat hinterlegen.",
       "religion_art9": "Die Religionszugehörigkeit ist eine besondere Kategorie personenbezogener Daten nach Art. 9 DSGVO. Sie wird hier nur auf Klick eingeblendet. Speicherung im Melderegister beruht auf § 3 Abs. 1 Nr. 11 BMG; die Verwendung zur Lohn- und Einkommensteuer auf § 51a EStG i.V.m. KiStAM (BZSt).",
       "religion_consent_toggle_label": "Ich willige ausdrücklich in die Anzeige meines Religionsmerkmals in dieser App ein (Art. 9 Abs. 2 lit. a DSGVO). Diese Einwilligung gilt nur für die aktuelle Sitzung.",
@@ -1883,7 +1925,11 @@
         },
         "cta_simulate": "Anfrage simulieren",
         "preview_error": "Vorschau konnte nicht erstellt werden — bitte erneut versuchen.",
-        "arf_footer": "Datengrundlage: EUDI Architecture and Reference Framework (Stand Mai 2026: v2.0); PID-Rulebook v1.4 — 8 Pflichtattribute, 4 von 6 Hilfsattributen."
+        "eudi_reference_section_title": "Echter EUDI-Referenz-Nachweis (offline verifiziert)",
+        "eudi_reference_section_intro": "Zum Beleg der technischen Machbarkeit: ein realer PID-Nachweis aus dem EU-Referenz-Ökosystem, vollständig offline kryptografisch geprüft. Er betrifft eine synthetische Test-Identität, nicht die Daten dieser Demo-Persona.",
+        "mock_attestations_section_title": "Mock-Datenfreigabe an private Empfänger ([MOCK])",
+        "mock_attestations_section_intro": "Simulierte 2027-Vision: Stammdaten dieser Demo-Persona auf Klick als Wallet-Nachweis an Bank, Vermieter:in oder Energieversorger freigeben. Alle Werte sind [MOCK].",
+        "arf_footer": "Datengrundlage: EUDI Architecture and Reference Framework (Stand Mai 2026: v2.9.0); PID-Rulebook gemäß CIR (EU) 2024/2977 — 5 verpflichtende Pflichtattribute (family_name, given_name, birth_date, birth_place, nationality), weitere Attribute nicht verpflichtend."
       }
     },
     "aktivitaet": {
@@ -1982,8 +2028,8 @@
       "wallet_attestation_preview": {
         "title": "Wallet-Attestation-Vorschau",
         "empfaenger_label": "Empfänger",
-        "section_pflicht": "PID-Pflichtattribute (8)",
-        "section_optional": "PID-Hilfsattribute (4 von 6)",
+        "section_pflicht": "PID-Pflichtattribute (5)",
+        "section_optional": "Weitere PID-Attribute (nicht verpflichtend)",
         "loading": "Vorschau wird erstellt …",
         "attestation_id_label": "Mock-Attestation-ID",
         "cta_close": "Schließen"
@@ -2410,6 +2456,33 @@
             "un_distinguishing_sign": "UN-Unterscheidungszeichen (D)"
           }
         }
+      },
+      "eudi_reference_pid": {
+        "title": "Verifizierter EUDI-Referenz-Nachweis",
+        "subject_note": "Synthetischer Referenz-Test-Nachweis für die aktive Demo-Persona — echte Krypto, erfundene Identität, nicht vom deutschen Staat.",
+        "reference_ecosystem_badge": "Referenz-Ökosystem",
+        "loading": "Nachweis wird offline kryptografisch geprüft …",
+        "error": "Der Referenz-Nachweis konnte nicht geprüft werden — bitte erneut versuchen.",
+        "status_section_aria": "Verifikationsstatus des EUDI-Referenz-Nachweises",
+        "status_verified": "Kryptografisch verifiziert",
+        "status_not_verified": "Nicht verifiziert",
+        "check_signature_label": "Signatur",
+        "check_signature_ok": "{alg}-Signatur des Ausstellers gültig",
+        "check_signature_not_ok": "Aussteller-Signatur ungültig",
+        "check_chain_label": "Vertrauenskette",
+        "check_chain_ok": "Kette zum Demo-Trust-Anchor gültig ({anchor})",
+        "check_chain_not_ok": "Vertrauenskette zum Demo-Trust-Anchor ungültig",
+        "validity_not_before_label": "Gültig ab",
+        "validity_expires_label": "Gültig bis",
+        "expired_note": "Nachweis abgelaufen am {date} — Signatur und Vertrauenskette dennoch kryptografisch verifiziert.",
+        "claims_heading": "Offengelegte PID-Attribute",
+        "selective_disclosure_note": "Selective Disclosure: ausschließlich die unten gezeigten Attribute wurden aus dem Nachweis offengelegt und gegen die Signatur geprüft.",
+        "claim_family_name": "Familienname",
+        "claim_given_name": "Vorname",
+        "claim_birthdate": "Geburtsdatum",
+        "claim_place_of_birth": "Geburtsort",
+        "claim_nationalities": "Staatsangehörigkeit",
+        "honesty_block": "[reference-ecosystem] — echter EU-Referenz-/Entwicklungs-Nachweis gegen einen Demo-Trust-Anchor mit einer synthetischen Test-Identität. Nicht vom deutschen Staat, nicht eIDAS-/produktiv-verifiziert. Eine deutsche staatliche EUDI-Wallet ist [ZUKUNFT] (frühestens ~2. Januar 2027)."
       }
     },
     "chip": {
@@ -3245,7 +3318,24 @@
     },
     "disclaimer_short": "TEST-Umgebung, selbst registriertes Ziel. Keine reale Behörde adressiert.",
     "tier1_offline_note": "Standards-treue Wire-Form, schema-validiert — keine Netzübermittlung.",
-    "live_region_label": "FIT-Connect-Übermittlung erstellt"
+    "live_region_label": "FIT-Connect-Übermittlung erstellt",
+    "live_heading": "Live-Roundtrip (TEST-Sandbox)",
+    "live_case_id_label": "Fall-ID",
+    "live_decrypt_label": "Entschlüsselungs-Roundtrip",
+    "live_decrypt_ok": "übereinstimmend",
+    "live_decrypt_not_ok": "nicht übereinstimmend",
+    "live_acknowledge_label": "Annahme-SET (accept-submission)",
+    "live_acknowledge_ok": "gepostet (HTTP 204)",
+    "live_acknowledge_not_ok": "nicht gepostet",
+    "live_subscriber_set_label": "Eigenes Annahme-SET zurückgelesen",
+    "live_subscriber_set_ok": "Signatur geprüft",
+    "live_subscriber_set_not_ok": "nicht geprüft",
+    "live_set_verified_label": "Event-Log-SETs",
+    "live_set_verified_ok": "alle Signaturen geprüft",
+    "live_set_verified_not_ok": "nicht alle geprüft",
+    "live_event_count_label": "Gelesene SETs im Event-Log",
+    "live_event_types_label": "Event-Typen",
+    "live_event_types_aria": "Event-Typen im Event-Log"
   },
   "katalog": {
     "titel": "Autopilot-Katalog",
@@ -3357,5 +3447,66 @@
   "shared": {
     "gehoert_zu": "Gehört zu: {vorgang}",
     "neu_badge": "neu"
+  },
+  "vono": {
+    "inline": {
+      "present_title": "Ihre amtliche Meldebestätigung liegt vor.",
+      "reverified_line": "Re-verifiziert: Signatur kryptografisch geprüft (gegen Demo-Trust-Anchor).",
+      "view_in_dokumente": "In „Dokumente“ ansehen",
+      "issuing": "Bestätigung wird ausgestellt …",
+      "error": "Die Bestätigung konnte nicht ausgestellt werden. Die Übermittlungen oben bleiben davon unberührt."
+    },
+    "credential": {
+      "title": "Amtliche Meldebestätigung",
+      "issuer_label": "Ausgestellt von: Demo-Issuer (eigener Trust-Anchor) — nicht von einer deutschen Meldebehörde und nicht vom Staat",
+      "marker_badge": "Demo · Format echt · DE-Behörden-Ausstellung Zukunft",
+      "status_verified": "Signatur geprüft (Demo-Trust-Anchor)",
+      "status_not_verified": "Nicht verifiziert",
+      "check_signature": "Signatur kryptografisch geprüft",
+      "check_chain": "Kette gegen Demo-Trust-Anchor gültig",
+      "check_fields": "{present} von {total} Bestätigungsfeldern vorhanden",
+      "no_doktorgrad_note": "(Doktorgrad nicht vorhanden)",
+      "expired": "Abgelaufen am {datum}",
+      "valid_until": "Gültig bis {datum}",
+      "fields_heading": "Enthaltene Felder (§ 24 Abs. 2 BMG)",
+      "field": {
+        "familienname": "Familienname",
+        "vornamen": "Vornamen",
+        "doktorgrad": "Doktorgrad",
+        "geburtsdatum": "Geburtsdatum",
+        "einzugsdatum": "Einzugsdatum",
+        "datum_anmeldung": "Datum der Anmeldung",
+        "anschrift": "Anschrift",
+        "wohnungsstatus": "Wohnungsstatus (Haupt-/Neben-/alleinige Wohnung)"
+      },
+      "vct_label": "vct (Credential-Typ)",
+      "rechtsgrundlage": "§ 24 Abs. 2 BMG · elektronisch i. V. m. § 10 BMeldDigiV, § 23a BMG",
+      "loading": "Bestätigung wird geprüft …",
+      "not_yet_issued": "Noch nicht ausgestellt — schliessen Sie zuerst den Umzug ab.",
+      "reference_ecosystem_badge": "reference-ecosystem",
+      "simple_status": "Echtheit automatisch geprüft"
+    },
+    "once_only": {
+      "wallet_path_note": "Sie halten die Bestätigung und legen sie selbst vor; die nächste Stelle prüft die Signatur."
+    },
+    "letter": {
+      "subject": "Ihre amtliche Meldebestätigung liegt vor",
+      "body": "Nach Ihrer Anmeldung steht Ihnen die amtliche Meldebestätigung (§ 24 Abs. 2 BMG) als Nachweis zur Verfügung. Sie finden sie in „Dokumente“. {disclaimer_short}",
+      "ai_summary": "Ihre Meldebestätigung ist da. Sie können sie der nächsten Stelle vorlegen — diese prüft die Signatur, statt erneut zu fragen."
+    },
+    "disclosure": {
+      "sheet_title": "Der nächsten Stelle vorlegen",
+      "intro": "Sie legen nur diese Felder offen (Datenminimierung):",
+      "field_anschrift": "Anschrift",
+      "field_datum_anmeldung": "Datum der Anmeldung",
+      "next_office_note": "Die nächste Stelle prüft die Signatur — sie fragt nicht erneut. Sie holt sich nichts aus dem Register.",
+      "result": "Signatur geprüft · {present} von {total} Feldern offengelegt",
+      "cta": "Nur diese Felder vorlegen",
+      "cta_aria": "Ausgewählte Felder der nächsten Stelle vorlegen und Signatur prüfen"
+    },
+    "disclaimer": {
+      "short": "Hinweis: Dieser Prototyp simuliert die Ausstellung. Die amtliche Meldebestätigung beruht real auf § 24 Abs. 2 BMG (elektronisch: § 10 BMeldDigiV). Hier ausgestellt von einem Demo-Issuer, nicht von einer deutschen Behörde — Format echt, Autorität Demo ([reference-ecosystem]). Wallet-Ausstellung durch Behörden = Zukunft ([ZUKUNFT], EUDI-Wallet ab 2. Jan 2027). Once-Only hier wallet-basiert, nicht Register-Austausch (NOOTS).",
+      "long": "Hinweis: Die amtliche Meldebestätigung ist das Dokument, das Sie nach einer Anmeldung erhalten (§ 24 Abs. 2 BMG, elektronisch i. V. m. § 10 BMeldDigiV / § 23a BMG). In diesem Prototyp wird sie von einem Demo-Issuer mit eigenem Trust-Anchor als verifiable credential ausgestellt — nicht von einer deutschen Meldebehörde und nicht vom Staat; das Format und die Signaturprüfung sind echt ([reference-ecosystem]), die Autorität ist Demo. Dass eine deutsche Meldebehörde eine Meldebestätigung als Wallet-Nachweis (PuB-EAA) ausstellt, ist eine Zukunftsfunktion ([ZUKUNFT]); die deutsche EUDI-Wallet startet gemäss eIDAS 2.0 (VO (EU) 2024/1183) am 2. Januar 2027. Once-Only zeigt diese Demo über den wallet-basierten Weg (Sie präsentieren den Nachweis selbst) — nicht über register-zu-register-Austausch (NOOTS/Registermodernisierung)."
+    }
   }
 }

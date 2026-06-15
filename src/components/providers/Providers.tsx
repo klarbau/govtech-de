@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { ThemeProvider } from 'next-themes';
 
+import { A11yPreferencesProvider } from '@/components/providers/A11yPreferencesProvider';
 import { MotionProvider } from '@/components/providers/motion-provider';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Toaster } from '@/components/ui/sonner';
@@ -34,12 +35,14 @@ export function Providers({ children }: ProvidersProps) {
       enableSystem
       disableTransitionOnChange
     >
-      <MotionProvider>
-        <TooltipProvider>
-          {children}
-          <Toaster richColors closeButton />
-        </TooltipProvider>
-      </MotionProvider>
+      <A11yPreferencesProvider>
+        <MotionProvider>
+          <TooltipProvider>
+            {children}
+            <Toaster richColors closeButton />
+          </TooltipProvider>
+        </MotionProvider>
+      </A11yPreferencesProvider>
     </ThemeProvider>
   );
 }

@@ -122,25 +122,91 @@ export type FitConnectBehoerdeId = keyof typeof BLOCK_D_PLACEHOLDER_LEIKA_KEYS;
 /* ───────────────────────── Tier-2 flag & creds (Spec § 6.7) ─────────────── */
 
 /**
+ * OAuth scope the sender (Onlinedienst) creds return — VERIFIED LIVE against the
+ * FITKO TEST sandbox (2026-06-14): `client_secret_post` → `token_type=Bearer`,
+ * `expires_in=1800`, this scope.
+ */
+export const FIT_CONNECT_SEND_SCOPE =
+  'https://schema.fitko.de/fit-connect/oauth/scopes/send-submissions' as const;
+
+/**
+ * User-Agent sent on every Submission-API request. FITKO's routing/bot
+ * detection rejects requests with a missing/invalid User-Agent (HTTP 403).
+ */
+export const FIT_CONNECT_USER_AGENT =
+  'govtech-de-fit-connect-adapter/1.0 (TEST sandbox; [MOCK destination])' as const;
+
+/**
+ * The full Tier-2 live env — surfaced as a STRUCTURAL verdict. Secret values
+ * (`clientSecret`, `subscriberClientSecret`, JWK private material) are carried
+ * through to the live module but are NEVER logged or returned in a receipt.
+ */
+export interface Tier2Env {
+  /** Send capability: LIVE=1 + sender creds + destinationId + leikaKey. */
+  enabled: boolean;
+  /** Receive capability: subscriber creds + decryption JWK path present. */
+  canReceive: boolean;
+  // Sender (Onlinedienst).
+  clientId?: string;
+  clientSecret?: string;
+  // Subscriber (Verwaltungssystem).
+  subscriberClientId?: string;
+  subscriberClientSecret?: string;
+  // Destination + routing.
+  destinationId?: string;
+  leikaKey?: string;
+  // Private JWK file paths (read server-side with node:fs; never bundled).
+  decryptionJwkPath?: string;
+  signingJwkPath?: string;
+}
+
+/**
  * Reads the Tier-2 enablement flag + creds from `process.env` (server only).
  *
  * Returns a structural verdict — NEVER the secret values themselves, and never
- * logs them. If `FIT_CONNECT_LIVE` is unset OR either credential is missing,
- * `enabled` is false and the public surface gracefully falls back to Tier-1
- * (Spec § 12, § 6.7).
+ * logs them. If `FIT_CONNECT_LIVE` is unset OR a required sender credential is
+ * missing, `enabled` is false and the public surface gracefully falls back to
+ * Tier-1 (Spec § 12, § 6.7). Never throws on a missing field — returns false
+ * flags so the caller can fall back cleanly.
  */
-export function readTier2Env(): {
-  enabled: boolean;
-  clientId?: string;
-  clientSecret?: string;
-} {
+export function readTier2Env(): Tier2Env {
   const live = process.env.FIT_CONNECT_LIVE === '1';
+
   const clientId = process.env.FIT_CONNECT_CLIENT_ID;
   const clientSecret = process.env.FIT_CONNECT_CLIENT_SECRET;
-  const enabled = live && Boolean(clientId) && Boolean(clientSecret);
-  return enabled
-    ? { enabled, clientId, clientSecret }
-    : { enabled: false };
+  const subscriberClientId = process.env.FIT_CONNECT_SUBSCRIBER_CLIENT_ID;
+  const subscriberClientSecret = process.env.FIT_CONNECT_SUBSCRIBER_CLIENT_SECRET;
+  const destinationId = process.env.FIT_CONNECT_DESTINATION_ID;
+  const leikaKey = process.env.FIT_CONNECT_LEIKA_KEY;
+  const decryptionJwkPath = process.env.FIT_CONNECT_DECRYPTION_JWK_PATH;
+  const signingJwkPath = process.env.FIT_CONNECT_SIGNING_JWK_PATH;
+
+  const enabled =
+    live &&
+    Boolean(clientId) &&
+    Boolean(clientSecret) &&
+    Boolean(destinationId) &&
+    Boolean(leikaKey);
+
+  const canReceive =
+    Boolean(subscriberClientId) &&
+    Boolean(subscriberClientSecret) &&
+    Boolean(decryptionJwkPath);
+
+  if (!enabled) return { enabled: false, canReceive: false };
+
+  return {
+    enabled,
+    canReceive,
+    clientId,
+    clientSecret,
+    subscriberClientId,
+    subscriberClientSecret,
+    destinationId,
+    leikaKey,
+    decryptionJwkPath,
+    signingJwkPath,
+  };
 }
 
 /**

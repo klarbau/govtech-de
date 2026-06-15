@@ -11,7 +11,7 @@
  *   - § 11.6 Activity-Log-Notes: `<key>:<value>;`-Marker.
  *   - § 11.8 `[MOCK]`-Watermark auf Werten mit echt-aussehendem Charakter.
  *   - § 11.10 Pilot-Phase-Status-Badge → `pilot_phase`-Flag in `disclaimer_meta`.
- *   - § 11.11 ARF v2.0 in `disclaimer_meta.arf_version`.
+ *   - § 11.11 ARF v2.9.0 in `disclaimer_meta.arf_version`.
  *   - § 11.18 Wallet minimal-statisch — 3 fixe Empfänger.
  *   - § 11.19 `getStammdaten()` ist Single-Source-of-Truth.
  *
@@ -416,7 +416,7 @@ function buildStammdaten(personaId: PersonaId): Stammdaten {
         'stammdaten.disclaimer.audit_log_app_internal',
       eudi_speculative_i18n_key: 'stammdaten.disclaimer.eudi_speculative',
       pilot_phase: 'pilot',
-      arf_version: 'v2.0',
+      arf_version: 'v2.9.0',
     },
   };
 
@@ -471,23 +471,31 @@ function buildWalletPreview(
   persona: Persona,
   empfaengerId: string,
 ): WalletAttestationPreview {
-  // PID-Pflicht (8 Felder gemäß ARF v2.0 PID-Rulebook).
+  // PID-Pflicht: genau 5 verpflichtende Subjekt-Attribute gemäß CIR (EU)
+  // 2024/2977 (PID-Rulebook, EUDI ARF v2.9.0): family_name, given_name,
+  // birth_date, birth_place, nationality. `birth_place` fehlte zuvor; die
+  // früheren Felder age_over_18 / issuing_country / issuance_date / expiry_date
+  // sind NICHT verpflichtend (Issuance-Metadaten bzw. optionale Attribute) und
+  // wandern nach `pid_optional`. [MOCK].
   const pid_pflicht: Record<string, string> = {
     family_name: persona.nachname,
     given_name: persona.vorname,
     birth_date: persona.geburtsdatum,
-    age_over_18: 'true',
+    birth_place: persona.geburtsort ?? '—',
     nationality: persona.staatsangehoerigkeit,
-    issuing_country: 'DE',
-    issuance_date: new Date().toISOString().slice(0, 10),
-    expiry_date: '2032-12-31',
   };
-  // PID-Hilfsattribute (4-aus-6 — Spec § 4.4 Loom-Cut).
+  // PID-Nicht-Pflichtattribute: Wohnsitz (optionale Attribute) + Issuance-
+  // Metadaten (age_over_18 / issuing_country / issuance_date / expiry_date),
+  // die zuvor fälschlich als Pflicht klassifiziert waren. [MOCK].
   const pid_optional: Record<string, string> = {
     resident_address: `${persona.adresse.strasse} ${persona.adresse.hausnummer}, ${persona.adresse.plz} ${persona.adresse.ort}`,
     resident_postal_code: persona.adresse.plz,
     resident_city: persona.adresse.ort,
     resident_country: persona.adresse.land ?? 'DE',
+    age_over_18: 'true',
+    issuing_country: 'DE',
+    issuance_date: new Date().toISOString().slice(0, 10),
+    expiry_date: '2032-12-31',
   };
 
   return {

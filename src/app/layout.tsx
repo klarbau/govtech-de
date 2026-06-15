@@ -5,6 +5,7 @@ import { getLocale, getMessages } from 'next-intl/server';
 import { Providers } from '@/components/providers/Providers';
 import { IntlClientProvider } from '@/i18n/IntlClientProvider';
 import { rtlLocales, type Locale } from '@/i18n/routing';
+import { getNoFoucScript } from '@/lib/a11y/no-fouc-script';
 import { cn } from '@/lib/utils';
 
 import './globals.css';
@@ -53,6 +54,12 @@ export default async function RootLayout({
         inter.variable,
       )}
     >
+      <head>
+        {/* No-FOUC: apply persisted Bedienhilfen (font-scale/contrast/readable/
+            reduce-motion) to <html> before first paint. Mirrors next-themes'
+            own pre-paint inline script. */}
+        <script dangerouslySetInnerHTML={{ __html: getNoFoucScript() }} />
+      </head>
       <body className="min-h-screen bg-background text-foreground antialiased">
         <IntlClientProvider locale={locale} messages={messages}>
           <Providers>{children}</Providers>
