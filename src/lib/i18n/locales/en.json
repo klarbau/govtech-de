@@ -3057,6 +3057,34 @@
       }
     }
   },
+  "termin_autopilot": {
+    "row": {
+      "status_vorgemerkt": "Appointment reserved",
+      "confirm_cta": "Confirm appointment",
+      "confirming": "Confirming …",
+      "confirmed": "Appointment confirmed",
+      "confirm_error": "Confirmation failed. Please try again.",
+      "disclosure_open": "Why this appointment?",
+      "disclosure_close": "Hide explanation"
+    },
+    "frist": {
+      "countdown": "{n, plural, =1 {1 day} other {# days}} left until the registration deadline (Anmeldefrist, § 17 BMG)",
+      "heute": "Last day of the registration deadline (Anmeldefrist, § 17 BMG)",
+      "abgelaufen": "Registration deadline missed — please register immediately (§ 54 BMG)"
+    },
+    "reasoning": {
+      "full": "Suggested because: it is the next free appointment, {n} days before your statutory registration deadline (Anmeldefrist, § 17 Abs. 1 BMG, two weeks from move-in), at the registration office (Meldebehörde) responsible for your new place of residence ({behoerde}). [MOCK] slot.",
+      "kein_slot": "No free appointment found before your registration deadline — please secure an appointment yourself soon and observe the deadline (§ 17 BMG)."
+    },
+    "label": {
+      "zukunft": "[ZUKUNFT] A nationwide appointment base service does not exist today — the OZG base services cover a user account, payment service, mailbox, search function and application routing (FIT-Connect), but no appointment standard. This view shows how such a service could look in 2027 on the Deutschland-Stack.",
+      "mock_slot": "[MOCK] — synthetic slot, no real appointment booking."
+    },
+    "disclaimer": "Note: This prototype simulates appointment booking. A nationwide appointment base service does not exist today — the OZG base services cover a user account, payment service, mailbox, search function and application routing (FIT-Connect), but no appointment standard; real appointment booking runs at the municipal level via separate systems ([ZUKUNFT]). All slot data and confirmations are synthetic ([MOCK]). The duty to register under § 17 Abs. 1 BMG (two weeks from move-in, subject to a fine under § 54 BMG) and the responsibility of the registration office (Meldebehörde) at the new place of residence apply in reality. For residence permits, the legally decisive step is filing the application before expiry (continued-validity fiction, Fortgeltungsfiktion § 81 Abs. 4 AufenthG; provisional certificate, Fiktionsbescheinigung § 81 Abs. 5 AufenthG) — the in-person appointment is issued by the immigration office (Ausländerbehörde), often by invitation; this demo does not book an appointment there. Calendar access reads availability only (free/busy), no appointment contents (data minimisation, Art. 5 Abs. 1 lit. c, Art. 25 DSGVO).",
+    "abh": {
+      "deadline_guard": "File the application before expiry to preserve the continued-validity fiction (Fortgeltungsfiktion, § 81 Abs. 4 AufenthG) — the in-person appointment is issued by the immigration office (Ausländerbehörde), often by invitation. This demo does not book an appointment there."
+    }
+  },
   "umzug_cascade": {
     "transport": {
       "label": "Transmission channel",

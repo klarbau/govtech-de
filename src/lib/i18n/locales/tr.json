@@ -2561,6 +2561,7 @@
       "ics_aria_all": "Tüm yaklaşan randevuları ICS olarak dışa aktar"
     },
     "status": {
+      "vorgeschlagen": "Önerildi",
       "gebucht": "Rezervasyon yapıldı",
       "bestaetigt": "Onaylandı",
       "verschoben": "Ertelendi",
@@ -3054,6 +3055,34 @@
         "pending": "Bekliyor",
         "failed": "Başarısız"
       }
+    }
+  },
+  "termin_autopilot": {
+    "row": {
+      "status_vorgemerkt": "Randevu ön kaydı yapıldı",
+      "confirm_cta": "Randevuyu onayla",
+      "confirming": "Onaylanıyor …",
+      "confirmed": "Randevu onaylandı",
+      "confirm_error": "Onaylama başarısız oldu. Lütfen tekrar deneyin.",
+      "disclosure_open": "Neden bu randevu?",
+      "disclosure_close": "Açıklamayı gizle"
+    },
+    "frist": {
+      "countdown": "İkamet kaydı süresine (Anmeldefrist, § 17 BMG) {n, plural, one {# gün} other {# gün}} kaldı",
+      "heute": "İkamet kaydı süresinin (Anmeldefrist, § 17 BMG) son günü",
+      "abgelaufen": "Kayıt süresi aşıldı — lütfen derhal kaydınızı yaptırın (§ 54 BMG)"
+    },
+    "reasoning": {
+      "full": "Önerilme nedeni: yasal ikamet kaydı sürenizden (Anmeldefrist, § 17 Abs. 1 BMG, taşınmadan itibaren iki hafta) {n} gün önceki en yakın boş randevu olması ve yeni ikamet yerinizden sorumlu nüfus kayıt dairesinde (Meldebehörde) ({behoerde}) bulunması. [MOCK] randevusu.",
+      "kein_slot": "Kayıt sürenizden önce boş randevu bulunamadı — lütfen kısa süre içinde kendiniz bir randevu alın ve süreye (§ 17 BMG) dikkat edin."
+    },
+    "label": {
+      "zukunft": "[ZUKUNFT] Bugün ülke çapında bir randevu temel hizmeti yoktur — OZG temel hizmetleri kullanıcı hesabı, ödeme hizmeti, posta kutusu, arama işlevi ve başvuru yönlendirmesini (FIT-Connect) kapsar, ancak bir randevu standardını kapsamaz. Bu görünüm, böyle bir hizmetin 2027'de Deutschland-Stack üzerinde nasıl görünebileceğini gösterir.",
+      "mock_slot": "[MOCK] — yapay randevu aralığı, gerçek randevu verilmez."
+    },
+    "disclaimer": "Not: Bu prototip randevu vermeyi simüle eder. Bugün ülke çapında bir randevu temel hizmeti yoktur — OZG temel hizmetleri kullanıcı hesabı, ödeme hizmeti, posta kutusu, arama işlevi ve başvuru yönlendirmesini (FIT-Connect) kapsar, ancak bir randevu standardını kapsamaz; gerçek randevu alma işlemi belediye düzeyinde ayrı sistemler üzerinden yürür ([ZUKUNFT]). Tüm randevu verileri ve onaylar yapaydır ([MOCK]). § 17 Abs. 1 BMG uyarınca kayıt yükümlülüğü (taşınmadan itibaren iki hafta, § 54 BMG uyarınca para cezasına tabidir) ve yeni ikamet yerindeki nüfus kayıt dairesinin (Meldebehörde) yetkisi gerçekte geçerlidir. Oturum izinleri için hukuken belirleyici adım, başvurunun süre dolmadan yapılmasıdır (geçerliliğin sürdüğü varsayımı, Fortgeltungsfiktion § 81 Abs. 4 AufenthG; geçici durum belgesi, Fiktionsbescheinigung § 81 Abs. 5 AufenthG) — şahsen başvuru randevusunu yabancılar dairesi (Ausländerbehörde) verir, çoğu zaman davet üzerine; bu demo orada randevu almaz. Takvim erişimi yalnızca uygunluk durumunu (boş/dolu) okur, randevu içeriklerini okumaz (veri minimizasyonu, Art. 5 Abs. 1 lit. c, Art. 25 DSGVO).",
+    "abh": {
+      "deadline_guard": "Geçerliliğin sürdüğü varsayımını (Fortgeltungsfiktion, § 81 Abs. 4 AufenthG) korumak için başvuruyu süre dolmadan yapın — şahsen başvuru randevusunu yabancılar dairesi (Ausländerbehörde) verir, çoğu zaman davet üzerine. Bu demo orada randevu almaz."
     }
   },
   "umzug_cascade": {

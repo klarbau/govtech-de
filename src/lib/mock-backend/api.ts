@@ -717,9 +717,76 @@ function mutateReminder(
 }
 
 /**
+ * Bürgeramt-Block-A-Side-Effects (Termin-Autopilot, Spec §2/§4.1/§5 — Hero):
+ * Meldebestätigung-Document + Anmeldung-Termin-Vorschlag (`'vorgeschlagen'`).
+ *
+ * MUSS **inline mit dem Block-A-Bürgeramt-Anmeldungsschritt** entstehen — also
+ * SOBALD der `buergeramt-berlin-mitte`-Schritt erfolgreich ist, NICHT erst nach
+ * den sensiblen Block-D-eID-Gates. Wird daher direkt am Step-Success-Hook
+ * aufgerufen (Resilient-Engine: `onStepSucceeded`; Legacy: nach dem Generator,
+ * vor Block D). Bleibt im Saga-Terminal `applyUmzugRipple` harmlos idempotent —
+ * die deterministische `id` macht jeden Folge-Mint zu einem No-op.
+ *
+ * Datum deterministisch aus dem stichtag-abgeleiteten „letzter sicherer Slot vor
+ * der Frist" (kein `Date.now()+7d`; live `nowIso` nur für die Past-Slot-Edge).
+ */
+function mintBuergeramtAnmeldungArtefakte(
+  vorgang: Vorgang,
+  persona: Persona,
+): void {
+  const stamp = new Date().toISOString().slice(0, 10);
+
+  upsertDocument({
+    id: `doc-meldebestaetigung-${vorgang.id}`,
+    typ: 'meldebestaetigung',
+    titel: 'Meldebestätigung Berlin-Mitte',
+    ausstellende_behoerde_id: 'buergeramt-berlin-mitte',
+    ausgestellt_am: stamp,
+    kategorie: 'bescheide',
+    dokument_nr: aktenzeichenForBehoerde('buergeramt-berlin-mitte'),
+    qr_payload: `[MOCK-QR] meldung://berlin-mitte/${persona.id}/${stamp} [MOCK – Verwaltungsdemo, keine echten Daten]`,
+    eudi_compatible: true,
+    watermark: '[MOCK]',
+    vorgang_id: vorgang.id,
+    owner_persona_id: persona.id,
+  });
+
+  // Anmeldung-Termin-Vorschlag (Termin-Autopilot, Spec §5/§6). Status
+  // 'vorgeschlagen' — NICHT 'gebucht'. stichtag liegt seit Kaskaden-Start im
+  // Vorgang-Kontext und ist hier (Block-A-Step-Success) lesbar.
+  const stichtag =
+    (vorgang.context?.stichtag as string | undefined) ??
+    vorgang.fristen.find((f) => f.typ === 'stichtag')?.datum ??
+    stamp;
+  const { slotIso } = letzterSichererAnmeldungSlot(stichtag, new Date().toISOString());
+  upsertTermin({
+    id: `termin-anmeldung-${vorgang.id}`,
+    behoerde_id: 'buergeramt-berlin-mitte',
+    vorgang_id: vorgang.id,
+    datum: slotIso,
+    ort: {
+      typ: 'praesenz',
+      details:
+        'Bezirksamt Mitte von Berlin — Bürgeramt Müllerstraße, Müllerstraße 146, 13353 Berlin',
+    },
+    status: 'vorgeschlagen',
+    betreff: 'Anmeldung neuer Wohnort (§ 17 BMG)',
+    buchungsreferenz: `[MOCK] ${aktenzeichenBuergeramtTermin()}`,
+    kategorie: 'behoerdentermin',
+    owner_persona_id: persona.id,
+  });
+}
+
+/**
  * §C1 — bei abgeschlossenem Umzug-Lauf: Meldebestätigung + (KFZ) Zulassungs-
  * bescheinigung Teil I minten, LEA-Termin (ABH) anlegen, alles vorgang_id-
  * verlinkt + owner-gestempelt, Events emittiert. Idempotent.
+ *
+ * Hinweis: die Bürgeramt-Artefakte (Meldebestätigung + Anmeldung-Termin)
+ * entstehen jetzt bereits am Block-A-Step-Success (s. `mintBuergeramtAnmeldung-
+ * Artefakte`), damit der Termin-Hero inline mit der Anmeldung erscheint. Der
+ * Aufruf hier bleibt als Sicherheitsnetz/Legacy-Pfad und ist über die
+ * deterministischen IDs idempotent (kein Doppel-Mint).
  */
 function applyUmzugRipple(vorgang: Vorgang, persona: Persona): void {
   const stamp = new Date().toISOString().slice(0, 10);
@@ -727,47 +794,9 @@ function applyUmzugRipple(vorgang: Vorgang, persona: Persona): void {
     vorgang.schritte.some((s) => s.status === 'confirmed' && pred(s));
 
   // Bürgeramt-Schritt → Meldebestätigung-Document + Anmeldung-Termin-Vorschlag.
+  // Idempotent: bei Block-A-Step-Success bereits gemintet (deterministische IDs).
   if (hasStep((s) => s.behoerde_id === 'buergeramt-berlin-mitte')) {
-    upsertDocument({
-      id: `doc-meldebestaetigung-${vorgang.id}`,
-      typ: 'meldebestaetigung',
-      titel: 'Meldebestätigung Berlin-Mitte',
-      ausstellende_behoerde_id: 'buergeramt-berlin-mitte',
-      ausgestellt_am: stamp,
-      kategorie: 'bescheide',
-      dokument_nr: aktenzeichenForBehoerde('buergeramt-berlin-mitte'),
-      qr_payload: `[MOCK-QR] meldung://berlin-mitte/${persona.id}/${stamp} [MOCK – Verwaltungsdemo, keine echten Daten]`,
-      eudi_compatible: true,
-      watermark: '[MOCK]',
-      vorgang_id: vorgang.id,
-      owner_persona_id: persona.id,
-    });
-
-    // Anmeldung-Termin-Vorschlag (Termin-Autopilot, Spec §5/§6). Status
-    // 'vorgeschlagen' — NICHT 'gebucht'. Datum deterministisch aus dem
-    // stichtag-abgeleiteten „letzter sicherer Slot vor der Frist" (kein
-    // Date.now()+7d). Idempotent über die deterministische id.
-    const stichtag =
-      (vorgang.context?.stichtag as string | undefined) ??
-      vorgang.fristen.find((f) => f.typ === 'stichtag')?.datum ??
-      stamp;
-    const { slotIso } = letzterSichererAnmeldungSlot(stichtag, new Date().toISOString());
-    upsertTermin({
-      id: `termin-anmeldung-${vorgang.id}`,
-      behoerde_id: 'buergeramt-berlin-mitte',
-      vorgang_id: vorgang.id,
-      datum: slotIso,
-      ort: {
-        typ: 'praesenz',
-        details:
-          'Bezirksamt Mitte von Berlin — Bürgeramt Müllerstraße, Müllerstraße 146, 13353 Berlin',
-      },
-      status: 'vorgeschlagen',
-      betreff: 'Anmeldung neuer Wohnort (§ 17 BMG)',
-      buchungsreferenz: `[MOCK] ${aktenzeichenBuergeramtTermin()}`,
-      kategorie: 'behoerdentermin',
-      owner_persona_id: persona.id,
-    });
+    mintBuergeramtAnmeldungArtefakte(vorgang, persona);
   }
 
   // KFZ-Schritt → Zulassungsbescheinigung Teil I (nur wenn KFZ-Hop lief).
@@ -1777,6 +1806,19 @@ const engineHooks: EngineHooks = {
       });
     }
 
+    // Termin-Autopilot-Hero (Spec §2/§4.1/§5): SOBALD der Block-A-Bürgeramt-
+    // Anmeldungsschritt erfolgreich ist — d. h. JETZT, vor den sensiblen
+    // Block-D-eID-Gates — Meldebestätigung + Anmeldung-Termin-Vorschlag minten,
+    // damit die Termin-Folgezeile inline mit der Anmeldung erscheint („ohne
+    // neuen Klick"). NICHT erst am Saga-Terminal (das wäre nach den eID-Taps).
+    // Idempotent über die deterministischen IDs (Saga-Terminal-Ripple = No-op).
+    if (step.block === 'A' && step.behoerdeId === 'buergeramt-berlin-mitte') {
+      const v = loadVorgaenge().find((x) => x.id === saga.vorgangId);
+      if (v && v.typ === 'umzug') {
+        mintBuergeramtAnmeldungArtefakte(v, persona);
+      }
+    }
+
     // Block-D side-effects: KFZ marker, Block-D stammdaten log, ripple,
     // completion check (idempotent). The projected AutopilotStep already has
     // letter_id assigned by the engine; pass a confirmed AutopilotStep shape.
@@ -1896,9 +1938,24 @@ async function runAutopilotInBackground(ctx: {
         const finalLetter: Letter = { ...letter, vorgang_id: ctx.vorgangId };
         appendLetter(finalLetter);
         upsertStep(ctx.vorgangId, { ...step, letter_id: finalLetter.id });
-        continue;
+      } else {
+        upsertStep(ctx.vorgangId, step);
       }
-      upsertStep(ctx.vorgangId, step);
+
+      // Termin-Autopilot-Hero (Spec §2/§4.1/§5): SOBALD der Block-A-Bürgeramt-
+      // Anmeldungsschritt im Stream bestätigt ist — d. h. inline mit der
+      // Anmeldung, vor den späteren Block-D-eID-Bestätigungen (über bestaetige-
+      // Impl) — Meldebestätigung + Anmeldung-Termin-Vorschlag minten. Idempotent
+      // über die deterministischen IDs (späterer Ripple = No-op).
+      if (
+        step.behoerde_id === 'buergeramt-berlin-mitte' &&
+        step.status === 'confirmed'
+      ) {
+        const v = loadVorgaenge().find((x) => x.id === ctx.vorgangId);
+        if (v && v.typ === 'umzug') {
+          mintBuergeramtAnmeldungArtefakte(v, ctx.persona);
+        }
+      }
     }
     // §C1 — Ripple nach Block A/B (Meldebestätigung-Document; KFZ/ABH folgen
     // beim Block-D-Confirm in bestaetigeImpl). Idempotent.
