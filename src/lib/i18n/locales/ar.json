@@ -1212,6 +1212,10 @@
       "cta_open_sheet": "كتابة رد",
       "sheet_title": "رد إلى {behoerde}",
       "sheet_close_aria": "إغلاق لوحة الرد",
+      "inline": {
+        "opened_announcement": "تم فتح لوحة الرد. لا يزال بإمكانك قراءة الرسالة بجانبها.",
+        "closed_announcement": "تم إغلاق لوحة الرد."
+      },
       "recipient_label_template": "إلى: {behoerde}",
       "bezug_label_template": "بشأن: {aktenzeichen}",
       "betreff_label_template": "الموضوع: {betreff}",

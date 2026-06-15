@@ -1212,6 +1212,10 @@
       "cta_open_sheet": "Compose reply",
       "sheet_title": "Reply to {behoerde}",
       "sheet_close_aria": "Close reply sheet",
+      "inline": {
+        "opened_announcement": "Reply panel opened. You can still read the letter on the left.",
+        "closed_announcement": "Reply panel closed."
+      },
       "recipient_label_template": "To: {behoerde}",
       "bezug_label_template": "Re: {aktenzeichen}",
       "betreff_label_template": "Subject: {betreff}",

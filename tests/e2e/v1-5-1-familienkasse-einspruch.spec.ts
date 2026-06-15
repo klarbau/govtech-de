@@ -131,8 +131,9 @@ test.describe('V1.5.1 Familienkasse-AO-Erklärer (synthetic letter)', () => {
     await replyButton.waitFor({ state: 'visible', timeout: 10_000 });
     await replyButton.click();
 
-    const sheet = page.locator('[data-slot="sheet-content"]');
-    await sheet.waitFor({ state: 'visible' });
+    // At ≥ 1100 px reply opens INLINE (Spec §6.2) — no modal Sheet.
+    const panel = page.locator('[data-testid="reply-inline-panel"]');
+    await panel.waitFor({ state: 'visible', timeout: 10_000 });
 
     // Picker-Default-Highlight ist Einspruch-Skelett (familienkasse-nachweis +
     // einspruch → AO-Familie). Click radio.

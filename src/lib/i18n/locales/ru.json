@@ -1212,6 +1212,10 @@
       "cta_open_sheet": "Написать ответ",
       "sheet_title": "Ответ в {behoerde}",
       "sheet_close_aria": "Закрыть панель ответа",
+      "inline": {
+        "opened_announcement": "Панель ответа открыта. Вы по-прежнему можете читать письмо слева.",
+        "closed_announcement": "Панель ответа закрыта."
+      },
       "recipient_label_template": "Кому: {behoerde}",
       "bezug_label_template": "К делу: {aktenzeichen}",
       "betreff_label_template": "Тема: {betreff}",

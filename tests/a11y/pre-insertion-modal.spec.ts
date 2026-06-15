@@ -96,7 +96,10 @@ async function openModalFor(
     .first();
   await replyButton.waitFor({ state: 'visible', timeout: 20_000 });
   await replyButton.click();
-  await page.locator('[data-slot="sheet-content"]').waitFor();
+  // Compose surface is open in BOTH layouts: inline panel (≥ 1100 px, Spec §6.2)
+  // and modal Sheet (< 1100 px) share #reply-compose-heading. Anchor on it so
+  // this helper is viewport-agnostic.
+  await page.locator('#reply-compose-heading').waitFor();
 
   const radio = page
     .getByRole('radio')
@@ -136,7 +139,9 @@ test.describe('V1.5.1 PreInsertionModal a11y', () => {
             .first();
           await replyButton.waitFor({ state: 'visible', timeout: 20_000 });
           await replyButton.click();
-          await page.locator('[data-slot="sheet-content"]').waitFor();
+          // Inline panel (≥ 1100 px) or modal Sheet (< 1100 px) — both expose
+          // #reply-compose-heading.
+          await page.locator('#reply-compose-heading').waitFor();
 
           const einspruch = page
             .getByRole('radio')
