@@ -199,8 +199,8 @@ test('status icons decorative (aria-hidden) + paired with text — WCAG 1.4.1', 
     // itself OR any ancestor inside the panel carries aria-hidden="true". lucide
     // renders the <Home> header svg inside an aria-hidden <span>, so its hiding is
     // inherited, not on the svg node — the correct WCAG 1.4.1 semantics.
-    const isEffectivelyHidden = (el) => {
-      let node = el;
+    const isEffectivelyHidden = (el: Element | null) => {
+      let node: Element | null = el;
       while (node && node !== panel.parentElement) {
         if (node.getAttribute && node.getAttribute('aria-hidden') === 'true') {
           return true;

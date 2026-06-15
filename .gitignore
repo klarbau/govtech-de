@@ -51,5 +51,6 @@ demo-recording/
 /.claude/
 /src/lib/i18n/_status.json
 
-# One-off local probe/screenshot scripts
+# One-off local probe/screenshot scripts + their image output
 tmp-*
+.dark-shots/

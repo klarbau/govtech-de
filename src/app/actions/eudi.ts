@@ -121,6 +121,26 @@ export async function verifyMeldebestaetigungCredential(
 }
 
 /**
+ * Mint ONLY (no verify) the run's Meldebestätigung credential and return the raw
+ * SD-JWT VC token. This is the server-action boundary the browser mock-backend
+ * (`src/lib/mock-backend/api.ts`) crosses when it persists the minted Document —
+ * the issuer (`node:crypto` + `jose`) MUST stay server-side, so the backend can
+ * never statically/dynamically pull `@/lib/eudi/issue` into the client bundle.
+ *
+ * Unlike `verifyMeldebestaetigungCredential` (which derives a deterministic demo
+ * context), this accepts the caller's exact `ctx` — the backend builds it from
+ * the real Vorgang (the NEW Umzug address + dates), so the persisted token's
+ * claims match the cascade. Deterministic + offline; Vercel- and Loom-safe.
+ */
+export async function issueMeldebestaetigungToken(
+  personaId: string,
+  vorgangId: string,
+  ctx: PersonaMeldeContext,
+): Promise<string> {
+  return issueMeldebestaetigungForPersona(personaId, vorgangId, ctx);
+}
+
+/**
  * Phase 2 — re-present ONLY the chosen field subset and re-verify. Mints the
  * full credential, then rebuilds a token carrying ONLY the selected disclosures
  * (issuer JWT unchanged) and re-verifies — the literal Datenminimierung proof:
