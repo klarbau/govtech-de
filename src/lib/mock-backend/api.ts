@@ -844,11 +844,13 @@ async function mintVerifiableOnceOnly(
       vorgang.fristen.find((f) => f.typ === 'stichtag')?.datum ??
       new Date().toISOString().slice(0, 10);
 
-    // Server-only issuer (node:crypto + jose) — dynamic import keeps it out of
-    // the client bundle and makes a missing/failed import non-fatal.
-    const { issueMeldebestaetigungForPersona } = await import('@/lib/eudi/issue');
+    // Server-only issuer (node:crypto + jose) runs behind a `'use server'`
+    // action — importing the action (not `@/lib/eudi/issue` directly) keeps the
+    // crypto deps out of the client bundle. The dynamic import keeps a
+    // missing/failed import non-fatal (the cascade must not break).
+    const { issueMeldebestaetigungToken } = await import('@/app/actions/eudi');
 
-    const token = await issueMeldebestaetigungForPersona(persona.id, vorgang.id, {
+    const token = await issueMeldebestaetigungToken(persona.id, vorgang.id, {
       familienname: persona.nachname,
       vornamen: persona.vorname,
       ...(persona.doktorgrad ? { doktorgrad: persona.doktorgrad } : {}),

@@ -2493,6 +2493,75 @@
       "close": "إغلاق",
       "payload_label": "معاينة المستند (اصطناعية)"
     },
+    "detail": {
+      "tablist_label": "طرق عرض المستند",
+      "tab": {
+        "uebersicht": "نظرة عامة",
+        "vorschau": "معاينة",
+        "verlauf": "السجل"
+      },
+      "meta": {
+        "dokument_id": "معرّف المستند",
+        "ausgestellt": "صدر في",
+        "kategorie": "الفئة",
+        "vorgang": "المعاملة المرتبطة",
+        "vorgang_umzug": "Umzug",
+        "aussteller": "الجهة المُصدِرة",
+        "gueltig_bis": "صالح حتى"
+      },
+      "echtheit": {
+        "title": "تم التحقق من الصحة",
+        "body": "تم فحص هذا المستند تلقائيًا والتحقق من توقيعه مقابل مرساة الثقة (Trust-Anchor) الخاصة بالجهة المُصدِرة.",
+        "checking": "جارٍ التحقق من الصحة …",
+        "fields_label": "البيانات المؤكَّدة"
+      },
+      "field": {
+        "familienname": "اسم العائلة",
+        "vorname": "الاسم الأول",
+        "geburtsdatum": "تاريخ الميلاد",
+        "anschrift": "العنوان",
+        "wohnungsstatus": "حالة السكن",
+        "einzugsdatum": "تاريخ الانتقال"
+      },
+      "wohnungsstatus": {
+        "hauptwohnung": "السكن الرئيسي",
+        "nebenwohnung": "السكن الثانوي",
+        "alleinige": "السكن الوحيد"
+      },
+      "hinweis": {
+        "title": "ملاحظة",
+        "body": "صدر هذا المستند رقميًا وهو صالح بدون توقيع."
+      },
+      "render": {
+        "preview_label": "معاينة المستند",
+        "title": "Meldebestätigung",
+        "legal": "بموجب § 18 من قانون تسجيل السكان الاتحادي الألماني (Bundesmeldegesetz, BMG)",
+        "intro": "يُؤكَّد بموجب هذا أن",
+        "anrede_w": "Frau",
+        "anrede_m": "Herr",
+        "geboren": "المولود في {datum}",
+        "zum": "اعتبارًا من {datum}",
+        "anmeldung": "قد سجّل العنوان التالي بصفته {status}:",
+        "ausgestellt_label": "صدر في",
+        "id_label": "معرّف المستند",
+        "disclaimer": "تم إنشاء هذا المستند إلكترونيًا وهو صالح بدون توقيع.",
+        "qr_alt": "رمز QR للتحقق (اصطناعي)",
+        "stamp_top": "Bezirksamt Mitte",
+        "stamp_bottom": "Berlin"
+      },
+      "verlauf": {
+        "title": "سجل المستند",
+        "issued": "صدر",
+        "issued_by": "من قِبل {behoerde}",
+        "verified": "أُعيد التحقق من التوقيع",
+        "verified_by": "مقابل مرساة الثقة التجريبية (Trust-Anchor) — التنسيق حقيقي، والجهة تجريبية.",
+        "stored": "حُفظ في مخزن المستندات",
+        "stored_sub": "يمكن التحقق منه وتقديمه مجددًا في أي وقت."
+      },
+      "demo_note": "[MOCK] عرض توضيحي: صادر عن جهة إصدار تجريبية لها مرساة ثقة (Trust-Anchor) خاصة بها — وليس عن جهة تسجيل ألمانية ولا عن الدولة. التنسيق وفحص التوقيع حقيقيان؛ أما إصدار المستندات إلى المحفظة من قِبل الجهات الرسمية فهو وظيفة مستقبلية (EUDI Wallet اعتبارًا من 2 يناير 2027).",
+      "download": "تنزيل",
+      "close": "إغلاق"
+    },
     "rail": {
       "aside_label": "وصول سريع للمستندات والمضافة حديثًا"
     }

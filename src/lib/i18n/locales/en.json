@@ -2493,6 +2493,75 @@
       "close": "Close",
       "payload_label": "Credential preview (synthetic)"
     },
+    "detail": {
+      "tablist_label": "Document views",
+      "tab": {
+        "uebersicht": "Overview",
+        "vorschau": "Preview",
+        "verlauf": "History"
+      },
+      "meta": {
+        "dokument_id": "Document ID",
+        "ausgestellt": "Issued on",
+        "kategorie": "Category",
+        "vorgang": "Related case",
+        "vorgang_umzug": "Umzug",
+        "aussteller": "Issuing authority",
+        "gueltig_bis": "Valid until"
+      },
+      "echtheit": {
+        "title": "Authenticity verified",
+        "body": "This document was checked automatically and its signature verified against the issuer's trust anchor.",
+        "checking": "Checking authenticity …",
+        "fields_label": "Confirmed details"
+      },
+      "field": {
+        "familienname": "Surname",
+        "vorname": "First name",
+        "geburtsdatum": "Date of birth",
+        "anschrift": "Address",
+        "wohnungsstatus": "Residence status",
+        "einzugsdatum": "Move-in date"
+      },
+      "wohnungsstatus": {
+        "hauptwohnung": "Primary residence",
+        "nebenwohnung": "Secondary residence",
+        "alleinige": "Sole residence"
+      },
+      "hinweis": {
+        "title": "Note",
+        "body": "This document was issued digitally and is valid without a signature."
+      },
+      "render": {
+        "preview_label": "Document preview",
+        "title": "Meldebestätigung",
+        "legal": "under § 18 of the German Federal Registration Act (Bundesmeldegesetz, BMG)",
+        "intro": "This confirms that",
+        "anrede_w": "Frau",
+        "anrede_m": "Herr",
+        "geboren": "born on {datum}",
+        "zum": "as of {datum}",
+        "anmeldung": "registered the following address as {status}:",
+        "ausgestellt_label": "Issued on",
+        "id_label": "Document ID",
+        "disclaimer": "This document was generated electronically and is valid without a signature.",
+        "qr_alt": "QR verification code (synthetic)",
+        "stamp_top": "Bezirksamt Mitte",
+        "stamp_bottom": "Berlin"
+      },
+      "verlauf": {
+        "title": "Document history",
+        "issued": "Issued",
+        "issued_by": "by {behoerde}",
+        "verified": "Signature re-verified",
+        "verified_by": "against the demo trust anchor — format real, authority demo.",
+        "stored": "Saved to the document store",
+        "stored_sub": "Can be re-checked and presented at any time."
+      },
+      "demo_note": "[MOCK] Demo: issued by a demo issuer with its own trust anchor — not by a German registration authority and not by the state. The format and signature check are real; wallet issuance by authorities is a future feature (EUDI Wallet from 2 January 2027).",
+      "download": "Download",
+      "close": "Close"
+    },
     "rail": {
       "aside_label": "Document quick access and recently added"
     }
