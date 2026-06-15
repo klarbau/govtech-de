@@ -58,6 +58,11 @@
     "motion": {
       "label": "Bewegung reduzieren"
     },
+    "selection": {
+      "label": "Markierten Text vorlesen",
+      "hint": "Zeigt beim Markieren von Text eine Schaltfläche zum Vorlesen.",
+      "read": "Markierten Text vorlesen"
+    },
     "reset": {
       "label": "Zurücksetzen",
       "announce": "Bedienhilfen zurückgesetzt."

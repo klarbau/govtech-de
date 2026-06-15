@@ -15,6 +15,12 @@ export interface A11yPreferences {
   contrast: boolean;
   readable: boolean;
   reduceMotion: boolean;
+  /**
+   * BEHAVIORAL pref (not visual): when on, selecting text surfaces a floating
+   * "Vorlesen" button. Persisted only — it does NOT toggle an `<html>` class and
+   * is intentionally absent from the no-FOUC pre-paint path (nothing to flash).
+   */
+  selectionReadAloud: boolean;
 }
 
 export const A11Y_DEFAULTS: A11yPreferences = {
@@ -22,6 +28,7 @@ export const A11Y_DEFAULTS: A11yPreferences = {
   contrast: false,
   readable: false,
   reduceMotion: false,
+  selectionReadAloud: false,
 };
 
 export const A11Y_STORAGE_KEY = 'govtech-de:v1:a11y:prefs';
@@ -58,6 +65,10 @@ export function parsePreferences(raw: unknown): A11yPreferences {
     contrast: asBool(obj.contrast, A11Y_DEFAULTS.contrast),
     readable: asBool(obj.readable, A11Y_DEFAULTS.readable),
     reduceMotion: asBool(obj.reduceMotion, A11Y_DEFAULTS.reduceMotion),
+    selectionReadAloud: asBool(
+      obj.selectionReadAloud,
+      A11Y_DEFAULTS.selectionReadAloud,
+    ),
   };
 }
 
@@ -98,7 +109,8 @@ export function isDefault(prefs: A11yPreferences): boolean {
     prefs.fontScale === A11Y_DEFAULTS.fontScale &&
     prefs.contrast === A11Y_DEFAULTS.contrast &&
     prefs.readable === A11Y_DEFAULTS.readable &&
-    prefs.reduceMotion === A11Y_DEFAULTS.reduceMotion
+    prefs.reduceMotion === A11Y_DEFAULTS.reduceMotion &&
+    prefs.selectionReadAloud === A11Y_DEFAULTS.selectionReadAloud
   );
 }
 

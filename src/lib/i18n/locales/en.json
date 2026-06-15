@@ -58,6 +58,11 @@
     "motion": {
       "label": "Reduce motion"
     },
+    "selection": {
+      "label": "Read aloud selected text",
+      "hint": "Shows a button to read aloud when you select text.",
+      "read": "Read aloud selected text"
+    },
     "reset": {
       "label": "Reset",
       "announce": "Accessibility settings reset."
