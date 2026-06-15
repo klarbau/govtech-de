@@ -311,10 +311,10 @@ export const BLOCK_D: BlockDEntry[] = [
     // D2 — eID-Basis § 18 PAuswG; §87/§86 AufenthG entfernt (Strafverfolgungs-/
     // Erhebungskanal, NICHT Adresspflege). Kein Melderegister→ABH-Push.
     behoerdeId: 'abh-berlin-lea',
-    aktion: 'Adressaktualisierung Aufenthaltstitel (Termin angeboten)',
+    aktion: 'Adressaktualisierung Aufenthaltstitel — Antrag vor Ablauf wahren',
     rechtsgrundlage: '§ 18 PAuswG',
     agentLabel:
-      'Wir bereiten die Adressaktualisierung Ihres Aufenthaltstitels vor und bieten einen Termin an',
+      'Wir bereiten die Adressaktualisierung Ihres Aufenthaltstitels vor — den Vorsprachetermin vergibt die Behörde',
     datenkategorien: ['neue_anschrift', 'dokumentennummer'],
     personaFlag: 'aufenthaltstitel',
     visibleIf: (p) => p.aufenthaltstitel !== undefined,
@@ -324,7 +324,7 @@ export const BLOCK_D: BlockDEntry[] = [
       betreffTemplate:
         'Ihr Aufenthaltstitel — Aktenzeichen {az}',
       floskel:
-        'in oben genannter Angelegenheit bestätigen wir den Eingang Ihrer Adressmeldung. Die Aktualisierung der auf der elektronischen Aufenthaltskarte hinterlegten Anschrift erfolgt nutzergesteuert über die eID-Funktion (§ 18 PAuswG); hierzu haben wir Ihnen einen Termin angeboten. Es findet kein automatischer Melderegister→Ausländerbehörde-Abgleich statt — bitte nehmen Sie den angebotenen Termin wahr.',
+        'in oben genannter Angelegenheit bestätigen wir den Eingang Ihrer Adressmeldung. Die Aktualisierung der auf der elektronischen Aufenthaltskarte hinterlegten Anschrift erfolgt nutzergesteuert über die eID-Funktion (§ 18 PAuswG). Den Vorsprachetermin vergibt die Ausländerbehörde, häufig auf Einladung — diese Demo bucht dort keinen Termin. Wichtig für die Verlängerung: stellen Sie Ihren Antrag vor Ablauf Ihres Titels, dann bleibt der bisherige Titel gültig (Fortgeltungsfiktion § 81 Abs. 4 AufenthG) und Sie erhalten eine Fiktionsbescheinigung (§ 81 Abs. 5 AufenthG).',
       abschluss: 'Mit freundlichen Grüßen\nIm Auftrag\nS. Wegener, Sachbearbeiter:in',
     },
   },

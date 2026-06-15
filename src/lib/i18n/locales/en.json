@@ -2561,6 +2561,7 @@
       "ics_aria_all": "Export all upcoming appointments as ICS"
     },
     "status": {
+      "vorgeschlagen": "Suggested",
       "gebucht": "Booked",
       "bestaetigt": "Confirmed",
       "verschoben": "Rescheduled",

@@ -627,7 +627,7 @@ export const terminSchema = z
       typ: z.enum(['praesenz', 'video', 'telefon']),
       details: z.string(),
     }),
-    status: z.enum(['gebucht', 'bestaetigt', 'abgesagt']),
+    status: z.enum(['vorgeschlagen', 'gebucht', 'bestaetigt', 'abgesagt', 'verschoben']),
     betreff: z.string(),
   })
   .passthrough();

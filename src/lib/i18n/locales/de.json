@@ -2791,6 +2791,7 @@
       "ics_aria_all": "Alle anstehenden Termine als ICS exportieren"
     },
     "status": {
+      "vorgeschlagen": "Vorgeschlagen",
       "gebucht": "Gebucht",
       "bestaetigt": "Bestätigt",
       "verschoben": "Verschoben",
@@ -3284,6 +3285,34 @@
         "pending": "Wartet",
         "failed": "Fehlgeschlagen"
       }
+    }
+  },
+  "termin_autopilot": {
+    "row": {
+      "status_vorgemerkt": "Termin vorgemerkt",
+      "confirm_cta": "Termin bestätigen",
+      "confirming": "Wird bestätigt …",
+      "confirmed": "Termin bestätigt",
+      "confirm_error": "Bestätigung fehlgeschlagen. Bitte erneut versuchen.",
+      "disclosure_open": "Warum dieser Termin?",
+      "disclosure_close": "Begründung ausblenden"
+    },
+    "frist": {
+      "countdown": "Noch {n, plural, =1 {1 Tag} other {# Tage}} bis zur Anmeldefrist (§ 17 BMG)",
+      "heute": "Letzter Tag der Anmeldefrist (§ 17 BMG)",
+      "abgelaufen": "Anmeldefrist überschritten — bitte umgehend anmelden (§ 54 BMG)"
+    },
+    "reasoning": {
+      "full": "Vorgeschlagen, weil: nächster freier Termin {n} Tage vor Ihrer gesetzlichen Anmeldefrist (§ 17 Abs. 1 BMG, zwei Wochen ab Einzug), an der zuständigen Meldebehörde Ihres neuen Wohnorts ({behoerde}). [MOCK]-Slot.",
+      "kein_slot": "Kein freier Termin vor Ihrer Anmeldefrist gefunden — bitte zeitnah selbst einen Termin sichern und die Frist (§ 17 BMG) beachten."
+    },
+    "label": {
+      "zukunft": "[ZUKUNFT] Ein bundesweiter Termin-Basisdienst existiert heute nicht — die OZG-Basisdienste umfassen Nutzerkonto, Bezahldienst, Postfach, Suchfunktion und Antragsrouting (FIT-Connect), keinen Termin-Standard. Diese Ansicht zeigt, wie ein solcher Dienst 2027 auf dem Deutschland-Stack aussehen könnte.",
+      "mock_slot": "[MOCK] — synthetischer Slot, keine echte Terminvergabe."
+    },
+    "disclaimer": "Hinweis: Dieser Prototyp simuliert die Terminvergabe. Einen bundesweiten Termin-Basisdienst gibt es heute nicht — die OZG-Basisdienste umfassen Nutzerkonto, Bezahldienst, Postfach, Suchfunktion und Antragsrouting (FIT-Connect), aber keinen Termin-Standard; reale Terminbuchung läuft kommunal über getrennte Systeme ([ZUKUNFT]). Alle Slot-Daten und Bestätigungen sind synthetisch ([MOCK]). Die Anmeldepflicht nach § 17 Abs. 1 BMG (zwei Wochen ab Einzug, bußgeldbewehrt nach § 54 BMG) und die Zuständigkeit der Meldebehörde am neuen Wohnort gelten real. Für Aufenthaltstitel ist der rechtlich entscheidende Schritt die Antragstellung vor Ablauf (Fortgeltungsfiktion § 81 Abs. 4 AufenthG, Fiktionsbescheinigung § 81 Abs. 5 AufenthG) — den Vorsprachetermin vergibt die Ausländerbehörde, häufig auf Einladung; diese Demo bucht dort keinen Termin. Der Kalenderzugriff liest ausschließlich Verfügbarkeit (frei/belegt), keine Termininhalte (Datenminimierung, Art. 5 Abs. 1 lit. c, Art. 25 DSGVO).",
+    "abh": {
+      "deadline_guard": "Antrag vor Ablauf stellen, um die Fortgeltungsfiktion (§ 81 Abs. 4 AufenthG) zu wahren — den Vorsprachetermin vergibt die Ausländerbehörde, häufig auf Einladung. Diese Demo bucht dort keinen Termin."
     }
   },
   "umzug_cascade": {

@@ -16,6 +16,10 @@ import {
 
 import { ValueReceiptCard } from '@/components/autopilot/ValueReceiptCard';
 import { FitConnectReceiptPanel } from '@/components/autopilot/FitConnectReceiptPanel';
+import {
+  TerminVorschlagRow,
+  type TerminConfirmState,
+} from '@/components/autopilot/TerminVorschlagRow';
 import { MeldebestaetigungInlineBeat } from '@/components/once-only/MeldebestaetigungInlineBeat';
 import { BehoerdenBadge } from '@/components/shared/BehoerdenBadge';
 import { submitViaFitConnect } from '@/app/actions/fit-connect';
@@ -27,6 +31,7 @@ import type {
   BehoerdeId,
   BlockTyp,
   MockBackendEvent,
+  Termin,
   ValueReceipt,
   Vorgang,
 } from '@/types';
@@ -91,6 +96,27 @@ const ZUKUNFT_ROWS: ReadonlySet<string> = new Set([
 
 /** The §33 BMG MB↔MB row that additionally shows the "≤ 3 Werktage" Frist chip. */
 const RUECKMELDUNG_BEHOERDE_ID = 'meldebehoerde-rueckmeldung';
+
+/**
+ * Block-A anchor: the Meldebehörde at the new address. Its row carries the
+ * Termin-Autopilot consequence line (Spec §4.1). The Anmeldung-Termin minted in
+ * the ripple has id `termin-anmeldung-${vorgangId}`.
+ */
+const BUERGERAMT_BEHOERDE_ID = 'buergeramt-berlin-mitte';
+
+/** § 17 BMG Anmeldefrist: zwei Wochen (14 Kalendertage) ab Einzug. */
+const ANMELDEFRIST_TAGE = 14;
+const MS_PER_TAG = 86_400_000;
+
+/** Reads the move-in date (`stichtag`) the cascade already carries on the Vorgang. */
+function readStichtagIso(vorgang: Vorgang | null): string | null {
+  if (!vorgang) return null;
+  const ctx = vorgang.context as Record<string, unknown> | undefined;
+  const fromCtx = ctx?.stichtag ?? ctx?.stichtag_iso;
+  if (typeof fromCtx === 'string') return fromCtx;
+  const fromFrist = vorgang.fristen?.find((f) => f.typ === 'stichtag')?.datum;
+  return typeof fromFrist === 'string' ? fromFrist : null;
+}
 
 /** The three Block-D ids that may trigger a FIT-Connect submission (Spec § 6.6). */
 const FIT_CONNECT_BEHOERDE_IDS: ReadonlySet<string> = new Set<FitConnectBehoerdeId>([
@@ -194,6 +220,21 @@ export function InlineCascade({
     Record<string, 'idle' | 'confirming' | 'error'>
   >({});
 
+  /**
+   * Termin-Autopilot (Spec §4.1): the Anmeldung-Termin the ripple mints when the
+   * Block-A Bürgeramt step runs. It arrives via the existing `termin_created`
+   * subscription / a `getVorgangRelated` read — NO extra primary fetch. Rendered
+   * as the consequence line under the Bürgeramt row. `nowIso` is captured once on
+   * mount as the FristCountdown "now" reference (this row only renders post-run,
+   * client-side, so `Date.now()` is hydration-safe here).
+   */
+  const [anmeldungTermin, setAnmeldungTermin] = useState<Termin | null>(null);
+  const [terminConfirmState, setTerminConfirmState] =
+    useState<TerminConfirmState>('idle');
+  const justConfirmedTerminRef = useRef(false);
+  const terminStatusRef = useRef<HTMLSpanElement | null>(null);
+  const nowIsoRef = useRef<string>(new Date().toISOString());
+
   const receiptFetchedRef = useRef(false);
   const seenLetterIdsRef = useRef<Set<string>>(new Set());
   const receiptCardRef = useRef<HTMLDivElement | null>(null);
@@ -241,6 +282,34 @@ export function InlineCascade({
     } catch {
       justConfirmedStepIdRef.current = null;
       setConfirmState((s) => ({ ...s, [stepId]: 'error' }));
+    }
+  }
+
+  /**
+   * Confirm the Anmeldung-Termin proposal (Spec §4.6) — the SAME op /termine uses
+   * (`bestaetigeTerminVorschlag`) so one Termin has one source of truth [Cond 4].
+   * Optimistic (mirrors `TermineView.handleBestaetigen`): flip to `confirmed`
+   * immediately; on failure return to `error` (retryable). The `termin_updated`
+   * subscription below reconciles the canonical record. `justConfirmedTerminRef`
+   * tells the focus effect to move focus onto the (now focusable) status span.
+   */
+  async function onConfirmTermin(terminId: string) {
+    setTerminConfirmState('confirming');
+    justConfirmedTerminRef.current = true;
+    setAnmeldungTermin((prev) =>
+      prev && prev.id === terminId ? { ...prev, status: 'bestaetigt' } : prev,
+    );
+    try {
+      await api.bestaetigeTerminVorschlag(terminId);
+      setTerminConfirmState('confirmed');
+    } catch {
+      justConfirmedTerminRef.current = false;
+      setTerminConfirmState('error');
+      setAnmeldungTermin((prev) =>
+        prev && prev.id === terminId
+          ? { ...prev, status: 'vorgeschlagen' }
+          : prev,
+      );
     }
   }
 
@@ -368,9 +437,57 @@ export function InlineCascade({
           setPosteingangCount(seen.size);
         }
       }
+      /* Termin-Autopilot (§4.1): the Anmeldung-Termin arrives as a ripple
+         consequence. Capture the one for THIS vorgang; ignore others. */
+      if (
+        event.type === 'termin_created' &&
+        event.termin.vorgang_id === vorgangId
+      ) {
+        setAnmeldungTermin(event.termin);
+      }
+      if (
+        event.type === 'termin_updated' &&
+        event.termin.vorgang_id === vorgangId
+      ) {
+        setAnmeldungTermin((prev) =>
+          prev && prev.id === event.termin.id ? event.termin : prev,
+        );
+        if (event.termin.id === `termin-anmeldung-${vorgangId}`) {
+          setTerminConfirmState(
+            event.termin.status === 'bestaetigt' ? 'confirmed' : 'idle',
+          );
+        }
+      }
     });
     return () => {
       unsubscribe();
+    };
+  }, [vorgangId]);
+
+  /* Seed the Anmeldung-Termin from `getVorgangRelated` for the case where it was
+     minted BEFORE this component subscribed (re-open / late mount) — the event
+     would otherwise never replay. De-duped against the live subscription via the
+     deterministic id; the event handler overwrites only when it owns the id. */
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const { termine } = await api.getVorgangRelated(vorgangId);
+        if (cancelled) return;
+        const anmeldung = termine.find(
+          (term) => term.id === `termin-anmeldung-${vorgangId}`,
+        );
+        if (!anmeldung) return;
+        setAnmeldungTermin((prev) => prev ?? anmeldung);
+        if (anmeldung.status === 'bestaetigt') {
+          setTerminConfirmState('confirmed');
+        }
+      } catch {
+        // live event path still delivers the Termin — seed is a backstop
+      }
+    })();
+    return () => {
+      cancelled = true;
     };
   }, [vorgangId]);
 
@@ -486,6 +603,28 @@ export function InlineCascade({
     }
   }, [receipt]);
 
+  /* Termin-Autopilot frist derivation (§4.4) — computed on the frontend from the
+     move-in date the cascade already carries (`stichtag`), the SAME rule the
+     ranker used backend-side: Frist = stichtag + 14 Kalendertage; the slot lives
+     on the Termin itself. `tageVorFrist` = whole calendar days between slot and
+     Frist (≥ 0). No mock-backend ranker import — decoupled from the api surface. */
+  const terminMeta = useMemo(() => {
+    const stichtagIso = readStichtagIso(vorgang);
+    if (!stichtagIso || !anmeldungTermin) return null;
+    const stichtag = parseISO(stichtagIso);
+    const slot = parseISO(anmeldungTermin.datum);
+    if (Number.isNaN(stichtag.getTime()) || Number.isNaN(slot.getTime())) {
+      return null;
+    }
+    const fristMs = stichtag.getTime() + ANMELDEFRIST_TAGE * MS_PER_TAG;
+    const fristIso = new Date(fristMs).toISOString();
+    const tageVorFrist = Math.max(
+      0,
+      Math.round((fristMs - slot.getTime()) / MS_PER_TAG),
+    );
+    return { fristIso, tageVorFrist };
+  }, [vorgang, anmeldungTermin]);
+
   /* Task 1: once the step the user just eID-confirmed flips to `confirmed` (its
    * button has unmounted), move focus off the now-gone button. Prefer the next
    * remaining eID button (keeps the two-tap flow on the keyboard); otherwise the
@@ -511,6 +650,16 @@ export function InlineCascade({
     }
     statusRefs.current.get(justConfirmed)?.focus();
   }, [cascadeNodes]);
+
+  /* Termin-confirm focus-continuity (§4.6): once the Anmeldung-Termin flips to
+     `confirmed`, the confirm <button> unmounts. Move focus to the now-focusable
+     "bestätigt" status span so keyboard/SR focus never drops to <body>. */
+  useEffect(() => {
+    if (!justConfirmedTerminRef.current) return;
+    if (terminConfirmState !== 'confirmed') return;
+    justConfirmedTerminRef.current = false;
+    terminStatusRef.current?.focus();
+  }, [terminConfirmState]);
 
   /* Spec § 6.6 — the eID hook. Once a Block-D FIT-Connect row flips to
    * `confirmed` (the user's "Mit eID bestätigen" tap landed), build the
@@ -650,6 +799,29 @@ export function InlineCascade({
                           </span>
                         ) : null}
                       </div>
+                      {/* Termin-Autopilot (§4.1): the Anmeldung-Termin renders as
+                       * the CONSEQUENCE of the Block-A Bürgeramt row — indented
+                       * under it, collapsed by default. No new block / card /
+                       * slot-grid [Cond 5]. Confirm reuses bestaetigeTerminVorschlag,
+                       * the SAME op /termine uses [Cond 4]. */}
+                      {node.behoerdeId === BUERGERAMT_BEHOERDE_ID &&
+                      anmeldungTermin &&
+                      terminMeta ? (
+                        <TerminVorschlagRow
+                          termin={anmeldungTermin}
+                          behoerdeName={node.behoerdeName}
+                          nowIso={nowIsoRef.current}
+                          tageVorFrist={terminMeta.tageVorFrist}
+                          fristIso={terminMeta.fristIso}
+                          state={terminConfirmState}
+                          onConfirm={() =>
+                            void onConfirmTermin(anmeldungTermin.id)
+                          }
+                          statusRef={(el) => {
+                            terminStatusRef.current = el;
+                          }}
+                        />
+                      ) : null}
                       {/* Decision A: the per-step eID-confirm affordance. */}
                       {isEidGate ? (
                         <div className="ml-9 mt-1 flex flex-col gap-1">

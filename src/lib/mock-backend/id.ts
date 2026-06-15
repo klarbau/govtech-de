@@ -43,6 +43,15 @@ export function aktenzeichenBuergeramtBerlin(bezirk: string = 'MITTE'): string {
 }
 
 /**
+ * Bürgeramt-Termin-Vorgangsnummer (municipal, NICHT bundesweit-standard):
+ * `[MOCK] BA-MITTE/TERMIN-2026-06-0093217`. Reine Anzeige-Referenz für den
+ * Anmeldung-Termin-Vorschlag (Termin-Autopilot, Spec §6).
+ */
+export function aktenzeichenBuergeramtTermin(bezirk: string = 'MITTE'): string {
+  return `[MOCK] BA-${bezirk.toUpperCase()}/TERMIN-${currentYear()}-${currentMonth()}-${randomDigits(7)}`;
+}
+
+/**
  * Finanzamt-Steuernummer im Format NN/BBB/UUUUP (Berlin: NN=11). Liefert
  * Standard-Berliner-Steuernummer-Format aus dem Domain-Note. Jahres-Suffix
  * gemäß Mock-Backend-Coder-Note `<Steuernummer> // <Jahr>`.

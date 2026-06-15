@@ -1,6 +1,11 @@
 import type { BehoerdeId } from './behoerde';
 
-export type TerminStatus = 'gebucht' | 'bestaetigt' | 'abgesagt' | 'verschoben';
+export type TerminStatus =
+  | 'vorgeschlagen' // NEU — Autopilot-Vorschlag, vom Bürger noch zu bestätigen
+  | 'gebucht'
+  | 'bestaetigt'
+  | 'abgesagt'
+  | 'verschoben';
 export type TerminOrtTyp = 'praesenz' | 'video' | 'telefon';
 
 export interface TerminOrt {

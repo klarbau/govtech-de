@@ -360,6 +360,10 @@ export function TermineView({ nowIso }: TermineViewProps) {
         return 'amber';
       case 'bestaetigt':
         return 'green';
+      // Termin-Autopilot proposal: still awaiting the citizen's confirmation —
+      // reads as "in progress", visually distinct from the confirmed green.
+      case 'vorgeschlagen':
+        return 'brand';
       default:
         return 'brand';
     }

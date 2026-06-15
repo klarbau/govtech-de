@@ -141,7 +141,12 @@ import {
 } from './stammdaten/v1-3-api';
 import { MockBackendError } from './errors';
 import { emit, subscribe } from './events';
-import { uuid, aktenzeichenForBehoerde } from './id';
+import {
+  uuid,
+  aktenzeichenForBehoerde,
+  aktenzeichenBuergeramtTermin,
+} from './id';
+import { letzterSichererAnmeldungSlot } from './autopilot/termin-ranker';
 import { computeValueReceipt } from './value-receipt';
 import { withLatency } from './latency';
 import { captureContext, runWithCapturedContext } from './store-context';
@@ -721,7 +726,7 @@ function applyUmzugRipple(vorgang: Vorgang, persona: Persona): void {
   const hasStep = (pred: (s: AutopilotStep) => boolean): boolean =>
     vorgang.schritte.some((s) => s.status === 'confirmed' && pred(s));
 
-  // Bürgeramt-Schritt → Meldebestätigung-Document.
+  // Bürgeramt-Schritt → Meldebestätigung-Document + Anmeldung-Termin-Vorschlag.
   if (hasStep((s) => s.behoerde_id === 'buergeramt-berlin-mitte')) {
     upsertDocument({
       id: `doc-meldebestaetigung-${vorgang.id}`,
@@ -735,6 +740,32 @@ function applyUmzugRipple(vorgang: Vorgang, persona: Persona): void {
       eudi_compatible: true,
       watermark: '[MOCK]',
       vorgang_id: vorgang.id,
+      owner_persona_id: persona.id,
+    });
+
+    // Anmeldung-Termin-Vorschlag (Termin-Autopilot, Spec §5/§6). Status
+    // 'vorgeschlagen' — NICHT 'gebucht'. Datum deterministisch aus dem
+    // stichtag-abgeleiteten „letzter sicherer Slot vor der Frist" (kein
+    // Date.now()+7d). Idempotent über die deterministische id.
+    const stichtag =
+      (vorgang.context?.stichtag as string | undefined) ??
+      vorgang.fristen.find((f) => f.typ === 'stichtag')?.datum ??
+      stamp;
+    const { slotIso } = letzterSichererAnmeldungSlot(stichtag, new Date().toISOString());
+    upsertTermin({
+      id: `termin-anmeldung-${vorgang.id}`,
+      behoerde_id: 'buergeramt-berlin-mitte',
+      vorgang_id: vorgang.id,
+      datum: slotIso,
+      ort: {
+        typ: 'praesenz',
+        details:
+          'Bezirksamt Mitte von Berlin — Bürgeramt Müllerstraße, Müllerstraße 146, 13353 Berlin',
+      },
+      status: 'vorgeschlagen',
+      betreff: 'Anmeldung neuer Wohnort (§ 17 BMG)',
+      buchungsreferenz: `[MOCK] ${aktenzeichenBuergeramtTermin()}`,
+      kategorie: 'behoerdentermin',
       owner_persona_id: persona.id,
     });
   }
@@ -757,27 +788,12 @@ function applyUmzugRipple(vorgang: Vorgang, persona: Persona): void {
     });
   }
 
-  // ABH/LEA-Schritt → Termin (Adressaktualisierung Aufenthaltstitel).
-  if (hasStep((s) => s.behoerde_id === 'abh-berlin-lea')) {
-    const inSevenDays = new Date(Date.now() + 7 * 86400000);
-    inSevenDays.setUTCHours(9, 0, 0, 0);
-    upsertTermin({
-      id: `termin-abh-adressupdate-${vorgang.id}`,
-      behoerde_id: 'abh-berlin-lea',
-      vorgang_id: vorgang.id,
-      datum: inSevenDays.toISOString(),
-      ort: {
-        typ: 'praesenz',
-        details:
-          'Landesamt für Einwanderung — Friedrich-Krause-Ufer 24, 13353 Berlin, Wartebereich C',
-      },
-      status: 'gebucht',
-      betreff: 'Adressaktualisierung Aufenthaltstitel',
-      buchungsreferenz: `[MOCK] ${aktenzeichenForBehoerde('abh-berlin-lea')}`,
-      kategorie: 'behoerdentermin',
-      owner_persona_id: persona.id,
-    });
-  }
+  // ABH/LEA-Schritt → KEIN Termin-Mint (Regression-Korrektur, Spec §12 Edit A).
+  // Das Landesamt für Einwanderung hat die offene Online-Terminbuchung 2025
+  // abgeschafft (Vorsprache nur auf Einladung); es gibt keinen Slot „zu buchen".
+  // Die ABH-Block-D-Zeile produziert nur ihren Bestätigungs-Letter (Adress-
+  // aktualisierung per eID, § 18 PAuswG) — OHNE Termin-Behauptung. Den Vorsprache-
+  // termin vergibt die Behörde; diese Demo bucht dort nichts.
 
   // Run-Frist/Reminder auf erledigt setzen.
   try {
