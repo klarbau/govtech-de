@@ -2502,6 +2502,75 @@
       "close": "Kapat",
       "payload_label": "Belge önizlemesi (sentetik)"
     },
+    "detail": {
+      "tablist_label": "Belge görünümleri",
+      "tab": {
+        "uebersicht": "Genel bakış",
+        "vorschau": "Önizleme",
+        "verlauf": "Geçmiş"
+      },
+      "meta": {
+        "dokument_id": "Belge kimliği",
+        "ausgestellt": "Düzenlenme tarihi",
+        "kategorie": "Kategori",
+        "vorgang": "İlgili işlem",
+        "vorgang_umzug": "Umzug",
+        "aussteller": "Düzenleyen kurum",
+        "gueltig_bis": "Geçerlilik tarihi"
+      },
+      "echtheit": {
+        "title": "Gerçekliği doğrulandı",
+        "body": "Bu belge otomatik olarak kontrol edildi ve imzası, düzenleyen kurumun güven çıpasına (Trust-Anchor) karşı doğrulandı.",
+        "checking": "Gerçeklik kontrol ediliyor …",
+        "fields_label": "Onaylanan bilgiler"
+      },
+      "field": {
+        "familienname": "Soyadı",
+        "vorname": "Ad",
+        "geburtsdatum": "Doğum tarihi",
+        "anschrift": "Adres",
+        "wohnungsstatus": "Konut durumu",
+        "einzugsdatum": "Taşınma tarihi"
+      },
+      "wohnungsstatus": {
+        "hauptwohnung": "Ana konut",
+        "nebenwohnung": "İkinci konut",
+        "alleinige": "Tek konut"
+      },
+      "hinweis": {
+        "title": "Not",
+        "body": "Bu belge dijital olarak düzenlenmiştir ve imza olmadan geçerlidir."
+      },
+      "render": {
+        "preview_label": "Belge önizlemesi",
+        "title": "Meldebestätigung",
+        "legal": "Alman Federal İkamet Kayıt Kanunu (Bundesmeldegesetz, BMG) § 18 uyarınca",
+        "intro": "İşbu belgeyle",
+        "anrede_w": "Frau",
+        "anrede_m": "Herr",
+        "geboren": "{datum} tarihinde doğan",
+        "zum": "{datum} itibarıyla",
+        "anmeldung": "kişisinin aşağıdaki adresi {status} olarak kaydettirdiği teyit edilir:",
+        "ausgestellt_label": "Düzenlenme tarihi",
+        "id_label": "Belge kimliği",
+        "disclaimer": "Bu belge elektronik olarak oluşturulmuştur ve imza olmadan geçerlidir.",
+        "qr_alt": "QR doğrulama kodu (sentetik)",
+        "stamp_top": "Bezirksamt Mitte",
+        "stamp_bottom": "Berlin"
+      },
+      "verlauf": {
+        "title": "Belge geçmişi",
+        "issued": "Düzenlendi",
+        "issued_by": "{behoerde} tarafından",
+        "verified": "İmza yeniden doğrulandı",
+        "verified_by": "demo güven çıpasına (Trust-Anchor) karşı — biçim gerçek, kurum demo.",
+        "stored": "Belge deposuna kaydedildi",
+        "stored_sub": "İstendiğinde yeniden doğrulanabilir ve sunulabilir."
+      },
+      "demo_note": "[MOCK] Demo: kendi güven çıpasına (Trust-Anchor) sahip bir demo düzenleyici tarafından verilmiştir — bir Alman ikamet kayıt kurumu tarafından değil, devlet tarafından da değil. Biçim ve imza kontrolü gerçektir; belgelerin kurumlar tarafından cüzdana verilmesi gelecekteki bir işlevdir (EUDI Wallet 2 Ocak 2027'den itibaren).",
+      "download": "İndir",
+      "close": "Kapat"
+    },
     "rail": {
       "aside_label": "Belge hızlı erişimi ve son eklenenler"
     }
@@ -2605,7 +2674,13 @@
     "fristen": {
       "title": "Süreler özeti",
       "in_tagen": "{count, plural, =0 {bugün son gün} =1 {1 gün} other {# gün}} içinde",
-      "ueberfaellig": "gecikmiş"
+      "ueberfaellig": "gecikmiş",
+      "summary": "Bu hafta {urgent} · toplam {total}",
+      "group": {
+        "diese_woche": "Bu hafta",
+        "demnaechst": "Yakında",
+        "spaeter": "Daha sonra"
+      }
     },
     "ort": {
       "video": "Görüntülü randevu",

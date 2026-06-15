@@ -2734,6 +2734,75 @@
       "mock_badge": "[MOCK]",
       "close": "Schließen",
       "payload_label": "Nachweis-Vorschau (synthetisch)"
+    },
+    "detail": {
+      "tablist_label": "Dokumentansichten",
+      "tab": {
+        "uebersicht": "Übersicht",
+        "vorschau": "Vorschau",
+        "verlauf": "Verlauf"
+      },
+      "meta": {
+        "dokument_id": "Dokument-ID",
+        "ausgestellt": "Ausgestellt am",
+        "kategorie": "Kategorie",
+        "vorgang": "Zugehöriger Vorgang",
+        "vorgang_umzug": "Umzug",
+        "aussteller": "Ausstellende Behörde",
+        "gueltig_bis": "Gültig bis"
+      },
+      "echtheit": {
+        "title": "Echtheit geprüft",
+        "body": "Dieses Dokument wurde automatisch geprüft und die Signatur gegen den Trust-Anchor des Ausstellers verifiziert.",
+        "checking": "Echtheit wird geprüft …",
+        "fields_label": "Bestätigte Angaben"
+      },
+      "field": {
+        "familienname": "Familienname",
+        "vorname": "Vorname",
+        "geburtsdatum": "Geburtsdatum",
+        "anschrift": "Anschrift",
+        "wohnungsstatus": "Wohnungsstatus",
+        "einzugsdatum": "Einzugsdatum"
+      },
+      "wohnungsstatus": {
+        "hauptwohnung": "Hauptwohnung",
+        "nebenwohnung": "Nebenwohnung",
+        "alleinige": "Alleinige Wohnung"
+      },
+      "hinweis": {
+        "title": "Hinweis",
+        "body": "Dieses Dokument wurde digital ausgestellt und ist ohne Unterschrift gültig."
+      },
+      "render": {
+        "preview_label": "Dokumentvorschau",
+        "title": "Meldebestätigung",
+        "legal": "nach § 18 Bundesmeldegesetz (BMG)",
+        "intro": "Hiermit wird bestätigt, dass",
+        "anrede_w": "Frau",
+        "anrede_m": "Herr",
+        "geboren": "geboren am {datum}",
+        "zum": "zum {datum}",
+        "anmeldung": "folgende Anschrift als {status} angemeldet hat:",
+        "ausgestellt_label": "Ausgestellt am",
+        "id_label": "Dokument-ID",
+        "disclaimer": "Dieses Dokument wurde elektronisch erstellt und ist ohne Unterschrift gültig.",
+        "qr_alt": "QR-Prüfcode (synthetisch)",
+        "stamp_top": "Bezirksamt Mitte",
+        "stamp_bottom": "Berlin"
+      },
+      "verlauf": {
+        "title": "Verlauf des Dokuments",
+        "issued": "Ausgestellt",
+        "issued_by": "durch {behoerde}",
+        "verified": "Signatur re-verifiziert",
+        "verified_by": "gegen den Demo-Trust-Anchor — Format echt, Autorität Demo.",
+        "stored": "Im Dokumentenspeicher hinterlegt",
+        "stored_sub": "Jederzeit erneut prüf- und vorlegbar."
+      },
+      "demo_note": "[MOCK] Demo: ausgestellt von einem Demo-Issuer mit eigenem Trust-Anchor — nicht von einer deutschen Meldebehörde und nicht vom Staat. Format und Signaturprüfung sind echt; die Wallet-Ausstellung durch Behörden ist eine Zukunftsfunktion (EUDI-Wallet ab 2. Januar 2027).",
+      "download": "Herunterladen",
+      "close": "Schließen"
     }
   },
   "termine": {
@@ -2836,7 +2905,13 @@
     "fristen": {
       "title": "Fristen im Überblick",
       "in_tagen": "In {count, plural, =0 {heute fällig} =1 {1 Tag} other {# Tagen}}",
-      "ueberfaellig": "überfällig"
+      "ueberfaellig": "überfällig",
+      "summary": "{urgent} diese Woche · {total} insgesamt",
+      "group": {
+        "diese_woche": "Diese Woche",
+        "demnaechst": "Demnächst",
+        "spaeter": "Später"
+      }
     },
     "ort": {
       "video": "Video-Termin",

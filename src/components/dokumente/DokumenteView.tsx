@@ -4,6 +4,7 @@ import * as React from 'react';
 import Link from 'next/link';
 import {
   BookUser,
+  CheckCircle2,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
@@ -13,11 +14,14 @@ import {
   Download,
   Eye,
   File,
+  FileBadge,
   FileText,
   FolderPlus,
   Home,
   IdCard,
+  Info,
   Landmark,
+  Loader2,
   Mail,
   Search,
   ShieldCheck,
@@ -33,18 +37,23 @@ import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 
 import { EudiExportDialog } from '@/components/dokumente/EudiExportDialog';
-import { MeldebestaetigungCredentialPanel } from '@/components/once-only/MeldebestaetigungCredentialPanel';
-import { Skeleton } from '@/components/shared/Skeleton';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+  MockQr,
+  OfficialStamp,
+  WappenEmblem,
+} from '@/components/dokumente/credential-art';
+import { Skeleton } from '@/components/shared/Skeleton';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { verifyMeldebestaetigungCredential } from '@/app/actions/eudi';
+import type { MeldebestaetigungVerificationResult } from '@/lib/eudi/types';
 import { api } from '@/lib/mock-backend';
-import type { Behoerde, Document, DocumentKategorie, DocumentTyp } from '@/types';
+import type {
+  Behoerde,
+  Document,
+  DocumentKategorie,
+  DocumentTyp,
+  Persona,
+} from '@/types';
 
 interface DocAvatar {
   cls: string; // empty string = default brand av (no extra class)
@@ -148,6 +157,7 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
   );
   const [eudiDoc, setEudiDoc] = React.useState<Document | null>(null);
   const [previewDoc, setPreviewDoc] = React.useState<Document | null>(null);
+  const [profile, setProfile] = React.useState<Persona | null>(null);
   const [newDocIds, setNewDocIds] = React.useState<Set<string>>(() => new Set());
   const [loaded, setLoaded] = React.useState(false);
 
@@ -157,12 +167,14 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
     let cancelled = false;
     void (async () => {
       try {
-        const [data, behoerden] = await Promise.all([
+        const [data, behoerden, prof] = await Promise.all([
           api.getDocuments(),
           api.getBehoerden(),
+          api.getProfile().catch(() => null),
         ]);
         if (cancelled) return;
         setDocs(data);
+        setProfile(prof);
         setBehoerdenById(
           Object.fromEntries(behoerden.map((b) => [b.id, b])),
         );
@@ -803,10 +815,11 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
         }}
       />
 
-      <DocumentPreviewDialog
+      <DocumentDetailDialog
         doc={previewDoc}
         now={now}
         behoerdenById={behoerdenById}
+        geschlecht={profile?.geschlecht}
         onClose={() => setPreviewDoc(null)}
         onDownload={handleDownloadDoc}
       />
@@ -902,21 +915,50 @@ function QuickAction({
   );
 }
 
-function DocumentPreviewDialog({
+/* ─────────────────────────── Document detail dialog ───────────────────────────
+ * The right-anchored detail panel that opens on the eye-icon. For an
+ * EUDI-compatible Meldebestätigung it re-verifies the SD-JWT VC credential
+ * (server action) and renders the verification readout + a faux „Urkunde"
+ * preview; for any other document it degrades to the metadata + a generic card.
+ */
+
+const DETAIL_TABS = ['uebersicht', 'vorschau', 'verlauf'] as const;
+type DetailTab = (typeof DETAIL_TABS)[number];
+
+/** Strip the `[MOCK]` prefix for inline display (the watermark is shown separately). */
+function stripMock(s: string): string {
+  return s.replace(/^\[MOCK\]\s*/, '').trim();
+}
+
+/** Split a „Behörde — Amt" name into its two display lines. */
+function splitBehoerde(name: string): [string, string | null] {
+  const parts = name.split(/\s+—\s+/);
+  if (parts.length >= 2) return [parts[0], parts.slice(1).join(' — ')];
+  return [name, null];
+}
+
+/** Split a single-line address into „Straße Nr." + „PLZ Ort". */
+function splitAnschrift(anschrift: string): [string, string | null] {
+  const idx = anschrift.lastIndexOf(',');
+  if (idx === -1) return [anschrift, null];
+  return [anschrift.slice(0, idx).trim(), anschrift.slice(idx + 1).trim()];
+}
+
+function DocumentDetailDialog({
   doc,
   now,
   behoerdenById,
+  geschlecht,
   onClose,
   onDownload,
 }: {
   doc: Document | null;
   now: Date;
   behoerdenById: Record<string, Behoerde>;
+  geschlecht?: string;
   onClose: () => void;
   onDownload: (doc: Document) => void;
 }) {
-  const t = useTranslations('dokumente');
-  const status = doc ? deriveStatus(doc, now) : null;
   return (
     <Dialog
       open={!!doc}
@@ -925,105 +967,548 @@ function DocumentPreviewDialog({
       }}
     >
       {doc ? (
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle>{doc.titel}</DialogTitle>
-            <DialogDescription>{t('preview.description')}</DialogDescription>
-          </DialogHeader>
-
-          <div
-            style={{
-              border: '1px dashed var(--border)',
-              borderRadius: 'var(--r-lg, 12px)',
-              background: 'var(--surface-2)',
-              padding: 20,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 14,
-            }}
-          >
-            <span
-              className="badge"
-              role="note"
-              style={{
-                alignSelf: 'flex-start',
-                fontFamily: 'var(--mono, monospace)',
-              }}
-            >
-              {doc.watermark}
-            </span>
-            <dl
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'max-content 1fr',
-                gap: '8px 16px',
-                margin: 0,
-                fontSize: 13.5,
-              }}
-            >
-              <dt style={{ color: 'var(--ink-3)' }}>{t('col.kategorie')}</dt>
-              <dd style={{ margin: 0 }}>
-                {t(`kategorie.${kategorieBadge(doc.kategorie).labelKey}`)}
-              </dd>
-
-              {doc.dokument_nr ? (
-                <>
-                  <dt style={{ color: 'var(--ink-3)' }}>{t('preview.nr_label')}</dt>
-                  <dd style={{ margin: 0 }}>{doc.dokument_nr}</dd>
-                </>
-              ) : null}
-
-              <dt style={{ color: 'var(--ink-3)' }}>{t('preview.aussteller')}</dt>
-              <dd style={{ margin: 0 }}>
-                {behoerdenById[doc.ausstellende_behoerde_id]?.name_de ??
-                  doc.ausstellende_behoerde_id}
-              </dd>
-
-              <dt style={{ color: 'var(--ink-3)' }}>
-                {t('preview.ausgestellt_label')}
-              </dt>
-              <dd style={{ margin: 0 }}>{formatDe(doc.ausgestellt_am)}</dd>
-
-              {doc.gueltig_bis ? (
-                <>
-                  <dt style={{ color: 'var(--ink-3)' }}>
-                    {t('preview.gueltig_bis_label')}
-                  </dt>
-                  <dd style={{ margin: 0 }}>{formatDe(doc.gueltig_bis)}</dd>
-                </>
-              ) : null}
-
-              {status ? (
-                <>
-                  <dt style={{ color: 'var(--ink-3)' }}>{t('col.status')}</dt>
-                  <dd style={{ margin: 0 }}>{t(`status.${status}`)}</dd>
-                </>
-              ) : null}
-            </dl>
-          </div>
-
-          {/* Verifiable Once-Only (Beat 3): the re-verifiable amtliche
-           * Meldebestätigung credential panel. Renders only for an EUDI-compatible
-           * Meldebestätigung — the credential the Umzug cascade returns. */}
-          {doc.typ === 'meldebestaetigung' && doc.eudi_compatible ? (
-            <MeldebestaetigungCredentialPanel
-              personaId={doc.owner_persona_id}
-              vorgangId={doc.vorgang_id}
-            />
-          ) : null}
-
-          <DialogFooter showCloseButton>
-            <button
-              type="button"
-              className="btn btn-primary btn-sm"
-              onClick={() => onDownload(doc)}
-            >
-              <Download />
-              {t('action.herunterladen_title')}
-            </button>
-          </DialogFooter>
-        </DialogContent>
+        <DocumentDetailContent
+          doc={doc}
+          now={now}
+          behoerdenById={behoerdenById}
+          geschlecht={geschlecht}
+          onClose={onClose}
+          onDownload={onDownload}
+        />
       ) : null}
     </Dialog>
+  );
+}
+
+function DocumentDetailContent({
+  doc,
+  now,
+  behoerdenById,
+  geschlecht,
+  onClose,
+  onDownload,
+}: {
+  doc: Document;
+  now: Date;
+  behoerdenById: Record<string, Behoerde>;
+  geschlecht?: string;
+  onClose: () => void;
+  onDownload: (doc: Document) => void;
+}) {
+  const t = useTranslations('dokumente');
+  const td = useTranslations('dokumente.detail');
+  const titleId = React.useId();
+  const baseId = React.useId();
+  const [tab, setTab] = React.useState<DetailTab>('uebersicht');
+  const tabRefs = React.useRef<Array<HTMLButtonElement | null>>([]);
+
+  const isMelde = doc.typ === 'meldebestaetigung' && doc.eudi_compatible;
+  const [result, setResult] =
+    React.useState<MeldebestaetigungVerificationResult | null>(null);
+  const [vState, setVState] = React.useState<'loading' | 'ready' | 'error'>(
+    isMelde ? 'loading' : 'ready',
+  );
+
+  React.useEffect(() => {
+    if (!isMelde) {
+      setVState('ready');
+      return;
+    }
+    let cancelled = false;
+    setVState('loading');
+    void verifyMeldebestaetigungCredential(doc.owner_persona_id, doc.vorgang_id)
+      .then((r) => {
+        if (cancelled) return;
+        setResult(r);
+        setVState('ready');
+      })
+      .catch(() => {
+        if (!cancelled) setVState('error');
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isMelde, doc.owner_persona_id, doc.vorgang_id]);
+
+  const status = deriveStatus(doc, now);
+  const cryptoVerified =
+    isMelde && result !== null && result.verified && result.chainValid;
+  const showVerified = isMelde ? cryptoVerified : status === 'verifiziert';
+
+  const behoerdeName =
+    behoerdenById[doc.ausstellende_behoerde_id]?.name_de ??
+    doc.ausstellende_behoerde_id;
+  const docId = stripMock(doc.dokument_nr ?? '');
+  const kat = kategorieBadge(doc.kategorie);
+
+  function onTabKeyDown(e: React.KeyboardEvent, idx: number) {
+    const last = DETAIL_TABS.length - 1;
+    let next = idx;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = idx === last ? 0 : idx + 1;
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = idx === 0 ? last : idx - 1;
+    else if (e.key === 'Home') next = 0;
+    else if (e.key === 'End') next = last;
+    else return;
+    e.preventDefault();
+    setTab(DETAIL_TABS[next]);
+    tabRefs.current[next]?.focus();
+  }
+
+  return (
+    <DialogContent data-doc-detail-panel className="dd-panel" aria-labelledby={titleId}>
+      <header className="dd-head">
+        <div className="dd-head-top">
+          <h2 id={titleId} className="dd-title">
+            {doc.titel}
+          </h2>
+          {showVerified ? (
+            <span className="dd-verified">
+              <ShieldCheck aria-hidden="true" />
+              {t('status.verifiziert')}
+            </span>
+          ) : null}
+        </div>
+
+        <dl className="dd-meta">
+          <div>
+            <dt>{td('meta.dokument_id')}</dt>
+            <dd className="mono">{docId || '—'}</dd>
+          </div>
+          <div>
+            <dt>{td('meta.ausgestellt')}</dt>
+            <dd>{formatDe(doc.ausgestellt_am)}</dd>
+          </div>
+          <div>
+            <dt>{td('meta.kategorie')}</dt>
+            <dd>{t(`kategorie.${kat.labelKey}`)}</dd>
+          </div>
+          {doc.vorgang_id ? (
+            <div>
+              <dt>{td('meta.vorgang')}</dt>
+              <dd>
+                <Link
+                  className="dd-vorgang-link"
+                  href={`/vorgaenge/umzug/${doc.vorgang_id}`}
+                >
+                  {td('meta.vorgang_umzug')}
+                </Link>
+              </dd>
+            </div>
+          ) : null}
+        </dl>
+
+        <dl className="dd-aussteller">
+          <dt>{td('meta.aussteller')}</dt>
+          <dd>{behoerdeName}</dd>
+        </dl>
+
+        <div role="tablist" aria-label={td('tablist_label')} className="dd-tabs">
+          {DETAIL_TABS.map((id, idx) => (
+            <button
+              key={id}
+              type="button"
+              role="tab"
+              id={`${baseId}-tab-${id}`}
+              ref={(el) => {
+                tabRefs.current[idx] = el;
+              }}
+              aria-selected={tab === id}
+              aria-controls={`${baseId}-panel-${id}`}
+              tabIndex={tab === id ? 0 : -1}
+              className={`dd-tab${tab === id ? ' active' : ''}`}
+              onClick={() => setTab(id)}
+              onKeyDown={(e) => onTabKeyDown(e, idx)}
+            >
+              {td(`tab.${id}`)}
+            </button>
+          ))}
+        </div>
+      </header>
+
+      <div className="dd-body">
+        <section
+          role="tabpanel"
+          id={`${baseId}-panel-uebersicht`}
+          aria-labelledby={`${baseId}-tab-uebersicht`}
+          tabIndex={0}
+          hidden={tab !== 'uebersicht'}
+        >
+          {tab === 'uebersicht' ? (
+            <UebersichtPanel
+              doc={doc}
+              now={now}
+              behoerdeName={behoerdeName}
+              isMelde={isMelde}
+              vState={vState}
+              result={result}
+              showVerified={showVerified}
+              geschlecht={geschlecht}
+              docId={docId}
+            />
+          ) : null}
+        </section>
+
+        <section
+          role="tabpanel"
+          id={`${baseId}-panel-vorschau`}
+          aria-labelledby={`${baseId}-tab-vorschau`}
+          tabIndex={0}
+          hidden={tab !== 'vorschau'}
+        >
+          {tab === 'vorschau' ? (
+            <div className="dd-vorschau">
+              <DocumentRender
+                doc={doc}
+                behoerdeName={behoerdeName}
+                isMelde={isMelde}
+                result={result}
+                geschlecht={geschlecht}
+                docId={docId}
+              />
+            </div>
+          ) : null}
+        </section>
+
+        <section
+          role="tabpanel"
+          id={`${baseId}-panel-verlauf`}
+          aria-labelledby={`${baseId}-tab-verlauf`}
+          tabIndex={0}
+          hidden={tab !== 'verlauf'}
+        >
+          {tab === 'verlauf' ? (
+            <VerlaufPanel
+              doc={doc}
+              behoerdeName={behoerdeName}
+              isMelde={isMelde}
+              showVerified={showVerified}
+            />
+          ) : null}
+        </section>
+      </div>
+
+      <footer className="dd-foot">
+        <p className="dd-demo-note">{td('demo_note')}</p>
+        <div className="dd-foot-actions">
+          <button
+            type="button"
+            className="btn btn-secondary btn-sm"
+            onClick={() => onDownload(doc)}
+          >
+            <Download />
+            {td('download')}
+          </button>
+          <button type="button" className="btn btn-primary btn-sm" onClick={onClose}>
+            {td('close')}
+          </button>
+        </div>
+      </footer>
+    </DialogContent>
+  );
+}
+
+/** Format a Meldebestätigung field value (dates → German, wohnungsstatus → label). */
+function meldeFieldValue(
+  td: ReturnType<typeof useTranslations>,
+  field: string,
+  value: string | undefined,
+): string {
+  if (!value) return '—';
+  if (field === 'geburtsdatum' || field === 'einzugsdatum' || field === 'datum_anmeldung') {
+    return formatDe(value);
+  }
+  if (field === 'wohnungsstatus') {
+    const key = value.toLowerCase();
+    if (key === 'hauptwohnung') return td('wohnungsstatus.hauptwohnung');
+    if (key === 'nebenwohnung') return td('wohnungsstatus.nebenwohnung');
+    if (key === 'alleinige' || key === 'alleinige_wohnung') return td('wohnungsstatus.alleinige');
+    return value;
+  }
+  return value;
+}
+
+/** The six confirmation fields shown in the readout grid (screenshot order). */
+const DETAIL_FIELD_ROWS: Array<{ field: string; labelKey: string }> = [
+  { field: 'familienname', labelKey: 'field.familienname' },
+  { field: 'vornamen', labelKey: 'field.vorname' },
+  { field: 'geburtsdatum', labelKey: 'field.geburtsdatum' },
+  { field: 'anschrift', labelKey: 'field.anschrift' },
+  { field: 'wohnungsstatus', labelKey: 'field.wohnungsstatus' },
+  { field: 'einzugsdatum', labelKey: 'field.einzugsdatum' },
+];
+
+function UebersichtPanel({
+  doc,
+  now,
+  behoerdeName,
+  isMelde,
+  vState,
+  result,
+  showVerified,
+  geschlecht,
+  docId,
+}: {
+  doc: Document;
+  now: Date;
+  behoerdeName: string;
+  isMelde: boolean;
+  vState: 'loading' | 'ready' | 'error';
+  result: MeldebestaetigungVerificationResult | null;
+  showVerified: boolean;
+  geschlecht?: string;
+  docId: string;
+}) {
+  const t = useTranslations('dokumente');
+  const td = useTranslations('dokumente.detail');
+  const loading = isMelde && vState === 'loading';
+
+  return (
+    <div className="dd-uebersicht">
+      <div className="dd-uber-left">
+        {showVerified || loading ? (
+          <div className="dd-echtheit">
+            <span className="dd-echtheit-icon" aria-hidden="true">
+              {loading ? (
+                <Loader2 className="dd-spin" />
+              ) : (
+                <ShieldCheck />
+              )}
+            </span>
+            <div>
+              <div className="dd-echtheit-title">{td('echtheit.title')}</div>
+              <p className="dd-echtheit-body">
+                {loading ? td('echtheit.checking') : td('echtheit.body')}
+              </p>
+            </div>
+          </div>
+        ) : null}
+
+        {isMelde && result && vState === 'ready' ? (
+          <dl className="dd-fields" aria-label={td('echtheit.fields_label')}>
+            {DETAIL_FIELD_ROWS.map(({ field, labelKey }) => {
+              const value = result.fields[field as keyof typeof result.fields];
+              if (!value) return null;
+              return (
+                <div key={field} className="dd-field">
+                  <dt>{td(labelKey)}</dt>
+                  <dd>{meldeFieldValue(td, field, value)}</dd>
+                </div>
+              );
+            })}
+          </dl>
+        ) : !isMelde ? (
+          <dl className="dd-fields">
+            <div className="dd-field">
+              <dt>{td('meta.kategorie')}</dt>
+              <dd>{t(`kategorie.${kategorieBadge(doc.kategorie).labelKey}`)}</dd>
+            </div>
+            {docId ? (
+              <div className="dd-field">
+                <dt>{td('meta.dokument_id')}</dt>
+                <dd>{docId}</dd>
+              </div>
+            ) : null}
+            <div className="dd-field">
+              <dt>{td('meta.aussteller')}</dt>
+              <dd>{behoerdeName}</dd>
+            </div>
+            <div className="dd-field">
+              <dt>{td('meta.ausgestellt')}</dt>
+              <dd>{formatDe(doc.ausgestellt_am)}</dd>
+            </div>
+            {doc.gueltig_bis ? (
+              <div className="dd-field">
+                <dt>{td('meta.gueltig_bis')}</dt>
+                <dd>{formatDe(doc.gueltig_bis)}</dd>
+              </div>
+            ) : null}
+            <div className="dd-field">
+              <dt>{t('col.status')}</dt>
+              <dd>{t(`status.${deriveStatus(doc, now)}`)}</dd>
+            </div>
+          </dl>
+        ) : null}
+
+        <div className="dd-hinweis">
+          <Info aria-hidden="true" />
+          <div>
+            <div className="dd-hinweis-title">{td('hinweis.title')}</div>
+            <p className="dd-hinweis-body">{td('hinweis.body')}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="dd-uber-right">
+        <DocumentRender
+          doc={doc}
+          behoerdeName={behoerdeName}
+          isMelde={isMelde}
+          result={result}
+          geschlecht={geschlecht}
+          docId={docId}
+        />
+      </div>
+    </div>
+  );
+}
+
+function DocumentRender({
+  doc,
+  behoerdeName,
+  isMelde,
+  result,
+  geschlecht,
+  docId,
+}: {
+  doc: Document;
+  behoerdeName: string;
+  isMelde: boolean;
+  result: MeldebestaetigungVerificationResult | null;
+  geschlecht?: string;
+  docId: string;
+}) {
+  const td = useTranslations('dokumente.detail');
+  const [behoerdeLine1, behoerdeLine2] = splitBehoerde(behoerdeName);
+
+  const anrede =
+    geschlecht === 'w'
+      ? td('render.anrede_w')
+      : geschlecht === 'm'
+        ? td('render.anrede_m')
+        : '';
+
+  const f = result?.fields;
+  const fullName = f
+    ? [f.vornamen, f.familienname].filter(Boolean).join(' ')
+    : '';
+  const [strasse, plzOrt] = f?.anschrift
+    ? splitAnschrift(f.anschrift)
+    : ['', null];
+  const wohnstatus = meldeFieldValue(td, 'wohnungsstatus', f?.wohnungsstatus);
+
+  return (
+    <article className="dd-render" aria-label={td('render.preview_label')}>
+      <span className="dd-render-mock" role="note">
+        {doc.watermark}
+      </span>
+      <header className="dd-render-head">
+        <WappenEmblem className="dd-wappen" />
+        <div className="dd-render-issuer">
+          <strong>{behoerdeLine1}</strong>
+          {behoerdeLine2 ? <span>{behoerdeLine2}</span> : null}
+        </div>
+      </header>
+
+      <h3 className="dd-render-title">
+        {isMelde ? td('render.title') : doc.titel}
+      </h3>
+      {isMelde ? <p className="dd-render-legal">{td('render.legal')}</p> : null}
+
+      {isMelde && f ? (
+        <div className="dd-render-body">
+          <p>{td('render.intro')}</p>
+          <p className="dd-render-name">
+            {[anrede, fullName].filter(Boolean).join(' ')}
+          </p>
+          <p>{td('render.geboren', { datum: meldeFieldValue(td, 'geburtsdatum', f.geburtsdatum) })}</p>
+          <p>{td('render.zum', { datum: meldeFieldValue(td, 'einzugsdatum', f.einzugsdatum) })}</p>
+          <p>{td('render.anmeldung', { status: wohnstatus })}</p>
+          <p className="dd-render-address">
+            <strong>{strasse}</strong>
+            {plzOrt ? (
+              <>
+                <br />
+                <strong>{plzOrt}</strong>
+              </>
+            ) : null}
+          </p>
+        </div>
+      ) : (
+        <div className="dd-render-body">
+          <p>{td('hinweis.body')}</p>
+        </div>
+      )}
+
+      <div className="dd-render-meta">
+        <div>
+          <span className="dd-render-meta-label">{td('render.ausgestellt_label')}</span>
+          <span>{formatDe(doc.ausgestellt_am)}</span>
+        </div>
+        {docId ? (
+          <div>
+            <span className="dd-render-meta-label">{td('render.id_label')}</span>
+            <span className="mono">{docId}</span>
+          </div>
+        ) : null}
+      </div>
+
+      <p className="dd-render-disclaimer">{td('render.disclaimer')}</p>
+
+      <div className="dd-render-foot">
+        <MockQr
+          value={doc.qr_payload || doc.id}
+          className="dd-qr"
+          title={td('render.qr_alt')}
+        />
+        <OfficialStamp
+          topText={td('render.stamp_top')}
+          bottomText={td('render.stamp_bottom')}
+          className="dd-stamp"
+        />
+      </div>
+    </article>
+  );
+}
+
+function VerlaufPanel({
+  doc,
+  behoerdeName,
+  isMelde,
+  showVerified,
+}: {
+  doc: Document;
+  behoerdeName: string;
+  isMelde: boolean;
+  showVerified: boolean;
+}) {
+  const td = useTranslations('dokumente.detail');
+  const events: Array<{ Icon: LucideIcon; title: string; sub: string; date?: string }> = [
+    {
+      Icon: FileBadge,
+      title: td('verlauf.issued'),
+      sub: td('verlauf.issued_by', { behoerde: behoerdeName }),
+      date: formatDe(doc.ausgestellt_am),
+    },
+  ];
+  if (isMelde && showVerified) {
+    events.push({
+      Icon: ShieldCheck,
+      title: td('verlauf.verified'),
+      sub: td('verlauf.verified_by'),
+    });
+  }
+  events.push({
+    Icon: CheckCircle2,
+    title: td('verlauf.stored'),
+    sub: td('verlauf.stored_sub'),
+  });
+
+  return (
+    <ol className="dd-timeline" aria-label={td('verlauf.title')}>
+      {events.map((ev, i) => (
+        <li key={i} className="dd-timeline-item">
+          <span className="dd-timeline-icon" aria-hidden="true">
+            <ev.Icon />
+          </span>
+          <div className="dd-timeline-body">
+            <div className="dd-timeline-title">
+              {ev.title}
+              {ev.date ? <span className="dd-timeline-date">{ev.date}</span> : null}
+            </div>
+            <p className="dd-timeline-sub">{ev.sub}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
   );
 }

@@ -852,7 +852,7 @@ async function mintVerifiableOnceOnly(
     // re-verify both happen SERVER-SIDE in the `verifyMeldebestaetigungCredential`
     // server action, which derives the SAME deterministic credential from the
     // persona fixture + canonical demo Umzug address. Here we only persist the
-    // durable vault SHELL (+ the Posteingang Letter); Beat 1/3 fetch the crypto
+    // durable vault SHELL (+ the Posteingang Letter); the panel fetches the crypto
     // verdict via the server action, so `qr_payload` carries a marker, not a token.
     const stamp = new Date().toISOString();
     const minted = upsertDocument({

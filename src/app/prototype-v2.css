@@ -2049,3 +2049,248 @@ button { font: inherit; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) {
   .heute-item, .erledigt-item { transition: none; }
 }
+
+/* =====================================================================
+   Document-detail panel — /dokumente eye-icon → right-anchored credential view
+   Geometry keyed on the [data-doc-detail-panel] attribute so this unlayered
+   rule overrides the base DialogContent's centred Tailwind positioning.
+   ===================================================================== */
+[data-doc-detail-panel] {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  bottom: 16px;
+  left: auto;
+  /* Tailwind v4 centres the base Popup via the `translate` property (not
+     `transform`), so BOTH must be reset to kill the -50%/-50% shift. */
+  transform: none;
+  translate: none;
+  width: min(960px, calc(100vw - 32px));
+  max-width: none;
+  height: auto;
+  max-height: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 18px;
+  background: var(--surface);
+}
+@media (max-width: 680px) {
+  [data-doc-detail-panel] {
+    top: 8px;
+    right: 8px;
+    bottom: 8px;
+    left: 8px;
+    width: auto;
+    border-radius: 14px;
+  }
+}
+
+/* Header (fixed) */
+.dd-head { flex: none; padding: 26px 28px 0; border-bottom: 1px solid var(--border); }
+.dd-head-top {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 16px; padding-right: 40px; /* clear the corner close (×) */
+}
+.dd-title {
+  margin: 0; font-size: 22px; font-weight: 700; line-height: 1.25;
+  letter-spacing: -0.01em; color: var(--ink); max-width: 60ch;
+}
+.dd-verified {
+  flex: none; display: inline-flex; align-items: center; gap: 6px; margin-top: 2px;
+  padding: 7px 13px; border-radius: 999px; background: var(--green-50);
+  color: var(--green-700);
+  border: 1px solid color-mix(in srgb, var(--green-700) 22%, transparent);
+  font-size: 13px; font-weight: 600; white-space: nowrap;
+}
+.dd-verified svg { width: 15px; height: 15px; }
+
+.dd-meta {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px 20px; margin: 22px 0 0;
+}
+.dd-meta > div { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.dd-meta dt { color: var(--ink-3); font-size: 12px; font-weight: 500; }
+.dd-meta dd { margin: 0; color: var(--ink); font-size: 14px; font-weight: 500; overflow-wrap: anywhere; }
+.dd-meta .mono { font-family: var(--mono, monospace); font-size: 13px; }
+.dd-vorgang-link { color: var(--brand-600); font-weight: 600; text-decoration: none; }
+.dd-vorgang-link:hover { text-decoration: underline; }
+@media (max-width: 680px) { .dd-meta { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.dd-aussteller { margin-top: 18px; display: flex; flex-direction: column; gap: 3px; }
+.dd-aussteller dt { color: var(--ink-3); font-size: 12px; font-weight: 500; }
+.dd-aussteller dd { margin: 0; color: var(--ink); font-size: 14px; font-weight: 600; }
+
+/* Tabs */
+.dd-tabs { display: flex; gap: 26px; margin-top: 20px; }
+.dd-tab {
+  position: relative; padding: 12px 2px; background: none; border: 0; font: inherit;
+  font-size: 14px; font-weight: 500; color: var(--ink-3); cursor: pointer;
+}
+.dd-tab:hover { color: var(--ink-2); }
+.dd-tab.active { color: var(--brand-700); font-weight: 600; }
+.dd-tab.active::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -1px;
+  height: 2px; background: var(--brand-fill); border-radius: 2px 2px 0 0;
+}
+.dd-tab:focus-visible { outline: 2px solid var(--brand-fill); outline-offset: 3px; border-radius: 4px; }
+
+/* Body (scroll) */
+.dd-body { flex: 1 1 auto; overflow-y: auto; padding: 24px 28px; min-height: 0; }
+.dd-body [role='tabpanel']:focus-visible { outline: 2px solid var(--brand-fill); outline-offset: 4px; border-radius: 8px; }
+
+/* Übersicht — two columns */
+.dd-uebersicht {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 22px; align-items: start;
+}
+@media (max-width: 820px) { .dd-uebersicht { grid-template-columns: minmax(0, 1fr); } }
+.dd-uber-left { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.dd-uber-right { min-width: 0; }
+
+.dd-echtheit {
+  display: flex; gap: 12px; padding: 16px; border-radius: 12px;
+  background: var(--green-50);
+  border: 1px solid color-mix(in srgb, var(--green-700) 16%, transparent);
+}
+.dd-echtheit-icon { flex: none; color: var(--green-700); }
+.dd-echtheit-icon svg { width: 22px; height: 22px; }
+.dd-echtheit-title { font-weight: 600; color: var(--green-700); margin-bottom: 3px; }
+.dd-echtheit-body { margin: 0; font-size: 13px; color: var(--green-700); line-height: 1.45; }
+
+.dd-fields {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 18px;
+  margin: 0; padding: 18px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface);
+}
+.dd-field { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.dd-field dt { color: var(--ink-3); font-size: 12px; font-weight: 500; }
+.dd-field dd { margin: 0; color: var(--ink); font-size: 14px; font-weight: 500; overflow-wrap: anywhere; }
+
+.dd-hinweis {
+  display: flex; gap: 12px; padding: 14px 16px; border-radius: 12px;
+  background: var(--brand-50);
+  border: 1px solid color-mix(in srgb, var(--brand-600) 16%, transparent);
+}
+.dd-hinweis svg { flex: none; width: 18px; height: 18px; color: var(--brand-600); margin-top: 1px; }
+.dd-hinweis-title { font-weight: 600; color: var(--brand-700); margin-bottom: 2px; font-size: 13.5px; }
+.dd-hinweis-body { margin: 0; font-size: 13px; color: var(--brand-700); line-height: 1.45; }
+
+/* Faux „Urkunde" render */
+.dd-render {
+  position: relative; display: flex; flex-direction: column; gap: 12px;
+  padding: 22px 24px 18px; border: 1px solid var(--border); border-radius: 12px;
+  background: var(--surface); box-shadow: var(--shadow-1);
+  font-size: 12.5px; color: var(--ink-2); overflow: hidden;
+}
+.dd-render-mock {
+  position: absolute; top: 12px; right: 12px; font-family: var(--mono, monospace);
+  font-size: 10px; color: var(--ink-3); letter-spacing: 0.04em;
+}
+.dd-render-head { display: flex; align-items: center; gap: 12px; }
+.dd-wappen { width: 34px; height: 40px; flex: none; }
+.dd-render-issuer { display: flex; flex-direction: column; line-height: 1.3; }
+.dd-render-issuer strong { font-size: 13px; font-weight: 700; color: var(--ink); }
+.dd-render-issuer span { font-size: 12px; color: var(--ink-3); }
+.dd-render-title { margin: 8px 0 0; font-size: 17px; font-weight: 700; color: var(--ink); }
+.dd-render-legal { margin: 0; font-size: 12px; color: var(--ink-3); }
+.dd-render-body { display: flex; flex-direction: column; gap: 5px; margin-top: 6px; line-height: 1.5; }
+.dd-render-body p { margin: 0; }
+.dd-render-name { font-size: 14px; font-weight: 700; color: var(--ink); }
+.dd-render-address { margin-top: 2px; }
+.dd-render-address strong { font-size: 13.5px; font-weight: 700; color: var(--ink); }
+.dd-render-meta {
+  display: flex; flex-wrap: wrap; gap: 6px 28px; margin-top: 12px;
+  padding-top: 12px; border-top: 1px solid var(--border);
+}
+.dd-render-meta > div { display: flex; flex-direction: column; gap: 2px; }
+.dd-render-meta-label { font-size: 11px; color: var(--ink-3); }
+.dd-render-meta > div > span:last-child { font-size: 12px; color: var(--ink); font-weight: 600; }
+.dd-render-disclaimer { margin: 6px 0 0; font-size: 11px; color: var(--ink-3); line-height: 1.4; }
+.dd-render-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; }
+.dd-qr { width: 76px; height: 76px; flex: none; }
+.dd-stamp { width: 88px; height: 88px; flex: none; color: var(--ink-3); opacity: 0.6; transform: rotate(-9deg); }
+
+/* Vorschau */
+.dd-vorschau { max-width: 460px; margin: 0 auto; }
+
+/* Verlauf timeline */
+.dd-timeline { list-style: none; margin: 0; padding: 4px 0; display: flex; flex-direction: column; }
+.dd-timeline-item { position: relative; display: flex; gap: 14px; padding: 0 0 22px; }
+.dd-timeline-item:last-child { padding-bottom: 0; }
+.dd-timeline-icon {
+  position: relative; z-index: 1; flex: none; display: grid; place-items: center;
+  width: 36px; height: 36px; border-radius: 50%; background: var(--brand-50); color: var(--brand-600);
+}
+.dd-timeline-icon svg { width: 18px; height: 18px; }
+.dd-timeline-item:not(:last-child)::before {
+  content: ''; position: absolute; left: 17px; top: 36px; bottom: 4px; width: 2px; background: var(--border);
+}
+.dd-timeline-body { padding-top: 6px; }
+.dd-timeline-title { font-weight: 600; color: var(--ink); display: flex; align-items: baseline; gap: 10px; }
+.dd-timeline-date { font-size: 12px; font-weight: 500; color: var(--ink-3); }
+.dd-timeline-sub { margin: 3px 0 0; font-size: 13px; color: var(--ink-3); line-height: 1.45; }
+
+/* Footer (fixed) */
+.dd-foot {
+  flex: none; display: flex; align-items: center; gap: 16px;
+  padding: 14px 28px; border-top: 1px solid var(--border); background: var(--surface-muted);
+}
+.dd-demo-note { flex: 1; margin: 0; font-size: 11px; color: var(--ink-3); line-height: 1.4; min-width: 0; }
+.dd-foot-actions { flex: none; display: flex; gap: 10px; }
+@media (max-width: 680px) {
+  .dd-foot { flex-direction: column; align-items: stretch; }
+  .dd-foot-actions { justify-content: flex-end; }
+}
+
+.dd-spin { animation: dd-spin 0.9s linear infinite; }
+@keyframes dd-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .dd-spin { animation: none; } }
+
+/* ============ Fristen-Übersichts-Panel (Termine right rail) ============
+   Neutral card surface — the panel lists OPEN deadlines, so it must not
+   sit on the green success treatment (that is reserved for the empty
+   state). Per-row left accent rail carries urgency redundant to the
+   badge label + the time-horizon group headings. */
+.frist-panel {
+  margin-top: 16px;
+  padding: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+}
+.frist-panel__group {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.frist-panel__group + .frist-group-head { margin-top: 14px; }
+.frist-group-head {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.frist-rail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 10px;
+  border-left: 3px solid var(--border);
+  border-radius: var(--r-sm);
+}
+.frist-rail-row--danger { border-left-color: var(--red-500); }
+.frist-rail-row--warning { border-left-color: var(--amber-600); }
+.frist-rail-row--neutral { border-left-color: var(--border-strong); }
+.frist-rail-row .frist-rail-row__title { font-size: 13px; min-width: 0; }
+.frist-rail-row__end { display: inline-flex; align-items: center; gap: 6px; flex: none; }
+.frist-rail-row__chev { width: 15px; height: 15px; color: var(--ink-3); }
+.frist-rail-link:hover .frist-rail-row { background: rgba(0,0,0,.04); }
+.dark .frist-rail-link:hover .frist-rail-row { background: rgba(255,255,255,.06); }
