@@ -334,7 +334,7 @@ export function TermineView({ nowIso }: TermineViewProps) {
     return differenceInCalendarDays(parseISO(iso), now);
   }
 
-  /** Frist-Badge text + tone (Zahl/Wort, warning ≤30, danger ≤7). */
+  /** Frist-Badge text + tone (relativ ≤30, danger ≤7, sonst absolutes Datum). */
   function fristBadge(iso: string): {
     label: string;
     variant: 'neutral' | 'warning' | 'danger';
@@ -343,8 +343,14 @@ export function TermineView({ nowIso }: TermineViewProps) {
     if (days < 0) {
       return { label: t('termine.fristen.ueberfaellig'), variant: 'danger' };
     }
+    if (days > 30) {
+      return {
+        label: format(parseISO(iso), 'MMM yyyy', { locale: dateLocale }),
+        variant: 'neutral',
+      };
+    }
     const label = t('termine.fristen.in_tagen', { count: days });
-    const variant = days <= 7 ? 'danger' : days <= 30 ? 'warning' : 'neutral';
+    const variant = days <= 7 ? 'danger' : 'warning';
     return { label, variant };
   }
 
@@ -922,93 +928,141 @@ export function TermineView({ nowIso }: TermineViewProps) {
               </div>
             </div>
 
-            <div
-              style={{
-                marginTop: 16,
-                padding: 14,
-                background: 'var(--banner-success-bg)',
-                borderRadius: 'var(--r-md)',
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 10,
-                  marginBottom: dayFristen.length > 0 ? 10 : 0,
-                }}
-              >
-                <CheckCircle2
-                  style={{
-                    color: 'var(--green-600)',
-                    width: 18,
-                    height: 18,
-                    flexShrink: 0,
-                  }}
-                />
-                <div>
-                  <h3 className="fw-600" style={{ margin: 0, fontSize: 14 }}>
-                    {t('termine.fristen.title')}
-                  </h3>
-                  <div className="text-xs muted">
-                    {t('termine.fristen_offen', { count: dayFristen.length })}
+            {(() => {
+              const hasFristen = dayFristen.length > 0;
+              const urgentCount = dayFristen.filter(
+                (r) => fristTage(r.datum) <= 7,
+              ).length;
+
+              const buckets: {
+                key: 'diese_woche' | 'demnaechst' | 'spaeter';
+                rows: typeof dayFristen;
+              }[] = [
+                { key: 'diese_woche', rows: [] },
+                { key: 'demnaechst', rows: [] },
+                { key: 'spaeter', rows: [] },
+              ];
+              for (const r of dayFristen) {
+                const days = fristTage(r.datum);
+                if (days <= 7) buckets[0]!.rows.push(r);
+                else if (days <= 30) buckets[1]!.rows.push(r);
+                else buckets[2]!.rows.push(r);
+              }
+
+              function renderRow(r: (typeof dayFristen)[number]) {
+                const badge = fristBadge(r.datum);
+                const row = (
+                  <div className={`frist-rail-row frist-rail-row--${badge.variant}`}>
+                    <span className="frist-rail-row__title">{r.titel}</span>
+                    <span className="frist-rail-row__end">
+                      <Badge variant={badge.variant}>{badge.label}</Badge>
+                      {r.vorgang_id ? (
+                        <ChevronRight
+                          className="frist-rail-row__chev"
+                          aria-hidden="true"
+                        />
+                      ) : null}
+                    </span>
                   </div>
-                </div>
-              </div>
-              {dayFristen.length > 0 ? (
-                <ul
-                  style={{
-                    listStyle: 'none',
-                    margin: 0,
-                    padding: 0,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 8,
-                  }}
-                >
-                  {dayFristen.map((r) => {
-                    const badge = fristBadge(r.datum);
-                    const row = (
-                      <div
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          gap: 10,
-                        }}
+                );
+                /* A destination (Vorgang) makes the whole row a link; the
+                   trailing chevron + the aria-label carry the affordance.
+                   Rows without a Vorgang stay flat, static information. */
+                return (
+                  <li key={r.id}>
+                    {r.vorgang_id ? (
+                      <Link
+                        href={`/vorgaenge/${r.vorgang_id}`}
+                        className="frist-rail-link"
+                        aria-label={t('termine.row.zum_vorgang_aria', {
+                          titel: r.titel,
+                        })}
                       >
-                        <span className="text-xs">{r.titel}</span>
-                        <Badge variant={badge.variant}>{badge.label}</Badge>
-                      </div>
-                    );
-                    /* Same row rule as the centre lists: a destination (Vorgang)
-                       makes the whole row a link with a Zum-Vorgang affordance +
-                       hover; otherwise it is flat, static information. */
-                    return (
-                      <li key={r.id}>
-                        {r.vorgang_id ? (
-                          <Link
-                            href={`/vorgaenge/${r.vorgang_id}`}
-                            className="frist-rail-link"
-                            aria-label={t('termine.row.zum_vorgang_aria', {
-                              titel: r.titel,
+                        {row}
+                      </Link>
+                    ) : (
+                      row
+                    )}
+                  </li>
+                );
+              }
+
+              return (
+                <div
+                  className={hasFristen ? 'frist-panel' : undefined}
+                  style={
+                    hasFristen
+                      ? undefined
+                      : {
+                          marginTop: 16,
+                          padding: 14,
+                          background: 'var(--banner-success-bg)',
+                          borderRadius: 'var(--r-md)',
+                        }
+                  }
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 10,
+                      marginBottom: hasFristen ? 12 : 0,
+                    }}
+                  >
+                    {hasFristen ? (
+                      <Bell
+                        style={{
+                          color: 'var(--ink-2)',
+                          width: 18,
+                          height: 18,
+                          flexShrink: 0,
+                        }}
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <CheckCircle2
+                        style={{
+                          color: 'var(--green-600)',
+                          width: 18,
+                          height: 18,
+                          flexShrink: 0,
+                        }}
+                        aria-hidden="true"
+                      />
+                    )}
+                    <div>
+                      <h3 className="fw-600" style={{ margin: 0, fontSize: 14 }}>
+                        {t('termine.fristen.title')}
+                      </h3>
+                      <div className="text-xs muted">
+                        {urgentCount > 0
+                          ? t('termine.fristen.summary', {
+                              urgent: urgentCount,
+                              total: dayFristen.length,
+                            })
+                          : t('termine.fristen_offen', {
+                              count: dayFristen.length,
                             })}
-                          >
-                            {row}
-                            <span className="tm-row-cta" aria-hidden="true">
-                              {t('termine.row.zum_vorgang_cta')}
-                              <ChevronRight />
-                            </span>
-                          </Link>
-                        ) : (
-                          row
-                        )}
-                      </li>
-                    );
-                  })}
-                </ul>
-              ) : null}
-            </div>
+                      </div>
+                    </div>
+                  </div>
+                  {hasFristen
+                    ? buckets
+                        .filter((b) => b.rows.length > 0)
+                        .map((b) => (
+                          <React.Fragment key={b.key}>
+                            <h4 className="frist-group-head">
+                              {t(`termine.fristen.group.${b.key}`)}
+                            </h4>
+                            <ul className="frist-panel__group">
+                              {b.rows.map(renderRow)}
+                            </ul>
+                          </React.Fragment>
+                        ))
+                    : null}
+                </div>
+              );
+            })()}
           </div>
         </div>
       </div>

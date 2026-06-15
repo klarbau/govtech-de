@@ -2665,7 +2665,13 @@
     "fristen": {
       "title": "Süreler özeti",
       "in_tagen": "{count, plural, =0 {bugün son gün} =1 {1 gün} other {# gün}} içinde",
-      "ueberfaellig": "gecikmiş"
+      "ueberfaellig": "gecikmiş",
+      "summary": "Bu hafta {urgent} · toplam {total}",
+      "group": {
+        "diese_woche": "Bu hafta",
+        "demnaechst": "Yakında",
+        "spaeter": "Daha sonra"
+      }
     },
     "ort": {
       "video": "Görüntülü randevu",

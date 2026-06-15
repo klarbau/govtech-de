@@ -2665,7 +2665,13 @@
     "fristen": {
       "title": "Строки — коротко",
       "in_tagen": "Через {count, plural, =0 {строк сьогодні} =1 {1 день} few {# дні} many {# днів} other {# дня}}",
-      "ueberfaellig": "прострочено"
+      "ueberfaellig": "прострочено",
+      "summary": "{urgent} цього тижня · {total} усього",
+      "group": {
+        "diese_woche": "Цього тижня",
+        "demnaechst": "Незабаром",
+        "spaeter": "Пізніше"
+      }
     },
     "ort": {
       "video": "Прийом за відео",

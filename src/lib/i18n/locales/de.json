@@ -2895,7 +2895,13 @@
     "fristen": {
       "title": "Fristen im Überblick",
       "in_tagen": "In {count, plural, =0 {heute fällig} =1 {1 Tag} other {# Tagen}}",
-      "ueberfaellig": "überfällig"
+      "ueberfaellig": "überfällig",
+      "summary": "{urgent} diese Woche · {total} insgesamt",
+      "group": {
+        "diese_woche": "Diese Woche",
+        "demnaechst": "Demnächst",
+        "spaeter": "Später"
+      }
     },
     "ort": {
       "video": "Video-Termin",

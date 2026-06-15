@@ -254,15 +254,19 @@ html {
 
 /* ── Neutral scale + cobalt + semantic (DARK) ───────────────────────────── */
 .dark {
-  --color-surface: #1A1E27;
-  --color-surface-page: #13161D;
-  --color-surface-raised: #1A1E27;
-  --color-surface-muted: #242935;
-  --color-border: #2C3340;
-  --color-border-strong: #404A5B;
+  /* Elevation ladder — the old set kept page (#13161D), card (#1A1E27) and the
+     inner sub-card tint within ~10 luminance points, so cards barely separated
+     from the canvas and the UI read as one flat dark sheet. This ladder gives
+     each layer a visible step: dark page canvas → lifted card → raised popover. */
+  --color-surface: #161B23;            /* card — a clear step above the canvas */
+  --color-surface-page: #0D1117;       /* page canvas — the darkest layer */
+  --color-surface-raised: #1C232F;     /* popovers/dialogs/dropdowns — above cards */
+  --color-surface-muted: #222934;      /* hover fills, inactive pills, secondary, table head */
+  --color-border: #2E3540;             /* hairline — present but quiet */
+  --color-border-strong: #3D4757;
   --color-text-primary: #ECEFF4;
   --color-text-secondary: #B6BDC9;
-  --color-text-muted: #9AA2B0;          /* HL-DS-7: 6.49:1 vs surface, 5.66:1 vs surface-muted */
+  --color-text-muted: #9AA2B0;          /* HL-DS-7: 6.76:1 vs surface, 5.66:1 vs surface-muted */
 
   --color-primary: #5B8DEF;
   --color-primary-hover: #4F82EC;
@@ -290,7 +294,7 @@ html {
      --ink-2 / --surface-soft also drive page-content (badges, banners, rows,
      sub-cards), so these overrides fix those in dark mode at the same time. */
   --ink-2: #C4CBD8;            /* nav labels + header btns: 10.1:1 vs surface */
-  --surface-soft: #212633;     /* hover fill + sub-cards: ink at 12.5:1 on it */
+  --surface-soft: #1C222D;     /* hover fill + inner sub-cards: a gentle lift above the card */
 
   --brand-50:  #1B2740;        /* active-nav pill bg: brand-700 text 7.2:1 */
   --brand-700: #9DBBFF;        /* active-nav label: 7.2:1 vs brand-50 pill */
@@ -308,6 +312,17 @@ html {
      it shares; this dedicated dark tint isolates the one surface whose text is
      the near-white dark --ink (#ECEFF4): 12.4:1 on the tint. */
   --banner-success-bg: #14301F;
+
+  /* Elevation — the :root shadows are tinted navy (rgba(15,31,78,…)), which is
+     invisible on a dark canvas, so cards lost all lift and read as flat boxes.
+     Black-based shadows actually register on dark and float the cards above the
+     darker page. Kept soft so the result is calm, not murky. */
+  --shadow-1: 0 1px 2px rgba(0,0,0,0.40), 0 1px 3px -1px rgba(0,0,0,0.32);
+  --shadow-2: 0 2px 6px -1px rgba(0,0,0,0.44), 0 12px 28px -10px rgba(0,0,0,0.52);
+  --shadow-pop: 0 18px 44px -14px rgba(0,0,0,0.70);
+  --shadow-card: 0 1px 2px 0 rgba(0,0,0,0.40);
+  --shadow-popover: 0 10px 28px -8px rgba(0,0,0,0.58);
+  --shadow-modal: 0 28px 60px -18px rgba(0,0,0,0.76);
 }
 
 @layer base {
@@ -620,7 +635,7 @@ html {
   --card-foreground:
     var(--color-text-primary);
   --popover:
-    var(--color-surface);
+    var(--color-surface-raised);
   --popover-foreground:
     var(--color-text-primary);
   --primary:

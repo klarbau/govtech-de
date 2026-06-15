@@ -2665,7 +2665,13 @@
     "fristen": {
       "title": "Сроки — кратко",
       "in_tagen": "Через {count, plural, =0 {срок сегодня} =1 {1 день} few {# дня} many {# дней} other {# дня}}",
-      "ueberfaellig": "просрочено"
+      "ueberfaellig": "просрочено",
+      "summary": "{urgent} на этой неделе · {total} всего",
+      "group": {
+        "diese_woche": "На этой неделе",
+        "demnaechst": "Скоро",
+        "spaeter": "Позже"
+      }
     },
     "ort": {
       "video": "Приём по видео",

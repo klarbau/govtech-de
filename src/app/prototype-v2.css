@@ -2228,3 +2228,50 @@ button { font: inherit; cursor: pointer; }
 .dd-spin { animation: dd-spin 0.9s linear infinite; }
 @keyframes dd-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .dd-spin { animation: none; } }
+
+/* ============ Fristen-Übersichts-Panel (Termine right rail) ============
+   Neutral card surface — the panel lists OPEN deadlines, so it must not
+   sit on the green success treatment (that is reserved for the empty
+   state). Per-row left accent rail carries urgency redundant to the
+   badge label + the time-horizon group headings. */
+.frist-panel {
+  margin-top: 16px;
+  padding: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+}
+.frist-panel__group {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.frist-panel__group + .frist-group-head { margin-top: 14px; }
+.frist-group-head {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.frist-rail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 10px;
+  border-left: 3px solid var(--border);
+  border-radius: var(--r-sm);
+}
+.frist-rail-row--danger { border-left-color: var(--red-500); }
+.frist-rail-row--warning { border-left-color: var(--amber-600); }
+.frist-rail-row--neutral { border-left-color: var(--border-strong); }
+.frist-rail-row .frist-rail-row__title { font-size: 13px; min-width: 0; }
+.frist-rail-row__end { display: inline-flex; align-items: center; gap: 6px; flex: none; }
+.frist-rail-row__chev { width: 15px; height: 15px; color: var(--ink-3); }
+.frist-rail-link:hover .frist-rail-row { background: rgba(0,0,0,.04); }
+.dark .frist-rail-link:hover .frist-rail-row { background: rgba(255,255,255,.06); }

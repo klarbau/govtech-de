@@ -2665,7 +2665,13 @@
     "fristen": {
       "title": "Deadlines at a glance",
       "in_tagen": "In {count, plural, =0 {due today} =1 {1 day} other {# days}}",
-      "ueberfaellig": "overdue"
+      "ueberfaellig": "overdue",
+      "summary": "{urgent} this week · {total} total",
+      "group": {
+        "diese_woche": "This week",
+        "demnaechst": "Upcoming",
+        "spaeter": "Later"
+      }
     },
     "ort": {
       "video": "Video appointment",

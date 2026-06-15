@@ -2665,7 +2665,13 @@
     "fristen": {
       "title": "المواعيد النهائية باختصار",
       "in_tagen": "خلال {count, plural, zero {مستحق اليوم} one {يوم واحد} two {يومين} few {# أيام} many {# يومًا} other {# يوم}}",
-      "ueberfaellig": "متأخر"
+      "ueberfaellig": "متأخر",
+      "summary": "{urgent} هذا الأسبوع · {total} الإجمالي",
+      "group": {
+        "diese_woche": "هذا الأسبوع",
+        "demnaechst": "قريبًا",
+        "spaeter": "لاحقًا"
+      }
     },
     "ort": {
       "video": "موعد عبر الفيديو",
