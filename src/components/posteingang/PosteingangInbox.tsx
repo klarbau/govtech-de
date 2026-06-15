@@ -232,6 +232,7 @@ export function PosteingangInbox({
 
   return (
     <>
+      <div className={inlineActive ? 'post-content--reply-open' : undefined}>
       <div className="gt-page-head">
         <h1>Posteingang</h1>
         <div className="sub">Alle Behörden-Briefe an einem Ort. Verstehen statt verzweifeln.</div>
@@ -300,9 +301,7 @@ export function PosteingangInbox({
         </button>
       </div>
 
-      <div
-        className={`post-layout${inlineActive ? ' post-layout--reply-open' : ''}`}
-      >
+      <div className="post-layout">
         {view === 'chronologisch' ? (
           <div>
             <PostSection
@@ -400,23 +399,21 @@ export function PosteingangInbox({
           />
         )}
 
-        {/* Inline-Antwortpanel = drittes Grid-Kind (Spec §5/§6). Liegt im
-            `.post-layout`-Grid, damit es eine echte Spalte belegt; nur aktiv
-            ≥ 1100 px. Im Schmal-Fall rendert stattdessen der modale Sheet
-            außerhalb des Grids. */}
-        {inlineActive && replyLetter && (
-          <ReplyInlinePanel
-            open={inlineReplyOpen}
-            letter={replyLetter}
-            empfaengerBehoerde={
-              behoerdenById[replyLetter.absender_behoerde_id] ?? null
-            }
-            existingReply={null}
-            onRequestClose={requestCloseReply}
-            onClosed={handleInlineClosed}
-          />
-        )}
       </div>
+      </div>
+
+      {inlineActive && replyLetter && (
+        <ReplyInlinePanel
+          open={inlineReplyOpen}
+          letter={replyLetter}
+          empfaengerBehoerde={
+            behoerdenById[replyLetter.absender_behoerde_id] ?? null
+          }
+          existingReply={null}
+          onRequestClose={requestCloseReply}
+          onClosed={handleInlineClosed}
+        />
+      )}
 
       <FilterSheet
         open={filterOpen}

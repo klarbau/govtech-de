@@ -1216,14 +1216,27 @@
         "opened_announcement": "Reply panel opened. You can still read the letter on the left.",
         "closed_announcement": "Reply panel closed."
       },
+      "fullpage": {
+        "back": "Back to inbox",
+        "original_heading": "Original letter"
+      },
       "recipient_label_template": "To: {behoerde}",
       "bezug_label_template": "Re: {aktenzeichen}",
       "betreff_label_template": "Subject: {betreff}",
       "aktenzeichen_label_template": "File reference (Aktenzeichen): {aktenzeichen}",
-      "char_count_template": "Characters: {n}",
+      "compose_title": "Compose reply",
+      "secure_transmission_short": "Your reply is transmitted securely to the authority.",
+      "learn_more": "Learn more",
+      "section": {
+        "antworttyp": "Answer type",
+        "antwortentwurf": "Draft",
+        "ki_unterstuetzung": "AI assistance",
+        "anhaenge": "Attachments"
+      },
+      "char_count_template": "{n} characters",
       "ai_rewrite": {
         "section_label": "AI actions",
-        "umformulieren": "Rewrite with AI",
+        "umformulieren": "Rephrase",
         "kuerzer": "Shorter",
         "formeller": "More formal",
         "einfacher": "Simpler",
@@ -1231,6 +1244,7 @@
         "done": "Text updated.",
         "error": "Rewrite failed – please try again.",
         "offline_fallback": "AI offline – text unchanged.",
+        "disclaimer": "AI can make mistakes. Please review the text.",
         "disabled_skelett_hint": "Not available for legal-remedy templates: the app does not draft legal reasoning (§ 2 RDG, German Legal Services Act)."
       },
       "outbound_speculative": "As of 2027 — speculative design. In this demo we simulate request-thread-bound bidirectional communication on the ZBP/BundID model: replies always live in the thread of a specific letter (anchored by file reference / Aktenzeichen), never as an open mailbox. Today (May 2026) the reply channel would differ by authority: Mein ELSTER for the tax office (Finanzamt), the health insurance portal for health insurance funds, a state service portal (Landes-Service-Portal) for citizens' offices and immigration authorities, often still postal mail. Nothing is sent to {behoerde}.",
@@ -1257,7 +1271,7 @@
         },
         "informative_rueckmeldung": {
           "label": "Informational reply",
-          "description": "Reply to a query from the authority.",
+          "description": "Standard reply to the authority's letter.",
           "icon": "ℹ️"
         },
         "termin_antwort": {
@@ -1266,8 +1280,8 @@
           "icon": "📅"
         },
         "freitext": {
-          "label": "Write your own text",
-          "description": "Start without a template.",
+          "label": "Free text",
+          "description": "Your own message with no preset structure.",
           "icon": "📝"
         },
         "rechtsbehelf_einspruch_skelett": {
@@ -1397,6 +1411,7 @@
       "attachments": {
         "label": "Attachments",
         "constraints_template": "max. {maxFiles} files · max. {maxFileMb} MB per file · max. {maxTotalMb} MB total · {allowedTypes}",
+        "formats_hint": "{allowedTypes} up to {maxFileMb} MB per file",
         "add_button": "Add file",
         "remove_template": "Remove attachment ‚{name}'",
         "size_template": "{size_kb} KB",
@@ -1405,7 +1420,7 @@
         "error_total_too_large": "Total size of all attachments exceeds {maxTotalMb} MB.",
         "error_mime_not_allowed": "File type ‚{name}' not allowed. Allowed: {allowedTypes}.",
         "errors_heading": "These attachments were rejected:",
-        "dropzone_cta": "Choose files",
+        "dropzone_cta": "Drag files here or choose",
         "dropzone_hint": "or drop them here",
         "dropzone_aria": "Choose files or drop them here via drag and drop"
       },
@@ -1419,8 +1434,8 @@
       "draft_discard_confirm_body": "The saved reply draft will be deleted. This cannot be undone.",
       "draft_discard_confirm_cta": "Discard",
       "draft_discard_confirm_cta_cancel": "Cancel",
-      "save_and_close_button": "Save and close",
-      "versand_button": "Send reply (simulated)",
+      "save_and_close_button": "Save draft",
+      "versand_button": "Send reply",
       "versand_modal": {
         "title": "Simulate sending the reply?",
         "body": "This demo simulates sending. Nothing goes to {empfaenger_behoerde}. Please write your reply as you would actually send it to the authority — insults or threats can be punishable under §§ 185, 241 of the German Criminal Code (StGB), even though this is only an exercise.",

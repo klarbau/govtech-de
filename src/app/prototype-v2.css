@@ -467,6 +467,30 @@ button { font: inherit; cursor: pointer; }
 
 /* ============ posteingang.html ============ */
 .post-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 24px; align-items: start; }
+
+/* Antwort-Drawer (≥ 1100 px): volle Höhe rechts am Viewport fixiert (Header-
+   Unterkante → unten), Footer wird vom Compose-Flex unten angeheftet. Der
+   Inhalt links bekommt rechts Platz (`post-content--reply-open`), damit Liste +
+   Detail nicht unter den Drawer rutschen. Unter 1100 px rendert der modale Sheet
+   → Drawer/Padding deaktiviert. */
+.reply-drawer {
+  position: fixed;
+  top: calc(var(--header-h) + 12px);
+  right: 14px;
+  bottom: 14px;
+  width: clamp(360px, 31vw, 452px);
+  z-index: 30;
+}
+.post-content--reply-open {
+  padding-right: calc(clamp(360px, 31vw, 452px) + 26px);
+}
+@media (max-width: 1099px) {
+  .reply-drawer {
+    position: static;
+    width: auto;
+  }
+  .post-content--reply-open { padding-right: 0; }
+}
 /* Reply-Inline-Panel (Spec reply-inline-panel §5/§7): bei offenem Panel
    schaltet das Grid auf drei Spalten (Liste | Detail | Antwort), das Detail wird
    geschoben statt überlagert. Nur ≥ 1100 px aktiv. C0: motion-safe Grid-Shift

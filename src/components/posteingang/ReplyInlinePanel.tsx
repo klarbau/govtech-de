@@ -76,7 +76,7 @@ export function ReplyInlinePanel({
   }
 
   const renderShell: ComposeShellRenderer = (chrome) => (
-    <div className="flex flex-col">
+    <div className="relative flex min-h-0 flex-1 flex-col">
       <button
         type="button"
         onClick={requestClose}
@@ -98,7 +98,7 @@ export function ReplyInlinePanel({
           onKeyDown={handleKeyDown}
           data-testid="reply-inline-panel"
           tabIndex={0}
-          className="relative flex max-h-[calc(100vh-7rem)] flex-col overflow-y-auto rounded-2xl border border-border bg-surface text-text-primary shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+          className="reply-drawer flex flex-col overflow-hidden rounded-2xl border border-border bg-surface text-text-primary shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
           {...(reduceMotion
             ? {}
             : {

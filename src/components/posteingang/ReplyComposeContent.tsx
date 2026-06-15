@@ -6,16 +6,24 @@ import { parseISO } from 'date-fns';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { toast } from 'sonner';
 import {
-  Feather,
+  CalendarClock,
+  Clock,
+  ExternalLink,
   FileText,
   Info,
   Loader2,
-  Minimize2,
+  type LucideIcon,
+  MessageSquare,
   Paperclip,
-  ScrollText,
+  PauseCircle,
+  Save,
+  Scale,
   Send,
+  ShieldAlert,
   Sparkles,
   Trash2,
+  UploadCloud,
+  Wand2,
   X,
 } from 'lucide-react';
 
@@ -57,11 +65,27 @@ import {
 } from './preInsertionModalLookup';
 
 /** Stable className constants — previously the Sheet{Header,Body,Footer} slots. */
-const composeHeaderClass = 'flex flex-col gap-1 border-b border-border px-5 py-4';
+const composeHeaderClass =
+  'flex shrink-0 flex-col gap-1 border-b border-border px-5 py-4';
 const composeBodyClass =
-  'flex flex-1 flex-col gap-4 overflow-y-auto px-5 py-4';
+  'flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-5 py-4';
 const composeFooterClass =
-  'flex flex-col gap-2 border-t border-border bg-surface-muted/40 px-5 py-4';
+  'flex shrink-0 flex-col gap-2 border-t border-border bg-surface-muted/40 px-5 py-4';
+
+/**
+ * Lucide-Line-Icons pro Vorlage (Target-Design: schlichte Outline-Icons, KEINE
+ * Emoji-Sticker). Fallback = FileText.
+ */
+const TEMPLATE_ICONS: Record<string, LucideIcon> = {
+  informative_rueckmeldung: MessageSquare,
+  freitext: FileText,
+  frist_verlaengerung: Clock,
+  nachweis_einreichen: Paperclip,
+  termin_antwort: CalendarClock,
+  rechtsbehelf_einspruch_skelett: Scale,
+  rechtsbehelf_widerspruch_skelett: ShieldAlert,
+  aussetzung_vollziehung_skelett: PauseCircle,
+};
 
 /**
  * Render-slot shell. `ReplyComposeContent` builds the inner chrome
@@ -156,6 +180,7 @@ export function ReplyComposeContent({
   renderShell,
 }: ReplyComposeContentProps) {
   const t = useTranslations('posteingang.compose');
+  const tSection = useTranslations('posteingang.compose.section');
   const tTemplates = useTranslations('posteingang.compose.templates');
   const tPicker = useTranslations('posteingang.compose.template_picker');
   // Phase 6b — neuer i18n-Tree für Skelett-Banner (`posteingang.reply.*`).
@@ -205,6 +230,7 @@ export function ReplyComposeContent({
   const [personaId, setPersonaId] = React.useState<string | null>(null);
   const [templatePending, setTemplatePending] = React.useState(false);
   const [rewritePending, setRewritePending] = React.useState(false);
+  const [secureInfoOpen, setSecureInfoOpen] = React.useState(false);
   const [confirmation, setConfirmation] = React.useState<Reply | null>(
     existingReply,
   );
@@ -758,7 +784,7 @@ export function ReplyComposeContent({
 
   const headingText = confirmation
     ? t('confirmation.headline')
-    : t('sheet_title', { behoerde: empfaengerName });
+    : t('compose_title');
 
   // M2-Stagger-Helper für die vier nummerierten Blöcke (nur inline + erstes
   // Öffnen + kein reduced-motion). Liefert framer-motion-Props; sonst leer.
@@ -796,27 +822,19 @@ export function ReplyComposeContent({
           id="reply-compose-heading"
           ref={headingRef}
           tabIndex={-1}
-          className="text-lg font-semibold text-text-primary outline-none"
+          className="text-xl font-bold text-text-primary outline-none"
         >
           {headingText}
         </h2>
       )}
-      <div className="flex flex-col gap-0.5 text-xs text-text-muted">
-        <p>{t('recipient_label_template', { behoerde: empfaengerName })}</p>
-        <p>{t('betreff_label_template', { betreff: letter.betreff })}</p>
-        <p className="flex flex-wrap items-center gap-1">
-          <span>
-            {t('aktenzeichen_label_template', { aktenzeichen: '' }).replace(
-              /\s*$/,
-              '',
-            )}
-          </span>
-          <span className="rounded bg-surface-muted px-1 font-mono text-[10px] uppercase tracking-wide text-text-muted">
-            [MOCK]
-          </span>
-          <span className="font-mono tabular-nums text-text-primary">
-            {letter.aktenzeichen}
-          </span>
+      <div className="flex flex-col gap-0.5 text-[13px] leading-relaxed text-text-muted">
+        <p>{empfaengerName}</p>
+        <p>
+          {t('aktenzeichen_label_template', { aktenzeichen: '' }).replace(
+            /\s*$/,
+            '',
+          )}{' '}
+          [MOCK] {letter.aktenzeichen.replace(/^\s*\[MOCK\]\s*/i, '')}
         </p>
       </div>
     </div>
@@ -872,7 +890,11 @@ export function ReplyComposeContent({
     </AnimatePresence>
   ) : (
     <div className={composeBodyClass}>
-      <SpeculativeBanner empfaenger={empfaengerName} />
+      <SecureTransmissionBanner
+        empfaenger={empfaengerName}
+        open={secureInfoOpen}
+        onToggle={() => setSecureInfoOpen((v) => !v)}
+      />
 
       {/* Frist-Kontext (Warnung + zitierter Frist-Header) gilt dem
           Skelett, das der Picker empfiehlt — auch solange dessen Radio
@@ -895,14 +917,15 @@ export function ReplyComposeContent({
         {crossSendAnnouncement}
       </div>
 
-      <motion.fieldset className="flex flex-col gap-2" {...staggerProps()}>
-        <legend className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          {tPicker('legend')}
-        </legend>
+      <motion.fieldset className="flex flex-col gap-2.5" {...staggerProps()}>
+        <legend className="sr-only">{tPicker('legend')}</legend>
+        <SectionHeading n={1} id="template-picker-title">
+          {tSection('antworttyp')}
+        </SectionHeading>
         <div
           role="radiogroup"
           aria-labelledby="template-picker-title"
-          className="grid gap-2 sm:grid-cols-1"
+          className="grid gap-3 sm:grid-cols-2"
           onKeyDown={(event) => {
             if (
               event.key !== 'ArrowDown' &&
@@ -937,7 +960,6 @@ export function ReplyComposeContent({
             const highlighted = checked || recommended;
             const labelKey = `${id}.label`;
             const descKey = `${id}.description`;
-            const iconKey = `${id}.icon`;
             // Defensive lookup — i18n-localizer arbeitet parallel.
             const label = (() => {
               try {
@@ -953,13 +975,7 @@ export function ReplyComposeContent({
                 return '';
               }
             })();
-            const icon = (() => {
-              try {
-                return tPicker(iconKey);
-              } catch {
-                return '';
-              }
-            })();
+            const Icon = TEMPLATE_ICONS[id] ?? FileText;
             // Roving-Tabindex (WAI-ARIA radiogroup): genau ein
             // fokussierbarer Eintrag. Ist nichts gewählt (Skelett-
             // Empfehlung aktiv), erhält der erste Eintrag tabindex 0.
@@ -977,44 +993,48 @@ export function ReplyComposeContent({
                 tabIndex={isTabStop ? 0 : -1}
                 onClick={() => onTemplateClick(id)}
                 className={cn(
-                  'grid cursor-pointer grid-cols-[auto_1fr] items-start gap-2.5 rounded-lg border p-3 text-left text-sm transition-colors',
+                  'relative flex cursor-pointer flex-col gap-3 rounded-xl border p-4 pr-9 text-left text-sm transition-colors',
                   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
                   highlighted
-                    ? 'border-brand-500 bg-brand-50 ring-1 ring-brand-500 dark:bg-brand-50/15'
+                    ? 'border-brand-500 bg-brand-50/60 dark:bg-brand-50/[0.07]'
                     : 'border-border hover:bg-muted/40',
                 )}
               >
+                <Icon
+                  aria-hidden="true"
+                  className={cn(
+                    'size-5 shrink-0',
+                    highlighted
+                      ? 'text-brand-600 dark:text-[var(--brand-600)]'
+                      : 'text-text-muted',
+                  )}
+                />
                 <span
                   aria-hidden="true"
                   className={cn(
-                    'mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border',
-                    checked ? 'border-primary' : 'border-border-strong',
+                    'absolute right-3.5 top-3.5 flex size-[18px] shrink-0 items-center justify-center rounded-full border-2',
+                    checked
+                      ? 'border-brand-600 dark:border-[var(--brand-600)]'
+                      : 'border-border-strong',
                   )}
                 >
                   {checked && (
-                    <span className="size-2 rounded-full bg-primary" />
+                    <span className="size-2 rounded-full bg-brand-600 dark:bg-[var(--brand-600)]" />
                   )}
                 </span>
-                <span className="flex flex-col gap-0.5">
+                <span className="flex flex-col gap-1">
                   <span
                     className={cn(
-                      'font-medium',
+                      'font-semibold leading-snug',
                       highlighted
                         ? 'text-brand-700 dark:text-[var(--brand-700)]'
                         : 'text-text-primary',
                     )}
                   >
-                    <span aria-hidden="true">{icon}</span> {label}
+                    {label}
                   </span>
                   {description && (
-                    <span
-                      className={cn(
-                        'text-xs',
-                        highlighted
-                          ? 'text-brand-700/90 dark:text-[var(--brand-700)]/90'
-                          : 'text-muted-foreground',
-                      )}
-                    >
+                    <span className="text-xs leading-snug text-muted-foreground">
                       {description}
                     </span>
                   )}
@@ -1088,12 +1108,13 @@ export function ReplyComposeContent({
           </div>
         )}
 
-        <motion.div className="flex flex-col gap-1" {...staggerProps()}>
+        <motion.div className="flex flex-col gap-2" {...staggerProps()}>
           <label
             htmlFor="reply-body"
-            className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
+            className="text-sm font-semibold text-text-primary"
           >
-            {t('body_textarea_label')}
+            <span className="sr-only">{t('body_textarea_label')}</span>
+            <span aria-hidden="true">2. {tSection('antwortentwurf')}</span>
           </label>
           {/* Phase 6b — Skelett-Banner über Textarea (Audit-Finding #2).
               Sichtbar, sobald ein Skelett-Template einen Vortext in
@@ -1138,15 +1159,14 @@ export function ReplyComposeContent({
             )}
             <span
               aria-hidden="true"
-              className="pointer-events-none absolute bottom-1.5 right-2.5 font-mono text-[10px] tabular-nums text-text-muted"
+              className="pointer-events-none absolute bottom-2 left-3 text-[11px] tabular-nums text-text-muted"
             >
               {t('char_count_template', { n: formState.body.length })}
             </span>
           </div>
-          <p
-            id="reply-body-hint"
-            className="text-[11px] leading-relaxed text-muted-foreground"
-          >
+          {/* Für Screenreader behalten (aria-describedby der Textarea), aber
+              visuell ausgeblendet — Target-Design zeigt hier keinen Hinweis. */}
+          <p id="reply-body-hint" className="sr-only">
             {t('body_textarea_de_hint')}
           </p>
           {disclaimerInline && (
@@ -1162,7 +1182,20 @@ export function ReplyComposeContent({
               {skelettFooter}
             </p>
           )}
+        </motion.div>
 
+        <motion.div className="flex flex-col gap-2" {...staggerProps()}>
+          <SectionHeading
+            n={3}
+            trailing={
+              <Sparkles
+                className="size-4 text-brand-600 dark:text-[var(--brand-600)]"
+                aria-hidden="true"
+              />
+            }
+          >
+            {tSection('ki_unterstuetzung')}
+          </SectionHeading>
           <KiAktionenChips
             body={formState.body}
             disabledForSkelett={currentIsSkelett}
@@ -1177,7 +1210,8 @@ export function ReplyComposeContent({
           />
         </motion.div>
 
-        <motion.div {...staggerProps()}>
+        <motion.div className="flex flex-col gap-2" {...staggerProps()}>
+          <SectionHeading n={4}>{tSection('anhaenge')}</SectionHeading>
           <AttachmentInput
             totalCount={totalAttachmentCount}
             persistedAttachments={formState.persistedAttachments}
@@ -1196,7 +1230,7 @@ export function ReplyComposeContent({
 
   const footerNode = confirmation ? null : (
     <div className={composeFooterClass}>
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <span
           role="status"
           aria-live="polite"
@@ -1209,53 +1243,55 @@ export function ReplyComposeContent({
         >
           {draftSavedRel ?? ''}
         </span>
-        {savingState === 'error' && (
+        <div className="flex items-center gap-2">
+          {savingState === 'error' && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => void persistDraft()}
+            >
+              {t('draft_save_error_retry')}
+            </Button>
+          )}
           <Button
             type="button"
-            variant="outline"
+            variant="ghost"
             size="sm"
-            onClick={() => void persistDraft()}
+            onClick={() => setDiscardOpen(true)}
+            className="h-auto px-2 py-1 text-[11px] text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+            disabled={!draftId && formState.body.trim().length === 0}
           >
-            {t('draft_save_error_retry')}
-          </Button>
-        )}
-      </div>
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <Button
-          type="button"
-          variant="ghost"
-          onClick={() => setDiscardOpen(true)}
-          className="rounded-[11px] text-destructive hover:bg-destructive/10"
-          disabled={!draftId && formState.body.trim().length === 0}
-        >
-          <Trash2 className="size-4" aria-hidden="true" />
-          {t('draft_discard_button')}
-        </Button>
-        <div className="flex flex-wrap items-center gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => void persistDraft().then(() => onRequestClose())}
-            disabled={savingState === 'saving'}
-            className="rounded-[11px]"
-          >
-            {t('save_and_close_button')}
-          </Button>
-          <Button
-            type="button"
-            onClick={() => setVersandModalOpen(true)}
-            disabled={
-              formState.body.trim().length === 0 ||
-              savingState === 'saving' ||
-              versandPending ||
-              templatePending
-            }
-            className="rounded-[11px]"
-          >
-            <Send className="size-4" aria-hidden="true" />
-            {t('versand_button')}
+            <Trash2 className="size-3.5" aria-hidden="true" />
+            {t('draft_discard_button')}
           </Button>
         </div>
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => void persistDraft().then(() => onRequestClose())}
+          disabled={savingState === 'saving'}
+          className="h-12 gap-2 rounded-xl border-brand-300 text-brand-700 hover:bg-brand-50/60 dark:border-brand-200/40 dark:text-[var(--brand-700)]"
+        >
+          <Save className="size-4" aria-hidden="true" />
+          {t('save_and_close_button')}
+        </Button>
+        <Button
+          type="button"
+          onClick={() => setVersandModalOpen(true)}
+          disabled={
+            formState.body.trim().length === 0 ||
+            savingState === 'saving' ||
+            versandPending ||
+            templatePending
+          }
+          className="h-12 gap-2 rounded-xl"
+        >
+          <Send className="size-4" aria-hidden="true" />
+          {t('versand_button')}
+        </Button>
       </div>
     </div>
   );
@@ -1335,25 +1371,76 @@ export function ReplyComposeContent({
   );
 }
 
-interface SpeculativeBannerProps {
-  empfaenger: string;
+interface SectionHeadingProps {
+  n: number;
+  id?: string;
+  children: React.ReactNode;
+  /** Optionales Trailing-Icon (z. B. Sparkles für KI-Unterstützung). */
+  trailing?: React.ReactNode;
 }
 
-function SpeculativeBanner({ empfaenger }: SpeculativeBannerProps) {
+/**
+ * Schlichte nummerierte Section-Überschrift („1. Antworttyp"). Reiner Text mit
+ * Zahlen-Präfix — keine farbigen Badge-Kreise (Target-Design).
+ */
+function SectionHeading({ n, id, children, trailing }: SectionHeadingProps) {
+  return (
+    <h3
+      id={id}
+      className="flex items-center gap-1.5 text-sm font-semibold text-text-primary"
+    >
+      <span>
+        {n}. {children}
+      </span>
+      {trailing}
+    </h3>
+  );
+}
+
+interface SecureTransmissionBannerProps {
+  empfaenger: string;
+  open: boolean;
+  onToggle: () => void;
+}
+
+/**
+ * Kompakter blauer Info-Banner — ersetzt den dominanten amber
+ * Speculative-Design-Block. Eine Zeile + „Mehr erfahren"-Disclosure, die den
+ * vollständigen `outbound_speculative`-Text aufklappt (a11y: aria-expanded +
+ * aria-controls auf die Region).
+ */
+function SecureTransmissionBanner({
+  empfaenger,
+  open,
+  onToggle,
+}: SecureTransmissionBannerProps) {
   const t = useTranslations('posteingang.compose');
   return (
-    <div
-      role="note"
-      className="flex items-start gap-2.5 rounded-lg border border-[var(--ds-color-warning)]/40 bg-[var(--ds-color-warning-soft)] p-3 text-xs leading-relaxed text-amber-950 dark:text-[var(--ds-color-text-primary)]"
-    >
-      <Info
-        className="mt-0.5 size-4 shrink-0 text-[var(--ds-color-warning)]"
-        aria-hidden="true"
-      />
-      <p>
-        <span className="font-semibold">{t('speculative_banner_title')}.</span>{' '}
+    <div className="rounded-lg border border-brand-200 bg-brand-50/60 dark:border-brand-200/40 dark:bg-brand-50/10">
+      <div className="flex items-center gap-2.5 px-3.5 py-3 text-[13px] leading-relaxed">
+        <Info
+          className="size-4 shrink-0 text-brand-600 dark:text-[var(--brand-600)]"
+          aria-hidden="true"
+        />
+        <p className="flex-1 text-text-primary">{t('secure_transmission_short')}</p>
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-expanded={open}
+          aria-controls="secure-transmission-details"
+          className="inline-flex shrink-0 items-center gap-1.5 rounded font-semibold text-brand-700 underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-1 dark:text-[var(--brand-700)]"
+        >
+          {t('learn_more')}
+          <ExternalLink className="size-3.5" aria-hidden="true" />
+        </button>
+      </div>
+      <div
+        id="secure-transmission-details"
+        hidden={!open}
+        className="border-t border-brand-200/70 px-3.5 py-3 text-xs leading-relaxed text-text-secondary dark:border-brand-200/30"
+      >
         {t('outbound_speculative', { behoerde: empfaenger })}
-      </p>
+      </div>
     </div>
   );
 }
@@ -1387,21 +1474,15 @@ function AttachmentInput({
   const allowedTypes = LETTER_ATTACHMENT_LIMITS.ALLOWED_MIME.map((m) =>
     m.replace('application/', '').replace('image/', '').toUpperCase(),
   ).join(', ');
-  const constraints = t('constraints_template', {
-    maxFiles: LETTER_ATTACHMENT_LIMITS.MAX_FILES,
-    maxFileMb: bytesToMb(LETTER_ATTACHMENT_LIMITS.MAX_BYTES_PER_FILE),
-    maxTotalMb: bytesToMb(LETTER_ATTACHMENT_LIMITS.MAX_BYTES_TOTAL),
+  const constraints = t('formats_hint', {
     allowedTypes,
+    maxFileMb: bytesToMb(LETTER_ATTACHMENT_LIMITS.MAX_BYTES_PER_FILE),
   });
   const limitReached = totalCount >= LETTER_ATTACHMENT_LIMITS.MAX_FILES;
 
   return (
-    <fieldset className="flex flex-col gap-2 rounded-lg border border-border p-3">
-      <legend className="px-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-        <Paperclip className="mr-1 inline size-3" aria-hidden="true" />
-        {t('label')}
-      </legend>
-      <p className="text-[11px] text-muted-foreground">{constraints}</p>
+    <fieldset className="flex flex-col gap-2">
+      <legend className="sr-only">{t('label')}</legend>
       <input
         ref={inputRef}
         type="file"
@@ -1442,19 +1523,22 @@ function AttachmentInput({
           onDropFiles(files);
         }}
         className={cn(
-          'flex w-full flex-col items-center justify-center gap-1 rounded-lg border border-dashed px-3 py-6 text-center text-sm transition-colors',
+          'flex w-full flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed px-3 py-7 text-center text-sm transition-colors',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
           'disabled:cursor-not-allowed disabled:opacity-50',
           dragging
-            ? 'border-brand-500 bg-brand-50 dark:bg-brand-50/15'
+            ? 'border-brand-500 bg-brand-50/60 dark:bg-brand-50/15'
             : 'border-border-strong hover:bg-muted/40',
         )}
       >
-        <Paperclip className="size-5 text-text-muted" aria-hidden="true" />
-        <span className="font-medium text-text-primary">
+        <UploadCloud
+          className="size-6 text-brand-600 dark:text-[var(--brand-600)]"
+          aria-hidden="true"
+        />
+        <span className="font-medium text-brand-700 dark:text-[var(--brand-700)]">
           {t('dropzone_cta')}
         </span>
-        <span className="text-[11px] text-text-muted">{t('dropzone_hint')}</span>
+        <span className="text-xs text-text-muted">{constraints}</span>
       </button>
 
       {errors.length > 0 && (
@@ -1563,15 +1647,14 @@ interface KiAktionenChipsProps {
 interface ChipDef {
   action: ReplyRewriteAction;
   labelKey: string;
-  icon: React.ComponentType<{ className?: string; 'aria-hidden'?: boolean }>;
-  primary: boolean;
+  icon: React.ComponentType<{ className?: string; 'aria-hidden'?: boolean }> | null;
 }
 
 const KI_CHIPS: readonly ChipDef[] = [
-  { action: 'umformulieren', labelKey: 'umformulieren', icon: Sparkles, primary: true },
-  { action: 'kuerzer', labelKey: 'kuerzer', icon: Minimize2, primary: false },
-  { action: 'formeller', labelKey: 'formeller', icon: ScrollText, primary: false },
-  { action: 'einfacher', labelKey: 'einfacher', icon: Feather, primary: false },
+  { action: 'umformulieren', labelKey: 'umformulieren', icon: Wand2 },
+  { action: 'kuerzer', labelKey: 'kuerzer', icon: null },
+  { action: 'formeller', labelKey: 'formeller', icon: null },
+  { action: 'einfacher', labelKey: 'einfacher', icon: null },
 ] as const;
 
 /**
@@ -1624,12 +1707,9 @@ function KiAktionenChips({
   }
 
   return (
-    <div className="flex flex-col gap-2">
-      <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-        {t('section_label')}
-      </p>
+    <div className="flex flex-col gap-2.5">
       <div className="flex flex-wrap gap-2">
-        {KI_CHIPS.map(({ action, labelKey, icon: Icon, primary }) => {
+        {KI_CHIPS.map(({ action, labelKey, icon: Icon }) => {
           const isBusy = busyAction === action;
           return (
             <button
@@ -1639,29 +1719,24 @@ function KiAktionenChips({
               disabled={rowDisabled}
               aria-busy={isBusy}
               className={cn(
-                'inline-flex min-h-8 items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors',
+                'inline-flex min-h-9 items-center gap-1.5 rounded-lg border border-border-strong bg-surface px-3.5 py-1.5 text-[13px] font-medium text-text-primary transition-colors hover:bg-muted/40',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
                 'disabled:cursor-not-allowed disabled:opacity-50',
-                primary
-                  ? 'border-brand-200 bg-brand-50 text-brand-700 hover:bg-brand-50/70 dark:bg-brand-50/15'
-                  : 'border-border-strong text-text-primary hover:bg-muted/40',
               )}
             >
               {isBusy ? (
                 <Loader2 className="size-3.5 animate-spin" aria-hidden="true" />
-              ) : (
-                <Icon className="size-3.5" aria-hidden={true} />
-              )}
+              ) : Icon ? (
+                <Icon className="size-3.5 text-text-muted" aria-hidden={true} />
+              ) : null}
               {isBusy ? t('busy') : t(labelKey)}
             </button>
           );
         })}
       </div>
-      {disabledForSkelett && (
-        <p className="text-[11px] leading-relaxed text-muted-foreground">
-          {t('disabled_skelett_hint')}
-        </p>
-      )}
+      <p className="text-xs leading-relaxed text-muted-foreground">
+        {disabledForSkelett ? t('disabled_skelett_hint') : t('disclaimer')}
+      </p>
       <div className="sr-only" role="status" aria-live="polite">
         {announcement}
       </div>

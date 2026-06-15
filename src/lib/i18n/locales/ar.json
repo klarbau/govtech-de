@@ -1216,14 +1216,27 @@
         "opened_announcement": "تم فتح لوحة الرد. لا يزال بإمكانك قراءة الرسالة بجانبها.",
         "closed_announcement": "تم إغلاق لوحة الرد."
       },
+      "fullpage": {
+        "back": "العودة إلى صندوق الوارد",
+        "original_heading": "الخطاب الأصلي (Original-Schreiben)"
+      },
       "recipient_label_template": "إلى: {behoerde}",
       "bezug_label_template": "بشأن: {aktenzeichen}",
       "betreff_label_template": "الموضوع: {betreff}",
       "aktenzeichen_label_template": "رقم الملف (Aktenzeichen): {aktenzeichen}",
-      "char_count_template": "عدد الأحرف: {n}",
+      "compose_title": "كتابة رد",
+      "secure_transmission_short": "تُرسَل ردودكم بشكل آمن إلى الجهة الرسمية.",
+      "learn_more": "معرفة المزيد",
+      "section": {
+        "antworttyp": "نوع الرد",
+        "antwortentwurf": "مسودة الرد",
+        "ki_unterstuetzung": "مساعدة الذكاء الاصطناعي",
+        "anhaenge": "المرفقات"
+      },
+      "char_count_template": "{n} حرفاً",
       "ai_rewrite": {
         "section_label": "إجراءات الذكاء الاصطناعي",
-        "umformulieren": "إعادة الصياغة بالذكاء الاصطناعي",
+        "umformulieren": "إعادة الصياغة",
         "kuerzer": "أقصر",
         "formeller": "أكثر رسمية",
         "einfacher": "أبسط",
@@ -1231,6 +1244,7 @@
         "done": "تم تحديث النص.",
         "error": "تعذّرت إعادة الصياغة – يُرجى المحاولة مرة أخرى.",
         "offline_fallback": "الذكاء الاصطناعي غير متصل – النص دون تغيير.",
+        "disclaimer": "قد يخطئ الذكاء الاصطناعي. يُرجى مراجعة النص.",
         "disabled_skelett_hint": "غير متاح لقوالب وسائل الطعن القانونية: لا يصوغ التطبيق أي تسبيب قانوني (§ 2 RDG — قانون الخدمات القانونية)."
       },
       "outbound_speculative": "حتى عام 2027 — تصميم افتراضي. في هذا العرض نُحاكي تواصلاً ثنائي الاتجاه مرتبطاً بخيط الطلب (antrags-thread-gebunden) قائماً على نموذج ZBP/BundID: تعيش الردود دائماً في خيط رسالة بعينها (مع تثبيت برقم الملف Aktenzeichen)، لا كصندوق بريد مفتوح. اليوم (مايو 2026) يختلف قناة الرد بحسب الجهة: Mein ELSTER لمصلحة الضرائب (Finanzamt)، بوابة التأمين الصحي لصناديق التأمين، بوابة خدمة الولاية (Landes-Service-Portal) لمكاتب المواطن وشؤون الأجانب، وغالباً ما تزال البريد الورقي. لا يُرسل شيء إلى {behoerde}.",
@@ -1257,7 +1271,7 @@
         },
         "informative_rueckmeldung": {
           "label": "رد إعلامي",
-          "description": "رد على استفسار من الجهة.",
+          "description": "رد قياسي على خطاب الجهة.",
           "icon": "ℹ️"
         },
         "termin_antwort": {
@@ -1266,8 +1280,8 @@
           "icon": "📅"
         },
         "freitext": {
-          "label": "كتابة نص خاص",
-          "description": "البدء دون قالب.",
+          "label": "نص حر",
+          "description": "رسالتك الخاصة دون بنية محددة.",
           "icon": "📝"
         },
         "rechtsbehelf_einspruch_skelett": {
@@ -1397,6 +1411,7 @@
       "attachments": {
         "label": "المرفقات",
         "constraints_template": "بحدّ أقصى {maxFiles} ملفات · أقصى {maxFileMb} م.ب لكل ملف · أقصى {maxTotalMb} م.ب إجمالاً · {allowedTypes}",
+        "formats_hint": "{allowedTypes} حتى {maxFileMb} م.ب لكل ملف",
         "add_button": "إضافة ملف",
         "remove_template": "إزالة المرفق ‚{name}'",
         "size_template": "{size_kb} ك.ب",
@@ -1405,7 +1420,7 @@
         "error_total_too_large": "إجمالي حجم المرفقات يتجاوز {maxTotalMb} م.ب.",
         "error_mime_not_allowed": "نوع الملف ‚{name}' غير مسموح. المسموح: {allowedTypes}.",
         "errors_heading": "تم رفض هذه المرفقات:",
-        "dropzone_cta": "اختيار الملفات",
+        "dropzone_cta": "اسحب الملفات إلى هنا أو اخترها",
         "dropzone_hint": "أو أفلِتها هنا",
         "dropzone_aria": "اختيار الملفات أو إفلاتها هنا بالسحب والإفلات"
       },
@@ -1419,8 +1434,8 @@
       "draft_discard_confirm_body": "ستُحذف مسودة الرد المحفوظة. لا يمكن التراجع عن هذا الإجراء.",
       "draft_discard_confirm_cta": "حذف",
       "draft_discard_confirm_cta_cancel": "إلغاء",
-      "save_and_close_button": "حفظ وإغلاق",
-      "versand_button": "إرسال الرد (محاكاة)",
+      "save_and_close_button": "حفظ المسودة",
+      "versand_button": "إرسال الرد",
       "versand_modal": {
         "title": "هل تريد محاكاة إرسال الرد؟",
         "body": "يُحاكي هذا العرض الإرسال. لا يصل شيء إلى {empfaenger_behoerde}. يُرجى صياغة ردك كما لو كنت سترسله فعلياً إلى الجهة — فالإهانات أو التهديدات قد تكون معاقَباً عليها بموجب §§ 185, 241 StGB (الإهانة، التهديد)، حتى وإن كان ذلك هنا مجرد تمرين.",

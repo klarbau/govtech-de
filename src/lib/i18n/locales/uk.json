@@ -1216,14 +1216,27 @@
         "opened_announcement": "Панель відповіді відкрито. Ви, як і раніше, можете читати лист ліворуч.",
         "closed_announcement": "Панель відповіді закрито."
       },
+      "fullpage": {
+        "back": "Назад до вхідних",
+        "original_heading": "Оригінал листа (Original-Schreiben)"
+      },
       "recipient_label_template": "Кому: {behoerde}",
       "bezug_label_template": "До справи: {aktenzeichen}",
       "betreff_label_template": "Тема: {betreff}",
       "aktenzeichen_label_template": "Номер справи (Aktenzeichen): {aktenzeichen}",
-      "char_count_template": "Символів: {n}",
+      "compose_title": "Написати відповідь",
+      "secure_transmission_short": "Ваша відповідь безпечно передається до відомства.",
+      "learn_more": "Докладніше",
+      "section": {
+        "antworttyp": "Тип відповіді",
+        "antwortentwurf": "Чернетка відповіді",
+        "ki_unterstuetzung": "Допомога ШІ",
+        "anhaenge": "Вкладення"
+      },
+      "char_count_template": "{n} символів",
       "ai_rewrite": {
         "section_label": "Дії ШІ",
-        "umformulieren": "Переформулювати за допомогою ШІ",
+        "umformulieren": "Переформулювати",
         "kuerzer": "Коротше",
         "formeller": "Офіційніше",
         "einfacher": "Простіше",
@@ -1231,6 +1244,7 @@
         "done": "Текст оновлено.",
         "error": "Не вдалося переформулювати — спробуйте ще раз.",
         "offline_fallback": "ШІ недоступний — текст без змін.",
+        "disclaimer": "ШІ може помилятися. Будь ласка, перевірте текст.",
         "disabled_skelett_hint": "Недоступно для шаблонів правових засобів захисту: застосунок не складає юридичного обґрунтування (§ 2 RDG — Закон про надання юридичних послуг)."
       },
       "outbound_speculative": "Станом на 2027 — умоглядний сценарій. У цьому демо ми моделюємо двосторонню комунікацію, привʼязану до нитки заявки (antrags-thread-gebunden), на основі моделі ZBP/BundID: відповіді завжди живуть у нитці конкретного листа (якір — номер справи, Aktenzeichen), а не у вільній скриньці. Сьогодні (травень 2026) канал відповіді залежить від відомства: Mein ELSTER для податкової (Finanzamt), портал лікарняної каси для медстраховиків, земельний сервіс-портал (Landes-Service-Portal) для бюро у справах громадян та іноземців, нерідко — паперова пошта. До {behoerde} нічого не надсилається.",
@@ -1257,7 +1271,7 @@
         },
         "informative_rueckmeldung": {
           "label": "Інформативна відповідь",
-          "description": "Відповідь на запит відомства.",
+          "description": "Стандартна відповідь на лист відомства.",
           "icon": "ℹ️"
         },
         "termin_antwort": {
@@ -1266,8 +1280,8 @@
           "icon": "📅"
         },
         "freitext": {
-          "label": "Власний текст",
-          "description": "Почати без шаблона.",
+          "label": "Вільний текст",
+          "description": "Власне повідомлення без заданої структури.",
           "icon": "📝"
         },
         "rechtsbehelf_einspruch_skelett": {
@@ -1397,6 +1411,7 @@
       "attachments": {
         "label": "Вкладення",
         "constraints_template": "макс. {maxFiles} файлів · макс. {maxFileMb} МБ на файл · макс. {maxTotalMb} МБ загалом · {allowedTypes}",
+        "formats_hint": "{allowedTypes} до {maxFileMb} МБ на файл",
         "add_button": "Додати файл",
         "remove_template": "Видалити вкладення ‚{name}'",
         "size_template": "{size_kb} КБ",
@@ -1405,7 +1420,7 @@
         "error_total_too_large": "Загальний розмір вкладень перевищує {maxTotalMb} МБ.",
         "error_mime_not_allowed": "Тип файлу ‚{name}' не дозволено. Дозволено: {allowedTypes}.",
         "errors_heading": "Ці вкладення відхилено:",
-        "dropzone_cta": "Вибрати файли",
+        "dropzone_cta": "Перетягніть файли сюди або виберіть",
         "dropzone_hint": "або перетягніть їх сюди",
         "dropzone_aria": "Вибрати файли або перетягнути їх сюди"
       },
@@ -1419,8 +1434,8 @@
       "draft_discard_confirm_body": "Збережену чернетку відповіді буде видалено. Дію не можна скасувати.",
       "draft_discard_confirm_cta": "Видалити",
       "draft_discard_confirm_cta_cancel": "Скасувати",
-      "save_and_close_button": "Зберегти і закрити",
-      "versand_button": "Надіслати відповідь (імітація)",
+      "save_and_close_button": "Зберегти чернетку",
+      "versand_button": "Надіслати відповідь",
       "versand_modal": {
         "title": "Імітувати надсилання відповіді?",
         "body": "Це демо імітує надсилання. До {empfaenger_behoerde} нічого не надходить. Будь ласка, пишіть відповідь так, як ви справді надіслали б її до відомства — образи або погрози можуть бути карними за §§ 185, 241 КК Німеччини — StGB, навіть якщо тут це лише вправа.",

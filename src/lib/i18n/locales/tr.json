@@ -1216,14 +1216,27 @@
         "opened_announcement": "Yanıt paneli açıldı. Mektubu soldan okumaya devam edebilirsiniz.",
         "closed_announcement": "Yanıt paneli kapatıldı."
       },
+      "fullpage": {
+        "back": "Gelen kutusuna dön",
+        "original_heading": "Orijinal yazı (Original-Schreiben)"
+      },
       "recipient_label_template": "Alıcı: {behoerde}",
       "bezug_label_template": "Konu: {aktenzeichen}",
       "betreff_label_template": "Konu (Betreff): {betreff}",
       "aktenzeichen_label_template": "Dosya numarası (Aktenzeichen): {aktenzeichen}",
-      "char_count_template": "Karakter: {n}",
+      "compose_title": "Yanıt yaz",
+      "secure_transmission_short": "Yanıtınız kuruma güvenli şekilde iletilir.",
+      "learn_more": "Daha fazla bilgi",
+      "section": {
+        "antworttyp": "Yanıt türü",
+        "antwortentwurf": "Yanıt taslağı",
+        "ki_unterstuetzung": "Yapay zeka desteği",
+        "anhaenge": "Ekler"
+      },
+      "char_count_template": "{n} karakter",
       "ai_rewrite": {
         "section_label": "Yapay zeka işlemleri",
-        "umformulieren": "Yapay zeka ile yeniden yaz",
+        "umformulieren": "Yeniden ifade et",
         "kuerzer": "Daha kısa",
         "formeller": "Daha resmî",
         "einfacher": "Daha basit",
@@ -1231,6 +1244,7 @@
         "done": "Metin güncellendi.",
         "error": "Yeniden yazma başarısız oldu – lütfen tekrar deneyin.",
         "offline_fallback": "Yapay zeka çevrimdışı – metin değişmedi.",
+        "disclaimer": "Yapay zeka hata yapabilir. Lütfen metni kontrol edin.",
         "disabled_skelett_hint": "Hukuki itiraz şablonları için kullanılamaz: Uygulama hukuki gerekçe yazmaz (§ 2 RDG — Hukuki Hizmetler Kanunu)."
       },
       "outbound_speculative": "2027 itibarıyla — kavramsal tasarım. Bu demoda ZBP/BundID modeli üzerine kurulu, başvuru ipliğine bağlı (antrags-thread-gebunden) iki yönlü iletişimi simüle ediyoruz: yanıtlar her zaman somut bir yazının ipliğinde yaşar (dosya numarası / Aktenzeichen ile sabitlenir), serbest bir posta kutusu olarak değil. Bugün (Mayıs 2026) yanıt kanalı kuruma göre değişir: Vergi dairesi (Finanzamt) için Mein ELSTER, sağlık sigortaları için sigorta portalı, vatandaş ve yabancılar daireleri için eyalet hizmet portalı (Landes-Service-Portal), sıklıkla hâlâ posta. {behoerde} kurumuna hiçbir şey gönderilmez.",
@@ -1257,7 +1271,7 @@
         },
         "informative_rueckmeldung": {
           "label": "Bilgilendirme yanıtı",
-          "description": "Kurumun sorusuna yanıt.",
+          "description": "Kurumun yazısına standart yanıt.",
           "icon": "ℹ️"
         },
         "termin_antwort": {
@@ -1266,8 +1280,8 @@
           "icon": "📅"
         },
         "freitext": {
-          "label": "Kendi metnini yaz",
-          "description": "Şablonsuz başla.",
+          "label": "Serbest metin",
+          "description": "Belirli bir yapı olmadan kendi mesajınız.",
           "icon": "📝"
         },
         "rechtsbehelf_einspruch_skelett": {
@@ -1397,6 +1411,7 @@
       "attachments": {
         "label": "Ekler",
         "constraints_template": "azami {maxFiles} dosya · dosya başına azami {maxFileMb} MB · toplam azami {maxTotalMb} MB · {allowedTypes}",
+        "formats_hint": "{allowedTypes} dosya başına {maxFileMb} MB'a kadar",
         "add_button": "Dosya ekle",
         "remove_template": "‚{name}' ekini kaldır",
         "size_template": "{size_kb} KB",
@@ -1405,7 +1420,7 @@
         "error_total_too_large": "Tüm eklerin toplam boyutu {maxTotalMb} MB sınırını aşıyor.",
         "error_mime_not_allowed": "‚{name}' dosya türüne izin verilmiyor. İzin verilen: {allowedTypes}.",
         "errors_heading": "Bu ekler reddedildi:",
-        "dropzone_cta": "Dosya seçin",
+        "dropzone_cta": "Dosyaları buraya sürükleyin veya seçin",
         "dropzone_hint": "ya da buraya bırakın",
         "dropzone_aria": "Dosya seçin veya sürükleyip buraya bırakın"
       },
@@ -1419,8 +1434,8 @@
       "draft_discard_confirm_body": "Kaydedilmiş yanıt taslağı silinecek. Bu işlem geri alınamaz.",
       "draft_discard_confirm_cta": "Sil",
       "draft_discard_confirm_cta_cancel": "İptal",
-      "save_and_close_button": "Kaydet ve kapat",
-      "versand_button": "Yanıtı gönder (simülasyon)",
+      "save_and_close_button": "Taslağı kaydet",
+      "versand_button": "Yanıtı gönder",
       "versand_modal": {
         "title": "Yanıt simüle olarak gönderilsin mi?",
         "body": "Bu demo göndermeyi simüle eder. {empfaenger_behoerde} kurumuna hiçbir şey gitmez. Lütfen yanıtınızı, kuruma gerçekten gönderecekmişsiniz gibi yazın — hakaret veya tehditler Alman Ceza Kanunu §§ 185, 241 — StGB uyarınca cezalandırılabilir, burası yalnızca bir alıştırma olsa bile.",

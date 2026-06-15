@@ -1216,14 +1216,27 @@
         "opened_announcement": "Панель ответа открыта. Вы по-прежнему можете читать письмо слева.",
         "closed_announcement": "Панель ответа закрыта."
       },
+      "fullpage": {
+        "back": "Назад во входящие",
+        "original_heading": "Исходное письмо (Original-Schreiben)"
+      },
       "recipient_label_template": "Кому: {behoerde}",
       "bezug_label_template": "К делу: {aktenzeichen}",
       "betreff_label_template": "Тема: {betreff}",
       "aktenzeichen_label_template": "Номер дела (Aktenzeichen): {aktenzeichen}",
-      "char_count_template": "Символов: {n}",
+      "compose_title": "Написать ответ",
+      "secure_transmission_short": "Ваш ответ безопасно передаётся в ведомство.",
+      "learn_more": "Подробнее",
+      "section": {
+        "antworttyp": "Тип ответа",
+        "antwortentwurf": "Черновик ответа",
+        "ki_unterstuetzung": "Помощь ИИ",
+        "anhaenge": "Вложения"
+      },
+      "char_count_template": "{n} символов",
       "ai_rewrite": {
         "section_label": "Действия ИИ",
-        "umformulieren": "Переформулировать с ИИ",
+        "umformulieren": "Переформулировать",
         "kuerzer": "Короче",
         "formeller": "Официальнее",
         "einfacher": "Проще",
@@ -1231,6 +1244,7 @@
         "done": "Текст обновлён.",
         "error": "Не удалось переформулировать — попробуйте ещё раз.",
         "offline_fallback": "ИИ недоступен — текст без изменений.",
+        "disclaimer": "ИИ может ошибаться. Пожалуйста, проверьте текст.",
         "disabled_skelett_hint": "Недоступно для шаблонов правовых средств защиты: приложение не составляет юридическое обоснование (§ 2 RDG — Закон об оказании юридических услуг)."
       },
       "outbound_speculative": "По состоянию на 2027 — умозрительный сценарий. В этом демо мы моделируем двунаправленную связь, привязанную к нити заявки (antrags-thread-gebunden), на основе модели ZBP/BundID: ответы всегда живут в нити конкретного письма (якорь — номер дела, Aktenzeichen), а не в свободном почтовом ящике. Сегодня (май 2026) канал ответа зависит от ведомства: Mein ELSTER для налоговой (Finanzamt), портал больничной кассы для медстраховщиков, земельный сервис-портал (Landes-Service-Portal) для бюро по делам граждан и иностранцев, нередко — бумажная почта. В {behoerde} ничего не отправляется.",
@@ -1257,7 +1271,7 @@
         },
         "informative_rueckmeldung": {
           "label": "Информативный ответ",
-          "description": "Ответ на запрос ведомства.",
+          "description": "Стандартный ответ на письмо ведомства.",
           "icon": "ℹ️"
         },
         "termin_antwort": {
@@ -1266,8 +1280,8 @@
           "icon": "📅"
         },
         "freitext": {
-          "label": "Свой текст",
-          "description": "Начать без шаблона.",
+          "label": "Свободный текст",
+          "description": "Своё сообщение без заданной структуры.",
           "icon": "📝"
         },
         "rechtsbehelf_einspruch_skelett": {
@@ -1397,6 +1411,7 @@
       "attachments": {
         "label": "Вложения",
         "constraints_template": "макс. {maxFiles} файлов · макс. {maxFileMb} МБ на файл · макс. {maxTotalMb} МБ всего · {allowedTypes}",
+        "formats_hint": "{allowedTypes} до {maxFileMb} МБ на файл",
         "add_button": "Добавить файл",
         "remove_template": "Удалить вложение ‚{name}'",
         "size_template": "{size_kb} КБ",
@@ -1405,7 +1420,7 @@
         "error_total_too_large": "Общий размер вложений превышает {maxTotalMb} МБ.",
         "error_mime_not_allowed": "Тип файла ‚{name}' не разрешён. Разрешено: {allowedTypes}.",
         "errors_heading": "Эти вложения отклонены:",
-        "dropzone_cta": "Выбрать файлы",
+        "dropzone_cta": "Перетащите файлы сюда или выберите",
         "dropzone_hint": "или перетащите их сюда",
         "dropzone_aria": "Выбрать файлы или перетащить их сюда"
       },
@@ -1419,8 +1434,8 @@
       "draft_discard_confirm_body": "Сохранённый черновик ответа будет удалён. Действие необратимо.",
       "draft_discard_confirm_cta": "Удалить",
       "draft_discard_confirm_cta_cancel": "Отмена",
-      "save_and_close_button": "Сохранить и закрыть",
-      "versand_button": "Отправить ответ (имитация)",
+      "save_and_close_button": "Сохранить черновик",
+      "versand_button": "Отправить ответ",
       "versand_modal": {
         "title": "Имитировать отправку ответа?",
         "body": "Это демо имитирует отправку. В {empfaenger_behoerde} ничего не уходит. Пожалуйста, пишите ответ так, как если бы вы действительно отправляли его в ведомство — оскорбления или угрозы могут быть наказуемы по §§ 185, 241 УК Германии — StGB, даже если здесь это лишь упражнение.",

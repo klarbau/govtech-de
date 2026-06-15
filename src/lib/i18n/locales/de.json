@@ -1219,14 +1219,27 @@
         "opened_announcement": "Antwortbereich geöffnet. Sie können den Brief weiterhin links lesen.",
         "closed_announcement": "Antwortbereich geschlossen."
       },
+      "fullpage": {
+        "back": "Zurück zum Posteingang",
+        "original_heading": "Original-Schreiben"
+      },
       "recipient_label_template": "An: {behoerde}",
       "bezug_label_template": "Bezug: {aktenzeichen}",
       "betreff_label_template": "Betreff: {betreff}",
       "aktenzeichen_label_template": "Aktenzeichen: {aktenzeichen}",
-      "char_count_template": "Zeichen: {n}",
+      "compose_title": "Antwort verfassen",
+      "secure_transmission_short": "Ihre Antwort wird sicher an die Behörde übermittelt.",
+      "learn_more": "Mehr erfahren",
+      "section": {
+        "antworttyp": "Antworttyp",
+        "antwortentwurf": "Antwortentwurf",
+        "ki_unterstuetzung": "KI-Unterstützung",
+        "anhaenge": "Anhänge"
+      },
+      "char_count_template": "{n} Zeichen",
       "ai_rewrite": {
         "section_label": "KI-Aktionen",
-        "umformulieren": "Mit KI umformulieren",
+        "umformulieren": "Umformulieren",
         "kuerzer": "Kürzer",
         "formeller": "Formeller",
         "einfacher": "Einfacher",
@@ -1234,6 +1247,7 @@
         "done": "Text aktualisiert.",
         "error": "Umformulieren fehlgeschlagen – bitte erneut versuchen.",
         "offline_fallback": "KI offline – Text unverändert.",
+        "disclaimer": "Die KI kann Fehler machen. Bitte prüfen Sie den Text.",
         "disabled_skelett_hint": "Für Rechtsbehelf-Vorlagen nicht verfügbar: Die App formuliert keine rechtlichen Begründungen (§ 2 RDG)."
       },
       "outbound_speculative": "Stand 2027 — Speculative Design. In dieser Demo simulieren wir antrags-thread-gebundene bidirektionale Kommunikation auf Basis des ZBP/BundID-Modells: Antworten leben immer im Thread eines konkreten Briefs (Aktenzeichen-Anker), nie als freies Postfach. Heute (Mai 2026) wäre der Antwort-Kanal je nach Behörde unterschiedlich: Mein ELSTER für das Finanzamt, das Kassen-Portal für Krankenkassen, ein Landes-Service-Portal für Bürger- und Ausländerbehörden, häufig noch der Briefweg. Es wird nichts an {behoerde} gesendet.",
@@ -1260,7 +1274,7 @@
         },
         "informative_rueckmeldung": {
           "label": "Informative Rückmeldung",
-          "description": "Antwort auf eine Rückfrage der Behörde.",
+          "description": "Standardantwort auf das Schreiben der Behörde.",
           "icon": "ℹ️"
         },
         "termin_antwort": {
@@ -1269,8 +1283,8 @@
           "icon": "📅"
         },
         "freitext": {
-          "label": "Eigenen Text verfassen",
-          "description": "Ohne Vorlage starten.",
+          "label": "Freitext",
+          "description": "Eigene Nachricht ohne vorgegebene Struktur.",
           "icon": "📝"
         },
         "rechtsbehelf_einspruch_skelett": {
@@ -1409,6 +1423,7 @@
       "attachments": {
         "label": "Anhänge",
         "constraints_template": "max. {maxFiles} Dateien · max. {maxFileMb} MB pro Datei · max. {maxTotalMb} MB gesamt · {allowedTypes}",
+        "formats_hint": "{allowedTypes} bis {maxFileMb} MB pro Datei",
         "add_button": "Datei hinzufügen",
         "remove_template": "Anhang ‚{name}' entfernen",
         "size_template": "{size_kb} KB",
@@ -1417,7 +1432,7 @@
         "error_total_too_large": "Gesamtgröße aller Anhänge überschreitet {maxTotalMb} MB.",
         "error_mime_not_allowed": "Dateityp ‚{name}' nicht erlaubt. Zulässig: {allowedTypes}.",
         "errors_heading": "Diese Anhänge wurden abgelehnt:",
-        "dropzone_cta": "Dateien auswählen",
+        "dropzone_cta": "Dateien hierher ziehen oder auswählen",
         "dropzone_hint": "oder hier ablegen",
         "dropzone_aria": "Dateien auswählen oder per Drag-and-drop ablegen"
       },
@@ -1431,8 +1446,8 @@
       "draft_discard_confirm_body": "Der gespeicherte Antwort-Entwurf wird gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",
       "draft_discard_confirm_cta": "Verwerfen",
       "draft_discard_confirm_cta_cancel": "Abbrechen",
-      "save_and_close_button": "Speichern und schließen",
-      "versand_button": "Antwort versenden (simuliert)",
+      "save_and_close_button": "Entwurf speichern",
+      "versand_button": "Antwort senden",
       "versand_modal": {
         "title": "Antwort simuliert versenden?",
         "body": "Diese Demo simuliert den Versand. Es geht nichts an {empfaenger_behoerde}. Bitte verfassen Sie Ihre Antwort so, wie Sie sie tatsächlich an die Behörde senden würden — Beleidigungen oder Drohungen können nach §§ 185, 241 StGB strafbar sein, auch wenn dies hier nur eine Übung ist.",
