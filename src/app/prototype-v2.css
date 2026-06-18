@@ -1944,7 +1944,9 @@ button { font: inherit; cursor: pointer; }
 .landing-header {
   position: sticky; top: 0; z-index: 50;
   display: flex; align-items: center; gap: 32px;
-  padding: 0 32px;
+  /* Bar is full-bleed; its content aligns to the same centered 1440px column
+     as .landing-page (side padding grows on wide screens). */
+  padding: 0 max(40px, calc((100vw - 1440px) / 2 + 40px));
   height: 68px;
   background: var(--surface);
   border-bottom: 1px solid var(--border);
@@ -1972,9 +1974,9 @@ button { font: inherit; cursor: pointer; }
 
 /* ── Page shell ──────────────────────────────────────────────────────────── */
 .landing-page {
-  max-width: 1200px;
+  max-width: 1440px;
   margin: 0 auto;
-  padding: 48px 32px 88px;
+  padding: 48px 40px 88px;
 }
 .section-sub { color: var(--ink-3); font-size: 15px; margin: 4px 0 24px; }
 
