@@ -1532,233 +1532,330 @@ button { font: inherit; cursor: pointer; }
 .ctx-foot a { color: var(--brand-600); font-weight: 500; display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; }
 
 
-/* ============ index.html ============ */
+/* ============================================================================
+   LANDING — Brandbook „Waldgrün" v1.0 (mockups #1 + #7, spec §4)
+   Container 1200px · warm-white · generous whitespace · green accent CTAs.
+   ============================================================================ */
+
+/* ── 4.1 Sticky white header ─────────────────────────────────────────────── */
 .landing-header {
-  display: flex; align-items: center; gap: 36px;
-  padding: 18px 56px;
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; gap: 32px;
+  padding: 0 32px;
+  height: 68px;
   background: var(--surface);
   border-bottom: 1px solid var(--border);
 }
-.landing-header .gt-brand-logo svg { width: 26px; height: 26px; color: var(--brand-700); }
+.landing-header .gt-brand { align-items: center; }
 .landing-header .gt-brand-logo { font-size: 18px; }
-/* Touch targets ≥40px in the landing header (BITV 2.0 / onboarding-landing.spec.ts).
-   Scoped here so the in-app topbar keeps its compact 36/38px chrome. */
-.landing-header .gt-header-btn { height: 40px; }
-.landing-header .gt-header-btn.icon { width: 40px; }
-.landing-header .gt-user-pill { height: 40px; }
-.landing-nav { display: flex; gap: 28px; flex: 1; margin-left: 18px; }
+.landing-header .gt-brand-logo svg { width: 28px; height: 28px; }
+.landing-nav {
+  display: flex; align-items: center; gap: 26px;
+  flex: 1; margin-left: 8px;
+}
 .landing-nav a, .landing-nav .menu {
-  display: inline-flex; align-items: center; gap: 6px;
+  display: inline-flex; align-items: center; gap: 5px;
   color: var(--ink-2); font-size: 14px; font-weight: 500;
+  border-radius: var(--r-sm);
 }
 .landing-nav a:hover { color: var(--ink); }
 .landing-nav .menu svg { width: 14px; height: 14px; color: var(--ink-3); }
+.landing-header-actions { display: flex; align-items: center; gap: 12px; }
+/* Touch target ≥40px on the header chrome (BITV 2.0). */
+.landing-header-actions .gt-header-btn,
+.landing-header-actions .gt-header-btn.icon { height: 40px; }
+.landing-header-actions .gt-header-btn.icon { width: 40px; }
+.landing-anmelden { height: 40px; }
 
+/* ── Page shell ──────────────────────────────────────────────────────────── */
 .landing-page {
-  padding: 56px 56px 80px;
-  max-width: 1440px;
+  max-width: 1200px;
   margin: 0 auto;
+  padding: 48px 32px 88px;
 }
+.section-sub { color: var(--ink-3); font-size: 15px; margin: 4px 0 24px; }
+
+/* ── 4.2 Hero: 3-column grid (intro · flow · stats) ──────────────────────── */
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
-  gap: 56px;
-  align-items: center;
-  margin-bottom: 64px;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.5fr) minmax(0, 0.62fr);
+  gap: 40px;
+  align-items: stretch;
+  margin-bottom: 72px;
 }
-.hero .eyebrow {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 6px 12px; background: var(--brand-50); color: var(--brand-700);
-  border: 1px solid var(--brand-100); border-radius: var(--r-pill);
+.hero-intro { display: flex; flex-direction: column; align-self: center; }
+.hero-pill {
+  align-self: flex-start;
+  padding: 6px 14px;
+  background: var(--surface-muted); color: var(--ink-2);
+  border-radius: var(--r-pill);
   font-size: 13px; font-weight: 500;
   margin-bottom: 22px;
 }
-.hero .eyebrow svg { width: 14px; height: 14px; }
 .hero h1 {
-  font-size: 64px; font-weight: 700; letter-spacing: -0.03em;
-  line-height: 1.02; margin: 0 0 24px;
+  font-family: var(--font-display);
+  font-size: 52px; font-weight: 700; letter-spacing: -0.025em;
+  line-height: 1.04; margin: 0 0 20px;
   color: var(--ink);
 }
-.hero p.lede {
+.hero-lede {
   font-size: 17px; color: var(--ink-2); line-height: 1.55;
-  max-width: 520px; margin: 0 0 28px;
+  margin: 0 0 28px;
 }
-.hero .cta { display: flex; gap: 12px; margin-bottom: 18px; }
-.hero .trust {
+.hero-cta { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+.hero-trust {
   display: inline-flex; align-items: center; gap: 8px;
-  color: var(--ink-3); font-size: 13px;
+  margin: 0; color: var(--ink-3); font-size: 13px; font-weight: 500;
 }
-.hero .trust svg { width: 16px; height: 16px; }
+.hero-trust svg { width: 16px; height: 16px; color: var(--brand-600); }
 
+/* ── Signature process-flow diagram (CSS only, never an image) ───────────── */
 .flow-card {
+  margin: 0;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r-xl);
-  padding: 28px 32px 24px;
+  padding: 28px 30px 24px;
   box-shadow: var(--shadow-2);
+  display: flex; flex-direction: column;
 }
-.flow-grid {
-  display: grid; grid-template-columns: 1fr 120px 1fr;
-  align-items: center; gap: 24px;
-  position: relative;
+.flow-eyebrow {
+  margin: 0 0 22px;
+  font-size: 11.5px; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--ink-3);
 }
-.flow-grid > .col-head { grid-column: span 1; color: var(--ink-3); font-size: 13px; text-align: left; }
-.flow-grid > .col-head.r { text-align: right; }
-.flow-col-citizen, .flow-col-auto, .flow-col-orgs {
-  display: flex; flex-direction: column; gap: 12px;
+.flow-stage {
+  display: flex; align-items: center; gap: 0;
+  margin-bottom: 24px;
 }
-.flow-pill {
+.flow-node {
   display: flex; align-items: center; gap: 12px;
   padding: 14px 16px;
-  background: var(--brand-50);
-  border: 1px solid var(--brand-100);
-  border-radius: var(--r-md);
-}
-.flow-pill .icon-circle { background: rgba(255,255,255,0.7); }
-.flow-pill .t { font-weight: 600; }
-.flow-pill .s { font-size: 12px; color: var(--ink-3); }
-.flow-org {
-  display: flex; align-items: center; gap: 10px;
-  padding: 12px 14px;
   border: 1px solid var(--border);
   border-radius: var(--r-md);
   background: var(--surface);
+  min-width: 0; flex: 1;
 }
-.flow-auto {
-  display: flex; flex-direction: column; align-items: center; gap: 8px;
-  text-align: center;
+.flow-node-citizen { background: var(--surface-muted); border-color: var(--brand-100); }
+.flow-node-icon {
+  flex: none;
+  width: 40px; height: 40px; border-radius: var(--r-sm);
+  display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.72); color: var(--brand-600);
 }
-.flow-auto .icon-square { width: 56px; height: 56px; border-radius: 50%; background: var(--brand-fill); }
-.flow-auto .icon-square svg { width: 28px; height: 28px; }
-.flow-auto .name { font-weight: 700; color: var(--brand-700); font-size: 14px; }
-.flow-auto .desc { color: var(--ink-3); font-size: 11.5px; line-height: 1.45; max-width: 130px; }
-.flow-foot {
-  display: flex; align-items: center; gap: 10px;
-  margin-top: 16px;
-  padding: 12px 14px;
-  background: var(--green-50);
-  border-radius: var(--r-md);
-  color: var(--green-700);
-  font-size: 13px;
-}
-.flow-arrow {
-  height: 1px; flex: 1;
-  border-top: 1.5px dashed var(--brand-200);
+.flow-node-icon svg { width: 20px; height: 20px; }
+.flow-node-mark { flex: none; width: 40px; height: 40px; }
+.flow-node-mark svg { width: 40px; height: 40px; border-radius: var(--r-sm); }
+.flow-node-text { display: flex; flex-direction: column; min-width: 0; }
+.flow-node-title { font-weight: 600; color: var(--ink); font-size: 14px; }
+.flow-node-sub { font-size: 11.5px; color: var(--ink-3); line-height: 1.4; }
+/* Connector lines between the three stage nodes. */
+.flow-connector {
+  flex: none; align-self: center;
+  width: 28px; height: 0;
+  border-top: 1.5px solid var(--brand-200);
   position: relative;
 }
-.flow-arrow::after {
-  content: ''; position: absolute; right: -2px; top: -5px;
+.flow-connector::after {
+  content: ''; position: absolute; right: -1px; top: -4px;
   width: 0; height: 0;
-  border-top: 5px solid transparent; border-bottom: 5px solid transparent;
-  border-left: 8px solid var(--brand-200);
+  border-top: 4px solid transparent; border-bottom: 4px solid transparent;
+  border-left: 6px solid var(--brand-200);
+}
+/* Secure hand-off hub: green circle, white lock. */
+.flow-lock {
+  flex: none;
+  width: 48px; height: 48px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--brand-fill);
+}
+.flow-lock svg { width: 22px; height: 22px; color: #fff; }
+
+/* Fan-out to 6 destination chips. */
+.flow-recipients {
+  list-style: none; margin: 0 0 20px; padding: 14px 0 0;
+  border-top: 1px dashed var(--brand-200);
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+}
+.flow-chip {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  font-size: 12.5px; font-weight: 500; color: var(--ink);
+  min-width: 0;
+}
+.flow-chip > span { min-width: 0; overflow-wrap: anywhere; line-height: 1.25; }
+.flow-chip-check { flex: none; width: 15px; height: 15px; color: var(--green-600); }
+.flow-chip-icon { flex: none; width: 15px; height: 15px; color: var(--ink-3); }
+/* Dashed return line + caption. */
+.flow-return {
+  margin: auto 0 0;
+  padding-top: 14px;
+  border-top: 1.5px dashed var(--brand-200);
+  text-align: center;
+  font-size: 12.5px; color: var(--ink-3);
 }
 
-.feature-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 18px; }
-.feature-card {
+/* ── Stats card (right column) ───────────────────────────────────────────── */
+.hero-stats {
+  display: flex; flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+  padding: 8px 20px;
+}
+.hero-stat {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 20px 0;
+}
+.hero-stat + .hero-stat { border-top: 1px solid var(--border); }
+.hero-stat-icon {
+  flex: none;
+  width: 40px; height: 40px; border-radius: var(--r-sm);
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--brand-50); color: var(--brand-600);
+}
+.hero-stat-icon svg { width: 18px; height: 18px; }
+.hero-stat-body { display: flex; flex-direction: column; min-width: 0; }
+.hero-stat-num {
+  font-family: var(--font-display);
+  font-size: 26px; font-weight: 700; line-height: 1.1; color: var(--ink);
+  font-variant-numeric: tabular-nums; letter-spacing: -0.01em;
+}
+.hero-stat-label { font-size: 14px; font-weight: 600; color: var(--ink-2); margin-top: 2px; }
+.hero-stat-sub { font-size: 12px; color: var(--ink-3); line-height: 1.45; margin-top: 4px; }
+
+/* ── 4.3 Lebenslagen quick-row (5 equal cards) ───────────────────────────── */
+.lebenslagen { margin-bottom: 72px; }
+.lebenslagen h2 {
+  font-family: var(--font-display);
+  font-size: 28px; font-weight: 600; letter-spacing: -0.015em;
+  margin: 0; color: var(--ink);
+}
+.lebenslagen-grid {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;
+}
+.lebenslage-card {
+  display: flex; flex-direction: column;
+  position: relative;
+  padding: 20px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
-  padding: 20px;
-  display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  transition: border-color .15s ease, transform .15s ease;
-}
-.feature-card:hover { border-color: var(--border-strong); transform: translateY(-1px); }
-.feature-card .body { display: flex; align-items: center; gap: 16px; }
-.feature-card .title { font-weight: 600; color: var(--ink); }
-.feature-card .sub { font-size: 12.5px; color: var(--ink-3); margin-top: 2px; max-width: 220px; }
-.feature-card .chev { color: var(--ink-4); }
-
-.feature-row.muted .feature-card { background: var(--surface-soft); }
-
-.screens-section { margin-top: 80px; }
-.screens-section h2 { font-size: 22px; margin: 0 0 6px; letter-spacing: -0.01em; }
-.screens-section p.sub { color: var(--ink-3); margin: 0 0 24px; }
-.screens-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 14px;
-}
-.screen-link {
-  display: flex; align-items: center; gap: 14px;
-  padding: 14px 16px;
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md);
   color: var(--ink);
+  transition: border-color .15s ease, transform .15s ease, box-shadow .15s ease;
 }
-.screen-link:hover { border-color: var(--brand-200); background: var(--brand-50); }
-.screen-link .n { color: var(--ink-4); font-size: 12px; font-variant-numeric: tabular-nums; width: 22px; }
-.screen-link .lbl { font-weight: 600; }
-.screen-link .desc { font-size: 12px; color: var(--ink-3); }
-
-/* Static (non-link) info cards: no hover-lift, default cursor — they are badges, not destinations. */
-.feature-card.is-static { cursor: default; }
-.feature-card.is-static:hover { border-color: var(--border); transform: none; }
-
-/* Secondary hero shortcut to /dashboard (keeps the fast path next to the primary /onboarding CTA). */
-.hero-shortcut {
-  display: flex; align-items: center; gap: 6px;
-  width: fit-content;
-  margin: 14px 0 18px;
-  color: var(--brand-600); font-size: 13px; font-weight: 500;
+.lebenslage-card:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-1);
 }
-.hero-shortcut svg { width: 14px; height: 14px; }
-.hero-shortcut:hover { color: var(--brand-700); text-decoration: underline; }
+.lebenslage-icon {
+  width: 44px; height: 44px; border-radius: var(--r-sm);
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--brand-50); color: var(--brand-600);
+  margin-bottom: 14px;
+}
+.lebenslage-icon svg { width: 20px; height: 20px; }
+.lebenslage-title { font-weight: 600; font-size: 16px; color: var(--ink); }
+.lebenslage-desc { font-size: 12.5px; color: var(--ink-3); line-height: 1.5; margin-top: 6px; }
+.lebenslage-arrow {
+  width: 16px; height: 16px; color: var(--ink-4);
+  margin-top: 14px;
+}
+.lebenslage-card:hover .lebenslage-arrow { color: var(--brand-600); }
 
-/* ============ landing footer ============ */
+/* ── 4.4 Trust-principles band (graugrün surface) ────────────────────────── */
+.principles {
+  background: var(--surface-muted);
+  border-radius: var(--r-xl);
+  padding: 40px 40px;
+  margin-bottom: 16px;
+}
+.principles-grid {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px;
+}
+.principle { display: flex; flex-direction: column; }
+.principle-icon {
+  width: 44px; height: 44px; border-radius: var(--r-sm);
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--surface); color: var(--brand-600);
+  border: 1px solid var(--brand-100);
+  margin-bottom: 16px;
+}
+.principle-icon svg { width: 20px; height: 20px; }
+.principle-title {
+  font-size: 16px; font-weight: 600; color: var(--ink);
+  margin: 0 0 8px; line-height: 1.35;
+}
+.principle-desc { font-size: 13.5px; color: var(--ink-2); line-height: 1.55; margin: 0; }
+
+/* ── 4.5 Footer trust bar ────────────────────────────────────────────────── */
 .landing-footer {
   border-top: 1px solid var(--border);
   background: var(--surface);
-  padding: 40px 56px 48px;
+  padding: 32px 32px 40px;
 }
-.landing-footer-inner {
-  max-width: 1440px; margin: 0 auto;
-  display: flex; align-items: flex-start; justify-content: space-between;
-  gap: 40px; flex-wrap: wrap;
+.landing-footer-bar {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 24px 40px; flex-wrap: wrap;
 }
-.landing-footer-brand { max-width: 520px; }
-.landing-footer-brand .gt-brand-logo { font-size: 17px; color: var(--brand-900); margin-bottom: 12px; }
-.landing-footer-brand .gt-brand-logo svg { width: 22px; height: 22px; color: var(--brand-700); }
+.landing-footer-trust {
+  display: inline-flex; align-items: center; gap: 10px;
+  margin: 0; font-size: 15px; font-weight: 600; color: var(--ink);
+}
+.landing-footer-trust svg { width: 18px; height: 18px; color: var(--brand-600); }
+.landing-footer-badges {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; align-items: center; gap: 12px 20px; flex-wrap: wrap;
+}
+.landing-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 500; color: var(--ink-2);
+}
+.landing-badge svg { width: 16px; height: 16px; color: var(--ink-3); }
 .landing-footer-disclaimer {
-  font-size: 13px; color: var(--ink-3); line-height: 1.6; margin: 0;
+  max-width: 1200px; margin: 24px auto 0;
+  padding-top: 20px; border-top: 1px solid var(--border);
+  font-size: 13px; color: var(--ink-3); line-height: 1.6;
 }
 .landing-footer-disclaimer .mock-tag {
   font-weight: 700; color: var(--ink-2); font-variant-numeric: tabular-nums;
 }
-.landing-footer-nav { display: flex; flex-direction: column; gap: 10px; }
-.landing-footer-nav a { color: var(--ink-2); font-size: 13px; font-weight: 500; }
-.landing-footer-nav a:hover { color: var(--ink); }
-.landing-footer-meta {
-  max-width: 1440px; margin: 28px auto 0;
-  padding-top: 20px; border-top: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 16px; flex-wrap: wrap;
-  font-size: 12px; color: var(--ink-4);
-}
-.landing-footer-meta > span { display: inline-flex; align-items: center; gap: 8px; }
-.landing-footer-meta svg { width: 14px; height: 14px; }
 
-/* ============ landing responsive ============ */
-/* Tablet / small-desktop: 4-up feature grid → 2-up; keep desktop layout intact ≥1024px. */
+/* ── Landing responsive ──────────────────────────────────────────────────── */
+/* Tablet / small-desktop: hero stats drop below the intro+flow; 5→3 cards. */
 @media (max-width: 1023px) {
-  .landing-page { padding: 40px 32px 64px; }
+  .landing-page { padding: 40px 24px 64px; }
   .hero {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 36px;
-    margin-bottom: 48px;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.4fr);
+    gap: 32px;
+    margin-bottom: 56px;
   }
-  .hero p.lede { max-width: none; }
-  .feature-row { grid-template-columns: repeat(2, 1fr); }
-  .landing-footer { padding: 36px 32px 40px; }
+  .hero-stats { grid-column: 1 / -1; }
+  .hero-stats {
+    flex-direction: row; flex-wrap: wrap;
+    padding: 4px 20px;
+  }
+  .hero-stat { flex: 1 1 30%; min-width: 200px; }
+  .hero-stat + .hero-stat { border-top: none; }
+  .lebenslagen-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
-/* Phone: single-column everything, fluid H1, wrapping header nav, no horizontal overflow. */
+/* Phone: single-column everything, fluid H1, wrapping header nav. */
 @media (max-width: 768px) {
   .landing-header {
     flex-wrap: wrap;
     gap: 12px 18px;
+    height: auto;
     padding: 14px 20px;
+    position: static;
   }
-  .landing-header .gt-brand { gap: 12px; }
-  .gt-tagline { display: none; }
   .landing-nav {
     order: 3; flex-basis: 100%;
     flex-wrap: wrap; gap: 14px 18px;
@@ -1767,34 +1864,46 @@ button { font: inherit; cursor: pointer; }
   .landing-nav a, .landing-nav .menu { font-size: 13px; }
 
   .landing-page { padding: 28px 20px 48px; }
-  .hero h1 { font-size: clamp(34px, 7vw, 64px); }
-  .hero .cta { flex-wrap: wrap; }
-  .hero .cta .btn { flex: 1 1 auto; justify-content: center; }
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px; margin-bottom: 48px;
+  }
+  .hero h1 { font-size: clamp(34px, 8vw, 52px); }
+  .hero-cta .btn { flex: 1 1 auto; justify-content: center; }
+  .hero-stats { flex-direction: column; }
+  .hero-stat { min-width: 0; }
+  .hero-stat + .hero-stat { border-top: 1px solid var(--border); }
 
-  /* Flow card: stack the 3-col diagram into one column, drop the spacer head. */
   .flow-card { padding: 22px 20px 20px; }
-  .flow-grid { grid-template-columns: 1fr; gap: 16px; }
-  .flow-grid > .col-head { display: none; }
-  .flow-grid > .col-head:first-child { display: block; }
-  .flow-auto { padding: 8px 0; }
-  .flow-auto .desc { max-width: none; }
+  .flow-stage { flex-direction: column; align-items: stretch; gap: 12px; }
+  .flow-node { flex: none; }
+  .flow-connector {
+    align-self: center;
+    width: 0; height: 18px;
+    border-top: none; border-left: 1.5px solid var(--brand-200);
+  }
+  .flow-connector::after {
+    right: auto; left: -4px; top: auto; bottom: -1px;
+    border-left: 4px solid transparent; border-right: 4px solid transparent;
+    border-top: 6px solid var(--brand-200); border-bottom: none;
+  }
+  .flow-lock { align-self: center; }
+  .flow-recipients { grid-template-columns: repeat(2, 1fr); }
 
-  .feature-row { grid-template-columns: 1fr; }
-  .feature-card .sub { max-width: none; }
-
-  .screens-grid { grid-template-columns: 1fr; }
-  .screens-section { margin-top: 56px; }
-
-  .landing-footer { padding: 32px 20px 36px; }
-  .landing-footer-inner { gap: 28px; }
-  .landing-footer-meta { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .lebenslagen-grid { grid-template-columns: repeat(2, 1fr); }
+  .principles { padding: 28px 24px; }
+  .principles-grid { grid-template-columns: 1fr; gap: 24px; }
+  .landing-footer { padding: 28px 20px 36px; }
+  .landing-footer-bar { gap: 16px; }
 }
 
-/* Very narrow (≤360px): make sure long German nouns never force horizontal scroll. */
+/* Very narrow (≤380px): keep long German nouns from forcing horizontal scroll. */
 @media (max-width: 380px) {
   .landing-header { padding: 12px 14px; }
   .landing-page { padding: 24px 14px 40px; }
-  .hero .cta .btn { flex-basis: 100%; }
+  .hero-cta .btn { flex-basis: 100%; }
+  .flow-recipients { grid-template-columns: 1fr; }
+  .lebenslagen-grid { grid-template-columns: 1fr; }
 }
 
 

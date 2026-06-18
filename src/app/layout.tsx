@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, Inter_Tight } from 'next/font/google';
 import { getLocale, getMessages } from 'next-intl/server';
 
 import { Providers } from '@/components/providers/Providers';
@@ -12,6 +12,7 @@ import './globals.css';
 import './prototype-v2.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
+const interTight = Inter_Tight({ subsets: ['latin'], variable: '--font-display' });
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://govtech-de.vercel.app'),
@@ -52,6 +53,7 @@ export default async function RootLayout({
       className={cn(
         'font-sans',
         inter.variable,
+        interTight.variable,
       )}
     >
       <head>
