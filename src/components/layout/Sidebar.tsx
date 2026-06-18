@@ -1,52 +1,12 @@
 import { getTranslations } from 'next-intl/server';
-import {
-  Calendar,
-  Euro,
-  FileText,
-  Folder,
-  HelpCircle,
-  Home,
-  LogOut,
-  Mail,
-  MessageCircle,
-  Shield,
-  User,
-  Users,
-  type LucideIcon,
-} from 'lucide-react';
+import { HelpCircle, LogOut } from 'lucide-react';
 
+import { navItems } from './nav-items';
 import { ParthenonCrest } from './ParthenonCrest';
 import { SidebarNavItem } from './SidebarNavItem';
 
-export interface NavItem {
-  href: string;
-  i18nKey:
-    | 'dashboard'
-    | 'posteingang'
-    | 'stammdaten'
-    | 'vorgaenge'
-    | 'dokumente'
-    | 'termine'
-    | 'steuer'
-    | 'familie'
-    | 'assistent'
-    | 'datenschutz';
-  icon: LucideIcon;
-}
-
-// Ordered + iconed to match NAV_MAIN in `docs/design-prototype-v2/assets/govtech.js`.
-export const navItems: NavItem[] = [
-  { href: '/dashboard', i18nKey: 'dashboard', icon: Home },
-  { href: '/posteingang', i18nKey: 'posteingang', icon: Mail },
-  { href: '/stammdaten', i18nKey: 'stammdaten', icon: User },
-  { href: '/vorgaenge', i18nKey: 'vorgaenge', icon: Folder },
-  { href: '/dokumente', i18nKey: 'dokumente', icon: FileText },
-  { href: '/termine', i18nKey: 'termine', icon: Calendar },
-  { href: '/steuer', i18nKey: 'steuer', icon: Euro },
-  { href: '/familie', i18nKey: 'familie', icon: Users },
-  { href: '/assistent', i18nKey: 'assistent', icon: MessageCircle },
-  { href: '/datenschutz', i18nKey: 'datenschutz', icon: Shield },
-];
+export type { NavItem } from './nav-items';
+export { navItems } from './nav-items';
 
 /**
  * Literal port of SIDEBAR_HTML in `docs/design-prototype-v2/assets/govtech.js`.

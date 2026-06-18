@@ -1907,6 +1907,77 @@ button { font: inherit; cursor: pointer; }
 }
 
 
+/* ============================================================================
+   APP TOP-NAV SHELL (Phase 2a) — Brandbook „Waldgrün" v1.0, spec §5.1
+   The authenticated shell drops the .gt-sidebar and wears a sticky top nav
+   that is visually identical to the landing header. Reuses the landing token
+   geometry (68px height, 14px links, green active state, 40px touch targets).
+   ============================================================================ */
+.app-topnav {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; gap: 28px;
+  padding: 0 32px;
+  height: 68px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.app-topnav .gt-brand { align-items: center; }
+.app-topnav .gt-brand-logo { font-size: 18px; }
+.app-topnav .gt-brand-logo svg { width: 28px; height: 28px; }
+
+/* Center nav: shares the landing-nav link style (set above). */
+.app-topnav-center { flex: 0 1 auto; margin-left: 4px; }
+.app-topnav-spacer { flex: 1 1 auto; }
+.app-topnav-actions { gap: 8px; }
+
+/* One link/menu trigger in the center nav. Mirrors `.landing-nav a` exactly so
+   the app header and landing header read identically; adds an active state. */
+.topnav-link {
+  display: inline-flex; align-items: center; gap: 5px;
+  min-height: 40px;
+  padding: 0 4px;
+  background: transparent; border: 0;
+  color: var(--ink-2); font-size: 14px; font-weight: 500;
+  border-radius: var(--r-sm);
+}
+.topnav-link:hover { color: var(--ink); }
+.topnav-menu svg { width: 14px; height: 14px; color: var(--ink-3); }
+.topnav-link.active,
+.topnav-link[data-active='true'] { color: var(--brand-700); font-weight: 600; }
+.topnav-link.active svg,
+.topnav-link[data-active='true'] svg { color: var(--brand-600); }
+
+/* Active route row inside the „Lösungen" dropdown (Tailwind-classed popup).
+   Uses the hex --brand-* tokens so the dark-mode tint-flip is honoured. */
+.topnav-solution-active {
+  background: var(--brand-50);
+  color: var(--brand-700);
+}
+.topnav-solution-active svg { color: var(--brand-600); }
+
+/* Below 1024px the center nav collapses; the MobileNav burger + drawer carry
+   the 10 routes (its trigger is `.gt-header-btn.lg:hidden`). */
+@media (max-width: 1023px) {
+  .app-topnav-center { display: none; }
+}
+
+/* ── App centered content column (replaces the .gt-content sidebar padding) ── */
+.app-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 40px 56px;
+  min-width: 0;
+}
+@media (max-width: 768px) {
+  .app-topnav { padding: 0 20px; gap: 16px; }
+  .app-content { padding: 24px 20px 48px; }
+}
+@media (max-width: 380px) {
+  .app-topnav { padding: 0 14px; }
+  .app-content { padding: 20px 14px 40px; }
+}
+
+
 /* ============ login.html ============ */
 .auth-page { padding: 40px 56px 24px; max-width: 1320px; margin: 0 auto; }
 .auth-card {

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { Menu as MenuPrimitive } from '@base-ui/react/menu';
-import { ChevronDown, LogOut, User, UserRound, Users } from 'lucide-react';
+import { ChevronDown, LogOut, Shield, User, UserRound, Users } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { useStripBaseUiFocusGuardAriaHidden } from '@/components/ui/use-strip-base-ui-focus-guard-aria-hidden';
@@ -57,12 +57,25 @@ function MenuContent() {
             'data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0',
           )}
         >
-          <MenuPrimitive.Item className={itemClass}>
+          <MenuPrimitive.Item
+            className={itemClass}
+            render={<Link href="/stammdaten" />}
+          >
             <UserRound
               className="size-4 shrink-0 text-text-secondary"
               aria-hidden="true"
             />
-            <span>{t('profile')}</span>
+            <span>{t('stammdaten')}</span>
+          </MenuPrimitive.Item>
+          <MenuPrimitive.Item
+            className={itemClass}
+            render={<Link href="/datenschutz" />}
+          >
+            <Shield
+              className="size-4 shrink-0 text-text-secondary"
+              aria-hidden="true"
+            />
+            <span>{t('datenschutz')}</span>
           </MenuPrimitive.Item>
           <MenuPrimitive.Item
             className={itemClass}

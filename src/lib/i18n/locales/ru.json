@@ -23,6 +23,16 @@
     "theme_toggle_system": "Как в системе",
     "user_menu": "Меню пользователя"
   },
+  "topnav": {
+    "nav_label": "Главная навигация",
+    "solutions": "Решения (Lösungen)",
+    "lebenslagen": "Жизненные ситуации (Lebenslagen)",
+    "security_privacy": "Безопасность и защита данных",
+    "resources": "Ресурсы",
+    "about_us": "О нас",
+    "help": "Помощь и контакты",
+    "about_project": "О проекте"
+  },
   "a11y": {
     "menu": {
       "open": "Доступность"
@@ -96,6 +106,8 @@
       "menu_label": "Открыть меню пользователя",
       "demo_name": "Анна Петрова",
       "profile": "Профиль",
+      "stammdaten": "Основные данные (Stammdaten)",
+      "datenschutz": "Защита данных (Datenschutz)",
       "switch_persona": "Сменить персону",
       "logout": "Выйти"
     },

@@ -23,6 +23,16 @@
     "theme_toggle_system": "Як у системі",
     "user_menu": "Меню користувача"
   },
+  "topnav": {
+    "nav_label": "Головна навігація",
+    "solutions": "Рішення (Lösungen)",
+    "lebenslagen": "Життєві ситуації (Lebenslagen)",
+    "security_privacy": "Безпека та захист даних",
+    "resources": "Ресурси",
+    "about_us": "Про нас",
+    "help": "Довідка та контакти",
+    "about_project": "Про проєкт"
+  },
   "a11y": {
     "menu": {
       "open": "Доступність"
@@ -96,6 +106,8 @@
       "menu_label": "Відкрити меню користувача",
       "demo_name": "Анна Петрова",
       "profile": "Профіль",
+      "stammdaten": "Основні дані (Stammdaten)",
+      "datenschutz": "Захист даних (Datenschutz)",
       "switch_persona": "Змінити персону",
       "logout": "Вийти"
     },

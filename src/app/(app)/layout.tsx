@@ -1,8 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 
 import { SelectionVorlesen } from '@/components/a11y/SelectionVorlesen';
-import { Sidebar } from '@/components/layout/Sidebar';
-import { Topbar } from '@/components/layout/Topbar';
+import { TopNav } from '@/components/layout/TopNav';
 
 // The app is a client-side mock-backend demo: every screen hydrates from
 // localStorage at runtime, so static prerendering yields nothing and trips a
@@ -25,13 +24,10 @@ export default async function AppLayout({
       >
         {tApp('skip_to_content')}
       </a>
-      <Topbar />
-      <div className="gt-shell">
-        <Sidebar />
-        <main id="main-content" tabIndex={-1} className="gt-content">
-          {children}
-        </main>
-      </div>
+      <TopNav />
+      <main id="main-content" tabIndex={-1} className="app-content">
+        {children}
+      </main>
       <SelectionVorlesen />
     </>
   );

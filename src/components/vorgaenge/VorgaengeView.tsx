@@ -240,8 +240,8 @@ export function VorgaengeView() {
   }
 
   return (
-    // Kein eigenes <main className="gt-content"> — das (app)-Layout stellt
-    // bereits main#main-content.gt-content; doppelt = doppeltes Padding +
+    // Kein eigenes <main className="app-content"> — das (app)-Layout stellt
+    // bereits main#main-content.app-content; doppelt = doppeltes Padding +
     // doppelte main-Landmark.
     <div>
       <div className="gt-page-head">

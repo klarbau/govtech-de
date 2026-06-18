@@ -23,6 +23,16 @@
     "theme_toggle_system": "System setting",
     "user_menu": "User menu"
   },
+  "topnav": {
+    "nav_label": "Main navigation",
+    "solutions": "Solutions (Lösungen)",
+    "lebenslagen": "Life events (Lebenslagen)",
+    "security_privacy": "Security & privacy",
+    "resources": "Resources",
+    "about_us": "About us",
+    "help": "Help & contact",
+    "about_project": "About the project"
+  },
   "a11y": {
     "menu": {
       "open": "Accessibility"
@@ -96,6 +106,8 @@
       "menu_label": "Open user menu",
       "demo_name": "Anna Petrov",
       "profile": "Profile",
+      "stammdaten": "Master data (Stammdaten)",
+      "datenschutz": "Privacy (Datenschutz)",
       "switch_persona": "Switch persona",
       "logout": "Sign out"
     },

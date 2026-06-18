@@ -23,6 +23,16 @@
     "theme_toggle_system": "Sistem ayarı",
     "user_menu": "Kullanıcı menüsü"
   },
+  "topnav": {
+    "nav_label": "Ana gezinme",
+    "solutions": "Çözümler (Lösungen)",
+    "lebenslagen": "Yaşam durumları (Lebenslagen)",
+    "security_privacy": "Güvenlik ve veri koruma",
+    "resources": "Kaynaklar",
+    "about_us": "Hakkımızda",
+    "help": "Yardım ve iletişim",
+    "about_project": "Proje hakkında"
+  },
   "a11y": {
     "menu": {
       "open": "Erişilebilirlik"
@@ -96,6 +106,8 @@
       "menu_label": "Kullanıcı menüsünü aç",
       "demo_name": "Anna Petrov",
       "profile": "Profil",
+      "stammdaten": "Ana veriler (Stammdaten)",
+      "datenschutz": "Veri koruma (Datenschutz)",
       "switch_persona": "Profil değiştir",
       "logout": "Çıkış yap"
     },

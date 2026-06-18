@@ -4,21 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import {
-  Calendar,
-  Euro,
-  FileText,
-  Folder,
-  HelpCircle,
-  Home,
-  LogOut,
-  Mail,
-  Menu,
-  MessageCircle,
-  Shield,
-  User,
-  Users,
-} from 'lucide-react';
+import { HelpCircle, LogOut, Menu } from 'lucide-react';
 
 import {
   Sheet,
@@ -29,20 +15,8 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 
+import { navItems } from './nav-items';
 import { ParthenonCrest } from './ParthenonCrest';
-
-const NAV_MAIN = [
-  { href: '/dashboard', i18nKey: 'dashboard', icon: Home },
-  { href: '/posteingang', i18nKey: 'posteingang', icon: Mail },
-  { href: '/stammdaten', i18nKey: 'stammdaten', icon: User },
-  { href: '/vorgaenge', i18nKey: 'vorgaenge', icon: Folder },
-  { href: '/dokumente', i18nKey: 'dokumente', icon: FileText },
-  { href: '/termine', i18nKey: 'termine', icon: Calendar },
-  { href: '/steuer', i18nKey: 'steuer', icon: Euro },
-  { href: '/familie', i18nKey: 'familie', icon: Users },
-  { href: '/assistent', i18nKey: 'assistent', icon: MessageCircle },
-  { href: '/datenschutz', i18nKey: 'datenschutz', icon: Shield },
-] as const;
 
 function isActive(pathname: string | null, href: string): boolean {
   if (!pathname) return false;
@@ -106,7 +80,7 @@ export function MobileNav() {
         </SheetHeader>
         <SheetBody>
           <nav className="gt-nav" aria-label={tShell('sidebar.nav_label')}>
-            {NAV_MAIN.map(({ href, i18nKey, icon: Icon }) => {
+            {navItems.map(({ href, i18nKey, icon: Icon }) => {
               const active = isActive(pathname, href);
               return (
                 <Link

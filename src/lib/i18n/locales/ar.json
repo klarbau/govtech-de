@@ -23,6 +23,16 @@
     "theme_toggle_system": "إعداد النظام",
     "user_menu": "قائمة المستخدم"
   },
+  "topnav": {
+    "nav_label": "التنقل الرئيسي",
+    "solutions": "الحلول (Lösungen)",
+    "lebenslagen": "مواقف حياتية (Lebenslagen)",
+    "security_privacy": "الأمان وحماية البيانات",
+    "resources": "الموارد",
+    "about_us": "من نحن",
+    "help": "المساعدة والتواصل",
+    "about_project": "حول المشروع"
+  },
   "a11y": {
     "menu": {
       "open": "إمكانية الوصول"
@@ -96,6 +106,8 @@
       "menu_label": "فتح قائمة المستخدم",
       "demo_name": "آنا بيتروف",
       "profile": "الملف الشخصي",
+      "stammdaten": "البيانات الأساسية (Stammdaten)",
+      "datenschutz": "حماية البيانات (Datenschutz)",
       "switch_persona": "تبديل الشخصية",
       "logout": "تسجيل الخروج"
     },
