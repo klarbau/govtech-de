@@ -35,8 +35,7 @@ export async function TopNav() {
 
       <nav className="landing-nav app-topnav-center" aria-label={t('nav_label')}>
         <TopNavSolutionsMenu />
-        {/* TODO Phase 2b: → /lebenslagen (route lands in Phase 2b). */}
-        <TopNavLink href="/vorgaenge" label={t('lebenslagen')} />
+        <TopNavLink href="/lebenslagen" label={t('lebenslagen')} />
         <TopNavLink href="/datenschutz" label={t('security_privacy')} />
         <TopNavResourcesMenu />
         <TopNavLink href="/" label={t('about_us')} />

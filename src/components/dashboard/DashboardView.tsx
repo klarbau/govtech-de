@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import {
   Calendar,
+  CalendarClock,
+  CalendarPlus,
   Check,
   CheckCircle2,
   ChevronRight,
@@ -16,6 +18,7 @@ import {
   Gauge,
   IdCard,
   Mail,
+  MapPin,
   Shield,
 } from 'lucide-react';
 
@@ -41,6 +44,7 @@ const DEMO_PRIOR_LOGIN_DAYS = 23;
  */
 export function DashboardView({ nowIso }: DashboardViewProps) {
   const t = useTranslations('dashboard');
+  const tTermin = useTranslations('dashboard.naechster_termin');
   const tCommon = useTranslations('common');
   const [snapshot, setSnapshot] = React.useState<DashboardSnapshot | null>(null);
   const [persona, setPersona] = React.useState<Persona | null>(null);
@@ -107,6 +111,7 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
   const highlight = snapshot?.autopilot_highlight;
   const erledigtFeed = snapshot?.erledigt_feed ?? [];
   const terminTile = snapshot?.termin_tile;
+  const umzugFristDatum = nextUmzugFrist(snapshot, nowIso);
 
   const visibleTodos = sortByRank(
     (snapshot?.top_actions ?? []).filter((a) => !dismissed.has(a.id)),
@@ -117,13 +122,6 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
   const terminSub = terminTile
     ? t('tiles.termine_sub', { datum: formatDDMMYYYY(new Date(terminTile.datum_iso)) })
     : t('tile.termine.none');
-  const erledigtPending = terminTile
-    ? {
-        behoerdeName: behoerdenNames[terminTile.behoerde_id] ?? terminTile.behoerde_id,
-        href: '/termine',
-      }
-    : undefined;
-
   async function handleDone(reminderId: string) {
     setDismissed((prev) => new Set(prev).add(reminderId));
     try {
@@ -147,9 +145,9 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
   if (snapshot === null && error === null) {
     return (
       <>
-        <div className="gt-page-head">
-          <h1>{t('titel')}</h1>
-          <h2 className="dash-greeting">{t('greeting.guten_tag', { name: anrede })}</h2>
+        <div className="gt-page-head dash-head">
+          <h1 className="dash-greeting">{t('greeting.guten_tag', { name: anrede })}</h1>
+          <p className="dash-greeting-sub">{t('greeting.sub')}</p>
         </div>
         <DashboardSkeleton label={tCommon('loading')} />
       </>
@@ -158,9 +156,9 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
 
   return (
     <>
-      <div className="gt-page-head">
-        <h1>{t('titel')}</h1>
-        <h2 className="dash-greeting">{t('greeting.guten_tag', { name: anrede })}</h2>
+      <div className="gt-page-head dash-head">
+        <h1 className="dash-greeting">{t('greeting.guten_tag', { name: anrede })}</h1>
+        <p className="dash-greeting-sub">{t('greeting.sub')}</p>
       </div>
 
       <div className="dash-layout">
@@ -249,13 +247,51 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
               items={erledigtFeed}
               behoerdenNames={behoerdenNames}
               nowIso={nowIso}
-              pending={erledigtPending}
             />
           </section>
         </div>
 
         <div className="dash-col">
-          {highlight ? <TriumphBanner highlight={highlight} variant="static" /> : null}
+          {highlight ? (
+            <TriumphBanner
+              highlight={highlight}
+              variant="static"
+              fristDatum={umzugFristDatum}
+            />
+          ) : null}
+
+          {terminTile ? (
+            <section aria-labelledby="naechster-termin-title" className="nt-card">
+              <div className="nt-head">
+                <span className="icon-circle"><CalendarClock aria-hidden="true" /></span>
+                <h3 id="naechster-termin-title">{tTermin('titel')}</h3>
+                <span className="badge green nt-badge">{tTermin('badge_bestaetigt')}</span>
+              </div>
+              <p className="nt-betreff">{terminTile.betreff}</p>
+              <div className="nt-meta">
+                <span className="nt-meta-row">
+                  <CalendarClock aria-hidden="true" />
+                  {formatTerminDateTime(terminTile.datum_iso)}
+                </span>
+                <span className="nt-meta-row">
+                  <MapPin aria-hidden="true" />
+                  <span>
+                    <span className="nt-ort-typ">{tTermin(terminTile.ort_typ)}</span>
+                    {terminTile.ort_details ? ` · ${terminTile.ort_details}` : ''}
+                  </span>
+                </span>
+              </div>
+              <div className="nt-actions">
+                <Link href="/termine" className="btn btn-secondary btn-sm">
+                  {tTermin('details')}
+                </Link>
+                <Link href="/termine" className="btn btn-ghost btn-sm">
+                  <CalendarPlus aria-hidden="true" />
+                  {tTermin('kalender')}
+                </Link>
+              </div>
+            </section>
+          ) : null}
 
           <div className="dash-tiles">
             <Link className="stat-tile" href="/posteingang">
@@ -416,6 +452,32 @@ function formatDDMMYYYY(d: Date): string {
   const dd = String(d.getDate()).padStart(2, '0');
   const mm = String(d.getMonth() + 1).padStart(2, '0');
   return `${dd}.${mm}.${d.getFullYear()}`;
+}
+
+/** Termin-Datum + Uhrzeit, DE-formatiert (z. B. „24.06.2025, 10:30 Uhr"). */
+function formatTerminDateTime(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  const datum = formatDDMMYYYY(d);
+  const hh = String(d.getHours()).padStart(2, '0');
+  const mm = String(d.getMinutes()).padStart(2, '0');
+  return `${datum}, ${hh}:${mm} Uhr`;
+}
+
+/**
+ * Frist-Datum (DD.MM.YYYY) für die „Nächster Schritt"-Zeile der Umzug-Karte:
+ * die nächstgelegene offene Frist ab `nowIso`, sonst undefined.
+ */
+function nextUmzugFrist(snapshot: DashboardSnapshot | null, nowIso: string): string | undefined {
+  const fristen = snapshot?.frist_tile ?? [];
+  const now = new Date(nowIso).getTime();
+  if (Number.isNaN(now)) return undefined;
+  const upcoming = fristen
+    .map((f) => new Date(f.frist_datum).getTime())
+    .filter((ts) => !Number.isNaN(ts) && ts >= now)
+    .sort((a, b) => a - b);
+  if (upcoming.length === 0) return undefined;
+  return formatDDMMYYYY(new Date(upcoming[0]));
 }
 
 interface HeuteView {

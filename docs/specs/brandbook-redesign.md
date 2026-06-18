@@ -234,3 +234,53 @@ Pflege & Gesundheit · Wohngeld beantragen. „Weitere Leistungen anzeigen ▾".
 - Tabular numerals for IDs/Fristen/€. WCAG 2.1 AA + BITV 2.0. 6-locale parity is a Phase-2 concern for new keys;
   the landing stays DE-only by design.
 - Keep all existing functionality (autopilot, assistant, mock-backend, i18n wiring) intact — this is a re-skin.
+
+---
+
+## Build log — frontend-coder
+- date: 2026-06-18
+- screens implemented: Leistungskatalog / Lebenslagen (`/lebenslagen`, mockup #6, §5.6)
+- components created/modified:
+  - `src/app/(app)/lebenslagen/page.tsx` (new — server component, Breadcrumb + view)
+  - `src/components/lebenslagen/LebenslagenView.tsx` (new — client view: search filter, category chips, sort, show-more, service grid, right rail, trust line)
+  - `src/components/layout/TopNav.tsx` (Lebenslagen center-nav link `/vorgaenge` → `/lebenslagen`; Phase-2a TODO removed)
+  - `src/components/layout/MobileNav.tsx` (added reachable Lebenslagen link to the mobile drawer)
+  - `src/app/prototype-v2.css` (new page-scoped `.lk-*` block after the breadcrumb block)
+- i18n keys added (DE source + 5 locales, full parity): `lebenslagen.*` namespace (title/subtitle, search, categories, results_count, sort, frequency, relevance, rail_*, trust_title, 9× `services.<id>.{title,description}`). Long service descriptions kept as DE fallback in non-DE locales per supporting-surface allowance; all headings/labels properly translated (en/ru/uk/ar/tr).
+- data: static in-file list (9 services, 3 popular) — no mock-backend; catalog links to existing routes (Umzug→/vorgaenge/umzug/run, Steuer→/steuer, others→/vorgaenge|/dashboard).
+- typecheck: pass (only the 2 pre-existing ajv errors in `src/lib/fit-connect/schema.ts`)
+- lint: not run (pnpm/lint broken through the worktree node_modules junction — known constraint)
+- i18n JSON: all 6 locales validated parse-clean (`node -e require`)
+- a11y self-confirm: one h1, `<nav>` breadcrumb landmark, labelled `role="search"` input + submit, category chips in a labelled `role="group"` with aria-pressed, aria-label on sort select, `aria-live="polite"` result count, all decorative icons `aria-hidden`, visible focus rings via tokens.
+- known gaps: search/submit/sort are client-side filter only (no backend, by design); „Mehr"-Kategorie acts as „Alle" (no extra catalog data); right rail collapses to a 2-up row 1080–560px then stacks.
+- next: a11y-tester (axe sweep light/dark + keyboard) | code-reviewer
+
+## Build log — frontend-coder
+- date: 2026-06-18
+- screens implemented: Datenschutz & Einwilligungen (`/datenschutz`, mockup #2, §5.5) — re-skin only
+- components created/modified:
+  - `src/components/datenschutz/DatenschutzView.tsx` (re-skinned to mockup #2: 3 stat cards, consent table-list with preserved `role=switch` toggles, compact „Letzte Aktivitäten" ul, Audit-Log table, „Vertrauen durch Prinzipien" rail, trust footer with security badges; all data wiring + dialogs + export + live-region announcement preserved; banner upgraded to `role=note` + focus-to-H2 on dismiss + persists `dismissVisionBanner`)
+  - `src/app/(app)/datenschutz/page.tsx` (added shared `Breadcrumb` Startseite → Datenschutz & Einwilligungen)
+  - `src/app/prototype-v2.css` (new page-scoped `.ds2-*` block appended after the old `datenschutz.html` block; old `.ds-*` block left intact for the dialog rows it still styles)
+- i18n keys added (DE source + 5 locales, full parity): `datenschutz.page.{title,subtitle}` updated to mockup copy; new `datenschutz.stats.*`, `datenschutz.weitergabe.*` (table headers + per-receiver zweck/kategorien + status + widerruf note), `datenschutz.audit.*` (table headers + details link), `datenschutz.rail.*` (3 principles), `datenschutz.footer.*` (title + 4 security badges)
+- data: NO mock-backend change — keeps the 4 existing receivers (krankenkasse/bank/arbeitgeber/weitere_dienste); the mockup's „Familienkasse/Private Empfänger" labels are mapped onto these via copy. Audit-Log + recent-activity both render the existing `uebermittlungs-log`.
+- typecheck: pass (only the 2 pre-existing ajv errors in `src/lib/fit-connect/schema.ts`)
+- a11y: `tests/a11y/redesign-datenschutz.spec.ts` 10/10 PASS (axe light/dark/RTL 0 serious-critical; one main+one h1; no skipped levels; 4 `role=switch`+aria-label+aria-checked; toggle flips+announces+„Einwilligung geändert" tops the timeline; banner dismiss → focus H2; `main table` th[scope]=6 + timeline `ul`; reduced-motion skeleton)
+- i18n JSON: all 6 locales validated parse-clean (`node -e require`)
+- known gaps: spine e2e could NOT be run green in this worktree — every route that bundles the shared server-action flight entry (incl. `fit-connect.ts` → `ajv/dist/2020`) 500s under `next dev` because `ajv/dist/2020` is unresolvable in the junctioned node_modules (the pre-existing ajv constraint; `next build` is likewise blocked per task). This is environmental + unrelated to the Datenschutz re-skin (the a11y suite served the route 200 before a dual-dev-server `.next` corruption surfaced the ajv miss). Spine touches dashboard/assistent/posteingang, not `/datenschutz`.
+- next: a11y-tester (independent axe sweep) | code-reviewer
+
+## Build log — frontend-coder
+- date: 2026-06-18
+- screens implemented: Dashboard (`/dashboard`, mockup #4, §5.2) — re-skin/polish only
+- components created/modified:
+  - `src/components/dashboard/DashboardView.tsx` — page head now greeting-as-H1 (Inter Tight) + sub line („Hier ist Ihr Überblick für heute …"); added dedicated **Nächster Termin** card (CalendarClock icon, „Bestätigt" badge, betreff + date/time + Ort, „Details ansehen"/„In Kalender" CTAs) sourced from `termin_tile`; dropped the duplicated pending-termin row from the Erledigt-Feed (now its own card); wired `umzugFristDatum` (nearest open Frist) into the Umzug card. All data wiring, stat-tile hrefs, todo dismiss/snooze handlers, and the spine-critical headings preserved.
+  - `src/components/dashboard/TriumphBanner.tsx` — reshaped the §B2 white card into **„Ihr Umzug im Überblick"** with a **circular SVG progress ring** in Waldgrün (`--brand-600` fill on `--brand-50` track, `stroke-dasharray`, big tabular-nums % in Inter Tight centre, `role="img"` + `aria-label` so the value is not colour-/shape-only); facts „{done} von {total} Stellen informiert" + „Zeit gespart"; „Nächster Schritt … Fällig bis {datum}" amber chip; primary „Zum Umzug gehen →". Percent computed honestly from `value_receipt.behoerden_count / klassische_schritte`.
+  - `src/app/prototype-v2.css` — dashboard block: greeting `.dash-head`/`.dash-greeting`/`.dash-greeting-sub`; umz-hero block reworked to `.umz-overview`/`.umz-ring`/`.umz-fact`/`.umz-next` + new `.nt-card` (Nächster Termin); removed dead `.umz-stat-*`/`.umz-hero-stats`/`.umz-hero-body` rules; ring transition behind `prefers-reduced-motion`.
+- i18n keys added (DE source + 5 locales, full parity): `dashboard.greeting.sub`; `dashboard.greeting.guten_tag` → „Guten Morgen, {name}"; `dashboard.triumph.{overview_title,ring_label,ring_aria,stellen_informiert,naechster_schritt_label,naechster_schritt_wert,naechster_schritt_frist,zum_umzug}`; new `dashboard.naechster_termin.{titel,badge_bestaetigt,details,kalender,none,praesenz,video,telefon}`. ICU-format-validated across all 6 locales.
+- spine-guard note: kept `dashboard.heute.titel` = „Was heute Ihre Aufmerksamkeit braucht" and the `kacheln.posteingang/vorgaenge.titel` headings unchanged (spine e2e asserts them verbatim); greeting heading still contains the surname → matches `/Petrov/i`.
+- typecheck: pass (only the 2 pre-existing ajv errors in `src/lib/fit-connect/schema.ts`)
+- i18n JSON: all 6 locales validated parse-clean (`node -e require`) + zero keys removed vs HEAD
+- a11y self-confirm (static reasoning — not run, ajv blocks dev/build in this worktree): one `<h1>` (greeting); DOM-order heading sequence 1·2·2·3·3·3·3·3·3·2 → no skipped levels (matches `redesign-dashboard.spec.ts` landmark test); stat-tile hrefs unchanged `[/posteingang,/posteingang,/termine,/vorgaenge]`; ring is `role="img"`+aria-label with redundant visible % numeral (not colour-only); amber Frist + green badges reuse the AA-safe light-chip tokens (`amber-50`/`amber-700`, `green-50`/`green-700`) that hold in dark mode; all decorative icons `aria-hidden`.
+- known gaps: ring percent reflects informed-vs-total from the value-receipt (not a per-step saga read), so it shows the completed-run figure; „Aktivitäten" feed = the existing „Automatisch erledigt für Sie" timeline (no separate data source). spine e2e + axe NOT run here (pre-existing ajv constraint blocks `next dev`/`next build` in the junctioned worktree).
+- next: a11y-tester (axe sweep light/dark + RTL + keyboard) | code-reviewer

@@ -10,12 +10,16 @@ import {
   AlertCircle,
   ArrowRight,
   Calendar,
+  Check,
   CheckCircle2,
+  ChevronDown,
   Clock,
   FileText,
   Fingerprint,
+  Home,
   ListChecks,
   Loader2,
+  Scale,
 } from 'lucide-react';
 
 import { UebermittlungsReceipt } from '@/components/autopilot/UebermittlungsReceipt';
@@ -250,12 +254,25 @@ function VorgangDetail({
   const nextBehoerde = nextStep ? behoerdenById[nextStep.behoerde_id] : undefined;
   const naechsteFristIso = vorgang.fristen?.[0]?.datum;
 
+  const doneCount = vorgang.schritte.filter((s) => s.status === 'confirmed').length;
+  const totalCount = vorgang.schritte.length;
+  const primaryRechtsgrundlage =
+    vorgang.schritte.find((s) => s.rechtsgrundlage)?.rechtsgrundlage ??
+    (vorgang.typ === 'umzug' ? '§ 17 BMG' : undefined);
+
   return (
     <>
+      <VorgangDetailBreadcrumb title={vorgang.titel ?? t('title')} />
+
       <VorgangHeaderClient
         title={vorgang.titel ?? t('title')}
+        vorgangNummer={vorgang.id}
         status={vorgang.status}
       />
+
+      {totalCount > 0 ? (
+        <GesamtfortschrittCard done={doneCount} total={totalCount} />
+      ) : null}
 
       <div className="vg-layout">
         <div className="flex flex-col gap-6">
@@ -340,6 +357,13 @@ function VorgangDetail({
             behoerdenCount={vorgang.schritte.length}
             naechsteFristIso={naechsteFristIso}
           />
+
+          {primaryRechtsgrundlage ? (
+            <BerechtigungenRail
+              rechtsgrundlage={primaryRechtsgrundlage}
+              behoerdenCount={vorgang.schritte.length}
+            />
+          ) : null}
 
           <div className="rail-card flex flex-col gap-3">
             <h3>{tv('datenschutz_title')}</h3>
@@ -561,13 +585,138 @@ function VorgangStatusBadge({ status }: { status: VorgangStatus }) {
   );
 }
 
-function VorgangHeaderClient({ title, status }: { title: string; status: VorgangStatus }) {
+function VorgangDetailBreadcrumb({ title }: { title: string }) {
+  const tCrumb = useTranslations('shell.breadcrumb');
+  const tNav = useTranslations('nav');
   return (
-    <div className="gt-page-head">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1>{title}</h1>
+    <nav aria-label={tCrumb('aria_label')} className="breadcrumb">
+      <ol className="breadcrumb-list">
+        <li className="breadcrumb-item">
+          <Link href="/dashboard" className="breadcrumb-link">
+            {tCrumb('home')}
+          </Link>
+          <span className="breadcrumb-sep" aria-hidden="true">
+            ›
+          </span>
+        </li>
+        <li className="breadcrumb-item">
+          <Link href="/vorgaenge" className="breadcrumb-link">
+            {tNav('vorgaenge')}
+          </Link>
+          <span className="breadcrumb-sep" aria-hidden="true">
+            ›
+          </span>
+        </li>
+        <li className="breadcrumb-item">
+          <span className="breadcrumb-current" aria-current="page">
+            {title}
+          </span>
+        </li>
+      </ol>
+    </nav>
+  );
+}
+
+function VorgangHeaderClient({
+  title,
+  vorgangNummer,
+  status,
+}: {
+  title: string;
+  vorgangNummer: string;
+  status: VorgangStatus;
+}) {
+  const tv = useTranslations('vorgang.detail');
+  return (
+    <div className="vd-hero">
+      <span className="icon-circle lg" aria-hidden="true">
+        <Home />
+      </span>
+      <div className="vd-hero-body">
+        <h1 className="vd-hero-title">{title}</h1>
+        <p className="vd-hero-sub">{tv('hero_sub')}</p>
+        <p className="vd-hero-nr">
+          <span className="vd-hero-nr-lbl">{tv('vorgangsnummer_label')}:</span>{' '}
+          <span className="vd-hero-nr-val">{vorgangNummer}</span>
+        </p>
+      </div>
+      <div className="vd-hero-status">
         <VorgangStatusBadge status={status} />
       </div>
+    </div>
+  );
+}
+
+function GesamtfortschrittCard({ done, total }: { done: number; total: number }) {
+  const tv = useTranslations('vorgang.detail');
+  const segments = Array.from({ length: total }, (_, i) => i < done);
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  return (
+    <div className="vd-progress">
+      <div className="vd-progress-main">
+        <div className="vd-progress-head">
+          <span className="vd-progress-title">{tv('progress_title')}</span>
+          <span className="vd-progress-count">{tv('progress_steps', { done, total })}</span>
+        </div>
+        <div
+          className="vd-progress-track"
+          role="progressbar"
+          aria-valuenow={done}
+          aria-valuemin={0}
+          aria-valuemax={total}
+          aria-label={tv('progress_steps', { done, total })}
+        >
+          {segments.map((filled, i) => (
+            <span
+              key={i}
+              className={cn('vd-progress-seg', filled && 'is-filled')}
+              aria-hidden="true"
+            />
+          ))}
+        </div>
+        <span className="sr-only">{pct}%</span>
+      </div>
+      <div className="vd-fertig">
+        <span className="icon-circle" aria-hidden="true">
+          <Clock />
+        </span>
+        <div>
+          <div className="vd-fertig-lbl">{tv('fertigstellung_label')}</div>
+          <div className="vd-fertig-val">{tv('fertigstellung_value')}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BerechtigungenRail({
+  rechtsgrundlage,
+  behoerdenCount,
+}: {
+  rechtsgrundlage: string;
+  behoerdenCount: number;
+}) {
+  const tv = useTranslations('vorgang.detail');
+  return (
+    <div className="rail-card vd-berechtigungen">
+      <h3>
+        <Scale aria-hidden="true" />
+        {tv('berechtigungen_title')}
+      </h3>
+      <dl className="vd-berechtigungen-list">
+        <div className="vd-berechtigungen-row">
+          <dt>{tv('berechtigungen_basis_label')}</dt>
+          <dd className="vd-mono">{rechtsgrundlage}</dd>
+        </div>
+        <div className="vd-berechtigungen-row">
+          <dt>{tv('summary_behoerden_label')}</dt>
+          <dd>{tv('berechtigungen_behoerden', { count: behoerdenCount })}</dd>
+        </div>
+        <div className="vd-berechtigungen-row">
+          <dt>{tv('berechtigungen_einwilligungen_label')}</dt>
+          <dd>{tv('berechtigungen_einwilligungen_value')}</dd>
+        </div>
+      </dl>
     </div>
   );
 }
@@ -608,16 +757,6 @@ const STATUS_VIZ: Record<AutopilotStepStatus, { Icon: typeof CheckCircle2; tone:
   failed: { Icon: AlertCircle, tone: 'text-destructive' },
 };
 
-const STATUS_TEXT_TONE: Record<AutopilotStepStatus, string> = {
-  pending: 'text-text-muted',
-  in_progress: 'text-primary',
-  needs_eid: 'text-primary',
-  pending_eid_confirmation: 'text-primary',
-  self_assigned: 'text-text-muted',
-  confirmed: 'text-success',
-  failed: 'text-destructive',
-};
-
 const STATUS_KEY_MAP: Record<AutopilotStepStatus, string> = {
   pending: 'pending',
   in_progress: 'in_progress',
@@ -626,6 +765,18 @@ const STATUS_KEY_MAP: Record<AutopilotStepStatus, string> = {
   self_assigned: 'pending',
   confirmed: 'confirmed',
   failed: 'failed',
+};
+
+/* Per-row status chip tone — `.badge` colour is decorative; the localized label
+ * carries the meaning (status is never colour-only). */
+const STATUS_CHIP_TONE: Record<AutopilotStepStatus, 'green' | 'amber' | 'brand' | 'red' | 'outline'> = {
+  pending: 'outline',
+  in_progress: 'brand',
+  needs_eid: 'amber',
+  pending_eid_confirmation: 'amber',
+  self_assigned: 'outline',
+  confirmed: 'green',
+  failed: 'red',
 };
 
 function BehoerdenStatusListClient({
@@ -637,85 +788,142 @@ function BehoerdenStatusListClient({
   behoerdenById: Record<BehoerdeId, Pick<Behoerde, 'name_de' | 'kategorie'>>;
   lettersById: Record<string, Pick<Letter, 'aktenzeichen' | 'betreff' | 'id'>>;
 }) {
-  const t = useTranslations('umzug.detail');
-  const tRun = useTranslations('umzug.run');
-  const tStep = useTranslations('convenience.step');
+  const tv = useTranslations('vorgang.detail');
 
   return (
     <section aria-labelledby="behoerden-status-title" className="gt-card">
       <div className="gt-card-head">
         <h2 id="behoerden-status-title" className="gt-card-title">
           <ListChecks aria-hidden="true" />
-          {t('beteiligte_behoerden_count', { count: steps.length })}
+          {tv('timeline_title', { count: steps.length })}
         </h2>
       </div>
-      <ol className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-card">
-        {steps.map((step) => {
-          const viz = STATUS_VIZ[step.status];
-          const behoerde = behoerdenById[step.behoerde_id];
-          const letter = step.letter_id ? lettersById[step.letter_id] : undefined;
-          const primary = step.agent_label ?? step.aktion;
-          const hasDatenkategorien =
-            Array.isArray(step.datenkategorien) && step.datenkategorien.length > 0;
-          return (
-            <li
-              key={step.id}
-              className="grid grid-cols-[24px_1fr_auto] items-start gap-3 px-4 py-3"
+      <ol className="vd-timeline">
+        {steps.map((step, index) => (
+          <TimelineRow
+            key={step.id}
+            index={index}
+            step={step}
+            behoerde={behoerdenById[step.behoerde_id]}
+            letter={step.letter_id ? lettersById[step.letter_id] : undefined}
+          />
+        ))}
+      </ol>
+    </section>
+  );
+}
+
+function TimelineRow({
+  index,
+  step,
+  behoerde,
+  letter,
+}: {
+  index: number;
+  step: AutopilotStep;
+  behoerde?: Pick<Behoerde, 'name_de' | 'kategorie'>;
+  letter?: Pick<Letter, 'aktenzeichen' | 'betreff' | 'id'>;
+}) {
+  const t = useTranslations('umzug.detail');
+  const tRun = useTranslations('umzug.run');
+  const tStep = useTranslations('convenience.step');
+  const tv = useTranslations('vorgang.detail');
+  const [open, setOpen] = React.useState(false);
+
+  const viz = STATUS_VIZ[step.status];
+  const done = step.status === 'confirmed';
+  const primary = step.agent_label ?? step.aktion;
+  const chipTone = STATUS_CHIP_TONE[step.status];
+  const uebermitteltIso = step.completed_at ?? step.started_at;
+  const uebermitteltLabel = uebermitteltIso
+    ? format(parseISO(uebermitteltIso), 'd. MMMM yyyy', { locale: de })
+    : null;
+  const hasDatenkategorien =
+    Array.isArray(step.datenkategorien) && step.datenkategorien.length > 0;
+  const hasDetails =
+    Boolean(step.rechtsgrundlage) ||
+    Boolean(letter?.aktenzeichen) ||
+    Boolean(letter?.betreff) ||
+    hasDatenkategorien;
+  const detailsId = `vd-details-${step.id}`;
+
+  return (
+    <li className={cn('vd-step', done && 'is-done')}>
+      <span className={cn('vd-step-node', done && 'is-done')} aria-hidden="true">
+        {done ? <Check /> : <span className="vd-step-num">{index + 1}</span>}
+      </span>
+      <div className="vd-step-body">
+        <div className="vd-step-head">
+          <span className={cn('vd-step-icon', viz.tone)} aria-hidden="true">
+            <viz.Icon className="size-4" />
+          </span>
+          <BehoerdenBadge
+            name={behoerde?.name_de ?? step.behoerde_id}
+            kategorie={behoerde?.kategorie}
+          />
+          <span className={`badge ${chipTone} vd-step-chip`}>
+            <span className="sr-only">Status: </span>
+            {tRun(`status.${STATUS_KEY_MAP[step.status]}`)}
+          </span>
+        </div>
+        <p className="vd-step-aktion">{primary}</p>
+        {uebermitteltLabel && done ? (
+          <p className="vd-step-meta">
+            {tv('uebermittelt_label')}: {uebermitteltLabel}
+          </p>
+        ) : null}
+
+        {hasDetails ? (
+          <>
+            <button
+              type="button"
+              className="vd-step-disclose"
+              aria-expanded={open}
+              aria-controls={detailsId}
+              onClick={() => setOpen((v) => !v)}
             >
-              <span
-                className={cn('mt-0.5 flex size-5 items-center justify-center', viz.tone)}
+              <ChevronDown
+                className={cn('vd-step-chevron', open && 'is-open')}
                 aria-hidden="true"
-              >
-                <viz.Icon className="size-4" />
-              </span>
-              <div className="flex min-w-0 flex-col gap-1">
-                <BehoerdenBadge
-                  name={behoerde?.name_de ?? step.behoerde_id}
-                  kategorie={behoerde?.kategorie}
-                />
-                <p className="ml-9 text-sm font-medium text-foreground">{primary}</p>
-                <p className="ml-9 text-xs text-muted-foreground">
+              />
+              {open ? tv('details_hide') : tv('details_show')}
+            </button>
+            {open ? (
+              <div id={detailsId} className="vd-step-details">
+                <p className="vd-step-detail-line">
                   {step.aktion}
                   {step.rechtsgrundlage ? (
                     <>
                       {' · '}
-                      <span className="font-medium">{tStep('basis_label')}:</span>{' '}
+                      <span className="vd-step-detail-em">{tStep('basis_label')}:</span>{' '}
                       {step.rechtsgrundlage}
                     </>
                   ) : null}
                 </p>
                 {letter?.aktenzeichen ? (
-                  <p className="ml-9 font-mono text-[11px] text-muted-foreground">
+                  <p className="vd-step-detail-line vd-mono">
                     {t('aktz_label')}: {letter.aktenzeichen}
                   </p>
                 ) : null}
                 {letter?.betreff ? (
-                  <p className="ml-9 text-xs text-muted-foreground">
+                  <p className="vd-step-detail-line">
                     {t('brief_label')}: {letter.betreff}
                   </p>
                 ) : null}
                 {hasDatenkategorien ? (
-                  <div className="ml-9">
-                    <UebermittlungsReceipt
-                      id={step.id}
-                      datenkategorien={step.datenkategorien ?? []}
-                      rechtsgrundlage={step.rechtsgrundlage}
-                      consentGivenAt={step.consent_given_at}
-                    />
-                  </div>
+                  <UebermittlungsReceipt
+                    id={step.id}
+                    datenkategorien={step.datenkategorien ?? []}
+                    rechtsgrundlage={step.rechtsgrundlage}
+                    consentGivenAt={step.consent_given_at}
+                  />
                 ) : null}
               </div>
-              <span
-                className={cn('text-xs font-medium', STATUS_TEXT_TONE[step.status])}
-              >
-                <span className="sr-only">Status: </span>
-                {tRun(`status.${STATUS_KEY_MAP[step.status]}`)}
-              </span>
-            </li>
-          );
-        })}
-      </ol>
-    </section>
+            ) : null}
+          </>
+        ) : null}
+      </div>
+    </li>
   );
 }
 

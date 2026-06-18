@@ -33,6 +33,86 @@
     "help": "Yardım ve iletişim",
     "about_project": "Proje hakkında"
   },
+  "lebenslagen": {
+    "breadcrumb_catalog": "Hizmet kataloğu",
+    "title": "Hizmetleri bulun.",
+    "subtitle": "Basit. Hızlı. Anlaşılır.",
+    "search_label": "Hizmet ara",
+    "search_placeholder": "Hizmet arayın, örn. „Kindergeld beantragen“",
+    "search_submit": "Ara",
+    "filter_label": "Konuları filtrele",
+    "categories": {
+      "alle": "Tüm konular",
+      "familie": "Aile",
+      "wohnen": "Konut",
+      "arbeit": "İş",
+      "migration": "Göç",
+      "steuern": "Vergiler",
+      "mehr": "Daha fazla"
+    },
+    "results_count": "{count} hizmet bulundu",
+    "results_none": "Hizmet bulunamadı. Lütfen aramanızı değiştirin.",
+    "sort_label": "Sırala",
+    "sort": {
+      "relevance": "İlgi düzeyi",
+      "popular": "Popülerlik",
+      "name": "Ad (A–Z)"
+    },
+    "frequency": {
+      "very_often": "Çok sık",
+      "often": "Sık"
+    },
+    "relevance": {
+      "very": "Çok ilgili",
+      "normal": "İlgili"
+    },
+    "open_service": "Hizmeti aç",
+    "show_more": "Daha fazla hizmet göster",
+    "rail_popular_title": "Sizin için popüler",
+    "rail_popular_sub": "Yaşam durumunuza göre",
+    "rail_secure_title": "Verileriniz güvende",
+    "rail_secure_body": "Her hizmet, hangi verilerin, kimin tarafından ve hangi yasal dayanakla işlendiğini gösterir. Kontrol sizde kalır.",
+    "rail_secure_link": "Gizlilik ve onaylar",
+    "trust_title": "Standartlarla güven",
+    "services": {
+      "umzug": {
+        "title": "Taşınmayı bildir",
+        "description": "Melden Sie Ihren neuen Wohnsitz an. Die Ummeldung wird automatisch an alle zuständigen Stellen weitergeleitet."
+      },
+      "geburt": {
+        "title": "Doğum bildir",
+        "description": "Beurkunden Sie die Geburt Ihres Kindes und stoßen Sie Kindergeld, Elterngeld und Krankenversicherung an."
+      },
+      "aufenthalt": {
+        "title": "Oturma iznini uzat",
+        "description": "Verlängern Sie Ihren Aufenthaltstitel rechtzeitig vor Ablauf und prüfen Sie die benötigten Nachweise."
+      },
+      "kindergeld": {
+        "title": "Çocuk parasını güncelle",
+        "description": "Aktualisieren Sie Bankverbindung, Anschrift oder Lebenssituation für Ihren Kindergeldbezug."
+      },
+      "steuer": {
+        "title": "Vergi beyannamesini önceden doldur",
+        "description": "Ihre Steuererklärung wird aus bereits bekannten Daten vorausgefüllt. Sie prüfen nur noch und reichen ein."
+      },
+      "reisepass": {
+        "title": "Pasaport başvurusu yap",
+        "description": "Beantragen Sie einen neuen Reisepass und buchen Sie den passenden Termin im Bürgeramt."
+      },
+      "bafoeg": {
+        "title": "Eğitim ve öğrenci desteği",
+        "description": "Beantragen Sie Ausbildungsförderung und behalten Sie Fristen sowie Nachweise im Blick."
+      },
+      "pflege": {
+        "title": "Bakım ve sağlık",
+        "description": "Beantragen Sie Leistungen der Pflegeversicherung und finden Sie Unterstützung im Pflegefall."
+      },
+      "wohngeld": {
+        "title": "Konut yardımı başvurusu yap",
+        "description": "Prüfen Sie Ihren Anspruch auf Wohngeld und stellen Sie den Antrag mit vorausgefüllten Angaben."
+      }
+    }
+  },
   "a11y": {
     "menu": {
       "open": "Erişilebilirlik"
@@ -116,6 +196,10 @@
     },
     "sheet": {
       "close": "Kapat"
+    },
+    "breadcrumb": {
+      "aria_label": "İçerik haritası",
+      "home": "Ana sayfa"
     }
   },
   "landing": {
@@ -312,7 +396,8 @@
       "herr": "İyi günler, Sayın {nachname}",
       "neutral": "İyi günler, {vorname} {nachname}",
       "last_login_meta": "son giriş {days} gün önce · bu cihazda",
-      "guten_tag": "İyi günler, {name}"
+      "guten_tag": "Günaydın, {name}",
+      "sub": "İşte bugüne dair genel görünümünüz. Sizi bilgilendirmeye devam ediyoruz."
     },
     "demo_banner": {
       "text": "Demo modu · örnek veri · orijinaller resmi posta kutularında kalır",
@@ -435,7 +520,15 @@
       "min_value": "yaklaşık {min} dk",
       "zeit_caption": "tek tek bildirime kıyasla",
       "stellen_label": "Bilgilendirilen makamlar",
-      "stellen_caption": "Daireler ve kurumlar"
+      "stellen_caption": "Daireler ve kurumlar",
+      "overview_title": "Taşınmanıza genel bakış",
+      "ring_label": "%{percent} tamamlandı",
+      "ring_aria": "Taşınma yüzde {percent} tamamlandı",
+      "stellen_informiert": "{total} daireden {done} tanesi bilgilendirildi",
+      "naechster_schritt_label": "Sonraki adım",
+      "naechster_schritt_wert": "Gelen kutusundaki onayları kontrol edin",
+      "naechster_schritt_frist": "Son tarih {datum}",
+      "zum_umzug": "Taşınmaya git"
     },
     "erledigt_feed": {
       "title": "Sizin için otomatik halledildi",
@@ -443,6 +536,16 @@
       "alle_schritte": "Tüm adımları göster",
       "termin_pending": "Randevu onayı gerekli",
       "termin_bestaetigen": "Randevuyu onayla"
+    },
+    "naechster_termin": {
+      "titel": "Sonraki randevu",
+      "badge_bestaetigt": "Onaylandı",
+      "details": "Ayrıntıları görüntüle",
+      "kalender": "Takvime ekle",
+      "none": "Planlanmış randevu yok",
+      "praesenz": "Yüz yüze",
+      "video": "Görüntülü randevu",
+      "telefon": "Telefon randevusu"
     },
     "tiles": {
       "posteingang_sub": "Yeni mesajlar",
@@ -787,7 +890,22 @@
       "datenschutz_title": "Veri koruma",
       "datenschutz_sub": "Bu işlem için neyin işlendiği — ve hangi yasal dayanağa göre.",
       "termine_title": "Bu işleme ait randevular ({count})",
-      "no_next_step": "Şu anda sizden bir şey istenmiyor. İlgili makamlar işlemi yürütüyor."
+      "no_next_step": "Şu anda sizden bir şey istenmiyor. İlgili makamlar işlemi yürütüyor.",
+      "hero_sub": "Yeni adresinizi bildirin – ilgili makamları sizin için biz bilgilendiriyoruz.",
+      "vorgangsnummer_label": "İşlem numarası",
+      "progress_title": "Genel ilerleme",
+      "progress_steps": "{total} adımdan {done} tanesi",
+      "fertigstellung_label": "Tahmini tamamlanma",
+      "fertigstellung_value": "2–3 gün",
+      "timeline_title": "Bu işlemdeki adımlar ({count})",
+      "uebermittelt_label": "İletilme tarihi",
+      "details_show": "Ayrıntıları görüntüle",
+      "details_hide": "Ayrıntıları gizle",
+      "berechtigungen_title": "Yasal dayanak ve yetkiler",
+      "berechtigungen_basis_label": "Yasal dayanak",
+      "berechtigungen_behoerden": "{count} makama",
+      "berechtigungen_einwilligungen_label": "Onaylar",
+      "berechtigungen_einwilligungen_value": "Yalnızca ilgili makamlara, dilediğiniz zaman geri alınabilir."
     }
   },
   "assistent": {
@@ -1159,6 +1277,69 @@
         "folge_familienkasse": "Familienkasse'ye çocuk parası başvurusu yapın",
         "folge_krankenkasse": "Çocuğu sağlık sigortasına ekleyin (aile sigortası)",
         "folge_steueridnr": "Vergi numarası (Steuer-IdNr.) Federal Merkezi Vergi Dairesi (BZSt) tarafından otomatik verilir"
+      }
+    },
+    "mockup3": {
+      "tabs": {
+        "aria_label": "Mektupları duruma göre filtrele",
+        "alle": "Tümü",
+        "ungelesen": "Okunmamış",
+        "mit_frist": "Süreli",
+        "wichtig": "Önemli"
+      },
+      "detail": {
+        "herunterladen": "İndir",
+        "drucken": "Yazdır",
+        "tabs_aria": "Mektup görünümü",
+        "tab_original": "Özgün metin",
+        "tab_anhaenge": "Ekler",
+        "tab_verlauf": "Geçmiş",
+        "meta_eingegangen": "Alınma tarihi",
+        "meta_behoerde": "Kurum",
+        "meta_kategorie": "Kategori",
+        "meta_aktenzeichen": "Dosya numarası",
+        "meta_frist": "Son tarih",
+        "meta_frist_keine": "Süre yok",
+        "anhaenge_empty": "Bu demoda bu mektuba ek bulunmamaktadır.",
+        "verlauf_empfangen_template": "Mektup {datum} tarihinde alındı",
+        "verlauf_verifiziert_template": "Gerçeklik {datum} tarihinde doğrulandı",
+        "kategorie": {
+          "bund": "Federal kurum",
+          "land": "Eyalet kurumu",
+          "kommune": "Belediye kurumu",
+          "sozialversicherung": "Sosyal sigorta",
+          "privat": "Özel hukuk kuruluşu",
+          "unbekannt": "Resmî mektup"
+        }
+      },
+      "erklaerer": {
+        "title": "Sade dille",
+        "pill": "Yapay zekâ açıklayıcı",
+        "worum_label": "Konu nedir?",
+        "betrag_label": "Tutar ne kadar?",
+        "bis_wann_label": "Ne zamana kadar ödemem gerekiyor?",
+        "worum_fallback": "Lütfen bu mektubun özgün metnini inceleyin.",
+        "betrag_nachzahlung_template": "{betrag} tutarında ek ödeme.",
+        "betrag_erstattung_template": "Lehinize {betrag} tutarında iade.",
+        "betrag_keiner": "Bu mektupta ödenecek bir tutar belirtilmemiştir.",
+        "bis_wann_template": "{datum} tarihine kadar.",
+        "bis_wann_keine": "Bu mektupta bir ödeme süresi belirtilmemiştir.",
+        "disclaimer": "Yapay zekâ tarafından üretilen açıklama — hukuki danışmanlık değildir. Hukuken yalnızca özgün metin bağlayıcıdır. Lütfen süreyi, tutarı ve dosya numarasını özgün metinle karşılaştırın."
+      },
+      "bedeutung": {
+        "title": "Bu sizin için ne anlama geliyor?",
+        "fallback": "Özgün metni okuyun ve belirtilen süreye uyun. Sorularınız varsa yetkili kuruma başvurun."
+      },
+      "naechste_schritte": {
+        "title": "Sonraki adımlar",
+        "antwort": "Yanıt hazırla",
+        "frist_merken": "Süreyi kaydet",
+        "zahlung": "Ödeme yap"
+      },
+      "fragen": {
+        "title": "Karar hakkında sorularınız mı var?",
+        "sub": "Bu mektup hakkında yapay zekâ asistanına başka sorular sorun.",
+        "cta": "Daha fazla soru sor"
       }
     },
     "normtooltip": {
@@ -2264,31 +2445,31 @@
     },
     "wallet": {
       "eudi_reference_pid": {
-      "title": "Doğrulanmış EUDI referans kanıtı",
-      "subject_note": "Aktif demo kişisi (Demo-Persona) için sentetik referans test kanıtı — gerçek kriptografi, uydurma kimlik, Alman devleti tarafından verilmemiştir.",
-      "reference_ecosystem_badge": "Referans ekosistemi",
-      "loading": "Kanıt çevrimdışı kriptografik olarak doğrulanıyor …",
-      "error": "Referans kanıtı doğrulanamadı — lütfen tekrar deneyin.",
-      "status_section_aria": "EUDI referans kanıtının doğrulama durumu",
-      "status_verified": "Kriptografik olarak doğrulandı",
-      "status_not_verified": "Doğrulanmadı",
-      "check_signature_label": "İmza",
-      "check_signature_ok": "Düzenleyenin {alg} imzası geçerli",
-      "check_signature_not_ok": "Düzenleyenin imzası geçersiz",
-      "check_chain_label": "Güven zinciri",
-      "check_chain_ok": "Demo güven çıpasına (Trust Anchor) giden zincir geçerli ({anchor})",
-      "check_chain_not_ok": "Demo güven çıpasına (Trust Anchor) giden güven zinciri geçersiz",
-      "validity_not_before_label": "Geçerlilik başlangıcı",
-      "validity_expires_label": "Geçerlilik sonu",
-      "expired_note": "Kanıtın süresi {date} tarihinde doldu — buna rağmen imza ve güven zinciri kriptografik olarak doğrulandı.",
-      "claims_heading": "Açıklanan PID nitelikleri",
-      "selective_disclosure_note": "Selective Disclosure: kanıttan yalnızca aşağıda gösterilen nitelikler açıklandı ve imzaya karşı doğrulandı.",
-      "claim_family_name": "Soyadı",
-      "claim_given_name": "Ad",
-      "claim_birthdate": "Doğum tarihi",
-      "claim_place_of_birth": "Doğum yeri",
-      "claim_nationalities": "Uyruk",
-      "honesty_block": "[reference-ecosystem] — sentetik bir test kimliğiyle, demo güven çıpasına (Trust Anchor) karşı gerçek bir AB referans/geliştirme kanıtı. Alman devleti tarafından düzenlenmemiş ve doğrulanmamıştır, eIDAS uyarınca/üretim ortamında doğrulanmamıştır. Devlet eliyle düzenlenen bir Alman EUDI cüzdanı [ZUKUNFT] kapsamındadır (en erken ~2 Ocak 2027)."
+        "title": "Doğrulanmış EUDI referans kanıtı",
+        "subject_note": "Aktif demo kişisi (Demo-Persona) için sentetik referans test kanıtı — gerçek kriptografi, uydurma kimlik, Alman devleti tarafından verilmemiştir.",
+        "reference_ecosystem_badge": "Referans ekosistemi",
+        "loading": "Kanıt çevrimdışı kriptografik olarak doğrulanıyor …",
+        "error": "Referans kanıtı doğrulanamadı — lütfen tekrar deneyin.",
+        "status_section_aria": "EUDI referans kanıtının doğrulama durumu",
+        "status_verified": "Kriptografik olarak doğrulandı",
+        "status_not_verified": "Doğrulanmadı",
+        "check_signature_label": "İmza",
+        "check_signature_ok": "Düzenleyenin {alg} imzası geçerli",
+        "check_signature_not_ok": "Düzenleyenin imzası geçersiz",
+        "check_chain_label": "Güven zinciri",
+        "check_chain_ok": "Demo güven çıpasına (Trust Anchor) giden zincir geçerli ({anchor})",
+        "check_chain_not_ok": "Demo güven çıpasına (Trust Anchor) giden güven zinciri geçersiz",
+        "validity_not_before_label": "Geçerlilik başlangıcı",
+        "validity_expires_label": "Geçerlilik sonu",
+        "expired_note": "Kanıtın süresi {date} tarihinde doldu — buna rağmen imza ve güven zinciri kriptografik olarak doğrulandı.",
+        "claims_heading": "Açıklanan PID nitelikleri",
+        "selective_disclosure_note": "Selective Disclosure: kanıttan yalnızca aşağıda gösterilen nitelikler açıklandı ve imzaya karşı doğrulandı.",
+        "claim_family_name": "Soyadı",
+        "claim_given_name": "Ad",
+        "claim_birthdate": "Doğum tarihi",
+        "claim_place_of_birth": "Doğum yeri",
+        "claim_nationalities": "Uyruk",
+        "honesty_block": "[reference-ecosystem] — sentetik bir test kimliğiyle, demo güven çıpasına (Trust Anchor) karşı gerçek bir AB referans/geliştirme kanıtı. Alman devleti tarafından düzenlenmemiş ve doğrulanmamıştır, eIDAS uyarınca/üretim ortamında doğrulanmamıştır. Devlet eliyle düzenlenen bir Alman EUDI cüzdanı [ZUKUNFT] kapsamındadır (en erken ~2 Ocak 2027)."
       }
     },
     "chip": {
@@ -2846,9 +3027,71 @@
   },
   "datenschutz": {
     "page": {
-      "title": "Veri koruma",
-      "subtitle": "Veri erişimlerine, onaylara ve kullanım amaçlarına genel bakış.",
+      "title": "Veri koruma ve onaylar",
+      "subtitle": "Verilerinizi kimin, hangi amaçla aldığına siz karar verirsiniz. Onaylarınızı dilediğiniz zaman yönetin – şeffaf, güvenli ve izlenebilir.",
       "tag": "Spekülatif demo özelliği"
+    },
+    "stats": {
+      "aktiv_title": "Etkin onaylar",
+      "aktiv_value": "{total} alıcıdan {active} tanesi",
+      "aktiv_sub": "Veri paylaşımı için verilen onaylar",
+      "anfragen_title": "Talepler (30 gün)",
+      "anfragen_sub": "Son aydaki veri erişimleri",
+      "letzte_title": "Son etkinlik",
+      "letzte_sub": "Kaydedilen en son veri erişimi",
+      "letzte_empty": "Yok"
+    },
+    "weitergabe": {
+      "title": "Veri paylaşımı için onaylar",
+      "subtitle": "Hangi makam ve hizmetlerin verilerinize erişebileceğini yönetin.",
+      "col_empfaenger": "Alıcı / kategori",
+      "col_zweck": "Veri işleme amacı",
+      "col_kategorien": "Veri kategorileri",
+      "col_status": "Durum",
+      "col_einwilligung": "Onay",
+      "col_details": "Ayrıntılar",
+      "status_aktiv": "Etkin",
+      "status_inaktiv": "Etkin değil",
+      "widerruf_note": "Onaylarınızı, gelecekte geçerli olmak üzere dilediğiniz zaman geri çekebilirsiniz.",
+      "krankenkasse_zweck": "Faturalandırma ve hizmetler için veri aktarımı",
+      "krankenkasse_kategorien": "Sigorta numarası, adres",
+      "bank_zweck": "Geri ödemeler için hesap verisi kontrolü",
+      "bank_kategorien": "IBAN, ad",
+      "arbeitgeber_zweck": "Gelir vergisi ve belgeler için veri paylaşımı",
+      "arbeitgeber_kategorien": "Vergi numarası, personel numarası",
+      "weitere_dienste_zweck": "Diğer makamlar ve kuruluşlar",
+      "weitere_dienste_kategorien": "Duruma göre"
+    },
+    "audit": {
+      "title": "Denetim günlüğü",
+      "subtitle": "Tamamen izlenebilir: her veri erişimi zaman damgası ve yasal dayanağıyla.",
+      "col_zeitpunkt": "Zaman",
+      "col_ereignis": "Olay",
+      "col_empfaenger": "Alıcı",
+      "col_rechtsgrundlage": "Yasal dayanak",
+      "col_details": "Ayrıntılar",
+      "details_ansehen": "Ayrıntıları görüntüle",
+      "details_aria": "„{ereignis}“ ayrıntılarını görüntüle",
+      "empty": "Henüz kayıtlı olay yok.",
+      "empfaenger_fallback": "—"
+    },
+    "rail": {
+      "title": "İlkelerle güven",
+      "subtitle": "Bizde veri koruma bir ek değil, temeldir.",
+      "principle_1_title": "Yasal dayanak olmadan veri yok",
+      "principle_1_body": "Her işleme net bir yasal veya sözleşmesel dayanağa dayanır.",
+      "principle_2_title": "Özel alıcılar yalnızca onayla",
+      "principle_2_body": "Kamu dışı kuruluşlara veriler yalnızca onayınızla aktarılır.",
+      "principle_3_title": "Şeffaflık ve kontrol",
+      "principle_3_body": "Her erişimi denetim günlüğünde görür ve onayları dilediğiniz zaman geri çekebilirsiniz.",
+      "link": "Veri koruma hakkında daha fazla"
+    },
+    "footer": {
+      "title": "Verileriniz. Güvenle korunur.",
+      "badge_encrypted": "Uçtan uca şifreli",
+      "badge_germany": "Almanya'da depolama",
+      "badge_iso": "ISO/IEC 27001",
+      "badge_dsgvo": "GDPR uyumlu"
     },
     "vision_banner": {
       "heading": "2027 vizyonu",

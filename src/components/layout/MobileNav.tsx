@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { HelpCircle, LogOut, Menu } from 'lucide-react';
+import { Compass, HelpCircle, LogOut, Menu } from 'lucide-react';
 
 import {
   Sheet,
@@ -32,6 +32,7 @@ function isActive(pathname: string | null, href: string): boolean {
 export function MobileNav() {
   const t = useTranslations('nav');
   const tShell = useTranslations('shell');
+  const tNav = useTranslations('topnav');
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -98,6 +99,16 @@ export function MobileNav() {
           <div className="gt-sidebar-bottom">
             <div className="gt-nav-divider" />
             <nav className="gt-nav">
+              <Link
+                href="/lebenslagen"
+                className={isActive(pathname, '/lebenslagen') ? 'active' : ''}
+                aria-current={
+                  isActive(pathname, '/lebenslagen') ? 'page' : undefined
+                }
+              >
+                <Compass aria-hidden="true" />
+                <span>{tNav('lebenslagen')}</span>
+              </Link>
               <Link href="/assistent">
                 <HelpCircle aria-hidden="true" />
                 <span>{tShell('sidebar.help')}</span>

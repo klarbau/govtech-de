@@ -33,6 +33,86 @@
     "help": "Помощь и контакты",
     "about_project": "О проекте"
   },
+  "lebenslagen": {
+    "breadcrumb_catalog": "Каталог услуг",
+    "title": "Найдите услуги.",
+    "subtitle": "Просто. Быстро. Понятно.",
+    "search_label": "Поиск услуги",
+    "search_placeholder": "Поиск услуги, напр. „Kindergeld beantragen“",
+    "search_submit": "Найти",
+    "filter_label": "Фильтр по темам",
+    "categories": {
+      "alle": "Все темы",
+      "familie": "Семья",
+      "wohnen": "Жильё",
+      "arbeit": "Работа",
+      "migration": "Миграция",
+      "steuern": "Налоги",
+      "mehr": "Ещё"
+    },
+    "results_count": "Найдено услуг: {count}",
+    "results_none": "Услуги не найдены. Измените параметры поиска.",
+    "sort_label": "Сортировать",
+    "sort": {
+      "relevance": "Релевантность",
+      "popular": "Популярность",
+      "name": "Название (А–Я)"
+    },
+    "frequency": {
+      "very_often": "Очень часто",
+      "often": "Часто"
+    },
+    "relevance": {
+      "very": "Очень релевантно",
+      "normal": "Релевантно"
+    },
+    "open_service": "Открыть услугу",
+    "show_more": "Показать больше услуг",
+    "rail_popular_title": "Популярно для вас",
+    "rail_popular_sub": "На основе вашей жизненной ситуации",
+    "rail_secure_title": "Ваши данные в безопасности",
+    "rail_secure_body": "Каждая услуга показывает, какие данные обрабатываются, кем и на каком правовом основании. Вы сохраняете контроль.",
+    "rail_secure_link": "Конфиденциальность и согласия",
+    "trust_title": "Доверие через стандарты",
+    "services": {
+      "umzug": {
+        "title": "Сообщить о переезде",
+        "description": "Melden Sie Ihren neuen Wohnsitz an. Die Ummeldung wird automatisch an alle zuständigen Stellen weitergeleitet."
+      },
+      "geburt": {
+        "title": "Зарегистрировать рождение",
+        "description": "Beurkunden Sie die Geburt Ihres Kindes und stoßen Sie Kindergeld, Elterngeld und Krankenversicherung an."
+      },
+      "aufenthalt": {
+        "title": "Продлить вид на жительство",
+        "description": "Verlängern Sie Ihren Aufenthaltstitel rechtzeitig vor Ablauf und prüfen Sie die benötigten Nachweise."
+      },
+      "kindergeld": {
+        "title": "Обновить пособие на ребёнка",
+        "description": "Aktualisieren Sie Bankverbindung, Anschrift oder Lebenssituation für Ihren Kindergeldbezug."
+      },
+      "steuer": {
+        "title": "Предзаполнить налоговую декларацию",
+        "description": "Ihre Steuererklärung wird aus bereits bekannten Daten vorausgefüllt. Sie prüfen nur noch und reichen ein."
+      },
+      "reisepass": {
+        "title": "Подать заявление на загранпаспорт",
+        "description": "Beantragen Sie einen neuen Reisepass und buchen Sie den passenden Termin im Bürgeramt."
+      },
+      "bafoeg": {
+        "title": "Учёба и студенческая поддержка",
+        "description": "Beantragen Sie Ausbildungsförderung und behalten Sie Fristen sowie Nachweise im Blick."
+      },
+      "pflege": {
+        "title": "Уход и здоровье",
+        "description": "Beantragen Sie Leistungen der Pflegeversicherung und finden Sie Unterstützung im Pflegefall."
+      },
+      "wohngeld": {
+        "title": "Подать заявление на жилищное пособие",
+        "description": "Prüfen Sie Ihren Anspruch auf Wohngeld und stellen Sie den Antrag mit vorausgefüllten Angaben."
+      }
+    }
+  },
   "a11y": {
     "menu": {
       "open": "Доступность"
@@ -116,6 +196,10 @@
     },
     "sheet": {
       "close": "Закрыть"
+    },
+    "breadcrumb": {
+      "aria_label": "Навигационная цепочка",
+      "home": "Главная"
     }
   },
   "landing": {
@@ -312,7 +396,8 @@
       "herr": "Здравствуйте, г-н {nachname}",
       "neutral": "Здравствуйте, {vorname} {nachname}",
       "last_login_meta": "последний вход {days} дн. назад · на этом устройстве",
-      "guten_tag": "Здравствуйте, {name}"
+      "guten_tag": "Доброе утро, {name}",
+      "sub": "Вот Ваш обзор на сегодня. Мы держим Вас в курсе."
     },
     "demo_banner": {
       "text": "Демо-режим · демо-данные · оригиналы остаются в официальных почтовых ящиках",
@@ -435,7 +520,15 @@
       "min_value": "ок. {min} мин",
       "zeit_caption": "по сравнению с отдельными обращениями",
       "stellen_label": "Уведомлённые инстанции",
-      "stellen_caption": "Ведомства и учреждения"
+      "stellen_caption": "Ведомства и учреждения",
+      "overview_title": "Ваш переезд: обзор",
+      "ring_label": "Выполнено {percent}%",
+      "ring_aria": "Переезд выполнен на {percent} процентов",
+      "stellen_informiert": "Уведомлено ведомств: {done} из {total}",
+      "naechster_schritt_label": "Следующий шаг",
+      "naechster_schritt_wert": "Проверьте подтверждения во входящих",
+      "naechster_schritt_frist": "Срок до {datum}",
+      "zum_umzug": "Перейти к переезду"
     },
     "erledigt_feed": {
       "title": "Сделано автоматически за Вас",
@@ -443,6 +536,16 @@
       "alle_schritte": "Показать все шаги",
       "termin_pending": "Требуется подтверждение записи на приём",
       "termin_bestaetigen": "Подтвердить запись"
+    },
+    "naechster_termin": {
+      "titel": "Ближайшая запись на приём",
+      "badge_bestaetigt": "Подтверждено",
+      "details": "Подробнее",
+      "kalender": "В календарь",
+      "none": "Записей на приём нет",
+      "praesenz": "Очно",
+      "video": "Видеоприём",
+      "telefon": "Приём по телефону"
     },
     "tiles": {
       "posteingang_sub": "Новые сообщения",
@@ -787,7 +890,22 @@
       "datenschutz_title": "Защита данных",
       "datenschutz_sub": "Что обрабатывается по этому делу — и на каком правовом основании.",
       "termine_title": "Записи по этому делу ({count})",
-      "no_next_step": "Сейчас от Вас ничего не требуется. Задействованные органы ведут дело."
+      "no_next_step": "Сейчас от Вас ничего не требуется. Задействованные органы ведут дело.",
+      "hero_sub": "Зарегистрируйте новое место жительства – мы сами уведомим ответственные органы.",
+      "vorgangsnummer_label": "Номер дела",
+      "progress_title": "Общий прогресс",
+      "progress_steps": "{done} из {total} шагов",
+      "fertigstellung_label": "Ожидаемое завершение",
+      "fertigstellung_value": "2–3 дня",
+      "timeline_title": "Шаги по делу ({count})",
+      "uebermittelt_label": "Передано",
+      "details_show": "Показать детали",
+      "details_hide": "Скрыть детали",
+      "berechtigungen_title": "Правовое основание и разрешения",
+      "berechtigungen_basis_label": "Правовое основание",
+      "berechtigungen_behoerden": "В {count} органов",
+      "berechtigungen_einwilligungen_label": "Согласия",
+      "berechtigungen_einwilligungen_value": "Только ответственным органам, отзыв в любое время."
     }
   },
   "assistent": {
@@ -1159,6 +1277,69 @@
         "folge_familienkasse": "Подать заявление на детское пособие в Familienkasse",
         "folge_krankenkasse": "Внести ребёнка в больничную кассу (семейное страхование)",
         "folge_steueridnr": "Налоговый идентификатор (Steuer-IdNr.) присваивается автоматически Федеральным налоговым ведомством (BZSt)"
+      }
+    },
+    "mockup3": {
+      "tabs": {
+        "aria_label": "Фильтровать письма по статусу",
+        "alle": "Все",
+        "ungelesen": "Непрочитанные",
+        "mit_frist": "Со сроком",
+        "wichtig": "Важные"
+      },
+      "detail": {
+        "herunterladen": "Скачать",
+        "drucken": "Печать",
+        "tabs_aria": "Просмотр письма",
+        "tab_original": "Оригинал",
+        "tab_anhaenge": "Вложения",
+        "tab_verlauf": "История",
+        "meta_eingegangen": "Получено",
+        "meta_behoerde": "Ведомство",
+        "meta_kategorie": "Категория",
+        "meta_aktenzeichen": "Номер дела",
+        "meta_frist": "Срок",
+        "meta_frist_keine": "Без срока",
+        "anhaenge_empty": "В этой демоверсии к письму не приложены вложения.",
+        "verlauf_empfangen_template": "Письмо получено {datum}",
+        "verlauf_verifiziert_template": "Подлинность проверена {datum}",
+        "kategorie": {
+          "bund": "Федеральное ведомство",
+          "land": "Земельное ведомство",
+          "kommune": "Муниципальное ведомство",
+          "sozialversicherung": "Социальное страхование",
+          "privat": "Частноправовая организация",
+          "unbekannt": "Официальное письмо"
+        }
+      },
+      "erklaerer": {
+        "title": "Простыми словами",
+        "pill": "ИИ-разъяснение",
+        "worum_label": "О чём речь?",
+        "betrag_label": "Какова сумма?",
+        "bis_wann_label": "До какого срока нужно заплатить?",
+        "worum_fallback": "Пожалуйста, ознакомьтесь с оригинальным текстом этого письма.",
+        "betrag_nachzahlung_template": "Доплата в размере {betrag}.",
+        "betrag_erstattung_template": "Возврат {betrag} в вашу пользу.",
+        "betrag_keiner": "В этом письме сумма к оплате не указана.",
+        "bis_wann_template": "До {datum}.",
+        "bis_wann_keine": "В этом письме срок оплаты не указан.",
+        "disclaimer": "Разъяснение, сгенерированное ИИ, — не юридическая консультация. Юридически обязателен только оригинальный текст. Пожалуйста, сверьте срок, сумму и номер дела с оригиналом."
+      },
+      "bedeutung": {
+        "title": "Что это значит для вас?",
+        "fallback": "Прочитайте оригинальный текст и соблюдайте указанный срок. При возникновении вопросов обратитесь в компетентное ведомство."
+      },
+      "naechste_schritte": {
+        "title": "Дальнейшие шаги",
+        "antwort": "Подготовить ответ",
+        "frist_merken": "Сохранить срок",
+        "zahlung": "Выполнить оплату"
+      },
+      "fragen": {
+        "title": "Вопросы по решению?",
+        "sub": "Задайте ИИ-ассистенту дополнительные вопросы по этому письму.",
+        "cta": "Задать другие вопросы"
       }
     },
     "normtooltip": {
@@ -2264,31 +2445,31 @@
     },
     "wallet": {
       "eudi_reference_pid": {
-      "title": "Проверенное эталонное подтверждение EUDI",
-      "subject_note": "Синтетическое эталонное тестовое подтверждение для активной демо-персоны — настоящая криптография, вымышленная личность, выдано не немецким государством.",
-      "reference_ecosystem_badge": "Эталонная экосистема",
-      "loading": "Подтверждение криптографически проверяется офлайн …",
-      "error": "Не удалось проверить эталонное подтверждение — попробуйте ещё раз.",
-      "status_section_aria": "Статус верификации эталонного подтверждения EUDI",
-      "status_verified": "Криптографически проверено",
-      "status_not_verified": "Не проверено",
-      "check_signature_label": "Подпись",
-      "check_signature_ok": "Подпись эмитента ({alg}) действительна",
-      "check_signature_not_ok": "Подпись эмитента недействительна",
-      "check_chain_label": "Цепочка доверия",
-      "check_chain_ok": "Цепочка к демо-якорю доверия (Trust Anchor) действительна ({anchor})",
-      "check_chain_not_ok": "Цепочка доверия к демо-якорю доверия (Trust Anchor) недействительна",
-      "validity_not_before_label": "Действительно с",
-      "validity_expires_label": "Действительно до",
-      "expired_note": "Подтверждение истекло {date} — подпись и цепочка доверия тем не менее криптографически проверены.",
-      "claims_heading": "Раскрытые атрибуты PID",
-      "selective_disclosure_note": "Selective Disclosure: из подтверждения были раскрыты и проверены по подписи исключительно показанные ниже атрибуты.",
-      "claim_family_name": "Фамилия",
-      "claim_given_name": "Имя",
-      "claim_birthdate": "Дата рождения",
-      "claim_place_of_birth": "Место рождения",
-      "claim_nationalities": "Гражданство",
-      "honesty_block": "[reference-ecosystem] — реальное подтверждение из эталонной/тестовой среды ЕС, проверенное по демо-якорю доверия (Trust Anchor) с синтетической тестовой личностью. Не выдано и не проверено государством Германии, не верифицировано по eIDAS и не в продуктивной среде. Государственный EUDI-кошелёк Германии — это [ZUKUNFT] (не ранее ~2 января 2027 года)."
+        "title": "Проверенное эталонное подтверждение EUDI",
+        "subject_note": "Синтетическое эталонное тестовое подтверждение для активной демо-персоны — настоящая криптография, вымышленная личность, выдано не немецким государством.",
+        "reference_ecosystem_badge": "Эталонная экосистема",
+        "loading": "Подтверждение криптографически проверяется офлайн …",
+        "error": "Не удалось проверить эталонное подтверждение — попробуйте ещё раз.",
+        "status_section_aria": "Статус верификации эталонного подтверждения EUDI",
+        "status_verified": "Криптографически проверено",
+        "status_not_verified": "Не проверено",
+        "check_signature_label": "Подпись",
+        "check_signature_ok": "Подпись эмитента ({alg}) действительна",
+        "check_signature_not_ok": "Подпись эмитента недействительна",
+        "check_chain_label": "Цепочка доверия",
+        "check_chain_ok": "Цепочка к демо-якорю доверия (Trust Anchor) действительна ({anchor})",
+        "check_chain_not_ok": "Цепочка доверия к демо-якорю доверия (Trust Anchor) недействительна",
+        "validity_not_before_label": "Действительно с",
+        "validity_expires_label": "Действительно до",
+        "expired_note": "Подтверждение истекло {date} — подпись и цепочка доверия тем не менее криптографически проверены.",
+        "claims_heading": "Раскрытые атрибуты PID",
+        "selective_disclosure_note": "Selective Disclosure: из подтверждения были раскрыты и проверены по подписи исключительно показанные ниже атрибуты.",
+        "claim_family_name": "Фамилия",
+        "claim_given_name": "Имя",
+        "claim_birthdate": "Дата рождения",
+        "claim_place_of_birth": "Место рождения",
+        "claim_nationalities": "Гражданство",
+        "honesty_block": "[reference-ecosystem] — реальное подтверждение из эталонной/тестовой среды ЕС, проверенное по демо-якорю доверия (Trust Anchor) с синтетической тестовой личностью. Не выдано и не проверено государством Германии, не верифицировано по eIDAS и не в продуктивной среде. Государственный EUDI-кошелёк Германии — это [ZUKUNFT] (не ранее ~2 января 2027 года)."
       }
     },
     "chip": {
@@ -2846,9 +3027,71 @@
   },
   "datenschutz": {
     "page": {
-      "title": "Защита данных",
-      "subtitle": "Обзор обращений к данным, согласий и целей использования.",
+      "title": "Защита данных и согласия",
+      "subtitle": "Вы решаете, кто получает ваши данные и с какой целью. Управляйте согласиями в любое время — прозрачно, безопасно и с возможностью проверки.",
       "tag": "Спекулятивная демо-функция"
+    },
+    "stats": {
+      "aktiv_title": "Активные согласия",
+      "aktiv_value": "{active} из {total} получателей",
+      "aktiv_sub": "Выданные согласия на передачу данных",
+      "anfragen_title": "Запросы (30 дней)",
+      "anfragen_sub": "Обращения к данным за последний месяц",
+      "letzte_title": "Последняя активность",
+      "letzte_sub": "Последнее зафиксированное обращение к данным",
+      "letzte_empty": "Нет"
+    },
+    "weitergabe": {
+      "title": "Согласия на передачу данных",
+      "subtitle": "Управляйте тем, какие органы и службы могут обращаться к вашим данным.",
+      "col_empfaenger": "Получатель / категория",
+      "col_zweck": "Цель обработки данных",
+      "col_kategorien": "Категории данных",
+      "col_status": "Статус",
+      "col_einwilligung": "Согласие",
+      "col_details": "Подробнее",
+      "status_aktiv": "Активно",
+      "status_inaktiv": "Неактивно",
+      "widerruf_note": "Вы можете отозвать согласия в любое время с действием на будущее.",
+      "krankenkasse_zweck": "Передача данных для расчётов и услуг",
+      "krankenkasse_kategorien": "Номер страховки, адрес",
+      "bank_zweck": "Проверка реквизитов счёта для возмещений",
+      "bank_kategorien": "IBAN, имя",
+      "arbeitgeber_zweck": "Передача данных для подоходного налога и справок",
+      "arbeitgeber_kategorien": "Налоговый номер, табельный номер",
+      "weitere_dienste_zweck": "Другие органы и организации",
+      "weitere_dienste_kategorien": "В зависимости от случая"
+    },
+    "audit": {
+      "title": "Журнал аудита",
+      "subtitle": "Полностью прослеживаемо: каждое обращение к данным с отметкой времени и правовым основанием.",
+      "col_zeitpunkt": "Время",
+      "col_ereignis": "Событие",
+      "col_empfaenger": "Получатель",
+      "col_rechtsgrundlage": "Правовое основание",
+      "col_details": "Подробнее",
+      "details_ansehen": "Показать подробности",
+      "details_aria": "Показать подробности о «{ereignis}»",
+      "empty": "Событий пока нет.",
+      "empfaenger_fallback": "—"
+    },
+    "rail": {
+      "title": "Доверие через принципы",
+      "subtitle": "Для нас защита данных — не дополнение, а основа.",
+      "principle_1_title": "Никаких данных без правового основания",
+      "principle_1_body": "Каждая обработка опирается на чёткое правовое или договорное основание.",
+      "principle_2_title": "Частные получатели — только с согласия",
+      "principle_2_body": "Негосударственным органам данные передаются исключительно с вашего согласия.",
+      "principle_3_title": "Прозрачность и контроль",
+      "principle_3_body": "Вы видите каждое обращение в журнале аудита и можете отозвать согласия в любое время.",
+      "link": "Подробнее о защите данных"
+    },
+    "footer": {
+      "title": "Ваши данные. Надёжно защищены.",
+      "badge_encrypted": "Сквозное шифрование",
+      "badge_germany": "Хранение в Германии",
+      "badge_iso": "ISO/IEC 27001",
+      "badge_dsgvo": "Соответствует GDPR"
     },
     "vision_banner": {
       "heading": "Видение 2027",

@@ -33,6 +33,86 @@
     "help": "Hilfe & Kontakt",
     "about_project": "Über das Projekt"
   },
+  "lebenslagen": {
+    "breadcrumb_catalog": "Leistungskatalog",
+    "title": "Leistungen finden.",
+    "subtitle": "Einfach. Schnell. Verständlich.",
+    "search_label": "Leistung suchen",
+    "search_placeholder": "Leistung suchen, z. B. „Kindergeld beantragen“",
+    "search_submit": "Suchen",
+    "filter_label": "Themen filtern",
+    "categories": {
+      "alle": "Alle Themen",
+      "familie": "Familie",
+      "wohnen": "Wohnen",
+      "arbeit": "Arbeit",
+      "migration": "Migration",
+      "steuern": "Steuern",
+      "mehr": "Mehr"
+    },
+    "results_count": "{count} Leistungen gefunden",
+    "results_none": "Keine Leistungen gefunden. Bitte passen Sie Ihre Suche an.",
+    "sort_label": "Sortieren",
+    "sort": {
+      "relevance": "Relevanz",
+      "popular": "Beliebtheit",
+      "name": "Name (A–Z)"
+    },
+    "frequency": {
+      "very_often": "Sehr häufig",
+      "often": "Häufig"
+    },
+    "relevance": {
+      "very": "Sehr relevant",
+      "normal": "Relevant"
+    },
+    "open_service": "Leistung öffnen",
+    "show_more": "Weitere Leistungen anzeigen",
+    "rail_popular_title": "Beliebt für Sie",
+    "rail_popular_sub": "Basierend auf Ihrer Lebenslage",
+    "rail_secure_title": "Ihre Daten sind sicher",
+    "rail_secure_body": "Jede Leistung zeigt, welche Daten verarbeitet werden, durch wen und auf welcher Rechtsgrundlage. Sie behalten die Kontrolle.",
+    "rail_secure_link": "Datenschutz & Einwilligungen",
+    "trust_title": "Vertrauen durch Standards",
+    "services": {
+      "umzug": {
+        "title": "Umzug melden",
+        "description": "Melden Sie Ihren neuen Wohnsitz an. Die Ummeldung wird automatisch an alle zuständigen Stellen weitergeleitet."
+      },
+      "geburt": {
+        "title": "Geburt anmelden",
+        "description": "Beurkunden Sie die Geburt Ihres Kindes und stoßen Sie Kindergeld, Elterngeld und Krankenversicherung an."
+      },
+      "aufenthalt": {
+        "title": "Aufenthaltstitel verlängern",
+        "description": "Verlängern Sie Ihren Aufenthaltstitel rechtzeitig vor Ablauf und prüfen Sie die benötigten Nachweise."
+      },
+      "kindergeld": {
+        "title": "Kindergeld aktualisieren",
+        "description": "Aktualisieren Sie Bankverbindung, Anschrift oder Lebenssituation für Ihren Kindergeldbezug."
+      },
+      "steuer": {
+        "title": "Steuererklärung vorausfüllen",
+        "description": "Ihre Steuererklärung wird aus bereits bekannten Daten vorausgefüllt. Sie prüfen nur noch und reichen ein."
+      },
+      "reisepass": {
+        "title": "Reisepass beantragen",
+        "description": "Beantragen Sie einen neuen Reisepass und buchen Sie den passenden Termin im Bürgeramt."
+      },
+      "bafoeg": {
+        "title": "Studium & BAföG",
+        "description": "Beantragen Sie Ausbildungsförderung und behalten Sie Fristen sowie Nachweise im Blick."
+      },
+      "pflege": {
+        "title": "Pflege & Gesundheit",
+        "description": "Beantragen Sie Leistungen der Pflegeversicherung und finden Sie Unterstützung im Pflegefall."
+      },
+      "wohngeld": {
+        "title": "Wohngeld beantragen",
+        "description": "Prüfen Sie Ihren Anspruch auf Wohngeld und stellen Sie den Antrag mit vorausgefüllten Angaben."
+      }
+    }
+  },
   "a11y": {
     "menu": {
       "open": "Barrierefreiheit"
@@ -116,6 +196,10 @@
     },
     "sheet": {
       "close": "Schließen"
+    },
+    "breadcrumb": {
+      "aria_label": "Brotkrümelnavigation",
+      "home": "Startseite"
     }
   },
   "landing": {
@@ -312,7 +396,8 @@
       "herr": "Guten Tag, Herr {nachname}",
       "neutral": "Guten Tag, {vorname} {nachname}",
       "last_login_meta": "letzter Login vor {days} Tagen · auf diesem Gerät",
-      "guten_tag": "Guten Tag, {name}"
+      "guten_tag": "Guten Morgen, {name}",
+      "sub": "Hier ist Ihr Überblick für heute. Wir halten Sie auf dem Laufenden."
     },
     "demo_banner": {
       "text": "Demo-Modus · Mock-Daten · Originale liegen in den amtlichen Postfächern",
@@ -435,7 +520,15 @@
       "min_value": "ca. {min} Min.",
       "zeit_caption": "gegenüber Einzelmeldungen",
       "stellen_label": "Informierte Stellen",
-      "stellen_caption": "Ämter & Institutionen"
+      "stellen_caption": "Ämter & Institutionen",
+      "overview_title": "Ihr Umzug im Überblick",
+      "ring_label": "{percent} % abgeschlossen",
+      "ring_aria": "Umzug zu {percent} Prozent abgeschlossen",
+      "stellen_informiert": "{done} von {total} Stellen informiert",
+      "naechster_schritt_label": "Nächster Schritt",
+      "naechster_schritt_wert": "Bestätigungen im Posteingang prüfen",
+      "naechster_schritt_frist": "Fällig bis {datum}",
+      "zum_umzug": "Zum Umzug gehen"
     },
     "erledigt_feed": {
       "title": "Automatisch erledigt für Sie",
@@ -443,6 +536,16 @@
       "alle_schritte": "Alle Schritte anzeigen",
       "termin_pending": "Terminbestätigung erforderlich",
       "termin_bestaetigen": "Termin bestätigen"
+    },
+    "naechster_termin": {
+      "titel": "Nächster Termin",
+      "badge_bestaetigt": "Bestätigt",
+      "details": "Details ansehen",
+      "kalender": "In Kalender",
+      "none": "Kein Termin geplant",
+      "praesenz": "Vor Ort",
+      "video": "Video-Termin",
+      "telefon": "Telefon-Termin"
     },
     "tiles": {
       "posteingang_sub": "Neue Nachrichten",
@@ -790,7 +893,22 @@
       "datenschutz_title": "Datenschutz",
       "datenschutz_sub": "Was wird zu diesem Vorgang verarbeitet — und auf welcher Grundlage.",
       "termine_title": "Termine zu diesem Vorgang ({count})",
-      "no_next_step": "Aktuell ist von Ihnen nichts zu tun. Die beteiligten Stellen arbeiten den Vorgang ab."
+      "no_next_step": "Aktuell ist von Ihnen nichts zu tun. Die beteiligten Stellen arbeiten den Vorgang ab.",
+      "hero_sub": "Melden Sie Ihren Wohnsitz um – wir informieren die zuständigen Stellen für Sie.",
+      "vorgangsnummer_label": "Vorgangsnummer",
+      "progress_title": "Gesamtfortschritt",
+      "progress_steps": "{done} von {total} Schritten",
+      "fertigstellung_label": "Voraussichtliche Fertigstellung",
+      "fertigstellung_value": "2–3 Tage",
+      "timeline_title": "Schritte im Vorgang ({count})",
+      "uebermittelt_label": "Übermittelt am",
+      "details_show": "Details ansehen",
+      "details_hide": "Details ausblenden",
+      "berechtigungen_title": "Rechtsgrundlage & Berechtigungen",
+      "berechtigungen_basis_label": "Rechtsgrundlage",
+      "berechtigungen_behoerden": "An {count} Behörden",
+      "berechtigungen_einwilligungen_label": "Einwilligungen",
+      "berechtigungen_einwilligungen_value": "Nur an zuständige Stellen, jederzeit widerrufbar."
     }
   },
   "assistent": {
@@ -1162,6 +1280,69 @@
         "folge_familienkasse": "Kindergeld-Antrag bei der Familienkasse stellen",
         "folge_krankenkasse": "Kind bei der Krankenkasse anmelden (Familienversicherung)",
         "folge_steueridnr": "Steuer-IdNr. wird automatisch vom BZSt vergeben"
+      }
+    },
+    "mockup3": {
+      "tabs": {
+        "aria_label": "Briefe nach Status filtern",
+        "alle": "Alle",
+        "ungelesen": "Ungelesen",
+        "mit_frist": "Mit Frist",
+        "wichtig": "Wichtig"
+      },
+      "detail": {
+        "herunterladen": "Herunterladen",
+        "drucken": "Drucken",
+        "tabs_aria": "Brief-Ansicht",
+        "tab_original": "Original",
+        "tab_anhaenge": "Anhänge",
+        "tab_verlauf": "Verlauf",
+        "meta_eingegangen": "Eingegangen",
+        "meta_behoerde": "Behörde",
+        "meta_kategorie": "Kategorie",
+        "meta_aktenzeichen": "Aktenzeichen",
+        "meta_frist": "Frist",
+        "meta_frist_keine": "Keine Frist",
+        "anhaenge_empty": "Diesem Brief sind in dieser Demo keine Anhänge beigefügt.",
+        "verlauf_empfangen_template": "Brief empfangen am {datum}",
+        "verlauf_verifiziert_template": "Authentizität geprüft am {datum}",
+        "kategorie": {
+          "bund": "Bundesbehörde",
+          "land": "Landesbehörde",
+          "kommune": "Kommunale Behörde",
+          "sozialversicherung": "Sozialversicherung",
+          "privat": "Privatrechtliche Stelle",
+          "unbekannt": "Behördenbrief"
+        }
+      },
+      "erklaerer": {
+        "title": "Einfach erklärt",
+        "pill": "KI-Erklärer",
+        "worum_label": "Worum geht es?",
+        "betrag_label": "Wie hoch ist der Betrag?",
+        "bis_wann_label": "Bis wann muss ich zahlen?",
+        "worum_fallback": "Bitte prüfen Sie den Originaltext dieses Briefs.",
+        "betrag_nachzahlung_template": "Nachzahlung von {betrag}.",
+        "betrag_erstattung_template": "Erstattung von {betrag} zu Ihren Gunsten.",
+        "betrag_keiner": "In diesem Brief ist kein Zahlbetrag genannt.",
+        "bis_wann_template": "Bis {datum}.",
+        "bis_wann_keine": "Für diesen Brief ist keine Zahlungsfrist genannt.",
+        "disclaimer": "KI-generierte Erläuterung — keine Rechtsberatung. Rechtsverbindlich ist allein der Originaltext. Bitte gleichen Sie Frist, Betrag und Aktenzeichen am Original ab."
+      },
+      "bedeutung": {
+        "title": "Was bedeutet das für Sie?",
+        "fallback": "Lesen Sie den Originaltext und beachten Sie die genannte Frist. Bei Rückfragen wenden Sie sich an die zuständige Behörde."
+      },
+      "naechste_schritte": {
+        "title": "Nächste Schritte",
+        "antwort": "Antwort vorbereiten",
+        "frist_merken": "Frist merken",
+        "zahlung": "Zahlung ausführen"
+      },
+      "fragen": {
+        "title": "Fragen zum Bescheid?",
+        "sub": "Stellen Sie dem KI-Assistenten weitere Fragen zu diesem Brief.",
+        "cta": "Weitere Fragen stellen"
       }
     },
     "normtooltip": {
@@ -3076,9 +3257,71 @@
   },
   "datenschutz": {
     "page": {
-      "title": "Datenschutz",
-      "subtitle": "Einblick in Datenzugriffe, Einwilligungen und Verwendungszwecke.",
+      "title": "Datenschutz & Einwilligungen",
+      "subtitle": "Sie bestimmen, wer Ihre Daten erhält und wofür. Verwalten Sie Ihre Einwilligungen jederzeit – transparent, sicher und nachvollziehbar.",
       "tag": "Spekulatives Demo-Feature"
+    },
+    "stats": {
+      "aktiv_title": "Einwilligungen aktiv",
+      "aktiv_value": "{active} von {total} Empfängern",
+      "aktiv_sub": "Erteilte Einwilligungen zur Datenweitergabe",
+      "anfragen_title": "Anfragen (30 Tage)",
+      "anfragen_sub": "Datenzugriffe im letzten Monat",
+      "letzte_title": "Letzte Aktivität",
+      "letzte_sub": "Zuletzt erfasster Datenzugriff",
+      "letzte_empty": "Keine"
+    },
+    "weitergabe": {
+      "title": "Einwilligungen für Datenweitergabe",
+      "subtitle": "Steuern Sie, welche Stellen und Dienste auf Ihre Daten zugreifen dürfen.",
+      "col_empfaenger": "Empfänger / Kategorie",
+      "col_zweck": "Zweck der Datenverarbeitung",
+      "col_kategorien": "Datenkategorien",
+      "col_status": "Status",
+      "col_einwilligung": "Einwilligung",
+      "col_details": "Details",
+      "status_aktiv": "Aktiv",
+      "status_inaktiv": "Inaktiv",
+      "widerruf_note": "Einwilligungen können Sie jederzeit mit Wirkung für die Zukunft widerrufen.",
+      "krankenkasse_zweck": "Datenübermittlung für Abrechnungen und Leistungen",
+      "krankenkasse_kategorien": "Versichertennummer, Adresse",
+      "bank_zweck": "Kontodatenprüfung für Erstattungen",
+      "bank_kategorien": "IBAN, Name",
+      "arbeitgeber_zweck": "Datenweitergabe für Lohnsteuer und Bescheinigungen",
+      "arbeitgeber_kategorien": "Steuer-IdNr., Personalnummer",
+      "weitere_dienste_zweck": "Weitere Behörden und Organisationen",
+      "weitere_dienste_kategorien": "Nach Einzelfall"
+    },
+    "audit": {
+      "title": "Audit-Log",
+      "subtitle": "Vollständig nachvollziehbar: jeder Datenzugriff mit Zeitpunkt und Rechtsgrundlage.",
+      "col_zeitpunkt": "Zeitpunkt",
+      "col_ereignis": "Ereignis",
+      "col_empfaenger": "Empfänger",
+      "col_rechtsgrundlage": "Rechtsgrundlage",
+      "col_details": "Details",
+      "details_ansehen": "Details ansehen",
+      "details_aria": "Details zu „{ereignis}“ ansehen",
+      "empty": "Noch keine Ereignisse erfasst.",
+      "empfaenger_fallback": "—"
+    },
+    "rail": {
+      "title": "Vertrauen durch Prinzipien",
+      "subtitle": "Datenschutz ist bei uns kein Zusatz, sondern Grundlage.",
+      "principle_1_title": "Keine Daten ohne Rechtsgrundlage",
+      "principle_1_body": "Jede Verarbeitung beruht auf einer klaren gesetzlichen oder vertraglichen Grundlage.",
+      "principle_2_title": "Private Empfänger nur mit Einwilligung",
+      "principle_2_body": "An nicht-hoheitliche Stellen werden Daten ausschließlich nach Ihrer Einwilligung übermittelt.",
+      "principle_3_title": "Transparenz & Kontrolle",
+      "principle_3_body": "Sie sehen jeden Zugriff im Audit-Log und können Einwilligungen jederzeit widerrufen.",
+      "link": "Mehr zum Datenschutz"
+    },
+    "footer": {
+      "title": "Ihre Daten. Sicher geschützt.",
+      "badge_encrypted": "Ende-zu-Ende verschlüsselt",
+      "badge_germany": "Speicherung in Deutschland",
+      "badge_iso": "ISO/IEC 27001",
+      "badge_dsgvo": "DSGVO-konform"
     },
     "vision_banner": {
       "heading": "2027-Vision",
