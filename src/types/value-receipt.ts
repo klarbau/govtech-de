@@ -9,8 +9,23 @@ import type { BehoerdeId } from './behoerde';
  */
 export interface ValueReceipt {
   vorgang_id: string;
-  /** Pass-1: einziger Wert. */
-  lebenslage: 'umzug';
+  /**
+   * Lebenslage des Laufs. Pass-1 war nur `'umzug'`; mit den funktionalen
+   * Lebenslagen (Spec `vorgaenge-functional.md` §1.4) auf die 8 Slugs geweitet.
+   * `computeValueReceipt` bleibt generisch (zählt `step.datenkategorien` + die
+   * distinkten Behörden); die dossierfesten Override-Werte
+   * (`behoerdengaenge_gespart`/`minuten_gespart`) kommen aus
+   * `LebenslageConfig.value_receipt`.
+   */
+  lebenslage:
+    | 'umzug'
+    | 'geburt'
+    | 'aufenthalt-verlaengerung'
+    | 'kindergeld'
+    | 'reisepass'
+    | 'bafoeg'
+    | 'pflegegrad'
+    | 'wohngeld';
   /** Distinkte Behörden, die der Lauf berührt hat. [domain: beteiligte-behoerden] */
   behoerden_count: number;
   /** Konservative gesparte Minuten (Status-quo minus Bürgeraufwand). [domain: zeitersparnis] */

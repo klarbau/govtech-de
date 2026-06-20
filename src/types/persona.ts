@@ -21,6 +21,23 @@ export interface Krankenversicherung {
   versichertennummer?: string;
 }
 
+/**
+ * Bankverbindung (Stammdaten / Once-Only-Quelle). Synthetisch, `[MOCK]`-Präfix
+ * auf der IBAN. Quelle: BundID-verifiziert oder Selbstauskunft. Speist die
+ * Once-Only-Prefill der funktionalen Lebenslagen (Kindergeld, BAföG, Wohngeld,
+ * Elterngeld — Spec `vorgaenge-functional.md` §1.3/§3).
+ */
+export interface Bankverbindung {
+  /** Synthetische IBAN mit `[MOCK]`-Präfix. */
+  iban: string;
+  /** Name der Bank (z. B. 'Berliner Sparkasse'). */
+  bank: string;
+  /** Provenienz der Angabe (z. B. 'bundid', 'selbstauskunft'). */
+  quelle: string;
+  /** Ob die Bankverbindung verifiziert ist. */
+  verified: boolean;
+}
+
 /** Beschäftigungsverhältnis. */
 export interface Beschaeftigung {
   typ: 'angestellt' | 'selbstaendig' | 'beamt' | 'student' | 'arbeitssuchend' | 'rente';
@@ -85,6 +102,12 @@ export interface Persona {
   };
   beschaeftigung?: Beschaeftigung;
   krankenversicherung?: Krankenversicherung;
+  /**
+   * Bankverbindung (Once-Only-Quelle für Leistungs-Auszahlungen). Optional,
+   * additiv — bricht keine bestehenden Konsumenten. Spec
+   * `vorgaenge-functional.md` §1.3.
+   */
+  bankverbindung?: Bankverbindung;
   /** Steuert, ob Block D den KFZ-Zulassungs-Schritt (§ 15 FZV) anzeigt. */
   kfz_halter: boolean;
   /** Steuert, ob Block D den Familienkasse-Schritt (§ 67/68 EStG) anzeigt. */

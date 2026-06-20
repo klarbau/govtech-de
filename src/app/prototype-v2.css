@@ -3314,3 +3314,196 @@ button { font: inherit; cursor: pointer; }
 .frist-rail-row__chev { width: 15px; height: 15px; color: var(--ink-3); }
 .frist-rail-link:hover .frist-rail-row { background: rgba(0,0,0,.04); }
 .dark .frist-rail-link:hover .frist-rail-row { background: rgba(255,255,255,.06); }
+
+/* ============================================================================
+   FUNKTIONALE LEBENSLAGEN — Detail / Antrag / Kaskade (Spec vorgaenge-functional §5)
+   Reuse-first: baut auf gt-card / lk-layout / lk-secure / badge / icon-circle /
+   btn / cas-card / umz-* auf. Nur die fuenf spec-genannten .ll-* Klassen + ein
+   paar schlanke Layout-Helfer. Tokens flippen dark-aware.
+   ========================================================================== */
+
+/* Linke Spalte der lk-layout-Grids (gestapelte gt-cards). */
+.ll-main { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+
+/* Dark-safe Text fuer den ZUKUNFT-2027-Banner: --ink-2 flippt hell, --amber-50
+   nicht. --amber-700 ist statisch dunkel -> AA in beiden Modi. */
+.dark .gt-banner.amber { color: var(--amber-700); }
+.dark .gt-banner.amber strong { color: var(--amber-700); }
+.ll-zukunft-banner strong { font-weight: 700; }
+
+/* Intro-Card */
+.ll-intro-head { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 16px; }
+.ll-intro-lead { color: var(--ink-3); font-size: 14px; margin: 4px 0 0; line-height: 1.55; }
+.ll-behoerde-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;
+  padding-top: 14px; border-top: 1px solid var(--border); margin: 0; }
+.ll-behoerde-row dt { color: var(--ink-3); font-size: 13px; }
+.ll-behoerde-row dd { display: inline-flex; align-items: center; gap: 10px; margin: 0; }
+.ll-behoerde-name { font-weight: 600; }
+.ll-kat-badge { font-size: 11.5px; }
+.ll-weitere { color: var(--ink-3); font-size: 12.5px; margin: 10px 0 0; }
+
+/* Voraussetzungen-Checkliste */
+.ll-checklist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.ll-checklist li { display: flex; gap: 12px; align-items: flex-start; font-size: 14px; line-height: 1.5; }
+.ll-checklist svg { width: 18px; height: 18px; color: var(--green-600); flex: none; margin-top: 1px; }
+
+/* Dokumente-Liste */
+.ll-doklist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.ll-doklist li { display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+  border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface); }
+.ll-doklist svg { width: 17px; height: 17px; color: var(--ink-3); flex: none; }
+.ll-dok-name { flex: 1; font-size: 14px; font-weight: 500; min-width: 0; }
+
+/* Provenance-Chip (Once-Only-Herkunft). Statische Tints -> dark-safe. */
+.ll-prefill-chip { display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 9px; border-radius: var(--r-pill); font-size: 11.5px; font-weight: 500;
+  background: var(--brand-50); color: var(--brand-700); white-space: nowrap; }
+.ll-prefill-chip svg { width: 12px; height: 12px; }
+.ll-prefill-chip.is-user { background: var(--surface-soft); color: var(--ink-2);
+  border: 1px solid var(--border-strong); }
+.ll-prefill-chip.is-upload { background: var(--amber-50); color: var(--amber-700); }
+
+/* Rechtsgrundlagen */
+.ll-recht-list { margin: 0; display: flex; flex-direction: column; gap: 12px; }
+.ll-recht-row { display: grid; grid-template-columns: 160px 1fr; gap: 14px; align-items: baseline;
+  padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+.ll-recht-row:last-child { border-bottom: 0; padding-bottom: 0; }
+.ll-recht-norm { font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12.5px; font-weight: 600; color: var(--ink-2); margin: 0; }
+.ll-recht-bedeutung { margin: 0; font-size: 13.5px; color: var(--ink-3); line-height: 1.55; }
+
+/* Frist / Gebuehr Mini-Stats */
+.ll-ministats { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.ll-ministat { display: flex; flex-direction: column; gap: 6px; }
+.ll-ministat h3 { font-size: 14px; font-weight: 600; margin: 4px 0 0; }
+.ll-ministat p { font-size: 13.5px; color: var(--ink-3); margin: 0; line-height: 1.5; }
+.ll-geb-betrag { font-size: 15px; font-weight: 700; color: var(--ink); display: flex;
+  align-items: center; gap: 10px; flex-wrap: wrap; }
+.ll-geb-hinweis { font-size: 12.5px; color: var(--ink-3); margin-top: 4px; }
+
+/* MOCK-Rail-Marker (Gebuehr/Upload/Dokument) — statisch dark-safe. */
+.ll-mock-rail { display: inline-flex; align-items: center;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px; font-weight: 600; letter-spacing: .02em;
+  padding: 2px 7px; border-radius: var(--r-pill);
+  background: var(--surface-soft); color: var(--ink-3); border: 1px solid var(--border-strong); }
+
+/* CTA-Zeile */
+.ll-cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.ll-back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px;
+  color: var(--ink-3); margin-bottom: 8px; }
+.ll-back-link:hover { color: var(--brand-600); }
+.ll-back-link svg { width: 15px; height: 15px; }
+
+/* Kein-Antrag-noetig-Panel (mode=antragslos) */
+.ll-antragslos { display: flex; gap: 16px; align-items: flex-start;
+  padding: 22px 24px; border-radius: var(--r-lg);
+  background: var(--green-50); border: 1px solid var(--green-100); }
+.ll-antragslos .icon-circle.lg { flex: none; }
+.ll-antragslos-body h2 { font-size: 17px; font-weight: 700; margin: 0; color: var(--green-700); }
+.ll-antragslos-body p { font-size: 14px; color: var(--ink-2); margin: 6px 0 14px; line-height: 1.55; }
+.dark .ll-antragslos { background: var(--banner-success-bg); }
+/* On the dark success band (#14301F) the green-600/700 title fails AA (3.25:1);
+   flip to the light mint so it reads (~11:1), mirroring the light-mode dark-on-light. */
+.dark .ll-antragslos-body h2 { color: var(--green-100); }
+
+/* Once-Only-Rail-Note */
+.ll-once-only { text-align: left; }
+.ll-once-only-title { font-size: 15px; font-weight: 600; margin: 10px 0 0; }
+.ll-once-only-note { font-size: 13px; color: var(--ink-3); margin: 6px 0 0; line-height: 1.5; }
+
+/* Antrag-Formular */
+.ll-fields { display: flex; flex-direction: column; gap: 18px; }
+.ll-field-row { display: flex; flex-direction: column; gap: 7px; }
+.ll-field-labelline { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.ll-field-label { font-size: 13.5px; font-weight: 600; color: var(--ink-2); }
+.ll-required { color: var(--red-600); }
+.ll-checkbox { display: flex; align-items: flex-start; gap: 10px; font-size: 13.5px; color: var(--ink-2); cursor: pointer; }
+.ll-checkbox input { margin-top: 2px; width: 16px; height: 16px; accent-color: var(--brand-fill); }
+
+.ll-dropzone { display: flex; align-items: center; gap: 12px; width: 100%;
+  padding: 16px; border: 1.5px dashed var(--border-strong); border-radius: var(--r-md);
+  background: var(--surface-soft); color: var(--ink-3); font-size: 13.5px; cursor: pointer; text-align: left; }
+.ll-dropzone:hover { border-color: var(--brand-500); }
+.ll-dropzone.is-set { border-style: solid; border-color: var(--green-500); color: var(--ink-2); background: var(--green-50); }
+.dark .ll-dropzone.is-set { background: var(--banner-success-bg); }
+.ll-dropzone svg { width: 20px; height: 20px; flex: none; }
+.ll-dropzone span:first-of-type { flex: 1; }
+
+/* Consent-Toggles */
+.ll-consent-lead { font-size: 13px; color: var(--ink-3); margin: 0 0 14px; }
+.ll-consent-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.ll-consent-label { display: flex; gap: 12px; align-items: flex-start; cursor: pointer; }
+.ll-consent-label input { margin-top: 2px; width: 17px; height: 17px; flex: none; accent-color: var(--brand-fill); }
+.ll-consent-text { display: flex; flex-direction: column; gap: 2px; }
+.ll-consent-aktion { font-size: 13.5px; font-weight: 500; color: var(--ink); line-height: 1.45; }
+.ll-consent-basis { font-size: 12px; color: var(--ink-3); }
+
+.ll-gebuehr-card { display: flex; gap: 16px; align-items: center; }
+
+/* Datenminimierungs-Panel */
+.ll-dm-panel { display: flex; flex-direction: column; gap: 14px; max-height: 520px; overflow: auto; }
+.ll-dm-head { display: flex; gap: 12px; align-items: flex-start; }
+.ll-dm-title { font-size: 15px; font-weight: 600; margin: 0; }
+.ll-dm-sub { font-size: 12.5px; color: var(--ink-3); margin: 2px 0 0; line-height: 1.45; }
+.ll-dm-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.ll-dm-recipient { display: flex; flex-direction: column; gap: 6px; padding: 12px;
+  border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface); }
+.ll-dm-recipient.is-muted { opacity: .5; }
+.ll-dm-recipient-name { font-size: 13px; font-weight: 600; }
+.ll-dm-kats { display: flex; flex-wrap: wrap; gap: 6px; }
+.ll-dm-kat { font-size: 11px; padding: 2px 8px; border-radius: var(--r-pill);
+  background: var(--brand-50); color: var(--brand-700); }
+.ll-dm-off { font-size: 11.5px; color: var(--ink-3); font-style: italic; }
+
+/* Kaskade */
+.ll-cascade-list { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.ll-cas-row { display: flex; flex-direction: column; gap: 12px; align-items: stretch; text-align: left; }
+.ll-cas-row.is-skipped { opacity: .55; }
+.ll-cas-main { display: flex; gap: 14px; align-items: flex-start; }
+.ll-cas-main .icon-circle { flex: none; }
+.ll-cas-body { flex: 1; min-width: 0; }
+.ll-cas-headline { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.ll-cas-headline .t { font-weight: 700; font-size: 15px; }
+.ll-cas-chips { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.ll-cas-row .s { color: var(--ink-3); font-size: 13px; margin-top: 4px; line-height: 1.5; min-height: 0; }
+.ll-cas-recht { color: var(--ink-4); font-size: 11.5px; margin-top: 5px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.ll-cas-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding-top: 10px; border-top: 1px solid var(--border); }
+.ll-cas-foot .time { color: var(--ink-3); font-size: 12.5px; font-variant-numeric: tabular-nums; margin: 0; }
+.ll-cas-eid { padding-top: 4px; }
+
+/* Gate-Chip: auto / eID / Einwilligung — statische Tints. */
+.ll-gate-chip { display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 9px; border-radius: var(--r-pill); font-size: 11px; font-weight: 600;
+  background: var(--surface-soft); color: var(--ink-2); border: 1px solid var(--border-strong); }
+.ll-gate-chip svg { width: 12px; height: 12px; }
+.ll-gate-chip.is-eid { background: var(--brand-50); color: var(--brand-700); border-color: transparent; }
+/* Static light pill in both modes (green-700 on green-50 = AA), like the amber
+   ZUKUNFT chip. No dark override — green-600 on the light pill would drop to ~3.2:1. */
+.ll-gate-chip.is-consent { background: var(--green-50); color: var(--green-700); border-color: transparent; }
+
+/* ZUKUNFT-Chip: amber Pille, statisch -> dark-safe. */
+.ll-zukunft-chip { display: inline-flex; align-items: center;
+  padding: 3px 9px; border-radius: var(--r-pill); font-size: 11px; font-weight: 600;
+  background: var(--amber-50); color: var(--amber-700); }
+
+/* Abschluss-Karte */
+.ll-completion { margin-top: 20px; border-color: var(--green-100); }
+.dark .ll-completion { border-color: var(--green-700); }
+.ll-completion-az { font-size: 14px; margin: 0 0 14px; }
+.ll-completion-az-lbl { color: var(--ink-3); }
+.ll-completion-links { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.ll-completion-link { display: flex; align-items: center; gap: 10px; padding: 12px 14px;
+  border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface); font-size: 13.5px; }
+.ll-completion-link:hover { box-shadow: var(--shadow-1); }
+.ll-completion-link svg { width: 16px; height: 16px; color: var(--ink-3); flex: none; }
+.ll-completion-link span:nth-of-type(1) { flex: 1; min-width: 0; }
+.ll-completion-next { font-size: 13px; color: var(--ink-3); margin: 14px 0 0; line-height: 1.5; }
+
+@media (max-width: 880px) {
+  .ll-ministats { grid-template-columns: 1fr; }
+  .ll-recht-row { grid-template-columns: 1fr; gap: 4px; }
+  .ll-dm-panel { max-height: none; }
+}

@@ -15,6 +15,40 @@
 import type { ValueReceipt } from '@/types/value-receipt';
 import type { Vorgang } from '@/types/vorgang';
 
+/**
+ * Dossier-feste Override-Figuren (§1.4) — kommen aus
+ * `LebenslageConfig.value_receipt`. Wenn gesetzt, gewinnen sie über die
+ * abgeleiteten Counts. `umzug` ruft ohne Overrides auf → altes Verhalten.
+ */
+export interface ValueReceiptOverrides {
+  behoerdengaenge_gespart?: number;
+  minuten_gespart?: number;
+  hinweis_key?: string;
+}
+
+/**
+ * Mappt `Vorgang.typ` auf den `ValueReceipt.lebenslage`-Slug. Umzug bleibt
+ * 'umzug'; die funktionalen Lebenslagen tragen ihren Slug im `vorgang.context`
+ * (`slug`), Fallback ist eine Typ-Heuristik.
+ */
+function lebenslageOf(vorgang: Vorgang): ValueReceipt['lebenslage'] {
+  const ctxSlug = (vorgang.context?.slug as string | undefined) ?? undefined;
+  const known: ValueReceipt['lebenslage'][] = [
+    'umzug',
+    'geburt',
+    'aufenthalt-verlaengerung',
+    'kindergeld',
+    'reisepass',
+    'bafoeg',
+    'pflegegrad',
+    'wohngeld',
+  ];
+  if (ctxSlug && (known as string[]).includes(ctxSlug)) {
+    return ctxSlug as ValueReceipt['lebenslage'];
+  }
+  return 'umzug';
+}
+
 /** Status-quo-Aufwand klassisch in Minuten (ca. 8 Stunden, 1a, gerundet). */
 const KLASSISCH_AUFWAND_MIN = 480;
 
@@ -52,8 +86,12 @@ const PRIVATE_ODER_ANSTALT = new Set<string>([
 export function computeValueReceipt(
   vorgang: Vorgang,
   stammdatenBestaetigtAm: string = vorgang.angelegt_am,
+  overrides?: ValueReceiptOverrides,
 ): ValueReceipt | null {
-  if (vorgang.typ !== 'umzug') return null;
+  // Umzug (kein Override): unverändertes V1-Verhalten — nur 'umzug'-Vorgänge.
+  // Funktionale Lebenslagen reichen ihre `value_receipt`-Overrides herein und
+  // sind dadurch zugelassen (§1.4); der `typ`-Guard greift nur ohne Overrides.
+  if (!overrides && vorgang.typ !== 'umzug') return null;
   const confirmed = vorgang.schritte.filter((s) => s.status === 'confirmed');
   if (confirmed.length === 0) return null;
 
@@ -78,9 +116,12 @@ export function computeValueReceipt(
 
   return {
     vorgang_id: vorgang.id,
-    lebenslage: 'umzug',
-    behoerden_count: behoerden.size,
-    geschaetzte_zeitersparnis_min: KLASSISCH_AUFWAND_MIN - AUTOPILOT_AUFWAND_MIN,
+    lebenslage: lebenslageOf(vorgang),
+    // Override-Figuren (dossierfest) gewinnen über die abgeleiteten Counts (§1.4).
+    behoerden_count: overrides?.behoerdengaenge_gespart ?? behoerden.size,
+    geschaetzte_zeitersparnis_min:
+      overrides?.minuten_gespart ??
+      KLASSISCH_AUFWAND_MIN - AUTOPILOT_AUFWAND_MIN,
     klassische_schritte: KLASSISCHE_SCHRITTE,
     ihr_aufwand_schritte: 1,
     once_only_fields: onceOnly,
