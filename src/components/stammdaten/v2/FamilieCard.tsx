@@ -18,6 +18,8 @@ interface FamilieMember {
 interface FamilieCardProps {
   kinder: FamilieMember[];
   partner?: FamilieMember;
+  onEdit?: () => void;
+  onAdd?: () => void;
 }
 
 /**
@@ -28,7 +30,7 @@ interface FamilieCardProps {
  * The trailing "+ Weitere Person hinzufügen" link is a no-op in V2 — the real
  * edit path remains in the Vorgang/Standesamt-Wegweiser.
  */
-export function FamilieCard({ kinder, partner }: FamilieCardProps) {
+export function FamilieCard({ kinder, partner, onEdit, onAdd }: FamilieCardProps) {
   const t = useTranslations('stammdaten.v2.familie');
   const tCta = useTranslations('stammdaten.cta');
 
@@ -48,7 +50,7 @@ export function FamilieCard({ kinder, partner }: FamilieCardProps) {
             {t('card_title')}
           </h2>
         </div>
-        <Button type="button" variant="outline" size="sm">
+        <Button type="button" variant="outline" size="sm" onClick={onEdit}>
           <Pencil aria-hidden="true" />
           {tCta('bearbeiten')}
         </Button>
@@ -89,7 +91,8 @@ export function FamilieCard({ kinder, partner }: FamilieCardProps) {
 
       <button
         type="button"
-        className="mt-2 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline focus-visible:underline"
+        onClick={onAdd}
+        className="mt-2 inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
       >
         <PlusCircle aria-hidden="true" className="size-3.5" />
         {t('add_link')}

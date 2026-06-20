@@ -262,8 +262,14 @@
       },
       "back": "Back"
     },
+    "eid_card": {
+      "kind": "ID card (Personalausweis)",
+      "subtitle": "Digital proof of identity · eID",
+      "mock": "[MOCK]"
+    },
     "transparency": {
       "title": "This data is provided by your digital identity",
+      "release_to": "Releases to GovTech DE",
       "subtitle": "You decide what is shared. Nothing without your consent.",
       "required_group": "Required details — needed to sign in",
       "optional_group": "Optional details — only when needed (data minimisation)",
@@ -280,6 +286,9 @@
         "optional": "Optional"
       },
       "share_toggle": "Share",
+      "verified_source": "From your ID card (Personalausweis) · verified",
+      "not_shared": "not transmitted",
+      "minimization": "Data minimisation (Datenminimierung): you are transmitting {shared} of {total} details.",
       "recipient": "Recipient: GovTech DE (demo) only — and only with your consent.",
       "legal_basis": "Legal basis: eIDAS 2 / OZG · consent-based details: DSGVO Art. 6 (1) (a)",
       "dsgvo_footer": "Your data is transmitted securely and processed in accordance with the DSGVO (GDPR).",
@@ -2284,6 +2293,37 @@
       "wallet_verbunden": "Wallet connected",
       "aufenthalt_gueltig": "Residence valid",
       "aufenthalt_ablauf_bald": "Residence permit expiring soon"
+    },
+    "hero_v3": {
+      "region_label": "Verified identity",
+      "status_badge": "Verified",
+      "kv_geburtsdatum": "Date of birth",
+      "kv_staatsangehoerigkeit": "Nationality",
+      "kv_quelle": "Authoritative source",
+      "quelle_fallback": "Citizens' office (registration authority)",
+      "fallback_chip_ausweis": "ID card on file"
+    },
+    "once_only": {
+      "region_title": "Once-only principle",
+      "summary": "Your data live across {count} registers and sync automatically — you only provide them once.",
+      "node_melderegister": "Population register",
+      "node_kba": "Vehicle register (KBA)",
+      "node_drv": "Pension account (DRV)",
+      "node_gkv": "Health insurance",
+      "node_finanzamt": "Tax office",
+      "node_bzst": "Tax ID (BZSt)",
+      "status_synchronisiert": "synchronised",
+      "status_angebunden": "connected",
+      "status_in_anbindung": "being connected (2027 vision)",
+      "node_aria": "{register} — {status}",
+      "feed_title": "Latest synchronisation",
+      "feed_route": "{absender} → {empfaenger}",
+      "feed_empty": "No register transmissions in the visible period.",
+      "show_all": "Show full log",
+      "pilot_note": "Register connection status: pilot phase — coverage is being expanded continuously."
+    },
+    "sections": {
+      "region_title": "Your master data in detail"
     },
     "aenderungsprotokoll": {
       "title": "Change log",

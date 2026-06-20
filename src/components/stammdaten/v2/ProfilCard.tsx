@@ -14,6 +14,7 @@ interface ProfilCardProps {
   geburtsdatumIso: string;
   staatsangehoerigkeit: string;
   partnerVorhanden: boolean;
+  onEdit?: () => void;
 }
 
 /**
@@ -28,6 +29,7 @@ export function ProfilCard({
   geburtsdatumIso,
   staatsangehoerigkeit,
   partnerVorhanden,
+  onEdit,
 }: ProfilCardProps) {
   const t = useTranslations('stammdaten.v2.profil');
   const tCta = useTranslations('stammdaten.cta');
@@ -59,6 +61,7 @@ export function ProfilCard({
           variant="outline"
           size="sm"
           data-testid="v2-profil-edit"
+          onClick={onEdit}
         >
           <Pencil aria-hidden="true" />
           {tCta('bearbeiten')}

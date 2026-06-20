@@ -1,7 +1,6 @@
 'use client';
 
-import { Avatar } from '@/components/shared/Avatar';
-import { cn } from '@/lib/utils';
+import { EidCredentialCard } from '@/components/onboarding/EidCredentialCard';
 
 interface OnboardingPersonaCardProps {
   personaId: string;
@@ -12,8 +11,10 @@ interface OnboardingPersonaCardProps {
 }
 
 /**
- * Single selectable persona card (Screen C). A real `<button>` whose accessible
- * name combines name + descriptor; the monogram avatar is decorative.
+ * Single selectable persona row (Screen C). Renders the credential's `select`
+ * variant so the picker reads as a rack of digital IDs. The accessible name
+ * combines name + descriptor (both real text); the MRZ hint is derived from the
+ * name and stays decorative.
  */
 export function OnboardingPersonaCard({
   name,
@@ -22,24 +23,12 @@ export function OnboardingPersonaCard({
   onClick,
 }: OnboardingPersonaCardProps) {
   return (
-    <button
-      type="button"
+    <EidCredentialCard
+      variant="select"
+      name={name}
+      descriptor={descriptor}
+      selected={selected}
       onClick={onClick}
-      aria-pressed={selected}
-      className={cn(
-        'flex w-full min-h-[44px] items-center gap-3 rounded-lg border bg-surface p-4 text-start transition-colors',
-        'hover:border-border-strong hover:bg-surface-muted',
-        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
-        selected ? 'border-primary bg-accent-soft' : 'border-border',
-      )}
-    >
-      <Avatar name={name} size="lg" tone="primary" />
-      <span className="flex min-w-0 flex-col gap-0.5">
-        <span className="truncate text-base font-semibold text-text-primary">
-          {name}
-        </span>
-        <span className="text-sm text-text-secondary">{descriptor}</span>
-      </span>
-    </button>
+    />
   );
 }

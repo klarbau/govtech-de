@@ -262,8 +262,14 @@
       },
       "back": "رجوع"
     },
+    "eid_card": {
+      "kind": "بطاقة الهوية (Personalausweis)",
+      "subtitle": "إثبات الهوية الرقمي · eID",
+      "mock": "[MOCK]"
+    },
     "transparency": {
       "title": "هذه البيانات تقدّمها هويتك الرقمية",
+      "release_to": "تُتاح لـ GovTech DE",
       "subtitle": "أنت من يقرّر ما يُشارَك. لا شيء دون موافقتك.",
       "required_group": "بيانات إلزامية — لازمة لتسجيل الدخول",
       "optional_group": "بيانات اختيارية — عند الحاجة فقط (تقليل البيانات)",
@@ -280,6 +286,9 @@
         "optional": "اختياري"
       },
       "share_toggle": "مشاركة",
+      "verified_source": "من بطاقة هويتك (Personalausweis) · موثّقة",
+      "not_shared": "لا تُنقَل",
+      "minimization": "تقليل البيانات (Datenminimierung): أنت تنقل {shared} من أصل {total} من البيانات.",
       "recipient": "المستلِم: GovTech DE (عرض توضيحي) فقط — وبموافقتك فقط.",
       "legal_basis": "الأساس القانوني: eIDAS 2 / OZG · البيانات المستندة إلى الموافقة: DSGVO Art. 6 Abs. 1 lit. a",
       "dsgvo_footer": "تُنقَل بياناتك بأمان وتُعالَج وفقاً للائحة DSGVO (GDPR).",
@@ -2284,6 +2293,37 @@
       "wallet_verbunden": "تم ربط المحفظة (Wallet)",
       "aufenthalt_gueltig": "الإقامة سارية",
       "aufenthalt_ablauf_bald": "تصريح الإقامة على وشك الانتهاء"
+    },
+    "hero_v3": {
+      "region_label": "هوية موثّقة",
+      "status_badge": "موثّقة",
+      "kv_geburtsdatum": "تاريخ الميلاد",
+      "kv_staatsangehoerigkeit": "الجنسية",
+      "kv_quelle": "المصدر الرسمي",
+      "quelle_fallback": "مكتب المواطنين (سلطة التسجيل)",
+      "fallback_chip_ausweis": "بطاقة الهوية محفوظة"
+    },
+    "once_only": {
+      "region_title": "مبدأ المرة الواحدة",
+      "summary": "تعيش بياناتك في {count} سجلات وتتزامن تلقائيًا — تقدّمها مرة واحدة فقط.",
+      "node_melderegister": "سجل السكان",
+      "node_kba": "سجل المركبات (KBA)",
+      "node_drv": "حساب التقاعد (DRV)",
+      "node_gkv": "التأمين الصحي",
+      "node_finanzamt": "مكتب الضرائب",
+      "node_bzst": "الرقم الضريبي (BZSt)",
+      "status_synchronisiert": "تمت المزامنة",
+      "status_angebunden": "متصل",
+      "status_in_anbindung": "قيد الربط (رؤية 2027)",
+      "node_aria": "{register} — {status}",
+      "feed_title": "آخر مزامنة",
+      "feed_route": "{absender} ← {empfaenger}",
+      "feed_empty": "لا توجد عمليات إرسال إلى السجلات في الفترة المرئية.",
+      "show_all": "عرض السجل الكامل",
+      "pilot_note": "حالة ربط السجلات: مرحلة تجريبية — يجري توسيع التغطية باستمرار."
+    },
+    "sections": {
+      "region_title": "بياناتك الأساسية بالتفصيل"
     },
     "aenderungsprotokoll": {
       "title": "سجل التغييرات",

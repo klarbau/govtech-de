@@ -44,7 +44,7 @@ export function VerifyChipRow({
 
 function Chip({ label }: { label: string }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-[13px] font-medium text-text-ink-2">
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-[13px] font-medium text-text-primary">
       <CheckCircle2 aria-hidden="true" className="size-3.5 text-success" />
       {label}
     </span>

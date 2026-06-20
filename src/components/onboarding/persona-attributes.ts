@@ -29,6 +29,8 @@ export interface OnboardingPersonaAttributes {
   name: string;
   /** German civilian date of the `geburtsdatum`. */
   birthdate: string;
+  /** Four-digit birth year, for the credential card's context line. */
+  birthYear: string;
   /** `${strasse} ${hausnummer}, ${plz} ${ort}`. */
   address: string;
   nationality: string;
@@ -79,6 +81,7 @@ export function getOnboardingPersonaAttributes(
   return {
     name: `${persona.vorname} ${persona.nachname}`,
     birthdate: formatDateDe(persona.geburtsdatum),
+    birthYear: persona.geburtsdatum.slice(0, 4),
     address: `${adresse.strasse} ${adresse.hausnummer}, ${adresse.plz} ${adresse.ort}`,
     nationality:
       NATIONALITY_LABEL[persona.staatsangehoerigkeit] ??

@@ -13,6 +13,7 @@ interface VersicherungVorsorgeCardProps {
   /** Altersvorsorge-Subtitle (z. B. „Gesetzliche Rentenversicherung · Versichert seit 12.05.2015"). */
   altersvorsorgeTraeger?: string;
   altersvorsorgeSeitIso?: string;
+  onEdit?: () => void;
 }
 
 /**
@@ -26,6 +27,7 @@ export function VersicherungVorsorgeCard({
   krankenkasse,
   altersvorsorgeTraeger,
   altersvorsorgeSeitIso,
+  onEdit,
 }: VersicherungVorsorgeCardProps) {
   const t = useTranslations('stammdaten.v2.versicherung');
   const tCta = useTranslations('stammdaten.cta');
@@ -48,7 +50,7 @@ export function VersicherungVorsorgeCard({
             {t('title')}
           </h2>
         </div>
-        <Button type="button" variant="outline" size="sm">
+        <Button type="button" variant="outline" size="sm" onClick={onEdit}>
           <Pencil aria-hidden="true" />
           {tCta('bearbeiten')}
         </Button>

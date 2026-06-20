@@ -22,6 +22,7 @@ interface DokumenteCardProps {
   personalausweis?: { nummer: string; gueltigBisIso: string };
   aufenthaltstitel?: { norm: string; gueltigBisIso: string };
   eatCan?: string;
+  onEdit?: () => void;
 }
 
 /**
@@ -36,6 +37,7 @@ export function DokumenteCard({
   personalausweis,
   aufenthaltstitel,
   eatCan,
+  onEdit,
 }: DokumenteCardProps) {
   const t = useTranslations('stammdaten.v2.dokumente');
 
@@ -109,7 +111,7 @@ export function DokumenteCard({
             {t('title')}
           </h2>
         </div>
-        <Button type="button" variant="outline" size="sm">
+        <Button type="button" variant="outline" size="sm" onClick={onEdit}>
           <Settings aria-hidden="true" />
           {t('verwalten')}
         </Button>

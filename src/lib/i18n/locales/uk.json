@@ -262,8 +262,14 @@
       },
       "back": "Назад"
     },
+    "eid_card": {
+      "kind": "Посвідчення особи (Personalausweis)",
+      "subtitle": "Цифрове підтвердження особи · eID",
+      "mock": "[MOCK]"
+    },
     "transparency": {
       "title": "Ці дані надає Ваша цифрова ідентичність",
+      "release_to": "Передає до GovTech DE",
       "subtitle": "Ви вирішуєте, що передавати. Нічого без Вашої згоди.",
       "required_group": "Обов'язкові дані — потрібні для входу",
       "optional_group": "Додаткові дані — лише за потреби (мінімізація даних)",
@@ -280,6 +286,9 @@
         "optional": "За вибором"
       },
       "share_toggle": "Передати",
+      "verified_source": "З Вашого паспорта (Personalausweis) · перевірено",
+      "not_shared": "не передається",
+      "minimization": "Мінімізація даних (Datenminimierung): Ви передаєте {shared} з {total} даних.",
       "recipient": "Отримувач: лише GovTech DE (демо) — і лише за Вашою згодою.",
       "legal_basis": "Правова основа: eIDAS 2 / OZG · дані на основі згоди: DSGVO Art. 6 Abs. 1 lit. a",
       "dsgvo_footer": "Ваші дані передаються безпечно й обробляються відповідно до DSGVO (GDPR).",
@@ -2284,6 +2293,37 @@
       "wallet_verbunden": "Wallet під’єднано",
       "aufenthalt_gueltig": "Посвідка на проживання дійсна",
       "aufenthalt_ablauf_bald": "Термін посвідки скоро спливає"
+    },
+    "hero_v3": {
+      "region_label": "Підтверджена особа",
+      "status_badge": "Підтверджено",
+      "kv_geburtsdatum": "Дата народження",
+      "kv_staatsangehoerigkeit": "Громадянство",
+      "kv_quelle": "Провідне джерело",
+      "quelle_fallback": "Бюро у справах громадян (орган реєстрації)",
+      "fallback_chip_ausweis": "Посвідчення особи збережено"
+    },
+    "once_only": {
+      "region_title": "Принцип однократного введення",
+      "summary": "Ваші дані зберігаються в {count} реєстрах і синхронізуються автоматично — ви надаєте їх лише один раз.",
+      "node_melderegister": "Реєстр мешканців",
+      "node_kba": "Реєстр транспортних засобів (KBA)",
+      "node_drv": "Пенсійний рахунок (DRV)",
+      "node_gkv": "Медичне страхування",
+      "node_finanzamt": "Податкова служба",
+      "node_bzst": "Податковий номер (BZSt)",
+      "status_synchronisiert": "синхронізовано",
+      "status_angebunden": "підключено",
+      "status_in_anbindung": "у процесі підключення (бачення 2027)",
+      "node_aria": "{register} — {status}",
+      "feed_title": "Остання синхронізація",
+      "feed_route": "{absender} → {empfaenger}",
+      "feed_empty": "Немає передач до реєстрів за видимий період.",
+      "show_all": "Показати повний журнал",
+      "pilot_note": "Статус підключення реєстрів: пілотна фаза — охоплення постійно розширюється."
+    },
+    "sections": {
+      "region_title": "Ваші основні дані докладно"
     },
     "aenderungsprotokoll": {
       "title": "Журнал змін",

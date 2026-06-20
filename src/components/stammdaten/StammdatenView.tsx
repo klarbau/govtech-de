@@ -1,27 +1,8 @@
 'use client';
 
 import * as React from 'react';
-import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { parseISO } from 'date-fns';
-import {
-  CheckCircle2,
-  ChevronRight,
-  Clock,
-  FileText,
-  Globe,
-  Home,
-  IdCard,
-  Landmark,
-  Lock,
-  Pencil,
-  PiggyBank,
-  PlusCircle,
-  Settings,
-  Shield,
-  User,
-  Users,
-} from 'lucide-react';
 
 import { api } from '@/lib/mock-backend';
 import {
@@ -35,6 +16,16 @@ import {
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/shared/Skeleton';
 import { EudiReferencePidCard } from '@/components/stammdaten/wallet/EudiReferencePidCard';
+import { ProfilCard } from '@/components/stammdaten/v2/ProfilCard';
+import { KontaktCard } from '@/components/stammdaten/v2/KontaktCard';
+import { FamilieCard } from '@/components/stammdaten/v2/FamilieCard';
+import { AnschriftCard } from '@/components/stammdaten/v2/AnschriftCard';
+import { DokumenteCard } from '@/components/stammdaten/v2/DokumenteCard';
+import { VersicherungVorsorgeCard } from '@/components/stammdaten/v2/VersicherungVorsorgeCard';
+import { AenderungsprotokollCard } from '@/components/stammdaten/v2/AenderungsprotokollCard';
+import { DatenhoheitFooter } from '@/components/stammdaten/v2/DatenhoheitFooter';
+import { IdentitaetsHero } from '@/components/stammdaten/v3/IdentitaetsHero';
+import { OnceOnlyRegisterPanel } from '@/components/stammdaten/v3/OnceOnlyRegisterPanel';
 import type {
   Behoerde,
   Persona,
@@ -52,16 +43,11 @@ interface Loaded {
   stammdaten: Stammdaten;
   log: UebermittlungsLogEntry[];
   wallet: WalletAttestation[];
+  behoerden: Behoerde[];
   behoerdenById: Record<string, Behoerde>;
 }
 
-/**
- * `<StammdatenView>` — literal port of `docs/design-prototype-v2/stammdaten.html`.
- * Same DOM (`verify-chips`, `sd-grid`, `sd-card`, `kv-row`, `doc-row`,
- * `timeline-card`, `sd-foot`); data wired via `api.getProfile()` +
- * `api.getStammdaten()` + `api.getUebermittlungsLog()` + `api.getWalletAttestations()`.
- */
-type AddFlow = { title: string; body: string };
+type DialogFlow = { title: string; body: string };
 
 /**
  * Shared Behörden-Hinweis: in this 2027-vision prototype, Stammdaten are a
@@ -71,12 +57,23 @@ type AddFlow = { title: string; body: string };
 const BEHOERDEN_HINWEIS =
   'In dieser Demo sind Stammdaten ein read-only Single-Source-of-Truth: Änderungen nehmen Sie nicht hier vor, sondern bei der zuständigen Behörde – die aktualisierten Daten fließen anschließend automatisch in Ihr Profil zurück.';
 
+/**
+ * `<StammdatenView>` — V3 „Verifizierter Identitätsraum + Once-Only-Maschine".
+ *
+ * Page head (single `<h1>`) → `<IdentitaetsHero>` (credential anchor) →
+ * `<OnceOnlyRegisterPanel>` (register-sovereignty band) → token-styled 3-column
+ * grid of the v2 cards → `<DatenhoheitFooter>`. All edit/add controls open the
+ * existing honest Behörden-Hinweis dialogs — never fake editing.
+ */
 export function StammdatenView(_props: StammdatenViewProps) {
+  const t = useTranslations('stammdaten');
   const [data, setData] = React.useState<Loaded | null>(null);
-  const [addFlow, setAddFlow] = React.useState<AddFlow | null>(null);
-  const [editFlow, setEditFlow] = React.useState<AddFlow | null>(null);
+  const [addFlow, setAddFlow] = React.useState<DialogFlow | null>(null);
+  const [editFlow, setEditFlow] = React.useState<DialogFlow | null>(null);
   const [protokollOpen, setProtokollOpen] = React.useState(false);
-  const [fullLog, setFullLog] = React.useState<UebermittlungsLogEntry[] | null>(null);
+  const [fullLog, setFullLog] = React.useState<UebermittlungsLogEntry[] | null>(
+    null,
+  );
 
   const personaId = data?.persona.id ?? null;
 
@@ -104,14 +101,21 @@ export function StammdatenView(_props: StammdatenViewProps) {
           const persona = await api.getProfile();
           const [stammdaten, log, wallet, behoerden] = await Promise.all([
             api.getStammdaten(persona.id),
-            api.getUebermittlungsLog(persona.id, { limit: 5 }),
+            api.getUebermittlungsLog(persona.id, { limit: 8 }),
             api.getWalletAttestations(persona.id),
             api.getBehoerden(),
           ]);
           if (cancelled) return;
           const map: Record<string, Behoerde> = {};
           for (const b of behoerden) map[b.id] = b;
-          setData({ persona, stammdaten, log, wallet, behoerdenById: map });
+          setData({
+            persona,
+            stammdaten,
+            log,
+            wallet,
+            behoerden,
+            behoerdenById: map,
+          });
           return;
         } catch {
           await new Promise((r) => setTimeout(r, 200));
@@ -127,472 +131,208 @@ export function StammdatenView(_props: StammdatenViewProps) {
     return <StammdatenSkeleton />;
   }
 
-  const { persona, stammdaten, log, wallet } = data;
-  const fullName = `${stammdaten.identitaet.vornamen} ${stammdaten.identitaet.familienname}`;
-  const geburt = formatDDMMYYYY(parseISO(stammdaten.identitaet.geburtsdatum));
-  const staatsangehoerigkeit = stammdaten.identitaet.staatsangehoerigkeit;
-  const familienstand = stammdaten.familie.partner ? 'verheiratet' : 'ledig';
+  const { persona, stammdaten, log, wallet, behoerden, behoerdenById } = data;
+  const identitaet = stammdaten.identitaet;
+  const fullName = `${identitaet.vornamen} ${identitaet.familienname}`.trim();
+
   const email =
-    persona.kontakt?.bundid_email.value ?? stammdaten.kontakt.email ?? '—';
+    persona.kontakt?.bundid_email.value ?? stammdaten.kontakt.email ?? undefined;
   const emailVerifiziert = Boolean(persona.kontakt?.bundid_email.verified);
   const mobil =
-    persona.kontakt?.bundid_mobil?.value ?? stammdaten.kontakt.mobil ?? '—';
+    persona.kontakt?.bundid_mobil?.value ?? stammdaten.kontakt.mobil ?? undefined;
   const mobilVerifiziert = Boolean(persona.kontakt?.bundid_mobil?.verified);
+
   const anschrift = stammdaten.anschrift_aktuell;
   const reisepass = stammdaten.dokumente_refs.reisepass;
   const personalausweis = stammdaten.dokumente_refs.personalausweis;
+  const eatCan = stammdaten.dokumente_refs.eat_can;
   const aufenthalt = persona.aufenthaltstitel;
   const kk = persona.krankenversicherung;
   const kvnr =
     persona.kvnr_v1_1?.unveraenderbar ??
     persona.krankenversicherung?.versichertennummer;
   const kinder = stammdaten.familie.kinder;
-  const aufenthaltGueltig =
-    aufenthalt && parseISO(aufenthalt.valid_until).getTime() > Date.now();
+  const partner = stammdaten.familie.partner;
+
+  const aufenthaltGueltig = Boolean(
+    aufenthalt && parseISO(aufenthalt.valid_until).getTime() > Date.now(),
+  );
   const walletVerbunden = wallet.length > 0;
-  const anschriftBestaetigtIso = log.find((e) => e.sektion === 'anschrift')
-    ?.timestamp;
+
+  const anschriftLogEntry = log.find((e) => e.sektion === 'anschrift');
+  const anschriftBestaetigtIso = anschriftLogEntry?.timestamp;
+  const fuehrendeQuelle =
+    (anschriftLogEntry?.absender_behoerde_id
+      ? behoerdenById[anschriftLogEntry.absender_behoerde_id]?.name_de
+      : undefined) ?? t('hero_v3.quelle_fallback');
+
+  const fallbackChipLabel = !aufenthaltGueltig
+    ? t('hero_v3.fallback_chip_ausweis')
+    : undefined;
 
   return (
     <>
-      <div className="gt-page-head">
-        <h1>Stammdaten</h1>
-        <div className="sub">Persönliche Daten, Kontakte und Nachweise an einem Ort.</div>
-        <div className="verify-chips" style={{ marginTop: '14px' }}>
-          <span className="verify-chip">
-            <CheckCircle2 />Adresse bestätigt
-          </span>
-          {walletVerbunden && (
-            <span className="verify-chip">
-              <CheckCircle2 />Wallet verbunden
-            </span>
-          )}
-          {aufenthaltGueltig && (
-            <span className="verify-chip">
-              <CheckCircle2 />Aufenthalt gültig
-            </span>
-          )}
-        </div>
-      </div>
+      <header className="mb-5">
+        <h1 className="text-2xl font-semibold tracking-tight text-text-primary sm:text-3xl">
+          {t('page.title')}
+        </h1>
+        <p className="mt-1 max-w-2xl text-sm text-text-secondary">
+          {t('page.subtitle')}
+        </p>
+      </header>
 
-      <div className="sd-grid">
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-          <div className="sd-card">
-            <div className="sd-card-head">
-              <div className="title">
-                <User />Persönliches Profil
-              </div>
-              <button
-                type="button"
-                className="btn btn-secondary btn-sm"
-                onClick={() =>
-                  setEditFlow({
-                    title: 'Persönliches Profil ändern',
-                    body: `Name, Geburtsdatum, Staatsangehörigkeit und Familienstand werden von der zuständigen Behörde (Standesamt bzw. Bürgeramt) geführt. ${BEHOERDEN_HINWEIS}`,
-                  })
-                }
-              >
-                <Pencil />Bearbeiten
-              </button>
-            </div>
-            <div className="kv-row">
-              <div className="k">Name</div>
-              <div className="v">{fullName}</div>
-            </div>
-            <div className="kv-row">
-              <div className="k">Geburtsdatum</div>
-              <div className="v">{geburt}</div>
-            </div>
-            <div className="kv-row">
-              <div className="k">Staatsangehörigkeit</div>
-              <div className="v">{capitalize(staatsangehoerigkeit)}</div>
-            </div>
-            <div className="kv-row">
-              <div className="k">Familienstand</div>
-              <div className="v">{familienstand}</div>
-            </div>
-          </div>
+      <IdentitaetsHero
+        fullName={fullName}
+        geburtsdatumIso={identitaet.geburtsdatum}
+        staatsangehoerigkeit={identitaet.staatsangehoerigkeit}
+        fuehrendeQuelle={fuehrendeQuelle}
+        verify={{
+          adresseBestaetigt: true,
+          walletVerbunden,
+          aufenthaltGueltig,
+        }}
+        fallbackChipLabel={fallbackChipLabel}
+      />
 
-          <div className="sd-card">
-            <div className="sd-card-head">
-              <div className="title">
-                <User />Kontakt
-              </div>
-              <button
-                type="button"
-                className="btn btn-secondary btn-sm"
-                onClick={() =>
-                  setEditFlow({
-                    title: 'Kontaktdaten ändern',
-                    body: `E-Mail und Telefonnummer werden zentral über Ihr DeutschlandID-Konto verwaltet und nach jeder Änderung neu verifiziert. ${BEHOERDEN_HINWEIS}`,
-                  })
-                }
-              >
-                <Pencil />Bearbeiten
-              </button>
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '8px 0',
-              }}
-            >
-              <div>
-                <div className="muted text-xs">E-Mail</div>
-                <div className="fw-500">{email}</div>
-              </div>
-              {emailVerifiziert && (
-                <span className="badge green">
-                  <CheckCircle2 style={{ width: '12px', height: '12px' }} />
-                  Verifiziert
-                </span>
-              )}
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '8px 0',
-                borderTop: '1px solid var(--border)',
-              }}
-            >
-              <div>
-                <div className="muted text-xs">Telefonnummer</div>
-                <div className="fw-500">{mobil}</div>
-              </div>
-              {mobilVerifiziert && (
-                <span className="badge green">
-                  <CheckCircle2 style={{ width: '12px', height: '12px' }} />
-                  Verifiziert
-                </span>
-              )}
-            </div>
-          </div>
+      <OnceOnlyRegisterPanel
+        behoerden={behoerden}
+        behoerdenById={behoerdenById}
+        log={log}
+        onOpenFullLog={openProtokoll}
+      />
 
-          <div className="sd-card">
-            <div className="sd-card-head">
-              <div className="title">
-                <Users />Familie &amp; Bezugspersonen
-              </div>
-              <button
-                type="button"
-                className="btn btn-secondary btn-sm"
-                onClick={() =>
-                  setEditFlow({
-                    title: 'Familie & Bezugspersonen ändern',
-                    body: `Familienstand und Bezugspersonen ergeben sich aus den beim Standesamt geführten Personenstandsdaten. ${BEHOERDEN_HINWEIS}`,
-                  })
-                }
-              >
-                <Pencil />Bearbeiten
-              </button>
-            </div>
-            <div className="muted text-xs" style={{ marginBottom: '8px' }}>
-              Kinder
-            </div>
-            {kinder.length === 0 ? (
-              <div className="muted text-sm" style={{ padding: '10px 0' }}>
-                Keine Kinder hinterlegt.
-              </div>
-            ) : (
-              kinder.map((kind) => (
-                <div
-                  key={`${kind.vorname}-${kind.geburtsdatum}`}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px',
-                    padding: '10px 0',
-                    borderTop: '1px solid var(--border)',
-                  }}
-                >
-                  <span className="avatar green">{initials(kind.vorname, kind.nachname)}</span>
-                  <div className="grow">
-                    <div className="fw-600">{kind.vorname} {kind.nachname}</div>
-                    <div className="muted text-xs">
-                      Geburtsdatum &nbsp; {formatDDMMYYYY(parseISO(kind.geburtsdatum))}
-                    </div>
-                  </div>
-                  <div className="text-sm muted">
-                    Verwandtschaft
-                    <br />
-                    <span style={{ color: 'var(--ink)' }} className="fw-500">Kind</span>
-                  </div>
-                  <ChevronRight style={{ color: 'var(--ink-4)' }} />
-                </div>
-              ))
-            )}
-            <button
-              type="button"
-              className="add-link"
-              style={{ background: 'transparent', border: 0, padding: 0, cursor: 'pointer' }}
-              onClick={() =>
+      <section aria-labelledby="sd-sections-title" className="mt-5">
+        <h2 id="sd-sections-title" className="sr-only">
+          {t('sections.region_title')}
+        </h2>
+        <div className="grid grid-cols-1 items-start gap-[18px] lg:grid-cols-3">
+          <div className="flex flex-col gap-[18px]">
+            <ProfilCard
+              vorname={identitaet.vornamen}
+              nachname={identitaet.familienname}
+              geburtsdatumIso={identitaet.geburtsdatum}
+              staatsangehoerigkeit={capitalize(identitaet.staatsangehoerigkeit)}
+              partnerVorhanden={Boolean(partner)}
+              onEdit={() =>
+                setEditFlow({
+                  title: 'Persönliches Profil ändern',
+                  body: `Name, Geburtsdatum, Staatsangehörigkeit und Familienstand werden von der zuständigen Behörde (Standesamt bzw. Bürgeramt) geführt. ${BEHOERDEN_HINWEIS}`,
+                })
+              }
+            />
+            <KontaktCard
+              email={email}
+              emailVerifiziert={emailVerifiziert}
+              mobil={mobil}
+              mobilVerifiziert={mobilVerifiziert}
+              onEdit={() =>
+                setEditFlow({
+                  title: 'Kontaktdaten ändern',
+                  body: `E-Mail und Telefonnummer werden zentral über Ihr DeutschlandID-Konto verwaltet und nach jeder Änderung neu verifiziert. ${BEHOERDEN_HINWEIS}`,
+                })
+              }
+            />
+            <FamilieCard
+              kinder={kinder.map((kind) => ({
+                vorname: kind.vorname,
+                nachname: kind.nachname,
+                geburtsdatumIso: kind.geburtsdatum,
+              }))}
+              partner={
+                partner
+                  ? {
+                      vorname: partner.vorname,
+                      nachname: partner.nachname,
+                      geburtsdatumIso: partner.geburtsdatum,
+                    }
+                  : undefined
+              }
+              onEdit={() =>
+                setEditFlow({
+                  title: 'Familie & Bezugspersonen ändern',
+                  body: `Familienstand und Bezugspersonen ergeben sich aus den beim Standesamt geführten Personenstandsdaten. ${BEHOERDEN_HINWEIS}`,
+                })
+              }
+              onAdd={() =>
                 setAddFlow({
                   title: 'Weitere Person hinzufügen',
                   body: 'Das Hinterlegen weiterer Bezugspersonen (Kinder, betreute Personen) ist eine 2027-Vision dieser Demo. In der echten App würde hier ein geführter Dialog mit DeutschlandID-Verknüpfung und Nachweis-Upload starten.',
                 })
               }
-            >
-              <PlusCircle />Weitere Person hinzufügen
-            </button>
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-          <div className="sd-card">
-            <div className="sd-card-head">
-              <div className="title">
-                <Home />Anschrift
-              </div>
-              <button
-                type="button"
-                className="btn btn-secondary btn-sm"
-                onClick={() =>
-                  setEditFlow({
-                    title: 'Anschrift ändern',
-                    body: `Ihre Meldeanschrift wird vom Bürgeramt im Melderegister geführt. Eine Adressänderung erfolgt über die Ummeldung – in dieser Demo als Umzug-Autopilot abgebildet. ${BEHOERDEN_HINWEIS}`,
-                  })
-                }
-              >
-                <Pencil />Ändern
-              </button>
-            </div>
-            <div className="muted text-xs">Aktuelle Anschrift</div>
-            <div
-              style={{
-                marginTop: '4px',
-                fontWeight: 500,
-                lineHeight: 1.55,
-              }}
-            >
-              {anschrift.strasse} {anschrift.hausnummer}
-              <br />
-              {anschrift.plz} {anschrift.ort}
-              <br />
-              Deutschland
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                borderTop: '1px solid var(--border)',
-                marginTop: '14px',
-                paddingTop: '12px',
-              }}
-            >
-              <span className="muted text-xs">
-                zuletzt bestätigt am{' '}
-                {anschriftBestaetigtIso
-                  ? formatDDMMYYYY(parseISO(anschriftBestaetigtIso))
-                  : '22.03.2026'}
-              </span>
-              <span className="badge green">Bestätigt</span>
-            </div>
+            />
           </div>
 
-          <div className="sd-card">
-            <div className="sd-card-head">
-              <div className="title">
-                <IdCard />Identitätsdokumente
-              </div>
-              <button
-                type="button"
-                className="btn btn-secondary btn-sm"
-                onClick={() =>
-                  setEditFlow({
-                    title: 'Identitätsdokumente verwalten',
-                    body: `Reisepass, Personalausweis und Aufenthaltstitel werden von der ausstellenden Behörde geführt. Neuausstellung oder Verlängerung erfolgt dort. ${BEHOERDEN_HINWEIS}`,
-                  })
-                }
-              >
-                <Settings />Verwalten
-              </button>
-            </div>
-            {reisepass && (
-              <div className="doc-row">
-                <span className="icon-square">
-                  <Globe />
-                </span>
-                <div className="body">
-                  <div className="t">Reisepass</div>
-                  <div className="s">
-                    Nummer {reisepass.nummer} · Gültig bis{' '}
-                    {formatDDMMYYYY(parseISO(reisepass.gueltig_bis))}
-                  </div>
-                </div>
-                <span className="badge green">Gültig</span>
-              </div>
-            )}
-            {personalausweis && (
-              <div className="doc-row">
-                <span className="icon-square">
-                  <IdCard />
-                </span>
-                <div className="body">
-                  <div className="t">Personalausweis</div>
-                  <div className="s">
-                    Nummer {personalausweis.nummer} · Gültig bis{' '}
-                    {formatDDMMYYYY(parseISO(personalausweis.gueltig_bis))}
-                  </div>
-                </div>
-                <span className="badge green">Gültig</span>
-              </div>
-            )}
-            {aufenthalt && (
-              <div className="doc-row">
-                <span className="icon-square">
-                  <IdCard />
-                </span>
-                <div className="body">
-                  <div className="t">Aufenthaltstitel</div>
-                  <div className="s">
-                    {aufenthalt.norm} · Gültig bis{' '}
-                    {formatDDMMYYYY(parseISO(aufenthalt.valid_until))}
-                  </div>
-                </div>
-                <span className="badge green">Gültig</span>
-              </div>
-            )}
-            <Link className="add-link" href="/dokumente">
-              <PlusCircle />Dokument hinzufügen
-            </Link>
-          </div>
-
-          <EudiReferencePidCard personaId={persona.id} />
-
-          <div className="sd-card">
-            <div className="sd-card-head">
-              <div className="title">
-                <Shield />Versicherung &amp; Vorsorge
-              </div>
-              <button
-                type="button"
-                className="btn btn-secondary btn-sm"
-                onClick={() =>
-                  setEditFlow({
-                    title: 'Versicherung & Vorsorge ändern',
-                    body: `Krankenkasse und Rentenversicherung werden von den jeweiligen Trägern geführt. Ein Kassenwechsel oder eine Statusänderung wird dort beantragt. ${BEHOERDEN_HINWEIS}`,
-                  })
-                }
-              >
-                <Pencil />Bearbeiten
-              </button>
-            </div>
-            {kk && (
-              <div className="doc-row">
-                <span
-                  className="avatar green"
-                  style={{ width: '36px', height: '36px', fontSize: '11px' }}
-                >
-                  {kk.traeger.slice(0, 3).toUpperCase()}
-                </span>
-                <div className="body">
-                  <div className="t">Krankenkasse</div>
-                  <div className="s">
-                    {kk.traeger}
-                    {kvnr ? ` · Versichertennummer ${kvnr}` : ''}
-                  </div>
-                </div>
-                <span className="badge green">Aktiv</span>
-              </div>
-            )}
-            {persona.rentenversicherungsnummer && (
-              <div className="doc-row">
-                <span className="icon-square">
-                  <PiggyBank />
-                </span>
-                <div className="body">
-                  <div className="t">Altersvorsorge</div>
-                  <div className="s">
-                    Gesetzliche Rentenversicherung · Nr. {persona.rentenversicherungsnummer}
-                  </div>
-                </div>
-                <span className="badge green">Aktiv</span>
-              </div>
-            )}
-            <button
-              type="button"
-              className="add-link"
-              style={{ background: 'transparent', border: 0, padding: 0, cursor: 'pointer' }}
-              onClick={() =>
-                setAddFlow({
-                  title: 'Weitere Vorsorge hinzufügen',
-                  body: 'Das Verknüpfen weiterer Vorsorge- und Versicherungsverhältnisse (private Altersvorsorge, Zusatzversicherungen) ist eine 2027-Vision dieser Demo. In der echten App würde hier ein Anbieter-Abgleich über die EUDI-Wallet starten.',
+          <div className="flex flex-col gap-[18px]">
+            <AnschriftCard
+              adresse={anschrift}
+              zuletztBestaetigtIso={anschriftBestaetigtIso}
+              onEdit={() =>
+                setEditFlow({
+                  title: 'Anschrift ändern',
+                  body: `Ihre Meldeanschrift wird vom Bürgeramt im Melderegister geführt. Eine Adressänderung erfolgt über die Ummeldung – in dieser Demo als Umzug-Autopilot abgebildet. ${BEHOERDEN_HINWEIS}`,
                 })
               }
-            >
-              <PlusCircle />Weitere Vorsorge hinzufügen
-            </button>
+            />
+            <DokumenteCard
+              reisepass={
+                reisepass
+                  ? { nummer: reisepass.nummer, gueltigBisIso: reisepass.gueltig_bis }
+                  : undefined
+              }
+              personalausweis={
+                personalausweis
+                  ? {
+                      nummer: personalausweis.nummer,
+                      gueltigBisIso: personalausweis.gueltig_bis,
+                    }
+                  : undefined
+              }
+              aufenthaltstitel={
+                aufenthalt
+                  ? { norm: aufenthalt.norm, gueltigBisIso: aufenthalt.valid_until }
+                  : undefined
+              }
+              eatCan={eatCan}
+              onEdit={() =>
+                setEditFlow({
+                  title: 'Identitätsdokumente verwalten',
+                  body: `Reisepass, Personalausweis und Aufenthaltstitel werden von der ausstellenden Behörde geführt. Neuausstellung oder Verlängerung erfolgt dort. ${BEHOERDEN_HINWEIS}`,
+                })
+              }
+            />
+            <EudiReferencePidCard personaId={persona.id} />
+            <VersicherungVorsorgeCard
+              krankenkasse={
+                kk
+                  ? { traegerName: kk.traeger, kvnr: kvnr ?? undefined }
+                  : undefined
+              }
+              altersvorsorgeTraeger={
+                persona.rentenversicherungsnummer
+                  ? 'Gesetzliche Rentenversicherung'
+                  : undefined
+              }
+              onEdit={() =>
+                setEditFlow({
+                  title: 'Versicherung & Vorsorge ändern',
+                  body: `Krankenkasse und Rentenversicherung werden von den jeweiligen Trägern geführt. Ein Kassenwechsel oder eine Statusänderung wird dort beantragt. ${BEHOERDEN_HINWEIS}`,
+                })
+              }
+            />
           </div>
-        </div>
 
-        <div className="sd-card timeline-card">
-          <div className="sd-card-head">
-            <div className="title">
-              <Clock />Änderungsprotokoll
-            </div>
+          <div className="flex flex-col gap-[18px]">
+            <AenderungsprotokollCard
+              entries={log}
+              behoerdenById={behoerdenById}
+              limit={6}
+              onShowAll={openProtokoll}
+            />
           </div>
-          <div className="muted text-xs" style={{ marginBottom: '12px' }}>
-            Letzte Änderungen an Ihren Stammdaten
-          </div>
-          {log.slice(0, 6).map((entry) => {
-            const variant = timelineAvatarVariant(entry.absender_behoerde_id ?? '');
-            const cls = variant === 'ard' ? 'item ard' : variant === 'aok' ? 'item aok' : 'item';
-            const ts = parseISO(entry.timestamp);
-            return (
-              <div key={entry.id} className={cls}>
-                <span className="av">{timelineAvatarContent(variant)}</span>
-                <div>
-                  <div className="t">{timelineTitle(entry)}</div>
-                  <div className="s">
-                    {behoerdenName(entry, data.behoerdenById)}
-                    {entry.note ? `\n${entry.note}` : ''}
-                  </div>
-                </div>
-                <div className="when">
-                  {formatDDMMYYYY(ts)}
-                  <br />
-                  {formatHHMM(ts)} Uhr
-                </div>
-              </div>
-            );
-          })}
-          {log.length === 0 && (
-            <div className="muted text-sm" style={{ padding: '14px 0' }}>
-              Keine Änderungen in den letzten 30 Tagen.
-            </div>
-          )}
-          <button
-            type="button"
-            className="btn btn-secondary"
-            style={{ marginTop: '16px', width: '100%' }}
-            onClick={openProtokoll}
-          >
-            <FileText />Vollständiges Protokoll anzeigen
-          </button>
         </div>
-      </div>
+      </section>
 
-      <div className="sd-foot">
-        <span className="icon-circle">
-          <Shield />
-        </span>
-        <div className="body">
-          <div className="t">Sie haben die Hoheit über Ihre Daten</div>
-          <div className="s">
-            Ihre Stammdaten werden nur mit Ihrer Zustimmung an Behörden und Dienste weitergegeben.
-            Sie entscheiden, wer welche Informationen einsehen darf.{' '}
-            <Link href="/datenschutz">Mehr zu Ihren Rechten und zur Datenverwendung.</Link>
-          </div>
-        </div>
-        <Link href="/datenschutz" className="btn btn-secondary">
-          <Lock />Datennutzung verwalten
-        </Link>
-      </div>
+      <DatenhoheitFooter />
 
       <Dialog
         open={addFlow !== null}
@@ -605,13 +345,11 @@ export function StammdatenView(_props: StammdatenViewProps) {
             <DialogTitle>{addFlow?.title ?? ''}</DialogTitle>
             <DialogDescription>{addFlow?.body ?? ''}</DialogDescription>
           </DialogHeader>
-          <p className="text-xs text-muted-foreground">[MOCK] — Demo-Funktion, demnächst verfügbar.</p>
+          <p className="text-xs text-muted-foreground">
+            [MOCK] — Demo-Funktion, demnächst verfügbar.
+          </p>
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setAddFlow(null)}
-            >
+            <Button type="button" variant="outline" onClick={() => setAddFlow(null)}>
               Schließen
             </Button>
           </DialogFooter>
@@ -633,11 +371,7 @@ export function StammdatenView(_props: StammdatenViewProps) {
             [MOCK] — Geführte Behörden-Änderung in Vorbereitung.
           </p>
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setEditFlow(null)}
-            >
+            <Button type="button" variant="outline" onClick={() => setEditFlow(null)}>
               Schließen
             </Button>
           </DialogFooter>
@@ -652,45 +386,33 @@ export function StammdatenView(_props: StammdatenViewProps) {
               Alle Änderungen und Übermittlungen Ihrer Stammdaten.
             </DialogDescription>
           </DialogHeader>
-          <div style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+          <div className="max-h-[60vh] overflow-y-auto" tabIndex={0}>
             {fullLog === null ? (
-              <p className="muted text-sm" style={{ padding: '14px 0' }}>
-                Wird geladen …
-              </p>
+              <p className="py-3.5 text-sm text-text-secondary">Wird geladen …</p>
             ) : fullLog.length === 0 ? (
-              <p className="muted text-sm" style={{ padding: '14px 0' }}>
+              <p className="py-3.5 text-sm text-text-secondary">
                 Keine Änderungen vorhanden.
               </p>
             ) : (
-              fullLog.map((entry) => {
-                const ts = parseISO(entry.timestamp);
-                return (
-                  <div
-                    key={entry.id}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      justifyContent: 'space-between',
-                      gap: '12px',
-                      padding: '10px 0',
-                      borderTop: '1px solid var(--border)',
-                    }}
-                  >
-                    <div>
-                      <div className="fw-600">{timelineTitle(entry)}</div>
-                      <div className="muted text-xs">
-                        {behoerdenName(entry, data.behoerdenById)}
-                        {entry.note ? ` · ${entry.note}` : ''}
-                      </div>
-                    </div>
-                    <div className="muted text-xs" style={{ whiteSpace: 'nowrap' }}>
-                      {formatDDMMYYYY(ts)}
-                      <br />
-                      {formatHHMM(ts)} Uhr
-                    </div>
+              fullLog.map((entry, idx) => (
+                <div
+                  key={entry.id}
+                  className={`flex items-start justify-between gap-3 py-2.5 ${idx > 0 ? 'border-t border-border' : ''}`}
+                >
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-text-primary">
+                      {timelineTitle(entry)}
+                    </p>
+                    <p className="text-xs text-text-secondary">
+                      {behoerdenName(entry, behoerdenById)}
+                      {entry.note ? ` · ${entry.note}` : ''}
+                    </p>
                   </div>
-                );
-              })
+                  <p className="shrink-0 whitespace-nowrap text-xs text-text-secondary tabular-nums">
+                    {formatDDMMYYYY(parseISO(entry.timestamp))}
+                  </p>
+                </div>
+              ))
             )}
           </div>
           <DialogFooter>
@@ -713,16 +435,26 @@ function StammdatenSkeleton() {
   return (
     <div role="status" aria-busy="true">
       <span className="sr-only">{tCommon('loading')}</span>
-      <div className="gt-page-head">
+      <div className="mb-5">
         <Skeleton shape="text" className="h-8 w-64" />
         <Skeleton shape="text" className="mt-2 w-80" />
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '18px', marginTop: '14px' }}>
-        <Skeleton className="h-28 rounded-2xl" />
-        <Skeleton className="h-36 rounded-2xl" />
-        <Skeleton className="h-32 rounded-2xl" />
-        <Skeleton className="h-32 rounded-2xl" />
-        <Skeleton className="h-28 rounded-2xl" />
+      <Skeleton className="h-44 rounded-2xl" />
+      <Skeleton className="mt-5 h-40 rounded-2xl" />
+      <div className="mt-5 grid grid-cols-1 gap-[18px] lg:grid-cols-3">
+        <div className="flex flex-col gap-[18px]">
+          <Skeleton className="h-40 rounded-2xl" />
+          <Skeleton className="h-32 rounded-2xl" />
+          <Skeleton className="h-36 rounded-2xl" />
+        </div>
+        <div className="flex flex-col gap-[18px]">
+          <Skeleton className="h-36 rounded-2xl" />
+          <Skeleton className="h-40 rounded-2xl" />
+          <Skeleton className="h-36 rounded-2xl" />
+        </div>
+        <div className="flex flex-col gap-[18px]">
+          <Skeleton className="h-72 rounded-2xl" />
+        </div>
       </div>
     </div>
   );
@@ -735,62 +467,33 @@ function capitalize(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-function initials(vorname: string, nachname: string): string {
-  return `${vorname.charAt(0)}${nachname.charAt(0)}`.toUpperCase();
-}
-
 function formatDDMMYYYY(d: Date): string {
   const dd = String(d.getDate()).padStart(2, '0');
   const mm = String(d.getMonth() + 1).padStart(2, '0');
   return `${dd}.${mm}.${d.getFullYear()}`;
 }
 
-function formatHHMM(d: Date): string {
-  const hh = String(d.getHours()).padStart(2, '0');
-  const mm = String(d.getMinutes()).padStart(2, '0');
-  return `${hh}:${mm}`;
-}
-
-function timelineAvatarVariant(
-  behoerdeId: string,
-): 'default' | 'ard' | 'aok' | 'eagle' {
-  if (behoerdeId.startsWith('ardzdf-') || behoerdeId.includes('beitragsservice'))
-    return 'ard';
-  if (behoerdeId.startsWith('aok-')) return 'aok';
-  if (
-    behoerdeId.startsWith('buergeramt-') ||
-    behoerdeId.startsWith('bezirksamt-') ||
-    behoerdeId.startsWith('finanzamt-')
-  )
-    return 'eagle';
-  return 'default';
-}
-
-function timelineAvatarContent(
-  variant: 'default' | 'ard' | 'aok' | 'eagle',
-): React.ReactNode {
-  if (variant === 'ard')
-    return (
-      <>
-        ARD
-        <br />
-        ZDF
-      </>
-    );
-  if (variant === 'aok') return 'AOK';
-  if (variant === 'eagle') return <Landmark />;
-  return <User />;
-}
-
 function timelineTitle(entry: UebermittlungsLogEntry): string {
   if (entry.zweck_i18n_key.includes('adresse')) return 'Adresse bestätigt';
-  if (entry.zweck_i18n_key.includes('kontakt') || entry.zweck_i18n_key.includes('email'))
+  if (
+    entry.zweck_i18n_key.includes('kontakt') ||
+    entry.zweck_i18n_key.includes('email')
+  )
     return 'E-Mail-Adresse geändert';
-  if (entry.zweck_i18n_key.includes('mobil') || entry.zweck_i18n_key.includes('telefon'))
+  if (
+    entry.zweck_i18n_key.includes('mobil') ||
+    entry.zweck_i18n_key.includes('telefon')
+  )
     return 'Telefonnummer bestätigt';
-  if (entry.zweck_i18n_key.includes('rundfunk') || entry.zweck_i18n_key.includes('beitragsservice'))
+  if (
+    entry.zweck_i18n_key.includes('rundfunk') ||
+    entry.zweck_i18n_key.includes('beitragsservice')
+  )
     return 'Rundfunkbeitrag aktualisiert';
-  if (entry.zweck_i18n_key.includes('krankenkasse') || entry.zweck_i18n_key.includes('kv'))
+  if (
+    entry.zweck_i18n_key.includes('krankenkasse') ||
+    entry.zweck_i18n_key.includes('kv')
+  )
     return 'Krankenkasse bestätigt';
   return 'Stammdaten aktualisiert';
 }

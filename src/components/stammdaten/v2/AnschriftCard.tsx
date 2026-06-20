@@ -18,6 +18,7 @@ interface AnschriftCardProps {
    * persona's seed date when no log entry exists.
    */
   zuletztBestaetigtIso?: string;
+  onEdit?: () => void;
 }
 
 /**
@@ -26,6 +27,7 @@ interface AnschriftCardProps {
 export function AnschriftCard({
   adresse,
   zuletztBestaetigtIso,
+  onEdit,
 }: AnschriftCardProps) {
   const t = useTranslations('stammdaten.v2.anschrift');
   const land = adresse.land === 'DE' || !adresse.land ? 'Deutschland' : adresse.land;
@@ -49,7 +51,7 @@ export function AnschriftCard({
             {t('title')}
           </h2>
         </div>
-        <Button type="button" variant="outline" size="sm">
+        <Button type="button" variant="outline" size="sm" onClick={onEdit}>
           <Pencil aria-hidden="true" />
           {t('aendern')}
         </Button>

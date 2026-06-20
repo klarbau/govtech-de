@@ -17,7 +17,7 @@ export function DatenhoheitFooter() {
   return (
     <section
       aria-labelledby="v2-datenhoheit-title"
-      className="mt-2 flex flex-col items-start gap-3 rounded-[var(--radius-card)] border border-brand-100 bg-brand-50 p-5 sm:flex-row sm:items-center"
+      className="mt-2 flex flex-col items-start gap-3 rounded-[var(--radius-card)] border border-brand-100 bg-brand-50 p-5 dark:border-white/10 dark:bg-[var(--brand-50)] sm:flex-row sm:items-center"
       data-testid="v2-datenhoheit-banner"
     >
       <span
@@ -33,11 +33,11 @@ export function DatenhoheitFooter() {
         >
           {t('title')}
         </p>
-        <p className="mt-1 text-sm leading-relaxed text-text-ink-2">
+        <p className="mt-1 text-sm leading-relaxed text-text-secondary">
           {t('body_before_link')}{' '}
           <Link
             href="/datenschutz"
-            className="font-medium text-primary hover:underline focus-visible:underline"
+            className="font-medium text-primary hover:underline focus-visible:underline dark:text-[var(--brand-700)]"
           >
             {t('body_link')}
           </Link>

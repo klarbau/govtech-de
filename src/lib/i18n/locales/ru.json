@@ -262,8 +262,14 @@
       },
       "back": "Назад"
     },
+    "eid_card": {
+      "kind": "Удостоверение личности (Personalausweis)",
+      "subtitle": "Цифровое подтверждение личности · eID",
+      "mock": "[MOCK]"
+    },
     "transparency": {
       "title": "Эти данные предоставляет Ваша цифровая идентичность",
+      "release_to": "Передаёт в GovTech DE",
       "subtitle": "Вы решаете, что передавать. Ничего без Вашего согласия.",
       "required_group": "Обязательные данные — необходимы для входа",
       "optional_group": "Дополнительные данные — только при необходимости (минимизация данных)",
@@ -280,6 +286,9 @@
         "optional": "По выбору"
       },
       "share_toggle": "Передать",
+      "verified_source": "Из Вашего паспорта (Personalausweis) · проверено",
+      "not_shared": "не передаётся",
+      "minimization": "Минимизация данных (Datenminimierung): Вы передаёте {shared} из {total} данных.",
       "recipient": "Получатель: только GovTech DE (демо) — и только с Вашего согласия.",
       "legal_basis": "Правовая основа: eIDAS 2 / OZG · данные на основе согласия: DSGVO Art. 6 Abs. 1 lit. a",
       "dsgvo_footer": "Ваши данные передаются безопасно и обрабатываются в соответствии с DSGVO (GDPR).",
@@ -2284,6 +2293,37 @@
       "wallet_verbunden": "Wallet подключён",
       "aufenthalt_gueltig": "Вид на жительство действителен",
       "aufenthalt_ablauf_bald": "Срок ВНЖ скоро истекает"
+    },
+    "hero_v3": {
+      "region_label": "Подтверждённая личность",
+      "status_badge": "Подтверждено",
+      "kv_geburtsdatum": "Дата рождения",
+      "kv_staatsangehoerigkeit": "Гражданство",
+      "kv_quelle": "Ведущий источник",
+      "quelle_fallback": "Бюро по делам граждан (орган регистрации)",
+      "fallback_chip_ausweis": "Удостоверение личности сохранено"
+    },
+    "once_only": {
+      "region_title": "Принцип однократного ввода",
+      "summary": "Ваши данные хранятся в {count} реестрах и синхронизируются автоматически — вы предоставляете их только один раз.",
+      "node_melderegister": "Реестр жителей",
+      "node_kba": "Реестр транспортных средств (KBA)",
+      "node_drv": "Пенсионный счёт (DRV)",
+      "node_gkv": "Медицинское страхование",
+      "node_finanzamt": "Налоговая инспекция",
+      "node_bzst": "Налоговый номер (BZSt)",
+      "status_synchronisiert": "синхронизировано",
+      "status_angebunden": "подключено",
+      "status_in_anbindung": "в процессе подключения (концепция 2027)",
+      "node_aria": "{register} — {status}",
+      "feed_title": "Последняя синхронизация",
+      "feed_route": "{absender} → {empfaenger}",
+      "feed_empty": "Нет передач в реестры за видимый период.",
+      "show_all": "Показать полный журнал",
+      "pilot_note": "Статус подключения реестров: пилотная фаза — охват постоянно расширяется."
+    },
+    "sections": {
+      "region_title": "Ваши основные данные подробно"
     },
     "aenderungsprotokoll": {
       "title": "Журнал изменений",

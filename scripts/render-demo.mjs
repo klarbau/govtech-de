@@ -79,8 +79,12 @@ function probeDurationSec(ffmpeg, file) {
 /**
  * The ambient pad as a single aevalsrc expression: four chords (A, F#m, D, E),
  * each swelling in and out over a 10 s window (sin envelope → zero at every
- * seam, so the loop never clicks). Two slightly detuned sines per note give
- * the pad its warmth.
+ * seam, so the loop never clicks). Two slightly detuned sines per chord note
+ * give the body of the pad its warmth; a sub-octave root underneath adds weight
+ * and a quiet two-octave shimmer on top adds air — so the loop reads as a fuller,
+ * more "scored" bed rather than a thin organ. Everything is scaled by
+ * `--music-vol` and clamped by the downstream `alimiter`, so the extra voices
+ * never clip.
  */
 function padExpression() {
   const SEG = 10;
@@ -95,12 +99,23 @@ function padExpression() {
     const lo = k * SEG;
     const hi = (k + 1) * SEG;
     const env = `between(mod(t,${cycle}),${lo},${hi})*sin(PI*(mod(t,${cycle})-${lo})/${SEG})`;
-    const voice = notes
-      .map(
+    const root = notes[0];
+    const top = notes[notes.length - 1];
+    const voice = [
+      // chord body — two slightly detuned sines per note
+      ...notes.map(
         (f) =>
-          `0.16*sin(2*PI*${f}*t)+0.09*sin(2*PI*${(f * 1.004).toFixed(3)}*t)`,
-      )
-      .join('+');
+          `0.145*sin(2*PI*${f}*t)+0.08*sin(2*PI*${(f * 1.004).toFixed(3)}*t)`,
+      ),
+      // sub-octave root — weight
+      `0.11*sin(2*PI*${(root / 2).toFixed(2)}*t)`,
+      // two-octave shimmer — air (detuned pair, kept quiet)
+      `0.05*sin(2*PI*${(top * 2).toFixed(2)}*t)+0.03*sin(2*PI*${(
+        top *
+        2 *
+        1.004
+      ).toFixed(3)}*t)`,
+    ].join('+');
     return `(${env})*(${voice})`;
   });
   return terms.join('+');

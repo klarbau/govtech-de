@@ -12,6 +12,7 @@ interface KontaktCardProps {
   emailVerifiziert?: boolean;
   mobil?: string;
   mobilVerifiziert?: boolean;
+  onEdit?: () => void;
 }
 
 /**
@@ -25,6 +26,7 @@ export function KontaktCard({
   emailVerifiziert,
   mobil,
   mobilVerifiziert,
+  onEdit,
 }: KontaktCardProps) {
   const t = useTranslations('stammdaten.v2.kontakt');
   const tCta = useTranslations('stammdaten.cta');
@@ -45,7 +47,7 @@ export function KontaktCard({
             {t('card_title')}
           </h2>
         </div>
-        <Button type="button" variant="outline" size="sm">
+        <Button type="button" variant="outline" size="sm" onClick={onEdit}>
           <Pencil aria-hidden="true" />
           {tCta('bearbeiten')}
         </Button>

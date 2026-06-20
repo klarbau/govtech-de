@@ -262,8 +262,14 @@
       },
       "back": "Zurück"
     },
+    "eid_card": {
+      "kind": "Personalausweis",
+      "subtitle": "Digitaler Identitätsnachweis · eID",
+      "mock": "[MOCK]"
+    },
     "transparency": {
       "title": "Diese Daten stellt Ihre digitale Identität bereit",
+      "release_to": "Gibt frei an GovTech DE",
       "subtitle": "Sie entscheiden, was geteilt wird. Nichts ohne Ihre Zustimmung.",
       "required_group": "Pflichtangaben — für die Anmeldung erforderlich",
       "optional_group": "Optionale Angaben — nur bei Bedarf (Datenminimierung)",
@@ -280,6 +286,9 @@
         "optional": "Optional"
       },
       "share_toggle": "Teilen",
+      "verified_source": "Aus Ihrem Personalausweis · verifiziert",
+      "not_shared": "wird nicht übertragen",
+      "minimization": "Datenminimierung: Sie übertragen {shared} von {total} Angaben.",
       "recipient": "Empfänger: nur GovTech DE (Demo) — und nur mit Ihrer Zustimmung.",
       "legal_basis": "Rechtsgrundlage: eIDAS 2 / OZG · einwilligungsbasierte Angaben: DSGVO Art. 6 Abs. 1 lit. a",
       "dsgvo_footer": "Ihre Daten werden sicher übertragen und gemäß DSGVO verarbeitet.",
@@ -2514,6 +2523,37 @@
       "wallet_verbunden": "Wallet verbunden",
       "aufenthalt_gueltig": "Aufenthalt gültig",
       "aufenthalt_ablauf_bald": "Aufenthalt läuft bald ab"
+    },
+    "hero_v3": {
+      "region_label": "Verifizierte Identität",
+      "status_badge": "Verifiziert",
+      "kv_geburtsdatum": "Geburtsdatum",
+      "kv_staatsangehoerigkeit": "Staatsangehörigkeit",
+      "kv_quelle": "Führende Quelle",
+      "quelle_fallback": "Bürgeramt (Meldebehörde)",
+      "fallback_chip_ausweis": "Personalausweis hinterlegt"
+    },
+    "once_only": {
+      "region_title": "Once-Only-Prinzip",
+      "summary": "Ihre Daten leben in {count} Registern und synchronisieren automatisch — Sie geben sie nur einmal an.",
+      "node_melderegister": "Melderegister",
+      "node_kba": "Fahrzeugregister (KBA)",
+      "node_drv": "Rentenkonto (DRV)",
+      "node_gkv": "Krankenkasse",
+      "node_finanzamt": "Finanzamt",
+      "node_bzst": "Steuer-IdNr (BZSt)",
+      "status_synchronisiert": "synchronisiert",
+      "status_angebunden": "angebunden",
+      "status_in_anbindung": "in Anbindung (2027-Vision)",
+      "node_aria": "{register} — {status}",
+      "feed_title": "Letzte Synchronisation",
+      "feed_route": "{absender} → {empfaenger}",
+      "feed_empty": "Keine Register-Übermittlungen im sichtbaren Zeitraum.",
+      "show_all": "Vollständiges Protokoll anzeigen",
+      "pilot_note": "Stand der Register-Anbindung: Pilot-Phase — die Abdeckung wird laufend erweitert."
+    },
+    "sections": {
+      "region_title": "Ihre Stammdaten im Detail"
     },
     "aenderungsprotokoll": {
       "title": "Änderungsprotokoll",

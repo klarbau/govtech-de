@@ -15,6 +15,11 @@ interface AenderungsprotokollCardProps {
   behoerdenById: Record<string, Behoerde>;
   /** Maximum rows to render. Defaults to 6 for the right-rail card. */
   limit?: number;
+  /**
+   * When provided, the „show all" control opens the in-page full-log dialog via
+   * this callback instead of linking to `/datenschutz`.
+   */
+  onShowAll?: () => void;
 }
 
 interface DerivedRow {
@@ -40,6 +45,7 @@ export function AenderungsprotokollCard({
   entries,
   behoerdenById,
   limit = 6,
+  onShowAll,
 }: AenderungsprotokollCardProps) {
   const t = useTranslations('stammdaten.v2.protokoll');
   const tRoot = useTranslations();
@@ -94,14 +100,26 @@ export function AenderungsprotokollCard({
         )}
       </ol>
 
-      <Link
-        href="/datenschutz"
-        data-testid="v2-protokoll-show-all"
-        className="mt-3 inline-flex w-full min-h-9 items-center justify-center gap-2 rounded-md border border-border-strong bg-surface px-3 text-[0.8125rem] font-medium text-text-primary hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-      >
-        <FileText aria-hidden="true" className="size-4" />
-        {t('show_all')}
-      </Link>
+      {onShowAll ? (
+        <button
+          type="button"
+          onClick={onShowAll}
+          data-testid="v2-protokoll-show-all"
+          className="mt-3 inline-flex w-full min-h-9 items-center justify-center gap-2 rounded-md border border-border-strong bg-surface px-3 text-[0.8125rem] font-medium text-text-primary hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+        >
+          <FileText aria-hidden="true" className="size-4" />
+          {t('show_all')}
+        </button>
+      ) : (
+        <Link
+          href="/datenschutz"
+          data-testid="v2-protokoll-show-all"
+          className="mt-3 inline-flex w-full min-h-9 items-center justify-center gap-2 rounded-md border border-border-strong bg-surface px-3 text-[0.8125rem] font-medium text-text-primary hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+        >
+          <FileText aria-hidden="true" className="size-4" />
+          {t('show_all')}
+        </Link>
+      )}
     </section>
   );
 }
@@ -130,7 +148,7 @@ function RowAvatar({ row }: { row: DerivedRow }) {
   // monogram
   const toneClass =
     row.monogramTone === 'success'
-      ? 'bg-success text-white'
+      ? 'bg-success-soft text-success'
       : 'bg-primary text-primary-foreground';
   return (
     <span

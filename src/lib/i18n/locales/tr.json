@@ -262,8 +262,14 @@
       },
       "back": "Geri"
     },
+    "eid_card": {
+      "kind": "Kimlik kartı (Personalausweis)",
+      "subtitle": "Dijital kimlik kanıtı · eID",
+      "mock": "[MOCK]"
+    },
     "transparency": {
       "title": "Bu verileri dijital kimliğiniz sağlar",
+      "release_to": "GovTech DE'ye aktarır",
       "subtitle": "Neyin paylaşılacağına siz karar verirsiniz. Onayınız olmadan hiçbir şey paylaşılmaz.",
       "required_group": "Zorunlu bilgiler — giriş için gereklidir",
       "optional_group": "İsteğe bağlı bilgiler — yalnızca gerektiğinde (veri minimizasyonu)",
@@ -280,6 +286,9 @@
         "optional": "İsteğe bağlı"
       },
       "share_toggle": "Paylaş",
+      "verified_source": "Kimlik kartınızdan (Personalausweis) · doğrulandı",
+      "not_shared": "aktarılmaz",
+      "minimization": "Veri minimizasyonu (Datenminimierung): {total} bilgiden {shared} tanesini aktarıyorsunuz.",
       "recipient": "Alıcı: yalnızca GovTech DE (demo) — ve yalnızca sizin onayınızla.",
       "legal_basis": "Hukuki dayanak: eIDAS 2 / OZG · onaya dayalı bilgiler: DSGVO Art. 6 Abs. 1 lit. a",
       "dsgvo_footer": "Verileriniz güvenli biçimde iletilir ve DSGVO (GDPR) uyarınca işlenir.",
@@ -2284,6 +2293,37 @@
       "wallet_verbunden": "Wallet bağlandı",
       "aufenthalt_gueltig": "Oturum geçerli",
       "aufenthalt_ablauf_bald": "Oturum izni yakında doluyor"
+    },
+    "hero_v3": {
+      "region_label": "Doğrulanmış kimlik",
+      "status_badge": "Doğrulandı",
+      "kv_geburtsdatum": "Doğum tarihi",
+      "kv_staatsangehoerigkeit": "Vatandaşlık",
+      "kv_quelle": "Yetkili kaynak",
+      "quelle_fallback": "Vatandaşlık dairesi (kayıt makamı)",
+      "fallback_chip_ausweis": "Kimlik kartı kayıtlı"
+    },
+    "once_only": {
+      "region_title": "Bir kez ilkesi",
+      "summary": "Verileriniz {count} sicilde tutulur ve otomatik olarak senkronize olur — onları yalnızca bir kez verirsiniz.",
+      "node_melderegister": "Nüfus sicili",
+      "node_kba": "Araç sicili (KBA)",
+      "node_drv": "Emeklilik hesabı (DRV)",
+      "node_gkv": "Sağlık sigortası",
+      "node_finanzamt": "Vergi dairesi",
+      "node_bzst": "Vergi kimlik no (BZSt)",
+      "status_synchronisiert": "senkronize edildi",
+      "status_angebunden": "bağlı",
+      "status_in_anbindung": "bağlanıyor (2027 vizyonu)",
+      "node_aria": "{register} — {status}",
+      "feed_title": "Son senkronizasyon",
+      "feed_route": "{absender} → {empfaenger}",
+      "feed_empty": "Görünür dönemde sicil aktarımı yok.",
+      "show_all": "Tüm günlüğü göster",
+      "pilot_note": "Sicil bağlantı durumu: pilot aşama — kapsam sürekli genişletiliyor."
+    },
+    "sections": {
+      "region_title": "Ana verileriniz ayrıntılı olarak"
     },
     "aenderungsprotokoll": {
       "title": "Değişiklik günlüğü",
