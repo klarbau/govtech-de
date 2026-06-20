@@ -3284,6 +3284,13 @@ button { font: inherit; cursor: pointer; }
 .vr-num { font-size:24px; font-weight:700; letter-spacing:-0.02em; color: var(--ink-1); }
 .vr-label { font-size:12px; color: var(--ink-3); margin-top:4px; }
 .vr-disclaimer { font-size:11.5px; color: var(--ink-3); margin-top:14px; }
+/* Dark-aware band (2026-06-20): --green-50/--green-200 don't flip in dark mode,
+   but --ink-1/--ink-3 (and inherited text) do → light-on-light (axe color-contrast
+   1.02 on .vr-title/.vr-num/.vr-label). Flip the receipt band to the dark success
+   surface + give the nested stat tiles a subtle dark elevation, mirroring
+   .dark .ll-antragslos. WCAG 2.1 AA. */
+.dark .vr-card { background: var(--banner-success-bg); border-color: var(--green-700); }
+.dark .vr-stat { background: rgba(255,255,255,.04); border-color: var(--green-700); }
 
 /* Umzug-Überblick (white card, mockup #4 — progress ring) */
 .umz-hero { background: var(--surface); border:1px solid var(--border); border-radius: var(--r-lg); padding:22px; box-shadow: var(--shadow-1); }

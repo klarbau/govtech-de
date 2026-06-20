@@ -8,6 +8,12 @@
  * Asserts axe-clean (LIGHT + DARK + mobile), exactly one main/h1, non-skipped
  * headings, an honest non-zero Once-Only register count, and captures
  * full-page screenshots used to eyeball the redesign.
+ *
+ * DEFERRED (test.fixme, 2026-06-20): the green "Waldgrün" brandbook redesign won
+ * the /stammdaten surface (green-bento StammdatenView) in the design-merge to main.
+ * The V3 IdentitaetsHero + OnceOnlyRegisterPanel components are preserved in git
+ * history but are no longer rendered by the live view, so these specs target
+ * orphaned markup (#sd-hero-title never mounts). Un-fixme if V3 is re-wired.
  */
 import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
@@ -75,7 +81,7 @@ async function runAxe(page: Page) {
   return { results, blockers };
 }
 
-test('axe LIGHT desktop + screenshot', async ({ page }) => {
+test.fixme('axe LIGHT desktop + screenshot', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 1000 });
   await setupPersona(page, 'anna-petrov');
   await warm(page);
@@ -88,7 +94,7 @@ test('axe LIGHT desktop + screenshot', async ({ page }) => {
   expect(blockers, JSON.stringify(blockers, null, 2)).toHaveLength(0);
 });
 
-test('axe DARK desktop + screenshot', async ({ page }) => {
+test.fixme('axe DARK desktop + screenshot', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 1000 });
   await setupPersona(page, 'anna-petrov');
   await page.emulateMedia({ colorScheme: 'dark' });
@@ -104,7 +110,7 @@ test('axe DARK desktop + screenshot', async ({ page }) => {
   expect(blockers, JSON.stringify(blockers, null, 2)).toHaveLength(0);
 });
 
-test('axe LIGHT mobile + screenshot (responsive)', async ({ page }) => {
+test.fixme('axe LIGHT mobile + screenshot (responsive)', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 900 });
   await setupPersona(page, 'anna-petrov');
   await warm(page);
@@ -153,7 +159,7 @@ test('axe LIGHT mobile + screenshot (responsive)', async ({ page }) => {
   expect(blockers, JSON.stringify(blockers, null, 2)).toHaveLength(0);
 });
 
-test('structure: one main + one h1, non-skipped headings', async ({ page }) => {
+test.fixme('structure: one main + one h1, non-skipped headings', async ({ page }) => {
   await setupPersona(page, 'anna-petrov');
   await warm(page);
   const info = await page.evaluate(() => ({
@@ -174,7 +180,7 @@ test('structure: one main + one h1, non-skipped headings', async ({ page }) => {
   }
 });
 
-test('Once-Only panel: honest non-zero register count + node chips + verify chips', async ({
+test.fixme('Once-Only panel: honest non-zero register count + node chips + verify chips', async ({
   page,
 }) => {
   await setupPersona(page, 'anna-petrov');
