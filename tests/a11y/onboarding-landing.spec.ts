@@ -22,7 +22,8 @@ test('landing sanity h1', async ({ page }) => {
   await page.goto('/', { waitUntil: 'networkidle' });
   const h1 = await page.locator('h1').first().innerText();
   console.log('[LANDING h1] ' + JSON.stringify(h1));
-  expect(h1).toContain('Autopilot');
+  // Brandbook landing headline (matches mockup #8/#6: "Verwaltung, die vorausdenkt.").
+  expect(h1).toContain('vorausdenkt');
   expect(await page.locator('h1').count()).toBe(1);
 });
 test('axe LIGHT landing de', async ({ page }) => {
@@ -78,7 +79,7 @@ test('landing heading hierarchy + figcaption', async ({ page }) => {
 test('landing CTAs + feature links', async ({ page }) => {
   await setLocale(page, 'de');
   await page.goto('/', { waitUntil: 'networkidle' });
-  const primary = page.getByRole('link', { name: /Demo starten/ });
+  const primary = page.getByRole('link', { name: /Demo erleben/ });
   await expect(primary).toBeVisible();
   await expect(primary).toHaveAttribute('href', '/onboarding');
   await primary.focus();
@@ -86,7 +87,9 @@ test('landing CTAs + feature links', async ({ page }) => {
   console.log('[LANDING primary focus] ' + JSON.stringify(outline));
   const n = await page.locator('section#leistungen a').count();
   console.log('[LANDING feature link count] ' + n);
-  expect(n).toBe(4);
+  // Brandbook landing Lebenslagen row = 5 tiles (Umzug/Geburt/Aufenthaltstitel/
+  // Steuer/Posteingang), matching mockups #8/#6.
+  expect(n).toBe(5);
 });
 test('landing nav touch targets', async ({ page }) => {
   await setLocale(page, 'de');

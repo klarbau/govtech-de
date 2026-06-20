@@ -1,7 +1,23 @@
 'use client';
 
 import Link from 'next/link';
-import { Clock, Landmark, User, FileText } from 'lucide-react';
+import {
+  Clock,
+  CheckCircle2,
+  FileText,
+  Home,
+  IdCard,
+  Landmark,
+  Lock,
+  Mail,
+  PiggyBank,
+  ShieldCheck,
+  Sparkles,
+  Tv,
+  User,
+  Users,
+  type LucideIcon,
+} from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { format, parseISO } from 'date-fns';
 import { de as deLocale } from 'date-fns/locale';
@@ -15,11 +31,6 @@ interface AenderungsprotokollCardProps {
   behoerdenById: Record<string, Behoerde>;
   /** Maximum rows to render. Defaults to 6 for the right-rail card. */
   limit?: number;
-  /**
-   * When provided, the „show all" control opens the in-page full-log dialog via
-   * this callback instead of linking to `/datenschutz`.
-   */
-  onShowAll?: () => void;
 }
 
 interface DerivedRow {
@@ -28,24 +39,27 @@ interface DerivedRow {
   sub: string;
   whenLine1: string;
   whenLine2: string;
-  variant: 'landmark' | 'user' | 'monogram';
-  monogram?: string;
-  monogramTone?: 'success' | 'primary';
+  /** Semantic lucide icon for the event (by recipient kind / section / activity). */
+  Icon: LucideIcon;
+  /** `success` → green circle (Kranken-/Sozialversicherung); else neutral. */
+  tone: 'neutral' | 'success';
 }
 
 /**
  * Prototype-v2 — „Änderungsprotokoll" right-rail card (Spec § COL 3).
  *
- * Pulls from the existing `UebermittlungsLogEntry[]` stream, derives a single
- * title + sub + timestamp triplet per row, and shows a monogram or icon avatar
- * matching the prototype mockup (Landmark for Behörde-zu-Behörde, monogram for
- * named services, user-icon for app-internal activity).
+ * Pulls from the existing `UebermittlungsLogEntry[]` stream and renders one
+ * title + sub + timestamp triplet per row. Each row gets a SEMANTIC icon derived
+ * from the event: the receiving authority's kind (Rundfunk → TV, Finanzamt →
+ * Landmark, Krankenkasse → green check, Standesamt → Users, Ausweis-Stelle →
+ * IdCard …), falling back to the affected Stammdaten-section, and a section/app
+ * icon for self-service activity (Brief → Mail, Dokument → FileText). Replaces
+ * the earlier generic monogram/landmark avatars.
  */
 export function AenderungsprotokollCard({
   entries,
   behoerdenById,
   limit = 6,
-  onShowAll,
 }: AenderungsprotokollCardProps) {
   const t = useTranslations('stammdaten.v2.protokoll');
   const tRoot = useTranslations();
@@ -61,14 +75,23 @@ export function AenderungsprotokollCard({
       className="rounded-[var(--radius-card)] border border-border bg-surface p-5 shadow-[var(--shadow-1)]"
       data-testid="v2-protokoll-card"
     >
-      <header className="mb-1 flex items-center gap-2">
-        <IconCircle icon={<Clock />} tone="neutral" size="sm" />
-        <h2
-          id="v2-protokoll-title"
-          className="text-base font-semibold text-text-primary"
+      <header className="mb-1 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <IconCircle icon={<Clock />} tone="neutral" size="sm" />
+          <h2
+            id="v2-protokoll-title"
+            className="text-base font-semibold text-text-primary"
+          >
+            {t('title')}
+          </h2>
+        </div>
+        <Link
+          href="/datenschutz"
+          data-testid="v2-protokoll-alle-anzeigen"
+          className="text-sm font-medium text-primary hover:underline focus-visible:underline"
         >
-          {t('title')}
-        </h2>
+          {t('alle_anzeigen')}
+        </Link>
       </header>
       <p className="mb-2 text-xs text-text-secondary">{t('subtitle')}</p>
 
@@ -82,7 +105,7 @@ export function AenderungsprotokollCard({
               className={`grid grid-cols-[40px_1fr_auto] items-start gap-3 py-3.5 ${idx > 0 ? 'border-t border-border' : ''}`}
               data-testid={`v2-protokoll-row-${row.id}`}
             >
-              <RowAvatar row={row} />
+              <RowAvatar Icon={row.Icon} tone={row.tone} />
               <div className="min-w-0">
                 <p className="text-[13.5px] font-semibold text-text-primary">
                   {row.title}
@@ -100,62 +123,29 @@ export function AenderungsprotokollCard({
         )}
       </ol>
 
-      {onShowAll ? (
-        <button
-          type="button"
-          onClick={onShowAll}
-          data-testid="v2-protokoll-show-all"
-          className="mt-3 inline-flex w-full min-h-9 items-center justify-center gap-2 rounded-md border border-border-strong bg-surface px-3 text-[0.8125rem] font-medium text-text-primary hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-        >
-          <FileText aria-hidden="true" className="size-4" />
-          {t('show_all')}
-        </button>
-      ) : (
-        <Link
-          href="/datenschutz"
-          data-testid="v2-protokoll-show-all"
-          className="mt-3 inline-flex w-full min-h-9 items-center justify-center gap-2 rounded-md border border-border-strong bg-surface px-3 text-[0.8125rem] font-medium text-text-primary hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-        >
-          <FileText aria-hidden="true" className="size-4" />
-          {t('show_all')}
-        </Link>
-      )}
+      <Link
+        href="/datenschutz"
+        data-testid="v2-protokoll-show-all"
+        className="mt-3 inline-flex w-full min-h-9 items-center justify-center gap-2 rounded-md border border-border-strong bg-surface px-3 text-[0.8125rem] font-medium text-text-primary hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      >
+        <FileText aria-hidden="true" className="size-4" />
+        {t('show_all')}
+      </Link>
     </section>
   );
 }
 
-function RowAvatar({ row }: { row: DerivedRow }) {
-  if (row.variant === 'landmark') {
-    return (
-      <span
-        aria-hidden="true"
-        className="flex size-9 shrink-0 items-center justify-center rounded-full bg-surface-muted text-text-secondary [&_svg]:size-4"
-      >
-        <Landmark />
-      </span>
-    );
-  }
-  if (row.variant === 'user') {
-    return (
-      <span
-        aria-hidden="true"
-        className="flex size-9 shrink-0 items-center justify-center rounded-full bg-surface-muted text-text-secondary [&_svg]:size-4"
-      >
-        <User />
-      </span>
-    );
-  }
-  // monogram
+function RowAvatar({ Icon, tone }: { Icon: LucideIcon; tone: DerivedRow['tone'] }) {
   const toneClass =
-    row.monogramTone === 'success'
+    tone === 'success'
       ? 'bg-success-soft text-success'
-      : 'bg-primary text-primary-foreground';
+      : 'bg-surface-muted text-text-secondary';
   return (
     <span
       aria-hidden="true"
-      className={`flex size-9 shrink-0 items-center justify-center rounded-full text-[10px] font-bold leading-tight ${toneClass}`}
+      className={`flex size-9 shrink-0 items-center justify-center rounded-full ${toneClass} [&_svg]:size-4`}
     >
-      {row.monogram}
+      <Icon />
     </span>
   );
 }
@@ -192,7 +182,9 @@ function deriveRow(
     // keep raw timestamp
   }
 
-  // Variant + sub-line + title derivation:
+  const { Icon, tone } = resolveRowVisual(entry, empfaenger ?? absender);
+
+  // App-internal self-service activity → "via App" sub-line.
   if (entry.kategorie === 'app_aktivitaet') {
     return {
       id: entry.id,
@@ -200,55 +192,80 @@ function deriveRow(
       sub: tLog('via_app'),
       whenLine1: when1,
       whenLine2: when2,
-      variant: 'user',
+      Icon,
+      tone,
     };
   }
 
-  // Behörde-zu-Behörde / Behörde-zu-Bürger:in / 2027-Vision → use an avatar
-  // derived from the most identifying side.
+  // Behörde-zu-Behörde / -Bürger:in → name the most identifying counterparty.
   const counterparty = empfaenger ?? absender;
-  if (counterparty) {
-    const mono = deriveMonogram(counterparty.name_de);
-    const variant: DerivedRow['variant'] = mono.length <= 4 && mono.length >= 2 ? 'monogram' : 'landmark';
-    const tone: DerivedRow['monogramTone'] = pickMonogramTone(counterparty);
-    return {
-      id: entry.id,
-      title: zweck,
-      sub: counterparty.name_de,
-      whenLine1: when1,
-      whenLine2: when2,
-      variant,
-      monogram: mono,
-      monogramTone: tone,
-    };
-  }
-
   return {
     id: entry.id,
     title: zweck,
-    sub: '',
+    sub: counterparty?.name_de ?? '',
     whenLine1: when1,
     whenLine2: when2,
-    variant: 'landmark',
+    Icon,
+    tone,
   };
 }
 
-function deriveMonogram(name: string): string {
-  // Strip leading articles, take first letter of each word — capped at 4.
-  const words = name.replace(/[—–-]/g, ' ').split(/\s+/).filter(Boolean);
-  if (words.length === 0) return '?';
-  if (words.length === 1) return words[0]!.slice(0, 3).toUpperCase();
-  const letters = words.slice(0, 4).map((w) => w[0]!.toUpperCase());
-  return letters.join('').slice(0, 4);
-}
-
-function pickMonogramTone(b: Behoerde): 'success' | 'primary' {
-  // Krankenkassen / Pflegekassen / Sozial-Versicherer → green; everything else → cobalt.
-  if (
-    b.kategorie === 'sozialversicherung' ||
-    /aok|tk|barmer|dak|krankenkasse|pflegekasse/i.test(b.name_de)
-  ) {
-    return 'success';
+/**
+ * Map an entry to a semantic icon + tone. Order of preference:
+ * 1. self-service activity → by field/zweck (Brief, Dokument, Einwilligung, KI),
+ * 2. the receiving/sending authority's kind (most recognisable),
+ * 3. the affected Stammdaten section.
+ * Only Kranken-/Sozialversicherung gets the green `success` tone — matching the
+ * mockup's single green „Krankenkasse"-check among otherwise neutral icons.
+ */
+function resolveRowVisual(
+  entry: UebermittlungsLogEntry,
+  counterparty: Behoerde | undefined,
+): { Icon: LucideIcon; tone: DerivedRow['tone'] } {
+  if (entry.kategorie === 'app_aktivitaet') {
+    const f = entry.field_id ?? '';
+    const z = entry.zweck_i18n_key;
+    if (f.includes('letter') || z.includes('brief') || z.includes('email'))
+      return { Icon: Mail, tone: 'neutral' };
+    if (z.includes('ki')) return { Icon: Sparkles, tone: 'neutral' };
+    if (f.includes('dokument') || z.includes('dokument'))
+      return { Icon: FileText, tone: 'neutral' };
+    if (f.includes('einwilligung') || f.includes('datenschutz') || z.includes('einwilligung'))
+      return { Icon: ShieldCheck, tone: 'neutral' };
+    return { Icon: User, tone: 'neutral' };
   }
-  return 'primary';
+
+  const name = (counterparty?.name_de ?? '').toLowerCase();
+  const kat = counterparty?.kategorie;
+
+  if (kat === 'sozialversicherung' || /aok|barmer|dak|kranken|pflege|\btk\b/.test(name))
+    return { Icon: CheckCircle2, tone: 'success' };
+  if (/beitragsservice|rundfunk|ard|zdf/.test(name))
+    return { Icon: Tv, tone: 'neutral' };
+  if (/finanzamt|steuer|körperschaft|koerperschaft/.test(name))
+    return { Icon: Landmark, tone: 'neutral' };
+  if (/standesamt/.test(name)) return { Icon: Users, tone: 'neutral' };
+  if (/druckerei|ausweis|pass\b/.test(name)) return { Icon: IdCard, tone: 'neutral' };
+  if (/ausländer|auslaender/.test(name)) return { Icon: IdCard, tone: 'neutral' };
+  if (/bürgeramt|buergeramt|bezirksamt|melde|einwohner/.test(name))
+    return { Icon: Home, tone: 'neutral' };
+
+  switch (entry.sektion) {
+    case 'anschrift':
+      return { Icon: Home, tone: 'neutral' };
+    case 'dokumente':
+      return { Icon: IdCard, tone: 'neutral' };
+    case 'familie':
+      return { Icon: Users, tone: 'neutral' };
+    case 'altersvorsorge':
+      return { Icon: PiggyBank, tone: 'neutral' };
+    case 'krankenversicherung_pflege':
+      return { Icon: CheckCircle2, tone: 'success' };
+    case 'sperren_einstellungen':
+      return { Icon: Lock, tone: 'neutral' };
+    case 'identitaet':
+      return { Icon: User, tone: 'neutral' };
+    default:
+      return { Icon: Clock, tone: 'neutral' };
+  }
 }

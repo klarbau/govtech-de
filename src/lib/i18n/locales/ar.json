@@ -1,7 +1,7 @@
 {
   "app": {
     "name": "GovTech DE",
-    "tagline": "إدارة عامة بفكر جديد.",
+    "tagline": "جميع معاملاتك مع الجهات الحكومية في مكان واحد.",
     "skip_to_content": "تخطَّ إلى المحتوى الرئيسي"
   },
   "nav": {
@@ -22,6 +22,104 @@
     "theme_toggle_dark": "السمة الداكنة",
     "theme_toggle_system": "إعداد النظام",
     "user_menu": "قائمة المستخدم"
+  },
+  "topnav": {
+    "nav_label": "التنقل الرئيسي",
+    "solutions": "الحلول (Lösungen)",
+    "lebenslagen": "مواقف حياتية (Lebenslagen)",
+    "security_privacy": "الأمان وحماية البيانات",
+    "resources": "الموارد",
+    "about_us": "من نحن",
+    "help": "المساعدة والتواصل",
+    "about_project": "حول المشروع"
+  },
+  "lebenslagen": {
+    "breadcrumb_catalog": "دليل الخدمات",
+    "title": "ابحث عن الخدمات.",
+    "subtitle": "بسيط. سريع. واضح.",
+    "intro": "اكتشف الخدمات المناسبة لوضعك الحياتي — مشروحة بوضوح وجاهزة للاستخدام مباشرة عبر الإنترنت.",
+    "search_label": "البحث عن خدمة",
+    "search_placeholder": "ابحث عن خدمة، مثل „Kindergeld beantragen“",
+    "search_submit": "بحث",
+    "filter_label": "تصفية الموضوعات",
+    "categories": {
+      "alle": "كل الموضوعات",
+      "familie": "العائلة",
+      "wohnen": "السكن",
+      "arbeit": "العمل",
+      "migration": "الهجرة",
+      "steuern": "الضرائب",
+      "mehr": "المزيد"
+    },
+    "results_count": "تم العثور على {count} خدمة",
+    "results_none": "لم يتم العثور على خدمات. يرجى تعديل بحثك.",
+    "sort_label": "ترتيب حسب:",
+    "sort_aria": "الترتيب",
+    "sort": {
+      "relevance": "الصلة",
+      "popular": "الشيوع",
+      "name": "الاسم (أ–ي)"
+    },
+    "frequency": {
+      "very_often": "شائع جدًا",
+      "often": "شائع"
+    },
+    "relevance": {
+      "very": "وثيق الصلة جدًا",
+      "normal": "ذو صلة"
+    },
+    "open_service": "فتح الخدمة",
+    "show_more": "عرض المزيد من الخدمات",
+    "rail_popular_title": "شائع بالنسبة لك",
+    "rail_popular_sub": "بناءً على وضعك الحياتي",
+    "rail_items": {
+      "kindergeld": "تحقق من البيانات وأبلغ عن التغييرات.",
+      "umzug": "أدخل عنوانك الجديد.",
+      "wohngeld": "احصل على دعم في تكاليف السكن.",
+      "steuer": "انقل بياناتك ووفّر وقتك."
+    },
+    "rail_secure_title": "بياناتك آمنة",
+    "rail_secure_body": "تُظهر كل خدمة البيانات التي تُعالج، ومن يعالجها، وعلى أي أساس قانوني. تبقى أنت المتحكم.",
+    "rail_secure_link": "الخصوصية والموافقات",
+    "trust_title": "ثقة من خلال المعايير",
+    "services": {
+      "umzug": {
+        "title": "الإبلاغ عن انتقال السكن",
+        "description": "Melden Sie Ihren neuen Wohnsitz an. Die Ummeldung wird automatisch an alle zuständigen Stellen weitergeleitet."
+      },
+      "geburt": {
+        "title": "تسجيل ولادة",
+        "description": "Beurkunden Sie die Geburt Ihres Kindes und stoßen Sie Kindergeld, Elterngeld und Krankenversicherung an."
+      },
+      "aufenthalt": {
+        "title": "تمديد تصريح الإقامة",
+        "description": "Verlängern Sie Ihren Aufenthaltstitel rechtzeitig vor Ablauf und prüfen Sie die benötigten Nachweise."
+      },
+      "kindergeld": {
+        "title": "تحديث علاوة الأطفال",
+        "description": "Aktualisieren Sie Bankverbindung, Anschrift oder Lebenssituation für Ihren Kindergeldbezug."
+      },
+      "steuer": {
+        "title": "تعبئة الإقرار الضريبي مسبقًا",
+        "description": "Ihre Steuererklärung wird aus bereits bekannten Daten vorausgefüllt. Sie prüfen nur noch und reichen ein."
+      },
+      "reisepass": {
+        "title": "التقدم بطلب جواز سفر",
+        "description": "Beantragen Sie einen neuen Reisepass und buchen Sie den passenden Termin im Bürgeramt."
+      },
+      "bafoeg": {
+        "title": "الدراسة والدعم الطلابي",
+        "description": "Beantragen Sie Ausbildungsförderung und behalten Sie Fristen sowie Nachweise im Blick."
+      },
+      "pflege": {
+        "title": "الرعاية والصحة",
+        "description": "Beantragen Sie Leistungen der Pflegeversicherung und finden Sie Unterstützung im Pflegefall."
+      },
+      "wohngeld": {
+        "title": "التقدم بطلب إعانة السكن",
+        "description": "Prüfen Sie Ihren Anspruch auf Wohngeld und stellen Sie den Antrag mit vorausgefüllten Angaben."
+      }
+    }
   },
   "a11y": {
     "menu": {
@@ -96,6 +194,8 @@
       "menu_label": "فتح قائمة المستخدم",
       "demo_name": "آنا بيتروف",
       "profile": "الملف الشخصي",
+      "stammdaten": "البيانات الأساسية (Stammdaten)",
+      "datenschutz": "حماية البيانات (Datenschutz)",
       "switch_persona": "تبديل الشخصية",
       "logout": "تسجيل الخروج"
     },
@@ -104,6 +204,10 @@
     },
     "sheet": {
       "close": "إغلاق"
+    },
+    "breadcrumb": {
+      "aria_label": "مسار التنقل",
+      "home": "الصفحة الرئيسية"
     }
   },
   "landing": {
@@ -309,7 +413,8 @@
       "herr": "مرحباً، السيد {nachname}",
       "neutral": "مرحباً، {vorname} {nachname}",
       "last_login_meta": "آخر تسجيل دخول قبل {days} يوماً · على هذا الجهاز",
-      "guten_tag": "مرحباً، {name}"
+      "guten_tag": "صباح الخير، {name}",
+      "sub": "إليك نظرة عامة على يومك. سنبقيك على اطلاع دائم."
     },
     "demo_banner": {
       "text": "وضع العرض · بيانات تجريبية · النسخ الأصلية تبقى في الصناديق الرسمية",
@@ -403,7 +508,7 @@
       "vorgang_abgeschlossen": "معاملة مكتملة"
     },
     "heute": {
-      "titel": "ما يتطلّب انتباهك اليوم",
+      "titel": "مهم اليوم",
       "tab_ki": "الذكاء الاصطناعي",
       "tab_frist": "الموعد النهائي",
       "tab_behoerde": "الجهة",
@@ -416,7 +521,12 @@
       "actions_label": "إجراءات {titel}",
       "sort_aria": "ترتيب توصيات الإجراءات",
       "frist_bald": "الموعد النهائي قريب",
-      "frist_am": "الموعد النهائي: {datum}"
+      "frist_am": "الموعد النهائي: {datum}",
+      "frist_bis": "مستحق حتى {datum}",
+      "reason_frist_naehe": "الموعد النهائي أقرب من إجراءاتك المفتوحة الأخرى.",
+      "reason_termin_steht": "تم تحديد موعد بالفعل.",
+      "reason_folgevorgang": "خطوة لاحقة ضمن إجراء جارٍ.",
+      "reason_manuell_priorisiert": "وضعت علامة عليه كمهم."
     },
     "triumph": {
       "title": "أُنجز نيابةً عنك",
@@ -432,23 +542,55 @@
       "min_value": "{min} دقيقة تقريباً",
       "zeit_caption": "مقارنةً بالإبلاغ الفردي",
       "stellen_label": "الجهات المُبلَّغة",
-      "stellen_caption": "الدوائر والمؤسسات"
+      "stellen_caption": "الدوائر والمؤسسات",
+      "overview_title": "انتقالك في لمحة",
+      "ring_label": "اكتمل {percent}%",
+      "ring_aria": "اكتمل الانتقال بنسبة {percent} بالمئة",
+      "stellen_informiert": "تم إبلاغ {done} من {total} جهة",
+      "naechster_schritt_label": "الخطوة التالية",
+      "naechster_schritt_wert": "تحقق من التأكيدات في صندوق الوارد",
+      "naechster_schritt_frist": "الموعد النهائي حتى {datum}",
+      "zum_umzug": "الانتقال إلى الإجراء"
     },
     "erledigt_feed": {
-      "title": "أُنجز تلقائياً نيابةً عنك",
+      "title": "أُنجز تلقائياً",
+      "count_aria": "{count} خطوة أُنجزت تلقائياً",
+      "badge_erledigt": "منجَز",
       "empty": "لم يُنجَز أي شيء تلقائياً بعد.",
       "alle_schritte": "عرض جميع الخطوات",
       "termin_pending": "يلزم تأكيد الموعد",
       "termin_bestaetigen": "تأكيد الموعد"
     },
+    "aktivitaeten": {
+      "titel": "النشاط",
+      "alle": "عرض كل النشاط",
+      "bewegung": "آخر تحديث: {zeit}",
+      "status": {
+        "angelegt": "أُنشئ",
+        "in_pruefung": "قيد المراجعة",
+        "genehmigt": "مُعتمَد",
+        "abgelehnt": "مرفوض",
+        "abgeschlossen": "مكتمل"
+      }
+    },
+    "naechster_termin": {
+      "titel": "الموعد التالي",
+      "badge_bestaetigt": "مؤكَّد",
+      "details": "عرض التفاصيل",
+      "kalender": "إضافة إلى التقويم",
+      "none": "لا يوجد موعد مجدول",
+      "praesenz": "حضورياً",
+      "video": "موعد بالفيديو",
+      "telefon": "موعد هاتفي"
+    },
     "tiles": {
-      "posteingang_sub": "رسائل جديدة",
+      "posteingang_sub": "رسائل غير مقروءة في صندوق الوارد",
       "posteingang_cta": "إلى صندوق الوارد",
       "fristen_sub": "المواعيد النهائية خلال الـ 14 يوماً القادمة",
       "fristen_cta": "عرض المواعيد النهائية",
       "termine_sub": "الموعد التالي: {datum}",
       "termine_cta": "جميع المواعيد",
-      "vorgaenge_sub": "قيد المعالجة",
+      "vorgaenge_sub": "المعاملات الجارية قيد المعالجة",
       "vorgaenge_cta": "عرض المعاملات"
     },
     "kontrolle": {
@@ -474,7 +616,7 @@
         "cta": "فتح"
       },
       "vorgaenge": {
-        "titel": "المعاملات",
+        "titel": "المعاملات المفتوحة",
         "stand": "{laeuft} قيد التنفيذ، {abgeschlossen} مكتمل",
         "cta": "عرض"
       },
@@ -784,7 +926,27 @@
       "datenschutz_title": "حماية البيانات",
       "datenschutz_sub": "ما الذي تتم معالجته بشأن هذه المعاملة — وعلى أي أساس قانوني.",
       "termine_title": "المواعيد المتعلقة بهذه المعاملة ({count})",
-      "no_next_step": "لا يُطلب منك شيء في الوقت الحالي. الجهات المعنية تعمل على إنجاز المعاملة."
+      "no_next_step": "لا يُطلب منك شيء في الوقت الحالي. الجهات المعنية تعمل على إنجاز المعاملة.",
+      "hero_sub": "سجّل عنوان سكنك الجديد – ونحن نُبلغ الجهات المختصة نيابةً عنك.",
+      "vorgangsnummer_label": "رقم المعاملة",
+      "vorgangsnummer_copy_aria": "نسخ رقم المعاملة",
+      "progress_title": "التقدّم الإجمالي",
+      "progress_steps": "{done} من {total} خطوات",
+      "fertigstellung_label": "الإنجاز المتوقّع",
+      "fertigstellung_value": "2–3 أيام",
+      "timeline_title": "خطوات هذه المعاملة ({count})",
+      "steps_overview_title": "معاملتك في لمحة",
+      "steps_overview_sub": "ننسّق طلبك ونحيله إلى الجهات المختصة.",
+      "uebermittelt_label": "أُرسلت في",
+      "details_show": "عرض التفاصيل",
+      "details_hide": "إخفاء التفاصيل",
+      "berechtigungen_title": "الأساس القانوني والصلاحيات",
+      "berechtigungen_basis_label": "الأساس القانوني",
+      "berechtigungen_datenweitergabe_label": "مشاركة البيانات",
+      "berechtigungen_behoerden": "إلى {count} جهات",
+      "berechtigungen_einwilligungen_label": "موافقاتك",
+      "berechtigungen_einwilligungen_value": "إلى الجهات المختصة فقط، ويمكن سحبها في أي وقت.",
+      "berechtigungen_details_link": "عرض التفاصيل والموافقات"
     }
   },
   "assistent": {
@@ -887,6 +1049,21 @@
   "posteingang": {
     "skip_link": {
       "zur_brief_liste": "تخطَّ إلى قائمة الرسائل"
+    },
+    "rail": {
+      "nav_aria": "مجلدات صندوق الوارد",
+      "title": "صندوق الوارد",
+      "subtitle": "رسائلك من الجهات الرسمية — آمنة ومنظَّمة.",
+      "write": "كتابة رسالة",
+      "write_aria": "كتابة رسالة جديدة بمساعدة المساعد",
+      "system_label": "نظرة عامة",
+      "posteingang": "صندوق الوارد",
+      "archiv": "الأرشيف",
+      "ordner_label": "المجلدات",
+      "ordner_empty": "لا مجلدات بعد — تظهر الرسائل تلقائياً حسب الجهة.",
+      "filter_label": "تصفية",
+      "filter_open": "اختيار عوامل التصفية",
+      "nur_ungelesen": "عرض غير المقروء فقط"
     },
     "hero": {
       "title": "صندوق الوارد (Posteingang)",
@@ -1156,6 +1333,78 @@
         "folge_familienkasse": "تقديم طلب علاوة الأبناء لدى صندوق الأسرة (Familienkasse)",
         "folge_krankenkasse": "تسجيل الطفل لدى التأمين الصحي (تأمين الأسرة)",
         "folge_steueridnr": "يُمنح الرقم الضريبي (Steuer-IdNr.) تلقائياً من المكتب الاتحادي المركزي للضرائب (BZSt)"
+      }
+    },
+    "mockup3": {
+      "tabs": {
+        "aria_label": "تصفية الرسائل حسب الحالة",
+        "alle": "الكل",
+        "ungelesen": "غير مقروء",
+        "mit_frist": "بمهلة",
+        "wichtig": "مهم"
+      },
+      "detail": {
+        "herunterladen": "تنزيل",
+        "drucken": "طباعة",
+        "tabs_aria": "عرض الرسالة",
+        "tab_original": "الأصل",
+        "tab_anhaenge": "المرفقات",
+        "tab_verlauf": "السجل",
+        "meta_eingegangen": "تاريخ الاستلام",
+        "meta_behoerde": "الجهة",
+        "meta_kategorie": "الفئة",
+        "meta_aktenzeichen": "رقم الملف",
+        "meta_frist": "المهلة",
+        "meta_frist_keine": "بدون مهلة",
+        "anhaenge_empty": "لا توجد مرفقات لهذه الرسالة في هذا العرض التجريبي.",
+        "verlauf_empfangen_template": "تم استلام الرسالة في {datum}",
+        "verlauf_verifiziert_template": "تم التحقق من الأصالة في {datum}",
+        "kategorie": {
+          "bund": "جهة اتحادية",
+          "land": "جهة على مستوى الولاية",
+          "kommune": "جهة بلدية",
+          "sozialversicherung": "التأمين الاجتماعي",
+          "privat": "جهة خاضعة للقانون الخاص",
+          "unbekannt": "خطاب رسمي"
+        }
+      },
+      "erklaerer": {
+        "title": "بكلمات مبسّطة",
+        "pill": "شرح بالذكاء الاصطناعي",
+        "intro": "أهم نقاط هذا الخطاب في لمحة:",
+        "worum_label": "ما موضوع هذا الخطاب؟",
+        "betrag_label": "ما مقدار المبلغ؟",
+        "bis_wann_label": "حتى متى يجب الدفع؟",
+        "worum_fallback": "يرجى مراجعة النص الأصلي لهذا الخطاب.",
+        "betrag_nachzahlung_template": "مبلغ إضافي مستحق قدره {betrag}.",
+        "betrag_erstattung_template": "استرداد قدره {betrag} لصالحك.",
+        "betrag_keiner": "لا يذكر هذا الخطاب مبلغاً مستحق الدفع.",
+        "bis_wann_template": "حتى {datum}.",
+        "bis_wann_keine": "لا يذكر هذا الخطاب مهلة للدفع.",
+        "disclaimer": "شرح مُولَّد بالذكاء الاصطناعي — وليس استشارة قانونية. النص الأصلي وحده هو المُلزِم قانوناً. يرجى مطابقة المهلة والمبلغ ورقم الملف مع الأصل.",
+        "feedback": "هل الشرح غير مفيد؟",
+        "feedback_aria": "الإبلاغ عن أن شرح الذكاء الاصطناعي هذا غير مفيد",
+        "feedback_toast": "شكراً على ملاحظاتك — نحسّن الشروحات باستمرار."
+      },
+      "bedeutung": {
+        "title": "ماذا يعني ذلك بالنسبة لك؟",
+        "fallback": "اقرأ النص الأصلي والتزم بالمهلة المذكورة. وعند وجود أسئلة، يرجى التواصل مع الجهة المختصة."
+      },
+      "naechste_schritte": {
+        "title": "الخطوات التالية",
+        "antwort": "إعداد الرد",
+        "antwort_sub": "حرّر رداً للجهة بمساعدة القوالب.",
+        "frist_merken": "حفظ المهلة",
+        "frist_merken_sub": "أضِف المهلة إلى تقويم مواعيدك.",
+        "zahlung": "تنفيذ الدفع",
+        "zahlung_sub": "سدّد المبلغ الإضافي المذكور في الموعد المحدّد.",
+        "vorgang": "إنشاء معاملة",
+        "vorgang_sub": "اجمع الرسائل المترابطة في معاملة واحدة."
+      },
+      "fragen": {
+        "title": "أسئلة حول القرار؟",
+        "sub": "اطرح على المساعد الذكي مزيداً من الأسئلة حول هذا الخطاب.",
+        "cta": "طرح مزيد من الأسئلة"
       }
     },
     "normtooltip": {
@@ -2085,7 +2334,8 @@
       },
       "anrechnungszeiten": {
         "title": "الفترات المعتمدة (Anrechnungszeiten)"
-      }
+      },
+      "gesetzliche_rente": "التأمين التقاعدي القانوني (Gesetzliche Rentenversicherung)"
     },
     "kv_pflege": {
       "krankenkasse": {
@@ -2261,38 +2511,39 @@
     },
     "wallet": {
       "eudi_reference_pid": {
-      "title": "إثبات EUDI مرجعي مُتحقَّق منه",
-      "subject_note": "إثبات اختباري مرجعي اصطناعي للنسخة التوضيحية النشطة (Demo-Persona) — تشفير حقيقي، وهوية مُختلَقة، وغير صادر عن الدولة الألمانية.",
-      "reference_ecosystem_badge": "منظومة مرجعية",
-      "loading": "يتم التحقق من الإثبات تشفيرياً دون اتصال …",
-      "error": "تعذَّر التحقق من الإثبات المرجعي — يُرجى المحاولة مجدداً.",
-      "status_section_aria": "حالة التحقق من إثبات EUDI المرجعي",
-      "status_verified": "تم التحقق منه تشفيرياً",
-      "status_not_verified": "غير مُتحقَّق منه",
-      "check_signature_label": "التوقيع",
-      "check_signature_ok": "توقيع المُصدِر ({alg}) صالح",
-      "check_signature_not_ok": "توقيع المُصدِر غير صالح",
-      "check_chain_label": "سلسلة الثقة",
-      "check_chain_ok": "السلسلة إلى مرساة الثقة التوضيحية (Trust Anchor) صالحة ({anchor})",
-      "check_chain_not_ok": "سلسلة الثقة إلى مرساة الثقة التوضيحية (Trust Anchor) غير صالحة",
-      "validity_not_before_label": "صالح من",
-      "validity_expires_label": "صالح حتى",
-      "expired_note": "انتهت صلاحية الإثبات بتاريخ {date} — ومع ذلك تم التحقق من التوقيع وسلسلة الثقة تشفيرياً.",
-      "claims_heading": "سمات PID المُفصَح عنها",
-      "selective_disclosure_note": "Selective Disclosure: لم يُفصَح من الإثبات ويُتحقَّق منه مقابل التوقيع سوى السمات المعروضة أدناه حصراً.",
-      "claim_family_name": "اسم العائلة",
-      "claim_given_name": "الاسم الأول",
-      "claim_birthdate": "تاريخ الميلاد",
-      "claim_place_of_birth": "مكان الميلاد",
-      "claim_nationalities": "الجنسية",
-      "honesty_block": "[reference-ecosystem] — إثبات حقيقي من بيئة مرجعية/تطويرية للاتحاد الأوروبي مقابل مرساة ثقة توضيحية (Trust Anchor) بهوية اختبارية اصطناعية. ليس صادراً عن الدولة الألمانية ولا مُتحقَّقاً منه، وغير مُتحقَّق منه وفق eIDAS وليس في بيئة إنتاجية. محفظة EUDI حكومية ألمانية أمرٌ [ZUKUNFT] (في موعد أقصاه نحو 2 يناير 2027)."
+        "title": "إثبات EUDI مرجعي مُتحقَّق منه",
+        "subject_note": "إثبات اختباري مرجعي اصطناعي للنسخة التوضيحية النشطة (Demo-Persona) — تشفير حقيقي، وهوية مُختلَقة، وغير صادر عن الدولة الألمانية.",
+        "reference_ecosystem_badge": "منظومة مرجعية",
+        "loading": "يتم التحقق من الإثبات تشفيرياً دون اتصال …",
+        "error": "تعذَّر التحقق من الإثبات المرجعي — يُرجى المحاولة مجدداً.",
+        "status_section_aria": "حالة التحقق من إثبات EUDI المرجعي",
+        "status_verified": "تم التحقق منه تشفيرياً",
+        "status_not_verified": "غير مُتحقَّق منه",
+        "check_signature_label": "التوقيع",
+        "check_signature_ok": "توقيع المُصدِر ({alg}) صالح",
+        "check_signature_not_ok": "توقيع المُصدِر غير صالح",
+        "check_chain_label": "سلسلة الثقة",
+        "check_chain_ok": "السلسلة إلى مرساة الثقة التوضيحية (Trust Anchor) صالحة ({anchor})",
+        "check_chain_not_ok": "سلسلة الثقة إلى مرساة الثقة التوضيحية (Trust Anchor) غير صالحة",
+        "validity_not_before_label": "صالح من",
+        "validity_expires_label": "صالح حتى",
+        "expired_note": "انتهت صلاحية الإثبات بتاريخ {date} — ومع ذلك تم التحقق من التوقيع وسلسلة الثقة تشفيرياً.",
+        "claims_heading": "سمات PID المُفصَح عنها",
+        "selective_disclosure_note": "Selective Disclosure: لم يُفصَح من الإثبات ويُتحقَّق منه مقابل التوقيع سوى السمات المعروضة أدناه حصراً.",
+        "claim_family_name": "اسم العائلة",
+        "claim_given_name": "الاسم الأول",
+        "claim_birthdate": "تاريخ الميلاد",
+        "claim_place_of_birth": "مكان الميلاد",
+        "claim_nationalities": "الجنسية",
+        "honesty_block": "[reference-ecosystem] — إثبات حقيقي من بيئة مرجعية/تطويرية للاتحاد الأوروبي مقابل مرساة ثقة توضيحية (Trust Anchor) بهوية اختبارية اصطناعية. ليس صادراً عن الدولة الألمانية ولا مُتحقَّقاً منه، وغير مُتحقَّق منه وفق eIDAS وليس في بيئة إنتاجية. محفظة EUDI حكومية ألمانية أمرٌ [ZUKUNFT] (في موعد أقصاه نحو 2 يناير 2027)."
       }
     },
     "chip": {
       "adresse_bestaetigt": "تم تأكيد العنوان",
       "wallet_verbunden": "تم ربط المحفظة (Wallet)",
       "aufenthalt_gueltig": "الإقامة سارية",
-      "aufenthalt_ablauf_bald": "تصريح الإقامة على وشك الانتهاء"
+      "aufenthalt_ablauf_bald": "تصريح الإقامة على وشك الانتهاء",
+      "kontakt_verifiziert": "تم توثيق بيانات الاتصال"
     },
     "hero_v3": {
       "region_label": "هوية موثّقة",
@@ -2412,7 +2663,8 @@
         "title": "سجل التغييرات",
         "subtitle": "آخر التغييرات على بياناتك الأساسية",
         "show_all": "عرض السجل الكامل",
-        "empty": "لا توجد تغييرات مسجلة بعد."
+        "empty": "لا توجد تغييرات مسجلة بعد.",
+        "alle_anzeigen": "عرض الكل"
       },
       "datenhoheit": {
         "title": "بياناتك بين يديك",
@@ -2423,6 +2675,51 @@
       "secondary": {
         "heading": "مجالات أخرى",
         "subtitle": "المعاش، التأمين الصحي، التنقل، تفضيلات الإشعارات والحجوبات — طبقة مساعدة أسفل الشبكة الرئيسية."
+      },
+      "nachweise": {
+        "title": "الإثباتات المرتبطة والمحفظة (Wallet)",
+        "body": "إثباتاتك الرقمية مرتبطة بأمان في المحفظة (Wallet) وقابلة للتحقق عند الحاجة.",
+        "check1": "تم التحقق منها تشفيريًا",
+        "check2": "توقيع eIDAS عند الإصدار صالح",
+        "check3": "مستوى الثقة: عالٍ (eIDAS)",
+        "quelle_label": "المصدر / خدمة الثقة",
+        "quelle_value": "BVA – Bundesverwaltungsamt",
+        "naechste_label": "المراجعة التالية",
+        "naechste_value": "14.06.2027",
+        "seal_aria": "تم التحقق من الإثباتات تشفيريًا"
+      },
+      "weitere": {
+        "title": "عمليات توثيق إضافية",
+        "steuer_id": "الرقم الضريبي (Steuer-ID)",
+        "sozialversicherungsnummer": "رقم التأمين الاجتماعي (Sozialversicherungsnummer)",
+        "verifiziert_am": "تم التوثيق بتاريخ: {datum}",
+        "verifiziert_badge": "موثَّق",
+        "alle_anzeigen": "عرض جميع عمليات التوثيق"
+      }
+    },
+    "header": {
+      "subtitle": "البيانات الشخصية وبيانات الاتصال والإثباتات والهويات المرتبطة في مكان واحد.",
+      "actions": {
+        "dokument_hinzufuegen": "إضافة وثيقة",
+        "adresse_aendern": "تغيير العنوان",
+        "verknuepfung_verwalten": "إدارة الربط"
+      }
+    },
+    "ring": {
+      "label": "اكتمال الملف الشخصي",
+      "aria": "اكتمال الملف الشخصي بنسبة {percent} بالمئة",
+      "letzte_aktualisierung": "آخر تحديث: {datum}"
+    },
+    "dialog": {
+      "close": "إغلاق",
+      "mock_hint": "[MOCK] — تغيير موجَّه عبر الجهة الرسمية قيد الإعداد.",
+      "profil": {
+        "title": "تغيير الملف الشخصي",
+        "body": "الاسم وتاريخ الميلاد والجنسية والحالة الاجتماعية تُدار بواسطة الجهة المختصة (مكتب الأحوال المدنية — Standesamt، أو مكتب المواطنين — Bürgeramt)."
+      },
+      "anschrift": {
+        "title": "تغيير العنوان",
+        "body": "يُدار عنوان تسجيلك بواسطة مكتب المواطنين (Bürgeramt) في سجل السكان (Melderegister). يتم تغيير العنوان عبر إعادة التسجيل — ويظهر في هذا العرض التوضيحي كنظام الانتقال الآلي (Umzug)."
       }
     }
   },
@@ -2874,17 +3171,79 @@
   },
   "datenschutz": {
     "page": {
-      "title": "حماية البيانات",
-      "subtitle": "نظرة على عمليات الوصول إلى البيانات والموافقات وأغراض الاستخدام.",
+      "title": "حماية البيانات والموافقات",
+      "subtitle": "أنت من يقرّر من يتلقّى بياناتك ولأي غرض. أدِر موافقاتك في أي وقت – بشفافية وأمان وقابلية للتتبّع.",
       "tag": "ميزة عرض توضيحي تصوُّرية"
     },
-    "vision_banner": {
-      "heading": "رؤية 2027",
-      "title": "رؤية 2027",
-      "body": "تجمع هذه اللوحة شفافية حماية بياناتك والتحكّم فيها. في الواقع اليوم لا تزال هذه الوظائف موزّعة على عدّة جهات.",
-      "body_1": "هذه الوظائف جزء من رؤيتنا لمزيد من الشفافية وحقّك في التحكّم بنفسك في بياناتك.",
-      "body_2": "قد يتغيّر التوفّر والمحتوى قبل الإطلاق.",
-      "dismiss": "إغلاق الإشعار"
+    "stats": {
+      "aktiv_title": "الموافقات النشطة",
+      "aktiv_value": "{active} من {total} مستلمين",
+      "aktiv_sub": "الموافقات الممنوحة لمشاركة البيانات",
+      "anfragen_title": "الطلبات (30 يومًا)",
+      "anfragen_sub": "عمليات الوصول إلى البيانات في الشهر الأخير",
+      "letzte_title": "آخر نشاط",
+      "letzte_sub": "آخر وصول مسجَّل إلى البيانات",
+      "letzte_empty": "لا شيء"
+    },
+    "weitergabe": {
+      "title": "الموافقات على مشاركة البيانات",
+      "subtitle": "تحكّم في الجهات والخدمات التي يُسمح لها بالوصول إلى بياناتك.",
+      "col_empfaenger": "المستلم / الفئة",
+      "col_zweck": "غرض معالجة البيانات",
+      "col_kategorien": "فئات البيانات",
+      "col_status": "الحالة",
+      "col_einwilligung": "الموافقة",
+      "col_details": "التفاصيل",
+      "status_aktiv": "نشط",
+      "status_inaktiv": "غير نشط",
+      "widerruf_note": "يمكنك سحب موافقاتك في أي وقت مع سريان المفعول للمستقبل.",
+      "krankenkasse_zweck": "نقل البيانات للفوترة والخدمات",
+      "krankenkasse_kategorien": "رقم التأمين، العنوان",
+      "arbeitgeber_zweck": "مشاركة البيانات لضريبة الأجور والشهادات",
+      "arbeitgeber_kategorien": "الرقم الضريبي، الرقم الوظيفي",
+      "familienkasse_zweck": "إعانة الأطفال والإعانات العائلية",
+      "familienkasse_kategorien": "البيانات الأساسية، بيانات الأطفال",
+      "private_zweck": "إثباتات عند الطلب",
+      "private_kategorien": "إثباتات، شهادات"
+    },
+    "audit": {
+      "title": "سجل التدقيق",
+      "subtitle": "قابل للتتبّع بالكامل: كل وصول إلى البيانات مع الطابع الزمني والأساس القانوني.",
+      "col_zeitpunkt": "الوقت",
+      "col_ereignis": "الحدث",
+      "col_empfaenger": "المستلم",
+      "col_rechtsgrundlage": "الأساس القانوني",
+      "col_details": "التفاصيل",
+      "details_ansehen": "عرض التفاصيل",
+      "details_aria": "عرض تفاصيل «{ereignis}»",
+      "empty": "لا توجد أحداث مسجَّلة بعد.",
+      "empfaenger_fallback": "—"
+    },
+    "rail": {
+      "title": "الثقة عبر المبادئ",
+      "subtitle": "حماية البيانات لدينا ليست إضافة بل أساس.",
+      "principle_1_title": "لا بيانات دون أساس قانوني",
+      "principle_1_body": "كل معالجة تستند إلى أساس قانوني أو تعاقدي واضح.",
+      "principle_1_link": "المزيد عن الأسس القانونية",
+      "principle_2_title": "المستلمون الخاصون بموافقة فقط",
+      "principle_2_body": "تُنقل البيانات إلى الجهات غير الحكومية حصريًا بموافقتك.",
+      "principle_2_link": "إدارة الموافقات",
+      "principle_3_title": "الشفافية والتحكّم",
+      "principle_3_body": "ترى كل وصول في سجل التدقيق ويمكنك سحب الموافقات في أي وقت.",
+      "principle_3_link": "عرض سجل التدقيق",
+      "link": "المزيد عن حماية البيانات"
+    },
+    "footer": {
+      "title": "بياناتك. محمية بأمان.",
+      "badge_encrypted": "تشفير من طرف إلى طرف",
+      "badge_germany": "التخزين في ألمانيا",
+      "badge_iso": "ISO/IEC 27001",
+      "badge_dsgvo": "متوافق مع اللائحة العامة لحماية البيانات"
+    },
+    "faq": {
+      "title": "أسئلة حول حماية البيانات؟",
+      "body": "تساعدك أسئلتنا الشائعة وجهات الاتصال.",
+      "link": "إلى مركز حماية البيانات"
     },
     "aktivitaet": {
       "title": "أحدث النشاطات",
@@ -2910,13 +3269,13 @@
       "title": "الموافقات",
       "subtitle": "تحكّم في أيّ الجهات والخدمات يُسمح لها بالوصول إلى بياناتك.",
       "krankenkasse": "صندوق التأمين الصحي (Krankenkasse)",
-      "krankenkasse_sub": "إرسال البيانات لأغراض الفوترة والخدمات",
-      "bank": "البنك",
-      "bank_sub": "التحقق من بيانات الحساب لأغراض المبالغ المستردّة",
+      "krankenkasse_sub": "التأمين الصحي القانوني",
       "arbeitgeber": "صاحب العمل",
-      "arbeitgeber_sub": "مشاركة البيانات لأغراض ضريبة الأجور والشهادات",
-      "weitere_dienste": "خدمات أخرى",
-      "weitere_dienste_sub": "جهات ومنظّمات أخرى",
+      "arbeitgeber_sub": "صاحب العمل الحالي",
+      "familienkasse": "صندوق الإعانات العائلية (Familienkasse)",
+      "familienkasse_sub": "Bundesagentur für Arbeit (الوكالة الاتحادية للعمل)",
+      "private": "المستلمون الخاصون",
+      "private_sub": "مثل المؤجِّرين، مؤسسات التعليم",
       "verwalten": "إدارة",
       "historie_anzeigen": "عرض سجلّ الموافقات",
       "ein": "تشغيل",

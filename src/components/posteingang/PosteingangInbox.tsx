@@ -5,30 +5,39 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
 import {
+  Archive,
   Briefcase,
+  Check,
   ChevronDown,
   ChevronRight,
   ChevronUp,
   Clock,
+  Download,
   Euro,
   File as FileIcon,
-  FileText,
   Filter,
+  Folder,
   FolderInput,
+  Info,
+  Inbox,
   Landmark,
+  ListChecks,
+  Mail,
+  MessageCircleQuestion,
   MoreHorizontal,
   PenSquare,
-  Scale,
+  Printer,
   Search,
   ShieldCheck,
   Sparkles,
+  ThumbsUp,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { api } from '@/lib/mock-backend';
 import { useMediaQuery } from '@/lib/hooks/use-media-query';
 import { Skeleton } from '@/components/shared/Skeleton';
-import type { Behoerde, Letter, Vorgang } from '@/types';
+import type { Behoerde, BehoerdeKategorie, Letter, Vorgang } from '@/types';
 
 import { NeuerVorgangAusBriefModal } from './NeuerVorgangAusBriefModal';
 import { ReplyInlinePanel } from './ReplyInlinePanel';
@@ -37,6 +46,7 @@ import { OriginaltextBlock } from './OriginaltextBlock';
 import { VorgangsGruppe, SonstigeGruppe } from './VorgangsGruppe';
 import { FilterSheet } from './FilterSheet';
 import {
+  FILTER_KATEGORIEN,
   filterKategorieToInternal,
   type FilterKategorie,
 } from './FilterPopover';
@@ -55,6 +65,56 @@ interface PosteingangInboxProps {
 
 type AvatarVariant = 'eagle' | 'aok' | 'ard' | 'lea' | 'jc' | 'default';
 type SectionKey = 'neu' | 'frist7' | 'erledigt';
+type StatusTab = 'alle' | 'ungelesen' | 'mit_frist' | 'wichtig';
+/** Posteingang (alle offenen Briefe) vs. Archiv (status === 'erledigt'). */
+type Mailbox = 'posteingang' | 'archiv';
+
+/** Ein Brief ist „mit Frist", wenn mindestens ein offener Frist-Termin hinterlegt ist. */
+function letterHasFrist(letter: Letter): boolean {
+  return (letter.fristen ?? []).some((f) => Boolean(f.datum));
+}
+
+/**
+ * „Wichtig" = nicht erledigt + Nachzahlungs- oder rechtsmittelfähiger Bescheid
+ * mit naher Frist. Pragmatisch: offener Brief mit Frist innerhalb 7 Tagen ODER
+ * mit fälliger Nachzahlung.
+ */
+function letterIsWichtig(letter: Letter, nowIso: string): boolean {
+  if (letter.status === 'erledigt') return false;
+  if (letter.betrag_richtung === 'nachzahlung') return true;
+  const earliest = (letter.fristen ?? []).map((f) => f.datum).sort()[0];
+  if (!earliest) return false;
+  const days = differenceInCalendarDays(parseISO(earliest), parseISO(nowIso));
+  return days >= 0 && days <= 7;
+}
+
+function matchesStatusTab(letter: Letter, tab: StatusTab, nowIso: string): boolean {
+  switch (tab) {
+    case 'ungelesen':
+      return letter.status === 'ungelesen';
+    case 'mit_frist':
+      return letterHasFrist(letter);
+    case 'wichtig':
+      return letterIsWichtig(letter, nowIso);
+    default:
+      return true;
+  }
+}
+
+/** Datenmodell-Kategorie → UI-Filter-Bucket (Inverse von `filterKategorieToInternal`). */
+function internalToFilterKategorie(k: BehoerdeKategorie): FilterKategorie {
+  switch (k) {
+    case 'bund':
+      return 'bund';
+    case 'land':
+      return 'land';
+    case 'kommune':
+      return 'kommunal';
+    case 'sozialversicherung':
+    case 'privat':
+      return 'sonstige';
+  }
+}
 
 /**
  * `<PosteingangInbox>` — literal port of `docs/design-prototype-v2/posteingang.html`.
@@ -70,6 +130,7 @@ export function PosteingangInbox({
   initialSelectedLetterId,
 }: PosteingangInboxProps) {
   const t = useTranslations('posteingang');
+  const t3 = useTranslations('posteingang.mockup3');
   const tCommon = useTranslations('common');
   const [letters, setLetters] = React.useState<Letter[]>(initial.letters);
   const [behoerdenById, setBehoerdenById] = React.useState(initial.behoerdenById);
@@ -78,6 +139,8 @@ export function PosteingangInbox({
   // flippt erst, wenn der initiale Refresh abgeschlossen ist (Erfolg ODER Fehler).
   const [loaded, setLoaded] = React.useState(initial.letters.length > 0);
   const [searchQuery, setSearchQuery] = React.useState('');
+  const [statusTab, setStatusTab] = React.useState<StatusTab>('alle');
+  const [mailbox, setMailbox] = React.useState<Mailbox>('posteingang');
   const [view, setView] = React.useState<'chronologisch' | 'vorgang'>('chronologisch');
   const [selectedLetterId, setSelectedLetterId] = React.useState<string | null>(
     initialSelectedLetterId ?? null,
@@ -156,12 +219,48 @@ export function PosteingangInbox({
 
   const nowIso = initial.nowIso;
 
+  // Mailbox-Scope: Posteingang = alle nicht-erledigten Briefe, Archiv =
+  // ausschließlich Briefe mit status === 'erledigt' (es gibt kein Folder-Modell;
+  // „Archiv" ist die einzige echte zweite Mailbox, vgl. LetterStatus-Union).
+  const mailboxLetters = React.useMemo(
+    () =>
+      letters.filter((l) =>
+        mailbox === 'archiv'
+          ? l.status === 'erledigt'
+          : l.status !== 'erledigt',
+      ),
+    [letters, mailbox],
+  );
+
+  const mailboxCounts = React.useMemo(
+    () => ({
+      posteingang: letters.filter((l) => l.status !== 'erledigt').length,
+      archiv: letters.filter((l) => l.status === 'erledigt').length,
+    }),
+    [letters],
+  );
+
+  // Ordner = echte Behörden-Kategorie-Buckets der aktuellen Mailbox, mit
+  // realer Anzahl (keine erfundenen Entwürfe/Gesendet/Papierkorb-Zähler).
+  const folders = React.useMemo(() => {
+    const counts = new Map<FilterKategorie, number>();
+    for (const l of mailboxLetters) {
+      const behoerde = behoerdenById[l.absender_behoerde_id];
+      if (!behoerde) continue;
+      const key = internalToFilterKategorie(behoerde.kategorie);
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+    return FILTER_KATEGORIEN.filter((k) => (counts.get(k) ?? 0) > 0).map(
+      (k) => ({ kategorie: k, count: counts.get(k) ?? 0 }),
+    );
+  }, [mailboxLetters, behoerdenById]);
+
   const filteredLetters = React.useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     const activeKategorien = new Set(
       filterSelected.flatMap((k) => filterKategorieToInternal(k)),
     );
-    return letters.filter((l) => {
+    return mailboxLetters.filter((l) => {
       const behoerde = behoerdenById[l.absender_behoerde_id];
       if (activeKategorien.size > 0) {
         if (!behoerde || !activeKategorien.has(behoerde.kategorie)) return false;
@@ -172,10 +271,25 @@ export function PosteingangInbox({
         (behoerde?.name_de ?? '').toLowerCase().includes(q)
       );
     });
-  }, [letters, behoerdenById, searchQuery, filterSelected]);
+  }, [mailboxLetters, behoerdenById, searchQuery, filterSelected]);
+
+  const tabCounts = React.useMemo(
+    () => ({
+      alle: filteredLetters.length,
+      ungelesen: filteredLetters.filter((l) => l.status === 'ungelesen').length,
+      mit_frist: filteredLetters.filter((l) => letterHasFrist(l)).length,
+      wichtig: filteredLetters.filter((l) => letterIsWichtig(l, nowIso)).length,
+    }),
+    [filteredLetters, nowIso],
+  );
+
+  const tabFilteredLetters = React.useMemo(
+    () => filteredLetters.filter((l) => matchesStatusTab(l, statusTab, nowIso)),
+    [filteredLetters, statusTab, nowIso],
+  );
 
   const grouped = React.useMemo(() => {
-    const filtered = filteredLetters;
+    const filtered = tabFilteredLetters;
 
     const neu: Letter[] = [];
     const frist7: Letter[] = [];
@@ -202,12 +316,12 @@ export function PosteingangInbox({
       }
     }
     return { neu, frist7, erledigt };
-  }, [filteredLetters, nowIso]);
+  }, [tabFilteredLetters, nowIso]);
 
   const byVorgang = React.useMemo(() => {
     const groups = new Map<string, Letter[]>();
     const sonstige: Letter[] = [];
-    for (const l of filteredLetters) {
+    for (const l of tabFilteredLetters) {
       if (l.vorgang_id) {
         const bucket = groups.get(l.vorgang_id);
         if (bucket) bucket.push(l);
@@ -217,10 +331,13 @@ export function PosteingangInbox({
       }
     }
     return { groups, sonstige };
-  }, [filteredLetters]);
+  }, [tabFilteredLetters]);
 
   const selectedLetter =
-    letters.find((l) => l.id === selectedLetterId) ?? letters[0] ?? null;
+    letters.find((l) => l.id === selectedLetterId) ??
+    tabFilteredLetters[0] ??
+    letters[0] ??
+    null;
 
   const selectedAbsender = selectedLetter
     ? behoerdenById[selectedLetter.absender_behoerde_id] ?? null
@@ -233,12 +350,30 @@ export function PosteingangInbox({
   return (
     <>
       <div className={inlineActive ? 'post-content--reply-open' : undefined}>
-      <div className="gt-page-head">
-        <h1>Posteingang</h1>
-        <div className="sub">Alle Behörden-Briefe an einem Ort. Verstehen statt verzweifeln.</div>
-        <span className="gt-page-tag">Prototyp · Mock-Daten</span>
-      </div>
+      <div className="post-shell">
+        <PostRail
+          mailbox={mailbox}
+          onMailboxChange={(next) => {
+            setMailbox(next);
+            setStatusTab('alle');
+          }}
+          mailboxCounts={mailboxCounts}
+          folders={folders}
+          activeFolders={filterSelected}
+          onToggleFolder={(k) =>
+            setFilterSelected((prev) =>
+              prev.includes(k) ? prev.filter((x) => x !== k) : [...prev, k],
+            )
+          }
+          onlyUnread={statusTab === 'ungelesen'}
+          onOnlyUnreadChange={(next) =>
+            setStatusTab(next ? 'ungelesen' : 'alle')
+          }
+          onOpenFilter={() => setFilterOpen(true)}
+          activeFilterCount={filterSelected.length}
+        />
 
+        <div className="post-main">
       <div className="post-toolbar">
         <div className="input-icon">
           <Search />
@@ -271,35 +406,40 @@ export function PosteingangInbox({
             Nach Vorgang
           </button>
         </div>
-        <button
-          type="button"
-          className="btn btn-secondary"
-          onClick={() => setFilterOpen(true)}
-          aria-haspopup="dialog"
-        >
-          <Filter />Filter
-          {filterSelected.length > 0 && (
-            <span
-              aria-label={`${filterSelected.length} Filter aktiv`}
-              style={{
-                minWidth: '18px',
-                height: '18px',
-                padding: '0 5px',
-                borderRadius: '9px',
-                background: 'var(--brand-fill)',
-                color: '#fff',
-                fontSize: '11px',
-                fontWeight: 600,
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              {filterSelected.length}
-            </span>
-          )}
-        </button>
       </div>
+
+      {view === 'chronologisch' && (
+        <div
+          className="post-tabs"
+          role="tablist"
+          aria-label={t3('tabs.aria_label')}
+        >
+          <StatusTabButton
+            label={t3('tabs.alle')}
+            count={tabCounts.alle}
+            active={statusTab === 'alle'}
+            onClick={() => setStatusTab('alle')}
+          />
+          <StatusTabButton
+            label={t3('tabs.ungelesen')}
+            count={tabCounts.ungelesen}
+            active={statusTab === 'ungelesen'}
+            onClick={() => setStatusTab('ungelesen')}
+          />
+          <StatusTabButton
+            label={t3('tabs.mit_frist')}
+            count={tabCounts.mit_frist}
+            active={statusTab === 'mit_frist'}
+            onClick={() => setStatusTab('mit_frist')}
+          />
+          <StatusTabButton
+            label={t3('tabs.wichtig')}
+            count={tabCounts.wichtig}
+            active={statusTab === 'wichtig'}
+            onClick={() => setStatusTab('wichtig')}
+          />
+        </div>
+      )}
 
       <div className="post-layout">
         {view === 'chronologisch' ? (
@@ -392,13 +532,14 @@ export function PosteingangInbox({
             absender={selectedAbsender}
             replyLabel={t('sticky_action.cta_reply')}
             onAntwortVorbereiten={(e) => openReply(selectedLetter, e)}
-            onEinspruch={(e) => openReply(selectedLetter, e)}
             onVorgangErstellen={() => setVorgangModalLetter(selectedLetter)}
             onOriginaltextToggle={() => setOriginalTextOpen((v) => !v)}
             originaltextOpen={originalTextOpen}
           />
         )}
 
+      </div>
+        </div>
       </div>
       </div>
 
@@ -451,6 +592,139 @@ export function PosteingangInbox({
 
 export type { InitialData };
 
+// ── PostRail ────────────────────────────────────────────────────────────────
+
+interface FolderEntry {
+  kategorie: FilterKategorie;
+  count: number;
+}
+
+function PostRail({
+  mailbox,
+  onMailboxChange,
+  mailboxCounts,
+  folders,
+  activeFolders,
+  onToggleFolder,
+  onlyUnread,
+  onOnlyUnreadChange,
+  onOpenFilter,
+  activeFilterCount,
+}: {
+  mailbox: Mailbox;
+  onMailboxChange: (next: Mailbox) => void;
+  mailboxCounts: { posteingang: number; archiv: number };
+  folders: FolderEntry[];
+  activeFolders: FilterKategorie[];
+  onToggleFolder: (k: FilterKategorie) => void;
+  onlyUnread: boolean;
+  onOnlyUnreadChange: (next: boolean) => void;
+  onOpenFilter: () => void;
+  activeFilterCount: number;
+}) {
+  const t = useTranslations('posteingang.rail');
+  const tKat = useTranslations('posteingang.filter.kategorie');
+
+  return (
+    <nav className="post-rail" aria-label={t('nav_aria')}>
+      <div className="post-rail-head">
+        <span className="ico" aria-hidden="true">
+          <Mail />
+        </span>
+        <div>
+          <h1>{t('title')}</h1>
+          <p className="sub">{t('subtitle')}</p>
+        </div>
+      </div>
+
+      <Link
+        href="/assistent"
+        className="btn btn-primary post-rail-write"
+        aria-label={t('write_aria')}
+        style={{ textDecoration: 'none' }}
+      >
+        <PenSquare />
+        {t('write')}
+      </Link>
+
+      <div className="post-rail-group" role="group" aria-label={t('system_label')}>
+        <div className="grp-label">{t('system_label')}</div>
+        <button
+          type="button"
+          className={`post-rail-link${mailbox === 'posteingang' ? ' active' : ''}`}
+          aria-current={mailbox === 'posteingang' ? 'page' : undefined}
+          onClick={() => onMailboxChange('posteingang')}
+        >
+          <Inbox aria-hidden="true" />
+          <span className="name">{t('posteingang')}</span>
+          <span className="cnt">{mailboxCounts.posteingang}</span>
+        </button>
+        <button
+          type="button"
+          className={`post-rail-link${mailbox === 'archiv' ? ' active' : ''}`}
+          aria-current={mailbox === 'archiv' ? 'page' : undefined}
+          onClick={() => onMailboxChange('archiv')}
+        >
+          <Archive aria-hidden="true" />
+          <span className="name">{t('archiv')}</span>
+          <span className="cnt">{mailboxCounts.archiv}</span>
+        </button>
+      </div>
+
+      <div className="post-rail-group" role="group" aria-label={t('ordner_label')}>
+        <div className="grp-label">{t('ordner_label')}</div>
+        {folders.length === 0 ? (
+          <p className="grp-label" style={{ textTransform: 'none', fontWeight: 400 }}>
+            {t('ordner_empty')}
+          </p>
+        ) : (
+          folders.map((f) => {
+            const active = activeFolders.includes(f.kategorie);
+            return (
+              <button
+                key={f.kategorie}
+                type="button"
+                className={`post-rail-link${active ? ' active' : ''}`}
+                aria-pressed={active}
+                onClick={() => onToggleFolder(f.kategorie)}
+              >
+                <Folder aria-hidden="true" />
+                <span className="name">{tKat(f.kategorie)}</span>
+                <span className="cnt">{f.count}</span>
+              </button>
+            );
+          })
+        )}
+      </div>
+
+      <div className="post-rail-group">
+        <div className="grp-label">{t('filter_label')}</div>
+        <label className="post-rail-link" style={{ cursor: 'pointer' }}>
+          <input
+            type="checkbox"
+            checked={onlyUnread}
+            onChange={(e) => onOnlyUnreadChange(e.target.checked)}
+            style={{ width: '16px', height: '16px', accentColor: 'var(--brand-600)' }}
+          />
+          <span className="name">{t('nur_ungelesen')}</span>
+        </label>
+        <button
+          type="button"
+          className="post-rail-link"
+          onClick={onOpenFilter}
+          aria-haspopup="dialog"
+        >
+          <Filter aria-hidden="true" />
+          <span className="name">{t('filter_open')}</span>
+          {activeFilterCount > 0 && (
+            <span className="cnt">{activeFilterCount}</span>
+          )}
+        </button>
+      </div>
+    </nav>
+  );
+}
+
 // ── PosteingangInboxSkeleton ────────────────────────────────────────────────
 
 function PosteingangInboxSkeleton({ loadingLabel }: { loadingLabel: string }) {
@@ -473,6 +747,33 @@ function PosteingangInboxSkeleton({ loadingLabel }: { loadingLabel: string }) {
         <Skeleton className="h-72 rounded-2xl" />
       </div>
     </div>
+  );
+}
+
+// ── StatusTabButton ─────────────────────────────────────────────────────────
+
+function StatusTabButton({
+  label,
+  count,
+  active,
+  onClick,
+}: {
+  label: string;
+  count: number;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      role="tab"
+      aria-selected={active}
+      className={`post-tab${active ? ' active' : ''}`}
+      onClick={onClick}
+    >
+      {label}
+      <span className="count">{count}</span>
+    </button>
   );
 }
 
@@ -609,7 +910,6 @@ function PostDetail({
   absender,
   replyLabel,
   onAntwortVorbereiten,
-  onEinspruch,
   onVorgangErstellen,
   onOriginaltextToggle,
   originaltextOpen,
@@ -618,20 +918,24 @@ function PostDetail({
   absender: Behoerde | null;
   replyLabel: string;
   onAntwortVorbereiten: (e: React.SyntheticEvent) => void;
-  onEinspruch: (e: React.SyntheticEvent) => void;
   onVorgangErstellen: () => void;
   onOriginaltextToggle: () => void;
   originaltextOpen: boolean;
 }) {
+  const t3 = useTranslations('posteingang.mockup3');
+  const tWas = useTranslations('posteingang.was_kann_ich_tun');
+  const [docTab, setDocTab] = React.useState<'original' | 'anhaenge' | 'verlauf'>(
+    'original',
+  );
+  // Bei Briefwechsel: zurück auf den Default-Tab + Originaltext eingeklappt.
+  React.useEffect(() => {
+    setDocTab('original');
+  }, [letter.id]);
+
   const ai = letter.ai_summary?.post_open;
-  const bullets = ai?.bullets?.slice(0, 3).map((b) => b.text) ?? [
-    'Maßgeblich bleibt der Originaltext.',
-    'Aktion innerhalb der genannten Frist möglich.',
-    'Bei Rückfragen wenden Sie sich an die zuständige Behörde.',
-  ];
-  const headline =
-    bullets[0] ??
-    'Bitte den Originaltext prüfen.';
+  const bullets = ai?.bullets?.slice(0, 3).map((b) => b.text) ?? [];
+  const worum = bullets[0] ?? t3('erklaerer.worum_fallback');
+
   const earliestFrist = (letter.fristen ?? [])
     .map((f) => f.datum)
     .sort()[0];
@@ -640,6 +944,27 @@ function PostDetail({
   const bodyExcerpt = letter.body_de
     ? letter.body_de.split('\n').filter(Boolean).slice(2, 5).join(' ').slice(0, 280)
     : '';
+
+  const betragText = formatBetragErklaerung(letter, t3);
+  const bisWannText = fristLabel
+    ? t3('erklaerer.bis_wann_template', { datum: fristLabel })
+    : t3('erklaerer.bis_wann_keine');
+
+  const bedeutung = formatBedeutung(letter, tWas, t3);
+  // „Was bedeutet das" als abgehakte Liste, wenn die KI-Zusammenfassung mehrere
+  // Punkte liefert (Bullet 0 ist die „Worum geht es"-Kurzfassung, oben im
+  // KI-Erklärer; ab Bullet 1 sind es die bedeutungstragenden Punkte). Andernfalls
+  // Single-Absatz-Fallback. Datenquelle: echte ai_summary.post_open.bullets.
+  const bedeutungBullets = (ai?.bullets ?? [])
+    .slice(1, 5)
+    .map((b) => b.text)
+    .filter((text) => text.trim().length > 0);
+  const hasNachzahlung = letter.betrag_richtung === 'nachzahlung';
+
+  const empfangenLabel = formatDDMMYYYY(parseISO(letter.empfangen_am));
+  const kategorieLabel = absender
+    ? t3(`detail.kategorie.${absender.kategorie}` as 'detail.kategorie.bund')
+    : t3('detail.kategorie.unbekannt');
 
   return (
     <div className="post-detail">
@@ -656,13 +981,35 @@ function PostDetail({
             <ShieldCheck />Authentisch geprüft
           </div>
           <div className="muted text-xs">
-            Verifiziert am {formatDDMMYYYY(parseISO(letter.empfangen_am))}
+            Verifiziert am {empfangenLabel}
           </div>
         </div>
+      </div>
+
+      <div className="post-detail-tools">
         <button
           type="button"
           className="btn btn-secondary btn-sm"
-          style={{ height: '32px', width: '32px', padding: 0 }}
+          onClick={() => downloadLetterAsText(letter)}
+        >
+          <Download />
+          {t3('detail.herunterladen')}
+        </button>
+        <button
+          type="button"
+          className="btn btn-secondary btn-sm"
+          onClick={() => {
+            if (typeof window !== 'undefined') window.print();
+          }}
+        >
+          <Printer />
+          {t3('detail.drucken')}
+        </button>
+        <span style={{ flex: 1 }} />
+        <button
+          type="button"
+          className="btn btn-secondary btn-sm"
+          style={{ width: '32px', padding: 0 }}
           aria-label="Weitere Optionen"
           disabled
           aria-disabled="true"
@@ -672,117 +1019,323 @@ function PostDetail({
       </div>
 
       <h2>{letter.betreff}</h2>
-      <div className="meta-row">
-        <div>Aktenzeichen: {letter.aktenzeichen}</div>
-        <div>
-          Eingegangen: {formatDDMMYYYY(parseISO(letter.empfangen_am))}
+      <dl className="post-meta-grid">
+        <div className="post-meta-cell">
+          <dt>{t3('detail.meta_eingegangen')}</dt>
+          <dd>{empfangenLabel}</dd>
         </div>
+        <div className="post-meta-cell">
+          <dt>{t3('detail.meta_behoerde')}</dt>
+          <dd>{absender?.name_de ?? '—'}</dd>
+        </div>
+        <div className="post-meta-cell">
+          <dt>{t3('detail.meta_kategorie')}</dt>
+          <dd>{kategorieLabel}</dd>
+        </div>
+        <div className="post-meta-cell">
+          <dt>{t3('detail.meta_aktenzeichen')}</dt>
+          <dd>{letter.aktenzeichen}</dd>
+        </div>
+        <div className="post-meta-cell">
+          <dt>{t3('detail.meta_frist')}</dt>
+          <dd className={fristLabel ? 'has-frist' : undefined}>
+            {fristLabel ?? t3('detail.meta_frist_keine')}
+          </dd>
+        </div>
+      </dl>
+
+      <div className="post-doc-tabs" role="tablist" aria-label={t3('detail.tabs_aria')}>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={docTab === 'original'}
+          className={`post-doc-tab${docTab === 'original' ? ' active' : ''}`}
+          onClick={() => setDocTab('original')}
+        >
+          {t3('detail.tab_original')}
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={docTab === 'anhaenge'}
+          className={`post-doc-tab${docTab === 'anhaenge' ? ' active' : ''}`}
+          onClick={() => setDocTab('anhaenge')}
+        >
+          {t3('detail.tab_anhaenge')}
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={docTab === 'verlauf'}
+          className={`post-doc-tab${docTab === 'verlauf' ? ' active' : ''}`}
+          onClick={() => setDocTab('verlauf')}
+        >
+          {t3('detail.tab_verlauf')}
+        </button>
       </div>
 
-      <div className="ai-card">
-        <span className="icon-circle">
-          <Sparkles />
-        </span>
-        <div>
-          <div className="h">AI-Brief-Erklärer</div>
-          <h4>{headline}</h4>
-          <ul>
-            {bullets.slice(1).map((b, i) => (
-              <li key={i}>{b}</li>
-            ))}
-            {bullets.length <= 1 && (
-              <li>Maßgeblich bleibt der Originaltext.</li>
+      {docTab === 'original' && (
+        <>
+          <div className="ai-card">
+            <span className="icon-circle">
+              <Sparkles />
+            </span>
+            <div className="ai-card-body">
+              <div className="ai-card-top">
+                <div className="h">{t3('erklaerer.title')}</div>
+                <span className="ai-pill">
+                  <Sparkles aria-hidden="true" />
+                  {t3('erklaerer.pill')}
+                </span>
+              </div>
+              <p className="ai-intro">{t3('erklaerer.intro')}</p>
+              <div className="ai-blocks">
+                <div className="ai-block">
+                  <div className="ai-block-q">
+                    <Info aria-hidden="true" />
+                    {t3('erklaerer.worum_label')}
+                  </div>
+                  <p className="ai-block-a">{worum}</p>
+                </div>
+                <div className="ai-block">
+                  <div className="ai-block-q">
+                    <Euro aria-hidden="true" />
+                    {t3('erklaerer.betrag_label')}
+                  </div>
+                  <p className="ai-block-a">{betragText}</p>
+                </div>
+                <div className="ai-block">
+                  <div className="ai-block-q">
+                    <Clock aria-hidden="true" />
+                    {t3('erklaerer.bis_wann_label')}
+                  </div>
+                  <p className="ai-block-a">{bisWannText}</p>
+                </div>
+              </div>
+              <div className="ai-foot">
+                <p className="ai-disclaimer">{t3('erklaerer.disclaimer')}</p>
+                <button
+                  type="button"
+                  className="ai-feedback"
+                  aria-label={t3('erklaerer.feedback_aria')}
+                  onClick={() => toast(t3('erklaerer.feedback_toast'))}
+                >
+                  <ThumbsUp aria-hidden="true" />
+                  {t3('erklaerer.feedback')}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {fristLabel && (
+            <div className="frist-row">
+              <Clock style={{ color: 'var(--ink-3)', width: '16px', height: '16px' }} />
+              <span>
+                Frist: {fristTyp.charAt(0).toUpperCase() + fristTyp.slice(1)} bis{' '}
+              </span>
+              <span className="frist-pill">{fristLabel}</span>
+            </div>
+          )}
+
+          <section className="post-panel" aria-label={t3('bedeutung.title')}>
+            <div className="post-panel-head">
+              <Info aria-hidden="true" />
+              <h3>{t3('bedeutung.title')}</h3>
+            </div>
+            {bedeutungBullets.length > 1 ? (
+              <ul className="post-bullets">
+                {bedeutungBullets.map((text, i) => (
+                  <li key={i}>
+                    <Check aria-hidden="true" />
+                    <span>{text}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>{bedeutung}</p>
             )}
-          </ul>
-        </div>
-        <div className="illustration">
-          <FileText />
-        </div>
-      </div>
+          </section>
 
-      {fristLabel && (
-        <div className="frist-row">
-          <Clock style={{ color: 'var(--ink-3)', width: '16px', height: '16px' }} />
-          <span>
-            Frist: {fristTyp.charAt(0).toUpperCase() + fristTyp.slice(1)} bis {fristLabel}
-          </span>
+          <section className="post-panel" aria-label={t3('naechste_schritte.title')}>
+            <div className="post-panel-head">
+              <ListChecks aria-hidden="true" />
+              <h3>{t3('naechste_schritte.title')}</h3>
+            </div>
+            <div className="step-rows">
+              <div className="step-row">
+                <Check className="step-tick" aria-hidden="true" />
+                <div className="step-text">
+                  <div className="lbl">{t3('naechste_schritte.antwort')}</div>
+                  <div className="sub">{t3('naechste_schritte.antwort_sub')}</div>
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-primary btn-sm"
+                  onClick={(e) => onAntwortVorbereiten(e)}
+                >
+                  <PenSquare />
+                  {t3('naechste_schritte.antwort')}
+                </button>
+              </div>
+
+              <div className="step-row">
+                <Check className="step-tick" aria-hidden="true" />
+                <div className="step-text">
+                  <div className="lbl">{t3('naechste_schritte.frist_merken')}</div>
+                  <div className="sub">{t3('naechste_schritte.frist_merken_sub')}</div>
+                </div>
+                <Link
+                  href="/termine"
+                  className="btn btn-secondary btn-sm"
+                  style={{ textDecoration: 'none' }}
+                >
+                  <Clock />
+                  {t3('naechste_schritte.frist_merken')}
+                </Link>
+              </div>
+
+              {hasNachzahlung && (
+                <div className="step-row">
+                  <Check className="step-tick" aria-hidden="true" />
+                  <div className="step-text">
+                    <div className="lbl">{t3('naechste_schritte.zahlung')}</div>
+                    <div className="sub">{t3('naechste_schritte.zahlung_sub')}</div>
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-secondary btn-sm"
+                    disabled
+                    aria-disabled="true"
+                    title="In diesem Prototyp nicht hinterlegt"
+                    style={{ opacity: 0.55, cursor: 'not-allowed' }}
+                  >
+                    <Euro />
+                    {t3('naechste_schritte.zahlung')}
+                  </button>
+                </div>
+              )}
+
+              <div className="step-row">
+                <Check className="step-tick" aria-hidden="true" />
+                <div className="step-text">
+                  <div className="lbl">{t3('naechste_schritte.vorgang')}</div>
+                  <div className="sub">{t3('naechste_schritte.vorgang_sub')}</div>
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-secondary btn-sm"
+                  onClick={onVorgangErstellen}
+                >
+                  <FolderInput />
+                  {t3('naechste_schritte.vorgang')}
+                </button>
+              </div>
+            </div>
+          </section>
+
+          {!originaltextOpen ? (
+            <div className="auszug">
+              <button
+                type="button"
+                className="more"
+                onClick={onOriginaltextToggle}
+                style={{ background: 'transparent', border: 0, padding: 0, cursor: 'pointer' }}
+              >
+                Mehr anzeigen <ChevronDown style={{ width: '12px', height: '12px' }} />
+              </button>
+              <div className="h">Auszug aus dem Originaltext</div>
+              <div className="quote">„{bodyExcerpt || letter.body_de.slice(0, 220)}"</div>
+            </div>
+          ) : (
+            <div style={{ marginTop: '18px' }}>
+              <OriginaltextBlock body={letter.body_de} />
+            </div>
+          )}
+
+          <Link href="/assistent" className="post-fragen" style={{ textDecoration: 'none' }}>
+            <span className="icon-circle">
+              <MessageCircleQuestion aria-hidden="true" />
+            </span>
+            <div className="post-fragen-body">
+              <div className="t">{t3('fragen.title')}</div>
+              <div className="s">{t3('fragen.sub')}</div>
+            </div>
+            <span className="post-fragen-cta">
+              {t3('fragen.cta')}
+              <ChevronRight aria-hidden="true" />
+            </span>
+          </Link>
+        </>
+      )}
+
+      {docTab === 'anhaenge' && (
+        <div className="post-doc-empty">
+          <FileIcon aria-hidden="true" />
+          <p>{t3('detail.anhaenge_empty')}</p>
         </div>
       )}
 
-      <div className="post-actions">
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={(e) => onAntwortVorbereiten(e)}
-        >
-          <PenSquare />
-          {replyLabel}
-        </button>
-        <button
-          type="button"
-          className="btn btn-secondary"
-          onClick={onVorgangErstellen}
-        >
-          <FolderInput />Vorgang erstellen
-        </button>
-        <button
-          type="button"
-          className="btn btn-secondary"
-          onClick={onOriginaltextToggle}
-          aria-expanded={originaltextOpen}
-        >
-          <FileIcon />Originaltext anzeigen
-        </button>
-      </div>
-
-      <div className="post-followups">
-        <div className="lbl">Was kann ich tun?</div>
-        <div className="chips">
-          <button type="button" className="chip-btn" onClick={(e) => onEinspruch(e)}>
-            <Scale />Einspruch erklären
-          </button>
-          <button
-            type="button"
-            className="chip-btn"
-            disabled
-            aria-disabled="true"
-            title="In diesem Prototyp nicht hinterlegt"
-            style={{ opacity: 0.55, cursor: 'not-allowed' }}
-          >
-            <Euro />Zahlung prüfen
-          </button>
-          <Link
-            href="/dokumente"
-            className="chip-btn"
-            style={{ textDecoration: 'none' }}
-          >
-            <FolderInput />Dokument ablegen
-          </Link>
-          <span style={{ flex: 1 }} />
-          <ChevronRight aria-hidden="true" style={{ color: 'var(--ink-4)' }} />
-        </div>
-      </div>
-
-      {!originaltextOpen ? (
-        <div className="auszug">
-          <button
-            type="button"
-            className="more"
-            onClick={onOriginaltextToggle}
-            style={{ background: 'transparent', border: 0, padding: 0, cursor: 'pointer' }}
-          >
-            Mehr anzeigen <ChevronDown style={{ width: '12px', height: '12px' }} />
-          </button>
-          <div className="h">Auszug aus dem Originaltext</div>
-          <div className="quote">„{bodyExcerpt || letter.body_de.slice(0, 220)}"</div>
-        </div>
-      ) : (
-        <div style={{ marginTop: '18px' }}>
-          <OriginaltextBlock body={letter.body_de} />
-        </div>
+      {docTab === 'verlauf' && (
+        <ol className="post-verlauf">
+          <li>
+            <span className="post-verlauf-dot" aria-hidden="true" />
+            <span>{t3('detail.verlauf_empfangen_template', { datum: empfangenLabel })}</span>
+          </li>
+          <li>
+            <span className="post-verlauf-dot" aria-hidden="true" />
+            <span>{t3('detail.verlauf_verifiziert_template', { datum: empfangenLabel })}</span>
+          </li>
+        </ol>
       )}
     </div>
   );
+}
+
+/** Euro-Cent → lokalisierter „1.234,56 €"-String (de-DE). */
+function formatBetragEuro(cent: number): string {
+  return new Intl.NumberFormat('de-DE', {
+    style: 'currency',
+    currency: 'EUR',
+  }).format(cent / 100);
+}
+
+function formatBetragErklaerung(
+  letter: Letter,
+  t3: ReturnType<typeof useTranslations>,
+): string {
+  if (typeof letter.betrag_cent !== 'number' || letter.betrag_cent <= 0) {
+    return t3('erklaerer.betrag_keiner');
+  }
+  const betrag = formatBetragEuro(letter.betrag_cent);
+  if (letter.betrag_richtung === 'erstattung') {
+    return t3('erklaerer.betrag_erstattung_template', { betrag });
+  }
+  return t3('erklaerer.betrag_nachzahlung_template', { betrag });
+}
+
+function formatBedeutung(
+  letter: Letter,
+  tWas: ReturnType<typeof useTranslations>,
+  t3: ReturnType<typeof useTranslations>,
+): string {
+  const hasFrist = (letter.fristen ?? []).some((f) => Boolean(f.datum));
+  if (letter.betrag_richtung === 'nachzahlung') return tWas('hint_zahlung');
+  if (hasFrist) return tWas('hint_frist');
+  return t3('bedeutung.fallback');
+}
+
+/** Lädt den Brief-Originaltext als `.txt` herunter (client-only, kein Backend). */
+function downloadLetterAsText(letter: Letter): void {
+  if (typeof window === 'undefined') return;
+  const blob = new Blob([letter.body_de], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${letter.aktenzeichen.replace(/[^\w.-]+/g, '_')}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
 }
 
 // ── helpers ─────────────────────────────────────────────────────────────────

@@ -91,7 +91,9 @@ async function openModalFor(
   });
   const replyButton = page
     .getByRole('button', {
-      name: /Antwort verfassen|Erneut antworten|Entwurf weiter schreiben/i,
+      // Redesign mockup #2 labels the "Nächste Schritte" reply action
+      // "Antwort vorbereiten"; the draft-aware variants remain for other readers.
+      name: /Antwort vorbereiten|Antwort verfassen|Erneut antworten|Entwurf weiter schreiben/i,
     })
     .first();
   await replyButton.waitFor({ state: 'visible', timeout: 20_000 });
@@ -134,7 +136,7 @@ test.describe('V1.5.1 PreInsertionModal a11y', () => {
           });
           const replyButton = page
             .getByRole('button', {
-              name: /Antwort verfassen|Erneut antworten|Entwurf weiter schreiben/i,
+              name: /Antwort vorbereiten|Antwort verfassen|Erneut antworten|Entwurf weiter schreiben/i,
             })
             .first();
           await replyButton.waitFor({ state: 'visible', timeout: 20_000 });
@@ -228,7 +230,7 @@ test.describe('V1.5.1 PreInsertionModal a11y', () => {
     });
     const reply = page
       .getByRole('button', {
-        name: /Antwort verfassen|Erneut antworten|Entwurf weiter schreiben/i,
+        name: /Antwort vorbereiten|Antwort verfassen|Erneut antworten|Entwurf weiter schreiben/i,
       })
       .first();
     await reply.waitFor({ state: 'visible', timeout: 20_000 });

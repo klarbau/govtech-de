@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, Inter_Tight } from 'next/font/google';
 import { getLocale, getMessages } from 'next-intl/server';
 
 import { Providers } from '@/components/providers/Providers';
@@ -12,6 +12,7 @@ import './globals.css';
 import './prototype-v2.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
+const interTight = Inter_Tight({ subsets: ['latin'], variable: '--font-display' });
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://govtech-de.vercel.app'),
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
   description:
     'Speculative-design prototype: how a citizen-first interaction layer for German public administration could feel in 2027.',
   openGraph: {
-    title: 'GovTech DE — Verwaltung neu gedacht',
+    title: 'GovTech DE — ein Satz statt sechs Behördengängen',
     description:
       'Ein:e Bürger:in sagt einmal „ich ziehe um" — und das System informiert jede zuständige Behörde. Speculative-Design-Prototyp, alle Daten erfunden.',
     images: ['/og.png'],
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'GovTech DE — Verwaltung neu gedacht',
+    title: 'GovTech DE — ein Satz statt sechs Behördengängen',
     description:
       'Ein Satz statt sechs Behördengängen — Speculative-Design-Prototyp für die deutsche Verwaltung 2027.',
     images: ['/og.png'],
@@ -52,6 +53,7 @@ export default async function RootLayout({
       className={cn(
         'font-sans',
         inter.variable,
+        interTight.variable,
       )}
     >
       <head>

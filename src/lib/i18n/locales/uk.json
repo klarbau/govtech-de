@@ -1,7 +1,7 @@
 {
   "app": {
     "name": "GovTech DE",
-    "tagline": "Адміністрування — переосмислене.",
+    "tagline": "Усі звернення до відомств в одному місці.",
     "skip_to_content": "Перейти до основного вмісту"
   },
   "nav": {
@@ -22,6 +22,104 @@
     "theme_toggle_dark": "Темна тема",
     "theme_toggle_system": "Як у системі",
     "user_menu": "Меню користувача"
+  },
+  "topnav": {
+    "nav_label": "Головна навігація",
+    "solutions": "Рішення (Lösungen)",
+    "lebenslagen": "Життєві ситуації (Lebenslagen)",
+    "security_privacy": "Безпека та захист даних",
+    "resources": "Ресурси",
+    "about_us": "Про нас",
+    "help": "Довідка та контакти",
+    "about_project": "Про проєкт"
+  },
+  "lebenslagen": {
+    "breadcrumb_catalog": "Каталог послуг",
+    "title": "Знайдіть послуги.",
+    "subtitle": "Просто. Швидко. Зрозуміло.",
+    "intro": "Відкрийте для себе послуги, що підходять до Вашої життєвої ситуації — зрозуміло пояснені та доступні онлайн.",
+    "search_label": "Пошук послуги",
+    "search_placeholder": "Пошук послуги, напр. „Kindergeld beantragen“",
+    "search_submit": "Знайти",
+    "filter_label": "Фільтр за темами",
+    "categories": {
+      "alle": "Усі теми",
+      "familie": "Сім’я",
+      "wohnen": "Житло",
+      "arbeit": "Робота",
+      "migration": "Міграція",
+      "steuern": "Податки",
+      "mehr": "Ще"
+    },
+    "results_count": "Знайдено послуг: {count}",
+    "results_none": "Послуги не знайдено. Змініть параметри пошуку.",
+    "sort_label": "Сортувати за:",
+    "sort_aria": "Сортування",
+    "sort": {
+      "relevance": "Релевантність",
+      "popular": "Популярність",
+      "name": "Назва (А–Я)"
+    },
+    "frequency": {
+      "very_often": "Дуже часто",
+      "often": "Часто"
+    },
+    "relevance": {
+      "very": "Дуже релевантно",
+      "normal": "Релевантно"
+    },
+    "open_service": "Відкрити послугу",
+    "show_more": "Показати більше послуг",
+    "rail_popular_title": "Популярне для вас",
+    "rail_popular_sub": "На основі вашої життєвої ситуації",
+    "rail_items": {
+      "kindergeld": "Перевірте дані та повідомте про зміни.",
+      "umzug": "Вкажіть Вашу нову адресу.",
+      "wohngeld": "Отримайте підтримку з витратами на житло.",
+      "steuer": "Перенесіть дані та заощадьте час."
+    },
+    "rail_secure_title": "Ваші дані захищені",
+    "rail_secure_body": "Кожна послуга показує, які дані обробляються, ким і на якій правовій підставі. Ви зберігаєте контроль.",
+    "rail_secure_link": "Конфіденційність і згоди",
+    "trust_title": "Довіра через стандарти",
+    "services": {
+      "umzug": {
+        "title": "Повідомити про переїзд",
+        "description": "Melden Sie Ihren neuen Wohnsitz an. Die Ummeldung wird automatisch an alle zuständigen Stellen weitergeleitet."
+      },
+      "geburt": {
+        "title": "Зареєструвати народження",
+        "description": "Beurkunden Sie die Geburt Ihres Kindes und stoßen Sie Kindergeld, Elterngeld und Krankenversicherung an."
+      },
+      "aufenthalt": {
+        "title": "Подовжити дозвіл на проживання",
+        "description": "Verlängern Sie Ihren Aufenthaltstitel rechtzeitig vor Ablauf und prüfen Sie die benötigten Nachweise."
+      },
+      "kindergeld": {
+        "title": "Оновити допомогу на дитину",
+        "description": "Aktualisieren Sie Bankverbindung, Anschrift oder Lebenssituation für Ihren Kindergeldbezug."
+      },
+      "steuer": {
+        "title": "Попередньо заповнити податкову декларацію",
+        "description": "Ihre Steuererklärung wird aus bereits bekannten Daten vorausgefüllt. Sie prüfen nur noch und reichen ein."
+      },
+      "reisepass": {
+        "title": "Подати заяву на закордонний паспорт",
+        "description": "Beantragen Sie einen neuen Reisepass und buchen Sie den passenden Termin im Bürgeramt."
+      },
+      "bafoeg": {
+        "title": "Навчання та студентська підтримка",
+        "description": "Beantragen Sie Ausbildungsförderung und behalten Sie Fristen sowie Nachweise im Blick."
+      },
+      "pflege": {
+        "title": "Догляд і здоров’я",
+        "description": "Beantragen Sie Leistungen der Pflegeversicherung und finden Sie Unterstützung im Pflegefall."
+      },
+      "wohngeld": {
+        "title": "Подати заяву на житлову допомогу",
+        "description": "Prüfen Sie Ihren Anspruch auf Wohngeld und stellen Sie den Antrag mit vorausgefüllten Angaben."
+      }
+    }
   },
   "a11y": {
     "menu": {
@@ -96,6 +194,8 @@
       "menu_label": "Відкрити меню користувача",
       "demo_name": "Анна Петрова",
       "profile": "Профіль",
+      "stammdaten": "Основні дані (Stammdaten)",
+      "datenschutz": "Захист даних (Datenschutz)",
       "switch_persona": "Змінити персону",
       "logout": "Вийти"
     },
@@ -104,6 +204,10 @@
     },
     "sheet": {
       "close": "Закрити"
+    },
+    "breadcrumb": {
+      "aria_label": "Навігаційний ланцюжок",
+      "home": "Головна"
     }
   },
   "landing": {
@@ -309,7 +413,8 @@
       "herr": "Доброго дня, пане {nachname}",
       "neutral": "Доброго дня, {vorname} {nachname}",
       "last_login_meta": "останній вхід {days} днів тому · на цьому пристрої",
-      "guten_tag": "Доброго дня, {name}"
+      "guten_tag": "Доброго ранку, {name}",
+      "sub": "Ось Ваш огляд на сьогодні. Ми тримаємо Вас у курсі."
     },
     "demo_banner": {
       "text": "Демо-режим · демо-дані · оригінали залишаються в офіційних поштових скриньках",
@@ -403,7 +508,7 @@
       "vorgang_abgeschlossen": "справу завершено"
     },
     "heute": {
-      "titel": "Що сьогодні потребує Вашої уваги",
+      "titel": "Важливо сьогодні",
       "tab_ki": "ШІ",
       "tab_frist": "Термін",
       "tab_behoerde": "Відомство",
@@ -416,7 +521,12 @@
       "actions_label": "Дії для {titel}",
       "sort_aria": "Порядок сортування рекомендацій",
       "frist_bald": "Скоро термін",
-      "frist_am": "Термін: {datum}"
+      "frist_am": "Термін: {datum}",
+      "frist_bis": "Термін до {datum}",
+      "reason_frist_naehe": "Термін ближчий, ніж в інших Ваших відкритих завданнях.",
+      "reason_termin_steht": "Запис на прийом уже призначено.",
+      "reason_folgevorgang": "Наступний крок у межах поточної процедури.",
+      "reason_manuell_priorisiert": "Позначено Вами як важливе."
     },
     "triumph": {
       "title": "Зроблено за Вас",
@@ -432,23 +542,55 @@
       "min_value": "бл. {min} хв",
       "zeit_caption": "порівняно з окремими зверненнями",
       "stellen_label": "Повідомлені установи",
-      "stellen_caption": "Відомства та установи"
+      "stellen_caption": "Відомства та установи",
+      "overview_title": "Ваш переїзд: огляд",
+      "ring_label": "Виконано {percent}%",
+      "ring_aria": "Переїзд виконано на {percent} відсотків",
+      "stellen_informiert": "Поінформовано відомств: {done} з {total}",
+      "naechster_schritt_label": "Наступний крок",
+      "naechster_schritt_wert": "Перевірте підтвердження у вхідних",
+      "naechster_schritt_frist": "Термін до {datum}",
+      "zum_umzug": "Перейти до переїзду"
     },
     "erledigt_feed": {
-      "title": "Зроблено автоматично за Вас",
+      "title": "Зроблено автоматично",
+      "count_aria": "Автоматично виконано кроків: {count}",
+      "badge_erledigt": "Готово",
       "empty": "Поки нічого не зроблено автоматично.",
       "alle_schritte": "Показати всі кроки",
       "termin_pending": "Потрібне підтвердження запису на прийом",
       "termin_bestaetigen": "Підтвердити запис"
     },
+    "aktivitaeten": {
+      "titel": "Активність",
+      "alle": "Показати всю активність",
+      "bewegung": "Остання зміна: {zeit}",
+      "status": {
+        "angelegt": "Створено",
+        "in_pruefung": "На перевірці",
+        "genehmigt": "Схвалено",
+        "abgelehnt": "Відхилено",
+        "abgeschlossen": "Завершено"
+      }
+    },
+    "naechster_termin": {
+      "titel": "Найближчий запис на прийом",
+      "badge_bestaetigt": "Підтверджено",
+      "details": "Детальніше",
+      "kalender": "У календар",
+      "none": "Записів на прийом немає",
+      "praesenz": "Особисто",
+      "video": "Відеоприйом",
+      "telefon": "Прийом телефоном"
+    },
     "tiles": {
-      "posteingang_sub": "Нові повідомлення",
+      "posteingang_sub": "Непрочитані повідомлення у Ваших вхідних",
       "posteingang_cta": "Перейти до вхідних",
       "fristen_sub": "Терміни в найближчі 14 днів",
       "fristen_cta": "Переглянути терміни",
       "termine_sub": "Найближчий запис: {datum}",
       "termine_cta": "Усі записи",
-      "vorgaenge_sub": "В обробці",
+      "vorgaenge_sub": "Поточні справи в обробці",
       "vorgaenge_cta": "Переглянути справи"
     },
     "kontrolle": {
@@ -474,7 +616,7 @@
         "cta": "Відкрити"
       },
       "vorgaenge": {
-        "titel": "Справи",
+        "titel": "Відкриті справи",
         "stand": "{laeuft} у роботі, {abgeschlossen} завершено",
         "cta": "Переглянути"
       },
@@ -784,7 +926,27 @@
       "datenschutz_title": "Захист даних",
       "datenschutz_sub": "Що обробляється за цією справою — і на якій правовій підставі.",
       "termine_title": "Записи за цією справою ({count})",
-      "no_next_step": "Зараз від Вас нічого не потрібно. Залучені органи опрацьовують справу."
+      "no_next_step": "Зараз від Вас нічого не потрібно. Залучені органи опрацьовують справу.",
+      "hero_sub": "Зареєструйте нове місце проживання – ми самі повідомимо відповідальні органи.",
+      "vorgangsnummer_label": "Номер справи",
+      "vorgangsnummer_copy_aria": "Скопіювати номер справи",
+      "progress_title": "Загальний прогрес",
+      "progress_steps": "{done} з {total} кроків",
+      "fertigstellung_label": "Очікуване завершення",
+      "fertigstellung_value": "2–3 дні",
+      "timeline_title": "Кроки у справі ({count})",
+      "steps_overview_title": "Ваша справа: огляд",
+      "steps_overview_sub": "Ми координуємо Ваш запит і спрямовуємо його до відповідальних органів.",
+      "uebermittelt_label": "Передано",
+      "details_show": "Показати деталі",
+      "details_hide": "Сховати деталі",
+      "berechtigungen_title": "Правова підстава та дозволи",
+      "berechtigungen_basis_label": "Правова підстава",
+      "berechtigungen_datenweitergabe_label": "Передача даних",
+      "berechtigungen_behoerden": "До {count} органів",
+      "berechtigungen_einwilligungen_label": "Ваші згоди",
+      "berechtigungen_einwilligungen_value": "Лише відповідальним органам, відкликати можна будь-коли.",
+      "berechtigungen_details_link": "Переглянути деталі та згоди"
     }
   },
   "assistent": {
@@ -887,6 +1049,21 @@
   "posteingang": {
     "skip_link": {
       "zur_brief_liste": "Перейти до списку листів"
+    },
+    "rail": {
+      "nav_aria": "Папки вхідних",
+      "title": "Вхідні",
+      "subtitle": "Ваші повідомлення від відомств — надійно та впорядковано.",
+      "write": "Написати повідомлення",
+      "write_aria": "Написати нове повідомлення за допомогою асистента",
+      "system_label": "Огляд",
+      "posteingang": "Вхідні",
+      "archiv": "Архів",
+      "ordner_label": "Папки",
+      "ordner_empty": "Папок поки немає — листи зʼявляються автоматично за відомствами.",
+      "filter_label": "Фільтр",
+      "filter_open": "Вибрати фільтри",
+      "nur_ungelesen": "Показувати лише непрочитані"
     },
     "hero": {
       "title": "Вхідні (Posteingang)",
@@ -1156,6 +1333,78 @@
         "folge_familienkasse": "Подати заяву на дитячу допомогу до Familienkasse",
         "folge_krankenkasse": "Внести дитину до лікарняної каси (сімейне страхування)",
         "folge_steueridnr": "Податковий ідентифікатор (Steuer-IdNr.) присвоюється автоматично Федеральним податковим відомством (BZSt)"
+      }
+    },
+    "mockup3": {
+      "tabs": {
+        "aria_label": "Фільтрувати листи за статусом",
+        "alle": "Усі",
+        "ungelesen": "Непрочитані",
+        "mit_frist": "Зі строком",
+        "wichtig": "Важливі"
+      },
+      "detail": {
+        "herunterladen": "Завантажити",
+        "drucken": "Друк",
+        "tabs_aria": "Перегляд листа",
+        "tab_original": "Оригінал",
+        "tab_anhaenge": "Вкладення",
+        "tab_verlauf": "Історія",
+        "meta_eingegangen": "Отримано",
+        "meta_behoerde": "Відомство",
+        "meta_kategorie": "Категорія",
+        "meta_aktenzeichen": "Номер справи",
+        "meta_frist": "Строк",
+        "meta_frist_keine": "Без строку",
+        "anhaenge_empty": "У цій демоверсії до листа не додано вкладень.",
+        "verlauf_empfangen_template": "Лист отримано {datum}",
+        "verlauf_verifiziert_template": "Автентичність перевірено {datum}",
+        "kategorie": {
+          "bund": "Федеральне відомство",
+          "land": "Земельне відомство",
+          "kommune": "Муніципальне відомство",
+          "sozialversicherung": "Соціальне страхування",
+          "privat": "Приватноправова установа",
+          "unbekannt": "Офіційний лист"
+        }
+      },
+      "erklaerer": {
+        "title": "Простими словами",
+        "pill": "ШІ-пояснення",
+        "intro": "Найважливіші пункти цього листа з одного погляду:",
+        "worum_label": "Про що йдеться?",
+        "betrag_label": "Яка сума?",
+        "bis_wann_label": "До якого строку потрібно сплатити?",
+        "worum_fallback": "Будь ласка, ознайомтеся з оригінальним текстом цього листа.",
+        "betrag_nachzahlung_template": "Доплата в розмірі {betrag}.",
+        "betrag_erstattung_template": "Повернення {betrag} на вашу користь.",
+        "betrag_keiner": "У цьому листі суму до сплати не зазначено.",
+        "bis_wann_template": "До {datum}.",
+        "bis_wann_keine": "У цьому листі строк сплати не зазначено.",
+        "disclaimer": "Пояснення, згенероване ШІ, — не юридична консультація. Юридично обовʼязковим є лише оригінальний текст. Будь ласка, звірте строк, суму та номер справи з оригіналом.",
+        "feedback": "Пояснення не допомогло?",
+        "feedback_aria": "Повідомити, що це ШІ-пояснення не допомогло",
+        "feedback_toast": "Дякуємо за відгук — ми постійно вдосконалюємо пояснення."
+      },
+      "bedeutung": {
+        "title": "Що це означає для вас?",
+        "fallback": "Прочитайте оригінальний текст і дотримуйтеся зазначеного строку. У разі запитань зверніться до компетентного відомства."
+      },
+      "naechste_schritte": {
+        "title": "Подальші кроки",
+        "antwort": "Підготувати відповідь",
+        "antwort_sub": "Складіть відповідь відомству за допомогою шаблонів.",
+        "frist_merken": "Зберегти строк",
+        "frist_merken_sub": "Перенесіть строк до свого календаря записів.",
+        "zahlung": "Виконати оплату",
+        "zahlung_sub": "Сплатіть зазначену доплату вчасно.",
+        "vorgang": "Створити справу",
+        "vorgang_sub": "Обʼєднайте повʼязані листи в одну справу."
+      },
+      "fragen": {
+        "title": "Питання щодо рішення?",
+        "sub": "Поставте ШІ-асистенту додаткові запитання щодо цього листа.",
+        "cta": "Поставити інші запитання"
       }
     },
     "normtooltip": {
@@ -2085,7 +2334,8 @@
       },
       "anrechnungszeiten": {
         "title": "Зараховувані періоди (Anrechnungszeiten)"
-      }
+      },
+      "gesetzliche_rente": "Державне пенсійне страхування (Gesetzliche Rentenversicherung)"
     },
     "kv_pflege": {
       "krankenkasse": {
@@ -2261,38 +2511,39 @@
     },
     "wallet": {
       "eudi_reference_pid": {
-      "title": "Перевірене еталонне підтвердження EUDI",
-      "subject_note": "Синтетичне еталонне тестове підтвердження для активної демо-персони — справжня криптографія, вигадана особа, видано не німецькою державою.",
-      "reference_ecosystem_badge": "Еталонна екосистема",
-      "loading": "Підтвердження криптографічно перевіряється офлайн …",
-      "error": "Не вдалося перевірити еталонне підтвердження — спробуйте ще раз.",
-      "status_section_aria": "Статус верифікації еталонного підтвердження EUDI",
-      "status_verified": "Криптографічно перевірено",
-      "status_not_verified": "Не перевірено",
-      "check_signature_label": "Підпис",
-      "check_signature_ok": "Підпис емітента ({alg}) дійсний",
-      "check_signature_not_ok": "Підпис емітента недійсний",
-      "check_chain_label": "Ланцюг довіри",
-      "check_chain_ok": "Ланцюг до демо-якоря довіри (Trust Anchor) дійсний ({anchor})",
-      "check_chain_not_ok": "Ланцюг довіри до демо-якоря довіри (Trust Anchor) недійсний",
-      "validity_not_before_label": "Дійсне з",
-      "validity_expires_label": "Дійсне до",
-      "expired_note": "Підтвердження сплинуло {date} — підпис і ланцюг довіри попри це криптографічно перевірені.",
-      "claims_heading": "Розкриті атрибути PID",
-      "selective_disclosure_note": "Selective Disclosure: з підтвердження було розкрито та перевірено за підписом виключно показані нижче атрибути.",
-      "claim_family_name": "Прізвище",
-      "claim_given_name": "Ім'я",
-      "claim_birthdate": "Дата народження",
-      "claim_place_of_birth": "Місце народження",
-      "claim_nationalities": "Громадянство",
-      "honesty_block": "[reference-ecosystem] — справжнє підтвердження з еталонного/тестового середовища ЄС, перевірене за демо-якорем довіри (Trust Anchor) із синтетичною тестовою особою. Не видане і не перевірене державою Німеччини, не верифіковане за eIDAS і не в продуктивному середовищі. Державний EUDI-гаманець Німеччини — це [ZUKUNFT] (не раніше ~2 січня 2027 року)."
+        "title": "Перевірене еталонне підтвердження EUDI",
+        "subject_note": "Синтетичне еталонне тестове підтвердження для активної демо-персони — справжня криптографія, вигадана особа, видано не німецькою державою.",
+        "reference_ecosystem_badge": "Еталонна екосистема",
+        "loading": "Підтвердження криптографічно перевіряється офлайн …",
+        "error": "Не вдалося перевірити еталонне підтвердження — спробуйте ще раз.",
+        "status_section_aria": "Статус верифікації еталонного підтвердження EUDI",
+        "status_verified": "Криптографічно перевірено",
+        "status_not_verified": "Не перевірено",
+        "check_signature_label": "Підпис",
+        "check_signature_ok": "Підпис емітента ({alg}) дійсний",
+        "check_signature_not_ok": "Підпис емітента недійсний",
+        "check_chain_label": "Ланцюг довіри",
+        "check_chain_ok": "Ланцюг до демо-якоря довіри (Trust Anchor) дійсний ({anchor})",
+        "check_chain_not_ok": "Ланцюг довіри до демо-якоря довіри (Trust Anchor) недійсний",
+        "validity_not_before_label": "Дійсне з",
+        "validity_expires_label": "Дійсне до",
+        "expired_note": "Підтвердження сплинуло {date} — підпис і ланцюг довіри попри це криптографічно перевірені.",
+        "claims_heading": "Розкриті атрибути PID",
+        "selective_disclosure_note": "Selective Disclosure: з підтвердження було розкрито та перевірено за підписом виключно показані нижче атрибути.",
+        "claim_family_name": "Прізвище",
+        "claim_given_name": "Ім'я",
+        "claim_birthdate": "Дата народження",
+        "claim_place_of_birth": "Місце народження",
+        "claim_nationalities": "Громадянство",
+        "honesty_block": "[reference-ecosystem] — справжнє підтвердження з еталонного/тестового середовища ЄС, перевірене за демо-якорем довіри (Trust Anchor) із синтетичною тестовою особою. Не видане і не перевірене державою Німеччини, не верифіковане за eIDAS і не в продуктивному середовищі. Державний EUDI-гаманець Німеччини — це [ZUKUNFT] (не раніше ~2 січня 2027 року)."
       }
     },
     "chip": {
       "adresse_bestaetigt": "Адресу підтверджено",
       "wallet_verbunden": "Wallet під’єднано",
       "aufenthalt_gueltig": "Посвідка на проживання дійсна",
-      "aufenthalt_ablauf_bald": "Термін посвідки скоро спливає"
+      "aufenthalt_ablauf_bald": "Термін посвідки скоро спливає",
+      "kontakt_verifiziert": "Контакт підтверджено"
     },
     "hero_v3": {
       "region_label": "Підтверджена особа",
@@ -2412,7 +2663,8 @@
         "title": "Журнал змін",
         "subtitle": "Останні зміни ваших персональних даних",
         "show_all": "Повний журнал",
-        "empty": "Записів поки немає."
+        "empty": "Записів поки немає.",
+        "alle_anzeigen": "Показати всі"
       },
       "datenhoheit": {
         "title": "Ви керуєте своїми даними",
@@ -2423,6 +2675,51 @@
       "secondary": {
         "heading": "Інші розділи",
         "subtitle": "Пенсія, медстрахування, мобільність, налаштування сповіщень і блокування — допоміжний шар під основною сіткою."
+      },
+      "nachweise": {
+        "title": "Підключені підтвердження та Wallet",
+        "body": "Ваші цифрові підтвердження надійно підключені у Wallet і за потреби піддаються перевірці.",
+        "check1": "Криптографічно перевірено",
+        "check2": "Підпис eIDAS під час видачі дійсний",
+        "check3": "Рівень довіри: високий (eIDAS)",
+        "quelle_label": "Джерело / довірча служба",
+        "quelle_value": "BVA – Bundesverwaltungsamt",
+        "naechste_label": "Наступна перевірка",
+        "naechste_value": "14.06.2027",
+        "seal_aria": "Підтвердження криптографічно перевірені"
+      },
+      "weitere": {
+        "title": "Додаткові підтвердження",
+        "steuer_id": "Податковий номер (Steuer-ID)",
+        "sozialversicherungsnummer": "Номер соціального страхування (Sozialversicherungsnummer)",
+        "verifiziert_am": "Перевірено: {datum}",
+        "verifiziert_badge": "Перевірено",
+        "alle_anzeigen": "Показати всі підтвердження"
+      }
+    },
+    "header": {
+      "subtitle": "Персональні дані, контакти, підтвердження та пов’язані ідентичності в одному місці.",
+      "actions": {
+        "dokument_hinzufuegen": "Додати документ",
+        "adresse_aendern": "Змінити адресу",
+        "verknuepfung_verwalten": "Керувати зв’язками"
+      }
+    },
+    "ring": {
+      "label": "Профіль заповнено",
+      "aria": "Профіль заповнено на {percent} відсотків",
+      "letzte_aktualisierung": "Останнє оновлення: {datum}"
+    },
+    "dialog": {
+      "close": "Закрити",
+      "mock_hint": "[MOCK] — Супроводжувана зміна через відомство в підготовці.",
+      "profil": {
+        "title": "Змінити особистий профіль",
+        "body": "Ім’я, дату народження, громадянство та сімейний стан веде відповідальне відомство (РАЦС — Standesamt, або міське бюро — Bürgeramt)."
+      },
+      "anschrift": {
+        "title": "Змінити адресу",
+        "body": "Вашу адресу реєстрації веде міське бюро (Bürgeramt) у реєстрі жителів (Melderegister). Зміна адреси здійснюється через перереєстрацію — у цій демоверсії показано як автопілот переїзду (Umzug)."
       }
     }
   },
@@ -2874,17 +3171,79 @@
   },
   "datenschutz": {
     "page": {
-      "title": "Захист даних",
-      "subtitle": "Огляд звернень до даних, згод і цілей використання.",
+      "title": "Захист даних і згоди",
+      "subtitle": "Ви вирішуєте, хто отримує ваші дані та з якою метою. Керуйте згодами будь-коли — прозоро, безпечно та з можливістю перевірки.",
       "tag": "Спекулятивна демофункція"
     },
-    "vision_banner": {
-      "heading": "Бачення 2027",
-      "title": "Бачення 2027",
-      "body": "Ця панель об’єднує прозорість і керування захистом Ваших даних. У реальному світі сьогодні ці функції ще розподілені між кількома установами.",
-      "body_1": "Ці функції — частина нашого бачення більшої прозорості та Вашого права самостійно розпоряджатися своїми даними.",
-      "body_2": "Доступність і вміст можуть змінитися до запуску.",
-      "dismiss": "Закрити повідомлення"
+    "stats": {
+      "aktiv_title": "Активні згоди",
+      "aktiv_value": "{active} з {total} отримувачів",
+      "aktiv_sub": "Надані згоди на передачу даних",
+      "anfragen_title": "Запити (30 днів)",
+      "anfragen_sub": "Звернення до даних за останній місяць",
+      "letzte_title": "Остання активність",
+      "letzte_sub": "Останнє зафіксоване звернення до даних",
+      "letzte_empty": "Немає"
+    },
+    "weitergabe": {
+      "title": "Згоди на передачу даних",
+      "subtitle": "Керуйте тим, які органи та служби можуть звертатися до ваших даних.",
+      "col_empfaenger": "Отримувач / категорія",
+      "col_zweck": "Мета обробки даних",
+      "col_kategorien": "Категорії даних",
+      "col_status": "Статус",
+      "col_einwilligung": "Згода",
+      "col_details": "Докладніше",
+      "status_aktiv": "Активно",
+      "status_inaktiv": "Неактивно",
+      "widerruf_note": "Ви можете відкликати згоди будь-коли з дією на майбутнє.",
+      "krankenkasse_zweck": "Передача даних для розрахунків і послуг",
+      "krankenkasse_kategorien": "Номер страхування, адреса",
+      "arbeitgeber_zweck": "Передача даних для прибуткового податку та довідок",
+      "arbeitgeber_kategorien": "Податковий номер, табельний номер",
+      "familienkasse_zweck": "Допомога на дітей, сімейні виплати",
+      "familienkasse_kategorien": "Анкетні дані, дані про дітей",
+      "private_zweck": "Підтвердження на запит",
+      "private_kategorien": "Підтвердження, довідки"
+    },
+    "audit": {
+      "title": "Журнал аудиту",
+      "subtitle": "Повністю простежувано: кожне звернення до даних із позначкою часу та правовою підставою.",
+      "col_zeitpunkt": "Час",
+      "col_ereignis": "Подія",
+      "col_empfaenger": "Отримувач",
+      "col_rechtsgrundlage": "Правова підстава",
+      "col_details": "Докладніше",
+      "details_ansehen": "Переглянути деталі",
+      "details_aria": "Переглянути деталі про «{ereignis}»",
+      "empty": "Подій поки немає.",
+      "empfaenger_fallback": "—"
+    },
+    "rail": {
+      "title": "Довіра через принципи",
+      "subtitle": "Для нас захист даних — не доповнення, а основа.",
+      "principle_1_title": "Жодних даних без правової підстави",
+      "principle_1_body": "Кожна обробка ґрунтується на чіткій правовій або договірній підставі.",
+      "principle_1_link": "Докладніше про правові підстави",
+      "principle_2_title": "Приватні отримувачі — лише за згодою",
+      "principle_2_body": "Недержавним органам дані передаються виключно за вашою згодою.",
+      "principle_2_link": "Керувати згодами",
+      "principle_3_title": "Прозорість і контроль",
+      "principle_3_body": "Ви бачите кожне звернення в журналі аудиту й можете відкликати згоди будь-коли.",
+      "principle_3_link": "Переглянути журнал аудиту",
+      "link": "Докладніше про захист даних"
+    },
+    "footer": {
+      "title": "Ваші дані. Надійно захищені.",
+      "badge_encrypted": "Наскрізне шифрування",
+      "badge_germany": "Зберігання в Німеччині",
+      "badge_iso": "ISO/IEC 27001",
+      "badge_dsgvo": "Відповідає GDPR"
+    },
+    "faq": {
+      "title": "Питання щодо захисту даних?",
+      "body": "Наші FAQ і контакти допоможуть Вам.",
+      "link": "До центру захисту даних"
     },
     "aktivitaet": {
       "title": "Останні дії",
@@ -2910,13 +3269,13 @@
       "title": "Згоди",
       "subtitle": "Керуйте тим, які установи та служби можуть звертатися до Ваших даних.",
       "krankenkasse": "Лікарняна каса (Krankenkasse)",
-      "krankenkasse_sub": "Передавання даних для розрахунків і виплат",
-      "bank": "Банк",
-      "bank_sub": "Перевірка даних рахунку для відшкодувань",
+      "krankenkasse_sub": "Обовʼязкове медичне страхування",
       "arbeitgeber": "Роботодавець",
-      "arbeitgeber_sub": "Передавання даних для податку із зарплати та довідок",
-      "weitere_dienste": "Інші служби",
-      "weitere_dienste_sub": "Інші установи та організації",
+      "arbeitgeber_sub": "Поточний роботодавець",
+      "familienkasse": "Сімейна каса (Familienkasse)",
+      "familienkasse_sub": "Bundesagentur für Arbeit (Федеральне агентство праці)",
+      "private": "Приватні отримувачі",
+      "private_sub": "напр. орендодавці, освітні організації",
       "verwalten": "Керувати",
       "historie_anzeigen": "Показати історію згод",
       "ein": "Увімк.",

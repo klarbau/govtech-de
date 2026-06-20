@@ -9,9 +9,9 @@
  */
 export type EinwilligungEmpfaenger =
   | 'krankenkasse'
-  | 'bank'
   | 'arbeitgeber'
-  | 'weitere_dienste';
+  | 'familienkasse'
+  | 'private';
 
 export interface DatenschutzEinwilligung {
   empfaenger: EinwilligungEmpfaenger;
@@ -40,7 +40,7 @@ export interface DatenquellenEintrag {
 
 export interface DatenschutzCockpit {
   persona_id: string;
-  /** genau 4: krankenkasse/bank/arbeitgeber/weitere_dienste. */
+  /** genau 4: krankenkasse/arbeitgeber/familienkasse/private. */
   einwilligungen: DatenschutzEinwilligung[];
   datenquellen: DatenquellenEintrag[];
 }

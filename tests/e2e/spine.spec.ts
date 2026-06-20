@@ -2,7 +2,7 @@
  * SPINE e2e — the "demo-shipped" gate (docs/demo-spine.md, steps 2–6).
  *
  * Proves the headline-wow path runs green deterministically, key-independent:
- *   2. Dashboard renders (greeting + "Was heute Ihre Aufmerksamkeit braucht" + nav tiles).
+ *   2. Dashboard renders (greeting + "Heute wichtig" + nav tiles).
  *   3. Assistent: user says "leite meinen Umzug ein" → UmzugConfirmCard surfaces
  *      with the proposed Behörden. The real assistant LLM needs an API key, so
  *      the SSE route is MOCKED (see `mockAssistantRoute`) — the mock emits a
@@ -187,16 +187,16 @@ test.describe('SPINE — assistant → autopilot → posteingang (demo-shipped g
       ).toBeVisible({ timeout: 20_000 });
     });
 
-    // "Was heute Ihre Aufmerksamkeit braucht" section.
+    // "Heute wichtig" section.
     await expect(
-      page.getByRole('heading', { name: 'Was heute Ihre Aufmerksamkeit braucht' }),
+      page.getByRole('heading', { name: 'Heute wichtig' }),
     ).toBeVisible();
-    // Nav tiles (Posteingang + Vorgänge among the six).
+    // Nav tiles (Posteingang + Offene Vorgänge among the stat cards).
     await expect(
       page.getByRole('heading', { name: 'Posteingang', exact: true }),
     ).toBeVisible();
     await expect(
-      page.getByRole('heading', { name: 'Vorgänge', exact: true }),
+      page.getByRole('heading', { name: 'Offene Vorgänge', exact: true }),
     ).toBeVisible();
 
     /* ── Step 3: Assistent — confirm card surfaces ──────────────────────── */

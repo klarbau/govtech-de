@@ -15,7 +15,7 @@ export default async function StammdatenLayout({
   const tNav = await getTranslations('nav');
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="sd-wide flex flex-col gap-4">
       <span className="sr-only">{tNav('stammdaten')}</span>
       {children}
     </div>

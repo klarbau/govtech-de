@@ -1290,9 +1290,9 @@ export const steuerBucketSchema = z.record(
 
 export const einwilligungEmpfaengerSchema = z.enum([
   'krankenkasse',
-  'bank',
   'arbeitgeber',
-  'weitere_dienste',
+  'familienkasse',
+  'private',
 ]);
 
 export const datenschutzEinwilligungSchema = z

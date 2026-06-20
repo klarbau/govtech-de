@@ -9,12 +9,13 @@
     'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     'Segoe UI', Roboto, sans-serif;
 
-  --color-brand-50: oklch(0.96 0.02 262);
-  --color-brand-100: oklch(0.92 0.05 262);
-  --color-brand-200: oklch(0.86 0.10 262);
-  --color-brand-500: oklch(0.55 0.21 262);
-  --color-brand-600: oklch(0.51 0.21 262);
-  --color-brand-700: oklch(0.47 0.20 262);
+  /* Waldgrün ramp (hue ~158) — mirrors the --brand-* hex ramp below. */
+  --color-brand-50: oklch(0.95 0.02 158);
+  --color-brand-100: oklch(0.89 0.04 158);
+  --color-brand-200: oklch(0.79 0.06 158);
+  --color-brand-500: oklch(0.45 0.09 158);
+  --color-brand-600: oklch(0.36 0.08 158);
+  --color-brand-700: oklch(0.32 0.07 158);
 
   /* Status accent ramps for the prototype-v2 components — additive extension
      of the existing redesign-foundation tokens. Inherits Tailwind defaults
@@ -36,11 +37,12 @@
   --color-teal-50:  oklch(0.94 0.04 195);
   --color-teal-500: oklch(0.55 0.13 195);
 
-  /* Secondary ink tier — sits between text-primary and text-secondary. */
-  --color-text-ink-2: oklch(0.32 0.04 262);
+  /* Secondary ink tier — sits between text-primary and text-secondary.
+     Re-pointed cobalt(262) → Waldgrün(158); ≈ #28332C. */
+  --color-text-ink-2: oklch(0.32 0.03 158);
 
   /* Softer surface tint for embedded sub-cards (vorgaenge progress card). */
-  --color-surface-soft: oklch(0.985 0.005 262);
+  --color-surface-soft: oklch(0.985 0.004 158);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -61,21 +63,21 @@
 :root {
   /* ── Neutral scale (LIGHT) ──────────────────────────────────────────── */
   --color-surface: #FFFFFF;            /* page + card body */
-  --color-surface-page: #F7F8FA;       /* page bg behind white cards */
+  --color-surface-page: #FAFAF8;       /* Warmweiß — page bg behind white cards */
   --color-surface-raised: #FFFFFF;     /* raised card == white */
-  --color-surface-muted: #EEF1F5;      /* hover fills, tinted rows, inactive pills */
-  --color-border: #E3E7ED;             /* 1px hairlines */
-  --color-border-strong: #C7CDD6;      /* input border, emphasised dividers */
-  --color-text-primary: #1A1F2A;       /* headings, body (>= 14:1) */
+  --color-surface-muted: #E7ECE7;      /* Graugrün — hover fills, tinted rows, inactive pills */
+  --color-border: #DEE3DF;             /* warm 1px hairlines (toward Neutralgrau) */
+  --color-border-strong: #C4C9C3;      /* input border, emphasised dividers */
+  --color-text-primary: #0B1220;       /* Tintenblau — headings, body (>= 16:1) */
   --color-text-secondary: #4B5563;     /* secondary text, table headers (>= 7:1) */
   --color-text-muted: #545C69;         /* captions, meta — HL-DS-7: 6.75:1 vs #FFF, 5.96:1 vs surface-muted */
 
-  /* ── Cobalt primary + states (LIGHT) ────────────────────────────────── */
-  --color-primary: #2563EB;
-  --color-primary-hover: #1D4FD8;
-  --color-primary-active: #1A45BE;
+  /* ── Waldgrün primary + states (LIGHT) ──────────────────────────────── */
+  --color-primary: #0F3D2E;            /* Waldgrün — white text 11.7:1 ✓ */
+  --color-primary-hover: #0C3325;
+  --color-primary-active: #0A2A1F;
   --color-primary-foreground: #FFFFFF;
-  --color-accent-soft: #EAF1FE;        /* active-nav pill, AI bubble bg, info chip */
+  --color-accent-soft: #ECF1EE;        /* active-nav pill, AI bubble bg, info chip — primary text 10:1 ✓ */
 
   /* ── Semantic (LIGHT) ───────────────────────────────────────────────── */
   --color-success: #137034;            /* text/icon — 5.54:1 vs success-soft (was #15803D 4.49) */
@@ -85,8 +87,8 @@
   --color-warning-strong: #B45309;
   --color-danger: #B91C1C;             /* text/icon — 5.50:1 vs danger-soft (was #DC2626 4.10) */
   --color-danger-soft: #FCE8E8;
-  --color-info: #2563EB;
-  --color-info-soft: #EAF1FE;
+  --color-info: #0F3D2E;               /* Waldgrün — white text 11.7:1 ✓ */
+  --color-info-soft: #ECF1EE;          /* info chip — primary text 10:1 ✓ */
 
   /* ── Compatibility aliases for the retired --ds-color-* layer ────────── */
   --ds-color-surface: var(--color-surface);
@@ -168,7 +170,7 @@
   --border-strong: var(--color-border-strong);
 
   --ink: var(--color-text-primary);
-  --ink-2: #2A3656;
+  --ink-2: #28332C;                    /* secondary green-ink (nav labels/header btns) — ~12:1 vs surface */
   --ink-3: var(--color-text-secondary);
   --ink-4: var(--color-text-muted);
 
@@ -176,13 +178,13 @@
      chrome (e.g. `var(--brand-600)` solid pills) renders the cobalt the
      user signed off on. The shadcn `--primary` token remains the single source
      of truth for utility classes (`bg-primary`, …). */
-  --brand-50:  #EEF3FE;
-  --brand-100: #DCE6FD;
-  --brand-200: #B7CBFB;
-  --brand-500: #2A5EE2;
-  --brand-600: #1E4FCC;
-  --brand-700: #173FA8;
-  --brand-900: #0F1F4E;
+  --brand-50:  #ECF1EE;   /* active-nav pill bg / soft surface — brand-600 text 10:1 ✓ */
+  --brand-100: #D6E1DB;   /* pill borders */
+  --brand-200: #AEC6BB;
+  --brand-500: #1E5C46;
+  --brand-600: #0F3D2E;   /* Waldgrün primary */
+  --brand-700: #0C3325;   /* hover */
+  --brand-900: #0B1220;   /* wordmark = Tintenblau */
 
   /* Solid-fill brand tokens — used by every brand surface that carries WHITE
      text (primary buttons, count pills, avatars, send button, today-marker…).
@@ -209,8 +211,8 @@
 
   --red-50:  #FDECEC;
   --red-100: #FBD7D7;
-  --red-500: #D92D2D;
-  --red-600: #B62121;
+  --red-500: #E2534B;   /* Signalrot — fills/borders/icons only (3.5:1 on white, not body text) */
+  --red-600: #C0392F;   /* darker Signalrot for stronger fills/borders */
 
   --pink-50:  #FBE8F2;
   /* Darkened from #C53A88 (4.14:1, AA-fail as badge text on --pink-50) to clear
@@ -231,9 +233,28 @@
   --r-xl: 18px;
   --r-pill: 999px;
 
+  /* Decorative icon-holder tile (2026-06-19). The mockups show every decorative
+     icon sitting in a SUBTLE NEUTRAL-gray rounded chip — NOT the old --brand-50
+     green tint (the AI-default-look the de-templating pass rightly removed), and
+     NOT a bare glyph. This token is the reconciliation: a near-neutral warm-gray
+     chip (Warmweiß/Graugrün family) that reads as a contained icon without any
+     green wash. Used by .icon-circle / .hero-stat-icon / .lebenslage-icon /
+     per-screen icon holders. Functional filled holders (.icon-square brand-fill,
+     value-receipt, banner glyphs) keep their own explicit background. */
+  --icon-tile: #EAEEEA;
+
+  /* Brandbook §03 Neutralgrau — decorative lines/dividers only. NOT for text:
+     #A3A8AD on white is ~2.6:1 and fails WCAG AA, so help/caption text stays on
+     the darker --color-text-muted. Token added for palette parity. */
+  --color-neutral-gray: #A3A8AD;
+
   /* Shadows — explicit zip values (not aliased onto --shadow-card, because
-     the zip ramp has three tiers and the prototype expects each). */
-  --shadow-1: 0 1px 0 rgba(15, 31, 78, 0.04), 0 1px 2px rgba(15, 31, 78, 0.04);
+     the zip ramp has three tiers and the prototype expects each). De-templating
+     pass (2026-06-18): light --shadow-1 was already near-invisible; collapsed to
+     a single faint 1px ground line (border-first resting elevation). Negligible
+     visible change in light — the real elevation refinement is the dark
+     --shadow-1 softening (see .dark block). --shadow-2 (overlays) untouched. */
+  --shadow-1: 0 1px 1px rgba(15, 31, 78, 0.04);
   --shadow-2: 0 1px 0 rgba(15, 31, 78, 0.05), 0 6px 16px -8px rgba(15, 31, 78, 0.10);
   --shadow-pop: 0 12px 32px -12px rgba(15, 31, 78, 0.18);
 
@@ -262,17 +283,18 @@ html {
   --color-surface-page: #0D1117;       /* page canvas — the darkest layer */
   --color-surface-raised: #1C232F;     /* popovers/dialogs/dropdowns — above cards */
   --color-surface-muted: #222934;      /* hover fills, inactive pills, secondary, table head */
-  --color-border: #2E3540;             /* hairline — present but quiet */
+  --color-border: #333B47;             /* hairline — nudged one step brighter (was #2E3540) so cards separate by border now that dark --shadow-1 is faint */
   --color-border-strong: #3D4757;
+  --icon-tile: #242C38;                /* dark icon-holder chip: a gentle step above the card (#161B23) so the tile reads without floating */
   --color-text-primary: #ECEFF4;
   --color-text-secondary: #B6BDC9;
   --color-text-muted: #9AA2B0;          /* HL-DS-7: 6.76:1 vs surface, 5.66:1 vs surface-muted */
 
-  --color-primary: #5B8DEF;
-  --color-primary-hover: #4F82EC;
-  --color-primary-active: #3F74E6;
+  --color-primary: #5FB89A;             /* lifted Waldgrün — dark text #0E1117 8.3:1 ✓ */
+  --color-primary-hover: #54AD8F;
+  --color-primary-active: #49A284;
   --color-primary-foreground: #0E1117;
-  --color-accent-soft: #152038;         /* primary-on-soft 5.02:1 (was #1C2C4A 4.31) */
+  --color-accent-soft: #15291F;         /* primary text on soft 6.9:1 ✓ */
 
   --color-success: #5CC98A;
   --color-success-soft: #13351F;
@@ -281,8 +303,8 @@ html {
   --color-warning-strong: #E3B341;
   --color-danger: #F2837C;
   --color-danger-soft: #3A1714;
-  --color-info: #5B8DEF;
-  --color-info-soft: #152038;
+  --color-info: #5FB89A;                /* lifted Waldgrün — mirrors --color-primary */
+  --color-info-soft: #15291F;
 
   /* ── prototype-v2 chrome tokens (DARK) ──────────────────────────────────
      These alias tokens are declared only in :root (light) above, so without
@@ -293,19 +315,19 @@ html {
      below WCAG AA. Flip them to dark-mode-appropriate values that clear AA.
      --ink-2 / --surface-soft also drive page-content (badges, banners, rows,
      sub-cards), so these overrides fix those in dark mode at the same time. */
-  --ink-2: #C4CBD8;            /* nav labels + header btns: 10.1:1 vs surface */
+  --ink-2: #C7D0C9;            /* nav labels + header btns: green-tinted light, ~10.2:1 vs surface */
   --surface-soft: #1C222D;     /* hover fill + inner sub-cards: a gentle lift above the card */
 
-  --brand-50:  #1B2740;        /* active-nav pill bg: brand-700 text 7.2:1 */
-  --brand-700: #9DBBFF;        /* active-nav label: 7.2:1 vs brand-50 pill */
-  --brand-600: #9DBBFF;        /* active-nav icon: 7.2:1 vs brand-50 pill */
-  --brand-900: #AFC4FF;        /* logo wordmark + crest: 9.5:1 vs surface */
+  --brand-50:  #16291F;        /* active-nav pill bg: brand-700 text 8.4:1 */
+  --brand-700: #7FCFB0;        /* active-nav label: 8.4:1 vs brand-50 pill */
+  --brand-600: #7FCFB0;        /* active-nav icon: 8.4:1 vs brand-50 pill */
+  --brand-900: #A8D8C4;        /* logo wordmark + crest: 11.3:1 vs surface */
 
   /* Solid brand fills stay saturated so WHITE text clears AA. The light flip of
      --brand-600/700 above (correct for nav text/icon-on-tint) would otherwise
-     drop primary buttons to white-on-#9DBBFF ≈ 1.9:1. */
-  --brand-fill: #2D6BE0;       /* white text 4.88:1 */
-  --brand-fill-hover: #2559C4; /* white text 6.34:1 */
+     drop primary buttons to white-on-#7FCFB0 ≈ 1.9:1. */
+  --brand-fill: #2E7D5B;       /* white text 4.64:1 */
+  --brand-fill-hover: #25664A; /* white text 6.40:1 */
 
   /* Success banner that carries theme-aware --ink text (e.g. /termine Fristen
      banner). --green-50 keeps its light value for the badge/icon-tint pairings
@@ -315,9 +337,16 @@ html {
 
   /* Elevation — the :root shadows are tinted navy (rgba(15,31,78,…)), which is
      invisible on a dark canvas, so cards lost all lift and read as flat boxes.
-     Black-based shadows actually register on dark and float the cards above the
-     darker page. Kept soft so the result is calm, not murky. */
-  --shadow-1: 0 1px 2px rgba(0,0,0,0.40), 0 1px 3px -1px rgba(0,0,0,0.32);
+     Black-based shadows register on dark, but the old --shadow-1 was heavy
+     enough that EVERY resting card floated identically — a flat-by-default
+     surface reads as more deliberate and more gov-credible (Refactoring-UI §5:
+     if everything floats, nothing has depth). The card already separates from
+     the darker page by both surface step (#161B23 over #0D1117) and the
+     --border hairline, so the resting shadow is reduced to a single faint
+     ground line. Overlays/sticky bars keep the stronger --shadow-2 (untouched)
+     so true elevation still reads. The --border below is nudged one step
+     brighter (#2E3540 → #333B47) to carry the now-shadowless card separation. */
+  --shadow-1: 0 1px 1px rgba(0,0,0,0.22);
   --shadow-2: 0 2px 6px -1px rgba(0,0,0,0.44), 0 12px 28px -10px rgba(0,0,0,0.52);
   --shadow-pop: 0 18px 44px -14px rgba(0,0,0,0.70);
   --shadow-card: 0 1px 2px 0 rgba(0,0,0,0.40);
@@ -435,7 +464,7 @@ html {
 
 @theme inline {
   --font-heading:
-    var(--font-sans);
+    var(--font-display);
   --font-sans:
     var(--font-sans);
 
@@ -723,10 +752,10 @@ html {
 :root {
   /* Light high-contrast palette — single source of truth. */
   --hc-foreground: #000000;
-  --hc-primary: #0B3FB0;
+  --hc-primary: #0A3325;       /* very dark Waldgrün — ~15.8:1 on white (>= 7:1) */
   --hc-muted-foreground: #2A2F38;
   --hc-border: #5B6472;
-  --hc-ring: #0B3FB0;
+  --hc-ring: #0A3325;          /* matches --hc-primary (Waldgrün) */
   --hc-text-secondary: #1A1F2A;
   --hc-text-muted: #2A2F38;
   --hc-border-strong: #2A2F38;
@@ -734,10 +763,10 @@ html {
 .dark {
   /* Dark high-contrast palette — single source of truth. */
   --hc-foreground: #FFFFFF;
-  --hc-primary: #9DBBFF;
+  --hc-primary: #A8D8C4;       /* light Waldgrün — ~12.2:1 on dark page (>= 7:1) */
   --hc-muted-foreground: #D5DAE2;
   --hc-border: #8E97A6;
-  --hc-ring: #9DBBFF;
+  --hc-ring: #A8D8C4;          /* matches --hc-primary (light Waldgrün) */
   --hc-text-secondary: #ECEFF4;
   --hc-text-muted: #D5DAE2;
   --hc-border-strong: #D5DAE2;
@@ -994,4 +1023,14 @@ html {
   a[href^="javascript:"]::after {
     content: "";
   }
+}
+
+/* Brandbook §04 — display font (Inter Tight) on app headings. Unlayered so it
+   reliably wins over the later-imported prototype-v2.css. font-family ONLY;
+   sizes/weights are untouched. */
+.gt-page-head h1,
+.text-display,
+.text-3xl,
+.text-2xl {
+  font-family: var(--font-display);
 }

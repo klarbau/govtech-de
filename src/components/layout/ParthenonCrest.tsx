@@ -1,7 +1,12 @@
 /**
- * Parthenon mark used by both the topbar logo (.gt-brand-logo svg) and the
- * sidebar crest (.gt-sidebar-brand .crest svg). 1:1 copy of the inline SVG
- * from `docs/design-prototype-v2/assets/govtech.js`.
+ * Brand mark used by both the topbar logo (.gt-brand-logo svg) and the
+ * sidebar crest (.gt-sidebar-brand .crest svg).
+ *
+ * Brandbook §02 „Waldgrün" v1.0: a filled rounded square in Waldgrün (#0F3D2E)
+ * with a white angular corner-bracket („⌐") glyph in the upper-left — two white
+ * strokes meeting at a right angle. Self-coloured (NOT currentColor) so the mark
+ * always renders green-with-white wherever it is used. Decorative → aria-hidden;
+ * the wordmark („GovTech-DE") carries the accessible name beside it.
  */
 export function ParthenonCrest() {
   return (
@@ -11,22 +16,16 @@ export function ParthenonCrest() {
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
     >
+      {/* Filled Waldgrün rounded square — self-coloured, not currentColor. */}
+      <rect x="0" y="0" width="32" height="32" rx="7" fill="#0F3D2E" />
+      {/* White corner-bracket „⌐": horizontal stroke (top) meeting a vertical
+          stroke (down) at a right angle in the upper-left. */}
       <path
-        d="M16 3.5 3.5 9.5h25L16 3.5Z"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M5 11.5V23M11 11.5V23M16 11.5V23M21 11.5V23M27 11.5V23"
-        stroke="currentColor"
-        strokeWidth="1.6"
-      />
-      <path
-        d="M3 23.5h26M2 27h28"
-        stroke="currentColor"
-        strokeWidth="1.6"
+        d="M10 10.5H20.5M10 10.5V21"
+        stroke="#FFFFFF"
+        strokeWidth="2.4"
         strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );

@@ -1,7 +1,7 @@
 {
   "app": {
     "name": "GovTech DE",
-    "tagline": "Public administration, rethought.",
+    "tagline": "Your dealings with public authorities in one place.",
     "skip_to_content": "Skip to main content"
   },
   "nav": {
@@ -22,6 +22,104 @@
     "theme_toggle_dark": "Dark theme",
     "theme_toggle_system": "System setting",
     "user_menu": "User menu"
+  },
+  "topnav": {
+    "nav_label": "Main navigation",
+    "solutions": "Solutions (Lösungen)",
+    "lebenslagen": "Life events (Lebenslagen)",
+    "security_privacy": "Security & privacy",
+    "resources": "Resources",
+    "about_us": "About us",
+    "help": "Help & contact",
+    "about_project": "About the project"
+  },
+  "lebenslagen": {
+    "breadcrumb_catalog": "Service catalogue",
+    "title": "Find services.",
+    "subtitle": "Simple. Fast. Clear.",
+    "intro": "Discover the right services for your life situation – explained clearly and ready to use directly online.",
+    "search_label": "Search for a service",
+    "search_placeholder": "Search for a service, e.g. „Kindergeld beantragen“",
+    "search_submit": "Search",
+    "filter_label": "Filter topics",
+    "categories": {
+      "alle": "All topics",
+      "familie": "Family",
+      "wohnen": "Housing",
+      "arbeit": "Work",
+      "migration": "Migration",
+      "steuern": "Taxes",
+      "mehr": "More"
+    },
+    "results_count": "{count} services found",
+    "results_none": "No services found. Please adjust your search.",
+    "sort_label": "Sort by:",
+    "sort_aria": "Sort",
+    "sort": {
+      "relevance": "Relevance",
+      "popular": "Popularity",
+      "name": "Name (A–Z)"
+    },
+    "frequency": {
+      "very_often": "Very common",
+      "often": "Common"
+    },
+    "relevance": {
+      "very": "Highly relevant",
+      "normal": "Relevant"
+    },
+    "open_service": "Open service",
+    "show_more": "Show more services",
+    "rail_popular_title": "Popular for you",
+    "rail_popular_sub": "Based on your life situation",
+    "rail_items": {
+      "kindergeld": "Check details and report changes.",
+      "umzug": "Provide your new address.",
+      "wohngeld": "Get support with housing costs.",
+      "steuer": "Reuse your data and save time."
+    },
+    "rail_secure_title": "Your data is safe",
+    "rail_secure_body": "Each service shows which data is processed, by whom and on what legal basis. You stay in control.",
+    "rail_secure_link": "Privacy & consents",
+    "trust_title": "Trust through standards",
+    "services": {
+      "umzug": {
+        "title": "Report a move",
+        "description": "Melden Sie Ihren neuen Wohnsitz an. Die Ummeldung wird automatisch an alle zuständigen Stellen weitergeleitet."
+      },
+      "geburt": {
+        "title": "Register a birth",
+        "description": "Beurkunden Sie die Geburt Ihres Kindes und stoßen Sie Kindergeld, Elterngeld und Krankenversicherung an."
+      },
+      "aufenthalt": {
+        "title": "Extend residence permit",
+        "description": "Verlängern Sie Ihren Aufenthaltstitel rechtzeitig vor Ablauf und prüfen Sie die benötigten Nachweise."
+      },
+      "kindergeld": {
+        "title": "Update child benefit",
+        "description": "Aktualisieren Sie Bankverbindung, Anschrift oder Lebenssituation für Ihren Kindergeldbezug."
+      },
+      "steuer": {
+        "title": "Pre-fill tax return",
+        "description": "Ihre Steuererklärung wird aus bereits bekannten Daten vorausgefüllt. Sie prüfen nur noch und reichen ein."
+      },
+      "reisepass": {
+        "title": "Apply for a passport",
+        "description": "Beantragen Sie einen neuen Reisepass und buchen Sie den passenden Termin im Bürgeramt."
+      },
+      "bafoeg": {
+        "title": "Studies & student aid",
+        "description": "Beantragen Sie Ausbildungsförderung und behalten Sie Fristen sowie Nachweise im Blick."
+      },
+      "pflege": {
+        "title": "Care & health",
+        "description": "Beantragen Sie Leistungen der Pflegeversicherung und finden Sie Unterstützung im Pflegefall."
+      },
+      "wohngeld": {
+        "title": "Apply for housing benefit",
+        "description": "Prüfen Sie Ihren Anspruch auf Wohngeld und stellen Sie den Antrag mit vorausgefüllten Angaben."
+      }
+    }
   },
   "a11y": {
     "menu": {
@@ -96,6 +194,8 @@
       "menu_label": "Open user menu",
       "demo_name": "Anna Petrov",
       "profile": "Profile",
+      "stammdaten": "Master data (Stammdaten)",
+      "datenschutz": "Privacy (Datenschutz)",
       "switch_persona": "Switch persona",
       "logout": "Sign out"
     },
@@ -104,6 +204,10 @@
     },
     "sheet": {
       "close": "Close"
+    },
+    "breadcrumb": {
+      "aria_label": "Breadcrumb",
+      "home": "Home"
     }
   },
   "landing": {
@@ -309,7 +413,8 @@
       "herr": "Hello, Mr {nachname}",
       "neutral": "Hello, {vorname} {nachname}",
       "last_login_meta": "last login {days} days ago · on this device",
-      "guten_tag": "Hello, {name}"
+      "guten_tag": "Good morning, {name}",
+      "sub": "Here is your overview for today. We keep you up to date."
     },
     "demo_banner": {
       "text": "Demo mode · mock data · originals stay in the official mailboxes",
@@ -403,7 +508,7 @@
       "vorgang_abgeschlossen": "case completed"
     },
     "heute": {
-      "titel": "What needs your attention today",
+      "titel": "Important today",
       "tab_ki": "AI",
       "tab_frist": "Deadline",
       "tab_behoerde": "Authority",
@@ -416,7 +521,12 @@
       "actions_label": "Actions for {titel}",
       "sort_aria": "Sort order of action recommendations",
       "frist_bald": "Deadline soon",
-      "frist_am": "Deadline: {datum}"
+      "frist_am": "Deadline: {datum}",
+      "frist_bis": "Due by {datum}",
+      "reason_frist_naehe": "The deadline is closer than for your other open actions.",
+      "reason_termin_steht": "An appointment has already been arranged.",
+      "reason_folgevorgang": "Follow-up step from an ongoing process.",
+      "reason_manuell_priorisiert": "Marked as important by you."
     },
     "triumph": {
       "title": "Done for you",
@@ -432,23 +542,55 @@
       "min_value": "approx. {min} min",
       "zeit_caption": "compared to filing individually",
       "stellen_label": "Offices informed",
-      "stellen_caption": "Authorities & institutions"
+      "stellen_caption": "Authorities & institutions",
+      "overview_title": "Your move at a glance",
+      "ring_label": "{percent}% completed",
+      "ring_aria": "Move {percent} percent completed",
+      "stellen_informiert": "{done} of {total} offices informed",
+      "naechster_schritt_label": "Next step",
+      "naechster_schritt_wert": "Check confirmations in your inbox",
+      "naechster_schritt_frist": "Due by {datum}",
+      "zum_umzug": "Go to move"
     },
     "erledigt_feed": {
-      "title": "Done automatically for you",
+      "title": "Done automatically",
+      "count_aria": "{count} steps completed automatically",
+      "badge_erledigt": "Done",
       "empty": "Nothing done automatically yet.",
       "alle_schritte": "Show all steps",
       "termin_pending": "Appointment confirmation required",
       "termin_bestaetigen": "Confirm appointment"
     },
+    "aktivitaeten": {
+      "titel": "Activity",
+      "alle": "Show all activity",
+      "bewegung": "Last update: {zeit}",
+      "status": {
+        "angelegt": "Created",
+        "in_pruefung": "Under review",
+        "genehmigt": "Approved",
+        "abgelehnt": "Rejected",
+        "abgeschlossen": "Completed"
+      }
+    },
+    "naechster_termin": {
+      "titel": "Next appointment",
+      "badge_bestaetigt": "Confirmed",
+      "details": "View details",
+      "kalender": "Add to calendar",
+      "none": "No appointment scheduled",
+      "praesenz": "In person",
+      "video": "Video appointment",
+      "telefon": "Phone appointment"
+    },
     "tiles": {
-      "posteingang_sub": "New messages",
+      "posteingang_sub": "Unread messages in your inbox",
       "posteingang_cta": "Go to inbox",
       "fristen_sub": "Deadlines within the next 14 days",
       "fristen_cta": "View deadlines",
       "termine_sub": "Next appointment: {datum}",
       "termine_cta": "All appointments",
-      "vorgaenge_sub": "In progress",
+      "vorgaenge_sub": "Ongoing cases in progress",
       "vorgaenge_cta": "View cases"
     },
     "kontrolle": {
@@ -474,7 +616,7 @@
         "cta": "Open"
       },
       "vorgaenge": {
-        "titel": "Cases",
+        "titel": "Open cases",
         "stand": "{laeuft} running, {abgeschlossen} completed",
         "cta": "View"
       },
@@ -784,7 +926,27 @@
       "datenschutz_title": "Data protection",
       "datenschutz_sub": "What is processed for this case — and on what legal basis.",
       "termine_title": "Appointments for this case ({count})",
-      "no_next_step": "Nothing is required from you right now. The involved authorities are working through the case."
+      "no_next_step": "Nothing is required from you right now. The involved authorities are working through the case.",
+      "hero_sub": "Register your new address – we inform the responsible authorities for you.",
+      "vorgangsnummer_label": "Case number",
+      "vorgangsnummer_copy_aria": "Copy case number",
+      "progress_title": "Overall progress",
+      "progress_steps": "{done} of {total} steps",
+      "fertigstellung_label": "Estimated completion",
+      "fertigstellung_value": "2–3 days",
+      "timeline_title": "Steps in this case ({count})",
+      "steps_overview_title": "Your case at a glance",
+      "steps_overview_sub": "We coordinate your request and forward it to the responsible authorities.",
+      "uebermittelt_label": "Transmitted on",
+      "details_show": "View details",
+      "details_hide": "Hide details",
+      "berechtigungen_title": "Legal basis & permissions",
+      "berechtigungen_basis_label": "Legal basis",
+      "berechtigungen_datenweitergabe_label": "Data sharing",
+      "berechtigungen_behoerden": "To {count} authorities",
+      "berechtigungen_einwilligungen_label": "Your consents",
+      "berechtigungen_einwilligungen_value": "Only to responsible authorities, revocable at any time.",
+      "berechtigungen_details_link": "View details & consents"
     }
   },
   "assistent": {
@@ -887,6 +1049,21 @@
   "posteingang": {
     "skip_link": {
       "zur_brief_liste": "Skip to letter list"
+    },
+    "rail": {
+      "nav_aria": "Inbox folders",
+      "title": "Inbox",
+      "subtitle": "Your messages from public authorities – secure and organised.",
+      "write": "Write a message",
+      "write_aria": "Write a new message with the assistant",
+      "system_label": "Overview",
+      "posteingang": "Inbox",
+      "archiv": "Archive",
+      "ordner_label": "Folders",
+      "ordner_empty": "No folders yet — letters appear automatically by authority.",
+      "filter_label": "Filter",
+      "filter_open": "Choose filters",
+      "nur_ungelesen": "Show unread only"
     },
     "hero": {
       "title": "Inbox (Posteingang)",
@@ -1156,6 +1333,78 @@
         "folge_familienkasse": "Apply for child benefit at the family benefits office (Familienkasse)",
         "folge_krankenkasse": "Register the child with the health insurance fund (family insurance)",
         "folge_steueridnr": "The tax ID (Steuer-IdNr.) is assigned automatically by the Federal Central Tax Office (BZSt)"
+      }
+    },
+    "mockup3": {
+      "tabs": {
+        "aria_label": "Filter letters by status",
+        "alle": "All",
+        "ungelesen": "Unread",
+        "mit_frist": "With deadline",
+        "wichtig": "Important"
+      },
+      "detail": {
+        "herunterladen": "Download",
+        "drucken": "Print",
+        "tabs_aria": "Letter view",
+        "tab_original": "Original",
+        "tab_anhaenge": "Attachments",
+        "tab_verlauf": "History",
+        "meta_eingegangen": "Received",
+        "meta_behoerde": "Authority",
+        "meta_kategorie": "Category",
+        "meta_aktenzeichen": "Reference",
+        "meta_frist": "Deadline",
+        "meta_frist_keine": "No deadline",
+        "anhaenge_empty": "This letter has no attachments in this demo.",
+        "verlauf_empfangen_template": "Letter received on {datum}",
+        "verlauf_verifiziert_template": "Authenticity checked on {datum}",
+        "kategorie": {
+          "bund": "Federal authority",
+          "land": "State authority",
+          "kommune": "Municipal authority",
+          "sozialversicherung": "Social insurance",
+          "privat": "Private-law body",
+          "unbekannt": "Official letter"
+        }
+      },
+      "erklaerer": {
+        "title": "In plain language",
+        "pill": "AI explainer",
+        "intro": "The key points of this letter at a glance:",
+        "worum_label": "What is this about?",
+        "betrag_label": "How much is the amount?",
+        "bis_wann_label": "By when do I have to pay?",
+        "worum_fallback": "Please review the original text of this letter.",
+        "betrag_nachzahlung_template": "Additional payment of {betrag}.",
+        "betrag_erstattung_template": "Refund of {betrag} in your favour.",
+        "betrag_keiner": "This letter does not state an amount to pay.",
+        "bis_wann_template": "By {datum}.",
+        "bis_wann_keine": "This letter does not state a payment deadline.",
+        "disclaimer": "AI-generated explanation — not legal advice. Only the original text is legally binding. Please verify the deadline, amount and reference number against the original.",
+        "feedback": "Explanation not helpful?",
+        "feedback_aria": "Report this AI explanation as not helpful",
+        "feedback_toast": "Thank you for your feedback — we keep improving the explanations."
+      },
+      "bedeutung": {
+        "title": "What does this mean for you?",
+        "fallback": "Read the original text and observe the stated deadline. If you have questions, contact the responsible authority."
+      },
+      "naechste_schritte": {
+        "title": "Next steps",
+        "antwort": "Prepare reply",
+        "antwort_sub": "Compose a response to the authority with template help.",
+        "frist_merken": "Save deadline",
+        "frist_merken_sub": "Add the deadline to your appointment calendar.",
+        "zahlung": "Make payment",
+        "zahlung_sub": "Pay the stated additional amount on time.",
+        "vorgang": "Create a case",
+        "vorgang_sub": "Bundle related letters into a single case."
+      },
+      "fragen": {
+        "title": "Questions about the decision?",
+        "sub": "Ask the AI assistant further questions about this letter.",
+        "cta": "Ask more questions"
       }
     },
     "normtooltip": {
@@ -2085,7 +2334,8 @@
       },
       "anrechnungszeiten": {
         "title": "Creditable periods (Anrechnungszeiten)"
-      }
+      },
+      "gesetzliche_rente": "Statutory pension insurance (Gesetzliche Rentenversicherung)"
     },
     "kv_pflege": {
       "krankenkasse": {
@@ -2261,38 +2511,39 @@
     },
     "wallet": {
       "eudi_reference_pid": {
-      "title": "Verified EUDI reference credential",
-      "subject_note": "Synthetic reference test credential for the active demo persona — real cryptography, invented identity, not issued by the German state.",
-      "reference_ecosystem_badge": "Reference ecosystem",
-      "loading": "Credential is being verified cryptographically offline …",
-      "error": "The reference credential could not be verified — please try again.",
-      "status_section_aria": "Verification status of the EUDI reference credential",
-      "status_verified": "Cryptographically verified",
-      "status_not_verified": "Not verified",
-      "check_signature_label": "Signature",
-      "check_signature_ok": "Issuer's {alg} signature valid",
-      "check_signature_not_ok": "Issuer signature invalid",
-      "check_chain_label": "Trust chain",
-      "check_chain_ok": "Chain to the demo trust anchor valid ({anchor})",
-      "check_chain_not_ok": "Trust chain to the demo trust anchor invalid",
-      "validity_not_before_label": "Valid from",
-      "validity_expires_label": "Valid until",
-      "expired_note": "Credential expired on {date} — signature and trust chain nonetheless cryptographically verified.",
-      "claims_heading": "Disclosed PID attributes",
-      "selective_disclosure_note": "Selective Disclosure: only the attributes shown below were disclosed from the credential and checked against the signature.",
-      "claim_family_name": "Family name",
-      "claim_given_name": "Given name",
-      "claim_birthdate": "Date of birth",
-      "claim_place_of_birth": "Place of birth",
-      "claim_nationalities": "Nationality",
-      "honesty_block": "[reference-ecosystem] — a real EU reference/development credential against a demo trust anchor with a synthetic test identity. Not verified by the German state, not eIDAS-/production-verified. A German state-issued EUDI Wallet is [ZUKUNFT] (at the earliest ~2 January 2027)."
+        "title": "Verified EUDI reference credential",
+        "subject_note": "Synthetic reference test credential for the active demo persona — real cryptography, invented identity, not issued by the German state.",
+        "reference_ecosystem_badge": "Reference ecosystem",
+        "loading": "Credential is being verified cryptographically offline …",
+        "error": "The reference credential could not be verified — please try again.",
+        "status_section_aria": "Verification status of the EUDI reference credential",
+        "status_verified": "Cryptographically verified",
+        "status_not_verified": "Not verified",
+        "check_signature_label": "Signature",
+        "check_signature_ok": "Issuer's {alg} signature valid",
+        "check_signature_not_ok": "Issuer signature invalid",
+        "check_chain_label": "Trust chain",
+        "check_chain_ok": "Chain to the demo trust anchor valid ({anchor})",
+        "check_chain_not_ok": "Trust chain to the demo trust anchor invalid",
+        "validity_not_before_label": "Valid from",
+        "validity_expires_label": "Valid until",
+        "expired_note": "Credential expired on {date} — signature and trust chain nonetheless cryptographically verified.",
+        "claims_heading": "Disclosed PID attributes",
+        "selective_disclosure_note": "Selective Disclosure: only the attributes shown below were disclosed from the credential and checked against the signature.",
+        "claim_family_name": "Family name",
+        "claim_given_name": "Given name",
+        "claim_birthdate": "Date of birth",
+        "claim_place_of_birth": "Place of birth",
+        "claim_nationalities": "Nationality",
+        "honesty_block": "[reference-ecosystem] — a real EU reference/development credential against a demo trust anchor with a synthetic test identity. Not verified by the German state, not eIDAS-/production-verified. A German state-issued EUDI Wallet is [ZUKUNFT] (at the earliest ~2 January 2027)."
       }
     },
     "chip": {
       "adresse_bestaetigt": "Address confirmed",
       "wallet_verbunden": "Wallet connected",
       "aufenthalt_gueltig": "Residence valid",
-      "aufenthalt_ablauf_bald": "Residence permit expiring soon"
+      "aufenthalt_ablauf_bald": "Residence permit expiring soon",
+      "kontakt_verifiziert": "Contact verified"
     },
     "hero_v3": {
       "region_label": "Verified identity",
@@ -2412,7 +2663,8 @@
         "title": "Change log",
         "subtitle": "Recent changes to your master data",
         "show_all": "Show full log",
-        "empty": "No changes recorded yet."
+        "empty": "No changes recorded yet.",
+        "alle_anzeigen": "Show all"
       },
       "datenhoheit": {
         "title": "You are in control of your data",
@@ -2423,6 +2675,51 @@
       "secondary": {
         "heading": "Other areas",
         "subtitle": "Pension, health insurance, mobility, notification preferences and blocks — secondary layer below the main grid."
+      },
+      "nachweise": {
+        "title": "Connected proofs & wallet",
+        "body": "Your digital proofs are securely connected in the wallet and verifiable when needed.",
+        "check1": "Cryptographically verified",
+        "check2": "eIDAS signature of issuance valid",
+        "check3": "Level of assurance: High (eIDAS)",
+        "quelle_label": "Source / trust service",
+        "quelle_value": "BVA – Bundesverwaltungsamt",
+        "naechste_label": "Next review",
+        "naechste_value": "14.06.2027",
+        "seal_aria": "Proofs cryptographically verified"
+      },
+      "weitere": {
+        "title": "Further verifications",
+        "steuer_id": "Steuer-ID (tax ID)",
+        "sozialversicherungsnummer": "Social insurance number (Sozialversicherungsnummer)",
+        "verifiziert_am": "Verified on: {datum}",
+        "verifiziert_badge": "Verified",
+        "alle_anzeigen": "Show all verifications"
+      }
+    },
+    "header": {
+      "subtitle": "Personal data, contact, proofs and connected identities in one place.",
+      "actions": {
+        "dokument_hinzufuegen": "Add document",
+        "adresse_aendern": "Change address",
+        "verknuepfung_verwalten": "Manage connection"
+      }
+    },
+    "ring": {
+      "label": "Profile complete",
+      "aria": "Profile {percent} percent complete",
+      "letzte_aktualisierung": "Last updated: {datum}"
+    },
+    "dialog": {
+      "close": "Close",
+      "mock_hint": "[MOCK] — Guided authority change in preparation.",
+      "profil": {
+        "title": "Change personal profile",
+        "body": "Name, date of birth, nationality and marital status are maintained by the responsible authority (Standesamt — registry office, or Bürgeramt — citizens' office)."
+      },
+      "anschrift": {
+        "title": "Change address",
+        "body": "Your registered address is maintained by the Bürgeramt (citizens' office) in the population register (Melderegister). An address change is made via re-registration — shown in this demo as the move (Umzug) autopilot."
       }
     }
   },
@@ -2874,17 +3171,79 @@
   },
   "datenschutz": {
     "page": {
-      "title": "Data protection",
-      "subtitle": "Insight into data access, consents and purposes of use.",
+      "title": "Data protection & consents",
+      "subtitle": "You decide who receives your data and for what purpose. Manage your consents at any time – transparent, secure and traceable.",
       "tag": "Speculative demo feature"
     },
-    "vision_banner": {
-      "heading": "2027 vision",
-      "title": "2027 vision",
-      "body": "This cockpit brings together your data-protection transparency and control. In the real world today, these functions are still spread across several offices.",
-      "body_1": "These functions are part of our vision for more transparency and self-determination over your data.",
-      "body_2": "Availability and content may change before launch.",
-      "dismiss": "Close notice"
+    "stats": {
+      "aktiv_title": "Active consents",
+      "aktiv_value": "{active} of {total} recipients",
+      "aktiv_sub": "Consents granted for data sharing",
+      "anfragen_title": "Requests (30 days)",
+      "anfragen_sub": "Data accesses in the last month",
+      "letzte_title": "Last activity",
+      "letzte_sub": "Most recently recorded data access",
+      "letzte_empty": "None"
+    },
+    "weitergabe": {
+      "title": "Consents for data sharing",
+      "subtitle": "Control which offices and services may access your data.",
+      "col_empfaenger": "Recipient / category",
+      "col_zweck": "Purpose of processing",
+      "col_kategorien": "Data categories",
+      "col_status": "Status",
+      "col_einwilligung": "Consent",
+      "col_details": "Details",
+      "status_aktiv": "Active",
+      "status_inaktiv": "Inactive",
+      "widerruf_note": "You can withdraw your consents at any time with effect for the future.",
+      "krankenkasse_zweck": "Data transfer for billing and benefits",
+      "krankenkasse_kategorien": "Insurance number, address",
+      "arbeitgeber_zweck": "Data sharing for wage tax and certificates",
+      "arbeitgeber_kategorien": "Tax ID, personnel number",
+      "familienkasse_zweck": "Child benefit, family benefits",
+      "familienkasse_kategorien": "Master data, children's data",
+      "private_zweck": "Proof on request",
+      "private_kategorien": "Proofs, certificates"
+    },
+    "audit": {
+      "title": "Audit log",
+      "subtitle": "Fully traceable: every data access with timestamp and legal basis.",
+      "col_zeitpunkt": "Timestamp",
+      "col_ereignis": "Event",
+      "col_empfaenger": "Recipient",
+      "col_rechtsgrundlage": "Legal basis",
+      "col_details": "Details",
+      "details_ansehen": "View details",
+      "details_aria": "View details for „{ereignis}“",
+      "empty": "No events recorded yet.",
+      "empfaenger_fallback": "—"
+    },
+    "rail": {
+      "title": "Trust through principles",
+      "subtitle": "For us, data protection is not an add-on but a foundation.",
+      "principle_1_title": "No data without a legal basis",
+      "principle_1_body": "Every processing operation rests on a clear legal or contractual basis.",
+      "principle_1_link": "More about legal bases",
+      "principle_2_title": "Private recipients only with consent",
+      "principle_2_body": "Data is transferred to non-governmental bodies solely with your consent.",
+      "principle_2_link": "Manage consents",
+      "principle_3_title": "Transparency & control",
+      "principle_3_body": "You see every access in the audit log and can withdraw consents at any time.",
+      "principle_3_link": "View audit log",
+      "link": "More about data protection"
+    },
+    "footer": {
+      "title": "Your data. Securely protected.",
+      "badge_encrypted": "End-to-end encrypted",
+      "badge_germany": "Stored in Germany",
+      "badge_iso": "ISO/IEC 27001",
+      "badge_dsgvo": "GDPR-compliant"
+    },
+    "faq": {
+      "title": "Questions about data protection?",
+      "body": "Our FAQs and contacts can help.",
+      "link": "Go to the data-protection centre"
     },
     "aktivitaet": {
       "title": "Recent activity",
@@ -2910,13 +3269,13 @@
       "title": "Consents",
       "subtitle": "Control which offices and services may access your data.",
       "krankenkasse": "Health insurer (Krankenkasse)",
-      "krankenkasse_sub": "Data transfer for billing and benefits",
-      "bank": "Bank",
-      "bank_sub": "Account check for refunds",
+      "krankenkasse_sub": "Statutory health insurance",
       "arbeitgeber": "Employer",
-      "arbeitgeber_sub": "Data sharing for wage tax and certificates",
-      "weitere_dienste": "Other services",
-      "weitere_dienste_sub": "Other authorities and organisations",
+      "arbeitgeber_sub": "Current employer",
+      "familienkasse": "Family Benefits Office (Familienkasse)",
+      "familienkasse_sub": "Bundesagentur für Arbeit (Federal Employment Agency)",
+      "private": "Private recipients",
+      "private_sub": "e.g. landlords, education providers",
       "verwalten": "Manage",
       "historie_anzeigen": "Show consent history",
       "ein": "On",
