@@ -133,9 +133,8 @@ export default function HomePage() {
               vorausdenkt.
             </h1>
             <p className="hero-lede">
-              Ein Portal. Alle Ämter. GovTech-DE bereitet Vorgänge vor, übermittelt
-              Angaben sicher an zuständige Stellen und erklärt jeden nächsten Schritt
-              verständlich.
+              GovTech-DE bereitet Ihre Anfrage vor, übermittelt sie sicher an
+              zuständige Stellen und erklärt jeden nächsten Schritt verständlich.
             </p>
             <div className="hero-cta">
               <Link href="/onboarding" className="btn btn-primary btn-lg">

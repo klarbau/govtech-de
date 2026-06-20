@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   description:
     'Speculative-design prototype: how a citizen-first interaction layer for German public administration could feel in 2027.',
   openGraph: {
-    title: 'GovTech DE — Verwaltung neu gedacht',
+    title: 'GovTech DE — ein Satz statt sechs Behördengängen',
     description:
       'Ein:e Bürger:in sagt einmal „ich ziehe um" — und das System informiert jede zuständige Behörde. Speculative-Design-Prototyp, alle Daten erfunden.',
     images: ['/og.png'],
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'GovTech DE — Verwaltung neu gedacht',
+    title: 'GovTech DE — ein Satz statt sechs Behördengängen',
     description:
       'Ein Satz statt sechs Behördengängen — Speculative-Design-Prototyp für die deutsche Verwaltung 2027.',
     images: ['/og.png'],

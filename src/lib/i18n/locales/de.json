@@ -1,7 +1,7 @@
 {
   "app": {
     "name": "GovTech DE",
-    "tagline": "Verwaltung neu gedacht.",
+    "tagline": "Behördengänge an einem Ort.",
     "skip_to_content": "Zum Hauptinhalt springen"
   },
   "nav": {
@@ -37,6 +37,7 @@
     "breadcrumb_catalog": "Leistungskatalog",
     "title": "Leistungen finden.",
     "subtitle": "Einfach. Schnell. Verständlich.",
+    "intro": "Entdecken Sie passende Leistungen und Services für Ihre Lebenssituation – verständlich erklärt und direkt online nutzbar.",
     "search_label": "Leistung suchen",
     "search_placeholder": "Leistung suchen, z. B. „Kindergeld beantragen“",
     "search_submit": "Suchen",
@@ -52,7 +53,8 @@
     },
     "results_count": "{count} Leistungen gefunden",
     "results_none": "Keine Leistungen gefunden. Bitte passen Sie Ihre Suche an.",
-    "sort_label": "Sortieren",
+    "sort_label": "Sortieren nach:",
+    "sort_aria": "Sortieren",
     "sort": {
       "relevance": "Relevanz",
       "popular": "Beliebtheit",
@@ -70,6 +72,12 @@
     "show_more": "Weitere Leistungen anzeigen",
     "rail_popular_title": "Beliebt für Sie",
     "rail_popular_sub": "Basierend auf Ihrer Lebenslage",
+    "rail_items": {
+      "kindergeld": "Informationen prüfen und Änderungen mitteilen.",
+      "umzug": "Ihre neue Adresse angeben.",
+      "wohngeld": "Unterstützung bei Wohnkosten erhalten.",
+      "steuer": "Daten übernehmen und Zeit sparen."
+    },
     "rail_secure_title": "Ihre Daten sind sicher",
     "rail_secure_body": "Jede Leistung zeigt, welche Daten verarbeitet werden, durch wen und auf welcher Rechtsgrundlage. Sie behalten die Kontrolle.",
     "rail_secure_link": "Datenschutz & Einwilligungen",
@@ -491,7 +499,7 @@
       "vorgang_abgeschlossen": "Vorgang abgeschlossen"
     },
     "heute": {
-      "titel": "Was heute Ihre Aufmerksamkeit braucht",
+      "titel": "Heute wichtig",
       "sort_aria": "Sortierung der Aktionsempfehlungen",
       "tab_ki": "KI",
       "tab_frist": "Frist",
@@ -504,7 +512,12 @@
       "snooze_days": "Um {days} Tage verschoben",
       "actions_label": "Aktionen für {titel}",
       "frist_bald": "Frist bald",
-      "frist_am": "Frist: {datum}"
+      "frist_am": "Frist: {datum}",
+      "frist_bis": "Fällig bis {datum}",
+      "reason_frist_naehe": "Frist rückt näher als bei Ihren anderen offenen Aktionen.",
+      "reason_termin_steht": "Ein Termin ist bereits vereinbart.",
+      "reason_folgevorgang": "Folgeschritt aus einem laufenden Verfahren.",
+      "reason_manuell_priorisiert": "Von Ihnen als wichtig markiert."
     },
     "triumph": {
       "title": "Erledigt für Sie",
@@ -531,11 +544,25 @@
       "zum_umzug": "Zum Umzug gehen"
     },
     "erledigt_feed": {
-      "title": "Automatisch erledigt für Sie",
+      "title": "Automatisch erledigt",
+      "count_aria": "{count} automatisch erledigte Schritte",
+      "badge_erledigt": "Erledigt",
       "empty": "Noch nichts automatisch erledigt.",
       "alle_schritte": "Alle Schritte anzeigen",
       "termin_pending": "Terminbestätigung erforderlich",
       "termin_bestaetigen": "Termin bestätigen"
+    },
+    "aktivitaeten": {
+      "titel": "Aktivitäten",
+      "alle": "Alle Aktivitäten anzeigen",
+      "bewegung": "Letzte Bewegung: {zeit}",
+      "status": {
+        "angelegt": "Angelegt",
+        "in_pruefung": "In Prüfung",
+        "genehmigt": "Genehmigt",
+        "abgelehnt": "Abgelehnt",
+        "abgeschlossen": "Abgeschlossen"
+      }
     },
     "naechster_termin": {
       "titel": "Nächster Termin",
@@ -548,13 +575,13 @@
       "telefon": "Telefon-Termin"
     },
     "tiles": {
-      "posteingang_sub": "Neue Nachrichten",
+      "posteingang_sub": "Ungelesene Nachrichten in Ihrem Posteingang",
       "posteingang_cta": "Zum Posteingang",
       "fristen_sub": "Fristen in den nächsten 14 Tagen",
       "fristen_cta": "Fristen ansehen",
       "termine_sub": "Nächster Termin: {datum}",
       "termine_cta": "Alle Termine",
-      "vorgaenge_sub": "In Bearbeitung",
+      "vorgaenge_sub": "Laufende Vorgänge in Bearbeitung",
       "vorgaenge_cta": "Vorgänge ansehen"
     },
     "kontrolle": {
@@ -580,7 +607,7 @@
         "cta": "Öffnen"
       },
       "vorgaenge": {
-        "titel": "Vorgänge",
+        "titel": "Offene Vorgänge",
         "stand": "{laeuft} läuft, {abgeschlossen} abgeschlossen",
         "cta": "Ansehen"
       },
@@ -896,19 +923,24 @@
       "no_next_step": "Aktuell ist von Ihnen nichts zu tun. Die beteiligten Stellen arbeiten den Vorgang ab.",
       "hero_sub": "Melden Sie Ihren Wohnsitz um – wir informieren die zuständigen Stellen für Sie.",
       "vorgangsnummer_label": "Vorgangsnummer",
+      "vorgangsnummer_copy_aria": "Vorgangsnummer kopieren",
       "progress_title": "Gesamtfortschritt",
       "progress_steps": "{done} von {total} Schritten",
       "fertigstellung_label": "Voraussichtliche Fertigstellung",
       "fertigstellung_value": "2–3 Tage",
       "timeline_title": "Schritte im Vorgang ({count})",
+      "steps_overview_title": "Ihr Vorgang im Überblick",
+      "steps_overview_sub": "Wir koordinieren Ihre Anfrage und leiten sie an die zuständigen Stellen weiter.",
       "uebermittelt_label": "Übermittelt am",
       "details_show": "Details ansehen",
       "details_hide": "Details ausblenden",
       "berechtigungen_title": "Rechtsgrundlage & Berechtigungen",
       "berechtigungen_basis_label": "Rechtsgrundlage",
+      "berechtigungen_datenweitergabe_label": "Datenweitergabe",
       "berechtigungen_behoerden": "An {count} Behörden",
-      "berechtigungen_einwilligungen_label": "Einwilligungen",
-      "berechtigungen_einwilligungen_value": "Nur an zuständige Stellen, jederzeit widerrufbar."
+      "berechtigungen_einwilligungen_label": "Ihre Einwilligungen",
+      "berechtigungen_einwilligungen_value": "Nur an zuständige Stellen, jederzeit widerrufbar.",
+      "berechtigungen_details_link": "Details & Einwilligungen ansehen"
     }
   },
   "assistent": {
@@ -1011,6 +1043,21 @@
   "posteingang": {
     "skip_link": {
       "zur_brief_liste": "Zum Brief-Listen-Bereich springen"
+    },
+    "rail": {
+      "nav_aria": "Posteingang-Ordner",
+      "title": "Posteingang",
+      "subtitle": "Ihre behördlichen Nachrichten – sicher und geordnet.",
+      "write": "Nachricht schreiben",
+      "write_aria": "Neue Nachricht mit dem Assistenten schreiben",
+      "system_label": "Übersicht",
+      "posteingang": "Posteingang",
+      "archiv": "Archiv",
+      "ordner_label": "Ordner",
+      "ordner_empty": "Noch keine Ordner — Briefe erscheinen automatisch nach Behörde.",
+      "filter_label": "Filter",
+      "filter_open": "Filter wählen",
+      "nur_ungelesen": "Nur ungelesene anzeigen"
     },
     "hero": {
       "title": "Posteingang",
@@ -1318,6 +1365,7 @@
       "erklaerer": {
         "title": "Einfach erklärt",
         "pill": "KI-Erklärer",
+        "intro": "Die wichtigsten Punkte dieses Briefs auf einen Blick:",
         "worum_label": "Worum geht es?",
         "betrag_label": "Wie hoch ist der Betrag?",
         "bis_wann_label": "Bis wann muss ich zahlen?",
@@ -1327,7 +1375,10 @@
         "betrag_keiner": "In diesem Brief ist kein Zahlbetrag genannt.",
         "bis_wann_template": "Bis {datum}.",
         "bis_wann_keine": "Für diesen Brief ist keine Zahlungsfrist genannt.",
-        "disclaimer": "KI-generierte Erläuterung — keine Rechtsberatung. Rechtsverbindlich ist allein der Originaltext. Bitte gleichen Sie Frist, Betrag und Aktenzeichen am Original ab."
+        "disclaimer": "KI-generierte Erläuterung — keine Rechtsberatung. Rechtsverbindlich ist allein der Originaltext. Bitte gleichen Sie Frist, Betrag und Aktenzeichen am Original ab.",
+        "feedback": "Erklärung nicht hilfreich?",
+        "feedback_aria": "Diese KI-Erklärung als nicht hilfreich melden",
+        "feedback_toast": "Danke für Ihre Rückmeldung — wir verbessern die Erklärungen laufend."
       },
       "bedeutung": {
         "title": "Was bedeutet das für Sie?",
@@ -1336,8 +1387,13 @@
       "naechste_schritte": {
         "title": "Nächste Schritte",
         "antwort": "Antwort vorbereiten",
+        "antwort_sub": "Verfassen Sie mit Vorlagen-Hilfe eine Rückmeldung an die Behörde.",
         "frist_merken": "Frist merken",
-        "zahlung": "Zahlung ausführen"
+        "frist_merken_sub": "Übernehmen Sie die Frist in Ihren Termin-Kalender.",
+        "zahlung": "Zahlung ausführen",
+        "zahlung_sub": "Begleichen Sie die genannte Nachzahlung fristgerecht.",
+        "vorgang": "Vorgang erstellen",
+        "vorgang_sub": "Bündeln Sie zusammengehörige Briefe zu einem Vorgang."
       },
       "fragen": {
         "title": "Fragen zum Bescheid?",
@@ -2308,7 +2364,8 @@
       },
       "anrechnungszeiten": {
         "title": "Anrechnungszeiten"
-      }
+      },
+      "gesetzliche_rente": "Gesetzliche Rentenversicherung"
     },
     "kv_pflege": {
       "krankenkasse": {
@@ -2706,7 +2763,8 @@
       "adresse_bestaetigt": "Adresse bestätigt",
       "wallet_verbunden": "Wallet verbunden",
       "aufenthalt_gueltig": "Aufenthalt gültig",
-      "aufenthalt_ablauf_bald": "Aufenthalt läuft bald ab"
+      "aufenthalt_ablauf_bald": "Aufenthalt läuft bald ab",
+      "kontakt_verifiziert": "Kontakt verifiziert"
     },
     "aenderungsprotokoll": {
       "title": "Änderungsprotokoll",
@@ -2795,7 +2853,8 @@
         "title": "Änderungsprotokoll",
         "subtitle": "Letzte Änderungen an Ihren Stammdaten",
         "show_all": "Vollständiges Protokoll anzeigen",
-        "empty": "Noch keine Änderungen erfasst."
+        "empty": "Noch keine Änderungen erfasst.",
+        "alle_anzeigen": "Alle anzeigen"
       },
       "datenhoheit": {
         "title": "Sie haben die Hoheit über Ihre Daten",
@@ -2806,6 +2865,51 @@
       "secondary": {
         "heading": "Weitere Bereiche",
         "subtitle": "Renten, Krankenversicherung, Mobilität, Notification-Präferenzen und Sperren — als sekundäre Schicht unter dem Hauptraster."
+      },
+      "nachweise": {
+        "title": "Verbundene Nachweise & Wallet",
+        "body": "Ihre digitalen Nachweise sind sicher in der Wallet verbunden und bei Bedarf verifizierbar.",
+        "check1": "Kryptografisch verifiziert",
+        "check2": "eIDAS-Signatur der Ausstellung gültig",
+        "check3": "Vertrauensniveau: Hoch (eIDAS)",
+        "quelle_label": "Quelle / Vertrauensdienst",
+        "quelle_value": "BVA – Bundesverwaltungsamt",
+        "naechste_label": "Nächste Überprüfung",
+        "naechste_value": "14.06.2027",
+        "seal_aria": "Nachweise kryptografisch verifiziert"
+      },
+      "weitere": {
+        "title": "Weitere Verifizierungen",
+        "steuer_id": "Steuer-ID",
+        "sozialversicherungsnummer": "Sozialversicherungsnummer",
+        "verifiziert_am": "Verifiziert am: {datum}",
+        "verifiziert_badge": "Verifiziert",
+        "alle_anzeigen": "Alle Verifizierungen anzeigen"
+      }
+    },
+    "header": {
+      "subtitle": "Persönliche Daten, Kontakt, Nachweise und verbundene Identitäten an einem Ort.",
+      "actions": {
+        "dokument_hinzufuegen": "Dokument hinzufügen",
+        "adresse_aendern": "Adresse ändern",
+        "verknuepfung_verwalten": "Verknüpfung verwalten"
+      }
+    },
+    "ring": {
+      "label": "Profil vollständig",
+      "aria": "Profil zu {percent} Prozent vollständig",
+      "letzte_aktualisierung": "Letzte Aktualisierung: {datum}"
+    },
+    "dialog": {
+      "close": "Schließen",
+      "mock_hint": "[MOCK] — Geführte Behörden-Änderung in Vorbereitung.",
+      "profil": {
+        "title": "Persönliches Profil ändern",
+        "body": "Name, Geburtsdatum, Staatsangehörigkeit und Familienstand werden von der zuständigen Behörde (Standesamt bzw. Bürgeramt) geführt."
+      },
+      "anschrift": {
+        "title": "Anschrift ändern",
+        "body": "Ihre Meldeanschrift wird vom Bürgeramt im Melderegister geführt. Eine Adressänderung erfolgt über die Ummeldung – in dieser Demo als Umzug-Autopilot abgebildet."
       }
     }
   },
@@ -3285,12 +3389,12 @@
       "widerruf_note": "Einwilligungen können Sie jederzeit mit Wirkung für die Zukunft widerrufen.",
       "krankenkasse_zweck": "Datenübermittlung für Abrechnungen und Leistungen",
       "krankenkasse_kategorien": "Versichertennummer, Adresse",
-      "bank_zweck": "Kontodatenprüfung für Erstattungen",
-      "bank_kategorien": "IBAN, Name",
       "arbeitgeber_zweck": "Datenweitergabe für Lohnsteuer und Bescheinigungen",
       "arbeitgeber_kategorien": "Steuer-IdNr., Personalnummer",
-      "weitere_dienste_zweck": "Weitere Behörden und Organisationen",
-      "weitere_dienste_kategorien": "Nach Einzelfall"
+      "familienkasse_zweck": "Kindergeld, Familienleistungen",
+      "familienkasse_kategorien": "Stammdaten, Kinderdaten",
+      "private_zweck": "Nachweise auf Anfrage",
+      "private_kategorien": "Nachweise, Bescheinigungen"
     },
     "audit": {
       "title": "Audit-Log",
@@ -3310,11 +3414,19 @@
       "subtitle": "Datenschutz ist bei uns kein Zusatz, sondern Grundlage.",
       "principle_1_title": "Keine Daten ohne Rechtsgrundlage",
       "principle_1_body": "Jede Verarbeitung beruht auf einer klaren gesetzlichen oder vertraglichen Grundlage.",
+      "principle_1_link": "Mehr zu Rechtsgrundlagen",
       "principle_2_title": "Private Empfänger nur mit Einwilligung",
       "principle_2_body": "An nicht-hoheitliche Stellen werden Daten ausschließlich nach Ihrer Einwilligung übermittelt.",
+      "principle_2_link": "Einwilligungen verwalten",
       "principle_3_title": "Transparenz & Kontrolle",
       "principle_3_body": "Sie sehen jeden Zugriff im Audit-Log und können Einwilligungen jederzeit widerrufen.",
+      "principle_3_link": "Audit-Log ansehen",
       "link": "Mehr zum Datenschutz"
+    },
+    "faq": {
+      "title": "Fragen zum Datenschutz?",
+      "body": "Unsere FAQs und Kontakte helfen weiter.",
+      "link": "Zum Datenschutz-Center"
     },
     "footer": {
       "title": "Ihre Daten. Sicher geschützt.",
@@ -3322,14 +3434,6 @@
       "badge_germany": "Speicherung in Deutschland",
       "badge_iso": "ISO/IEC 27001",
       "badge_dsgvo": "DSGVO-konform"
-    },
-    "vision_banner": {
-      "heading": "2027-Vision",
-      "title": "2027-Vision",
-      "body": "Dieses Cockpit bündelt Ihre Datenschutz-Transparenz und -Kontrolle. In der echten Welt sind diese Funktionen heute noch über mehrere Stellen verteilt.",
-      "body_1": "Diese Funktionen sind Teil unserer Vision für mehr Transparenz und Selbstbestimmung über Ihre Daten.",
-      "body_2": "Verfügbarkeit und Inhalte können sich bis zur Einführung ändern.",
-      "dismiss": "Hinweis schließen"
     },
     "aktivitaet": {
       "title": "Letzte Aktivitäten",
@@ -3355,13 +3459,13 @@
       "title": "Einwilligungen",
       "subtitle": "Steuern Sie, welche Stellen und Dienste auf Ihre Daten zugreifen dürfen.",
       "krankenkasse": "Krankenkasse",
-      "krankenkasse_sub": "Datenübermittlung für Abrechnungen und Leistungen",
-      "bank": "Bank",
-      "bank_sub": "Kontodatenprüfung für Erstattungen",
+      "krankenkasse_sub": "Gesetzliche Krankenversicherung",
       "arbeitgeber": "Arbeitgeber",
-      "arbeitgeber_sub": "Datenweitergabe für Lohnsteuer und Bescheinigungen",
-      "weitere_dienste": "Weitere Dienste",
-      "weitere_dienste_sub": "Weitere Behörden und Organisationen",
+      "arbeitgeber_sub": "Aktueller Arbeitgeber",
+      "familienkasse": "Familienkasse",
+      "familienkasse_sub": "Bundesagentur für Arbeit",
+      "private": "Private Empfänger",
+      "private_sub": "z. B. Vermieter, Bildungsträger",
       "verwalten": "Verwalten",
       "historie_anzeigen": "Einwilligungshistorie anzeigen",
       "ein": "Ein",

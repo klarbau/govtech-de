@@ -7,6 +7,8 @@ interface VerifyChipRowProps {
   adresseBestaetigt: boolean;
   walletVerbunden: boolean;
   aufenthaltGueltig: boolean;
+  /** Driven by `emailVerifiziert || mobilVerifiziert`. */
+  kontaktVerifiziert?: boolean;
   /** When the persona is German and has no Aufenthaltstitel, swap the chip
    *  for a sensible alternative ("Personalausweis hinterlegt" or
    *  "Reisepass hinterlegt"). Caller decides the label. */
@@ -25,6 +27,7 @@ export function VerifyChipRow({
   adresseBestaetigt,
   walletVerbunden,
   aufenthaltGueltig,
+  kontaktVerifiziert,
   fallbackChip,
 }: VerifyChipRowProps) {
   const t = useTranslations('stammdaten.chip');
@@ -38,13 +41,14 @@ export function VerifyChipRow({
       {walletVerbunden ? <Chip label={t('wallet_verbunden')} /> : null}
       {aufenthaltGueltig ? <Chip label={t('aufenthalt_gueltig')} /> : null}
       {!aufenthaltGueltig && fallbackChip ? <Chip label={fallbackChip} /> : null}
+      {kontaktVerifiziert ? <Chip label={t('kontakt_verifiziert')} /> : null}
     </div>
   );
 }
 
 function Chip({ label }: { label: string }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-[13px] font-medium text-text-ink-2">
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-[13px] font-medium text-text-secondary">
       <CheckCircle2 aria-hidden="true" className="size-3.5 text-success" />
       {label}
     </span>

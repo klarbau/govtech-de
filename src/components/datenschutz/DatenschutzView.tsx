@@ -2,11 +2,14 @@
 
 import * as React from 'react';
 import {
+  ArrowRight,
+  Briefcase,
   ChevronRight,
   Clock,
   Download,
   Eye,
   FileText,
+  HelpCircle,
   Info,
   Landmark,
   Lock,
@@ -15,7 +18,8 @@ import {
   Settings,
   Shield,
   ShieldCheck,
-  X,
+  User,
+  Users,
 } from 'lucide-react';
 
 import {
@@ -75,16 +79,25 @@ function activityBadgeFor(
 
 const EMPFAENGER_ORDER: EinwilligungEmpfaenger[] = [
   'krankenkasse',
-  'bank',
   'arbeitgeber',
-  'weitere_dienste',
+  'familienkasse',
+  'private',
 ];
+
+const EMPFAENGER_ICON: Record<
+  EinwilligungEmpfaenger,
+  React.ComponentType<{ 'aria-hidden'?: boolean | 'true' | 'false' }>
+> = {
+  krankenkasse: Landmark,
+  arbeitgeber: Briefcase,
+  familienkasse: Users,
+  private: User,
+};
 
 export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
   const t = useTranslations();
   const [personaId, setPersonaId] = React.useState<PersonaId | null>(null);
   const [loaded, setLoaded] = React.useState(false);
-  const [bannerOpen, setBannerOpen] = React.useState(true);
   const [activities, setActivities] = React.useState<UebermittlungsLogEntry[]>([]);
   const [behoerdenById, setBehoerdenById] = React.useState<Record<string, Behoerde>>({});
   const [einwilligungen, setEinwilligungen] = React.useState<DatenschutzEinwilligung[]>([]);
@@ -185,14 +198,6 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
     const firstToggle = node.querySelector<HTMLElement>('[role="switch"]');
     firstToggle?.focus({ preventScroll: true });
   }, []);
-
-  const dismissBanner = React.useCallback(() => {
-    setBannerOpen(false);
-    if (personaId) void api.dismissVisionBanner(personaId).catch(() => undefined);
-    // Move focus to the first section heading so keyboard users are not
-    // stranded on a removed control (WCAG 2.4.3 focus order).
-    window.requestAnimationFrame(() => consentHeadingRef.current?.focus());
-  }, [personaId]);
 
   const handleExport = React.useCallback(() => {
     if (!personaId) return;
@@ -330,30 +335,6 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
         {liveAnnouncement}
       </div>
 
-      {bannerOpen ? (
-        <div className="ds-vision" role="note" aria-label={t('datenschutz.vision_banner.heading')}>
-          <span className="icon-circle">
-            <Info aria-hidden="true" />
-          </span>
-          <div className="body">
-            <div className="t">{t('datenschutz.vision_banner.heading')}</div>
-            <div className="s">
-              {t('datenschutz.vision_banner.body_1')}
-              <br />
-              {t('datenschutz.vision_banner.body_2')}
-            </div>
-          </div>
-          <button
-            type="button"
-            className="close"
-            aria-label={t('datenschutz.vision_banner.dismiss')}
-            onClick={dismissBanner}
-          >
-            <X aria-hidden="true" />
-          </button>
-        </div>
-      ) : null}
-
       {/* Stat row */}
       <div className="ds2-stats">
         <div className="ds2-stat">
@@ -423,12 +404,18 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
                   {sortedEinw.map((e) => {
                     const empfLabel = t(`datenschutz.einwilligungen.${e.empfaenger}`);
                     const empfKat = t(`datenschutz.einwilligungen.${e.empfaenger}_sub`);
+                    const EmpfIcon = EMPFAENGER_ICON[e.empfaenger] ?? Shield;
                     return (
                       <tr key={e.empfaenger}>
                         <td>
                           <div className="ds2-empf">
-                            <span className="ds2-empf-name">{empfLabel}</span>
-                            <span className="ds2-empf-kat">{empfKat}</span>
+                            <span className="icon-circle">
+                              <EmpfIcon aria-hidden="true" />
+                            </span>
+                            <div className="ds2-empf-text">
+                              <span className="ds2-empf-name">{empfLabel}</span>
+                              <span className="ds2-empf-kat">{empfKat}</span>
+                            </div>
                           </div>
                         </td>
                         <td className="ds2-zweck">
@@ -620,6 +607,14 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
                   <p className="ds2-principle-body">
                     {t('datenschutz.rail.principle_1_body')}
                   </p>
+                  <button
+                    type="button"
+                    className="ds2-principle-link"
+                    onClick={scrollToWeitergabe}
+                  >
+                    {t('datenschutz.rail.principle_1_link')}
+                    <ArrowRight aria-hidden="true" />
+                  </button>
                 </div>
               </li>
               <li>
@@ -633,6 +628,14 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
                   <p className="ds2-principle-body">
                     {t('datenschutz.rail.principle_2_body')}
                   </p>
+                  <button
+                    type="button"
+                    className="ds2-principle-link"
+                    onClick={scrollToWeitergabe}
+                  >
+                    {t('datenschutz.rail.principle_2_link')}
+                    <ArrowRight aria-hidden="true" />
+                  </button>
                 </div>
               </li>
               <li>
@@ -646,9 +649,31 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
                   <p className="ds2-principle-body">
                     {t('datenschutz.rail.principle_3_body')}
                   </p>
+                  <button
+                    type="button"
+                    className="ds2-principle-link"
+                    onClick={openLogDialog}
+                  >
+                    {t('datenschutz.rail.principle_3_link')}
+                    <ArrowRight aria-hidden="true" />
+                  </button>
                 </div>
               </li>
             </ul>
+          </section>
+
+          <section className="gt-card ds2-faq">
+            <span className="icon-circle">
+              <HelpCircle aria-hidden="true" />
+            </span>
+            <div>
+              <h2 className="ds2-faq-title">{t('datenschutz.faq.title')}</h2>
+              <p className="ds2-faq-body">{t('datenschutz.faq.body')}</p>
+              <button type="button" className="ds2-principle-link" onClick={openLogDialog}>
+                {t('datenschutz.faq.link')}
+                <ArrowRight aria-hidden="true" />
+              </button>
+            </div>
           </section>
         </aside>
       </div>

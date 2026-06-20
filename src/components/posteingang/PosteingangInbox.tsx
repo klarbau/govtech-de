@@ -5,7 +5,9 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
 import {
+  Archive,
   Briefcase,
+  Check,
   ChevronDown,
   ChevronRight,
   ChevronUp,
@@ -14,10 +16,13 @@ import {
   Euro,
   File as FileIcon,
   Filter,
+  Folder,
   FolderInput,
   Info,
+  Inbox,
   Landmark,
   ListChecks,
+  Mail,
   MessageCircleQuestion,
   MoreHorizontal,
   PenSquare,
@@ -25,13 +30,14 @@ import {
   Search,
   ShieldCheck,
   Sparkles,
+  ThumbsUp,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { api } from '@/lib/mock-backend';
 import { useMediaQuery } from '@/lib/hooks/use-media-query';
 import { Skeleton } from '@/components/shared/Skeleton';
-import type { Behoerde, Letter, Vorgang } from '@/types';
+import type { Behoerde, BehoerdeKategorie, Letter, Vorgang } from '@/types';
 
 import { NeuerVorgangAusBriefModal } from './NeuerVorgangAusBriefModal';
 import { ReplyInlinePanel } from './ReplyInlinePanel';
@@ -40,6 +46,7 @@ import { OriginaltextBlock } from './OriginaltextBlock';
 import { VorgangsGruppe, SonstigeGruppe } from './VorgangsGruppe';
 import { FilterSheet } from './FilterSheet';
 import {
+  FILTER_KATEGORIEN,
   filterKategorieToInternal,
   type FilterKategorie,
 } from './FilterPopover';
@@ -59,6 +66,8 @@ interface PosteingangInboxProps {
 type AvatarVariant = 'eagle' | 'aok' | 'ard' | 'lea' | 'jc' | 'default';
 type SectionKey = 'neu' | 'frist7' | 'erledigt';
 type StatusTab = 'alle' | 'ungelesen' | 'mit_frist' | 'wichtig';
+/** Posteingang (alle offenen Briefe) vs. Archiv (status === 'erledigt'). */
+type Mailbox = 'posteingang' | 'archiv';
 
 /** Ein Brief ist „mit Frist", wenn mindestens ein offener Frist-Termin hinterlegt ist. */
 function letterHasFrist(letter: Letter): boolean {
@@ -92,6 +101,21 @@ function matchesStatusTab(letter: Letter, tab: StatusTab, nowIso: string): boole
   }
 }
 
+/** Datenmodell-Kategorie → UI-Filter-Bucket (Inverse von `filterKategorieToInternal`). */
+function internalToFilterKategorie(k: BehoerdeKategorie): FilterKategorie {
+  switch (k) {
+    case 'bund':
+      return 'bund';
+    case 'land':
+      return 'land';
+    case 'kommune':
+      return 'kommunal';
+    case 'sozialversicherung':
+    case 'privat':
+      return 'sonstige';
+  }
+}
+
 /**
  * `<PosteingangInbox>` — literal port of `docs/design-prototype-v2/posteingang.html`.
  * Same DOM (`post-toolbar`, `post-layout`, `post-section`, `post-item`,
@@ -116,6 +140,7 @@ export function PosteingangInbox({
   const [loaded, setLoaded] = React.useState(initial.letters.length > 0);
   const [searchQuery, setSearchQuery] = React.useState('');
   const [statusTab, setStatusTab] = React.useState<StatusTab>('alle');
+  const [mailbox, setMailbox] = React.useState<Mailbox>('posteingang');
   const [view, setView] = React.useState<'chronologisch' | 'vorgang'>('chronologisch');
   const [selectedLetterId, setSelectedLetterId] = React.useState<string | null>(
     initialSelectedLetterId ?? null,
@@ -194,12 +219,48 @@ export function PosteingangInbox({
 
   const nowIso = initial.nowIso;
 
+  // Mailbox-Scope: Posteingang = alle nicht-erledigten Briefe, Archiv =
+  // ausschließlich Briefe mit status === 'erledigt' (es gibt kein Folder-Modell;
+  // „Archiv" ist die einzige echte zweite Mailbox, vgl. LetterStatus-Union).
+  const mailboxLetters = React.useMemo(
+    () =>
+      letters.filter((l) =>
+        mailbox === 'archiv'
+          ? l.status === 'erledigt'
+          : l.status !== 'erledigt',
+      ),
+    [letters, mailbox],
+  );
+
+  const mailboxCounts = React.useMemo(
+    () => ({
+      posteingang: letters.filter((l) => l.status !== 'erledigt').length,
+      archiv: letters.filter((l) => l.status === 'erledigt').length,
+    }),
+    [letters],
+  );
+
+  // Ordner = echte Behörden-Kategorie-Buckets der aktuellen Mailbox, mit
+  // realer Anzahl (keine erfundenen Entwürfe/Gesendet/Papierkorb-Zähler).
+  const folders = React.useMemo(() => {
+    const counts = new Map<FilterKategorie, number>();
+    for (const l of mailboxLetters) {
+      const behoerde = behoerdenById[l.absender_behoerde_id];
+      if (!behoerde) continue;
+      const key = internalToFilterKategorie(behoerde.kategorie);
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+    return FILTER_KATEGORIEN.filter((k) => (counts.get(k) ?? 0) > 0).map(
+      (k) => ({ kategorie: k, count: counts.get(k) ?? 0 }),
+    );
+  }, [mailboxLetters, behoerdenById]);
+
   const filteredLetters = React.useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     const activeKategorien = new Set(
       filterSelected.flatMap((k) => filterKategorieToInternal(k)),
     );
-    return letters.filter((l) => {
+    return mailboxLetters.filter((l) => {
       const behoerde = behoerdenById[l.absender_behoerde_id];
       if (activeKategorien.size > 0) {
         if (!behoerde || !activeKategorien.has(behoerde.kategorie)) return false;
@@ -210,7 +271,7 @@ export function PosteingangInbox({
         (behoerde?.name_de ?? '').toLowerCase().includes(q)
       );
     });
-  }, [letters, behoerdenById, searchQuery, filterSelected]);
+  }, [mailboxLetters, behoerdenById, searchQuery, filterSelected]);
 
   const tabCounts = React.useMemo(
     () => ({
@@ -273,7 +334,10 @@ export function PosteingangInbox({
   }, [tabFilteredLetters]);
 
   const selectedLetter =
-    letters.find((l) => l.id === selectedLetterId) ?? letters[0] ?? null;
+    letters.find((l) => l.id === selectedLetterId) ??
+    tabFilteredLetters[0] ??
+    letters[0] ??
+    null;
 
   const selectedAbsender = selectedLetter
     ? behoerdenById[selectedLetter.absender_behoerde_id] ?? null
@@ -286,12 +350,30 @@ export function PosteingangInbox({
   return (
     <>
       <div className={inlineActive ? 'post-content--reply-open' : undefined}>
-      <div className="gt-page-head">
-        <h1>Posteingang</h1>
-        <div className="sub">Alle Behörden-Briefe an einem Ort. Verstehen statt verzweifeln.</div>
-        <span className="gt-page-tag">Prototyp · Mock-Daten</span>
-      </div>
+      <div className="post-shell">
+        <PostRail
+          mailbox={mailbox}
+          onMailboxChange={(next) => {
+            setMailbox(next);
+            setStatusTab('alle');
+          }}
+          mailboxCounts={mailboxCounts}
+          folders={folders}
+          activeFolders={filterSelected}
+          onToggleFolder={(k) =>
+            setFilterSelected((prev) =>
+              prev.includes(k) ? prev.filter((x) => x !== k) : [...prev, k],
+            )
+          }
+          onlyUnread={statusTab === 'ungelesen'}
+          onOnlyUnreadChange={(next) =>
+            setStatusTab(next ? 'ungelesen' : 'alle')
+          }
+          onOpenFilter={() => setFilterOpen(true)}
+          activeFilterCount={filterSelected.length}
+        />
 
+        <div className="post-main">
       <div className="post-toolbar">
         <div className="input-icon">
           <Search />
@@ -324,34 +406,6 @@ export function PosteingangInbox({
             Nach Vorgang
           </button>
         </div>
-        <button
-          type="button"
-          className="btn btn-secondary"
-          onClick={() => setFilterOpen(true)}
-          aria-haspopup="dialog"
-        >
-          <Filter />Filter
-          {filterSelected.length > 0 && (
-            <span
-              aria-label={`${filterSelected.length} Filter aktiv`}
-              style={{
-                minWidth: '18px',
-                height: '18px',
-                padding: '0 5px',
-                borderRadius: '9px',
-                background: 'var(--brand-fill)',
-                color: '#fff',
-                fontSize: '11px',
-                fontWeight: 600,
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              {filterSelected.length}
-            </span>
-          )}
-        </button>
       </div>
 
       {view === 'chronologisch' && (
@@ -485,6 +539,8 @@ export function PosteingangInbox({
         )}
 
       </div>
+        </div>
+      </div>
       </div>
 
       {inlineActive && replyLetter && (
@@ -535,6 +591,139 @@ export function PosteingangInbox({
 }
 
 export type { InitialData };
+
+// ── PostRail ────────────────────────────────────────────────────────────────
+
+interface FolderEntry {
+  kategorie: FilterKategorie;
+  count: number;
+}
+
+function PostRail({
+  mailbox,
+  onMailboxChange,
+  mailboxCounts,
+  folders,
+  activeFolders,
+  onToggleFolder,
+  onlyUnread,
+  onOnlyUnreadChange,
+  onOpenFilter,
+  activeFilterCount,
+}: {
+  mailbox: Mailbox;
+  onMailboxChange: (next: Mailbox) => void;
+  mailboxCounts: { posteingang: number; archiv: number };
+  folders: FolderEntry[];
+  activeFolders: FilterKategorie[];
+  onToggleFolder: (k: FilterKategorie) => void;
+  onlyUnread: boolean;
+  onOnlyUnreadChange: (next: boolean) => void;
+  onOpenFilter: () => void;
+  activeFilterCount: number;
+}) {
+  const t = useTranslations('posteingang.rail');
+  const tKat = useTranslations('posteingang.filter.kategorie');
+
+  return (
+    <nav className="post-rail" aria-label={t('nav_aria')}>
+      <div className="post-rail-head">
+        <span className="ico" aria-hidden="true">
+          <Mail />
+        </span>
+        <div>
+          <h1>{t('title')}</h1>
+          <p className="sub">{t('subtitle')}</p>
+        </div>
+      </div>
+
+      <Link
+        href="/assistent"
+        className="btn btn-primary post-rail-write"
+        aria-label={t('write_aria')}
+        style={{ textDecoration: 'none' }}
+      >
+        <PenSquare />
+        {t('write')}
+      </Link>
+
+      <div className="post-rail-group" role="group" aria-label={t('system_label')}>
+        <div className="grp-label">{t('system_label')}</div>
+        <button
+          type="button"
+          className={`post-rail-link${mailbox === 'posteingang' ? ' active' : ''}`}
+          aria-current={mailbox === 'posteingang' ? 'page' : undefined}
+          onClick={() => onMailboxChange('posteingang')}
+        >
+          <Inbox aria-hidden="true" />
+          <span className="name">{t('posteingang')}</span>
+          <span className="cnt">{mailboxCounts.posteingang}</span>
+        </button>
+        <button
+          type="button"
+          className={`post-rail-link${mailbox === 'archiv' ? ' active' : ''}`}
+          aria-current={mailbox === 'archiv' ? 'page' : undefined}
+          onClick={() => onMailboxChange('archiv')}
+        >
+          <Archive aria-hidden="true" />
+          <span className="name">{t('archiv')}</span>
+          <span className="cnt">{mailboxCounts.archiv}</span>
+        </button>
+      </div>
+
+      <div className="post-rail-group" role="group" aria-label={t('ordner_label')}>
+        <div className="grp-label">{t('ordner_label')}</div>
+        {folders.length === 0 ? (
+          <p className="grp-label" style={{ textTransform: 'none', fontWeight: 400 }}>
+            {t('ordner_empty')}
+          </p>
+        ) : (
+          folders.map((f) => {
+            const active = activeFolders.includes(f.kategorie);
+            return (
+              <button
+                key={f.kategorie}
+                type="button"
+                className={`post-rail-link${active ? ' active' : ''}`}
+                aria-pressed={active}
+                onClick={() => onToggleFolder(f.kategorie)}
+              >
+                <Folder aria-hidden="true" />
+                <span className="name">{tKat(f.kategorie)}</span>
+                <span className="cnt">{f.count}</span>
+              </button>
+            );
+          })
+        )}
+      </div>
+
+      <div className="post-rail-group">
+        <div className="grp-label">{t('filter_label')}</div>
+        <label className="post-rail-link" style={{ cursor: 'pointer' }}>
+          <input
+            type="checkbox"
+            checked={onlyUnread}
+            onChange={(e) => onOnlyUnreadChange(e.target.checked)}
+            style={{ width: '16px', height: '16px', accentColor: 'var(--brand-600)' }}
+          />
+          <span className="name">{t('nur_ungelesen')}</span>
+        </label>
+        <button
+          type="button"
+          className="post-rail-link"
+          onClick={onOpenFilter}
+          aria-haspopup="dialog"
+        >
+          <Filter aria-hidden="true" />
+          <span className="name">{t('filter_open')}</span>
+          {activeFilterCount > 0 && (
+            <span className="cnt">{activeFilterCount}</span>
+          )}
+        </button>
+      </div>
+    </nav>
+  );
+}
 
 // ── PosteingangInboxSkeleton ────────────────────────────────────────────────
 
@@ -762,6 +951,14 @@ function PostDetail({
     : t3('erklaerer.bis_wann_keine');
 
   const bedeutung = formatBedeutung(letter, tWas, t3);
+  // „Was bedeutet das" als abgehakte Liste, wenn die KI-Zusammenfassung mehrere
+  // Punkte liefert (Bullet 0 ist die „Worum geht es"-Kurzfassung, oben im
+  // KI-Erklärer; ab Bullet 1 sind es die bedeutungstragenden Punkte). Andernfalls
+  // Single-Absatz-Fallback. Datenquelle: echte ai_summary.post_open.bullets.
+  const bedeutungBullets = (ai?.bullets ?? [])
+    .slice(1, 5)
+    .map((b) => b.text)
+    .filter((text) => text.trim().length > 0);
   const hasNachzahlung = letter.betrag_richtung === 'nachzahlung';
 
   const empfangenLabel = formatDDMMYYYY(parseISO(letter.empfangen_am));
@@ -891,19 +1088,42 @@ function PostDetail({
                   {t3('erklaerer.pill')}
                 </span>
               </div>
-              <div className="ai-block">
-                <div className="ai-block-q">{t3('erklaerer.worum_label')}</div>
-                <p className="ai-block-a">{worum}</p>
+              <p className="ai-intro">{t3('erklaerer.intro')}</p>
+              <div className="ai-blocks">
+                <div className="ai-block">
+                  <div className="ai-block-q">
+                    <Info aria-hidden="true" />
+                    {t3('erklaerer.worum_label')}
+                  </div>
+                  <p className="ai-block-a">{worum}</p>
+                </div>
+                <div className="ai-block">
+                  <div className="ai-block-q">
+                    <Euro aria-hidden="true" />
+                    {t3('erklaerer.betrag_label')}
+                  </div>
+                  <p className="ai-block-a">{betragText}</p>
+                </div>
+                <div className="ai-block">
+                  <div className="ai-block-q">
+                    <Clock aria-hidden="true" />
+                    {t3('erklaerer.bis_wann_label')}
+                  </div>
+                  <p className="ai-block-a">{bisWannText}</p>
+                </div>
               </div>
-              <div className="ai-block">
-                <div className="ai-block-q">{t3('erklaerer.betrag_label')}</div>
-                <p className="ai-block-a">{betragText}</p>
+              <div className="ai-foot">
+                <p className="ai-disclaimer">{t3('erklaerer.disclaimer')}</p>
+                <button
+                  type="button"
+                  className="ai-feedback"
+                  aria-label={t3('erklaerer.feedback_aria')}
+                  onClick={() => toast(t3('erklaerer.feedback_toast'))}
+                >
+                  <ThumbsUp aria-hidden="true" />
+                  {t3('erklaerer.feedback')}
+                </button>
               </div>
-              <div className="ai-block">
-                <div className="ai-block-q">{t3('erklaerer.bis_wann_label')}</div>
-                <p className="ai-block-a">{bisWannText}</p>
-              </div>
-              <p className="ai-disclaimer">{t3('erklaerer.disclaimer')}</p>
             </div>
           </div>
 
@@ -911,8 +1131,9 @@ function PostDetail({
             <div className="frist-row">
               <Clock style={{ color: 'var(--ink-3)', width: '16px', height: '16px' }} />
               <span>
-                Frist: {fristTyp.charAt(0).toUpperCase() + fristTyp.slice(1)} bis {fristLabel}
+                Frist: {fristTyp.charAt(0).toUpperCase() + fristTyp.slice(1)} bis{' '}
               </span>
+              <span className="frist-pill">{fristLabel}</span>
             </div>
           )}
 
@@ -921,7 +1142,18 @@ function PostDetail({
               <Info aria-hidden="true" />
               <h3>{t3('bedeutung.title')}</h3>
             </div>
-            <p>{bedeutung}</p>
+            {bedeutungBullets.length > 1 ? (
+              <ul className="post-bullets">
+                {bedeutungBullets.map((text, i) => (
+                  <li key={i}>
+                    <Check aria-hidden="true" />
+                    <span>{text}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>{bedeutung}</p>
+            )}
           </section>
 
           <section className="post-panel" aria-label={t3('naechste_schritte.title')}>
@@ -929,43 +1161,75 @@ function PostDetail({
               <ListChecks aria-hidden="true" />
               <h3>{t3('naechste_schritte.title')}</h3>
             </div>
-            <div className="post-actions">
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={(e) => onAntwortVorbereiten(e)}
-              >
-                <PenSquare />
-                {t3('naechste_schritte.antwort')}
-              </button>
-              <Link
-                href="/termine"
-                className="btn btn-secondary"
-                style={{ textDecoration: 'none' }}
-              >
-                <Clock />
-                {t3('naechste_schritte.frist_merken')}
-              </Link>
-              {hasNachzahlung && (
+            <div className="step-rows">
+              <div className="step-row">
+                <Check className="step-tick" aria-hidden="true" />
+                <div className="step-text">
+                  <div className="lbl">{t3('naechste_schritte.antwort')}</div>
+                  <div className="sub">{t3('naechste_schritte.antwort_sub')}</div>
+                </div>
                 <button
                   type="button"
-                  className="btn btn-secondary"
-                  disabled
-                  aria-disabled="true"
-                  title="In diesem Prototyp nicht hinterlegt"
-                  style={{ opacity: 0.55, cursor: 'not-allowed' }}
+                  className="btn btn-primary btn-sm"
+                  onClick={(e) => onAntwortVorbereiten(e)}
                 >
-                  <Euro />
-                  {t3('naechste_schritte.zahlung')}
+                  <PenSquare />
+                  {t3('naechste_schritte.antwort')}
                 </button>
+              </div>
+
+              <div className="step-row">
+                <Check className="step-tick" aria-hidden="true" />
+                <div className="step-text">
+                  <div className="lbl">{t3('naechste_schritte.frist_merken')}</div>
+                  <div className="sub">{t3('naechste_schritte.frist_merken_sub')}</div>
+                </div>
+                <Link
+                  href="/termine"
+                  className="btn btn-secondary btn-sm"
+                  style={{ textDecoration: 'none' }}
+                >
+                  <Clock />
+                  {t3('naechste_schritte.frist_merken')}
+                </Link>
+              </div>
+
+              {hasNachzahlung && (
+                <div className="step-row">
+                  <Check className="step-tick" aria-hidden="true" />
+                  <div className="step-text">
+                    <div className="lbl">{t3('naechste_schritte.zahlung')}</div>
+                    <div className="sub">{t3('naechste_schritte.zahlung_sub')}</div>
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-secondary btn-sm"
+                    disabled
+                    aria-disabled="true"
+                    title="In diesem Prototyp nicht hinterlegt"
+                    style={{ opacity: 0.55, cursor: 'not-allowed' }}
+                  >
+                    <Euro />
+                    {t3('naechste_schritte.zahlung')}
+                  </button>
+                </div>
               )}
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={onVorgangErstellen}
-              >
-                <FolderInput />Vorgang erstellen
-              </button>
+
+              <div className="step-row">
+                <Check className="step-tick" aria-hidden="true" />
+                <div className="step-text">
+                  <div className="lbl">{t3('naechste_schritte.vorgang')}</div>
+                  <div className="sub">{t3('naechste_schritte.vorgang_sub')}</div>
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-secondary btn-sm"
+                  onClick={onVorgangErstellen}
+                >
+                  <FolderInput />
+                  {t3('naechste_schritte.vorgang')}
+                </button>
+              </div>
             </div>
           </section>
 

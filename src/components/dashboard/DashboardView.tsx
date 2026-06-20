@@ -45,12 +45,12 @@ const DEMO_PRIOR_LOGIN_DAYS = 23;
 export function DashboardView({ nowIso }: DashboardViewProps) {
   const t = useTranslations('dashboard');
   const tTermin = useTranslations('dashboard.naechster_termin');
+  const tAktiv = useTranslations('dashboard.aktivitaeten');
   const tCommon = useTranslations('common');
   const [snapshot, setSnapshot] = React.useState<DashboardSnapshot | null>(null);
   const [persona, setPersona] = React.useState<Persona | null>(null);
   const [behoerdenNames, setBehoerdenNames] = React.useState<Record<string, string>>({});
   const [dismissed, setDismissed] = React.useState<Set<string>>(() => new Set());
-  const [upcomingTermine, setUpcomingTermine] = React.useState(0);
   const [error, setError] = React.useState<string | null>(null);
   const lastSeenWrittenRef = React.useRef(false);
 
@@ -85,19 +85,6 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
         } catch {
           /* names are nice-to-have */
         }
-        try {
-          const termine = await api.getTermine();
-          if (!cancelled) {
-            const now = new Date(nowIso).getTime();
-            const count = termine.filter((termin) => {
-              const ts = new Date(termin.datum).getTime();
-              return !Number.isNaN(ts) && ts >= now;
-            }).length;
-            setUpcomingTermine(count);
-          }
-        } catch {
-          /* termine count gracefully falls back to 0 */
-        }
       } catch {
         if (!cancelled) setError(t('fehler.laden'));
       }
@@ -118,10 +105,13 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
   ).slice(0, 3);
   const todosEmpty = visibleTodos.length === 0;
 
+  // „Aktivitäten" speist sich aus echten Vorgangs-Bewegungen (letzte
+  // Schritt-Timestamps), neueste zuerst, max. 3 — distinkt vom Autopilot-Feed.
+  const aktivitaeten = [...(snapshot?.vorgangs_stand_tile ?? [])]
+    .sort((a, b) => b.letzte_bewegung_iso.localeCompare(a.letzte_bewegung_iso))
+    .slice(0, 3);
+
   const fristenWithin14 = countFristenWithin14(snapshot, nowIso);
-  const terminSub = terminTile
-    ? t('tiles.termine_sub', { datum: formatDDMMYYYY(new Date(terminTile.datum_iso)) })
-    : t('tile.termine.none');
   async function handleDone(reminderId: string) {
     setDismissed((prev) => new Set(prev).add(reminderId));
     try {
@@ -184,30 +174,27 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
                 </div>
               </div>
             ) : (
-              <ol className="heute-list">
+              <ol className="heute-grid">
                 {visibleTodos.map((item, idx) => {
                   const view = mapToHeuteItem(item, idx);
                   return (
-                    <li key={view.id} className="heute-item">
-                      <Link href={view.href} className="heute-link">
-                        <span className="n">{idx + 1}</span>
+                    <li key={view.id} className="heute-tile">
+                      <Link href={view.href} className="heute-tile-link">
                         <span className={`icon-circle ${view.iconCircleTone}`}>{view.icon}</span>
-                        <div className="body grow">
-                          <div className="t">{view.titel}</div>
-                          <div className="s">{view.subline}</div>
+                        <div className="ht-body">
+                          <div className="ht-titel">{view.titel}</div>
+                          <div className="ht-sub">{reasonSubline(view.reasonToken, t)}</div>
                         </div>
                         {view.fristDatum ? (
-                          <span className="heute-frist">
-                            <span className="badge amber">{t('heute.frist_bald')}</span>
-                            <span className="heute-frist-am">
-                              {t('heute.frist_am', { datum: view.fristDatum })}
-                            </span>
-                          </span>
+                          <div className="ht-frist">
+                            <Calendar aria-hidden="true" />
+                            {t('heute.frist_bis', { datum: view.fristDatum })}
+                          </div>
                         ) : null}
-                        <ChevronRight className="heute-chev" aria-hidden="true" />
+                        <ChevronRight className="ht-chev" aria-hidden="true" />
                       </Link>
                       <div
-                        className="heute-actions"
+                        className="ht-actions"
                         role="group"
                         aria-label={t('heute.actions_label', { titel: view.titel })}
                       >
@@ -237,28 +224,26 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
 
           <section aria-labelledby="erledigt-feed-title" className="heute-card">
             <div className="heute-head">
-              <h2 id="erledigt-feed-title">{t('erledigt_feed.title')}</h2>
+              <h2 id="erledigt-feed-title" className="heute-head-title">
+                {t('erledigt_feed.title')}
+                <span className="head-count" aria-hidden="true">
+                  ({erledigtFeed.length})
+                </span>
+                <span className="sr-only">
+                  {t('erledigt_feed.count_aria', { count: erledigtFeed.length })}
+                </span>
+              </h2>
               <Link href="/vorgaenge" className="card-head-link">
                 {t('erledigt_feed.alle_schritte')}
                 <ChevronRight aria-hidden="true" />
               </Link>
             </div>
             <ErledigtFeed
-              items={erledigtFeed}
+              items={erledigtFeed.slice(0, 4)}
               behoerdenNames={behoerdenNames}
               nowIso={nowIso}
             />
           </section>
-        </div>
-
-        <div className="dash-col">
-          {highlight ? (
-            <TriumphBanner
-              highlight={highlight}
-              variant="static"
-              fristDatum={umzugFristDatum}
-            />
-          ) : null}
 
           {terminTile ? (
             <section aria-labelledby="naechster-termin-title" className="nt-card">
@@ -293,6 +278,48 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
             </section>
           ) : null}
 
+          {aktivitaeten.length > 0 ? (
+            <section aria-labelledby="aktivitaeten-title" className="heute-card">
+              <div className="heute-head">
+                <h2 id="aktivitaeten-title">{tAktiv('titel')}</h2>
+                <Link href="/vorgaenge" className="card-head-link">
+                  {tAktiv('alle')}
+                  <ChevronRight aria-hidden="true" />
+                </Link>
+              </div>
+              <ul className="aktiv-feed">
+                {aktivitaeten.map((akt) => (
+                  <li key={akt.vorgang_id} className="aktiv-row">
+                    <Link href={`/vorgaenge/${akt.vorgang_id}`} className="aktiv-item">
+                      <span className="aktiv-icon" aria-hidden="true"><Folder /></span>
+                      <div className="aktiv-body">
+                        <div className="aktiv-titel">{akt.titel}</div>
+                        <div className="aktiv-sub">
+                          {tAktiv('bewegung', {
+                            zeit: relativeBewegung(akt.letzte_bewegung_iso, nowIso),
+                          })}
+                        </div>
+                      </div>
+                      <span className="badge brand aktiv-status">
+                        {tAktiv(`status.${akt.status}`)}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+        </div>
+
+        <div className="dash-col">
+          {highlight ? (
+            <TriumphBanner
+              highlight={highlight}
+              variant="static"
+              fristDatum={umzugFristDatum}
+            />
+          ) : null}
+
           <div className="dash-tiles">
             <Link className="stat-tile" href="/posteingang">
               <div className="st-head">
@@ -306,30 +333,6 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
                 <ChevronRight aria-hidden="true" />
               </span>
             </Link>
-            <Link className="stat-tile" href="/posteingang">
-              <div className="st-head">
-                <span className="icon-circle"><Clock aria-hidden="true" /></span>
-                <h3>{t('kacheln.fristen.titel')}</h3>
-              </div>
-              <div className="st-num">{fristenWithin14}</div>
-              <div className="st-sub">{t('tiles.fristen_sub')}</div>
-              <span className="st-cta">
-                {t('tiles.fristen_cta')}
-                <ChevronRight aria-hidden="true" />
-              </span>
-            </Link>
-            <Link className="stat-tile" href="/termine">
-              <div className="st-head">
-                <span className="icon-circle"><Calendar aria-hidden="true" /></span>
-                <h3>{t('kacheln.termine.titel')}</h3>
-              </div>
-              <div className="st-num">{upcomingTermine}</div>
-              <div className="st-sub">{terminSub}</div>
-              <span className="st-cta">
-                {t('tiles.termine_cta')}
-                <ChevronRight aria-hidden="true" />
-              </span>
-            </Link>
             <Link className="stat-tile" href="/vorgaenge">
               <div className="st-head">
                 <span className="icon-circle"><Folder aria-hidden="true" /></span>
@@ -339,6 +342,18 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
               <div className="st-sub">{t('tiles.vorgaenge_sub')}</div>
               <span className="st-cta">
                 {t('tiles.vorgaenge_cta')}
+                <ChevronRight aria-hidden="true" />
+              </span>
+            </Link>
+            <Link className="stat-tile" href="/posteingang">
+              <div className="st-head">
+                <span className="icon-circle"><Clock aria-hidden="true" /></span>
+                <h3>{t('kacheln.fristen.titel')}</h3>
+              </div>
+              <div className="st-num">{fristenWithin14}</div>
+              <div className="st-sub">{t('tiles.fristen_sub')}</div>
+              <span className="st-cta">
+                {t('tiles.fristen_cta')}
                 <ChevronRight aria-hidden="true" />
               </span>
             </Link>
@@ -422,9 +437,6 @@ function greetingAnrede(
   persona: Persona | null,
 ): string {
   if (snapshot) {
-    const { geschlecht_anrede, nachname } = snapshot.greeting;
-    if (geschlecht_anrede === 'frau') return `Frau ${nachname}`;
-    if (geschlecht_anrede === 'herr') return `Herr ${nachname}`;
     return `${snapshot.greeting.vorname} ${snapshot.greeting.nachname}`;
   }
   if (persona) {
@@ -452,6 +464,23 @@ function formatDDMMYYYY(d: Date): string {
   const dd = String(d.getDate()).padStart(2, '0');
   const mm = String(d.getMonth() + 1).padStart(2, '0');
   return `${dd}.${mm}.${d.getFullYear()}`;
+}
+
+/**
+ * Relative DE-Zeitangabe („gerade eben", „vor 3 Std", „vor 5 Tagen") für die
+ * „Aktivitäten"-Bewegungszeile. Speist sich aus echten Vorgangs-Timestamps.
+ */
+function relativeBewegung(iso: string, nowIso: string): string {
+  const then = new Date(iso).getTime();
+  const now = new Date(nowIso).getTime();
+  if (Number.isNaN(then) || Number.isNaN(now)) return '';
+  const diffMin = Math.round((now - then) / 60000);
+  if (diffMin < 2) return 'gerade eben';
+  if (diffMin < 60) return `vor ${diffMin} Min`;
+  const diffH = Math.round(diffMin / 60);
+  if (diffH < 24) return `vor ${diffH} Std`;
+  const diffD = Math.round(diffH / 24);
+  return `vor ${diffD} Tag${diffD === 1 ? '' : 'en'}`;
 }
 
 /** Termin-Datum + Uhrzeit, DE-formatiert (z. B. „24.06.2025, 10:30 Uhr"). */
@@ -484,7 +513,10 @@ interface HeuteView {
   id: string;
   sourceId: string;
   titel: string;
-  subline: string;
+  /** Klartext-Begründung (z. B. „Frist rückt näher …") als Karten-Subline. */
+  reasonToken: string;
+  /** Sekundäres Detail (Aktenzeichen) — Karten-fern, nur für SR/Detail. */
+  aktenzeichen?: string;
   href: string;
   icon: React.ReactNode;
   iconCircleTone: string;
@@ -508,12 +540,12 @@ function mapToHeuteItem(item: unknown, idx: number): HeuteView {
       frist_datum?: string;
       source_typ: string;
     };
-    const sub = ta.aktenzeichen ?? reasonLabel(ta.reason_token);
     return {
       id: ta.id,
       sourceId: ta.source_id ?? ta.id,
       titel: ta.titel,
-      subline: sub,
+      reasonToken: ta.reason_token,
+      aktenzeichen: ta.aktenzeichen,
       href: ta.target_route,
       icon: iconForReason(ta.reason_token, ta.source_typ, idx),
       iconCircleTone: idx === 0 ? 'violet' : '',
@@ -529,16 +561,24 @@ function iconForReason(token: string, sourceTyp: string, idx: number): React.Rea
   if (idx === 2) return <Gauge />;
   return <FileText />;
 }
-function reasonLabel(token: string): string {
+
+/**
+ * Whitelist-Reason-Token → i18n-Klartext-Subline für die „Heute wichtig"-Karte.
+ * Unbekannte Tokens fallen auf leeren String zurück (keine Roh-Token-Anzeige).
+ */
+function reasonSubline(
+  token: string,
+  t: ReturnType<typeof useTranslations>,
+): string {
   switch (token) {
     case 'frist_naehe':
-      return 'Frist näher als bei anderen offenen Aktionen';
+      return t('heute.reason_frist_naehe');
     case 'termin_steht':
-      return 'Termin bereits vereinbart';
+      return t('heute.reason_termin_steht');
     case 'folgevorgang':
-      return 'Folgevorgang aus laufendem Verfahren';
+      return t('heute.reason_folgevorgang');
     case 'manuell_priorisiert':
-      return 'Manuell als prioritär markiert';
+      return t('heute.reason_manuell_priorisiert');
     default:
       return '';
   }

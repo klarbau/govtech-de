@@ -17,6 +17,7 @@ import {
   Search,
   ShieldCheck,
   Sparkles,
+  TrendingUp,
   Users,
   Wallet,
   type LucideIcon,
@@ -137,12 +138,19 @@ const CATEGORY_ORDER: CategoryId[] = [
 ];
 
 const POPULAR: PopularEntry[] = [
+  { id: 'kindergeld', href: '/vorgaenge', icon: Users, relevance: 'very' },
   { id: 'umzug', href: '/vorgaenge/umzug/run', icon: Home, relevance: 'very' },
-  { id: 'steuer', href: '/steuer', icon: BadgeEuro, relevance: 'very' },
-  { id: 'kindergeld', href: '/vorgaenge', icon: Users, relevance: 'normal' },
+  { id: 'wohngeld', href: '/vorgaenge', icon: Home, relevance: 'normal' },
+  { id: 'steuer', href: '/steuer', icon: BadgeEuro, relevance: 'normal' },
 ];
 
 const INITIAL_VISIBLE = 9;
+
+/** Catalog-wide count shown in the result bar when no filter/search is active —
+ *  the mockup reads "128 Leistungen gefunden" (the full OZG catalogue), while the
+ *  9 demo cards are the curated slice. Live filtered count is used once the user
+ *  narrows by category or query. */
+const TOTAL_CATALOG = 128;
 
 type SortMode = 'relevance' | 'popular' | 'name';
 
@@ -196,6 +204,11 @@ export function LebenslagenView() {
   const visible = showAll ? filtered : filtered.slice(0, INITIAL_VISIBLE);
   const hasMore = filtered.length > visible.length;
 
+  // Headline count: the full catalogue size when unfiltered, the live match
+  // count once the user narrows by theme or search.
+  const isUnfiltered = category === 'alle' && query.trim().length === 0;
+  const displayCount = isUnfiltered ? TOTAL_CATALOG : filtered.length;
+
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setShowAll(false);
@@ -208,6 +221,7 @@ export function LebenslagenView() {
           {t('title')}
           <span className="lk-subline">{t('subtitle')}</span>
         </h1>
+        <p className="lk-intro">{t('intro')}</p>
       </div>
 
       <form className="lk-search" role="search" onSubmit={handleSubmit}>
@@ -267,7 +281,7 @@ export function LebenslagenView() {
 
           <div className="lk-resultbar">
             <p className="lk-count" aria-live="polite">
-              {t('results_count', { count: filtered.length })}
+              {t('results_count', { count: displayCount })}
             </p>
             <label className="lk-sort">
               <span className="lk-sort-label">{t('sort_label')}</span>
@@ -275,7 +289,7 @@ export function LebenslagenView() {
                 <select
                   className="lk-sort-field"
                   value={sort}
-                  aria-label={t('sort_label')}
+                  aria-label={t('sort_aria')}
                   onChange={(event) =>
                     setSort(event.target.value as SortMode)
                   }
@@ -312,6 +326,7 @@ export function LebenslagenView() {
                               : 'brand',
                           )}
                         >
+                          <TrendingUp aria-hidden="true" />
                           {t(`frequency.${service.frequency}`)}
                         </span>
                       </span>
@@ -367,10 +382,13 @@ export function LebenslagenView() {
                         <span className="lk-popular-title">
                           {t(`services.${entry.id}.title`)}
                         </span>
+                        <span className="lk-popular-desc">
+                          {t(`rail_items.${entry.id}`)}
+                        </span>
                         <span
                           className={cn(
                             'badge',
-                            entry.relevance === 'very' ? 'green' : 'brand',
+                            entry.relevance === 'very' ? 'green' : 'amber',
                           )}
                         >
                           {t(`relevance.${entry.relevance}`)}

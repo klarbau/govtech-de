@@ -1,7 +1,7 @@
 {
   "app": {
     "name": "GovTech DE",
-    "tagline": "Kamu yönetimi yeniden düşünüldü.",
+    "tagline": "Tüm resmi işlemleriniz tek bir yerde.",
     "skip_to_content": "Ana içeriğe atla"
   },
   "nav": {
@@ -37,6 +37,7 @@
     "breadcrumb_catalog": "Hizmet kataloğu",
     "title": "Hizmetleri bulun.",
     "subtitle": "Basit. Hızlı. Anlaşılır.",
+    "intro": "Yaşam durumunuza uygun hizmetleri keşfedin — anlaşılır biçimde açıklanmış ve doğrudan çevrim içi kullanıma hazır.",
     "search_label": "Hizmet ara",
     "search_placeholder": "Hizmet arayın, örn. „Kindergeld beantragen“",
     "search_submit": "Ara",
@@ -52,7 +53,8 @@
     },
     "results_count": "{count} hizmet bulundu",
     "results_none": "Hizmet bulunamadı. Lütfen aramanızı değiştirin.",
-    "sort_label": "Sırala",
+    "sort_label": "Şuna göre sırala:",
+    "sort_aria": "Sıralama",
     "sort": {
       "relevance": "İlgi düzeyi",
       "popular": "Popülerlik",
@@ -70,6 +72,12 @@
     "show_more": "Daha fazla hizmet göster",
     "rail_popular_title": "Sizin için popüler",
     "rail_popular_sub": "Yaşam durumunuza göre",
+    "rail_items": {
+      "kindergeld": "Bilgileri kontrol edin ve değişiklikleri bildirin.",
+      "umzug": "Yeni adresinizi girin.",
+      "wohngeld": "Konut masraflarında destek alın.",
+      "steuer": "Verilerinizi aktarın ve zaman kazanın."
+    },
     "rail_secure_title": "Verileriniz güvende",
     "rail_secure_body": "Her hizmet, hangi verilerin, kimin tarafından ve hangi yasal dayanakla işlendiğini gösterir. Kontrol sizde kalır.",
     "rail_secure_link": "Gizlilik ve onaylar",
@@ -491,7 +499,7 @@
       "vorgang_abgeschlossen": "işlem tamamlandı"
     },
     "heute": {
-      "titel": "Bugün dikkatinizi gerektirenler",
+      "titel": "Bugün önemli",
       "tab_ki": "Yapay Zekâ",
       "tab_frist": "Süre",
       "tab_behoerde": "Makam",
@@ -504,7 +512,12 @@
       "actions_label": "{titel} için işlemler",
       "sort_aria": "Eylem önerilerinin sıralaması",
       "frist_bald": "Süre yaklaşıyor",
-      "frist_am": "Son tarih: {datum}"
+      "frist_am": "Son tarih: {datum}",
+      "frist_bis": "Son tarih: {datum}",
+      "reason_frist_naehe": "Süre, diğer açık işlemlerinize göre daha yakın.",
+      "reason_termin_steht": "Bir randevu zaten ayarlandı.",
+      "reason_folgevorgang": "Devam eden bir işlemin sonraki adımı.",
+      "reason_manuell_priorisiert": "Tarafınızdan önemli olarak işaretlendi."
     },
     "triumph": {
       "title": "Sizin için halledildi",
@@ -531,11 +544,25 @@
       "zum_umzug": "Taşınmaya git"
     },
     "erledigt_feed": {
-      "title": "Sizin için otomatik halledildi",
+      "title": "Otomatik halledildi",
+      "count_aria": "{count} adım otomatik olarak halledildi",
+      "badge_erledigt": "Tamamlandı",
       "empty": "Henüz otomatik olarak hiçbir şey halledilmedi.",
       "alle_schritte": "Tüm adımları göster",
       "termin_pending": "Randevu onayı gerekli",
       "termin_bestaetigen": "Randevuyu onayla"
+    },
+    "aktivitaeten": {
+      "titel": "Etkinlik",
+      "alle": "Tüm etkinliği göster",
+      "bewegung": "Son hareket: {zeit}",
+      "status": {
+        "angelegt": "Oluşturuldu",
+        "in_pruefung": "İnceleniyor",
+        "genehmigt": "Onaylandı",
+        "abgelehnt": "Reddedildi",
+        "abgeschlossen": "Tamamlandı"
+      }
     },
     "naechster_termin": {
       "titel": "Sonraki randevu",
@@ -548,13 +575,13 @@
       "telefon": "Telefon randevusu"
     },
     "tiles": {
-      "posteingang_sub": "Yeni mesajlar",
+      "posteingang_sub": "Gelen kutunuzdaki okunmamış mesajlar",
       "posteingang_cta": "Gelen kutusuna git",
       "fristen_sub": "Önümüzdeki 14 gündeki süreler",
       "fristen_cta": "Süreleri görüntüle",
       "termine_sub": "Sonraki randevu: {datum}",
       "termine_cta": "Tüm randevular",
-      "vorgaenge_sub": "İşlemde",
+      "vorgaenge_sub": "Süren işlemler işleniyor",
       "vorgaenge_cta": "İşlemleri görüntüle"
     },
     "kontrolle": {
@@ -580,7 +607,7 @@
         "cta": "Aç"
       },
       "vorgaenge": {
-        "titel": "İşlemler",
+        "titel": "Açık işlemler",
         "stand": "{laeuft} sürüyor, {abgeschlossen} tamamlandı",
         "cta": "Görüntüle"
       },
@@ -893,19 +920,24 @@
       "no_next_step": "Şu anda sizden bir şey istenmiyor. İlgili makamlar işlemi yürütüyor.",
       "hero_sub": "Yeni adresinizi bildirin – ilgili makamları sizin için biz bilgilendiriyoruz.",
       "vorgangsnummer_label": "İşlem numarası",
+      "vorgangsnummer_copy_aria": "İşlem numarasını kopyala",
       "progress_title": "Genel ilerleme",
       "progress_steps": "{total} adımdan {done} tanesi",
       "fertigstellung_label": "Tahmini tamamlanma",
       "fertigstellung_value": "2–3 gün",
       "timeline_title": "Bu işlemdeki adımlar ({count})",
+      "steps_overview_title": "İşleminize genel bakış",
+      "steps_overview_sub": "Talebinizi koordine eder ve ilgili makamlara iletiriz.",
       "uebermittelt_label": "İletilme tarihi",
       "details_show": "Ayrıntıları görüntüle",
       "details_hide": "Ayrıntıları gizle",
       "berechtigungen_title": "Yasal dayanak ve yetkiler",
       "berechtigungen_basis_label": "Yasal dayanak",
+      "berechtigungen_datenweitergabe_label": "Veri paylaşımı",
       "berechtigungen_behoerden": "{count} makama",
-      "berechtigungen_einwilligungen_label": "Onaylar",
-      "berechtigungen_einwilligungen_value": "Yalnızca ilgili makamlara, dilediğiniz zaman geri alınabilir."
+      "berechtigungen_einwilligungen_label": "Onaylarınız",
+      "berechtigungen_einwilligungen_value": "Yalnızca ilgili makamlara, dilediğiniz zaman geri alınabilir.",
+      "berechtigungen_details_link": "Ayrıntıları ve onayları görüntüle"
     }
   },
   "assistent": {
@@ -1008,6 +1040,21 @@
   "posteingang": {
     "skip_link": {
       "zur_brief_liste": "Yazı listesine geç"
+    },
+    "rail": {
+      "nav_aria": "Gelen kutusu klasörleri",
+      "title": "Gelen kutusu",
+      "subtitle": "Resmi makamlardan gelen mesajlarınız — güvenli ve düzenli.",
+      "write": "Mesaj yaz",
+      "write_aria": "Asistanla yeni bir mesaj yaz",
+      "system_label": "Genel bakış",
+      "posteingang": "Gelen kutusu",
+      "archiv": "Arşiv",
+      "ordner_label": "Klasörler",
+      "ordner_empty": "Henüz klasör yok — yazılar makama göre otomatik olarak görünür.",
+      "filter_label": "Filtre",
+      "filter_open": "Filtre seç",
+      "nur_ungelesen": "Yalnızca okunmamışları göster"
     },
     "hero": {
       "title": "Gelen kutusu (Posteingang)",
@@ -1315,6 +1362,7 @@
       "erklaerer": {
         "title": "Sade dille",
         "pill": "Yapay zekâ açıklayıcı",
+        "intro": "Bu mektubun en önemli noktaları bir bakışta:",
         "worum_label": "Konu nedir?",
         "betrag_label": "Tutar ne kadar?",
         "bis_wann_label": "Ne zamana kadar ödemem gerekiyor?",
@@ -1324,7 +1372,10 @@
         "betrag_keiner": "Bu mektupta ödenecek bir tutar belirtilmemiştir.",
         "bis_wann_template": "{datum} tarihine kadar.",
         "bis_wann_keine": "Bu mektupta bir ödeme süresi belirtilmemiştir.",
-        "disclaimer": "Yapay zekâ tarafından üretilen açıklama — hukuki danışmanlık değildir. Hukuken yalnızca özgün metin bağlayıcıdır. Lütfen süreyi, tutarı ve dosya numarasını özgün metinle karşılaştırın."
+        "disclaimer": "Yapay zekâ tarafından üretilen açıklama — hukuki danışmanlık değildir. Hukuken yalnızca özgün metin bağlayıcıdır. Lütfen süreyi, tutarı ve dosya numarasını özgün metinle karşılaştırın.",
+        "feedback": "Açıklama yardımcı olmadı mı?",
+        "feedback_aria": "Bu yapay zekâ açıklamasını yardımcı olmadı olarak bildir",
+        "feedback_toast": "Geri bildiriminiz için teşekkürler — açıklamaları sürekli iyileştiriyoruz."
       },
       "bedeutung": {
         "title": "Bu sizin için ne anlama geliyor?",
@@ -1333,8 +1384,13 @@
       "naechste_schritte": {
         "title": "Sonraki adımlar",
         "antwort": "Yanıt hazırla",
+        "antwort_sub": "Şablon yardımıyla makama bir yanıt yazın.",
         "frist_merken": "Süreyi kaydet",
-        "zahlung": "Ödeme yap"
+        "frist_merken_sub": "Süreyi randevu takviminize aktarın.",
+        "zahlung": "Ödeme yap",
+        "zahlung_sub": "Belirtilen ek ödemeyi zamanında yapın.",
+        "vorgang": "İşlem oluştur",
+        "vorgang_sub": "İlgili yazıları tek bir işlemde toplayın."
       },
       "fragen": {
         "title": "Karar hakkında sorularınız mı var?",
@@ -2269,7 +2325,8 @@
       },
       "anrechnungszeiten": {
         "title": "Sayılan süreler (Anrechnungszeiten)"
-      }
+      },
+      "gesetzliche_rente": "Yasal emeklilik sigortası (Gesetzliche Rentenversicherung)"
     },
     "kv_pflege": {
       "krankenkasse": {
@@ -2476,7 +2533,8 @@
       "adresse_bestaetigt": "Adres onaylandı",
       "wallet_verbunden": "Wallet bağlandı",
       "aufenthalt_gueltig": "Oturum geçerli",
-      "aufenthalt_ablauf_bald": "Oturum izni yakında doluyor"
+      "aufenthalt_ablauf_bald": "Oturum izni yakında doluyor",
+      "kontakt_verifiziert": "İletişim doğrulandı"
     },
     "aenderungsprotokoll": {
       "title": "Değişiklik günlüğü",
@@ -2565,7 +2623,8 @@
         "title": "Değişiklik günlüğü",
         "subtitle": "Ana verilerinizdeki son değişiklikler",
         "show_all": "Tam günlüğü göster",
-        "empty": "Henüz kayıtlı değişiklik yok."
+        "empty": "Henüz kayıtlı değişiklik yok.",
+        "alle_anzeigen": "Tümünü göster"
       },
       "datenhoheit": {
         "title": "Verileriniz sizin kontrolünüzde",
@@ -2576,6 +2635,51 @@
       "secondary": {
         "heading": "Diğer alanlar",
         "subtitle": "Emeklilik, sağlık sigortası, ulaşım, bildirim tercihleri ve bloklar — ana ızgaranın altındaki yardımcı katman."
+      },
+      "nachweise": {
+        "title": "Bağlı kanıtlar ve Wallet",
+        "body": "Dijital kanıtlarınız Wallet içinde güvenle bağlıdır ve gerektiğinde doğrulanabilir.",
+        "check1": "Kriptografik olarak doğrulandı",
+        "check2": "Düzenleme anındaki eIDAS imzası geçerli",
+        "check3": "Güven düzeyi: Yüksek (eIDAS)",
+        "quelle_label": "Kaynak / güven hizmeti",
+        "quelle_value": "BVA – Bundesverwaltungsamt",
+        "naechste_label": "Sonraki kontrol",
+        "naechste_value": "14.06.2027",
+        "seal_aria": "Kanıtlar kriptografik olarak doğrulandı"
+      },
+      "weitere": {
+        "title": "Diğer doğrulamalar",
+        "steuer_id": "Vergi numarası (Steuer-ID)",
+        "sozialversicherungsnummer": "Sosyal güvenlik numarası (Sozialversicherungsnummer)",
+        "verifiziert_am": "Doğrulama tarihi: {datum}",
+        "verifiziert_badge": "Doğrulandı",
+        "alle_anzeigen": "Tüm doğrulamaları göster"
+      }
+    },
+    "header": {
+      "subtitle": "Kişisel veriler, iletişim, kanıtlar ve bağlı kimlikler tek bir yerde.",
+      "actions": {
+        "dokument_hinzufuegen": "Belge ekle",
+        "adresse_aendern": "Adresi değiştir",
+        "verknuepfung_verwalten": "Bağlantıyı yönet"
+      }
+    },
+    "ring": {
+      "label": "Profil tamamlandı",
+      "aria": "Profil yüzde {percent} oranında tamamlandı",
+      "letzte_aktualisierung": "Son güncelleme: {datum}"
+    },
+    "dialog": {
+      "close": "Kapat",
+      "mock_hint": "[MOCK] — Rehberli resmi makam değişikliği hazırlanıyor.",
+      "profil": {
+        "title": "Kişisel profili değiştir",
+        "body": "Ad, doğum tarihi, uyruk ve medeni durum yetkili makam (nüfus dairesi — Standesamt veya vatandaş ofisi — Bürgeramt) tarafından tutulur."
+      },
+      "anschrift": {
+        "title": "Adresi değiştir",
+        "body": "Kayıtlı adresiniz vatandaş ofisi (Bürgeramt) tarafından nüfus kütüğünde (Melderegister) tutulur. Adres değişikliği yeniden kayıt (Anmeldung) ile yapılır — bu demoda taşınma (Umzug) otomatik akışı olarak gösterilir."
       }
     }
   },
@@ -3055,12 +3159,12 @@
       "widerruf_note": "Onaylarınızı, gelecekte geçerli olmak üzere dilediğiniz zaman geri çekebilirsiniz.",
       "krankenkasse_zweck": "Faturalandırma ve hizmetler için veri aktarımı",
       "krankenkasse_kategorien": "Sigorta numarası, adres",
-      "bank_zweck": "Geri ödemeler için hesap verisi kontrolü",
-      "bank_kategorien": "IBAN, ad",
       "arbeitgeber_zweck": "Gelir vergisi ve belgeler için veri paylaşımı",
       "arbeitgeber_kategorien": "Vergi numarası, personel numarası",
-      "weitere_dienste_zweck": "Diğer makamlar ve kuruluşlar",
-      "weitere_dienste_kategorien": "Duruma göre"
+      "familienkasse_zweck": "Çocuk parası, aile yardımları",
+      "familienkasse_kategorien": "Temel veriler, çocuk verileri",
+      "private_zweck": "Talep üzerine belgeler",
+      "private_kategorien": "Belgeler, sertifikalar"
     },
     "audit": {
       "title": "Denetim günlüğü",
@@ -3080,10 +3184,13 @@
       "subtitle": "Bizde veri koruma bir ek değil, temeldir.",
       "principle_1_title": "Yasal dayanak olmadan veri yok",
       "principle_1_body": "Her işleme net bir yasal veya sözleşmesel dayanağa dayanır.",
+      "principle_1_link": "Yasal dayanaklar hakkında daha fazla",
       "principle_2_title": "Özel alıcılar yalnızca onayla",
       "principle_2_body": "Kamu dışı kuruluşlara veriler yalnızca onayınızla aktarılır.",
+      "principle_2_link": "Onayları yönet",
       "principle_3_title": "Şeffaflık ve kontrol",
       "principle_3_body": "Her erişimi denetim günlüğünde görür ve onayları dilediğiniz zaman geri çekebilirsiniz.",
+      "principle_3_link": "Denetim günlüğünü görüntüle",
       "link": "Veri koruma hakkında daha fazla"
     },
     "footer": {
@@ -3093,13 +3200,10 @@
       "badge_iso": "ISO/IEC 27001",
       "badge_dsgvo": "GDPR uyumlu"
     },
-    "vision_banner": {
-      "heading": "2027 vizyonu",
-      "title": "2027 vizyonu",
-      "body": "Bu panel, veri koruma şeffaflığınızı ve kontrolünüzü bir araya getirir. Gerçek dünyada bu işlevler bugün hâlâ birden fazla kuruma dağılmış durumda.",
-      "body_1": "Bu işlevler, verileriniz üzerinde daha fazla şeffaflık ve öz belirleme vizyonumuzun bir parçasıdır.",
-      "body_2": "Kullanılabilirlik ve içerik, kullanıma sunulana kadar değişebilir.",
-      "dismiss": "Bildirimi kapat"
+    "faq": {
+      "title": "Veri koruma hakkında sorularınız mı var?",
+      "body": "SSS bölümümüz ve iletişim kanallarımız yardımcı olur.",
+      "link": "Veri koruma merkezine git"
     },
     "aktivitaet": {
       "title": "Son etkinlikler",
@@ -3125,13 +3229,13 @@
       "title": "Onaylar",
       "subtitle": "Hangi kurum ve hizmetlerin verilerinize erişebileceğini siz yönetirsiniz.",
       "krankenkasse": "Hastalık kasası (Krankenkasse)",
-      "krankenkasse_sub": "Fatura ve hizmetler için veri iletimi",
-      "bank": "Banka",
-      "bank_sub": "İadeler için hesap verilerinin kontrolü",
+      "krankenkasse_sub": "Yasal sağlık sigortası",
       "arbeitgeber": "İşveren",
-      "arbeitgeber_sub": "Maaş vergisi ve belgeler için veri paylaşımı",
-      "weitere_dienste": "Diğer hizmetler",
-      "weitere_dienste_sub": "Diğer kurum ve kuruluşlar",
+      "arbeitgeber_sub": "Mevcut işveren",
+      "familienkasse": "Aile yardımı kasası (Familienkasse)",
+      "familienkasse_sub": "Bundesagentur für Arbeit (Federal İş Kurumu)",
+      "private": "Özel alıcılar",
+      "private_sub": "örn. ev sahipleri, eğitim kuruluşları",
       "verwalten": "Yönet",
       "historie_anzeigen": "Onay geçmişini göster",
       "ein": "Açık",

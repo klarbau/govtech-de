@@ -140,7 +140,7 @@ test('top-action list is ol of links with accessible names', async ({ page }) =>
   }
 });
 
-test('four stat tiles are links with accessible names in visual order', async ({ page }) => {
+test('three stat tiles are links with accessible names in visual order', async ({ page }) => {
   await setLocale(page, 'de');
   await page.goto('/dashboard', { waitUntil: 'networkidle' });
   await waitForDashboard(page);
@@ -153,8 +153,11 @@ test('four stat tiles are links with accessible names in visual order', async ({
     }));
   });
   console.log('[STAT-TILES] ' + JSON.stringify(tiles));
-  expect(tiles.length).toBe(4);
-  const expectedHrefs = ['/posteingang', '/posteingang', '/termine', '/vorgaenge'];
+  // Redesign mockup #3: the right rail stacks Posteingang / Offene Vorgänge /
+  // Fristen as stat tiles (the standalone Termine tile was dropped — Termine is
+  // covered by the left "Nächster Termin" card), plus the Kontrolle card below.
+  expect(tiles.length).toBe(3);
+  const expectedHrefs = ['/posteingang', '/vorgaenge', '/posteingang'];
   expect(tiles.map((t) => t.href)).toEqual(expectedHrefs);
   for (const t of tiles) {
     expect((t.name ?? '').length).toBeGreaterThan(0);

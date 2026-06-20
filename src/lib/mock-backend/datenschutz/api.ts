@@ -29,7 +29,8 @@ import {
 import { appendLogEntry } from '../stammdaten/api';
 
 // ---------------------------------------------------------------------------
-// Seed-Defaults (Prototyp): Krankenkasse Ein, Rest Aus.
+// Seed-Defaults (Prototyp): drei hoheitlich/vertraglich gekoppelte Empfänger
+// Ein, private Empfänger Aus (rendert Inaktiv / Toggle off).
 // ---------------------------------------------------------------------------
 
 function defaultEinwilligungen(): DatenschutzEinwilligung[] {
@@ -40,17 +41,17 @@ function defaultEinwilligungen(): DatenschutzEinwilligung[] {
       rechtsgrundlage: 'Art. 6 Abs. 1 lit. a DSGVO',
     },
     {
-      empfaenger: 'bank',
-      erteilt: false,
-      rechtsgrundlage: 'Art. 6 Abs. 1 lit. a DSGVO',
-    },
-    {
       empfaenger: 'arbeitgeber',
-      erteilt: false,
+      erteilt: true,
       rechtsgrundlage: 'Art. 6 Abs. 1 lit. a DSGVO',
     },
     {
-      empfaenger: 'weitere_dienste',
+      empfaenger: 'familienkasse',
+      erteilt: true,
+      rechtsgrundlage: 'Art. 6 Abs. 1 lit. a DSGVO',
+    },
+    {
+      empfaenger: 'private',
       erteilt: false,
       rechtsgrundlage: 'Art. 6 Abs. 1 lit. a DSGVO',
     },

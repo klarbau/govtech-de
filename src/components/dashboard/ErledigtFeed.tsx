@@ -32,7 +32,7 @@ interface ErledigtFeedProps {
  * (`<time>`); aufeinanderfolgende Haken werden über einen Verbinder visuell
  * verkettet. Optional eine ausstehende Termin-Zeile am Ende.
  */
-export function ErledigtFeed({ items, behoerdenNames, nowIso, pending }: ErledigtFeedProps) {
+export function ErledigtFeed({ items, behoerdenNames, pending }: ErledigtFeedProps) {
   const t = useTranslations('dashboard.erledigt_feed');
 
   if (items.length === 0 && !pending) {
@@ -53,16 +53,15 @@ export function ErledigtFeed({ items, behoerdenNames, nowIso, pending }: Erledig
                 <CheckCircle2 />
               </span>
               <div className="ei-body">
-                <div className="ei-title">{item.agent_label}</div>
-                <div className="ei-sub">{behoerde}</div>
+                <div className="ei-title">{behoerde}</div>
+                <div className="ei-sub">{item.agent_label}</div>
               </div>
-              <time
-                className="ei-time"
-                dateTime={item.erledigt_at}
-                title={absoluteDe(item.erledigt_at)}
-              >
-                {relativeDe(item.erledigt_at, nowIso)}
-              </time>
+              <span className="ei-meta">
+                <time className="ei-time" dateTime={item.erledigt_at}>
+                  {absoluteDe(item.erledigt_at)}
+                </time>
+                <span className="badge green ei-badge">{t('badge_erledigt')}</span>
+              </span>
             </Link>
           </li>
         );
@@ -98,17 +97,4 @@ function absoluteDe(iso: string): string {
     hour: '2-digit',
     minute: '2-digit',
   });
-}
-
-function relativeDe(iso: string, nowIso: string): string {
-  const then = new Date(iso).getTime();
-  const now = new Date(nowIso).getTime();
-  if (Number.isNaN(then) || Number.isNaN(now)) return '';
-  const diffMin = Math.round((now - then) / 60000);
-  if (diffMin < 2) return 'gerade eben';
-  if (diffMin < 60) return `vor ${diffMin} Min`;
-  const diffH = Math.round(diffMin / 60);
-  if (diffH < 24) return `vor ${diffH} Std`;
-  const diffD = Math.round(diffH / 24);
-  return `vor ${diffD} Tag${diffD === 1 ? '' : 'en'}`;
 }

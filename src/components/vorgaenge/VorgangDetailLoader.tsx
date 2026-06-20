@@ -9,17 +9,28 @@ import { toast } from 'sonner';
 import {
   AlertCircle,
   ArrowRight,
+  Briefcase,
+  Building2,
   Calendar,
+  Car,
   Check,
   CheckCircle2,
   ChevronDown,
+  ChevronRight,
   Clock,
+  Copy,
+  Euro,
   FileText,
   Fingerprint,
+  HeartPulse,
   Home,
+  Landmark,
   ListChecks,
   Loader2,
   Scale,
+  Share2,
+  ShieldCheck,
+  Tv,
 } from 'lucide-react';
 
 import { UebermittlungsReceipt } from '@/components/autopilot/UebermittlungsReceipt';
@@ -223,6 +234,40 @@ function pickNextStep(steps: AutopilotStep[]): AutopilotStep | undefined {
   );
 }
 
+/** Step statuses that count as the currently-active step for the progress bar. */
+const IN_PROGRESS_STATUS: ReadonlySet<AutopilotStepStatus> = new Set([
+  'in_progress',
+  'needs_eid',
+  'pending_eid_confirmation',
+  'self_assigned',
+]);
+
+/* Per-authority glyph for the step tile — matched by name (mirrors the
+ * ICONS_BY_BLOCK_OR_NAME approach on the Umzug-run page). Falls back to a
+ * neutral building glyph. */
+function behoerdeStepIcon(name: string): typeof Building2 {
+  const lower = name.toLowerCase();
+  if (lower.includes('finanzamt')) return Euro;
+  if (lower.includes('krankenkasse') || lower.includes('aok') || lower.startsWith('tk')) {
+    return HeartPulse;
+  }
+  if (lower.includes('beitragsservice') || lower.includes('rundfunk')) return Tv;
+  if (lower.includes('zulassung') || lower.includes('kfz') || lower.includes('fahrzeug')) {
+    return Car;
+  }
+  if (lower.includes('arbeitgeber') || lower.includes('arbeit')) return Briefcase;
+  if (lower.includes('bundesdruckerei') || lower.includes('ausweis')) return Landmark;
+  if (
+    lower.includes('bürger') ||
+    lower.includes('burger') ||
+    lower.includes('meldebehörde') ||
+    lower.includes('einwohner')
+  ) {
+    return Building2;
+  }
+  return Building2;
+}
+
 function VorgangDetail({
   data,
   id,
@@ -256,6 +301,7 @@ function VorgangDetail({
 
   const doneCount = vorgang.schritte.filter((s) => s.status === 'confirmed').length;
   const totalCount = vorgang.schritte.length;
+  const activeStepIndex = vorgang.schritte.findIndex((s) => IN_PROGRESS_STATUS.has(s.status));
   const primaryRechtsgrundlage =
     vorgang.schritte.find((s) => s.rechtsgrundlage)?.rechtsgrundlage ??
     (vorgang.typ === 'umzug' ? '§ 17 BMG' : undefined);
@@ -271,26 +317,15 @@ function VorgangDetail({
       />
 
       {totalCount > 0 ? (
-        <GesamtfortschrittCard done={doneCount} total={totalCount} />
+        <GesamtfortschrittCard
+          done={doneCount}
+          total={totalCount}
+          activeIndex={activeStepIndex}
+        />
       ) : null}
 
       <div className="vg-layout">
         <div className="flex flex-col gap-6">
-          {nextStep ? (
-            <NextStepCard
-              vorgangId={vorgang.id}
-              stepId={nextStep.id}
-              behoerdeName={nextBehoerde?.name_de ?? nextStep.behoerde_id}
-              kategorie={nextBehoerde?.kategorie}
-              aktion={nextStep.aktion}
-              rechtsgrundlage={nextStep.rechtsgrundlage}
-              letterId={nextStep.letter_id}
-              reload={reload}
-            />
-          ) : vorgang.schritte.length > 0 && !receipt ? (
-            <NoNextStepCard />
-          ) : null}
-
           {receipt ? <ValueReceiptCard receipt={receipt} variant="static" /> : null}
 
           {adresseNeu ? <AdresseDiffClient alt={adresseAlt} neu={adresseNeu} /> : null}
@@ -352,6 +387,7 @@ function VorgangDetail({
         <aside aria-label={tv('summary_title')} className="flex flex-col gap-4">
           <VorgangSummaryRail
             status={vorgang.status}
+            vorgangNummer={vorgang.id}
             angelegtIso={vorgang.angelegt_am}
             stichtagIso={stichtag}
             behoerdenCount={vorgang.schritte.length}
@@ -362,7 +398,23 @@ function VorgangDetail({
             <BerechtigungenRail
               rechtsgrundlage={primaryRechtsgrundlage}
               behoerdenCount={vorgang.schritte.length}
+              vorgangId={id}
             />
+          ) : null}
+
+          {nextStep ? (
+            <NextStepCard
+              vorgangId={vorgang.id}
+              stepId={nextStep.id}
+              behoerdeName={nextBehoerde?.name_de ?? nextStep.behoerde_id}
+              kategorie={nextBehoerde?.kategorie}
+              aktion={nextStep.aktion}
+              rechtsgrundlage={nextStep.rechtsgrundlage}
+              letterId={nextStep.letter_id}
+              reload={reload}
+            />
+          ) : vorgang.schritte.length > 0 && !receipt ? (
+            <NoNextStepCard />
           ) : null}
 
           <div className="rail-card flex flex-col gap-3">
@@ -507,12 +559,14 @@ function NoNextStepCard() {
 
 function VorgangSummaryRail({
   status,
+  vorgangNummer,
   angelegtIso,
   stichtagIso,
   behoerdenCount,
   naechsteFristIso,
 }: {
   status: VorgangStatus;
+  vorgangNummer: string;
   angelegtIso: string;
   stichtagIso?: string;
   behoerdenCount: number;
@@ -533,6 +587,9 @@ function VorgangSummaryRail({
       <dl className="flex flex-col">
         <SummaryRow label={tv('summary_status_label')}>
           <VorgangStatusBadge status={status} />
+        </SummaryRow>
+        <SummaryRow label={tv('vorgangsnummer_label')}>
+          <VorgangsnummerValue value={vorgangNummer} />
         </SummaryRow>
         <SummaryRow label={tv('summary_angelegt_label')}>{angelegtLabel}</SummaryRow>
         {stichtagLabel ? (
@@ -558,6 +615,39 @@ function SummaryRow({ label, children }: { label: string; children: React.ReactN
       <dt className="text-xs text-muted-foreground">{label}</dt>
       <dd className="text-sm font-medium text-foreground">{children}</dd>
     </div>
+  );
+}
+
+function VorgangsnummerValue({ value }: { value: string }) {
+  const tv = useTranslations('vorgang.detail');
+  const [copied, setCopied] = React.useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard?.writeText(value);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1600);
+    } catch {
+      // Clipboard unavailable (insecure context / denied) — no-op.
+    }
+  };
+
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <span className="vd-mono">{value}</span>
+      <button
+        type="button"
+        onClick={handleCopy}
+        aria-label={tv('vorgangsnummer_copy_aria')}
+        className="inline-flex size-6 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      >
+        {copied ? (
+          <Check className="size-3.5 text-emerald-600" aria-hidden="true" />
+        ) : (
+          <Copy className="size-3.5" aria-hidden="true" />
+        )}
+      </button>
+    </span>
   );
 }
 
@@ -647,7 +737,15 @@ function VorgangHeaderClient({
   );
 }
 
-function GesamtfortschrittCard({ done, total }: { done: number; total: number }) {
+function GesamtfortschrittCard({
+  done,
+  total,
+  activeIndex,
+}: {
+  done: number;
+  total: number;
+  activeIndex: number;
+}) {
   const tv = useTranslations('vorgang.detail');
   const segments = Array.from({ length: total }, (_, i) => i < done);
   const pct = total > 0 ? Math.round((done / total) * 100) : 0;
@@ -669,7 +767,11 @@ function GesamtfortschrittCard({ done, total }: { done: number; total: number })
           {segments.map((filled, i) => (
             <span
               key={i}
-              className={cn('vd-progress-seg', filled && 'is-filled')}
+              className={cn(
+                'vd-progress-seg',
+                filled && 'is-filled',
+                !filled && i === activeIndex && 'is-active',
+              )}
               aria-hidden="true"
             />
           ))}
@@ -692,9 +794,11 @@ function GesamtfortschrittCard({ done, total }: { done: number; total: number })
 function BerechtigungenRail({
   rechtsgrundlage,
   behoerdenCount,
+  vorgangId,
 }: {
   rechtsgrundlage: string;
   behoerdenCount: number;
+  vorgangId: string;
 }) {
   const tv = useTranslations('vorgang.detail');
   return (
@@ -704,19 +808,52 @@ function BerechtigungenRail({
         {tv('berechtigungen_title')}
       </h3>
       <dl className="vd-berechtigungen-list">
-        <div className="vd-berechtigungen-row">
-          <dt>{tv('berechtigungen_basis_label')}</dt>
-          <dd className="vd-mono">{rechtsgrundlage}</dd>
-        </div>
-        <div className="vd-berechtigungen-row">
-          <dt>{tv('summary_behoerden_label')}</dt>
-          <dd>{tv('berechtigungen_behoerden', { count: behoerdenCount })}</dd>
-        </div>
-        <div className="vd-berechtigungen-row">
-          <dt>{tv('berechtigungen_einwilligungen_label')}</dt>
-          <dd>{tv('berechtigungen_einwilligungen_value')}</dd>
-        </div>
+        <BerechtigungenRow
+          icon={FileText}
+          label={tv('berechtigungen_basis_label')}
+          value={<span className="vd-mono">{rechtsgrundlage}</span>}
+        />
+        <BerechtigungenRow
+          icon={Share2}
+          label={tv('berechtigungen_datenweitergabe_label')}
+          value={tv('berechtigungen_behoerden', { count: behoerdenCount })}
+        />
+        <BerechtigungenRow
+          icon={ShieldCheck}
+          label={tv('berechtigungen_einwilligungen_label')}
+          value={tv('berechtigungen_einwilligungen_value')}
+        />
       </dl>
+      <Link
+        href={`/datenschutz?vorgangId=${encodeURIComponent(vorgangId)}`}
+        className="vd-berechtigungen-link"
+      >
+        {tv('berechtigungen_details_link')}
+        <ArrowRight aria-hidden="true" />
+      </Link>
+    </div>
+  );
+}
+
+function BerechtigungenRow({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: typeof FileText;
+  label: string;
+  value: React.ReactNode;
+}) {
+  return (
+    <div className="vd-berechtigungen-row">
+      <span className="vd-berechtigungen-icon" aria-hidden="true">
+        <Icon />
+      </span>
+      <div className="vd-berechtigungen-stack">
+        <dt>{label}</dt>
+        <dd>{value}</dd>
+      </div>
+      <ChevronRight className="vd-berechtigungen-chevron" aria-hidden="true" />
     </div>
   );
 }
@@ -795,8 +932,9 @@ function BehoerdenStatusListClient({
       <div className="gt-card-head">
         <h2 id="behoerden-status-title" className="gt-card-title">
           <ListChecks aria-hidden="true" />
-          {tv('timeline_title', { count: steps.length })}
+          {tv('steps_overview_title')}
         </h2>
+        <p className="gt-card-sub">{tv('steps_overview_sub')}</p>
       </div>
       <ol className="vd-timeline">
         {steps.map((step, index) => (
@@ -838,6 +976,7 @@ function TimelineRow({
   const uebermitteltLabel = uebermitteltIso
     ? format(parseISO(uebermitteltIso), 'd. MMMM yyyy', { locale: de })
     : null;
+  const StepTileIcon = behoerdeStepIcon(behoerde?.name_de ?? step.behoerde_id);
   const hasDatenkategorien =
     Array.isArray(step.datenkategorien) && step.datenkategorien.length > 0;
   const hasDetails =
@@ -854,6 +993,9 @@ function TimelineRow({
       </span>
       <div className="vd-step-body">
         <div className="vd-step-head">
+          <span className="vd-step-tile" aria-hidden="true">
+            <StepTileIcon />
+          </span>
           <span className={cn('vd-step-icon', viz.tone)} aria-hidden="true">
             <viz.Icon className="size-4" />
           </span>
