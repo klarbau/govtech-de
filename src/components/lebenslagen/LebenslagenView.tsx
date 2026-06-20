@@ -63,7 +63,7 @@ const SERVICES: ServiceEntry[] = [
   },
   {
     id: 'geburt',
-    href: '/vorgaenge',
+    href: '/lebenslagen/geburt',
     icon: Baby,
     iconTone: 'pink',
     category: 'familie',
@@ -71,7 +71,7 @@ const SERVICES: ServiceEntry[] = [
   },
   {
     id: 'aufenthalt',
-    href: '/vorgaenge',
+    href: '/lebenslagen/aufenthalt-verlaengerung',
     icon: Plane,
     iconTone: 'teal',
     category: 'migration',
@@ -79,7 +79,7 @@ const SERVICES: ServiceEntry[] = [
   },
   {
     id: 'kindergeld',
-    href: '/vorgaenge',
+    href: '/lebenslagen/kindergeld',
     icon: Users,
     iconTone: 'violet',
     category: 'familie',
@@ -95,7 +95,7 @@ const SERVICES: ServiceEntry[] = [
   },
   {
     id: 'reisepass',
-    href: '/vorgaenge',
+    href: '/lebenslagen/reisepass',
     icon: Wallet,
     iconTone: 'brand',
     category: 'migration',
@@ -103,7 +103,7 @@ const SERVICES: ServiceEntry[] = [
   },
   {
     id: 'bafoeg',
-    href: '/vorgaenge',
+    href: '/lebenslagen/bafoeg',
     icon: GraduationCap,
     iconTone: 'amber',
     category: 'arbeit',
@@ -111,7 +111,7 @@ const SERVICES: ServiceEntry[] = [
   },
   {
     id: 'pflege',
-    href: '/dashboard',
+    href: '/lebenslagen/pflegegrad',
     icon: Heart,
     iconTone: 'pink',
     category: 'familie',
@@ -119,7 +119,7 @@ const SERVICES: ServiceEntry[] = [
   },
   {
     id: 'wohngeld',
-    href: '/vorgaenge',
+    href: '/lebenslagen/wohngeld',
     icon: Briefcase,
     iconTone: 'teal',
     category: 'wohnen',
@@ -138,9 +138,9 @@ const CATEGORY_ORDER: CategoryId[] = [
 ];
 
 const POPULAR: PopularEntry[] = [
-  { id: 'kindergeld', href: '/vorgaenge', icon: Users, relevance: 'very' },
+  { id: 'kindergeld', href: '/lebenslagen/kindergeld', icon: Users, relevance: 'very' },
   { id: 'umzug', href: '/vorgaenge/umzug/run', icon: Home, relevance: 'very' },
-  { id: 'wohngeld', href: '/vorgaenge', icon: Home, relevance: 'normal' },
+  { id: 'wohngeld', href: '/lebenslagen/wohngeld', icon: Home, relevance: 'normal' },
   { id: 'steuer', href: '/steuer', icon: BadgeEuro, relevance: 'normal' },
 ];
 

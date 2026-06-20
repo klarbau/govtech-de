@@ -20,6 +20,12 @@ interface EidConfirmDialogProps {
   onOpenChange: (open: boolean) => void;
   behoerdeName: string;
   onConfirm: () => Promise<void> | void;
+  /** Optional copy overrides for the generic Lebenslagen flows. When omitted,
+   *  the Umzug eID-dialog strings are used (backward-compatible default). */
+  title?: string;
+  body?: string;
+  confirmLabel?: string;
+  cancelLabel?: string;
 }
 
 export function EidConfirmDialog({
@@ -27,8 +33,16 @@ export function EidConfirmDialog({
   onOpenChange,
   behoerdeName,
   onConfirm,
+  title,
+  body,
+  confirmLabel,
+  cancelLabel,
 }: EidConfirmDialogProps) {
   const t = useTranslations('umzug.run.eid_dialog');
+  const titleText = title ?? t('title');
+  const bodyText = body ?? t('body_template', { behoerde: behoerdeName });
+  const confirmText = confirmLabel ?? t('cta_confirm');
+  const cancelText = cancelLabel ?? t('cta_cancel');
   const reducedMotion = useReducedMotion();
   const [pulsing, setPulsing] = useState(false);
 
@@ -50,10 +64,8 @@ export function EidConfirmDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{t('title')}</DialogTitle>
-          <DialogDescription>
-            {t('body_template', { behoerde: behoerdeName })}
-          </DialogDescription>
+          <DialogTitle>{titleText}</DialogTitle>
+          <DialogDescription>{bodyText}</DialogDescription>
         </DialogHeader>
         <div
           className="flex items-center justify-center py-6"
@@ -77,14 +89,14 @@ export function EidConfirmDialog({
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            {t('cta_cancel')}
+            {cancelText}
           </Button>
           <Button
             onClick={handleConfirm}
             disabled={pulsing}
           >
             <Fingerprint aria-hidden="true" />
-            <span>{t('cta_confirm')}</span>
+            <span>{confirmText}</span>
           </Button>
         </DialogFooter>
       </DialogContent>

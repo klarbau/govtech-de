@@ -119,6 +119,561 @@
         "title": "Apply for housing benefit",
         "description": "Prüfen Sie Ihren Anspruch auf Wohngeld und stellen Sie den Antrag mit vorausgefüllten Angaben."
       }
+    },
+    "detail": {
+      "rail_label": "Data protection and once-only",
+      "back_to_detail": "Back to overview",
+      "back_to_dashboard": "To overview",
+      "zustaendige_behoerde": "Responsible authority",
+      "weitere_behoerden": "Other authorities involved",
+      "zukunft_banner_badge": "[ZUKUNFT 2027]",
+      "zukunft_banner_body": "Parts of this process are not yet in force today. This demo shows how the procedure would look once the planned once-only and register integration is fully live. Clearly marked steps are speculative.",
+      "section": {
+        "intro": "What this is about",
+        "voraussetzungen": "Requirements",
+        "dokumente": "Required evidence",
+        "rechtsgrundlagen": "Legal bases",
+        "frist": "Deadline",
+        "gebuehr": "Fee"
+      },
+      "kategorie": {
+        "bund": "Federal",
+        "land": "State",
+        "kommune": "Municipal",
+        "sozialversicherung": "Social insurance",
+        "privat": "Private"
+      },
+      "prefill_available_chip": "from your master data",
+      "upload_mock_chip": "Upload evidence [MOCK]",
+      "keine_frist": "No fixed application deadline.",
+      "keine_gebuehr": "No fee is charged for this service.",
+      "mock_payment": "[MOCK payment]",
+      "cta_beantragen": "Apply now",
+      "cta_antragslos": "No application needed",
+      "cta_cascade_view": "View automatic processing",
+      "datenschutz_title": "Your data is protected",
+      "datenschutz_body": "Only the minimum data set needed for each authority is transmitted — encrypted and only to the responsible authorities.",
+      "datenschutz_link": "Open privacy cockpit",
+      "once_only_title": "Once-only",
+      "once_only_note": "{count, plural, =0 {No fields are pre-filled — you enter everything yourself.} one {We pre-fill # field from your confirmed master data.} other {We pre-fill # fields from your confirmed master data.}}",
+      "antrag_title": "Apply for {leistung}",
+      "antrag_lead": "Pre-filled from your master data. Please check the details, complete the fields that cannot be pre-filled and submit with your eID.",
+      "antrag_fields_title": "Your details",
+      "chip_user_input": "Your input",
+      "chip_from_source": "from {source}",
+      "upload_prompt": "Select evidence or drag it here",
+      "upload_set": "{label} selected",
+      "mock_upload": "[MOCK]",
+      "consent_title": "Consents",
+      "consent_lead": "These steps only take place with your explicit consent. You can deselect individual authorities — the application then runs without that step.",
+      "cta_eid_submit": "Confirm & submit with eID",
+      "datenminimierung_title": "Data minimisation",
+      "datenminimierung_sub": "Which data category goes to which authority — in each case only the minimum required set (Art. 5(1)(c) GDPR).",
+      "datenminimierung_off": "Consent not given — no transmission",
+      "submit_error": "The application could not be started. Please try again.",
+      "antragslos": {
+        "kein_antrag_title": "No application needed",
+        "kein_antrag_body": "You do not need to fill anything in for this service. The responsible authorities exchange the necessary data automatically; you only confirm the payment with your eID."
+      },
+      "cascade": {
+        "running": "Processing in progress",
+        "done": "Processing completed",
+        "lead": "You confirm once — the responsible authorities coordinate the next steps.",
+        "subline": "Your details are transmitted securely to the responsible authorities.",
+        "preparing": "Preparing cascade",
+        "starting": "Starting",
+        "uhr": "",
+        "skipped": "Skipped",
+        "gate_auto": "Automatic",
+        "gate_eid": "Confirm with eID",
+        "gate_consent": "With consent",
+        "zukunft_chip": "[ZUKUNFT]",
+        "confirm_eid": "Confirm with eID",
+        "overview_title": "Overview",
+        "beteiligte_behoerden": "Authorities involved",
+        "behoerden_count": "{count, plural, one {# authority} other {# authorities}}",
+        "schutz_title": "Your data is protected",
+        "schutz_body": "Transmission encrypted, only to responsible authorities.",
+        "live_title": "Live activity",
+        "started_title": "Process started",
+        "started_body": "Your details have been checked and the cascade has started.",
+        "completion_title": "Done — your evidence",
+        "aktenzeichen": "File reference (Aktenzeichen)",
+        "posteingang_link": "Letter in your inbox",
+        "vault_link": "Document in the vault",
+        "termin_vorgemerkt": "Appointment reserved",
+        "naechster_schritt": "The responsible authority will get in touch with the decision (Bescheid). You will find all evidence in your inbox and in the document vault."
+      },
+      "eid_dialog": {
+        "title": "Confirm with eID",
+        "body_template": "We will transmit your application to {behoerde} using your electronic identity (eID).",
+        "confirm": "Confirm with eID",
+        "cancel": "Cancel"
+      }
+    },
+    "geburt": {
+      "title": "Birth of a child",
+      "lead": "Register the birth, register the child, tax ID, child benefit (Kindergeld), parental allowance (Elterngeld) and family health insurance — all in one procedure.",
+      "voraussetzungen": {
+        "0": "Birth of a child in Germany (the clinic's birth notification is available).",
+        "1": "At least one parent is registered in Germany.",
+        "2": "Confirmed choice of name for the child."
+      },
+      "dokumente": {
+        "0": "Clinic birth notification or birth certificate",
+        "1": "Identity card / eID of the parents",
+        "2": "Marriage certificate or acknowledgement of paternity (if applicable)"
+      },
+      "fields": {
+        "elternname": {
+          "label": "Family name (parent)",
+          "hint": "Family name"
+        },
+        "anschrift": {
+          "label": "Address",
+          "hint": "Street, postcode, city"
+        },
+        "familienstand": {
+          "label": "Marital status",
+          "hint": "Marital status"
+        },
+        "staatsangehoerigkeit": {
+          "label": "Nationality",
+          "hint": "Nationality"
+        },
+        "elternSteuerId": {
+          "label": "Tax ID (parent)",
+          "hint": "11-digit tax ID"
+        },
+        "iban": {
+          "label": "IBAN for payments",
+          "hint": "DE…"
+        },
+        "kindVornamen": {
+          "label": "First name(s) of the child",
+          "hint": "Chosen name of the child"
+        },
+        "kindGeburtsdatum": {
+          "label": "Date of birth of the child",
+          "hint": "as per birth notification"
+        }
+      },
+      "rechtsgrundlagen": {
+        "pstg": {
+          "bedeutung": "Registration of the birth and issuance of the birth certificate by the registry office (Standesamt)."
+        },
+        "ao": {
+          "bedeutung": "Application-free issuance of the child's tax identification number."
+        },
+        "estg": {
+          "bedeutung": "Entitlement to and determination of child benefit (Kindergeld)."
+        },
+        "beeg": {
+          "bedeutung": "Entitlement to and determination of parental allowance (Elterngeld) (consent-based income check)."
+        },
+        "sgbv": {
+          "bedeutung": "Contribution-free family health insurance for the child in the statutory health insurance scheme."
+        }
+      },
+      "frist_beschreibung": "The birth must be notified to the registry office (Standesamt) within one week (§ 18 PStG).",
+      "gebuehr_betrag": "from €12 per certificate",
+      "gebuehr_hinweis": "Fees only apply for additional copies of certificates.",
+      "value_receipt_hinweis": "Conservatively estimated: one bundled procedure instead of up to five separate trips to the authorities."
+    },
+    "aufenthalt-verlaengerung": {
+      "title": "Extend residence permit (Aufenthaltstitel)",
+      "lead": "Submit the extension application before expiry, receive a provisional certificate (Fiktionsbescheinigung) and reserve the biometrics appointment.",
+      "voraussetzungen": {
+        "0": "Existing residence permit (Aufenthaltstitel) that has not yet expired.",
+        "1": "Valid passport and proof of health insurance.",
+        "2": "Application before the permit expires (continued validity under § 81(4) AufenthG)."
+      },
+      "dokumente": {
+        "0": "Passport (scan)",
+        "1": "Biometric photo",
+        "2": "Proof of health insurance",
+        "3": "Proof of employment / salary"
+      },
+      "fields": {
+        "name": {
+          "label": "Name",
+          "hint": "Family name"
+        },
+        "geburtsdatum": {
+          "label": "Date of birth",
+          "hint": "Date of birth"
+        },
+        "staatsangehoerigkeit": {
+          "label": "Nationality",
+          "hint": "Nationality"
+        },
+        "anschrift": {
+          "label": "Address",
+          "hint": "Street, postcode, city"
+        },
+        "eatDokumentnr": {
+          "label": "Document number (eAT)",
+          "hint": "Document number"
+        },
+        "gueltigBis": {
+          "label": "Permit valid until",
+          "hint": "Date"
+        },
+        "passScan": {
+          "label": "Passport scan",
+          "hint": "Upload scan"
+        },
+        "lichtbild": {
+          "label": "Biometric photo",
+          "hint": "Upload photo"
+        }
+      },
+      "rechtsgrundlagen": {
+        "aufenthg81": {
+          "bedeutung": "Application for extension; a timely application triggers the continued validity (Fortgeltungsfiktion)."
+        },
+        "pauswg": {
+          "bedeutung": "Citizen-driven, secure identification via eID for the online application."
+        },
+        "aufenthv": {
+          "bedeutung": "Setting of the administrative fee for the extension."
+        },
+        "azrg": {
+          "bedeutung": "Internal authority cross-check with the Central Register of Foreigners (Ausländerzentralregister) (without any action by you)."
+        }
+      },
+      "frist_beschreibung": "Submit the application before your permit expires. The demo triggers around 90 days beforehand; it is the timely application — not the appointment — that secures continued validity.",
+      "gebuehr_betrag": "€93",
+      "gebuehr_hinweis": "The application fee of €93 is real; no actual payment takes place in the demo.",
+      "value_receipt_hinweis": "The in-person biometrics appointment remains necessary and is not saved; what is saved are the preparatory trips to the authorities."
+    },
+    "kindergeld": {
+      "title": "Child benefit (Kindergeld)",
+      "lead": "Today a pre-filled application; from 2027 the determination will largely run automatically — you only confirm the bank details.",
+      "antragslos_note": "Automatic payment has been enacted in law but is not yet in force (phased from 2027). This demo shows the future procedure: the population register, the Federal Central Tax Office (BZSt) and the family benefits office (Familienkasse) exchange the data; with your eID you only confirm the bank details.",
+      "voraussetzungen": {
+        "0": "Child registered in Germany with an allocated tax ID.",
+        "1": "Child benefit entitlement of the parent (§ 62 EStG)."
+      },
+      "dokumente": {
+        "0": "Birth certificate of the child (from the data chain, no upload needed)"
+      },
+      "fields": {
+        "kindName": {
+          "label": "First name of the child",
+          "hint": "First name"
+        },
+        "kindGeburtsdatum": {
+          "label": "Date of birth of the child",
+          "hint": "Date"
+        },
+        "kindSteuerId": {
+          "label": "Tax ID of the child",
+          "hint": "11-digit tax ID"
+        },
+        "berechtigteSteuerId": {
+          "label": "Your tax ID",
+          "hint": "11-digit tax ID"
+        },
+        "anschrift": {
+          "label": "Address",
+          "hint": "Street, postcode, city"
+        },
+        "iban": {
+          "label": "IBAN for the payment",
+          "hint": "DE…"
+        }
+      },
+      "rechtsgrundlagen": {
+        "pstg": {
+          "bedeutung": "Birth registration as the origin of the data chain."
+        },
+        "ao": {
+          "bedeutung": "The child's tax ID as the key for automatic determination."
+        },
+        "estg": {
+          "bedeutung": "Entitlement to child benefit (Kindergeld); payment from the month of birth, retroactive for max. 6 months."
+        },
+        "btdrs": {
+          "bedeutung": "Planned legal basis for application-free payment (not yet in force)."
+        }
+      },
+      "frist_beschreibung": "Payment from the month of birth (§ 66 EStG); retroactive for a maximum of six months (§ 70 EStG).",
+      "gebuehr_hinweis": "No fees are charged for child benefit (Kindergeld).",
+      "value_receipt_hinweis": "Conservatively estimated: no separate application, only one eID confirmation of the bank details."
+    },
+    "reisepass": {
+      "title": "Passport / identity card",
+      "lead": "Prepare the application from your master data and reserve an in-person appointment. The in-person visit remains mandatory.",
+      "voraussetzungen": {
+        "0": "German nationality (passport / identity card).",
+        "1": "In-person visit to record the photo and fingerprints.",
+        "2": "Previous identity document for presentation."
+      },
+      "dokumente": {
+        "0": "Biometric photo (on site)",
+        "1": "Previous identity document",
+        "2": "Birth / marriage certificate for first-time applications"
+      },
+      "fields": {
+        "name": {
+          "label": "Name",
+          "hint": "Family name"
+        },
+        "geburtsdatum": {
+          "label": "Date of birth",
+          "hint": "Date"
+        },
+        "geburtsort": {
+          "label": "Place of birth",
+          "hint": "Place of birth"
+        },
+        "staatsangehoerigkeit": {
+          "label": "Nationality",
+          "hint": "Nationality"
+        },
+        "anschrift": {
+          "label": "Address",
+          "hint": "Street, postcode, city"
+        },
+        "dokumentauswahl": {
+          "label": "Document",
+          "hint": "Passport or identity card"
+        },
+        "lichtbild": {
+          "label": "Biometric photo",
+          "hint": "is created on site"
+        },
+        "fingerabdruecke": {
+          "label": "Fingerprints",
+          "hint": "I acknowledge that two fingerprints will be taken on site."
+        }
+      },
+      "rechtsgrundlagen": {
+        "passg": {
+          "bedeutung": "Issuance of a passport or identity card."
+        },
+        "vorsprache": {
+          "bedeutung": "An in-person visit is mandatory for the entire application."
+        },
+        "eu": {
+          "bedeutung": "EU-wide requirements on security features and biometric data."
+        },
+        "bmg": {
+          "bedeutung": "Pre-filling of the application data from the population register (Melderegister)."
+        }
+      },
+      "frist_beschreibung": "No fixed application deadline; plan around 8–12 weeks before your document expires.",
+      "gebuehr_betrag": "Identity card €46 / €27.60 (under 24)",
+      "gebuehr_hinweis": "Passport fees depend on age and version; no express option for the identity card.",
+      "value_receipt_hinweis": "The in-person visit remains necessary; what is saved is the preparation and the search for an appointment."
+    },
+    "bafoeg": {
+      "title": "BAföG (student aid)",
+      "lead": "Pre-fill the initial application from your master data and submit it with your eID. Approval is not guaranteed.",
+      "voraussetzungen": {
+        "0": "Eligible education at a higher-education institution or school.",
+        "1": "Enrolment and certificate under § 9 BAföG (form 2).",
+        "2": "Details on parental income (form 3 + tax assessment)."
+      },
+      "dokumente": {
+        "0": "Enrolment certificate / form 2",
+        "1": "Proof of health insurance",
+        "2": "Parents' tax assessment (form 3)"
+      },
+      "fields": {
+        "name": {
+          "label": "Name",
+          "hint": "Family name"
+        },
+        "geburtsdatum": {
+          "label": "Date of birth",
+          "hint": "Date"
+        },
+        "anschrift": {
+          "label": "Address",
+          "hint": "Street, postcode, city"
+        },
+        "steuerId": {
+          "label": "Tax ID",
+          "hint": "11-digit tax ID"
+        },
+        "staatsangehoerigkeit": {
+          "label": "Nationality",
+          "hint": "Nationality"
+        },
+        "iban": {
+          "label": "IBAN for the payment",
+          "hint": "DE…"
+        },
+        "kvNachweis": {
+          "label": "Health insurance number",
+          "hint": "Insurance number"
+        },
+        "hochschuleStudiengang": {
+          "label": "Institution and course of study",
+          "hint": "confirmed via form 2"
+        },
+        "elterneinkommen": {
+          "label": "Parental income (form 3)",
+          "hint": "Upload evidence"
+        }
+      },
+      "rechtsgrundlagen": {
+        "bafoeg46": {
+          "bedeutung": "Application to the responsible student-aid office (Amt für Ausbildungsförderung)."
+        },
+        "bafoeg9": {
+          "bedeutung": "Aptitude / study certificate from the institution (form 2)."
+        },
+        "bafoeg24": {
+          "bedeutung": "Crediting of parental income against the funding."
+        },
+        "bafoeg51": {
+          "bedeutung": "In the event of processing delays, an advance payment of 80%."
+        },
+        "abgleich": {
+          "bedeutung": "Subsequent data matching for abuse control (no pre-filling)."
+        }
+      },
+      "frist_beschreibung": "No cut-off deadline, but funding only starts from the month of application — so submit it in good time before your studies begin.",
+      "gebuehr_hinweis": "The BAföG procedure is free of charge.",
+      "value_receipt_hinweis": "Parental income still has to be proven yourself; what is saved is the entry of master data and trips to the authorities."
+    },
+    "pflegegrad": {
+      "title": "Apply for a care level (Pflegegrad)",
+      "lead": "Submit the initial application to your care insurance fund (Pflegekasse). The fund commissions the Medical Service (Medizinischer Dienst); the care level (Pflegegrad) is determined only via a home visit.",
+      "voraussetzungen": {
+        "0": "Membership of statutory or private long-term care insurance.",
+        "1": "Need for care expected to last (at least 6 months).",
+        "2": "Willingness to be assessed by the Medical Service (home visit)."
+      },
+      "dokumente": {
+        "0": "Insurance card / insurance number (KVNR)",
+        "1": "Power of attorney / proof of legal guardianship (if available)"
+      },
+      "fields": {
+        "name": {
+          "label": "Name",
+          "hint": "Family name"
+        },
+        "geburtsdatum": {
+          "label": "Date of birth",
+          "hint": "Date"
+        },
+        "anschrift": {
+          "label": "Address",
+          "hint": "Street, postcode, city"
+        },
+        "kvnr": {
+          "label": "Insurance number (KVNR)",
+          "hint": "Insurance number"
+        },
+        "pflegekasse": {
+          "label": "Care insurance fund (Pflegekasse)",
+          "hint": "from your health insurance"
+        },
+        "vollmacht": {
+          "label": "Power of attorney / guardianship",
+          "hint": "upload optionally"
+        },
+        "aerztlicheBefunde": {
+          "label": "Medical findings (health data)",
+          "hint": "upload only with consent"
+        }
+      },
+      "rechtsgrundlagen": {
+        "sgbxi33": {
+          "bedeutung": "Application for long-term care insurance benefits; the application date = start of benefits."
+        },
+        "sgbxi18": {
+          "bedeutung": "The care insurance fund (Pflegekasse) commissions the Medical Service (Medizinischer Dienst) with the assessment."
+        },
+        "sgbxi18a": {
+          "bedeutung": "The assessment is generally carried out via a home visit."
+        },
+        "sgbxi18c": {
+          "bedeutung": "25-working-day deadline; in case of delay the fund owes €70 per week."
+        },
+        "sgbxi1415": {
+          "bedeutung": "Criteria and modules for determining the care level (Pflegegrad) (1–5)."
+        }
+      },
+      "frist_beschreibung": "The care insurance fund decides within 25 working days (§ 18c SGB XI); otherwise it owes €70 for each week of delay.",
+      "gebuehr_hinweis": "The procedure is free of charge for the insured.",
+      "value_receipt_hinweis": "The Medical Service home visit remains necessary; what is saved is the application and coordination effort."
+    },
+    "wohngeld": {
+      "title": "Housing benefit (Wohngeld)",
+      "lead": "Pre-fill the housing benefit (Wohngeld) application from your master data and submit it with your eID. The official assessment runs in the background.",
+      "voraussetzungen": {
+        "0": "Own living space with rent costs (main residence).",
+        "1": "Income within the housing benefit (Wohngeld) limits.",
+        "2": "No ongoing receipt of citizen's allowance (Bürgergeld) / ALG II (exclusion under § 7 WoGG)."
+      },
+      "dokumente": {
+        "0": "Rental contract",
+        "1": "Proof of rent payments for the last three months",
+        "2": "Proof of income / earnings certificate"
+      },
+      "fields": {
+        "name": {
+          "label": "Name",
+          "hint": "Family name"
+        },
+        "geburtsdatum": {
+          "label": "Date of birth",
+          "hint": "Date"
+        },
+        "geschlecht": {
+          "label": "Gender",
+          "hint": "Gender"
+        },
+        "anschrift": {
+          "label": "Address",
+          "hint": "Street, postcode, city"
+        },
+        "iban": {
+          "label": "IBAN for the payment",
+          "hint": "DE…"
+        },
+        "bruttoeinkommen": {
+          "label": "Monthly gross income",
+          "hint": "Amount in €"
+        },
+        "steuerId": {
+          "label": "Tax ID",
+          "hint": "11-digit tax ID"
+        },
+        "bruttokaltmiete": {
+          "label": "Basic rent excluding heating (Bruttokaltmiete)",
+          "hint": "as per rental contract, amount in €"
+        },
+        "mietvertrag": {
+          "label": "Rental contract + proof of payment",
+          "hint": "Upload evidence"
+        }
+      },
+      "rechtsgrundlagen": {
+        "wogg22": {
+          "bedeutung": "Housing benefit (Wohngeld) is granted only on application (not application-free)."
+        },
+        "wogg23": {
+          "bedeutung": "Income determination for the amount of housing benefit (Wohngeld)."
+        },
+        "wogg33": {
+          "bedeutung": "Authority-initiated data matching for plausibility checks after the application."
+        },
+        "wogg7": {
+          "bedeutung": "Exclusion when receiving citizen's allowance (Bürgergeld) / ALG II and similar."
+        },
+        "wogg2425": {
+          "bedeutung": "Issuance of the decision; approval usually for 12 months."
+        }
+      },
+      "frist_beschreibung": "No cut-off deadline, but payment only from the month of application; approval usually applies for 12 months.",
+      "gebuehr_hinweis": "The housing benefit (Wohngeld) procedure is free of charge.",
+      "value_receipt_hinweis": "The exact amount is non-binding [MOCK]; what is saved is the entry of master data and the trip to the housing benefit office (Wohngeldstelle)."
     }
   },
   "a11y": {

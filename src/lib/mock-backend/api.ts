@@ -118,6 +118,20 @@ import {
   makeFakeClock,
 } from './orchestration';
 import { isReliableModeForEngine } from './orchestration/reliable';
+import {
+  getLebenslageConfig as getLebenslageConfigRegistry,
+  getLebenslagenCatalog,
+} from './lebenslagen';
+import type {
+  LebenslageCatalogEntry,
+  LebenslageConfig,
+} from './lebenslagen/types';
+import {
+  confirmEidStep,
+  hasLebenslageRun,
+  runLebenslageCascade,
+  type LebenslageCascadePorts,
+} from './lebenslagen/engine';
 import type { EngineHooks } from './orchestration';
 import { projectStep as projectSagaStep } from './orchestration/projection';
 import type {
@@ -1043,6 +1057,31 @@ export interface MockBackendApi {
    */
   erledigeVorgangSchritt(vorgangId: string, schrittId: string): Promise<void>;
 
+  // ---------------------- Funktionale Lebenslagen (vorgaenge-functional.md §5.4) --
+  /** Katalog-Einträge für das `/lebenslagen`-Grid (dünner Registry-Wrapper). */
+  getLebenslagen(): Promise<LebenslageCatalogEntry[]>;
+  /** Vollständige Config eines Slugs, `null` falls unbekannt. */
+  getLebenslageConfig(slug: string): Promise<LebenslageConfig | null>;
+  /**
+   * Startet eine funktionale Lebenslage: legt den Vorgang an (`in_pruefung`),
+   * seedet alle Schritte `pending` und kickt `runLebenslageCascade`. `consents`
+   * = erteilte Cascade-Step-IDs (form-time). Gibt sofort `{ vorgangId }` zurück
+   * (Kaskade läuft asynchron wie Umzug). `mode:'antragslos'` (kindergeld) wird
+   * mit leerem `formValues` aufgerufen — gleicher Pfad, der eID-Schritt pausiert.
+   */
+  starteLebenslage(
+    slug: string,
+    formValues: Record<string, unknown>,
+    consents: string[],
+  ): Promise<{ vorgangId: string }>;
+  /**
+   * Gibt einen eID-Gate-Schritt einer Lebenslagen-Kaskade frei (Parität zu
+   * `bestaetigeAutopilotSchritt`): mintet Letter/Document/Termin des Hops und
+   * setzt die Kaskade fort, bis zum nächsten eID-Gate oder Abschluss
+   * (`abgeschlossen`). `stepId` = volle AutopilotStep-ID (`"${vorgangId}:${cfgId}"`).
+   */
+  bestaetigeLebenslageSchritt(vorgangId: string, stepId: string): Promise<void>;
+
   // Posteingang-Capability — Write (NEW)
   /**
    * Legt einen neuen Vorgang aus einem Brief an, setzt `letter.vorgang_id` auf
@@ -1742,6 +1781,134 @@ async function applyBlockDSideEffectsLegacy(
 }
 
 // ----------------------------------------------------------------------------
+// Funktionale Lebenslagen — generische Kaskade (vorgaenge-functional.md §5.4).
+//
+// `runLebenslageCascade` (engine.ts) bekommt schmale Side-effect-Ports, die an
+// dieselben Pfade binden, die der Umzug-Autopilot nutzt (`upsertStep` →
+// `autopilot_step`, `appendLetter` → `letter_received`, `upsertDocument`,
+// `upsertTermin`, `changeVorgangStatus`). So sieht die UI denselben Event-Stream.
+// ----------------------------------------------------------------------------
+
+const lebenslagePorts: LebenslageCascadePorts = {
+  upsertStep,
+  appendLetter,
+  upsertDocument,
+  upsertTermin,
+  changeVorgangStatus,
+};
+
+async function starteLebenslageImpl(
+  slug: string,
+  _formValues: Record<string, unknown>,
+  consents: string[],
+): Promise<{ vorgangId: string }> {
+  ensureBooted();
+  const config = getLebenslageConfigRegistry(slug);
+  if (!config || config.engine !== 'lebenslage-cascade') {
+    throw new MockBackendError(
+      `Lebenslage "${slug}" ist nicht als generische Kaskade verfügbar.`,
+      { code: 'LEBENSLAGE_NOT_FOUND', retryable: false },
+    );
+  }
+  const persona = loadProfile();
+  const vorgangId = `vorgang-${uuid()}`;
+  const angelegtAm = new Date().toISOString();
+
+  // Beteiligte Behörden = distinkte cascade-Behörden (run-gefiltert auf Persona).
+  const beteiligte = Array.from(
+    new Set(
+      config.cascade
+        .filter((s) => !s.visibleIf || s.visibleIf(persona))
+        .map((s) => s.behoerdeId),
+    ),
+  );
+
+  // Fristen aus config.frist ableiten (tage:null → keine Stichtags-Frist).
+  const fristen =
+    config.frist && typeof config.frist.tage === 'number'
+      ? (() => {
+          const d = new Date();
+          d.setUTCDate(d.getUTCDate() + (config.frist!.tage as number));
+          return [{ typ: `${slug}_frist`, datum: d.toISOString().slice(0, 10) }];
+        })()
+      : [];
+
+  const vorgang: Vorgang = {
+    id: vorgangId,
+    typ: config.vorgangTyp,
+    titel: `Lebenslage: ${slug}`,
+    status: 'in_pruefung',
+    beteiligte_behoerden_ids: beteiligte,
+    schritte: [],
+    fristen,
+    angelegt_am: angelegtAm,
+    persona_id: persona.id,
+    // Minimaler, nicht-PII Run-Kontext: Slug (für ValueReceipt-Mapping) +
+    // erteilte Consents + Mode. KEINE Formularwerte (mögliche PII) persistieren.
+    context: { slug, consents, mode: config.mode },
+  };
+  const vorgaenge = loadVorgaenge();
+  vorgaenge.push(vorgang);
+  saveVorgaenge(vorgaenge);
+  emit({ type: 'vorgang_created', vorgangId });
+
+  // Form-time erteilte Einwilligungen festhalten — sonst laufen die consent-
+  // gegateten Schritte nicht. Das Seeden + run-geordnete Streamen der Schritte
+  // übernimmt `runLebenslageCascade` (Engine-Mapping), nicht diese Zeile.
+  recordConsent(consents, `lebenslage:${slug}`);
+
+  // Kaskade asynchron starten (fire-and-forget wie Umzug) im gekapselten
+  // Request-Kontext, damit verzögerte `emit()`-Aufrufe auf dem richtigen Bus
+  // landen. `runLebenslageCascade` streamt Block-A sofort + pausiert am ersten
+  // eID-Gate.
+  const ctxSnapshot = captureContext();
+  void runWithCapturedContext(ctxSnapshot, () =>
+    runLebenslageCascade(config, vorgang, persona, lebenslagePorts, consents).catch(
+      (err) => {
+        if (typeof console !== 'undefined') {
+          console.error('[mock-backend] lebenslage cascade crashed', err);
+        }
+      },
+    ),
+  );
+
+  return { vorgangId };
+}
+
+async function bestaetigeLebenslageSchrittImpl(
+  vorgangId: string,
+  stepId: string,
+): Promise<void> {
+  const vorgang = loadVorgaenge().find((v) => v.id === vorgangId);
+  if (!vorgang) {
+    throw new MockBackendError(`Vorgang "${vorgangId}" nicht gefunden.`, {
+      code: 'VORGANG_NOT_FOUND',
+      retryable: false,
+    });
+  }
+  if (!hasLebenslageRun(vorgangId)) {
+    // Doppel-Confirm nach Abschluss oder unbekannter Lauf: prüfen, ob der
+    // Schritt bereits `confirmed` ist (idempotent), sonst Fehler.
+    const step = vorgang.schritte.find((s) => s.id === stepId);
+    if (step && step.status === 'confirmed') return;
+    throw new MockBackendError(
+      `Keine laufende Lebenslagen-Kaskade für Vorgang "${vorgangId}".`,
+      { code: 'LEBENSLAGE_RUN_NOT_FOUND', retryable: false },
+    );
+  }
+  const ctxSnapshot = captureContext();
+  await runWithCapturedContext(ctxSnapshot, async () => {
+    const ok = await confirmEidStep(vorgangId, stepId);
+    if (!ok) {
+      throw new MockBackendError(
+        `eID-Schritt "${stepId}" nicht gefunden oder nicht freigabefähig.`,
+        { code: 'STEP_NOT_FOUND', retryable: false },
+      );
+    }
+  });
+}
+
+// ----------------------------------------------------------------------------
 // Resilient Orchestration Engine — Hooks (Spec § 5.1–§ 5.2).
 //
 // Der Engine ruft diese Hooks, um seinen Saga-State auf den bestehenden
@@ -2325,6 +2492,24 @@ export const api: MockBackendApi & {
 
   erledigeVorgangSchritt: (vorgangId: string, schrittId: string) =>
     withLatency(() => erledigeVorgangSchrittImpl(vorgangId, schrittId)),
+
+  // ---------- Funktionale Lebenslagen (vorgaenge-functional.md §5.4) ----------
+  getLebenslagen: () =>
+    withLatency<LebenslageCatalogEntry[]>(() => getLebenslagenCatalog()),
+
+  getLebenslageConfig: (slug: string) =>
+    withLatency<LebenslageConfig | null>(() =>
+      getLebenslageConfigRegistry(slug),
+    ),
+
+  starteLebenslage: (
+    slug: string,
+    formValues: Record<string, unknown>,
+    consents: string[],
+  ) => withLatency(() => starteLebenslageImpl(slug, formValues, consents)),
+
+  bestaetigeLebenslageSchritt: (vorgangId: string, stepId: string) =>
+    withLatency(() => bestaetigeLebenslageSchrittImpl(vorgangId, stepId)),
 
   // ---------- Posteingang-Capability — Read ----------
   extrahiereAktion: (letterId: string) => {
@@ -3034,7 +3219,21 @@ export const api: MockBackendApi & {
         persona.adresse as { verifiziert_am?: string }
       ).verifiziert_am;
       const stammdatenBestaetigtAm = anschriftVerifiziertAm ?? v.angelegt_am;
-      return computeValueReceipt(v, stammdatenBestaetigtAm);
+      // §1.4 — für funktionale Lebenslagen die dossierfesten Override-Figuren
+      // aus der Config durchreichen (Umzug bleibt ohne Override = altes
+      // Verhalten). Slug liegt im minimalen Run-Kontext.
+      const slug = v.context?.slug as string | undefined;
+      const llConfig = slug ? getLebenslageConfigRegistry(slug) : null;
+      const overrides =
+        llConfig && llConfig.engine === 'lebenslage-cascade'
+          ? {
+              behoerdengaenge_gespart:
+                llConfig.value_receipt.behoerdengaenge_gespart,
+              minuten_gespart: llConfig.value_receipt.minuten_gespart,
+              hinweis_key: llConfig.value_receipt.hinweis_key,
+            }
+          : undefined;
+      return computeValueReceipt(v, stammdatenBestaetigtAm, overrides);
     }),
 
   getVorgangRelated: (vorgangId: string) =>

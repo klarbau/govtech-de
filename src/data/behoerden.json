@@ -972,5 +972,59 @@
       "supports_eudi": false
     },
     "bundid_postfach_anbindung": "nicht_angebunden"
+  },
+  {
+    "id": "elterngeldstelle-berlin-mitte",
+    "name_de": "Bezirksamt Mitte von Berlin — Jugendamt, Elterngeldstelle",
+    "kategorie": "kommune",
+    "zustaendige_themen": ["elterngeld", "elterngeld_plus", "partnerschaftsbonus"],
+    "adresse": { "strasse": "Karl-Marx-Allee", "hausnummer": "31", "plz": "10178", "ort": "Berlin", "land": "DE" },
+    "online": { "portal_url": "https://www.elterngeld-digital.de", "supports_eudi": false },
+    "bundid_postfach_anbindung": "in_pilotierung"
+  },
+  {
+    "id": "afa-stw-berlin",
+    "name_de": "Amt für Ausbildungsförderung beim studierendenWERK BERLIN",
+    "kategorie": "land",
+    "zustaendige_themen": ["ausbildungsfoerderung", "bafoeg", "foerderungsnummer"],
+    "adresse": { "strasse": "Behrenstraße", "hausnummer": "40/41", "plz": "10117", "ort": "Berlin", "land": "DE" },
+    "online": { "portal_url": "https://bafoeg-digital.de", "supports_eudi": true },
+    "bundid_postfach_anbindung": "nicht_angebunden"
+  },
+  {
+    "id": "hochschule-immatrikulationsamt",
+    "name_de": "[MOCK] Immatrikulationsamt / Studierendensekretariat der Hochschule",
+    "kategorie": "land",
+    "zustaendige_themen": ["immatrikulation", "studienbescheinigung", "bafoeg_formblatt_2"],
+    "adresse": { "strasse": "—", "hausnummer": "—", "plz": "10117", "ort": "Berlin", "land": "DE" },
+    "online": { "supports_eudi": false },
+    "bundid_postfach_anbindung": "nicht_angebunden"
+  },
+  {
+    "id": "md-berlin-brandenburg",
+    "name_de": "Medizinischer Dienst Berlin-Brandenburg",
+    "kategorie": "sozialversicherung",
+    "zustaendige_themen": ["pflegebegutachtung", "pflegegrad"],
+    "adresse": { "strasse": "Lübecker Straße", "hausnummer": "1", "plz": "10559", "ort": "Berlin", "land": "DE" },
+    "online": { "portal_url": "https://www.md-bb.org", "supports_eudi": false },
+    "bundid_postfach_anbindung": "nicht_angebunden"
+  },
+  {
+    "id": "wohngeldstelle-berlin-mitte",
+    "name_de": "Bezirksamt Mitte von Berlin — Wohnungsamt / Wohngeldstelle",
+    "kategorie": "kommune",
+    "zustaendige_themen": ["wohngeld", "mietzuschuss", "lastenzuschuss"],
+    "adresse": { "strasse": "Karl-Marx-Allee", "hausnummer": "31", "plz": "10178", "ort": "Berlin", "land": "DE" },
+    "online": { "portal_url": "https://service.berlin.de/dienstleistung/120656/", "supports_eudi": false },
+    "bundid_postfach_anbindung": "in_pilotierung"
+  },
+  {
+    "id": "bundesagentur-fuer-arbeit-datenabgleich",
+    "name_de": "Bundesagentur für Arbeit (Datenabgleich nach § 33 WoGG)",
+    "kategorie": "bund",
+    "zustaendige_themen": ["datenabgleich", "leistungsbezug_pruefung"],
+    "adresse": { "strasse": "Regensburger Straße", "hausnummer": "104", "plz": "90478", "ort": "Nürnberg", "land": "DE" },
+    "online": { "supports_eudi": false },
+    "bundid_postfach_anbindung": "angebunden"
   }
 ]

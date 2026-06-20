@@ -119,6 +119,561 @@
         "title": "Wohngeld beantragen",
         "description": "Prüfen Sie Ihren Anspruch auf Wohngeld und stellen Sie den Antrag mit vorausgefüllten Angaben."
       }
+    },
+    "detail": {
+      "rail_label": "Datenschutz und Once-Only",
+      "back_to_detail": "Zurück zur Übersicht",
+      "back_to_dashboard": "Zur Übersicht",
+      "zustaendige_behoerde": "Zuständige Stelle",
+      "weitere_behoerden": "Weitere beteiligte Stellen",
+      "zukunft_banner_badge": "[ZUKUNFT 2027]",
+      "zukunft_banner_body": "Teile dieses Ablaufs sind heute noch nicht in Kraft. Diese Demo zeigt, wie der Vorgang aussähe, wenn die geplante Once-Only- und Register-Anbindung vollständig produktiv ist. Klar gekennzeichnete Schritte sind spekulativ.",
+      "section": {
+        "intro": "Worum es geht",
+        "voraussetzungen": "Voraussetzungen",
+        "dokumente": "Benötigte Nachweise",
+        "rechtsgrundlagen": "Rechtsgrundlagen",
+        "frist": "Frist",
+        "gebuehr": "Gebühr"
+      },
+      "kategorie": {
+        "bund": "Bund",
+        "land": "Land",
+        "kommune": "Kommune",
+        "sozialversicherung": "Sozialversicherung",
+        "privat": "Privat"
+      },
+      "prefill_available_chip": "aus Ihren Stammdaten",
+      "upload_mock_chip": "Nachweis hochladen [MOCK]",
+      "keine_frist": "Keine feste Antragsfrist.",
+      "keine_gebuehr": "Für diese Leistung wird keine Gebühr erhoben.",
+      "mock_payment": "[MOCK-Zahlung]",
+      "cta_beantragen": "Jetzt beantragen",
+      "cta_antragslos": "Kein Antrag nötig",
+      "cta_cascade_view": "Automatische Bearbeitung ansehen",
+      "datenschutz_title": "Ihre Daten sind geschützt",
+      "datenschutz_body": "Es wird nur der für die jeweilige Stelle minimal nötige Datensatz übermittelt — verschlüsselt und nur an zuständige Behörden.",
+      "datenschutz_link": "Datenschutz-Cockpit öffnen",
+      "once_only_title": "Once-Only",
+      "once_only_note": "{count, plural, =0 {Es werden keine Felder vorausgefüllt — Sie geben alles selbst ein.} one {Wir füllen # Feld aus Ihren bestätigten Stammdaten aus.} other {Wir füllen # Felder aus Ihren bestätigten Stammdaten aus.}}",
+      "antrag_title": "{leistung} beantragen",
+      "antrag_lead": "Aus Ihren Stammdaten vorausgefüllt. Prüfen Sie die Angaben, ergänzen Sie die nicht vorausfüllbaren Felder und senden Sie mit Ihrer eID ab.",
+      "antrag_fields_title": "Ihre Angaben",
+      "chip_user_input": "Ihre Eingabe",
+      "chip_from_source": "aus {source}",
+      "upload_prompt": "Nachweis auswählen oder hierher ziehen",
+      "upload_set": "{label} ausgewählt",
+      "mock_upload": "[MOCK]",
+      "consent_title": "Einwilligungen",
+      "consent_lead": "Diese Schritte erfolgen nur mit Ihrer ausdrücklichen Einwilligung. Sie können einzelne Stellen abwählen — der Antrag läuft dann ohne diesen Schritt.",
+      "cta_eid_submit": "Mit eID bestätigen & absenden",
+      "datenminimierung_title": "Datenminimierung",
+      "datenminimierung_sub": "Welche Datenkategorie an welche Stelle geht — jeweils nur der minimal nötige Satz (Art. 5 Abs. 1 lit. c DSGVO).",
+      "datenminimierung_off": "Einwilligung nicht erteilt — keine Übermittlung",
+      "submit_error": "Der Antrag konnte nicht gestartet werden. Bitte versuchen Sie es erneut.",
+      "antragslos": {
+        "kein_antrag_title": "Kein Antrag nötig",
+        "kein_antrag_body": "Für diese Leistung müssen Sie nichts ausfüllen. Die zuständigen Stellen tauschen die nötigen Daten automatisch aus; Sie bestätigen nur die Auszahlung mit Ihrer eID."
+      },
+      "cascade": {
+        "running": "Bearbeitung läuft",
+        "done": "Bearbeitung abgeschlossen",
+        "lead": "Sie bestätigen einmal — die zuständigen Stellen koordinieren die nächsten Schritte.",
+        "subline": "Ihre Angaben werden sicher an die zuständigen Stellen übermittelt.",
+        "preparing": "Kaskade wird vorbereitet",
+        "starting": "Wird gestartet",
+        "uhr": "Uhr",
+        "skipped": "Übersprungen",
+        "gate_auto": "Automatisch",
+        "gate_eid": "Mit eID bestätigen",
+        "gate_consent": "Mit Einwilligung",
+        "zukunft_chip": "[ZUKUNFT]",
+        "confirm_eid": "Mit eID bestätigen",
+        "overview_title": "Übersicht",
+        "beteiligte_behoerden": "Beteiligte Stellen",
+        "behoerden_count": "{count, plural, one {# Stelle} other {# Stellen}}",
+        "schutz_title": "Ihre Daten sind geschützt",
+        "schutz_body": "Übermittlung verschlüsselt, nur an zuständige Stellen.",
+        "live_title": "Live-Aktivitäten",
+        "started_title": "Vorgang gestartet",
+        "started_body": "Ihre Angaben wurden geprüft und die Kaskade gestartet.",
+        "completion_title": "Erledigt — Ihre Nachweise",
+        "aktenzeichen": "Aktenzeichen",
+        "posteingang_link": "Brief im Posteingang",
+        "vault_link": "Dokument im Tresor",
+        "termin_vorgemerkt": "Termin vorgemerkt",
+        "naechster_schritt": "Die zuständige Stelle meldet sich mit dem Bescheid. Sie finden alle Nachweise im Posteingang und im Dokumenten-Tresor."
+      },
+      "eid_dialog": {
+        "title": "Mit eID bestätigen",
+        "body_template": "Wir übermitteln Ihren Antrag mit Ihrem elektronischen Identitätsnachweis (eID) an {behoerde}.",
+        "confirm": "Mit eID bestätigen",
+        "cancel": "Abbrechen"
+      }
+    },
+    "geburt": {
+      "title": "Geburt eines Kindes",
+      "lead": "Geburt beurkunden, Kind anmelden, Steuer-ID, Kindergeld, Elterngeld und Familienversicherung — in einem Vorgang.",
+      "voraussetzungen": {
+        "0": "Geburt eines Kindes in Deutschland (Geburtsanzeige der Klinik liegt vor).",
+        "1": "Mindestens ein Elternteil ist in Deutschland gemeldet.",
+        "2": "Bestätigte Namensbestimmung für das Kind."
+      },
+      "dokumente": {
+        "0": "Geburtsanzeige der Klinik bzw. Geburtsbescheinigung",
+        "1": "Personalausweis / eID der Eltern",
+        "2": "Eheurkunde oder Vaterschaftsanerkennung (falls zutreffend)"
+      },
+      "fields": {
+        "elternname": {
+          "label": "Familienname (Elternteil)",
+          "hint": "Familienname"
+        },
+        "anschrift": {
+          "label": "Anschrift",
+          "hint": "Straße, PLZ, Ort"
+        },
+        "familienstand": {
+          "label": "Familienstand",
+          "hint": "Familienstand"
+        },
+        "staatsangehoerigkeit": {
+          "label": "Staatsangehörigkeit",
+          "hint": "Staatsangehörigkeit"
+        },
+        "elternSteuerId": {
+          "label": "Steuer-ID (Elternteil)",
+          "hint": "11-stellige Steuer-ID"
+        },
+        "iban": {
+          "label": "IBAN für Auszahlungen",
+          "hint": "DE…"
+        },
+        "kindVornamen": {
+          "label": "Vorname(n) des Kindes",
+          "hint": "Namensbestimmung des Kindes"
+        },
+        "kindGeburtsdatum": {
+          "label": "Geburtsdatum des Kindes",
+          "hint": "laut Geburtsanzeige"
+        }
+      },
+      "rechtsgrundlagen": {
+        "pstg": {
+          "bedeutung": "Beurkundung der Geburt und Ausstellung der Geburtsurkunde durch das Standesamt."
+        },
+        "ao": {
+          "bedeutung": "Antraglose Vergabe der steuerlichen Identifikationsnummer des Kindes."
+        },
+        "estg": {
+          "bedeutung": "Anspruch auf und Festsetzung von Kindergeld."
+        },
+        "beeg": {
+          "bedeutung": "Anspruch auf und Festsetzung von Elterngeld (einwilligungsbasierte Einkommensprüfung)."
+        },
+        "sgbv": {
+          "bedeutung": "Beitragsfreie Familienversicherung des Kindes in der gesetzlichen Krankenversicherung."
+        }
+      },
+      "frist_beschreibung": "Die Geburt ist binnen einer Woche beim Standesamt anzuzeigen (§ 18 PStG).",
+      "gebuehr_betrag": "ab 12 € je Urkunde",
+      "gebuehr_hinweis": "Gebühren fallen nur für zusätzliche Urkundenausfertigungen an.",
+      "value_receipt_hinweis": "Konservativ geschätzt: ein gebündelter Vorgang statt bis zu fünf einzelner Behördengänge."
+    },
+    "aufenthalt-verlaengerung": {
+      "title": "Aufenthaltstitel verlängern",
+      "lead": "Verlängerungsantrag vor Ablauf stellen, Fiktionsbescheinigung erhalten und den Biometrie-Termin vormerken.",
+      "voraussetzungen": {
+        "0": "Bestehender, noch nicht abgelaufener Aufenthaltstitel.",
+        "1": "Gültiger Reisepass und Nachweis der Krankenversicherung.",
+        "2": "Antragstellung vor Ablauf des Titels (Fortgeltungsfiktion § 81 Abs. 4 AufenthG)."
+      },
+      "dokumente": {
+        "0": "Reisepass (Scan)",
+        "1": "Biometrisches Lichtbild",
+        "2": "Krankenversicherungs-Nachweis",
+        "3": "Beschäftigungs-/Gehaltsnachweis"
+      },
+      "fields": {
+        "name": {
+          "label": "Name",
+          "hint": "Familienname"
+        },
+        "geburtsdatum": {
+          "label": "Geburtsdatum",
+          "hint": "Geburtsdatum"
+        },
+        "staatsangehoerigkeit": {
+          "label": "Staatsangehörigkeit",
+          "hint": "Staatsangehörigkeit"
+        },
+        "anschrift": {
+          "label": "Anschrift",
+          "hint": "Straße, PLZ, Ort"
+        },
+        "eatDokumentnr": {
+          "label": "Dokumentnummer (eAT)",
+          "hint": "Dokumentnummer"
+        },
+        "gueltigBis": {
+          "label": "Titel gültig bis",
+          "hint": "Datum"
+        },
+        "passScan": {
+          "label": "Reisepass-Scan",
+          "hint": "Scan hochladen"
+        },
+        "lichtbild": {
+          "label": "Biometrisches Lichtbild",
+          "hint": "Lichtbild hochladen"
+        }
+      },
+      "rechtsgrundlagen": {
+        "aufenthg81": {
+          "bedeutung": "Antrag auf Verlängerung; rechtzeitiger Antrag löst die Fortgeltungsfiktion aus."
+        },
+        "pauswg": {
+          "bedeutung": "Bürgergetriebene, sichere Identifizierung per eID für die Online-Antragstellung."
+        },
+        "aufenthv": {
+          "bedeutung": "Festlegung der Verwaltungsgebühr für die Verlängerung."
+        },
+        "azrg": {
+          "bedeutung": "Behördeninterner Abgleich mit dem Ausländerzentralregister (ohne Ihr Zutun)."
+        }
+      },
+      "frist_beschreibung": "Stellen Sie den Antrag vor Ablauf Ihres Titels. Die Demo löst rund 90 Tage vorher aus; der rechtzeitige Antrag — nicht der Termin — sichert die Fortgeltung.",
+      "gebuehr_betrag": "93 €",
+      "gebuehr_hinweis": "Die Antragsgebühr von 93 € ist real; in der Demo erfolgt keine echte Zahlung.",
+      "value_receipt_hinweis": "Die persönliche Biometrie-Vorsprache bleibt nötig und wird nicht eingespart; gespart werden vorbereitende Behördengänge."
+    },
+    "kindergeld": {
+      "title": "Kindergeld",
+      "lead": "Heute ein vorausgefüllter Antrag; ab 2027 läuft die Festsetzung weitgehend automatisch — Sie bestätigen nur die Bankverbindung.",
+      "antragslos_note": "Die automatische Auszahlung ist gesetzlich beschlossen, aber noch nicht in Kraft (gestuft ab 2027). Diese Demo zeigt den künftigen Ablauf: Melderegister, BZSt und Familienkasse tauschen die Daten aus; Sie bestätigen mit Ihrer eID nur die Bankverbindung.",
+      "voraussetzungen": {
+        "0": "In Deutschland gemeldetes Kind mit zugeteilter Steuer-ID.",
+        "1": "Kindergeldberechtigung des Elternteils (§ 62 EStG)."
+      },
+      "dokumente": {
+        "0": "Geburtsurkunde des Kindes (aus der Datenkette, kein Upload nötig)"
+      },
+      "fields": {
+        "kindName": {
+          "label": "Vorname des Kindes",
+          "hint": "Vorname"
+        },
+        "kindGeburtsdatum": {
+          "label": "Geburtsdatum des Kindes",
+          "hint": "Datum"
+        },
+        "kindSteuerId": {
+          "label": "Steuer-ID des Kindes",
+          "hint": "11-stellige Steuer-ID"
+        },
+        "berechtigteSteuerId": {
+          "label": "Ihre Steuer-ID",
+          "hint": "11-stellige Steuer-ID"
+        },
+        "anschrift": {
+          "label": "Anschrift",
+          "hint": "Straße, PLZ, Ort"
+        },
+        "iban": {
+          "label": "IBAN für die Auszahlung",
+          "hint": "DE…"
+        }
+      },
+      "rechtsgrundlagen": {
+        "pstg": {
+          "bedeutung": "Geburtsbeurkundung als Ursprung der Datenkette."
+        },
+        "ao": {
+          "bedeutung": "Steuer-ID des Kindes als Schlüssel für die automatische Festsetzung."
+        },
+        "estg": {
+          "bedeutung": "Anspruch auf Kindergeld; Auszahlung ab Geburtsmonat, rückwirkend max. 6 Monate."
+        },
+        "btdrs": {
+          "bedeutung": "Geplante Rechtsgrundlage für die antraglose Auszahlung (noch nicht in Kraft)."
+        }
+      },
+      "frist_beschreibung": "Auszahlung ab Geburtsmonat (§ 66 EStG); rückwirkend höchstens sechs Monate (§ 70 EStG).",
+      "gebuehr_hinweis": "Für Kindergeld werden keine Gebühren erhoben.",
+      "value_receipt_hinweis": "Konservativ geschätzt: kein separater Antrag, nur eine eID-Bestätigung der Bankverbindung."
+    },
+    "reisepass": {
+      "title": "Reisepass / Personalausweis",
+      "lead": "Antrag aus Ihren Stammdaten vorbereiten und einen Vorsprache-Termin vormerken. Die persönliche Vorsprache bleibt Pflicht.",
+      "voraussetzungen": {
+        "0": "Deutsche Staatsangehörigkeit (Reisepass/Personalausweis).",
+        "1": "Persönliche Vorsprache zur Abnahme von Lichtbild und Fingerabdrücken.",
+        "2": "Bisheriges Ausweisdokument zur Vorlage."
+      },
+      "dokumente": {
+        "0": "Biometrisches Lichtbild (vor Ort)",
+        "1": "Bisheriges Ausweisdokument",
+        "2": "Geburts-/Eheurkunde bei erstmaliger Beantragung"
+      },
+      "fields": {
+        "name": {
+          "label": "Name",
+          "hint": "Familienname"
+        },
+        "geburtsdatum": {
+          "label": "Geburtsdatum",
+          "hint": "Datum"
+        },
+        "geburtsort": {
+          "label": "Geburtsort",
+          "hint": "Geburtsort"
+        },
+        "staatsangehoerigkeit": {
+          "label": "Staatsangehörigkeit",
+          "hint": "Staatsangehörigkeit"
+        },
+        "anschrift": {
+          "label": "Anschrift",
+          "hint": "Straße, PLZ, Ort"
+        },
+        "dokumentauswahl": {
+          "label": "Dokument",
+          "hint": "Reisepass oder Personalausweis"
+        },
+        "lichtbild": {
+          "label": "Biometrisches Lichtbild",
+          "hint": "wird vor Ort erstellt"
+        },
+        "fingerabdruecke": {
+          "label": "Fingerabdrücke",
+          "hint": "Ich nehme zur Kenntnis, dass zwei Fingerabdrücke vor Ort abgenommen werden."
+        }
+      },
+      "rechtsgrundlagen": {
+        "passg": {
+          "bedeutung": "Ausstellung von Reisepass bzw. Personalausweis."
+        },
+        "vorsprache": {
+          "bedeutung": "Persönliche Vorsprache ist für den gesamten Antrag verpflichtend."
+        },
+        "eu": {
+          "bedeutung": "EU-weite Vorgaben zu Sicherheitsmerkmalen und biometrischen Daten."
+        },
+        "bmg": {
+          "bedeutung": "Vorbefüllung der Antragsdaten aus dem Melderegister."
+        }
+      },
+      "frist_beschreibung": "Keine feste Antragsfrist; planen Sie rund 8–12 Wochen vor Ablauf Ihres Dokuments ein.",
+      "gebuehr_betrag": "Personalausweis 46 € / 27,60 € (unter 24)",
+      "gebuehr_hinweis": "Reisepass-Gebühren je nach Alter und Ausführung; keine Express-Option für den Personalausweis.",
+      "value_receipt_hinweis": "Die Vorsprache bleibt erforderlich; gespart werden Vorbereitung und Terminsuche."
+    },
+    "bafoeg": {
+      "title": "BAföG (Ausbildungsförderung)",
+      "lead": "Erstantrag aus Ihren Stammdaten vorausfüllen und mit eID einreichen. Eine Bewilligung ist nicht garantiert.",
+      "voraussetzungen": {
+        "0": "Förderungsfähige Ausbildung an Hochschule oder Schule.",
+        "1": "Immatrikulation und Bescheinigung nach § 9 BAföG (Formblatt 2).",
+        "2": "Angaben zum Elterneinkommen (Formblatt 3 + Steuerbescheid)."
+      },
+      "dokumente": {
+        "0": "Immatrikulationsbescheinigung / Formblatt 2",
+        "1": "Nachweis Krankenversicherung",
+        "2": "Steuerbescheid der Eltern (Formblatt 3)"
+      },
+      "fields": {
+        "name": {
+          "label": "Name",
+          "hint": "Familienname"
+        },
+        "geburtsdatum": {
+          "label": "Geburtsdatum",
+          "hint": "Datum"
+        },
+        "anschrift": {
+          "label": "Anschrift",
+          "hint": "Straße, PLZ, Ort"
+        },
+        "steuerId": {
+          "label": "Steuer-ID",
+          "hint": "11-stellige Steuer-ID"
+        },
+        "staatsangehoerigkeit": {
+          "label": "Staatsangehörigkeit",
+          "hint": "Staatsangehörigkeit"
+        },
+        "iban": {
+          "label": "IBAN für die Auszahlung",
+          "hint": "DE…"
+        },
+        "kvNachweis": {
+          "label": "Krankenversicherungsnummer",
+          "hint": "Versichertennummer"
+        },
+        "hochschuleStudiengang": {
+          "label": "Hochschule und Studiengang",
+          "hint": "wird via Formblatt 2 bestätigt"
+        },
+        "elterneinkommen": {
+          "label": "Elterneinkommen (Formblatt 3)",
+          "hint": "Nachweis hochladen"
+        }
+      },
+      "rechtsgrundlagen": {
+        "bafoeg46": {
+          "bedeutung": "Antragstellung beim zuständigen Amt für Ausbildungsförderung."
+        },
+        "bafoeg9": {
+          "bedeutung": "Eignungs-/Studiennachweis der Hochschule (Formblatt 2)."
+        },
+        "bafoeg24": {
+          "bedeutung": "Anrechnung des Elterneinkommens auf die Förderung."
+        },
+        "bafoeg51": {
+          "bedeutung": "Bei Bearbeitungsverzug Abschlagszahlung von 80 %."
+        },
+        "abgleich": {
+          "bedeutung": "Nachgelagerter Datenabgleich zur Missbrauchskontrolle (kein Prefill)."
+        }
+      },
+      "frist_beschreibung": "Keine Ausschlussfrist, aber Förderung erst ab Antragsmonat — also rechtzeitig vor Ausbildungsbeginn stellen.",
+      "gebuehr_hinweis": "Das BAföG-Verfahren ist gebührenfrei.",
+      "value_receipt_hinweis": "Das Elterneinkommen muss weiterhin selbst nachgewiesen werden; gespart werden Stammdaten-Erfassung und Behördengänge."
+    },
+    "pflegegrad": {
+      "title": "Pflegegrad beantragen",
+      "lead": "Erstantrag bei Ihrer Pflegekasse einreichen. Die Pflegekasse beauftragt den Medizinischen Dienst; der Pflegegrad wird nur per Hausbesuch festgestellt.",
+      "voraussetzungen": {
+        "0": "Mitgliedschaft in der gesetzlichen oder privaten Pflegeversicherung.",
+        "1": "Voraussichtlich auf Dauer (mind. 6 Monate) bestehender Pflegebedarf.",
+        "2": "Bereitschaft zur Begutachtung durch den Medizinischen Dienst (Hausbesuch)."
+      },
+      "dokumente": {
+        "0": "Versichertenkarte / KVNR",
+        "1": "Vollmacht / Betreuungsnachweis (falls vorhanden)"
+      },
+      "fields": {
+        "name": {
+          "label": "Name",
+          "hint": "Familienname"
+        },
+        "geburtsdatum": {
+          "label": "Geburtsdatum",
+          "hint": "Datum"
+        },
+        "anschrift": {
+          "label": "Anschrift",
+          "hint": "Straße, PLZ, Ort"
+        },
+        "kvnr": {
+          "label": "Versichertennummer (KVNR)",
+          "hint": "Versichertennummer"
+        },
+        "pflegekasse": {
+          "label": "Pflegekasse",
+          "hint": "aus Ihrer Krankenversicherung"
+        },
+        "vollmacht": {
+          "label": "Vollmacht / Betreuung",
+          "hint": "optional hochladen"
+        },
+        "aerztlicheBefunde": {
+          "label": "Ärztliche Befunde (Gesundheitsdaten)",
+          "hint": "nur mit Einwilligung hochladen"
+        }
+      },
+      "rechtsgrundlagen": {
+        "sgbxi33": {
+          "bedeutung": "Antrag auf Leistungen der Pflegeversicherung; Antragsdatum = Leistungsbeginn."
+        },
+        "sgbxi18": {
+          "bedeutung": "Die Pflegekasse beauftragt den Medizinischen Dienst mit der Begutachtung."
+        },
+        "sgbxi18a": {
+          "bedeutung": "Begutachtung erfolgt grundsätzlich per Hausbesuch."
+        },
+        "sgbxi18c": {
+          "bedeutung": "25-Arbeitstage-Frist; bei Verzug schuldet die Kasse 70 €/Woche."
+        },
+        "sgbxi1415": {
+          "bedeutung": "Maßstab und Module der Pflegegrad-Feststellung (1–5)."
+        }
+      },
+      "frist_beschreibung": "Die Pflegekasse entscheidet binnen 25 Arbeitstagen (§ 18c SGB XI); andernfalls schuldet sie 70 € je Woche Verzug.",
+      "gebuehr_hinweis": "Das Verfahren ist für Versicherte kostenfrei.",
+      "value_receipt_hinweis": "Der MD-Hausbesuch bleibt nötig; gespart werden Antrags- und Koordinationsaufwand."
+    },
+    "wohngeld": {
+      "title": "Wohngeld",
+      "lead": "Wohngeldantrag aus Ihren Stammdaten vorbefüllen und mit eID einreichen. Die behördliche Prüfung läuft im Hintergrund.",
+      "voraussetzungen": {
+        "0": "Eigener Wohnraum mit Mietbelastung (Hauptwohnsitz).",
+        "1": "Einkommen innerhalb der Wohngeldgrenzen.",
+        "2": "Kein laufender Bürgergeld-/ALG-II-Bezug (Ausschluss § 7 WoGG)."
+      },
+      "dokumente": {
+        "0": "Mietvertrag",
+        "1": "Mietzahlungsnachweis der letzten drei Monate",
+        "2": "Einkommensnachweis / Verdienstbescheinigung"
+      },
+      "fields": {
+        "name": {
+          "label": "Name",
+          "hint": "Familienname"
+        },
+        "geburtsdatum": {
+          "label": "Geburtsdatum",
+          "hint": "Datum"
+        },
+        "geschlecht": {
+          "label": "Geschlecht",
+          "hint": "Geschlecht"
+        },
+        "anschrift": {
+          "label": "Anschrift",
+          "hint": "Straße, PLZ, Ort"
+        },
+        "iban": {
+          "label": "IBAN für die Auszahlung",
+          "hint": "DE…"
+        },
+        "bruttoeinkommen": {
+          "label": "Monatliches Bruttoeinkommen",
+          "hint": "Betrag in €"
+        },
+        "steuerId": {
+          "label": "Steuer-ID",
+          "hint": "11-stellige Steuer-ID"
+        },
+        "bruttokaltmiete": {
+          "label": "Bruttokaltmiete",
+          "hint": "laut Mietvertrag, Betrag in €"
+        },
+        "mietvertrag": {
+          "label": "Mietvertrag + Zahlungsnachweise",
+          "hint": "Nachweis hochladen"
+        }
+      },
+      "rechtsgrundlagen": {
+        "wogg22": {
+          "bedeutung": "Wohngeld wird nur auf Antrag gewährt (nicht antragslos)."
+        },
+        "wogg23": {
+          "bedeutung": "Einkommensermittlung für die Wohngeldhöhe."
+        },
+        "wogg33": {
+          "bedeutung": "Behördeninitiierter Datenabgleich zur Plausibilisierung nach dem Antrag."
+        },
+        "wogg7": {
+          "bedeutung": "Ausschluss bei Bezug von Bürgergeld/ALG II u. ä."
+        },
+        "wogg2425": {
+          "bedeutung": "Erlass des Bescheids; Bewilligung in der Regel für 12 Monate."
+        }
+      },
+      "frist_beschreibung": "Keine Ausschlussfrist, aber Zahlung erst ab Antragsmonat; die Bewilligung gilt in der Regel 12 Monate.",
+      "gebuehr_hinweis": "Das Wohngeldverfahren ist gebührenfrei.",
+      "value_receipt_hinweis": "Die konkrete Höhe ist unverbindlich [MOCK]; gespart werden Stammdaten-Erfassung und der Behördengang zur Wohngeldstelle."
     }
   },
   "a11y": {

@@ -119,6 +119,12 @@
       "traeger": "AOK Nordost",
       "versichertennummer": "[MOCK] AOK-NO-2023-77418264"
     },
+    "bankverbindung": {
+      "iban": "[MOCK] DE89 1009 0000 0123 4567 89",
+      "bank": "Berliner Sparkasse",
+      "quelle": "bundid",
+      "verified": true
+    },
     "kfz_halter": false,
     "kindergeld_bezug": true,
     "wehrerfasst": false,

@@ -119,6 +119,561 @@
         "title": "Konut yardımı başvurusu yap",
         "description": "Prüfen Sie Ihren Anspruch auf Wohngeld und stellen Sie den Antrag mit vorausgefüllten Angaben."
       }
+    },
+    "detail": {
+      "rail_label": "Veri koruma ve Once-Only",
+      "back_to_detail": "Genel görünüme dön",
+      "back_to_dashboard": "Genel görünüme",
+      "zustaendige_behoerde": "Yetkili makam",
+      "weitere_behoerden": "İlgili diğer makamlar",
+      "zukunft_banner_badge": "[ZUKUNFT 2027]",
+      "zukunft_banner_body": "Bu sürecin bazı bölümleri henüz yürürlükte değildir. Bu demo, planlanan Once-Only ve sicil bağlantısı tam olarak devreye girdiğinde sürecin nasıl görüneceğini gösterir. Açıkça işaretlenmiş adımlar varsayımsaldır.",
+      "section": {
+        "intro": "Konu nedir",
+        "voraussetzungen": "Koşullar",
+        "dokumente": "Gerekli belgeler",
+        "rechtsgrundlagen": "Yasal dayanaklar",
+        "frist": "Süre",
+        "gebuehr": "Harç"
+      },
+      "kategorie": {
+        "bund": "Federasyon",
+        "land": "Eyalet",
+        "kommune": "Belediye",
+        "sozialversicherung": "Sosyal sigorta",
+        "privat": "Özel"
+      },
+      "prefill_available_chip": "ana verilerinizden",
+      "upload_mock_chip": "Belge yükle [MOCK]",
+      "keine_frist": "Sabit bir başvuru süresi yoktur.",
+      "keine_gebuehr": "Bu hizmet için harç alınmaz.",
+      "mock_payment": "[MOCK ödeme]",
+      "cta_beantragen": "Şimdi başvur",
+      "cta_antragslos": "Başvuru gerekmez",
+      "cta_cascade_view": "Otomatik işlemeyi görüntüle",
+      "datenschutz_title": "Verileriniz korunuyor",
+      "datenschutz_body": "Her makam için yalnızca asgari düzeyde gerekli veri kümesi iletilir — şifreli olarak ve yalnızca yetkili makamlara.",
+      "datenschutz_link": "Veri koruma merkezini aç",
+      "once_only_title": "Once-Only",
+      "once_only_note": "{count, plural, =0 {Hiçbir alan önceden doldurulmaz — her şeyi kendiniz girersiniz.} one {Onayladığınız ana verilerinizden # alanı dolduruyoruz.} other {Onayladığınız ana verilerinizden # alanı dolduruyoruz.}}",
+      "antrag_title": "{leistung} başvurusu",
+      "antrag_lead": "Ana verilerinizden önceden dolduruldu. Lütfen bilgileri kontrol edin, önceden doldurulamayan alanları tamamlayın ve eID'nizle gönderin.",
+      "antrag_fields_title": "Bilgileriniz",
+      "chip_user_input": "Sizin girişiniz",
+      "chip_from_source": "{source} kaynağından",
+      "upload_prompt": "Belge seçin veya buraya sürükleyin",
+      "upload_set": "{label} seçildi",
+      "mock_upload": "[MOCK]",
+      "consent_title": "İzinler",
+      "consent_lead": "Bu adımlar yalnızca açık izninizle gerçekleşir. Tek tek makamların seçimini kaldırabilirsiniz — başvuru o adım olmadan devam eder.",
+      "cta_eid_submit": "eID ile onayla ve gönder",
+      "datenminimierung_title": "Veri en aza indirme",
+      "datenminimierung_sub": "Hangi veri kategorisinin hangi makama gittiği — her seferinde yalnızca asgari gerekli küme (DSGVO/GDPR Madde 5/1-c).",
+      "datenminimierung_off": "İzin verilmedi — iletim yapılmaz",
+      "submit_error": "Başvuru başlatılamadı. Lütfen tekrar deneyin.",
+      "antragslos": {
+        "kein_antrag_title": "Başvuru gerekmez",
+        "kein_antrag_body": "Bu hizmet için hiçbir şey doldurmanıza gerek yoktur. Yetkili makamlar gerekli verileri otomatik olarak paylaşır; siz yalnızca ödemeyi eID'nizle onaylarsınız."
+      },
+      "cascade": {
+        "running": "İşleme devam ediyor",
+        "done": "İşleme tamamlandı",
+        "lead": "Bir kez onaylarsınız — yetkili makamlar sonraki adımları koordine eder.",
+        "subline": "Bilgileriniz yetkili makamlara güvenli biçimde iletilir.",
+        "preparing": "Zincir hazırlanıyor",
+        "starting": "Başlatılıyor",
+        "uhr": "",
+        "skipped": "Atlandı",
+        "gate_auto": "Otomatik",
+        "gate_eid": "eID ile onayla",
+        "gate_consent": "İzinle",
+        "zukunft_chip": "[ZUKUNFT]",
+        "confirm_eid": "eID ile onayla",
+        "overview_title": "Genel görünüm",
+        "beteiligte_behoerden": "İlgili makamlar",
+        "behoerden_count": "{count, plural, one {# makam} other {# makam}}",
+        "schutz_title": "Verileriniz korunuyor",
+        "schutz_body": "İletim şifrelidir, yalnızca yetkili makamlara.",
+        "live_title": "Canlı etkinlikler",
+        "started_title": "Süreç başlatıldı",
+        "started_body": "Bilgileriniz kontrol edildi ve zincir başlatıldı.",
+        "completion_title": "Tamamlandı — belgeleriniz",
+        "aktenzeichen": "Dosya numarası (Aktenzeichen)",
+        "posteingang_link": "Gelen kutusundaki mektup",
+        "vault_link": "Kasadaki belge",
+        "termin_vorgemerkt": "Randevu ön kayda alındı",
+        "naechster_schritt": "Yetkili makam kararla (Bescheid) sizinle iletişime geçecektir. Tüm belgeleri gelen kutusunda ve belge kasasında bulabilirsiniz."
+      },
+      "eid_dialog": {
+        "title": "eID ile onayla",
+        "body_template": "Başvurunuzu elektronik kimlik kanıtınızla (eID) {behoerde} makamına iletiyoruz.",
+        "confirm": "eID ile onayla",
+        "cancel": "İptal"
+      }
+    },
+    "geburt": {
+      "title": "Çocuğun doğumu",
+      "lead": "Doğumu tescil edin, çocuğu kaydedin, vergi kimlik numarası, çocuk parası (Kindergeld), ebeveyn parası (Elterngeld) ve aile sağlık sigortası — tek bir işlemde.",
+      "voraussetzungen": {
+        "0": "Almanya'da bir çocuğun doğumu (kliniğin doğum bildirimi mevcut).",
+        "1": "En az bir ebeveyn Almanya'da kayıtlıdır.",
+        "2": "Çocuk için onaylanmış isim belirlemesi."
+      },
+      "dokumente": {
+        "0": "Kliniğin doğum bildirimi veya doğum belgesi",
+        "1": "Ebeveynlerin kimlik kartı / eID'si",
+        "2": "Evlilik belgesi veya babalık tanıma (varsa)"
+      },
+      "fields": {
+        "elternname": {
+          "label": "Soyadı (ebeveyn)",
+          "hint": "Soyadı"
+        },
+        "anschrift": {
+          "label": "Adres",
+          "hint": "Sokak, posta kodu, şehir"
+        },
+        "familienstand": {
+          "label": "Medeni durum",
+          "hint": "Medeni durum"
+        },
+        "staatsangehoerigkeit": {
+          "label": "Uyruk",
+          "hint": "Uyruk"
+        },
+        "elternSteuerId": {
+          "label": "Vergi kimlik numarası (ebeveyn)",
+          "hint": "11 haneli vergi kimlik numarası"
+        },
+        "iban": {
+          "label": "Ödemeler için IBAN",
+          "hint": "DE…"
+        },
+        "kindVornamen": {
+          "label": "Çocuğun adı/adları",
+          "hint": "Çocuğun belirlenen adı"
+        },
+        "kindGeburtsdatum": {
+          "label": "Çocuğun doğum tarihi",
+          "hint": "doğum bildirimine göre"
+        }
+      },
+      "rechtsgrundlagen": {
+        "pstg": {
+          "bedeutung": "Doğumun nüfus dairesi (Standesamt) tarafından tescili ve doğum belgesinin düzenlenmesi."
+        },
+        "ao": {
+          "bedeutung": "Çocuğun vergi kimlik numarasının başvurusuz verilmesi."
+        },
+        "estg": {
+          "bedeutung": "Çocuk parasına (Kindergeld) hak kazanma ve tespiti."
+        },
+        "beeg": {
+          "bedeutung": "Ebeveyn parasına (Elterngeld) hak kazanma ve tespiti (izne dayalı gelir kontrolü)."
+        },
+        "sgbv": {
+          "bedeutung": "Çocuğun yasal sağlık sigortasında prim ödemesiz aile sigortası."
+        }
+      },
+      "frist_beschreibung": "Doğum, bir hafta içinde nüfus dairesine (Standesamt) bildirilmelidir (§ 18 PStG).",
+      "gebuehr_betrag": "belge başına 12 €'dan itibaren",
+      "gebuehr_hinweis": "Harç yalnızca ek belge nüshaları için alınır.",
+      "value_receipt_hinweis": "İhtiyatlı tahminle: beşe kadar ayrı makam ziyareti yerine tek bir birleşik işlem."
+    },
+    "aufenthalt-verlaengerung": {
+      "title": "Oturma iznini uzat (Aufenthaltstitel)",
+      "lead": "Süre dolmadan uzatma başvurusunu yapın, geçici belge (Fiktionsbescheinigung) alın ve biyometri randevusunu ön kayda alın.",
+      "voraussetzungen": {
+        "0": "Mevcut, henüz süresi dolmamış oturma izni (Aufenthaltstitel).",
+        "1": "Geçerli pasaport ve sağlık sigortası kanıtı.",
+        "2": "İznin süresi dolmadan başvuru (devam eden geçerlilik § 81/4 AufenthG)."
+      },
+      "dokumente": {
+        "0": "Pasaport (tarama)",
+        "1": "Biyometrik fotoğraf",
+        "2": "Sağlık sigortası kanıtı",
+        "3": "Çalışma / maaş kanıtı"
+      },
+      "fields": {
+        "name": {
+          "label": "İsim",
+          "hint": "Soyadı"
+        },
+        "geburtsdatum": {
+          "label": "Doğum tarihi",
+          "hint": "Doğum tarihi"
+        },
+        "staatsangehoerigkeit": {
+          "label": "Uyruk",
+          "hint": "Uyruk"
+        },
+        "anschrift": {
+          "label": "Adres",
+          "hint": "Sokak, posta kodu, şehir"
+        },
+        "eatDokumentnr": {
+          "label": "Belge numarası (eAT)",
+          "hint": "Belge numarası"
+        },
+        "gueltigBis": {
+          "label": "İznin geçerlilik sonu",
+          "hint": "Tarih"
+        },
+        "passScan": {
+          "label": "Pasaport taraması",
+          "hint": "Tarama yükle"
+        },
+        "lichtbild": {
+          "label": "Biyometrik fotoğraf",
+          "hint": "Fotoğraf yükle"
+        }
+      },
+      "rechtsgrundlagen": {
+        "aufenthg81": {
+          "bedeutung": "Uzatma başvurusu; zamanında başvuru devam eden geçerliliği (Fortgeltungsfiktion) tetikler."
+        },
+        "pauswg": {
+          "bedeutung": "Çevrim içi başvuru için vatandaş tarafından başlatılan, eID ile güvenli kimlik doğrulama."
+        },
+        "aufenthv": {
+          "bedeutung": "Uzatma için idari harcın belirlenmesi."
+        },
+        "azrg": {
+          "bedeutung": "Yabancılar Merkezi Sicili (Ausländerzentralregister) ile makam içi karşılaştırma (sizin bir işleminiz olmadan)."
+        }
+      },
+      "frist_beschreibung": "Başvuruyu izninizin süresi dolmadan yapın. Demo yaklaşık 90 gün önce tetiklenir; devam eden geçerliliği randevu değil, zamanında yapılan başvuru güvence altına alır.",
+      "gebuehr_betrag": "93 €",
+      "gebuehr_hinweis": "93 €'luk başvuru harcı gerçektir; demoda fiili ödeme yapılmaz.",
+      "value_receipt_hinweis": "Yüz yüze biyometri görüşmesi gerekli kalır ve tasarruf edilmez; tasarruf edilen, hazırlık amaçlı makam ziyaretleridir."
+    },
+    "kindergeld": {
+      "title": "Çocuk parası (Kindergeld)",
+      "lead": "Bugün önceden doldurulmuş bir başvuru; 2027'den itibaren tespit büyük ölçüde otomatik yürür — siz yalnızca banka bilgilerini onaylarsınız.",
+      "antragslos_note": "Otomatik ödeme yasayla kabul edildi ancak henüz yürürlükte değil (2027'den itibaren kademeli). Bu demo gelecekteki süreci gösterir: nüfus sicili, Federal Merkezi Vergi Dairesi (BZSt) ve aile yardım kasası (Familienkasse) verileri paylaşır; eID'nizle yalnızca banka bilgilerini onaylarsınız.",
+      "voraussetzungen": {
+        "0": "Almanya'da kayıtlı ve vergi kimlik numarası atanmış çocuk.",
+        "1": "Ebeveynin çocuk parası hakkı (§ 62 EStG)."
+      },
+      "dokumente": {
+        "0": "Çocuğun doğum belgesi (veri zincirinden, yükleme gerekmez)"
+      },
+      "fields": {
+        "kindName": {
+          "label": "Çocuğun adı",
+          "hint": "Ad"
+        },
+        "kindGeburtsdatum": {
+          "label": "Çocuğun doğum tarihi",
+          "hint": "Tarih"
+        },
+        "kindSteuerId": {
+          "label": "Çocuğun vergi kimlik numarası",
+          "hint": "11 haneli vergi kimlik numarası"
+        },
+        "berechtigteSteuerId": {
+          "label": "Vergi kimlik numaranız",
+          "hint": "11 haneli vergi kimlik numarası"
+        },
+        "anschrift": {
+          "label": "Adres",
+          "hint": "Sokak, posta kodu, şehir"
+        },
+        "iban": {
+          "label": "Ödeme için IBAN",
+          "hint": "DE…"
+        }
+      },
+      "rechtsgrundlagen": {
+        "pstg": {
+          "bedeutung": "Veri zincirinin kaynağı olarak doğum tescili."
+        },
+        "ao": {
+          "bedeutung": "Otomatik tespitin anahtarı olarak çocuğun vergi kimlik numarası."
+        },
+        "estg": {
+          "bedeutung": "Çocuk parası (Kindergeld) hakkı; ödeme doğum ayından itibaren, geriye dönük en fazla 6 ay."
+        },
+        "btdrs": {
+          "bedeutung": "Başvurusuz ödeme için planlanan yasal dayanak (henüz yürürlükte değil)."
+        }
+      },
+      "frist_beschreibung": "Ödeme doğum ayından itibaren (§ 66 EStG); geriye dönük en fazla altı ay (§ 70 EStG).",
+      "gebuehr_hinweis": "Çocuk parası (Kindergeld) için harç alınmaz.",
+      "value_receipt_hinweis": "İhtiyatlı tahminle: ayrı bir başvuru yok, yalnızca banka bilgilerinin tek bir eID onayı."
+    },
+    "reisepass": {
+      "title": "Pasaport / kimlik kartı",
+      "lead": "Başvuruyu ana verilerinizden hazırlayın ve bir yüz yüze görüşme randevusunu ön kayda alın. Yüz yüze görüşme zorunlu kalır.",
+      "voraussetzungen": {
+        "0": "Alman vatandaşlığı (pasaport / kimlik kartı).",
+        "1": "Fotoğraf ve parmak izlerinin alınması için yüz yüze görüşme.",
+        "2": "İbraz için önceki kimlik belgesi."
+      },
+      "dokumente": {
+        "0": "Biyometrik fotoğraf (yerinde)",
+        "1": "Önceki kimlik belgesi",
+        "2": "İlk başvuruda doğum / evlilik belgesi"
+      },
+      "fields": {
+        "name": {
+          "label": "İsim",
+          "hint": "Soyadı"
+        },
+        "geburtsdatum": {
+          "label": "Doğum tarihi",
+          "hint": "Tarih"
+        },
+        "geburtsort": {
+          "label": "Doğum yeri",
+          "hint": "Doğum yeri"
+        },
+        "staatsangehoerigkeit": {
+          "label": "Uyruk",
+          "hint": "Uyruk"
+        },
+        "anschrift": {
+          "label": "Adres",
+          "hint": "Sokak, posta kodu, şehir"
+        },
+        "dokumentauswahl": {
+          "label": "Belge",
+          "hint": "Pasaport veya kimlik kartı"
+        },
+        "lichtbild": {
+          "label": "Biyometrik fotoğraf",
+          "hint": "yerinde oluşturulur"
+        },
+        "fingerabdruecke": {
+          "label": "Parmak izleri",
+          "hint": "Yerinde iki parmak izinin alınacağını kabul ediyorum."
+        }
+      },
+      "rechtsgrundlagen": {
+        "passg": {
+          "bedeutung": "Pasaport veya kimlik kartının düzenlenmesi."
+        },
+        "vorsprache": {
+          "bedeutung": "Tüm başvuru için yüz yüze görüşme zorunludur."
+        },
+        "eu": {
+          "bedeutung": "Güvenlik özellikleri ve biyometrik verilere ilişkin AB genelindeki gereklilikler."
+        },
+        "bmg": {
+          "bedeutung": "Başvuru verilerinin nüfus sicilinden (Melderegister) önceden doldurulması."
+        }
+      },
+      "frist_beschreibung": "Sabit bir başvuru süresi yoktur; belgenizin süresi dolmadan yaklaşık 8–12 hafta önce planlayın.",
+      "gebuehr_betrag": "Kimlik kartı 46 € / 27,60 € (24 yaş altı)",
+      "gebuehr_hinweis": "Pasaport harçları yaşa ve türe göre değişir; kimlik kartı için hızlı seçenek yoktur.",
+      "value_receipt_hinweis": "Yüz yüze görüşme gerekli kalır; tasarruf edilen, hazırlık ve randevu aramadır."
+    },
+    "bafoeg": {
+      "title": "BAföG (öğrenim desteği)",
+      "lead": "İlk başvuruyu ana verilerinizden önceden doldurun ve eID'nizle gönderin. Onay garanti edilmez.",
+      "voraussetzungen": {
+        "0": "Yüksekokulda veya okulda desteğe uygun bir öğrenim.",
+        "1": "Kayıt ve § 9 BAföG uyarınca belge (Form 2).",
+        "2": "Ebeveyn geliri bilgileri (Form 3 + vergi tahakkuku)."
+      },
+      "dokumente": {
+        "0": "Kayıt belgesi / Form 2",
+        "1": "Sağlık sigortası kanıtı",
+        "2": "Ebeveynlerin vergi tahakkuku (Form 3)"
+      },
+      "fields": {
+        "name": {
+          "label": "İsim",
+          "hint": "Soyadı"
+        },
+        "geburtsdatum": {
+          "label": "Doğum tarihi",
+          "hint": "Tarih"
+        },
+        "anschrift": {
+          "label": "Adres",
+          "hint": "Sokak, posta kodu, şehir"
+        },
+        "steuerId": {
+          "label": "Vergi kimlik numarası",
+          "hint": "11 haneli vergi kimlik numarası"
+        },
+        "staatsangehoerigkeit": {
+          "label": "Uyruk",
+          "hint": "Uyruk"
+        },
+        "iban": {
+          "label": "Ödeme için IBAN",
+          "hint": "DE…"
+        },
+        "kvNachweis": {
+          "label": "Sağlık sigortası numarası",
+          "hint": "Sigortalı numarası"
+        },
+        "hochschuleStudiengang": {
+          "label": "Yüksekokul ve bölüm",
+          "hint": "Form 2 ile onaylanır"
+        },
+        "elterneinkommen": {
+          "label": "Ebeveyn geliri (Form 3)",
+          "hint": "Belge yükle"
+        }
+      },
+      "rechtsgrundlagen": {
+        "bafoeg46": {
+          "bedeutung": "Yetkili öğrenim desteği dairesine (Amt für Ausbildungsförderung) başvuru."
+        },
+        "bafoeg9": {
+          "bedeutung": "Yüksekokulun uygunluk / öğrenim belgesi (Form 2)."
+        },
+        "bafoeg24": {
+          "bedeutung": "Ebeveyn gelirinin desteğe mahsup edilmesi."
+        },
+        "bafoeg51": {
+          "bedeutung": "İşlem gecikmesi durumunda %80 oranında avans ödemesi."
+        },
+        "abgleich": {
+          "bedeutung": "Kötüye kullanımı denetlemek için sonradan veri karşılaştırması (önceden doldurma değil)."
+        }
+      },
+      "frist_beschreibung": "Hak düşürücü süre yoktur, ancak destek yalnızca başvuru ayından itibaren başlar — bu yüzden öğrenim başlamadan önce zamanında başvurun.",
+      "gebuehr_hinweis": "BAföG işlemi harçsızdır.",
+      "value_receipt_hinweis": "Ebeveyn geliri yine de kendiniz kanıtlanmalıdır; tasarruf edilen, ana veri girişi ve makam ziyaretleridir."
+    },
+    "pflegegrad": {
+      "title": "Bakım derecesi başvurusu (Pflegegrad)",
+      "lead": "İlk başvuruyu bakım sigortası kasanıza (Pflegekasse) yapın. Kasa, Tıbbi Hizmet'i (Medizinischer Dienst) görevlendirir; bakım derecesi (Pflegegrad) yalnızca ev ziyaretiyle belirlenir.",
+      "voraussetzungen": {
+        "0": "Yasal veya özel bakım sigortasına üyelik.",
+        "1": "Muhtemelen süreklilik gösteren (en az 6 ay) bakım ihtiyacı.",
+        "2": "Tıbbi Hizmet (Medizinischer Dienst) tarafından değerlendirilmeye hazır olma (ev ziyareti)."
+      },
+      "dokumente": {
+        "0": "Sigortalı kartı / sigortalı numarası (KVNR)",
+        "1": "Vekâletname / vesayet kanıtı (varsa)"
+      },
+      "fields": {
+        "name": {
+          "label": "İsim",
+          "hint": "Soyadı"
+        },
+        "geburtsdatum": {
+          "label": "Doğum tarihi",
+          "hint": "Tarih"
+        },
+        "anschrift": {
+          "label": "Adres",
+          "hint": "Sokak, posta kodu, şehir"
+        },
+        "kvnr": {
+          "label": "Sigortalı numarası (KVNR)",
+          "hint": "Sigortalı numarası"
+        },
+        "pflegekasse": {
+          "label": "Bakım sigortası kasası (Pflegekasse)",
+          "hint": "sağlık sigortanızdan"
+        },
+        "vollmacht": {
+          "label": "Vekâletname / vesayet",
+          "hint": "isteğe bağlı yükleyin"
+        },
+        "aerztlicheBefunde": {
+          "label": "Tıbbi bulgular (sağlık verileri)",
+          "hint": "yalnızca izinle yükleyin"
+        }
+      },
+      "rechtsgrundlagen": {
+        "sgbxi33": {
+          "bedeutung": "Bakım sigortası hizmetleri başvurusu; başvuru tarihi = hizmet başlangıcı."
+        },
+        "sgbxi18": {
+          "bedeutung": "Bakım sigortası kasası (Pflegekasse), değerlendirme için Tıbbi Hizmet'i (Medizinischer Dienst) görevlendirir."
+        },
+        "sgbxi18a": {
+          "bedeutung": "Değerlendirme esas olarak ev ziyaretiyle yapılır."
+        },
+        "sgbxi18c": {
+          "bedeutung": "25 iş günü süresi; gecikme durumunda kasa haftalık 70 € öder."
+        },
+        "sgbxi1415": {
+          "bedeutung": "Bakım derecesi (Pflegegrad) tespitinin ölçütleri ve modülleri (1–5)."
+        }
+      },
+      "frist_beschreibung": "Bakım sigortası kasası 25 iş günü içinde karar verir (§ 18c SGB XI); aksi hâlde her gecikme haftası için 70 € borçlu olur.",
+      "gebuehr_hinweis": "İşlem sigortalılar için ücretsizdir.",
+      "value_receipt_hinweis": "Tıbbi Hizmet'in ev ziyareti gerekli kalır; tasarruf edilen, başvuru ve koordinasyon eforudur."
+    },
+    "wohngeld": {
+      "title": "Konut yardımı (Wohngeld)",
+      "lead": "Konut yardımı (Wohngeld) başvurusunu ana verilerinizden önceden doldurun ve eID'nizle gönderin. Resmî inceleme arka planda yürür.",
+      "voraussetzungen": {
+        "0": "Kira yükü olan kendine ait konut (ana ikametgâh).",
+        "1": "Konut yardımı (Wohngeld) sınırları içinde gelir.",
+        "2": "Devam eden vatandaş parası (Bürgergeld) / ALG II alımının olmaması (istisna § 7 WoGG)."
+      },
+      "dokumente": {
+        "0": "Kira sözleşmesi",
+        "1": "Son üç aya ait kira ödeme kanıtı",
+        "2": "Gelir kanıtı / kazanç belgesi"
+      },
+      "fields": {
+        "name": {
+          "label": "İsim",
+          "hint": "Soyadı"
+        },
+        "geburtsdatum": {
+          "label": "Doğum tarihi",
+          "hint": "Tarih"
+        },
+        "geschlecht": {
+          "label": "Cinsiyet",
+          "hint": "Cinsiyet"
+        },
+        "anschrift": {
+          "label": "Adres",
+          "hint": "Sokak, posta kodu, şehir"
+        },
+        "iban": {
+          "label": "Ödeme için IBAN",
+          "hint": "DE…"
+        },
+        "bruttoeinkommen": {
+          "label": "Aylık brüt gelir",
+          "hint": "€ cinsinden tutar"
+        },
+        "steuerId": {
+          "label": "Vergi kimlik numarası",
+          "hint": "11 haneli vergi kimlik numarası"
+        },
+        "bruttokaltmiete": {
+          "label": "Isıtma hariç brüt kira (Bruttokaltmiete)",
+          "hint": "kira sözleşmesine göre, € cinsinden tutar"
+        },
+        "mietvertrag": {
+          "label": "Kira sözleşmesi + ödeme kanıtları",
+          "hint": "Belge yükle"
+        }
+      },
+      "rechtsgrundlagen": {
+        "wogg22": {
+          "bedeutung": "Konut yardımı (Wohngeld) yalnızca başvuru üzerine verilir (başvurusuz değil)."
+        },
+        "wogg23": {
+          "bedeutung": "Konut yardımı (Wohngeld) tutarı için gelir tespiti."
+        },
+        "wogg33": {
+          "bedeutung": "Başvurudan sonra makullük kontrolü için makam tarafından başlatılan veri karşılaştırması."
+        },
+        "wogg7": {
+          "bedeutung": "Vatandaş parası (Bürgergeld) / ALG II vb. alımında istisna."
+        },
+        "wogg2425": {
+          "bedeutung": "Kararın çıkarılması; onay genellikle 12 ay için."
+        }
+      },
+      "frist_beschreibung": "Hak düşürücü süre yoktur, ancak ödeme yalnızca başvuru ayından itibaren yapılır; onay genellikle 12 ay geçerlidir.",
+      "gebuehr_hinweis": "Konut yardımı (Wohngeld) işlemi harçsızdır.",
+      "value_receipt_hinweis": "Kesin tutar bağlayıcı değildir [MOCK]; tasarruf edilen, ana veri girişi ve konut yardımı dairesine (Wohngeldstelle) yapılan ziyarettir."
     }
   },
   "a11y": {
