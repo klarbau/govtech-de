@@ -35,12 +35,18 @@ established press). Note the date of each development.
 
 ## Honesty rules (non-negotiable)
 
-- **Cite a real source URL** for every candidate. No source → don't add it.
+- **Cite a real source URL you actually opened** for every candidate. Before writing an item, FETCH the
+  source and confirm the specific claim is on that page. A URL you could not open is not a citation — drop it.
+- **Assert only what the fetched source states.** Do not add names, renames, dates, figures, or "confirms X"
+  details that are not on the page. (First run: a `confidence: high` item claimed a "BundID → DeutschlandID
+  rename" the cited source never mentioned.) If part of a task is your own inference, keep it separate and
+  tag it `speculative` — never fold an unsourced guess into a high-confidence claim.
 - **No fabricated "developments."** If you're inferring or speculating, tag it `confidence: speculative`
   and say so plainly.
 - Distinguish **shipped reality** from **roadmap/future** (the project marks future things `[ZUKUNFT 20xx]`).
 - Stay inside the demo's honesty guardrails (no false claims about what German systems do; no
-  Melderegister→Ausländerbehörde push; antragsloses Kindergeld is `[ZUKUNFT 2027]`, etc. — see agent-context).
+  Melderegister→Ausländerbehörde push). Note: **antragsloses Kindergeld is now enacted law** (Kabinett
+  18.03.2026; automatic payment phased März 2027 / Nov 2027), no longer `[ZUKUNFT]` speculation.
 - **Cap: 3–7 candidates per run.** If nothing genuinely new/relevant today, append fewer — or none, and say
   so in the run. An empty honest run is better than padding.
 
