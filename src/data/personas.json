@@ -128,6 +128,8 @@
     "kfz_halter": false,
     "kindergeld_bezug": true,
     "wehrerfasst": false,
+    "wohnverhaeltnis": "miete",
+    "wohngeld_indikation": true,
     "sprachen": [
       "ru",
       "de",

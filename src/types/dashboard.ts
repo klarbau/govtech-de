@@ -11,6 +11,7 @@ import type { PersonaId } from './persona';
 import type { LetterFristTyp } from './letter';
 import type { VorgangStatus } from './vorgang';
 import type { ValueReceipt } from './value-receipt';
+import type { WohngeldAnspruchEstimate } from './wohngeld-estimate';
 
 /**
  * Eine Zeile im "Automatisch erledigt für Sie"-Feed (§1.4/§B2). Delegierte
@@ -274,4 +275,13 @@ export interface DashboardSnapshot {
   };
   /** "Automatisch erledigt für Sie"-Feed — chronologisch, neueste zuerst (§B2). */
   erledigt_feed: ErledigtFeedItem[];
+  /**
+   * Proaktiver Wohngeld-Anspruch-Hinweis (high-emphasis Karte) oder `null`
+   * (Spec `proaktiver-wohngeld-anspruch.md` § 6). Vorbefüllung via
+   * `estimateWohngeldAnspruch`, gefiltert über denselben Consent-/Dismiss-/
+   * Snooze-Gate wie `api.getWohngeldHinweis`, damit Snapshot und Direct-Call
+   * konsistent bleiben. `null` = nicht qualifiziert ODER unterdrückt (nie eine
+   * "kein Anspruch"-Aussage).
+   */
+  wohngeld_hinweis?: WohngeldAnspruchEstimate | null;
 }

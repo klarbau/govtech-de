@@ -109,7 +109,7 @@ const eventPort: EngineEvent = {
 // ── Transport (mock; reliable mode disables the random fault) ─────────────────
 
 let transportSingleton: Transport | undefined;
-function getTransport(): Transport {
+export function getTransport(): Transport {
   if (!transportSingleton) {
     transportSingleton = createMockTransport({
       reliable: () => isReliableModeForEngine(),
@@ -199,7 +199,9 @@ export async function runRecoverOnBoot(): Promise<RecoveryResult> {
   });
 }
 
-// ── Test-only access to the persistence port + transport (proofs § 7) ─────────
+// ── Proof-/§7-Zugriff: persistencePort + der Transport-Handle für die
+//    deterministische Fault-Injection-Bridge. `getTransport` ist oben ein
+//    öffentlicher Export (von der Engine produktiv genutzt) — nicht test-only.
 
 export const __orchestrationInternals = {
   persistencePort,

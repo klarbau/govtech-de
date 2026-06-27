@@ -95,6 +95,7 @@ import type {
   VorgangsKategorie,
   WalletAttestation,
   WalletAttestationPreview,
+  WohngeldAnspruchEstimate,
   YellowLetterBridgeResult,
 } from '@/types';
 import { LETTER_ATTACHMENT_LIMITS } from '@/types';
@@ -122,6 +123,7 @@ import {
   getLebenslageConfig as getLebenslageConfigRegistry,
   getLebenslagenCatalog,
 } from './lebenslagen';
+import { bridgeTargetForArchetype } from './brief-bridge';
 import type {
   LebenslageCatalogEntry,
   LebenslageConfig,
@@ -143,6 +145,12 @@ import type {
 } from '@/types/orchestration';
 import { appendLogEntry, stammdatenApi } from './stammdaten/api';
 import { dashboardApi } from './dashboard/api';
+import {
+  persistWohngeldConsent,
+  persistWohngeldDismiss,
+  persistWohngeldSnooze,
+  resolveWohngeldHinweisById,
+} from './lebenslagen/wohngeld-estimate';
 import { datenschutzApi } from './datenschutz/api';
 import { familieApi } from './familie/api';
 import { remindersApi } from './reminders/api';
@@ -772,7 +780,7 @@ function mintBuergeramtAnmeldungArtefakte(
     (vorgang.context?.stichtag as string | undefined) ??
     vorgang.fristen.find((f) => f.typ === 'stichtag')?.datum ??
     stamp;
-  const { slotIso } = letzterSichererAnmeldungSlot(stichtag, new Date().toISOString());
+  const { slotIso, fristIso } = letzterSichererAnmeldungSlot(stichtag, new Date().toISOString());
   upsertTermin({
     id: `termin-anmeldung-${vorgang.id}`,
     behoerde_id: 'buergeramt-berlin-mitte',
@@ -786,7 +794,8 @@ function mintBuergeramtAnmeldungArtefakte(
     status: 'vorgeschlagen',
     betreff: 'Anmeldung neuer Wohnort (§ 17 BMG)',
     buchungsreferenz: `[MOCK] ${aktenzeichenBuergeramtTermin()}`,
-    kategorie: 'behoerdentermin',
+    frist_iso: fristIso,
+    reasoning_typ: 'bmg_17',
     owner_persona_id: persona.id,
   });
 }
@@ -1467,6 +1476,27 @@ export interface MockBackendApi {
   getLebenslagenHinweise(
     personaId: PersonaId,
   ): Promise<LebenslagenHinweis[]>;
+
+  // ---------------------- Proaktiver Wohngeld-Anspruch-Hinweis ----------------------
+  // Spec: docs/specs/proaktiver-wohngeld-anspruch.md § 6.
+  /**
+   * Proaktiver Wohngeld-Anspruch-Hinweis der Persona oder `null`. `null`, wenn
+   * (a) nicht qualifiziert, (b) Consent widerrufen, (c) dismissed, oder
+   * (d) Snooze-Datum in der Zukunft. Euro-Range ist eine synthetische
+   * [MOCK]-Schätzung (€180–370), niemals aus Seed-Daten.
+   */
+  getWohngeldHinweis(
+    personaId: PersonaId,
+  ): Promise<WohngeldAnspruchEstimate | null>;
+  /** Persistiert "nicht mehr anzeigen" (Karte kommt nach Reload nicht zurück). */
+  dismissWohngeldHinweis(personaId: PersonaId): Promise<void>;
+  /** Versteckt die Karte für `tage` Tage (Snooze; Test-Default 30). */
+  snoozeWohngeldHinweis(personaId: PersonaId, tage: number): Promise<void>;
+  /** Consent-Toggle für die proaktive Erkennung. `false` → Karte verschwindet dauerhaft. */
+  setWohngeldHinweisConsent(
+    personaId: PersonaId,
+    consent: boolean,
+  ): Promise<void>;
   /**
    * AI-seitiger Ranking-Stub (assistant-engineer-owned). Liefert hier den
    * deterministischen Frist-Fallback; läuft NICHT durch `withLatency()`.
@@ -2658,6 +2688,15 @@ export const api: MockBackendApi & {
           });
         }
         const letter = letters[idx];
+
+        // Idempotenz (Spec §6.2.1 / §9.5): trägt der Brief bereits einen Vorgang,
+        // keinen zweiten anlegen — gleiche vorgangId zurückgeben. Schützt den
+        // geseedeten Hero-Brief letter-abh-erinnerung-verlaengerung
+        // (vorgang-anna-aufenthaltstitel-2027-stub) und doppeltes Tappen der CTA.
+        if (letter.vorgang_id) {
+          return { vorgangId: letter.vorgang_id };
+        }
+
         const vorgangId = `vorgang-${uuid()}`;
         const angelegtAm = new Date().toISOString();
         const titel = vorgangTitelFromArchetype(
@@ -2684,6 +2723,9 @@ export const api: MockBackendApi & {
             source: 'posteingang.erstelleVorgangAusBrief',
             seed_letter_id: letterId,
             archetype: letter.archetype,
+            // Spec §6.2.2: verknüpft den neuen Vorgang mit seiner Lebenslage
+            // (Deep-Link-Slug). Additiv — Vorgang.context ist Record<string, unknown>.
+            lebenslage_slug: bridgeTargetForArchetype(letter.archetype)?.slug,
           },
         };
         const vorgaenge = loadVorgaenge();
@@ -3201,6 +3243,30 @@ export const api: MockBackendApi & {
     return dashboardApi.prioritizeTopActions(candidates);
   },
 
+  // ---------- Proaktiver Wohngeld-Anspruch-Hinweis (Spec § 6) ----------
+  // Estimate + Consent-/Dismiss-/Snooze-Gate leben in
+  // `lebenslagen/wohngeld-estimate.ts` (geteilt mit dem DashboardSnapshot-Pfad).
+  getWohngeldHinweis: (personaId) =>
+    withLatency<WohngeldAnspruchEstimate | null>(() => {
+      ensureBooted();
+      return resolveWohngeldHinweisById(personaId, new Date());
+    }),
+  dismissWohngeldHinweis: (personaId) =>
+    withLatency<void>(() => {
+      ensureBooted();
+      persistWohngeldDismiss(personaId);
+    }),
+  snoozeWohngeldHinweis: (personaId, tage) =>
+    withLatency<void>(() => {
+      ensureBooted();
+      persistWohngeldSnooze(personaId, tage);
+    }),
+  setWohngeldHinweisConsent: (personaId, consent) =>
+    withLatency<void>(() => {
+      ensureBooted();
+      persistWohngeldConsent(personaId, consent);
+    }),
+
   // ---------- Redesign — Termine ----------
   getReminders: () => {
     ensureBooted();
@@ -3338,12 +3404,16 @@ export const api: MockBackendApi & {
       mutateTermin(terminId, (t) => ({ ...t, status: 'bestaetigt' })),
     ),
 
+  // Reschedule: mutiert NUR `datum` — KEIN Status-Wechsel mehr (redesign-termine-
+  // vorgemerkt.md, Tier 2). „verschoben" ist eine Transition, kein Ruhe-Status;
+  // nach dem Umlegen bleibt der Termin „Vorgemerkt" bzw. „Bestätigt" am neuen
+  // Datum. Die Behörde wird NICHT automatisch benachrichtigt ([MOCK] — kein
+  // OZG/XTermin-Sync); diese (falsche) Behauptung ist aus der UI entfernt.
   verschiebeTermin: (terminId: string, neuesDatumIso: string) =>
     withLatency<void>(() =>
       mutateTermin(terminId, (t) => ({
         ...t,
         datum: neuesDatumIso,
-        status: 'verschoben',
       })),
     ),
 

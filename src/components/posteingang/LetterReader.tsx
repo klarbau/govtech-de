@@ -4,7 +4,7 @@ import * as React from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Link2 } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { toast } from 'sonner';
@@ -25,8 +25,11 @@ import type {
 } from '@/types';
 
 import { api } from '@/lib/mock-backend';
+import { bridgeTargetForArchetype } from '@/lib/mock-backend/brief-bridge';
 
 import { AISummaryBlock } from './AISummaryBlock';
+import { downloadIcs } from './download-ics';
+import { ErkannteAufgabePanel } from './ErkannteAufgabePanel';
 import { AuthentizitaetsBadge, DEFAULT_AUTH_CHANNEL } from './AuthentizitaetsBadge';
 import { FristChip } from './FristChip';
 import { NeuerVorgangAusBriefModal } from './NeuerVorgangAusBriefModal';
@@ -52,33 +55,6 @@ interface LetterReaderProps {
   embedded?: boolean;
 }
 
-function downloadIcs(letter: Letter, frist: LetterFrist): void {
-  const dt = frist.datum.replaceAll('-', '');
-  const summary = `Frist · ${frist.typ} · ${letter.aktenzeichen}`;
-  const ics = [
-    'BEGIN:VCALENDAR',
-    'VERSION:2.0',
-    'PRODID:-//govtech-de-demo//posteingang//DE',
-    'BEGIN:VEVENT',
-    `UID:${letter.id}-${frist.typ}@govtech-de-demo`,
-    `DTSTAMP:${dt}T080000Z`,
-    `DTSTART;VALUE=DATE:${dt}`,
-    `DTEND;VALUE=DATE:${dt}`,
-    `SUMMARY:${summary}`,
-    `DESCRIPTION:[MOCK] ${frist.original_zitat.replaceAll(/[\r\n]+/g, ' ')}`,
-    'END:VEVENT',
-    'END:VCALENDAR',
-    '',
-  ].join('\r\n');
-  const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `frist-${letter.id}-${frist.typ}.ics`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
 function downloadLetter(letter: Letter): void {
   const blob = new Blob([letter.body_de], { type: 'text/plain;charset=utf-8' });
   const url = URL.createObjectURL(blob);
@@ -99,6 +75,7 @@ export function LetterReader({
   const t = useTranslations('posteingang.reader');
   const tArche = useTranslations('posteingang.archetype.label');
   const tBridge = useTranslations('posteingang.bridge');
+  const tPost = useTranslations('posteingang');
   const router = useRouter();
 
   const [summary, setSummary] = React.useState<LetterAiSummaryPostOpen | null>(
@@ -268,6 +245,9 @@ export function LetterReader({
 
   const hasCitationMismatch = fristen.some((f) => f.citation_match === false);
 
+  // „Der Brief, der handelt" — Bridge-Ziel des Archetyps (oder null → no-slug).
+  const bridge = bridgeTargetForArchetype(letter.archetype);
+
   // Höchstwertige Vorlesen-Fläche: die KI-Zusammenfassung (Bullets), sonst der
   // Brieftext als Fallback. On-device, kein Datenfluss (siehe VorlesenButton).
   const vorlesenText = summary
@@ -313,6 +293,15 @@ export function LetterReader({
             />
             <StatusBadge variant="verifiziert">{t('auth_badge')}</StatusBadge>
             <AuthentizitaetsBadge channel={authChannel} />
+            {letter.vorgang_id && (
+              <span
+                data-testid="reader-linked-badge"
+                className="inline-flex items-center gap-1 rounded-full border border-border bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground"
+              >
+                <Link2 className="size-3" aria-hidden="true" />
+                {tPost('linkedBadge')}
+              </span>
+            )}
             {vorgangTitle ? (
               <Link
                 href={letter.vorgang_id ? `/vorgaenge/${letter.vorgang_id}` : '#'}
@@ -450,6 +439,15 @@ export function LetterReader({
         />
         <OriginaltextBlock ref={originalRef} body={letter.body_de} />
       </div>
+
+      <ErkannteAufgabePanel
+        letter={letter}
+        bridge={bridge}
+        fristen={fristen}
+        onScrollToZitat={(zitat) => originalRef.current?.scrollToZitat(zitat)}
+        onAddToCalendar={onAddToCalendar}
+        embedded={embedded}
+      />
 
       {letter.archetype === 'renteninfo' && (
         <section

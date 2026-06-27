@@ -114,6 +114,8 @@ export type {
   EudiExportPreview,
   AutopilotKatalogEntry,
 } from './value-receipt';
+// Proaktiver Wohngeld-Anspruch-Hinweis (Spec proaktiver-wohngeld-anspruch.md § 6).
+export type { WohngeldAnspruchEstimate } from './wohngeld-estimate';
 // Redesign — Dashboard (read-model + AI-Top-3 candidates).
 export type {
   DashboardSnapshot,

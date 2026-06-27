@@ -47,6 +47,16 @@ A direct codegraph answer is a handful of calls; the equivalent grep+read explor
 
 **Specs are large (100–160 KB each) — do NOT read them whole.** They are section-numbered. Read only the sections your role needs: skim the spec's heading list first (Grep `^#` or read the top), then Read the targeted §-ranges (e.g. assistant-engineer → §7 tool contract; a11y-tester → §11 checklist; mock-backend-coder → data-schema + autopilot §§; frontend-coder → screen-flow + component-inventory §§). Reading a 160 KB spec end-to-end when you need two sections is the single biggest avoidable token cost in this repo. Same for control docs: pull the section you need, not the whole file.
 
+## Run it so the user can verify (every change)
+
+Whenever you add or change something the user can see or interact with (a screen, component, flow, or visible fix), it is **not "done" until the user can check it themselves**. Before you hand back:
+
+1. **Make it runnable.** Ensure the app is actually serving the change. The dev server runs on `http://localhost:3000` (`next dev`, HMR picks up edits live). If none is running, start one (`node_modules/.bin/next dev`, in the background). Do **not** run `next build`/`next start` over a live `next dev` — it rewrites the shared `.next` and corrupts the running server (this has cost real demo sessions).
+2. **Give exact test instructions.** Tell the user precisely how to reach and exercise the change: the route (e.g. `/lebenslagen/geburt`), the persona/login if relevant (e.g. `anna-petrov`), the steps to reproduce the target state (e.g. "submit → it parks at the eID gate — that's the screen"), and what to look for. A path + concrete steps, never just "open the app".
+3. **Don't claim a visual/behavioural PASS you didn't show.** A self-reported "looks good" is not enough (see verification discipline). Either screenshot it yourself, or point the user at the running route so they can see it live.
+
+Formal gates (axe a11y, `next build`, spine e2e) need a clean prod build that pauses :3000 — coordinate that pause with the user rather than silently killing their dev server.
+
 ## Folder structure
 
 ```

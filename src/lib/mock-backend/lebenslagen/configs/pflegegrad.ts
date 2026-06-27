@@ -22,6 +22,7 @@ export const pflegegradConfig: LebenslageConfig = {
   zukunft: true,
   engine: 'lebenslage-cascade',
   href: '/lebenslagen/pflegegrad',
+  dauer_geschaetzt_key: 'lebenslagen.pflegegrad.dauer_geschaetzt',
   zustaendige_behoerden: [
     'aok-nordost-pflegekasse',
     'md-berlin-brandenburg',
@@ -118,6 +119,8 @@ export const pflegegradConfig: LebenslageConfig = {
       block: 'D',
       gate: 'eid',
       aktion: 'Pflegegrad-Erstantrag bei der Pflegekasse einreichen',
+      kurzlabel: 'Erstantrag einreichen',
+      behoerdeKurz: 'Pflegekasse',
       agentLabel: 'Wir reichen mit Ihrer eID den Pflegegrad-Erstantrag bei der Pflegekasse ein',
       rechtsgrundlage: '§ 33 Abs. 1 SGB XI · § 18 PAuswG',
       datenkategorien: ['Identität', 'Anschrift', 'Krankenversicherung'],
@@ -141,6 +144,8 @@ export const pflegegradConfig: LebenslageConfig = {
       block: 'A',
       gate: 'auto',
       aktion: 'Eingangsbestätigung + gesetzliches Antragsdatum (= Leistungsbeginn)',
+      kurzlabel: 'Eingangsbestätigung',
+      behoerdeKurz: 'Pflegekasse',
       agentLabel: 'Die Pflegekasse bestätigt das Antragsdatum — Ihr Leistungsbeginn',
       rechtsgrundlage: '§ 33 Abs. 1 S. 4 SGB XI',
       datenkategorien: ['Identität'],
@@ -162,6 +167,8 @@ export const pflegegradConfig: LebenslageConfig = {
       block: 'A',
       gate: 'auto',
       aktion: 'Begutachtungsauftrag von Kasse an MD (binnen 3 Arbeitstagen) — REAL, kein ZUKUNFT',
+      kurzlabel: 'Begutachtungsauftrag',
+      behoerdeKurz: 'Medizinischer Dienst',
       agentLabel: 'Die Pflegekasse beauftragt den Medizinischen Dienst mit der Begutachtung',
       rechtsgrundlage: '§ 18 SGB XI',
       datenkategorien: ['Identität', 'Krankenversicherung'],
@@ -174,6 +181,8 @@ export const pflegegradConfig: LebenslageConfig = {
       block: 'B',
       gate: 'consent',
       aktion: 'Hausbesuch-Begutachtungstermin vorschlagen (MD vergibt)',
+      kurzlabel: 'Hausbesuch-Termin',
+      behoerdeKurz: 'Medizinischer Dienst',
       agentLabel: 'Mit Ihrer Einwilligung schlägt der MD einen Hausbesuch-Begutachtungstermin vor',
       rechtsgrundlage: '§ 18a SGB XI · Art. 6 Abs. 1 lit. a DSGVO',
       datenkategorien: ['Identität', 'Anschrift', 'Gesundheitsdaten'],
@@ -194,6 +203,8 @@ export const pflegegradConfig: LebenslageConfig = {
       block: 'A',
       gate: 'auto',
       aktion: 'Bescheid über Pflegegrad (1–5) auf MD-Gutachten — binnen 25 Arbeitstagen',
+      kurzlabel: 'Pflegegrad-Bescheid',
+      behoerdeKurz: 'Pflegekasse',
       agentLabel: 'Die Pflegekasse erlässt den Bescheid über Ihren Pflegegrad (auf MD-Gutachten)',
       rechtsgrundlage: '§ 18c Abs. 1 · §§ 14, 15 SGB XI',
       datenkategorien: ['Identität', 'Gesundheitsdaten'],
@@ -217,6 +228,8 @@ export const pflegegradConfig: LebenslageConfig = {
       gate: 'consent',
       aktion:
         'Folgeleistungen: Pflegegeld, Pflicht-Beratungseinsatz, Pflegehilfsmittel (42 €/Monat)',
+      kurzlabel: 'Folgeleistungen',
+      behoerdeKurz: 'Pflegekasse',
       agentLabel: 'Mit Ihrer Einwilligung richten wir Folgeleistungen ein (Pflegegeld, Hilfsmittel)',
       rechtsgrundlage: '§ 37 / § 37 Abs. 3 / § 40 Abs. 2 SGB XI',
       datenkategorien: ['Identität', 'Bankverbindung'],
@@ -237,5 +250,22 @@ export const pflegegradConfig: LebenslageConfig = {
     behoerdengaenge_gespart: 3,
     minuten_gespart: 210,
     hinweis_key: 'lebenslagen.pflegegrad.value_receipt_hinweis',
+  },
+  // Ergebnis-Band des completed-state-Dossiers. Pflegegrad-Wert ist synthetisch
+  // ([MOCK]) — real wird er ausschließlich nach MD-Hausbesuch festgestellt
+  // (§§ 14, 15 SGB XI); der [MOCK]-Marker macht das transparent.
+  ergebnis: {
+    lead_key: 'lebenslagen.pflegegrad.ergebnis.lead',
+    kennzahl: {
+      label_key: 'lebenslagen.pflegegrad.ergebnis.kennzahl_label',
+      wert: '2',
+      sub_key: 'lebenslagen.pflegegrad.ergebnis.kennzahl_sub',
+      mock: true,
+    },
+    status: {
+      label_key: 'lebenslagen.pflegegrad.ergebnis.status_label',
+      wert_key: 'lebenslagen.pflegegrad.ergebnis.status_wert',
+      sub_key: 'lebenslagen.pflegegrad.ergebnis.status_sub',
+    },
   },
 };

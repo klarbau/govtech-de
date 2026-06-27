@@ -18,6 +18,7 @@ export const geburtConfig: LebenslageConfig = {
   zukunft: true,
   engine: 'lebenslage-cascade',
   href: '/lebenslagen/geburt',
+  dauer_geschaetzt_key: 'lebenslagen.geburt.dauer_geschaetzt',
   zustaendige_behoerden: [
     'standesamt-berlin-mitte',
     'buergeramt-berlin-mitte',
@@ -134,6 +135,8 @@ export const geburtConfig: LebenslageConfig = {
       gate: 'eid',
       aktion:
         'Geburt beurkunden + Geburtsurkunde ausstellen (auf Geburtsanzeige + bestätigte Namensbestimmung)',
+      kurzlabel: 'Geburt beurkunden',
+      behoerdeKurz: 'Standesamt',
       agentLabel:
         'Wir beurkunden die Geburt beim Standesamt und stellen die Geburtsurkunde aus',
       rechtsgrundlage: '§ 18, § 20, § 21 PStG',
@@ -155,6 +158,8 @@ export const geburtConfig: LebenslageConfig = {
       block: 'A',
       gate: 'auto',
       aktion: 'Kind ins Melderegister eintragen + Geburtsdaten an BZSt übermitteln',
+      kurzlabel: 'Kind anmelden',
+      behoerdeKurz: 'Einwohnermeldeamt',
       agentLabel: 'Wir tragen das Kind ins Melderegister ein und melden die Geburt dem BZSt',
       rechtsgrundlage: '§ 17 BMG i.V.m. § 139b AO',
       datenkategorien: ['Identität', 'Anschrift'],
@@ -176,6 +181,8 @@ export const geburtConfig: LebenslageConfig = {
       block: 'A',
       gate: 'auto',
       aktion: 'Steuer-Identifikationsnummer des Kindes antragslos vergeben',
+      kurzlabel: 'Steuer-ID',
+      behoerdeKurz: 'Bundeszentralamt',
       agentLabel: 'Das BZSt vergibt automatisch die Steuer-ID Ihres Kindes',
       rechtsgrundlage: '§ 139b AO',
       datenkategorien: ['Identität', 'Steuer-ID'],
@@ -199,6 +206,8 @@ export const geburtConfig: LebenslageConfig = {
       gate: 'eid',
       aktion:
         'Kindergeld festsetzen (heute § 67 EStG antragsbasiert; antragslose Festsetzung = ZUKUNFT)',
+      kurzlabel: 'Kindergeld',
+      behoerdeKurz: 'Familienkasse',
       agentLabel: 'Wir setzen mit Ihrer eID-Bestätigung das Kindergeld bei der Familienkasse fest',
       rechtsgrundlage: '§§ 62, 67 EStG · §§ 62 ff. antragslos',
       datenkategorien: ['Identität', 'Steuer-ID', 'Bankverbindung'],
@@ -223,6 +232,8 @@ export const geburtConfig: LebenslageConfig = {
       gate: 'eid',
       aktion:
         'Elterngeld festsetzen (einwilligungsbasiert ELFE; Einkommensdaten mit Einwilligung)',
+      kurzlabel: 'Elterngeld',
+      behoerdeKurz: 'Elterngeldstelle',
       agentLabel: 'Wir setzen mit Ihrer eID-Bestätigung das Elterngeld bei der Elterngeldstelle fest',
       rechtsgrundlage: '§ 1, § 4, § 7 BEEG · Art. 6 Abs. 1 lit. a DSGVO',
       datenkategorien: ['Identität', 'Einkommen', 'Bankverbindung'],
@@ -246,6 +257,8 @@ export const geburtConfig: LebenslageConfig = {
       block: 'B',
       gate: 'consent',
       aktion: 'Kind beitragsfrei familienversichern (Anmeldung durch Mitglied)',
+      kurzlabel: 'Familienversicherung',
+      behoerdeKurz: 'Krankenkasse',
       agentLabel: 'Mit Ihrer Einwilligung melden wir das Kind beitragsfrei in der Familienversicherung an',
       rechtsgrundlage: '§ 10 SGB V · Art. 6 Abs. 1 lit. a DSGVO',
       datenkategorien: ['Identität', 'Krankenversicherung'],

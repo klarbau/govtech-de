@@ -256,42 +256,45 @@ test.describe('SPINE — assistant → autopilot → posteingang (demo-shipped g
     await kaskadeLink.click();
     await page.waitForURL('**/vorgaenge/umzug/run**');
 
-    // The redesigned run page renders a flat cascade: `.cascade` → `.cascade-cards`
-    // → one `.cas-card` per step (A→D→B sorted, block-C filtered, sliced to 5).
-    // The page hydrates `getVorgang(vorgangId)` from localStorage, which already
-    // holds the cascade steps persisted by the in-process autopilot. A reload
-    // clears a dev cold-compile of this route without losing persisted state.
-    const cascadeCards = page.locator('.cascade-cards .cas-card');
+    // The run page now renders the shared dossier (`VorgangInBearbeitung`, the
+    // same component the 7 Lebenslagen use): a vertical step timeline
+    // `.vlf-timeline` → one `.vlf-tl-item` per step (A→D→B sorted, block-C
+    // filtered, NOT sliced). The page hydrates `getVorgang(vorgangId)` from
+    // localStorage, which already holds the cascade steps persisted by the
+    // in-process autopilot. A reload clears a dev cold-compile of this route
+    // without losing persisted state.
+    const timelineItems = page.locator('.vlf-timeline .vlf-tl-item');
     try {
-      await expect(cascadeCards.first().locator('.t')).toBeVisible({
+      await expect(timelineItems.first().locator('.vlf-tl-title')).toBeVisible({
         timeout: 20_000,
       });
     } catch {
       await page.reload({ waitUntil: 'domcontentloaded' });
-      await expect(cascadeCards.first().locator('.t')).toBeVisible({
+      await expect(timelineItems.first().locator('.vlf-tl-title')).toBeVisible({
         timeout: 20_000,
       });
     }
 
-    // The five Block-A Behörden cascade cards progress to "Abgeschlossen" — the
-    // redesign's `statusLabel('confirmed')` label, the equivalent of the old
-    // "bestätigt". Reliable mode guarantees no random failure, so all five
-    // resolve. (Block-A gained the § 33 BMG MB↔MB-Rückmeldung row in
-    // feat/fit-connect-cascade-realism, taking the auto-confirmed count 4 → 5.)
-    // Scope strictly to `.cascade-cards .cas-card .badge`: "Abgeschlossen"
-    // ALSO appears in the hero badge and the Live-Aktivitäten feed rows, so a
-    // page-wide matcher would over-count. The 6th card (first Block-D step) may
-    // remain in_progress/pending, so we assert exactly 5 confirmed.
+    // The five Block-A Behörden timeline rows progress to "Erledigt" — the
+    // dossier's `status_confirmed` label (lebenslagen.detail.laufend), the
+    // equivalent of the old run page's "Abgeschlossen". Reliable mode guarantees
+    // no random failure, so all five resolve. (Block-A gained the § 33 BMG
+    // MB↔MB-Rückmeldung row in feat/fit-connect-cascade-realism, taking the
+    // auto-confirmed count 4 → 5.) Scope strictly to `.vlf-timeline .vlf-tl-item
+    // .badge`: "Erledigt" ALSO appears in the Beteiligte-Stellen list + the
+    // Live-Aktivitäten feed, so a page-wide matcher would over-count. The
+    // Block-D rows gate on eID (confirmed inline, not on /run) so they stay
+    // pending here → we assert exactly 5 "Erledigt" in the timeline.
     await expect(
-      page.locator('.cascade-cards .cas-card .badge', {
-        hasText: 'Abgeschlossen',
+      page.locator('.vlf-timeline .vlf-tl-item .badge', {
+        hasText: 'Erledigt',
       }),
     ).toHaveCount(5, { timeout: 30_000 });
 
-    // The Finanzamt + Beitragsservice cards render (scoped to the cascade so the
-    // Übersicht auth-list / Live-feed copies don't satisfy the assertion).
-    await expect(cascadeCards.getByText(/Finanzamt/i).first()).toBeVisible();
-    await expect(cascadeCards.getByText(/Beitragsservice/i).first()).toBeVisible();
+    // The Finanzamt + Beitragsservice rows render (scoped to the timeline so the
+    // Beteiligte-Stellen list / Live-feed copies don't satisfy the assertion).
+    await expect(timelineItems.getByText(/Finanzamt/i).first()).toBeVisible();
+    await expect(timelineItems.getByText(/Beitragsservice/i).first()).toBeVisible();
 
     /* ── Step 6: confirmations land in the Posteingang ──────────────────── */
     const letterLinks = page.locator('a[href^="/posteingang/letter-"]');

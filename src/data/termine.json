@@ -48,8 +48,13 @@
       "typ": "video",
       "details": "AOK Nordost Video-Sprechstunde — Link wird 24 h vorher per E-Mail zugestellt"
     },
-    "status": "gebucht",
-    "betreff": "Beratung Vorsorge-Untersuchungen"
+    "status": "bestaetigt",
+    "betreff": "Beratung Vorsorge-Untersuchungen",
+    "vorbereitung": [
+      { "label_i18n_key": "termine.vorbereitung.versicherungskarte", "done": true },
+      { "label_i18n_key": "termine.vorbereitung.unterlagen_pruefen", "done": true },
+      { "label_i18n_key": "termine.vorbereitung.fragen_notieren" }
+    ]
   },
   {
     "id": "termin-anna-kinderarzt-u7",
@@ -60,7 +65,7 @@
       "typ": "praesenz",
       "details": "Kinderarztpraxis am Park, Winsstraße 12, 10405 Berlin"
     },
-    "status": "gebucht",
+    "status": "bestaetigt",
     "betreff": "Vorsorgeuntersuchung U7 (Lev)",
     "buchungsreferenz": "[MOCK] KAP-2026-U7-0412",
     "kategorie": "buchung"
@@ -92,7 +97,7 @@
       "typ": "praesenz",
       "details": "Kinderarztpraxis Eppendorf, Hamburg"
     },
-    "status": "gebucht",
+    "status": "bestaetigt",
     "betreff": "Vorsorgeuntersuchung U3 (Mia)",
     "kategorie": "buchung"
   },
@@ -106,7 +111,7 @@
       "typ": "telefon",
       "details": "Finanzamt Köln-Mitte — telefonische Rückfrage, Durchwahl per E-Mail"
     },
-    "status": "gebucht",
+    "status": "bestaetigt",
     "betreff": "Rückfrage Einkommensteuer 2024",
     "kategorie": "behoerdentermin"
   },
@@ -119,7 +124,7 @@
       "typ": "video",
       "details": "IHK Köln — Online-Beratung Selbstständige"
     },
-    "status": "gebucht",
+    "status": "bestaetigt",
     "betreff": "Beratung Beitragsfestsetzung",
     "kategorie": "behoerdentermin"
   }

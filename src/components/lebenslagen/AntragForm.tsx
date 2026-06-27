@@ -4,7 +4,7 @@ import * as React from 'react';
 import { notFound, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { ArrowLeft, Euro, Fingerprint, Landmark, Lock, UploadCloud } from 'lucide-react';
+import { ArrowLeft, Euro, Fingerprint, Info, Landmark, Lock, UploadCloud } from 'lucide-react';
 
 import { EidConfirmDialog } from '@/components/umzug/EidConfirmDialog';
 import { api } from '@/lib/mock-backend';
@@ -13,7 +13,7 @@ import type {
   LebenslageConfig,
 } from '@/lib/mock-backend/lebenslagen/types';
 import type { Behoerde, Persona } from '@/types';
-import { formatPrefillValue, resolvePath } from './lebenslagen-shared';
+import { formatPrefillValue, isGenuineNotFound, loadWithRetry, resolvePath } from './lebenslagen-shared';
 
 interface AntragFormProps {
   slug: string;
@@ -28,37 +28,43 @@ interface FieldState {
 type LoadState =
   | { kind: 'loading' }
   | { kind: 'not-found' }
+  | { kind: 'error' }
   | { kind: 'ready'; config: LebenslageConfig; persona: Persona; behoerden: Behoerde[] };
 
 export function AntragForm({ slug }: AntragFormProps) {
   const [state, setState] = React.useState<LoadState>({ kind: 'loading' });
+  const [reloadKey, setReloadKey] = React.useState(0);
 
   React.useEffect(() => {
     let cancelled = false;
+    setState({ kind: 'loading' });
     (async () => {
       try {
-        const config = await api.getLebenslageConfig(slug);
+        const config = await loadWithRetry(() => api.getLebenslageConfig(slug));
         if (cancelled) return;
         if (!config || config.mode === 'antragslos') {
           setState({ kind: 'not-found' });
           return;
         }
         const [persona, behoerden] = await Promise.all([
-          api.getProfile(),
-          api.getBehoerden().catch(() => [] as Behoerde[]),
+          loadWithRetry(() => api.getProfile()),
+          loadWithRetry(() => api.getBehoerden()).catch(() => [] as Behoerde[]),
         ]);
         if (!cancelled) setState({ kind: 'ready', config, persona, behoerden });
-      } catch {
-        if (!cancelled) setState({ kind: 'not-found' });
+      } catch (err) {
+        // Transienter (5%) Latenzfehler → Retry-Zustand; nur ein genuiner
+        // Not-Found-Fehler rendert 404.
+        if (!cancelled) setState({ kind: isGenuineNotFound(err) ? 'not-found' : 'error' });
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [slug]);
+  }, [slug, reloadKey]);
 
   if (state.kind === 'loading') return <FormSkeleton />;
   if (state.kind === 'not-found') return notFound();
+  if (state.kind === 'error') return <FormLoadError onRetry={() => setReloadKey((k) => k + 1)} />;
 
   return (
     <AntragFormReady
@@ -66,6 +72,24 @@ export function AntragForm({ slug }: AntragFormProps) {
       persona={state.persona}
       behoerden={state.behoerden}
     />
+  );
+}
+
+function FormLoadError({ onRetry }: { onRetry: () => void }) {
+  const td = useTranslations('lebenslagen.detail');
+  const tc = useTranslations('common.cta');
+  return (
+    <div className="gt-page-head">
+      <div className="gt-banner amber" role="alert">
+        <Info aria-hidden="true" />
+        <div>
+          <strong>{td('load_error')}</strong>
+        </div>
+      </div>
+      <button type="button" className="btn btn-secondary" onClick={onRetry} style={{ marginTop: 12 }}>
+        {tc('erneut_versuchen')}
+      </button>
+    </div>
   );
 }
 
@@ -385,7 +409,6 @@ function AntragFormReady({
       <EidConfirmDialog
         open={eidOpen}
         onOpenChange={setEidOpen}
-        behoerdeName={primaryBehoerdeName}
         onConfirm={handleConfirm}
         title={td('eid_dialog.title')}
         body={td('eid_dialog.body_template', { behoerde: primaryBehoerdeName })}

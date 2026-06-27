@@ -49,7 +49,7 @@ import type {
 } from './types';
 import { uuid } from '../id';
 import { wait } from '../latency';
-import { __orchestrationInternals } from '../orchestration';
+import { getTransport } from '../orchestration';
 
 const MOCK_FOOTER = '[MOCK – Verwaltungsdemo, keine echten Daten]';
 
@@ -262,7 +262,7 @@ async function performStepWork(
 
   // §1.2 — die EINE headline Forward-Submission über getTransport() ankern.
   if (stepCfg.isPrimarySubmission) {
-    const transport = __orchestrationInternals.getTransport();
+    const transport = getTransport();
     const envelope: TransportEnvelope = {
       messageId: `msg-${uuid()}`,
       behoerdeId: stepCfg.behoerdeId,

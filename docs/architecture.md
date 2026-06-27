@@ -318,6 +318,27 @@ AI additions: read-only tool `preview_umzug` (proposes Umzug params without writ
 
 Autopilot-Katalog teaser fields (2026-06-13): `AutopilotKatalogEntry` (`src/types/value-receipt.ts`, served by `api.getAutopilotKatalog`) gained two required `ca.`-teaser estimates — `behoerden_count` and `geschaetzte_zeitersparnis_min` — for the dashboard catalog preview cards; these are intentionally distinct from the realized `ValueReceipt` numbers of a completed run and are always rendered with „ca.".
 
+### Proaktiver Wohngeld-Anspruch-Hinweis (2026-06-27)
+
+Supporting-track addition (Spec `docs/specs/proaktiver-wohngeld-anspruch.md` § 6). A proactive, data-triggered "you may be entitled to Wohngeld" card on the dashboard. **Honesty-locked**: the euro figure is a synthetic **[MOCK]** estimate, never seed-sourced; the whole concept is **[ZUKUNFT 2027]**.
+
+New type file `src/types/wohngeld-estimate.ts` → `WohngeldAnspruchEstimate` (`qualifiziert`, `geschaetzt_min_eur`/`geschaetzt_max_eur` (range only, hard-capped €180–370), `mietstufe` 1–7, `haushaltsgroesse`, `trigger_label_i18n_key`, `rechtsgrundlage[]`, `zukunft: true`).
+
+Additive **optional** `Persona` fields (no break): `wohnverhaeltnis?: 'miete' | 'eigentum'` and `wohngeld_indikation?: boolean` (a non-numeric heuristic flag — **never** an income/rent amount; there is no numeric income field anywhere in the Stammdaten). `DashboardSnapshot` gained optional `wohngeld_hinweis?: WohngeldAnspruchEstimate | null`, prefilled by `buildDashboard` so the card renders without a separate roundtrip.
+
+Estimate + gate live in `src/lib/mock-backend/lebenslagen/wohngeld-estimate.ts` (single source of truth, shared between the snapshot path and the direct API call): `estimateWohngeldAnspruch(persona)` (pure predicate + derivations; non-qualifying persona → `null`, never a "kein Anspruch" payload), `resolveWohngeldHinweis(persona, now)` (estimate + suppression gate), plus the persisting mutators. The euro range is a deterministic function of `(haushaltsgroesse, mietstufe)` clamped to €180–370; Anna (HH 3, Mietstufe IV/4) yields **min 220 / max 340**. Mietstufe derives from the registered municipality ([MOCK] table: Berlin → 4, default → 3), not raw PLZ.
+
+New `api` methods (all `withLatency` + `ensureBooted`, dispatched through `api.ts`):
+
+```ts
+getWohngeldHinweis(personaId): Promise<WohngeldAnspruchEstimate | null>; // null if not qualified OR consent revoked OR dismissed OR snooze in future
+dismissWohngeldHinweis(personaId): Promise<void>;
+snoozeWohngeldHinweis(personaId, tage): Promise<void>;
+setWohngeldHinweisConsent(personaId, consent): Promise<void>;
+```
+
+New persistence keys under `govtech-de:v1:`: `wohngeld-hinweis:dismissed` (`Record<PersonaId, ISO>`), `wohngeld-hinweis:snoozed-until` (`Record<PersonaId, ISO>`), `wohngeld-hinweis:consent` (`Record<PersonaId, boolean>`, default `true` when absent). Seed: `anna-petrov` only carries `wohnverhaeltnis: 'miete'` + `wohngeld_indikation: true` (Schmidt/Mehmet are the negative path — no card).
+
 ## Update protocol
 
 When any of the following change, this file must be updated by the responsible agent in the same review pass:

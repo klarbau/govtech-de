@@ -54,6 +54,24 @@ const umzugStub: LebenslageConfig = {
     minuten_gespart: 180,
     hinweis_key: 'lebenslagen.umzug.value_receipt_hinweis',
   },
+  // Ergebnis-Dossier „Gesamtergebnis"-Band (VorgangAbgeschlossen). Umzug hat kein
+  // einzelnes fachliches Outcome-Datum wie „Pflegegrad 2", daher eine ehrliche
+  // Prozess-Kennzahl (Ummeldung abgeschlossen) + die „ein Satz"-Aufwandsaussage
+  // aus dem Value-Receipt. Dritte Zelle bleibt generisch „Beteiligte Stellen".
+  ergebnis: {
+    lead_key: 'lebenslagen.umzug.ergebnis.lead',
+    kennzahl: {
+      label_key: 'lebenslagen.umzug.ergebnis.kennzahl_label',
+      wert: 'Abgeschlossen',
+      sub_key: 'lebenslagen.umzug.ergebnis.kennzahl_sub',
+      mock: false,
+    },
+    status: {
+      label_key: 'lebenslagen.umzug.ergebnis.status_label',
+      wert_key: 'lebenslagen.umzug.ergebnis.status_wert',
+      sub_key: 'lebenslagen.umzug.ergebnis.status_sub',
+    },
+  },
 };
 
 /**
@@ -103,6 +121,10 @@ export function getLebenslagenCatalog(): LebenslageCatalogEntry[] {
     engine: c.engine,
     title_key: titleKey(c.slug),
     lead_key: leadKey(c.slug),
+    // Hub-Kachel-Metadaten: Schritt-/Behörden-Zahl direkt aus dem Config.
+    // Umzug-Stub hat eine leere Cascade → schritte 0 (Hub zeigt „teilweise automatisch").
+    schritte: c.cascade.length,
+    behoerden: c.zustaendige_behoerden.length,
   }));
 }
 

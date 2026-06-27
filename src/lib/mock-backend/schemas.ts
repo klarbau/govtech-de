@@ -100,6 +100,11 @@ const personaSchemaBase = z.object({
   kindergeld_bezug: z.boolean(),
   wehrerfasst: z.boolean(),
   sprachen: z.array(z.string()),
+  // Proaktiver Wohngeld-Anspruch-Hinweis (Spec proaktiver-wohngeld-anspruch.md
+  // § 6) — additive optionale Heuristik-Felder. KEINE numerische Einkommens-
+  // oder Miet-Zahl; `wohngeld_indikation` ist nur ein boolescher Marker.
+  wohnverhaeltnis: z.enum(['miete', 'eigentum']).optional(),
+  wohngeld_indikation: z.boolean().optional(),
   // V1 Stammdaten — additive optionale Felder (Spec § 4.3).
   fruehere_namen: z.array(z.string()).optional(),
   doktorgrad: z.string().optional(),
@@ -1331,6 +1336,20 @@ export const dashboardSortModeSchema = z.enum([
 
 /** Bucket `govtech-de:v1:dashboard:sort-mode` — Record<PersonaId, DashboardSortMode>. */
 export const dashboardSortModeBucketSchema = z.record(dashboardSortModeSchema);
+
+// ---------------------------------------------------------------------------
+// Proaktiver Wohngeld-Anspruch-Hinweis (Spec proaktiver-wohngeld-anspruch.md
+// § 6). deviceLocal-State pro Persona.
+// ---------------------------------------------------------------------------
+
+/** Bucket `govtech-de:v1:wohngeld-hinweis:dismissed` — Record<PersonaId, ISO-Timestamp>. */
+export const wohngeldHinweisDismissedBucketSchema = z.record(z.string());
+
+/** Bucket `govtech-de:v1:wohngeld-hinweis:snoozed-until` — Record<PersonaId, ISO-Datum>. */
+export const wohngeldHinweisSnoozedBucketSchema = z.record(z.string());
+
+/** Bucket `govtech-de:v1:wohngeld-hinweis:consent` — Record<PersonaId, boolean>. */
+export const wohngeldHinweisConsentBucketSchema = z.record(z.boolean());
 
 // Compile-time guard: zod-Enum und TS-Union (`DashboardSortMode`) identisch.
 import type { DashboardSortMode as _DashboardSortModeTs } from '@/types/dashboard';

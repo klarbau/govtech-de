@@ -116,6 +116,21 @@ export interface Persona {
   wehrerfasst: boolean;
   /** ISO-639-1-Codes der gesprochenen Sprachen (z. B. ['de','ru','en']). */
   sprachen: string[];
+  /**
+   * Wohnverhältnis (selbst-deklarierbares Stammdatum; NICHT im Melderegister).
+   * Mieter:innen sind Wohngeld-nudge-relevant; Eigentümer:innen i.d.R. nicht.
+   * Additiv/optional — bricht keine bestehenden Konsumenten (Spec
+   * `proaktiver-wohngeld-anspruch.md` § 6).
+   */
+  wohnverhaeltnis?: 'miete' | 'eigentum';
+  /**
+   * Grobe, NICHT-numerische "könnte anspruchsberechtigt sein"-Indikation ([MOCK]).
+   * KEIN Einkommensbetrag, KEINE Entitlement-Berechnung. Nur ein Heuristik-Flag,
+   * das eine niedrige/mittlere Einkommenslage andeutet (z. B. aus Onboarding-
+   * Selbstauskunft). Steuert ausschließlich, ob der proaktive Wohngeld-Hinweis
+   * erscheint (Spec `proaktiver-wohngeld-anspruch.md` § 6).
+   */
+  wohngeld_indikation?: boolean;
 
   // -------------------------------------------------------------------------
   // V1 Stammdaten — additive optionale Felder (Spec § 4.3). Kein Bruch an

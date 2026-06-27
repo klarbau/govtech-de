@@ -19,15 +19,32 @@ import { cn, dateFnsLocale } from '@/lib/utils';
 
 const WEEKDAY_KEYS = ['mo', 'di', 'mi', 'do', 'fr', 'sa', 'so'] as const;
 
+/** Per-day event breakdown by category (termine / fristen / erinnerungen). */
+export interface DayEventBreakdown {
+  termine: number;
+  fristen: number;
+  erinnerungen: number;
+}
+
 interface MonthCalendarProps {
   /** ISO date of the currently selected day, or null for "no day selected". */
   selectedIso: string | null;
   /** ISO date treated as "today" (SSR-stable demo now). */
   todayIso: string;
-  /** ISO date strings (yyyy-MM-dd) that carry one or more events, with a count. */
-  eventCounts: Record<string, number>;
+  /**
+   * yyyy-MM-dd → per-category event breakdown. A dot's colour is derived from
+   * which categories the day carries (single → that colour, >1 → amber); the
+   * cell aria-label announces the breakdown in TEXT (colour-independent a11y).
+   */
+  events: Record<string, DayEventBreakdown>;
   onSelect: (iso: string | null) => void;
 }
+
+const EMPTY_BREAKDOWN: DayEventBreakdown = {
+  termine: 0,
+  fristen: 0,
+  erinnerungen: 0,
+};
 
 function dayKey(date: Date): string {
   return format(date, 'yyyy-MM-dd');
@@ -47,10 +64,11 @@ function dayKey(date: Date): string {
 export function MonthCalendar({
   selectedIso,
   todayIso,
-  eventCounts,
+  events,
   onSelect,
 }: MonthCalendarProps) {
   const t = useTranslations('termine.calendar');
+  const tBreakdown = useTranslations('termine.calendar.day_events_breakdown');
   const dateLocale = dateFnsLocale(useLocale());
   const today = React.useMemo(() => parseISO(todayIso), [todayIso]);
   const selected = selectedIso ? parseISO(selectedIso) : null;
@@ -205,10 +223,32 @@ export function MonthCalendar({
               const isToday = isSameDay(day, today);
               const isSelected = selected ? isSameDay(day, selected) : false;
               const isActive = isSameDay(day, activeDay);
-              const count = eventCounts[key] ?? 0;
+              const breakdown = events[key] ?? EMPTY_BREAKDOWN;
+              const activeCategories = (
+                ['termine', 'fristen', 'erinnerungen'] as const
+              ).filter((cat) => breakdown[cat] > 0);
+              const count = activeCategories.reduce(
+                (sum, cat) => sum + breakdown[cat],
+                0,
+              );
 
+              // Dot colour: a single category → that hue, >1 → amber „mehrere".
+              const dotClass =
+                activeCategories.length > 1
+                  ? 'cal-dot-mehrere'
+                  : activeCategories[0] === 'fristen'
+                    ? 'cal-dot-frist'
+                    : activeCategories[0] === 'erinnerungen'
+                      ? 'cal-dot-erinnerung'
+                      : 'cal-dot-termin';
+
+              // Colour-independent a11y: spell the per-category breakdown in text.
               const eventSuffix =
-                count > 0 ? t('day_events_suffix', { count }) : '';
+                count > 0
+                  ? ` — ${activeCategories
+                      .map((cat) => tBreakdown(cat, { count: breakdown[cat] }))
+                      .join(', ')}`
+                  : '';
               const label = t('day_aria', {
                 datum: format(day, 'EEEE, d. MMMM yyyy', { locale: dateLocale }),
                 events: eventSuffix,
@@ -252,7 +292,7 @@ export function MonthCalendar({
                         aria-hidden="true"
                         className={cn(
                           'absolute bottom-1 size-1 rounded-full',
-                          isSelected ? 'bg-primary-foreground' : 'bg-success',
+                          isSelected ? 'bg-primary-foreground' : dotClass,
                         )}
                       />
                     ) : null}

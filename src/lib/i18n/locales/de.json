@@ -43,11 +43,14 @@
     "search_submit": "Suchen",
     "filter_label": "Themen filtern",
     "categories": {
-      "alle": "Alle Themen",
+      "alle": "Alle",
       "familie": "Familie",
       "wohnen": "Wohnen",
       "arbeit": "Arbeit",
       "migration": "Migration",
+      "gesundheit": "Gesundheit",
+      "mobilitaet": "Mobilität",
+      "rente": "Rente",
       "steuern": "Steuern",
       "mehr": "Mehr"
     },
@@ -82,6 +85,136 @@
     "rail_secure_body": "Jede Leistung zeigt, welche Daten verarbeitet werden, durch wen und auf welcher Rechtsgrundlage. Sie behalten die Kontrolle.",
     "rail_secure_link": "Datenschutz & Einwilligungen",
     "trust_title": "Vertrauen durch Standards",
+    "hub_subtitle": "Finden Sie Leistungen und Informationen des Staates – geordnet nach Lebenssituationen, verständlich erklärt.",
+    "results_none_category": "Keine Treffer in dieser Kategorie. Bitte wählen Sie ein anderes Thema.",
+    "beliebte_title": "Beliebte Lebenslagen",
+    "alle_anzeigen": "Alle anzeigen",
+    "meta_schritte": "{count, plural, one {# Schritt} other {# Schritte}}",
+    "meta_behoerden": "{count, plural, one {# Behörde} other {# Behörden}}",
+    "teilautomatisch": "teilweise automatisch",
+    "beliebte": {
+      "geburt": {
+        "title": "Geburt eines Kindes",
+        "desc": "Erledigen Sie alle wichtigen Schritte rund um die Geburt."
+      },
+      "umzug": {
+        "title": "Umzug",
+        "desc": "Melden Sie Ihren neuen Wohnsitz an – die zuständigen Stellen werden automatisch informiert."
+      },
+      "aufenthalt": {
+        "title": "Aufenthaltstitel verlängern",
+        "desc": "Verlängern Sie Ihren Aufenthaltstitel rechtzeitig vor Ablauf."
+      },
+      "kindergeld": {
+        "title": "Kindergeld",
+        "desc": "Sichern Sie sich Kindergeld – mit vorausgefüllten Angaben."
+      },
+      "wohngeld": {
+        "title": "Wohngeld beantragen",
+        "desc": "Prüfen Sie Ihren Anspruch und stellen Sie den Antrag online."
+      },
+      "pflege": {
+        "title": "Pflege organisieren",
+        "desc": "Beantragen Sie Leistungen der Pflegeversicherung im Pflegefall."
+      }
+    },
+    "nach_lebensphase_title": "Nach Lebensphase",
+    "alle_phase": "Alle {count} Lebenslagen",
+    "alle_lebenslagen_anzeigen": "Alle Lebenslagen anzeigen",
+    "phasen": {
+      "familie": {
+        "title": "Familie & Kinder",
+        "items": {
+          "geburt": "Geburt eines Kindes",
+          "kindergeld": "Kindergeld beantragen",
+          "elterngeld": "Elterngeld beantragen"
+        }
+      },
+      "wohnen": {
+        "title": "Wohnen & Umzug",
+        "items": {
+          "umzug": "Umzug",
+          "wohnberechtigung": "Wohnberechtigung",
+          "wohngeld": "Wohngeld beantragen"
+        }
+      },
+      "arbeit": {
+        "title": "Arbeit & Einkommen",
+        "items": {
+          "arbeit_aufnehmen": "Arbeit aufnehmen",
+          "arbeitslos": "Arbeitslos melden",
+          "buergergeld": "Bürgergeld beantragen"
+        }
+      },
+      "migration": {
+        "title": "Migration & Aufenthalt",
+        "items": {
+          "aufenthalt": "Aufenthaltstitel verlängern",
+          "einbuergerung": "Einbürgerung",
+          "visum": "Visum beantragen"
+        }
+      },
+      "gesundheit": {
+        "title": "Gesundheit & Vorsorge",
+        "items": {
+          "pflege": "Pflege organisieren",
+          "krankenversicherung": "Krankenversicherung",
+          "vorsorge": "Vorsorge & Impfen"
+        }
+      }
+    },
+    "warum_title": "Warum das hilfreich ist",
+    "warum": {
+      "once_only": {
+        "title": "Once-Only",
+        "desc": "Ihre Daten werden nur einmal abgefragt und sicher zwischen Behörden genutzt."
+      },
+      "verstaendlich": {
+        "title": "Verständlich erklärt",
+        "desc": "Wir zeigen Ihnen in klaren Schritten, was zu tun ist – ohne Fachchinesisch."
+      },
+      "schutz": {
+        "title": "Ihre Daten schützen",
+        "desc": "Ihre Daten werden nur mit Ihrer Einwilligung verarbeitet."
+      },
+      "link": "Mehr zu Sicherheit & Datenschutz"
+    },
+    "empfohlen_title": "Empfohlen für Sie",
+    "empfohlen": {
+      "bearbeiten": "Bearbeiten",
+      "alle": "Alle Empfehlungen anzeigen",
+      "geburt": {
+        "title": "Geburt eines Kindes",
+        "desc": "Basierend auf Ihrer Lebenssituation"
+      },
+      "umzug": {
+        "title": "Umzug",
+        "desc": "Häufig genutzt in Ihrer Region"
+      },
+      "wohngeld": {
+        "title": "Wohngeld beantragen",
+        "desc": "Passend zu Ihren Angaben"
+      }
+    },
+    "trust": {
+      "label": "Vertrauen & Standards",
+      "offiziell": {
+        "title": "Offiziell & zuverlässig",
+        "sub": "Leistungen von Bund, Ländern und Kommunen"
+      },
+      "barrierefrei": {
+        "title": "Barrierefrei",
+        "sub": "Für alle Menschen zugänglich"
+      },
+      "kostenfrei": {
+        "title": "Kostenfrei",
+        "sub": "Dieser Service ist für Sie kostenfrei"
+      },
+      "verfuegbar": {
+        "title": "24/7 verfügbar",
+        "sub": "Immer online – auch am Wochenende"
+      }
+    },
     "services": {
       "umzug": {
         "title": "Umzug melden",
@@ -130,12 +263,48 @@
       "zukunft_banner_body": "Teile dieses Ablaufs sind heute noch nicht in Kraft. Diese Demo zeigt, wie der Vorgang aussähe, wenn die geplante Once-Only- und Register-Anbindung vollständig produktiv ist. Klar gekennzeichnete Schritte sind spekulativ.",
       "section": {
         "intro": "Worum es geht",
+        "enthalten": "Was in diesem Vorgang enthalten ist",
         "voraussetzungen": "Voraussetzungen",
         "dokumente": "Benötigte Nachweise",
         "rechtsgrundlagen": "Rechtsgrundlagen",
         "frist": "Frist",
-        "gebuehr": "Gebühr"
+        "gebuehr": "Gebühr",
+        "once_only_auto": "Was automatisch für Sie vorbereitet wird",
+        "fristen_gebuehren": "Fristen & Gebühren"
       },
+      "breadcrumb_label": "Brotkrumen-Navigation",
+      "breadcrumb_root": "Lebenslagen",
+      "stepper_label": "Schritte dieses Vorgangs",
+      "phase": {
+        "familie": "Familie & Kinder",
+        "wohnen": "Wohnen & Umzug",
+        "arbeit": "Arbeit & Einkommen",
+        "migration": "Migration & Aufenthalt",
+        "steuern": "Steuern",
+        "mehr": "Weitere Leistungen"
+      },
+      "beteiligte_stellen": "Beteiligte Stellen",
+      "mock_marker": "[MOCK]",
+      "nachweis_hochgeladen": "Hochgeladen",
+      "nachweis_ausstehend": "Noch ausstehend",
+      "nachweis_anzeigen": "Anzeigen",
+      "nachweis_hochladen": "Hochladen",
+      "nachweis_dropzone": "Weitere Nachweise hierher ziehen oder Dateien auswählen",
+      "once_only_qualifier": "(Once-Only)",
+      "once_only_intro": "Folgende Daten werden – sofern bereits vorhanden – von Behörden sicher abgerufen und vorausgefüllt.",
+      "datensparsam": "Datensparsam & sicher",
+      "dauer_geschaetzt": "Dauer (geschätzt)",
+      "frist_label": "Frist",
+      "gebuehren_label": "Gebühren",
+      "auf_einen_blick": "Auf einen Blick",
+      "gesamtdauer": "Gesamtdauer (geschätzt)",
+      "schritte_insgesamt": "Schritte insgesamt",
+      "beteiligte_behoerden_count": "Beteiligte Behörden",
+      "alle_schritte": "Alle Schritte im Überblick anzeigen",
+      "naechster_schritt": "Nächster Schritt",
+      "naechster_schritt_body": "Sie haben bereits Nachweise hochgeladen und die Voraussetzungen geprüft.",
+      "vorgang_speichern": "Vorgang speichern",
+      "vorgang_fortsetzen": "Sie können den Vorgang jederzeit fortsetzen.",
       "kategorie": {
         "bund": "Bund",
         "land": "Land",
@@ -171,6 +340,7 @@
       "datenminimierung_sub": "Welche Datenkategorie an welche Stelle geht — jeweils nur der minimal nötige Satz (Art. 5 Abs. 1 lit. c DSGVO).",
       "datenminimierung_off": "Einwilligung nicht erteilt — keine Übermittlung",
       "submit_error": "Der Antrag konnte nicht gestartet werden. Bitte versuchen Sie es erneut.",
+      "load_error": "Die Daten konnten nicht geladen werden — die zuständige Stelle war kurz nicht erreichbar. Bitte erneut versuchen.",
       "antragslos": {
         "kein_antrag_title": "Kein Antrag nötig",
         "kein_antrag_body": "Für diese Leistung müssen Sie nichts ausfüllen. Die zuständigen Stellen tauschen die nötigen Daten automatisch aus; Sie bestätigen nur die Auszahlung mit Ihrer eID."
@@ -202,7 +372,111 @@
         "posteingang_link": "Brief im Posteingang",
         "vault_link": "Dokument im Tresor",
         "termin_vorgemerkt": "Termin vorgemerkt",
-        "naechster_schritt": "Die zuständige Stelle meldet sich mit dem Bescheid. Sie finden alle Nachweise im Posteingang und im Dokumenten-Tresor."
+        "naechster_schritt": "Die zuständige Stelle meldet sich mit dem Bescheid. Sie finden alle Nachweise im Posteingang und im Dokumenten-Tresor.",
+        "heroStatus": {
+          "confirmed": "bestätigt",
+          "failed": "Fehler — erneut versuchen",
+          "in_progress": "in Arbeit"
+        }
+      },
+      "result": {
+        "overview_title": "Vorgang im Überblick",
+        "vorgang_id": "Vorgangs-ID",
+        "copy": "Kopieren",
+        "copied": "Kopiert",
+        "copy_aria": "Vorgangs-ID in die Zwischenablage kopieren",
+        "progress_aria": "Fortschritt {pct} Prozent",
+        "fortschritt_value": "{pct}%",
+        "zeit_value": "ca. {min} Min",
+        "stat_fortschritt": "Fortschritt",
+        "stat_zeit": "Zeit gespart",
+        "stat_phase": "Aktuelle Phase",
+        "phase_keine": "Bearbeitung abgeschlossen",
+        "result_title": "Gesamtergebnis",
+        "result_status": "Abgeschlossen",
+        "result_lead": "Ihr Antrag wurde koordiniert bearbeitet und an die zuständigen Stellen übermittelt.",
+        "result_cell_stellen_val": "{count, plural, one {# Behörde / Institution} other {# Behörden / Institutionen}}",
+        "mock_tag": "[MOCK]",
+        "gate_nicht_erteilt": "Nicht erteilt",
+        "bescheid_link": "Bescheid ansehen",
+        "stat_stellen": "Beteiligte Stellen",
+        "stat_nachweise": "Bescheide & Nachweise",
+        "timeline_title": "Ihr Vorgang – alle Schritte im Überblick",
+        "gate_auto": "Automatisch",
+        "gate_consent": "Mit Einwilligung",
+        "gate_eid_done": "Mit eID bestätigt",
+        "step_done": "abgeschlossen",
+        "dsgvo_micro": "Alle Datenübermittlungen erfolgen sicher, nachvollziehbar und gemäß DSGVO.",
+        "docs_title": "Bescheide & Nachweise",
+        "anzeigen": "Anzeigen",
+        "allesort_title": "Alles an einem Ort",
+        "allesort_body": "Ihre Dokumente sind sicher in Ihrem digitalen Postfach gespeichert.",
+        "zum_posteingang": "Zum Posteingang",
+        "alle_dokumente": "Alle Dokumente im Posteingang",
+        "log_title": "Aktivitätsprotokoll",
+        "log_all": "Gesamten Verlauf anzeigen",
+        "rail_aria": "Ihre Kontrolle und Datenschutz",
+        "next_title": "Nächster Schritt",
+        "next_body": "Sie müssen aktuell nichts weiter tun. Wir informieren Sie, sobald es Neuigkeiten gibt.",
+        "details_ansehen": "Details ansehen",
+        "kontrolle_title": "Ihre Kontrolle",
+        "consent_title": "Einwilligungen",
+        "consent_count": "{granted} von {total} erteilt",
+        "consent_revoke": "Jederzeit widerrufbar",
+        "consent_link": "Einwilligungen verwalten",
+        "datenschutz_title": "Datenschutz-Hinweis",
+        "datenschutz_body": "Ihre Daten werden ausschließlich zur Bearbeitung dieses Antrags verwendet.",
+        "update_title": "Nächstes Update",
+        "update_body": "Wir halten Sie auf dem Laufenden.",
+        "inst_title": "Beteiligte Institutionen",
+        "inst_count": "{count, plural, one {# Stelle beteiligt} other {# Stellen beteiligt}}",
+        "inst_note": "sicher vernetzt und koordiniert",
+        "checklist_title": "Was wurde bereits erledigt?",
+        "schutz_title": "Ihre Daten sind geschützt",
+        "schutz_body": "Übermittlung verschlüsselt, nur an zuständige Stellen.",
+        "stat_zeit_ca": "Zeit gespart (ca.)",
+        "result_cell_stellen_sub": "alle Aufgaben abgeschlossen",
+        "result_cell_nachweise_sub": "im Posteingang & Tresor",
+        "result_cell_zeit_sub": "gegenüber dem klassischen Weg",
+        "synthetic_note": "ca.-Wert (Schätzung)",
+        "update_eta": "voraussichtlich in 2–3 Werktagen",
+        "docs_created": "erstellt am {date}",
+        "demo_play": "Live-Demo abspielen",
+        "demo_playing": "Wird abgespielt …",
+        "demo_aria": "Bearbeitungsablauf als Demo abspielen",
+        "tl_status_running": "läuft",
+        "tl_status_queue": "in Warteschlange",
+        "tl_status_eid": "eID erforderlich",
+        "tl_status_eid_sub": "Ihre Bestätigung nötig",
+        "tl_kind_eid": "Mit eID",
+        "next_done_title": "Sie müssen aktuell nichts weiter tun.",
+        "next_done_sub": "Wir informieren Sie, sobald es Neuigkeiten gibt.",
+        "next_eid_title_sub": "Bitte bestätigen Sie diesen Schritt mit Ihrer eID.",
+        "next_working_sub": "{behoerde} · wird bearbeitet"
+      },
+      "laufend": {
+        "stat_fortschritt": "Fortschritt",
+        "stat_schritte": "Schritte erledigt",
+        "stat_phase": "Aktueller Schritt",
+        "pct_value": "{pct}%",
+        "schritte_value": "{done} / {total}",
+        "phase_start": "Wird vorbereitet",
+        "progress_aria": "Fortschritt {pct} Prozent",
+        "status_confirmed": "Erledigt",
+        "status_in_progress": "Läuft",
+        "status_needs_eid": "Bestätigung nötig",
+        "status_pending": "Wartet",
+        "status_failed": "Fehlgeschlagen",
+        "timeline_title": "Schritte der Bearbeitung",
+        "eid_title": "Ihre Bestätigung ist erforderlich",
+        "eid_sub": "Damit {behoerde} fortfahren kann, bestätigen Sie diesen Schritt einmal mit Ihrem Ausweis.",
+        "eid_note": "Sie bestätigen nur diesen einen Schritt. Die übrige Bearbeitung läuft automatisch weiter.",
+        "next_title": "Was als Nächstes passiert",
+        "next_body": "Sie müssen aktuell nichts tun. Die zuständigen Stellen arbeiten den Vorgang ab — wir informieren Sie über jeden Schritt.",
+        "next_body_eid": "Ein Schritt wartet auf Ihre Bestätigung mit eID. Danach läuft die Bearbeitung automatisch weiter.",
+        "update_title": "Nächstes Update",
+        "update_body": "Sobald sich der Status ändert, sehen Sie es hier in Echtzeit.",
+        "rail_aria": "Status und Datenschutz"
       },
       "eid_dialog": {
         "title": "Mit eID bestätigen",
@@ -275,6 +549,7 @@
           "bedeutung": "Beitragsfreie Familienversicherung des Kindes in der gesetzlichen Krankenversicherung."
         }
       },
+      "dauer_geschaetzt": "30–45 Min",
       "frist_beschreibung": "Die Geburt ist binnen einer Woche beim Standesamt anzuzeigen (§ 18 PStG).",
       "gebuehr_betrag": "ab 12 € je Urkunde",
       "gebuehr_hinweis": "Gebühren fallen nur für zusätzliche Urkundenausfertigungen an.",
@@ -342,6 +617,7 @@
           "bedeutung": "Behördeninterner Abgleich mit dem Ausländerzentralregister (ohne Ihr Zutun)."
         }
       },
+      "dauer_geschaetzt": "25–35 Min",
       "frist_beschreibung": "Stellen Sie den Antrag vor Ablauf Ihres Titels. Die Demo löst rund 90 Tage vorher aus; der rechtzeitige Antrag — nicht der Termin — sichert die Fortgeltung.",
       "gebuehr_betrag": "93 €",
       "gebuehr_hinweis": "Die Antragsgebühr von 93 € ist real; in der Demo erfolgt keine echte Zahlung.",
@@ -398,6 +674,7 @@
           "bedeutung": "Geplante Rechtsgrundlage für die antraglose Auszahlung (noch nicht in Kraft)."
         }
       },
+      "dauer_geschaetzt": "ca. 10 Min",
       "frist_beschreibung": "Auszahlung ab Geburtsmonat (§ 66 EStG); rückwirkend höchstens sechs Monate (§ 70 EStG).",
       "gebuehr_hinweis": "Für Kindergeld werden keine Gebühren erhoben.",
       "value_receipt_hinweis": "Konservativ geschätzt: kein separater Antrag, nur eine eID-Bestätigung der Bankverbindung."
@@ -463,6 +740,7 @@
           "bedeutung": "Vorbefüllung der Antragsdaten aus dem Melderegister."
         }
       },
+      "dauer_geschaetzt": "ca. 15 Min",
       "frist_beschreibung": "Keine feste Antragsfrist; planen Sie rund 8–12 Wochen vor Ablauf Ihres Dokuments ein.",
       "gebuehr_betrag": "Personalausweis 46 € / 27,60 € (unter 24)",
       "gebuehr_hinweis": "Reisepass-Gebühren je nach Alter und Ausführung; keine Express-Option für den Personalausweis.",
@@ -536,9 +814,20 @@
           "bedeutung": "Nachgelagerter Datenabgleich zur Missbrauchskontrolle (kein Prefill)."
         }
       },
+      "dauer_geschaetzt": "20–30 Min",
       "frist_beschreibung": "Keine Ausschlussfrist, aber Förderung erst ab Antragsmonat — also rechtzeitig vor Ausbildungsbeginn stellen.",
       "gebuehr_hinweis": "Das BAföG-Verfahren ist gebührenfrei.",
       "value_receipt_hinweis": "Das Elterneinkommen muss weiterhin selbst nachgewiesen werden; gespart werden Stammdaten-Erfassung und Behördengänge."
+    },
+    "umzug": {
+      "ergebnis": {
+        "lead": "Ihr Umzug ist abgeschlossen — alle zuständigen Stellen wurden über Ihre neue Anschrift informiert.",
+        "kennzahl_label": "Ummeldung",
+        "kennzahl_sub": "Neue Anschrift amtlich erfasst",
+        "status_label": "Ihr Aufwand",
+        "status_wert": "Ein Satz",
+        "status_sub": "Einmal bestätigt — den Rest erledigt der Autopilot"
+      }
     },
     "pflegegrad": {
       "title": "Pflegegrad beantragen",
@@ -599,9 +888,18 @@
           "bedeutung": "Maßstab und Module der Pflegegrad-Feststellung (1–5)."
         }
       },
+      "dauer_geschaetzt": "20–30 Min",
       "frist_beschreibung": "Die Pflegekasse entscheidet binnen 25 Arbeitstagen (§ 18c SGB XI); andernfalls schuldet sie 70 € je Woche Verzug.",
       "gebuehr_hinweis": "Das Verfahren ist für Versicherte kostenfrei.",
-      "value_receipt_hinweis": "Der MD-Hausbesuch bleibt nötig; gespart werden Antrags- und Koordinationsaufwand."
+      "value_receipt_hinweis": "Der MD-Hausbesuch bleibt nötig; gespart werden Antrags- und Koordinationsaufwand.",
+      "ergebnis": {
+        "lead": "Ihr Pflegegrad-Antrag wurde koordiniert eingereicht und bearbeitet — der Pflegegrad-Wert ist in dieser Demo ein [MOCK]-Platzhalter.",
+        "kennzahl_label": "Pflegegrad",
+        "kennzahl_sub": "[MOCK] · Feststellung nach MD-Hausbesuch (§§ 14, 15 SGB XI)",
+        "status_label": "Folgeleistungen",
+        "status_wert": "Pflegegeld & Hilfsmittel",
+        "status_sub": "§ 37, § 40 SGB XI"
+      }
     },
     "wohngeld": {
       "title": "Wohngeld",
@@ -671,6 +969,7 @@
           "bedeutung": "Erlass des Bescheids; Bewilligung in der Regel für 12 Monate."
         }
       },
+      "dauer_geschaetzt": "20–30 Min",
       "frist_beschreibung": "Keine Ausschlussfrist, aber Zahlung erst ab Antragsmonat; die Bewilligung gilt in der Regel 12 Monate.",
       "gebuehr_hinweis": "Das Wohngeldverfahren ist gebührenfrei.",
       "value_receipt_hinweis": "Die konkrete Höhe ist unverbindlich [MOCK]; gespart werden Stammdaten-Erfassung und der Behördengang zur Wohngeldstelle."
@@ -922,16 +1221,33 @@
       "back": "Zurück"
     },
     "eid_card": {
-      "kind": "Personalausweis",
-      "subtitle": "Digitaler Identitätsnachweis · eID",
-      "mock": "[MOCK]"
+      "label": "Digitale Identität (eID)",
+      "footer": "Mock eID-Karte",
+      "mock": "MOCK"
     },
     "transparency": {
-      "title": "Diese Daten stellt Ihre digitale Identität bereit",
-      "release_to": "Gibt frei an GovTech DE",
-      "subtitle": "Sie entscheiden, was geteilt wird. Nichts ohne Ihre Zustimmung.",
-      "required_group": "Pflichtangaben — für die Anmeldung erforderlich",
-      "optional_group": "Optionale Angaben — nur bei Bedarf (Datenminimierung)",
+      "demo_banner": "Demo-Modus: Es werden keine echten Daten verwendet.",
+      "title": "Ihre eID-Daten für die Anmeldung",
+      "subtitle": "Sie entscheiden, welche Informationen an GovTech-DE (Demo) übertragen werden.",
+      "panel": {
+        "empfaenger_label": "Empfänger",
+        "empfaenger_value": "GovTech-DE (Demo)",
+        "empfaenger_sub": "Dienstanbieter",
+        "zweck_label": "Zweck",
+        "zweck_value": "Anmeldung",
+        "zweck_sub": "bei GovTech-DE (Demo)",
+        "rechtsgrundlage_label": "Rechtsgrundlage",
+        "rechtsgrundlage_value": "eIDAS 2 / OZG",
+        "rechtsgrundlage_sub": "DSGVO Art. 6 Abs. 1 lit. a",
+        "secure_line": "Übertragung sicher und verschlüsselt.",
+        "trusted_service": "Vertrauenswürdiger Dienst"
+      },
+      "required_group": "Pflichtangaben",
+      "required_badge": "Erforderlich",
+      "required_caption": "Diese Angaben sind für die Anmeldung erforderlich.",
+      "optional_group": "Optionale Angaben",
+      "optional_badge": "Nur bei Bedarf",
+      "optional_caption": "Diese Informationen sind optional und werden nur übertragen, wenn Sie zustimmen.",
       "attr": {
         "name": "Name",
         "birthdate": "Geburtsdatum",
@@ -944,14 +1260,20 @@
         "available": "Verfügbar",
         "optional": "Optional"
       },
+      "verified": "Verifiziert",
+      "required_item": "Erforderlich",
       "share_toggle": "Teilen",
-      "verified_source": "Aus Ihrem Personalausweis · verifiziert",
       "not_shared": "wird nicht übertragen",
-      "minimization": "Datenminimierung: Sie übertragen {shared} von {total} Angaben.",
-      "recipient": "Empfänger: nur GovTech DE (Demo) — und nur mit Ihrer Zustimmung.",
-      "legal_basis": "Rechtsgrundlage: eIDAS 2 / OZG · einwilligungsbasierte Angaben: DSGVO Art. 6 Abs. 1 lit. a",
-      "dsgvo_footer": "Ihre Daten werden sicher übertragen und gemäß DSGVO verarbeitet.",
-      "mock_note": "Spekulatives Demo-Feature · keine echte eID-Datenübertragung.",
+      "counter": "{shared} von {total} Angaben werden übertragen",
+      "adjust_hint": "Sie können Ihre Auswahl jederzeit anpassen.",
+      "trust": {
+        "consent_title": "Ihre Zustimmung",
+        "consent_desc": "Sie entscheiden, welche Daten Sie teilen möchten.",
+        "dsgvo_title": "DSGVO-konform",
+        "dsgvo_desc": "Verarbeitung ausschließlich auf Basis Ihrer Einwilligung.",
+        "secure_title": "Sichere Übertragung",
+        "secure_desc": "Ihre Daten werden verschlüsselt übertragen und geschützt."
+      },
       "back": "Zurück",
       "confirm": "Anmeldung bestätigen",
       "committing": "Anmeldung wird vorbereitet …"
@@ -1190,6 +1512,28 @@
       }
     }
   },
+  "wohngeldHinweis": {
+    "title": "Möglicher Anspruch erkannt",
+    "trigger_label": "Sie haben vermutlich Anspruch auf Wohngeld.",
+    "amount_range": "ca. {min} – {max} € / Monat",
+    "amount_schaetzung": "Schätzung",
+    "amount_a11y": "Geschätzter Mietzuschuss zwischen {min} und {max} Euro pro Monat — unverbindliche Schätzung.",
+    "non_take_up": "Rund die Hälfte der Berechtigten beantragt Wohngeld nie — prüfen Sie, ob es Ihnen zusteht.",
+    "datenblock_title": "Genutzte Daten (Datenminimierung)",
+    "daten_haushalt": "Haushaltsgröße ({n}, aus Melderegister)",
+    "daten_mietstufe": "Mietstufe {stufe} (registrierte Gemeinde {ort}) [MOCK]",
+    "daten_wohnverhaeltnis": "Wohnverhältnis: zur Miete",
+    "daten_ergaenzen": "Sie ergänzen noch: Bruttoeinkommen und Mietvertrag",
+    "cta_primary": "Anspruch prüfen & Antrag vorbereiten",
+    "rechtsgrundlage": "Rechtsgrundlage: {normen}",
+    "consent_line": "Hinweis auf Basis Ihrer Einwilligung zu proaktiven Anspruchs-Hinweisen (Koalitionsvertrag 2025).",
+    "consent_settings": "Einstellung ändern",
+    "consent_revoked_toast": "Proaktive Hinweise deaktiviert. Sie können das in den Einstellungen wieder aktivieren.",
+    "zukunft_schaetzung": "[ZUKUNFT 2027] Unverbindliche Schätzung auf Basis Ihrer Daten — keine Bewilligung. Die tatsächliche Höhe ergibt sich erst aus dem Bescheid.",
+    "dismiss": "Hinweis schließen",
+    "snooze": "Später erinnern",
+    "behoerde": "Zuständig: Bezirksamt Mitte von Berlin — Wohngeldstelle"
+  },
   "common": {
     "cta": {
       "zurueck": "Zurück",
@@ -1395,6 +1739,8 @@
     "run": {
       "title": "Autopilot läuft …",
       "subtitle_template": "{adresse} · Stichtag {stichtag}",
+      "headline": "Umzug auf Autopilot",
+      "headline_sub": "Sie bestätigen einmal – das System koordiniert die nächsten Schritte.",
       "vorgang_label": "Vorgang #{id}",
       "status": {
         "pending": "wartet",
@@ -1402,12 +1748,6 @@
         "confirmed": "bestätigt",
         "failed": "Fehler — erneut versuchen",
         "needs_eid": "eID-Tap erforderlich"
-      },
-      "eid_dialog": {
-        "title": "Mit Ihrer eID bestätigen",
-        "body_template": "Wir leiten Ihre neue Adresse an {behoerde} weiter. Bitte halten Sie Ihren Personalausweis an das Lesegerät und bestätigen Sie mit Ihrer PIN.",
-        "cta_confirm": "Mit eID bestätigen",
-        "cta_cancel": "Abbrechen"
       },
       "cta_pause": "Pause",
       "cta_cancel": "Abbrechen",
@@ -2309,6 +2649,23 @@
       "renten_section_subtitle": "Aus dieser Renteninformation übernehmen wir die fünf Pflicht-Inhalte (§ 109 Abs. 3 SGB VI) in Ihre Stammdaten-Sektion Altersvorsorge.",
       "renten_toast_already_applied": "Diese Renteninformation wurde bereits übernommen.",
       "renten_toast_error": "Übernahme fehlgeschlagen — bitte erneut versuchen."
+    },
+    "linkedBadge": "Mit Vorgang verknüpft",
+    "erkannteAufgabe": {
+      "title": "Erkannte Aufgabe",
+      "provenance": "erkannt aus: {label}",
+      "frist_label": "Frist",
+      "frist_advisory": "bitte gegen das Original prüfen",
+      "frist_im_original": "Im Original prüfen",
+      "cta_vorgang_oeffnen": "Vorgang öffnen",
+      "cta_antrag_vorbereiten": "Antrag vorbereiten",
+      "cta_termin_vormerken": "Termin vormerken",
+      "cta_error": "Vorgang konnte nicht vorbereitet werden — bitte erneut versuchen.",
+      "prepared": "Vorgang ist vorbereitet",
+      "prepared_link": "zum Vorgang",
+      "no_target": "Kein geführter Vorgang verfügbar",
+      "zukunft_hint": "[ZUKUNFT 2027] Briefinhalt wird automatisch erkannt · [MOCK]",
+      "calendar_disabled_a11y": "Kalender-Eintrag nicht möglich: Frist nicht eindeutig aus dem Originalbrief erkannt. Bitte im Original prüfen."
     }
   },
   "vorgaenge": {
@@ -3714,7 +4071,84 @@
   },
   "termine": {
     "title": "Termine",
-    "subtitle": "Behördentermine, Erinnerungen und Buchungen an einem Ort.",
+    "subtitle": "Alle Termine, Fristen und Erinnerungen an einem Ort.",
+    "spur": {
+      "termine_titel": "Termine, um die sich das System kümmert",
+      "termine_leer": "Aktuell keine anstehenden Termine.",
+      "fristen_titel": "Fristen, die Sie im Blick behalten müssen",
+      "fristen_leer": "Keine offenen Fristen."
+    },
+    "kpi": {
+      "naechster_termin": "Nächster Termin",
+      "offene_fristen": "Offene Fristen",
+      "offene_fristen_sub": "Handlungsbedarf",
+      "bestaetigte": "Bestätigte Termine",
+      "bestaetigte_sub": "In den nächsten 30 Tagen",
+      "warten": "Warten auf Rückmeldung",
+      "warten_sub": "Termine in Klärung",
+      "kein_termin": "Kein Termin"
+    },
+    "tabs": {
+      "alle": "Alle",
+      "termine": "Termine",
+      "fristen": "Fristen",
+      "erinnerungen": "Erinnerungen",
+      "vergangen": "Vergangen"
+    },
+    "toolbar": {
+      "suche_placeholder": "Termine, Behörden oder Vorgänge suchen",
+      "suche_label": "Termine durchsuchen",
+      "filter": "Filter",
+      "export": "Kalender exportieren"
+    },
+    "liste": {
+      "anstehende_titel": "Anstehende Termine",
+      "alle_termine": "Alle Termine anzeigen",
+      "alle_fristen": "Alle Fristen anzeigen",
+      "erinnerungen_titel": "Erinnerungen"
+    },
+    "cal": {
+      "legend": {
+        "titel": "Legende",
+        "termine": "Termine",
+        "fristen": "Fristen",
+        "erinnerungen": "Erinnerungen",
+        "mehrere": "Mehrere Einträge"
+      }
+    },
+    "hero": {
+      "tag": "Vorgemerkt",
+      "mock_marker": "[MOCK] für Sie gehalten",
+      "summary": {
+        "behoerde": "Behörde",
+        "datum": "Datum",
+        "ort": "Ort",
+        "anliegen": "Anliegen"
+      },
+      "reasoning_bmg17": "Letzter sicherer Slot vor Ihrer Anmeldefrist (§ 17 Abs. 1 BMG, zwei Wochen ab Einzug) — noch {tage, plural, =0 {heute fällig} =1 {1 Tag} other {# Tage}}.",
+      "reasoning_bmg17_statisch": "Letzter sicherer Slot vor Ihrer Anmeldefrist (§ 17 Abs. 1 BMG, zwei Wochen ab Einzug). [MOCK]",
+      "nicht_abgeschlossen": "Nicht abgeschlossen, bis Sie bestätigen.",
+      "cta_bestaetigen": "Termin bestätigen",
+      "aria_bestaetigen": "Termin bei {behoerde} am {datum} bestätigen"
+    },
+    "quittung": {
+      "titel": "Bestätigt",
+      "gelesen": "Gelesen: nichts aus Ihrem Kalender.",
+      "posteingang": "Die Bestätigung liegt in Ihrem Posteingang."
+    },
+    "absagen": {
+      "title": "Termin absagen?",
+      "body": "Wenn Sie absagen, wird der Termin sofort für andere frei.",
+      "cta_confirm": "Absagen",
+      "cta_cancel": "Behalten",
+      "toast": "Termin abgesagt.",
+      "toast_undo": "Rückgängig",
+      "toast_error": "Termin konnte nicht abgesagt werden — bitte erneut versuchen.",
+      "undo_done": "Absage rückgängig gemacht."
+    },
+    "bestaetigen": {
+      "toast_error": "Bestätigung fehlgeschlagen — bitte erneut versuchen."
+    },
     "calendar": {
       "prev": "Vorheriger Monat",
       "next": "Nächster Monat",
@@ -3738,14 +4172,22 @@
         "so": "So"
       },
       "day_aria": "{datum}{events}",
-      "day_events_suffix": " — {count, plural, =1 {1 Termin} other {# Termine}}"
+      "day_events_suffix": " — {count, plural, =1 {1 Termin} other {# Termine}}",
+      "day_events_breakdown": {
+        "termine": "{count, plural, =1 {1 Termin} other {# Termine}}",
+        "fristen": "{count, plural, =1 {1 Frist} other {# Fristen}}",
+        "erinnerungen": "{count, plural, =1 {1 Erinnerung} other {# Erinnerungen}}"
+      },
+      "quittung_hint": "Ihre Termine im Überblick"
     },
     "filter": {
       "title": "Filter",
       "behoerdentermine": "Behördentermine",
       "erinnerungen": "Erinnerungen & Fristen",
       "buchungen": "Buchungen",
-      "abgeschlossen": "Abgeschlossen"
+      "abgeschlossen": "Abgeschlossen",
+      "vergangene_zeigen": "Vergangene & abgesagte anzeigen",
+      "vergangene_ausblenden": "Vergangene & abgesagte ausblenden"
     },
     "naechste": {
       "title": "Nächste Termine",
@@ -3767,11 +4209,13 @@
       "ics_aria_all": "Alle anstehenden Termine als ICS exportieren"
     },
     "status": {
-      "vorgeschlagen": "Vorgeschlagen",
+      "vorgeschlagen": "Vorgemerkt",
       "gebucht": "Gebucht",
       "bestaetigt": "Bestätigt",
       "verschoben": "Verschoben",
-      "abgesagt": "Abgesagt"
+      "abgesagt": "Abgesagt",
+      "erledigt": "Erledigt",
+      "wartet": "Wartet auf Bestätigung"
     },
     "marker": {
       "erinnerung": "Erinnerung"
@@ -3785,12 +4229,26 @@
       "hide": "Abgeschlossene Termine ausblenden"
     },
     "detail": {
-      "status_label": "Status: {status}"
+      "status_label": "Status: {status}",
+      "titel": "Termindetails",
+      "schliessen": "Termindetails schließen",
+      "zugehoeriger_vorgang": "Zugehöriger Vorgang",
+      "link_hinweis": "Link wird 24 h vorher per E-Mail zugestellt.",
+      "vorbereitung_titel": "Vorbereitung",
+      "zum_vorgang": "Zum Vorgang",
+      "verschieben": "Termin verschieben"
     },
     "reschedule": {
-      "title": "Termin verschieben",
-      "intro": "Wählen Sie einen neuen Termin. Die Behörde erhält die Änderung automatisch.",
-      "confirm": "Auf diesen Termin verschieben"
+      "title": "Anderen Termin suchen",
+      "intro": "Wir suchen einen anderen freien Termin für Sie ([MOCK]).",
+      "confirm": "Auf diesen Termin verschieben",
+      "slot_mock_suffix": "[MOCK]",
+      "warteliste_titel": "Aktuell kein freier Termin",
+      "warteliste_text": "Wir setzen Sie auf die Warteliste und melden uns, sobald einer frei wird.",
+      "warteliste_cta": "Auf die Warteliste setzen",
+      "warteliste_toast": "Sie stehen auf der Warteliste ([MOCK]).",
+      "toast_template": "Termin verschoben auf {datum}.",
+      "toast_error": "Termin konnte nicht verschoben werden — bitte erneut versuchen."
     },
     "naechster_schritt": {
       "title": "Nächster Schritt",
@@ -3807,7 +4265,10 @@
       "alter_titel": "Alten Aufenthaltstitel mitbringen",
       "biometrie": "Biometrisches Passfoto mitbringen",
       "gebuehr": "Bearbeitungsgebühr bereithalten",
-      "meldung": "Wohnungsgeberbestätigung mitbringen"
+      "meldung": "Wohnungsgeberbestätigung mitbringen",
+      "versicherungskarte": "Versicherungskarte bereithalten",
+      "unterlagen_pruefen": "Relevante Unterlagen prüfen",
+      "fragen_notieren": "Fragen notieren"
     },
     "fristen": {
       "title": "Fristen im Überblick",

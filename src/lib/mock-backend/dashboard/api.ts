@@ -32,6 +32,7 @@ import type {
   Vorgang,
 } from '@/types';
 import { computeValueReceipt } from '../value-receipt';
+import { resolveWohngeldHinweis } from '../lebenslagen/wohngeld-estimate';
 import { MockBackendError } from '../errors';
 import { withLatency } from '../latency';
 import { readOrInit, write, type CollectionKey } from '../persistence';
@@ -705,6 +706,11 @@ function buildDashboard(
     vorgaenge_abgeschlossen_jahr,
     autopilot_highlight,
     erledigt_feed,
+    // Proaktiver Wohngeld-Anspruch-Hinweis (Spec proaktiver-wohngeld-anspruch.md
+    // § 6). Gleiche Consent-/Dismiss-/Snooze-Filterung wie api.getWohngeldHinweis
+    // (geteilte `resolveWohngeldHinweis`-Quelle) → Snapshot und Direct-Call
+    // bleiben konsistent. `null` = nicht qualifiziert ODER unterdrückt.
+    wohngeld_hinweis: resolveWohngeldHinweis(persona, now),
   };
 }
 

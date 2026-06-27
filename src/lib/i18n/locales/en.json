@@ -43,11 +43,14 @@
     "search_submit": "Search",
     "filter_label": "Filter topics",
     "categories": {
-      "alle": "All topics",
+      "alle": "All",
       "familie": "Family",
       "wohnen": "Housing",
       "arbeit": "Work",
       "migration": "Migration",
+      "gesundheit": "Health",
+      "mobilitaet": "Mobility",
+      "rente": "Pension",
       "steuern": "Taxes",
       "mehr": "More"
     },
@@ -82,6 +85,136 @@
     "rail_secure_body": "Each service shows which data is processed, by whom and on what legal basis. You stay in control.",
     "rail_secure_link": "Privacy & consents",
     "trust_title": "Trust through standards",
+    "hub_subtitle": "Find state services and information – organised by life situation and explained clearly.",
+    "results_none_category": "No matches in this category. Please choose a different topic.",
+    "beliebte_title": "Popular life events",
+    "alle_anzeigen": "Show all",
+    "meta_schritte": "{count, plural, one {# step} other {# steps}}",
+    "meta_behoerden": "{count, plural, one {# authority} other {# authorities}}",
+    "teilautomatisch": "partly automatic",
+    "beliebte": {
+      "geburt": {
+        "title": "Birth of a child",
+        "desc": "Handle all the key steps around a birth."
+      },
+      "umzug": {
+        "title": "Moving house",
+        "desc": "Register your new address – the responsible authorities are informed automatically."
+      },
+      "aufenthalt": {
+        "title": "Extend residence permit",
+        "desc": "Extend your residence permit in good time before it expires."
+      },
+      "kindergeld": {
+        "title": "Child benefit (Kindergeld)",
+        "desc": "Secure your child benefit – with pre-filled details."
+      },
+      "wohngeld": {
+        "title": "Apply for housing benefit (Wohngeld)",
+        "desc": "Check your entitlement and apply online."
+      },
+      "pflege": {
+        "title": "Organise long-term care",
+        "desc": "Apply for long-term care insurance benefits when care is needed."
+      }
+    },
+    "nach_lebensphase_title": "By life stage",
+    "alle_phase": "All {count} life events",
+    "alle_lebenslagen_anzeigen": "Show all life events",
+    "phasen": {
+      "familie": {
+        "title": "Family & children",
+        "items": {
+          "geburt": "Birth of a child",
+          "kindergeld": "Apply for child benefit (Kindergeld)",
+          "elterngeld": "Apply for parental allowance (Elterngeld)"
+        }
+      },
+      "wohnen": {
+        "title": "Housing & moving",
+        "items": {
+          "umzug": "Moving house",
+          "wohnberechtigung": "Housing entitlement (Wohnberechtigung)",
+          "wohngeld": "Apply for housing benefit (Wohngeld)"
+        }
+      },
+      "arbeit": {
+        "title": "Work & income",
+        "items": {
+          "arbeit_aufnehmen": "Starting work",
+          "arbeitslos": "Register as unemployed",
+          "buergergeld": "Apply for citizen's income (Bürgergeld)"
+        }
+      },
+      "migration": {
+        "title": "Migration & residence",
+        "items": {
+          "aufenthalt": "Extend residence permit",
+          "einbuergerung": "Naturalisation (Einbürgerung)",
+          "visum": "Apply for a visa"
+        }
+      },
+      "gesundheit": {
+        "title": "Health & prevention",
+        "items": {
+          "pflege": "Organise long-term care",
+          "krankenversicherung": "Health insurance",
+          "vorsorge": "Check-ups & vaccinations"
+        }
+      }
+    },
+    "warum_title": "Why this helps",
+    "warum": {
+      "once_only": {
+        "title": "Once-only",
+        "desc": "Your data is requested only once and shared securely between authorities."
+      },
+      "verstaendlich": {
+        "title": "Explained clearly",
+        "desc": "We show you in clear steps what to do – without jargon."
+      },
+      "schutz": {
+        "title": "Protect your data",
+        "desc": "Your data is processed only with your consent."
+      },
+      "link": "More on security & data protection"
+    },
+    "empfohlen_title": "Recommended for you",
+    "empfohlen": {
+      "bearbeiten": "Edit",
+      "alle": "Show all recommendations",
+      "geburt": {
+        "title": "Birth of a child",
+        "desc": "Based on your life situation"
+      },
+      "umzug": {
+        "title": "Moving house",
+        "desc": "Frequently used in your region"
+      },
+      "wohngeld": {
+        "title": "Apply for housing benefit (Wohngeld)",
+        "desc": "Matching your details"
+      }
+    },
+    "trust": {
+      "label": "Trust & standards",
+      "offiziell": {
+        "title": "Official & reliable",
+        "sub": "Services from federal, state and local government"
+      },
+      "barrierefrei": {
+        "title": "Accessible",
+        "sub": "Accessible to everyone"
+      },
+      "kostenfrei": {
+        "title": "Free of charge",
+        "sub": "This service is free of charge for you"
+      },
+      "verfuegbar": {
+        "title": "Available 24/7",
+        "sub": "Always online – including at weekends"
+      }
+    },
     "services": {
       "umzug": {
         "title": "Report a move",
@@ -130,12 +263,48 @@
       "zukunft_banner_body": "Parts of this process are not yet in force today. This demo shows how the procedure would look once the planned once-only and register integration is fully live. Clearly marked steps are speculative.",
       "section": {
         "intro": "What this is about",
+        "enthalten": "What this procedure includes",
         "voraussetzungen": "Requirements",
         "dokumente": "Required evidence",
         "rechtsgrundlagen": "Legal bases",
         "frist": "Deadline",
-        "gebuehr": "Fee"
+        "gebuehr": "Fee",
+        "once_only_auto": "What is prepared automatically for you",
+        "fristen_gebuehren": "Deadlines & fees"
       },
+      "breadcrumb_label": "Breadcrumb navigation",
+      "breadcrumb_root": "Life events",
+      "stepper_label": "Steps of this procedure",
+      "phase": {
+        "familie": "Family & children",
+        "wohnen": "Housing & moving",
+        "arbeit": "Work & income",
+        "migration": "Migration & residence",
+        "steuern": "Taxes",
+        "mehr": "Other services"
+      },
+      "beteiligte_stellen": "Authorities involved",
+      "mock_marker": "[MOCK]",
+      "nachweis_hochgeladen": "Uploaded",
+      "nachweis_ausstehend": "Still pending",
+      "nachweis_anzeigen": "View",
+      "nachweis_hochladen": "Upload",
+      "nachweis_dropzone": "Drag further evidence here or select files",
+      "once_only_qualifier": "(once-only)",
+      "once_only_intro": "The following data is securely retrieved from authorities and pre-filled where it already exists.",
+      "datensparsam": "Data-minimal & secure",
+      "dauer_geschaetzt": "Duration (estimated)",
+      "frist_label": "Deadline",
+      "gebuehren_label": "Fees",
+      "auf_einen_blick": "At a glance",
+      "gesamtdauer": "Total duration (estimated)",
+      "schritte_insgesamt": "Steps in total",
+      "beteiligte_behoerden_count": "Authorities involved",
+      "alle_schritte": "Show all steps at a glance",
+      "naechster_schritt": "Next step",
+      "naechster_schritt_body": "You have already uploaded evidence and checked the requirements.",
+      "vorgang_speichern": "Save procedure",
+      "vorgang_fortsetzen": "You can continue the procedure at any time.",
       "kategorie": {
         "bund": "Federal",
         "land": "State",
@@ -171,6 +340,7 @@
       "datenminimierung_sub": "Which data category goes to which authority — in each case only the minimum required set (Art. 5(1)(c) GDPR).",
       "datenminimierung_off": "Consent not given — no transmission",
       "submit_error": "The application could not be started. Please try again.",
+      "load_error": "The data could not be loaded — the responsible office was briefly unavailable. Please try again.",
       "antragslos": {
         "kein_antrag_title": "No application needed",
         "kein_antrag_body": "You do not need to fill anything in for this service. The responsible authorities exchange the necessary data automatically; you only confirm the payment with your eID."
@@ -202,7 +372,112 @@
         "posteingang_link": "Letter in your inbox",
         "vault_link": "Document in the vault",
         "termin_vorgemerkt": "Appointment reserved",
-        "naechster_schritt": "The responsible authority will get in touch with the decision (Bescheid). You will find all evidence in your inbox and in the document vault."
+        "naechster_schritt": "The responsible authority will get in touch with the decision (Bescheid). You will find all evidence in your inbox and in the document vault.",
+        "heroStatus": {
+          "confirmed": "confirmed",
+          "failed": "Error — try again",
+          "in_progress": "in progress"
+        }
+      },
+      "result": {
+        "overview_title": "Your case at a glance",
+        "vorgang_id": "Case ID (Vorgangs-ID)",
+        "copy": "Copy",
+        "copied": "Copied",
+        "copy_aria": "Copy case ID to clipboard",
+        "progress_aria": "Progress {pct} percent",
+        "fortschritt_value": "{pct}%",
+        "zeit_value": "approx. {min} min",
+        "stat_fortschritt": "Progress",
+        "stat_zeit": "Time saved",
+        "stat_phase": "Current phase",
+        "phase_keine": "Processing completed",
+        "result_title": "Overall result",
+        "result_status": "Completed",
+        "result_lead": "Your application has been processed in a coordinated way and submitted to the responsible authorities.",
+        "result_cell_stellen_val": "{count, plural, one {# authority / institution} other {# authorities / institutions}}",
+        "mock_tag": "[MOCK]",
+        "gate_nicht_erteilt": "Not granted",
+        "bescheid_link": "View decision (Bescheid)",
+        "stat_stellen": "Authorities involved",
+        "stat_nachweise": "Decisions & evidence",
+        "timeline_title": "Your case – all steps at a glance",
+        "gate_auto": "Automatic",
+        "gate_consent": "With consent",
+        "gate_eid_done": "Confirmed with eID",
+
+        "step_done": "completed",
+        "dsgvo_micro": "All data transfers are secure, traceable and compliant with the GDPR (DSGVO).",
+        "docs_title": "Decisions & evidence",
+        "anzeigen": "View",
+        "allesort_title": "Everything in one place",
+        "allesort_body": "Your documents are stored securely in your digital mailbox.",
+        "zum_posteingang": "Go to inbox",
+        "alle_dokumente": "All documents in the inbox",
+        "log_title": "Activity log",
+        "log_all": "Show full history",
+        "rail_aria": "Your control and data protection",
+        "next_title": "Next step",
+        "next_body": "There is nothing you need to do right now. We will let you know as soon as there is any news.",
+        "details_ansehen": "View details",
+        "kontrolle_title": "Your control",
+        "consent_title": "Consents",
+        "consent_count": "{granted} of {total} granted",
+        "consent_revoke": "Revocable at any time",
+        "consent_link": "Manage consents",
+        "datenschutz_title": "Data protection notice",
+        "datenschutz_body": "Your data is used solely to process this application.",
+        "update_title": "Next update",
+        "update_body": "We will keep you informed.",
+        "inst_title": "Institutions involved",
+        "inst_count": "{count, plural, one {# authority involved} other {# authorities involved}}",
+        "inst_note": "securely networked and coordinated",
+        "checklist_title": "What has already been done?",
+        "schutz_title": "Your data is protected",
+        "schutz_body": "Transmission encrypted, only to the responsible authorities.",
+        "stat_zeit_ca": "Time saved (approx.)",
+        "result_cell_stellen_sub": "all tasks completed",
+        "result_cell_nachweise_sub": "in inbox & vault",
+        "result_cell_zeit_sub": "compared with the traditional route",
+        "synthetic_note": "approx. value (estimate)",
+        "update_eta": "expected in 2–3 working days",
+        "docs_created": "created on {date}",
+        "demo_play": "Play live demo",
+        "demo_playing": "Playing …",
+        "demo_aria": "Play the processing sequence as a demo",
+        "tl_status_running": "running",
+        "tl_status_queue": "in queue",
+        "tl_status_eid": "eID required",
+        "tl_status_eid_sub": "Your confirmation needed",
+        "tl_kind_eid": "With eID",
+        "next_done_title": "There is nothing you need to do right now.",
+        "next_done_sub": "We will let you know as soon as there is any news.",
+        "next_eid_title_sub": "Please confirm this step with your eID.",
+        "next_working_sub": "{behoerde} · being processed"
+      },
+      "laufend": {
+        "stat_fortschritt": "Progress",
+        "stat_schritte": "Steps completed",
+        "stat_phase": "Current step",
+        "pct_value": "{pct}%",
+        "schritte_value": "{done} / {total}",
+        "phase_start": "Getting ready",
+        "progress_aria": "Progress {pct} percent",
+        "status_confirmed": "Done",
+        "status_in_progress": "In progress",
+        "status_needs_eid": "Confirmation required",
+        "status_pending": "Waiting",
+        "status_failed": "Failed",
+        "timeline_title": "Processing steps",
+        "eid_title": "Your confirmation is required",
+        "eid_sub": "To let {behoerde} proceed, please confirm this step once with your ID.",
+        "eid_note": "You only confirm this one step. The rest of the processing continues automatically.",
+        "next_title": "What happens next",
+        "next_body": "There is nothing you need to do right now. The responsible authorities are handling your case — we will keep you informed at every step.",
+        "next_body_eid": "One step is waiting for your confirmation with eID. After that, processing continues automatically.",
+        "update_title": "Next update",
+        "update_body": "As soon as the status changes, you will see it here in real time.",
+        "rail_aria": "Status and data protection"
       },
       "eid_dialog": {
         "title": "Confirm with eID",
@@ -275,6 +550,7 @@
           "bedeutung": "Contribution-free family health insurance for the child in the statutory health insurance scheme."
         }
       },
+      "dauer_geschaetzt": "30–45 min",
       "frist_beschreibung": "The birth must be notified to the registry office (Standesamt) within one week (§ 18 PStG).",
       "gebuehr_betrag": "from €12 per certificate",
       "gebuehr_hinweis": "Fees only apply for additional copies of certificates.",
@@ -342,6 +618,7 @@
           "bedeutung": "Internal authority cross-check with the Central Register of Foreigners (Ausländerzentralregister) (without any action by you)."
         }
       },
+      "dauer_geschaetzt": "25–35 min",
       "frist_beschreibung": "Submit the application before your permit expires. The demo triggers around 90 days beforehand; it is the timely application — not the appointment — that secures continued validity.",
       "gebuehr_betrag": "€93",
       "gebuehr_hinweis": "The application fee of €93 is real; no actual payment takes place in the demo.",
@@ -398,6 +675,7 @@
           "bedeutung": "Planned legal basis for application-free payment (not yet in force)."
         }
       },
+      "dauer_geschaetzt": "approx. 10 min",
       "frist_beschreibung": "Payment from the month of birth (§ 66 EStG); retroactive for a maximum of six months (§ 70 EStG).",
       "gebuehr_hinweis": "No fees are charged for child benefit (Kindergeld).",
       "value_receipt_hinweis": "Conservatively estimated: no separate application, only one eID confirmation of the bank details."
@@ -463,6 +741,7 @@
           "bedeutung": "Pre-filling of the application data from the population register (Melderegister)."
         }
       },
+      "dauer_geschaetzt": "approx. 15 min",
       "frist_beschreibung": "No fixed application deadline; plan around 8–12 weeks before your document expires.",
       "gebuehr_betrag": "Identity card €46 / €27.60 (under 24)",
       "gebuehr_hinweis": "Passport fees depend on age and version; no express option for the identity card.",
@@ -536,9 +815,20 @@
           "bedeutung": "Subsequent data matching for abuse control (no pre-filling)."
         }
       },
+      "dauer_geschaetzt": "20–30 min",
       "frist_beschreibung": "No cut-off deadline, but funding only starts from the month of application — so submit it in good time before your studies begin.",
       "gebuehr_hinweis": "The BAföG procedure is free of charge.",
       "value_receipt_hinweis": "Parental income still has to be proven yourself; what is saved is the entry of master data and trips to the authorities."
+    },
+    "umzug": {
+      "ergebnis": {
+        "lead": "Your move is complete — all the relevant authorities have been informed of your new address.",
+        "kennzahl_label": "Re-registration (Ummeldung)",
+        "kennzahl_sub": "New address officially recorded",
+        "status_label": "Your effort",
+        "status_wert": "A single step",
+        "status_sub": "Confirmed once — the autopilot handled the rest"
+      }
     },
     "pflegegrad": {
       "title": "Apply for a care level (Pflegegrad)",
@@ -599,9 +889,18 @@
           "bedeutung": "Criteria and modules for determining the care level (Pflegegrad) (1–5)."
         }
       },
+      "dauer_geschaetzt": "20–30 min",
       "frist_beschreibung": "The care insurance fund decides within 25 working days (§ 18c SGB XI); otherwise it owes €70 for each week of delay.",
       "gebuehr_hinweis": "The procedure is free of charge for the insured.",
-      "value_receipt_hinweis": "The Medical Service home visit remains necessary; what is saved is the application and coordination effort."
+      "value_receipt_hinweis": "The Medical Service home visit remains necessary; what is saved is the application and coordination effort.",
+      "ergebnis": {
+        "lead": "Your care-level application was submitted and processed in a coordinated way — in this demo the care-level value is a [MOCK] placeholder.",
+        "kennzahl_label": "Care level (Pflegegrad)",
+        "kennzahl_sub": "[MOCK] · determined after the MD home visit (§§ 14, 15 SGB XI)",
+        "status_label": "Follow-up benefits",
+        "status_wert": "Care allowance & aids",
+        "status_sub": "§ 37, § 40 SGB XI"
+      }
     },
     "wohngeld": {
       "title": "Housing benefit (Wohngeld)",
@@ -671,6 +970,7 @@
           "bedeutung": "Issuance of the decision; approval usually for 12 months."
         }
       },
+      "dauer_geschaetzt": "20–30 min",
       "frist_beschreibung": "No cut-off deadline, but payment only from the month of application; approval usually applies for 12 months.",
       "gebuehr_hinweis": "The housing benefit (Wohngeld) procedure is free of charge.",
       "value_receipt_hinweis": "The exact amount is non-binding [MOCK]; what is saved is the entry of master data and the trip to the housing benefit office (Wohngeldstelle)."
@@ -922,16 +1222,33 @@
       "back": "Back"
     },
     "eid_card": {
-      "kind": "ID card (Personalausweis)",
-      "subtitle": "Digital proof of identity · eID",
-      "mock": "[MOCK]"
+      "label": "Digital identity (eID)",
+      "footer": "Mock eID card",
+      "mock": "MOCK"
     },
     "transparency": {
-      "title": "This data is provided by your digital identity",
-      "release_to": "Releases to GovTech DE",
-      "subtitle": "You decide what is shared. Nothing without your consent.",
-      "required_group": "Required details — needed to sign in",
-      "optional_group": "Optional details — only when needed (data minimisation)",
+      "demo_banner": "Demo mode: no real data is used.",
+      "title": "Your eID data for signing in",
+      "subtitle": "You decide which information is transmitted to GovTech-DE (demo).",
+      "panel": {
+        "empfaenger_label": "Recipient",
+        "empfaenger_value": "GovTech-DE (demo)",
+        "empfaenger_sub": "Service provider",
+        "zweck_label": "Purpose",
+        "zweck_value": "Sign-in",
+        "zweck_sub": "with GovTech-DE (demo)",
+        "rechtsgrundlage_label": "Legal basis",
+        "rechtsgrundlage_value": "eIDAS 2 / OZG",
+        "rechtsgrundlage_sub": "DSGVO Art. 6 Abs. 1 lit. a",
+        "secure_line": "Transmission is secure and encrypted.",
+        "trusted_service": "Trusted service"
+      },
+      "required_group": "Required details",
+      "required_badge": "Required",
+      "required_caption": "These details are required to sign in.",
+      "optional_group": "Optional details",
+      "optional_badge": "Only if needed",
+      "optional_caption": "This information is optional and is only transmitted if you consent.",
       "attr": {
         "name": "Name",
         "birthdate": "Date of birth",
@@ -944,14 +1261,20 @@
         "available": "Available",
         "optional": "Optional"
       },
+      "verified": "Verified",
+      "required_item": "Required",
       "share_toggle": "Share",
-      "verified_source": "From your ID card (Personalausweis) · verified",
       "not_shared": "not transmitted",
-      "minimization": "Data minimisation (Datenminimierung): you are transmitting {shared} of {total} details.",
-      "recipient": "Recipient: GovTech DE (demo) only — and only with your consent.",
-      "legal_basis": "Legal basis: eIDAS 2 / OZG · consent-based details: DSGVO Art. 6 (1) (a)",
-      "dsgvo_footer": "Your data is transmitted securely and processed in accordance with the DSGVO (GDPR).",
-      "mock_note": "Speculative demo feature · no real eID data transfer.",
+      "counter": "{shared} of {total} details are transmitted",
+      "adjust_hint": "You can adjust your selection at any time.",
+      "trust": {
+        "consent_title": "Your consent",
+        "consent_desc": "You decide which data you wish to share.",
+        "dsgvo_title": "DSGVO-compliant",
+        "dsgvo_desc": "Processing solely on the basis of your consent.",
+        "secure_title": "Secure transmission",
+        "secure_desc": "Your data is transmitted encrypted and protected."
+      },
       "back": "Back",
       "confirm": "Confirm sign-in",
       "committing": "Preparing sign-in …"
@@ -1190,6 +1513,28 @@
       }
     }
   },
+  "wohngeldHinweis": {
+    "title": "Possible entitlement detected",
+    "trigger_label": "You are likely entitled to Wohngeld (housing benefit).",
+    "amount_range": "approx. {min} – {max} € / month",
+    "amount_schaetzung": "Estimate",
+    "amount_a11y": "Estimated rent subsidy between {min} and {max} euros per month — non-binding estimate.",
+    "non_take_up": "About half of those entitled never claim Wohngeld (housing benefit) — check whether you qualify.",
+    "datenblock_title": "Data used (data minimisation)",
+    "daten_haushalt": "Household size ({n}, from the Melderegister / population register)",
+    "daten_mietstufe": "Mietstufe (rent tier) {stufe} (registered municipality {ort}) [MOCK]",
+    "daten_wohnverhaeltnis": "Housing situation: renting",
+    "daten_ergaenzen": "Still to add: gross income and tenancy agreement",
+    "cta_primary": "Check entitlement & prepare application",
+    "rechtsgrundlage": "Legal basis: {normen}",
+    "consent_line": "Notice based on your consent to proactive entitlement notices (Koalitionsvertrag 2025 / coalition agreement).",
+    "consent_settings": "Change setting",
+    "consent_revoked_toast": "Proactive notices disabled. You can re-enable them in the settings.",
+    "zukunft_schaetzung": "[ZUKUNFT 2027] Non-binding estimate based on your data — not an approval. The actual amount is determined only by the official decision (Bescheid).",
+    "dismiss": "Close notice",
+    "snooze": "Remind me later",
+    "behoerde": "Responsible: Bezirksamt Mitte von Berlin — Wohngeldstelle (housing benefit office)"
+  },
   "common": {
     "cta": {
       "zurueck": "Back",
@@ -1392,6 +1737,8 @@
     "run": {
       "title": "Autopilot is running …",
       "subtitle_template": "{adresse} · move-in {stichtag}",
+      "headline": "Change of address on autopilot",
+      "headline_sub": "You confirm once — the system coordinates the next steps.",
       "vorgang_label": "Case #{id}",
       "status": {
         "pending": "waiting",
@@ -1399,12 +1746,6 @@
         "confirmed": "confirmed",
         "failed": "Error — try again",
         "needs_eid": "eID tap required"
-      },
-      "eid_dialog": {
-        "title": "Confirm with your eID",
-        "body_template": "We are forwarding your new address to {behoerde}. Please hold your national ID card to the reader and confirm with your PIN.",
-        "cta_confirm": "Confirm with eID",
-        "cta_cancel": "Cancel"
       },
       "cta_pause": "Pause",
       "cta_cancel": "Cancel",
@@ -2297,6 +2638,23 @@
       "renten_section_subtitle": "From this pension statement (Renteninformation) we transfer the five mandatory items (§ 109 Abs. 3 SGB VI) into your Pension provision (Altersvorsorge) section.",
       "renten_toast_already_applied": "This pension statement (Renteninformation) has already been transferred.",
       "renten_toast_error": "Transfer failed — please try again."
+    },
+    "linkedBadge": "Linked to case (Vorgang)",
+    "erkannteAufgabe": {
+      "title": "Detected task",
+      "provenance": "detected from: {label}",
+      "frist_label": "Deadline",
+      "frist_advisory": "please check against the original",
+      "frist_im_original": "Check in the original",
+      "cta_vorgang_oeffnen": "Open case",
+      "cta_antrag_vorbereiten": "Prepare application",
+      "cta_termin_vormerken": "Reserve appointment",
+      "cta_error": "The case could not be prepared — please try again.",
+      "prepared": "Case is prepared",
+      "prepared_link": "go to case",
+      "no_target": "No guided case available",
+      "zukunft_hint": "[ZUKUNFT 2027] Letter content is detected automatically · [MOCK]",
+      "calendar_disabled_a11y": "Calendar entry not available: the deadline could not be clearly identified in the original letter. Please check in the original."
     }
   },
   "vorgaenge": {
@@ -3484,7 +3842,84 @@
   },
   "termine": {
     "title": "Appointments",
-    "subtitle": "Authority appointments, reminders and bookings in one place.",
+    "subtitle": "Appointments the system takes care of for you.",
+    "spur": {
+      "termine_titel": "Appointments the system takes care of for you",
+      "termine_leer": "No upcoming appointments right now.",
+      "fristen_titel": "Deadlines you need to keep an eye on",
+      "fristen_leer": "No open deadlines."
+    },
+    "kpi": {
+      "naechster_termin": "Next appointment",
+      "offene_fristen": "Open deadlines",
+      "offene_fristen_sub": "Action needed",
+      "bestaetigte": "Confirmed appointments",
+      "bestaetigte_sub": "In the next 30 days",
+      "warten": "Awaiting response",
+      "warten_sub": "Appointments being clarified",
+      "kein_termin": "No appointment"
+    },
+    "tabs": {
+      "alle": "All",
+      "termine": "Appointments",
+      "fristen": "Deadlines",
+      "erinnerungen": "Reminders",
+      "vergangen": "Past"
+    },
+    "toolbar": {
+      "suche_placeholder": "Search appointments, authorities or cases",
+      "suche_label": "Search appointments",
+      "filter": "Filter",
+      "export": "Export calendar"
+    },
+    "liste": {
+      "anstehende_titel": "Upcoming appointments",
+      "alle_termine": "Show all appointments",
+      "alle_fristen": "Show all deadlines",
+      "erinnerungen_titel": "Reminders"
+    },
+    "cal": {
+      "legend": {
+        "titel": "Legend",
+        "termine": "Appointments",
+        "fristen": "Deadlines",
+        "erinnerungen": "Reminders",
+        "mehrere": "Multiple entries"
+      }
+    },
+    "hero": {
+      "tag": "Reserved for you",
+      "mock_marker": "[MOCK] held for you",
+      "summary": {
+        "behoerde": "Authority",
+        "datum": "Date",
+        "ort": "Location",
+        "anliegen": "Matter"
+      },
+      "reasoning_bmg17": "Last safe slot before your registration deadline (§ 17 Abs. 1 BMG, two weeks from move-in) — {tage, plural, =0 {due today} =1 {1 day} other {# days}} left.",
+      "reasoning_bmg17_statisch": "Last safe slot before your registration deadline (§ 17 Abs. 1 BMG, two weeks from move-in). [MOCK]",
+      "nicht_abgeschlossen": "Not complete until you confirm.",
+      "cta_bestaetigen": "Confirm appointment",
+      "aria_bestaetigen": "Confirm appointment at {behoerde} on {datum}"
+    },
+    "quittung": {
+      "titel": "Confirmed",
+      "gelesen": "Read: nothing from your calendar.",
+      "posteingang": "The confirmation is in your inbox."
+    },
+    "absagen": {
+      "title": "Cancel appointment?",
+      "body": "If you cancel, the slot is released for others immediately.",
+      "cta_confirm": "Cancel",
+      "cta_cancel": "Keep",
+      "toast": "Appointment cancelled.",
+      "toast_undo": "Undo",
+      "toast_error": "The appointment could not be cancelled — please try again.",
+      "undo_done": "Cancellation undone."
+    },
+    "bestaetigen": {
+      "toast_error": "Confirmation failed — please try again."
+    },
     "calendar": {
       "prev": "Previous month",
       "next": "Next month",
@@ -3508,14 +3943,22 @@
         "so": "Sun"
       },
       "day_aria": "{datum}{events}",
-      "day_events_suffix": " — {count, plural, =1 {1 appointment} other {# appointments}}"
+      "day_events_suffix": " — {count, plural, =1 {1 appointment} other {# appointments}}",
+      "day_events_breakdown": {
+        "termine": "{count, plural, =1 {1 appointment} other {# appointments}}",
+        "fristen": "{count, plural, =1 {1 deadline} other {# deadlines}}",
+        "erinnerungen": "{count, plural, =1 {1 reminder} other {# reminders}}"
+      },
+      "quittung_hint": "Your appointments at a glance"
     },
     "filter": {
       "title": "Filter",
       "behoerdentermine": "Authority appointments",
       "erinnerungen": "Reminders & deadlines",
       "buchungen": "Bookings",
-      "abgeschlossen": "Completed"
+      "abgeschlossen": "Completed",
+      "vergangene_zeigen": "Show past & cancelled",
+      "vergangene_ausblenden": "Hide past & cancelled"
     },
     "naechste": {
       "title": "Upcoming appointments",
@@ -3537,11 +3980,13 @@
       "ics_aria_all": "Export all upcoming appointments as ICS"
     },
     "status": {
-      "vorgeschlagen": "Suggested",
+      "vorgeschlagen": "Reserved for you",
       "gebucht": "Booked",
       "bestaetigt": "Confirmed",
       "verschoben": "Rescheduled",
-      "abgesagt": "Cancelled"
+      "abgesagt": "Cancelled",
+      "erledigt": "Done",
+      "wartet": "Awaiting confirmation"
     },
     "marker": {
       "erinnerung": "Reminder"
@@ -3555,12 +4000,26 @@
       "hide": "Hide completed appointments"
     },
     "detail": {
-      "status_label": "Status: {status}"
+      "status_label": "Status: {status}",
+      "titel": "Appointment details",
+      "schliessen": "Close appointment details",
+      "zugehoeriger_vorgang": "Related case",
+      "link_hinweis": "The link will be sent by email 24 h in advance.",
+      "vorbereitung_titel": "Preparation",
+      "zum_vorgang": "Go to case",
+      "verschieben": "Reschedule appointment"
     },
     "reschedule": {
-      "title": "Reschedule appointment",
-      "intro": "Choose a new appointment. The authority is notified of the change automatically.",
-      "confirm": "Reschedule to this appointment"
+      "title": "Find another appointment",
+      "intro": "We are looking for another free appointment for you ([MOCK]).",
+      "confirm": "Reschedule to this appointment",
+      "slot_mock_suffix": "[MOCK]",
+      "warteliste_titel": "No free appointment right now",
+      "warteliste_text": "We will add you to the waiting list and get in touch as soon as one becomes available.",
+      "warteliste_cta": "Add me to the waiting list",
+      "warteliste_toast": "You are on the waiting list ([MOCK]).",
+      "toast_template": "Appointment rescheduled to {datum}.",
+      "toast_error": "The appointment could not be rescheduled — please try again."
     },
     "naechster_schritt": {
       "title": "Next step",
@@ -3577,7 +4036,10 @@
       "alter_titel": "Bring your old residence permit (Aufenthaltstitel)",
       "biometrie": "Bring a biometric passport photo",
       "gebuehr": "Have the processing fee ready",
-      "meldung": "Bring the landlord confirmation (Wohnungsgeberbestätigung)"
+      "meldung": "Bring the landlord confirmation (Wohnungsgeberbestätigung)",
+      "versicherungskarte": "Have your insurance card ready",
+      "unterlagen_pruefen": "Check the relevant documents",
+      "fragen_notieren": "Note down your questions"
     },
     "fristen": {
       "title": "Deadlines at a glance",

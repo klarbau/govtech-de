@@ -70,6 +70,13 @@ export type CollectionKey =
   // Redesign-Dashboard — deviceLocal-State (`dashboard.md` § 5.4).
   | 'dashboard:last-seen'
   | 'dashboard:sort-mode'
+  // Proaktiver Wohngeld-Anspruch-Hinweis (`proaktiver-wohngeld-anspruch.md`
+  // § 6). deviceLocal-State pro Persona. `dismissed`/`snoozed-until` verstecken
+  // die Karte; `consent` (Default `true`, wenn kein Eintrag) widerruft die
+  // proaktive Erkennung. Bei zod-Fehler reseedet `read()` nur diese Buckets.
+  | 'wohngeld-hinweis:dismissed'
+  | 'wohngeld-hinweis:snoozed-until'
+  | 'wohngeld-hinweis:consent'
   // Resilient Orchestration Engine (`resilient-orchestration-engine.md` § 2.5).
   // Eigener Schema-Version-Marker (`orchestration:schema-version`, start `1`) —
   // bleibt im bestehenden `v1`-Namespace; KEIN globaler v1→v2-Bump (der würde

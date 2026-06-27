@@ -147,7 +147,7 @@ test('onboarding full keyboard flow + axe each step', async ({ page }) => {
   expect(personaAxe.blockers).toHaveLength(0);
   await page.getByRole('button', { name: /Anna Petrov/ }).focus();
   await page.keyboard.press('Enter');
-  const transH1 = page.getByRole('heading', { level: 1, name: /Diese Daten/ });
+  const transH1 = page.getByRole('heading', { level: 1, name: /eID-Daten/ });
   await expect(transH1).toBeVisible({ timeout: 4000 });
   expect(await page.locator('h1').count()).toBe(1);
   const transAxe = await runAxe(page);
@@ -162,7 +162,7 @@ test('axe onboarding D dark', async ({ page }) => {
   await page.evaluate(() => document.documentElement.classList.add('dark'));
   await page.getByRole('button', { name: /Demo-Modus/ }).click();
   await page.getByRole('button', { name: /Anna Petrov/ }).click();
-  await expect(page.getByRole('heading', { level: 1, name: /Diese Daten/ })).toBeVisible({ timeout: 4000 });
+  await expect(page.getByRole('heading', { level: 1, name: /eID-Daten/ })).toBeVisible({ timeout: 4000 });
   const { results, blockers } = await runAxe(page);
   console.log('[AXE onboarding D dark] ' + JSON.stringify(summarize(results)));
   expect(blockers).toHaveLength(0);
@@ -190,7 +190,7 @@ test('onboarding transparency toggle >=44', async ({ page }) => {
   await page.goto('/onboarding', { waitUntil: 'networkidle' });
   await page.getByRole('button', { name: /Demo-Modus/ }).click();
   await page.getByRole('button', { name: /Familie Schmidt/ }).click();
-  await expect(page.getByRole('heading', { level: 1, name: /Diese Daten/ })).toBeVisible({ timeout: 4000 });
+  await expect(page.getByRole('heading', { level: 1, name: /eID-Daten/ })).toBeVisible({ timeout: 4000 });
   const sizes = await page.evaluate(() => Array.from(document.querySelectorAll('label')).filter((l) => l.querySelector('[data-slot="switch"]')).map((l) => Math.round(l.getBoundingClientRect().height)));
   console.log('[ONBOARDING toggle heights] ' + JSON.stringify(sizes));
   for (const h of sizes) expect(h).toBeGreaterThanOrEqual(44);

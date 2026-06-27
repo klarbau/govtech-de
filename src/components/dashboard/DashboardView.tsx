@@ -22,9 +22,12 @@ import {
   Shield,
 } from 'lucide-react';
 
+import { toast } from 'sonner';
+
 import { AutopilotKatalogTeaser } from '@/components/autopilot/AutopilotKatalogTeaser';
 import { ErledigtFeed } from '@/components/dashboard/ErledigtFeed';
 import { TriumphBanner } from '@/components/dashboard/TriumphBanner';
+import { WohngeldHinweisCard } from '@/components/dashboard/WohngeldHinweisCard';
 import { Skeleton } from '@/components/shared/Skeleton';
 import { api } from '@/lib/mock-backend';
 import type { Behoerde, DashboardSnapshot, Persona } from '@/types';
@@ -47,10 +50,12 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
   const tTermin = useTranslations('dashboard.naechster_termin');
   const tAktiv = useTranslations('dashboard.aktivitaeten');
   const tCommon = useTranslations('common');
+  const tWohngeld = useTranslations('wohngeldHinweis');
   const [snapshot, setSnapshot] = React.useState<DashboardSnapshot | null>(null);
   const [persona, setPersona] = React.useState<Persona | null>(null);
   const [behoerdenNames, setBehoerdenNames] = React.useState<Record<string, string>>({});
   const [dismissed, setDismissed] = React.useState<Set<string>>(() => new Set());
+  const [wohngeldHidden, setWohngeldHidden] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const lastSeenWrittenRef = React.useRef(false);
 
@@ -105,6 +110,9 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
   ).slice(0, 3);
   const todosEmpty = visibleTodos.length === 0;
 
+  const wohngeldHinweis = snapshot?.wohngeld_hinweis ?? null;
+  const showWohngeld = wohngeldHinweis !== null && !wohngeldHidden;
+
   // „Aktivitäten" speist sich aus echten Vorgangs-Bewegungen (letzte
   // Schritt-Timestamps), neueste zuerst, max. 3 — distinkt vom Autopilot-Feed.
   const aktivitaeten = [...(snapshot?.vorgangs_stand_tile ?? [])]
@@ -132,6 +140,40 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
     }
   }
 
+  async function handleWohngeldDismiss() {
+    if (!persona) return;
+    setWohngeldHidden(true);
+    try {
+      await api.dismissWohngeldHinweis(persona.id);
+      await reload();
+    } catch {
+      /* optimistic hide already applied */
+    }
+  }
+
+  async function handleWohngeldSnooze() {
+    if (!persona) return;
+    setWohngeldHidden(true);
+    try {
+      await api.snoozeWohngeldHinweis(persona.id, 30);
+      await reload();
+    } catch {
+      /* optimistic hide already applied */
+    }
+  }
+
+  async function handleWohngeldRevokeConsent() {
+    if (!persona) return;
+    setWohngeldHidden(true);
+    try {
+      await api.setWohngeldHinweisConsent(persona.id, false);
+      await reload();
+    } catch {
+      /* optimistic hide already applied */
+    }
+    toast(tWohngeld('consent_revoked_toast'));
+  }
+
   if (snapshot === null && error === null) {
     return (
       <>
@@ -153,6 +195,16 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
 
       <div className="dash-layout">
         <div className="dash-col">
+          {showWohngeld && wohngeldHinweis ? (
+            <WohngeldHinweisCard
+              estimate={wohngeldHinweis}
+              ort={persona?.adresse?.ort ?? ''}
+              onDismiss={handleWohngeldDismiss}
+              onSnooze={handleWohngeldSnooze}
+              onRevokeConsent={handleWohngeldRevokeConsent}
+            />
+          ) : null}
+
           <section aria-labelledby="dashboard-heute-zu-tun" className="heute-card">
             <div className="heute-head">
               <h2 id="dashboard-heute-zu-tun">{t('heute.titel')}</h2>

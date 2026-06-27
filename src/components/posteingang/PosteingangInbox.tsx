@@ -21,6 +21,7 @@ import {
   Info,
   Inbox,
   Landmark,
+  Link2,
   ListChecks,
   Mail,
   MessageCircleQuestion,
@@ -35,14 +36,17 @@ import {
 import { toast } from 'sonner';
 
 import { api } from '@/lib/mock-backend';
+import { bridgeTargetForArchetype } from '@/lib/mock-backend/brief-bridge';
 import { useMediaQuery } from '@/lib/hooks/use-media-query';
 import { Skeleton } from '@/components/shared/Skeleton';
-import type { Behoerde, BehoerdeKategorie, Letter, Vorgang } from '@/types';
+import type { Behoerde, BehoerdeKategorie, Letter, LetterFrist, Vorgang } from '@/types';
 
+import { ErkannteAufgabePanel } from './ErkannteAufgabePanel';
+import { downloadIcs } from './download-ics';
 import { NeuerVorgangAusBriefModal } from './NeuerVorgangAusBriefModal';
 import { ReplyInlinePanel } from './ReplyInlinePanel';
 import { ReplyModalSheet } from './ReplyModalSheet';
-import { OriginaltextBlock } from './OriginaltextBlock';
+import { OriginaltextBlock, type OriginaltextBlockHandle } from './OriginaltextBlock';
 import { VorgangsGruppe, SonstigeGruppe } from './VorgangsGruppe';
 import { FilterSheet } from './FilterSheet';
 import {
@@ -160,6 +164,10 @@ export function PosteingangInbox({
   // (initial false → Modal), flippt nach Mount auf den echten Match.
   const inlineBreakpoint = useMediaQuery('(min-width: 1100px)');
   const inlineActive = replyLetter !== null && inlineBreakpoint;
+  // Der Gutter folgt dem Öffnen-Lebenszyklus (nicht `replyLetter`), damit er
+  // beim Schließen synchron zur Drawer-Exit-Animation einklappt statt erst,
+  // wenn `replyLetter` nach `onClosed` geleert wird.
+  const replyGutterOpen = inlineReplyOpen && inlineBreakpoint;
 
   function openReply(letter: Letter, event?: React.SyntheticEvent) {
     const trigger = (event?.currentTarget ??
@@ -349,7 +357,7 @@ export function PosteingangInbox({
 
   return (
     <>
-      <div className={inlineActive ? 'post-content--reply-open' : undefined}>
+      <div className={replyGutterOpen ? 'post-content post-content--reply-open' : 'post-content'}>
       <div className="post-shell">
         <PostRail
           mailbox={mailbox}
@@ -836,6 +844,7 @@ function PostItemRow({
   section: SectionKey;
   onSelect: () => void;
 }) {
+  const tBadge = useTranslations('posteingang');
   const variant = avatarVariant(letter.absender_behoerde_id);
   const archetypeLabel = archetypeText(letter);
   const earliestFrist = (letter.fristen ?? [])
@@ -876,6 +885,15 @@ function PostItemRow({
         </div>
         <div className="s">
           {archetypeLabel}
+          {letter.vorgang_id && (
+            <span
+              data-testid="post-item-linked-badge"
+              className="ml-1.5 inline-flex items-center gap-1 rounded-full border border-border bg-muted px-1.5 py-0.5 align-middle text-[11px] font-medium text-muted-foreground"
+            >
+              <Link2 className="size-3" aria-hidden="true" />
+              {tBadge('linkedBadge')}
+            </span>
+          )}
           <br />
           Aktenzeichen: {letter.aktenzeichen}
         </div>
@@ -924,6 +942,7 @@ function PostDetail({
 }) {
   const t3 = useTranslations('posteingang.mockup3');
   const tWas = useTranslations('posteingang.was_kann_ich_tun');
+  const tPost = useTranslations('posteingang');
   const [docTab, setDocTab] = React.useState<'original' | 'anhaenge' | 'verlauf'>(
     'original',
   );
@@ -931,6 +950,50 @@ function PostDetail({
   React.useEffect(() => {
     setDocTab('original');
   }, [letter.id]);
+
+  // „Der Brief, der handelt" — Bridge-Ziel + Originaltext-Handle (scrollToZitat).
+  const bridge = bridgeTargetForArchetype(letter.archetype);
+  const originalRef = React.useRef<OriginaltextBlockHandle>(null);
+  const [pendingZitat, setPendingZitat] = React.useState<string | null>(null);
+
+  // „Im Original prüfen": ist der Originaltext zugeklappt, erst aufklappen, dann
+  // nach Mount zum Zitat scrollen + hervorheben (RAF nach dem State-Flip).
+  const handleScrollToZitat = React.useCallback(
+    (zitat: string) => {
+      if (originaltextOpen) {
+        originalRef.current?.scrollToZitat(zitat);
+      } else {
+        setPendingZitat(zitat);
+        onOriginaltextToggle();
+      }
+    },
+    [originaltextOpen, onOriginaltextToggle],
+  );
+
+  React.useEffect(() => {
+    if (!originaltextOpen || !pendingZitat) return;
+    const zitat = pendingZitat;
+    const raf = requestAnimationFrame(() => {
+      originalRef.current?.scrollToZitat(zitat);
+      setPendingZitat(null);
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [originaltextOpen, pendingZitat]);
+
+  const handleAddToCalendar = React.useCallback(
+    (frist: LetterFrist) => {
+      // Defense-in-depth: das Panel verdrahtet diesen Handler strukturell nur im
+      // `citation_match=true`-Zweig, aber wir verweigern den ICS-Export hier noch
+      // einmal explizit, wenn die Frist nicht eindeutig belegt ist.
+      if (frist.citation_match === false) {
+        toast.error(tPost('erkannteAufgabe.calendar_disabled_a11y'));
+        return;
+      }
+      downloadIcs(letter, frist);
+      void api.protokolliereLetterAktivitaet(letter.id, 'frist_added_to_calendar');
+    },
+    [letter, tPost],
+  );
 
   const ai = letter.ai_summary?.post_open;
   const bullets = ai?.bullets?.slice(0, 3).map((b) => b.text) ?? [];
@@ -974,7 +1037,18 @@ function PostDetail({
         </span>
         <div className="grow">
           <div className="who">{absender?.name_de ?? 'Behörde'}</div>
-          <div className="what">Behördenbrief · {archetypeText(letter)}</div>
+          <div className="what">
+            Behördenbrief · {archetypeText(letter)}
+            {letter.vorgang_id && (
+              <span
+                data-testid="post-detail-linked-badge"
+                className="ml-1.5 inline-flex items-center gap-1 rounded-full border border-border bg-muted px-2 py-0.5 align-middle text-[11px] font-medium text-muted-foreground"
+              >
+                <Link2 className="size-3" aria-hidden="true" />
+                {tPost('linkedBadge')}
+              </span>
+            )}
+          </div>
         </div>
         <div style={{ textAlign: 'right' }}>
           <div className="verify">
@@ -1127,6 +1201,17 @@ function PostDetail({
             </div>
           </div>
 
+          <ErkannteAufgabePanel
+            letter={letter}
+            bridge={bridge}
+            fristen={letter.fristen ?? []}
+            provenanceLabel={archetypeText(letter)}
+            onScrollToZitat={handleScrollToZitat}
+            onAddToCalendar={handleAddToCalendar}
+            embedded
+            variant="post-panel"
+          />
+
           {fristLabel && (
             <div className="frist-row">
               <Clock style={{ color: 'var(--ink-3)', width: '16px', height: '16px' }} />
@@ -1248,7 +1333,7 @@ function PostDetail({
             </div>
           ) : (
             <div style={{ marginTop: '18px' }}>
-              <OriginaltextBlock body={letter.body_de} />
+              <OriginaltextBlock ref={originalRef} body={letter.body_de} />
             </div>
           )}
 

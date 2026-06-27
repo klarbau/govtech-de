@@ -4,93 +4,114 @@ import * as React from 'react';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import {
-  addDays,
   differenceInCalendarDays,
   format,
   parseISO,
-  setHours,
-  setMinutes,
   type Locale,
 } from 'date-fns';
+import { toast } from 'sonner';
 import {
   Bell,
   Calendar,
-  CalendarPlus,
+  CalendarDays,
   CheckCircle2,
   ChevronRight,
+  Circle,
   Clock,
   Euro,
   FileText,
+  Filter,
   Info,
   Landmark,
   MapPin,
   ReceiptText,
   RefreshCw,
+  Search,
   Stethoscope,
+  Users,
+  X,
 } from 'lucide-react';
 
 import { api } from '@/lib/mock-backend';
 import { dateFnsLocale } from '@/lib/utils';
-import type { Behoerde, Reminder, Termin, TerminStatus } from '@/types';
+import type { Behoerde, Reminder, Termin } from '@/types';
 import { Badge } from '@/components/ui/badge';
 import { EmptyState } from '@/components/shared/EmptyState';
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-
 import { Skeleton } from '@/components/shared/Skeleton';
 
-import { MonthCalendar } from './MonthCalendar';
-import { TermineFilter, type TermineFilterKey } from './TermineFilter';
+import { MonthCalendar, type DayEventBreakdown } from './MonthCalendar';
+import { TerminRescheduleDialog } from './TerminRescheduleDialog';
+import { TerminAbsagenDialog } from './TerminAbsagenDialog';
+import { dayKey, formatDateLong, formatTimeRange } from './termin-format';
+import { displayStatus, istBuergeramtVorgemerkt } from './termin-status';
 
-/* Re-wire of docs/design-prototype-v2/termine.html on the cobalt design
-   system: keeps the prototype look, restores accessible + interactive
-   behaviour (keyboard calendar, day-selection filtering, focus-trapped
-   dialogs, live updates, real list affordances). */
+/* termine-green-relayout.md: green command-center relayout of /termine. The data
+   layer (load/retry/subscribe, optimistic revert-on-error mutations, ICS export,
+   §17 „Vorgemerkt" semantics) is PRESERVED — only the derivations + JSX/CSS are
+   rebuilt around the 3-column command center. All operations stay honest: the §17
+   confirm shows only the „Gelesen: nichts aus Ihrem Kalender."-Quittung, never a
+   Posteingang claim; the ABH/LEA termin is never the §17 hero. */
 
 interface TermineViewProps {
   nowIso: string;
 }
 
-type FilterState = Record<TermineFilterKey, boolean>;
+const TWENTY_FOUR_HOURS_MS = 24 * 3600 * 1000;
+const THIRTY_DAYS_MS = 30 * 24 * 3600 * 1000;
 
-/** yyyy-MM-dd key of an ISO timestamp (local). */
-function dayKey(iso: string): string {
-  try {
-    return format(parseISO(iso), 'yyyy-MM-dd');
-  } catch {
-    return iso.slice(0, 10);
+type TabId = 'alle' | 'termine' | 'fristen' | 'erinnerungen' | 'vergangen';
+
+/** View-level badge state: the Bürgeramt-vs-not split happens HERE so the shared
+ *  displayStatus() (and the spine) keep their 4-state union untouched. */
+type ViewBadge =
+  | 'bestaetigt'
+  | 'vorgemerkt'
+  | 'wartet'
+  | 'abgesagt'
+  | 'erledigt';
+
+function viewBadge(term: Termin, nowIso: string): ViewBadge {
+  const ds = displayStatus(term, nowIso);
+  if (ds === 'vorgemerkt') {
+    return istBuergeramtVorgemerkt(term, nowIso) ? 'vorgemerkt' : 'wartet';
+  }
+  return ds;
+}
+
+function viewBadgeTone(badge: ViewBadge): string {
+  switch (badge) {
+    case 'bestaetigt':
+      return 'green';
+    case 'vorgemerkt':
+      return 'amber';
+    case 'wartet':
+      return 'violet';
+    case 'abgesagt':
+      return 'red';
+    case 'erledigt':
+      return 'outline';
   }
 }
 
-function formatDateLong(iso: string, locale: Locale): string {
-  try {
-    return format(parseISO(iso), 'EEEE, dd. MMMM yyyy', { locale });
-  } catch {
-    return iso.slice(0, 10);
-  }
-}
-
-function formatTimeRange(iso: string, durationMinutes = 45): string {
-  try {
-    const d = parseISO(iso);
-    const end = new Date(d.getTime() + durationMinutes * 60 * 1000);
-    return `${format(d, 'HH:mm')} – ${format(end, 'HH:mm')} Uhr`;
-  } catch {
-    return '';
+function viewBadgeLabelKey(badge: ViewBadge): string {
+  switch (badge) {
+    case 'vorgemerkt':
+      return 'vorgeschlagen'; // Enum-Key bleibt; Label = „Vorgemerkt"
+    case 'wartet':
+      return 'wartet';
+    case 'bestaetigt':
+      return 'bestaetigt';
+    case 'abgesagt':
+      return 'abgesagt';
+    case 'erledigt':
+      return 'erledigt';
   }
 }
 
 export function TermineView({ nowIso }: TermineViewProps) {
   const t = useTranslations();
-  const tAction = useTranslations('termine.action');
+  const tTermine = useTranslations('termine');
   const tStatus = useTranslations('termine.status');
   const dateLocale = dateFnsLocale(useLocale());
 
@@ -102,35 +123,47 @@ export function TermineView({ nowIso }: TermineViewProps) {
   const [behoerdenById, setBehoerdenById] = React.useState<
     Record<string, Behoerde>
   >({});
+  const [activePersonaId, setActivePersonaId] = React.useState<string | null>(
+    null,
+  );
   const [busy, setBusy] = React.useState<string | null>(null);
   const [phase, setPhase] = React.useState<'loading' | 'ready' | 'error'>(
     'loading',
   );
 
-  const [filters, setFilters] = React.useState<FilterState>({
-    behoerdentermine: true,
-    erinnerungen: true,
-    buchungen: true,
-    abgeschlossen: false,
-  });
+  const [activeTab, setActiveTab] = React.useState<TabId>('alle');
+  const [query, setQuery] = React.useState('');
   const [selectedIso, setSelectedIso] = React.useState<string | null>(null);
-  const [detailTermin, setDetailTermin] = React.useState<Termin | null>(null);
+  const [selectedId, setSelectedId] = React.useState<string | null>(null);
+  // The §17 confirm flips the badge green; keep that termin selected as a receipt.
+  const [recentlyConfirmedId, setRecentlyConfirmedId] = React.useState<
+    string | null
+  >(null);
+  // Auto-selection is applied exactly once after the first successful load.
+  const autoSelectedRef = React.useRef(false);
+
   const [rescheduleTermin, setRescheduleTermin] = React.useState<Termin | null>(
     null,
   );
+  const [absagenTermin, setAbsagenTermin] = React.useState<Termin | null>(null);
+  // Element that opened the „Absagen"-AlertDialog — for focus-return on close
+  // (WCAG 2.4.3). Remembered on click, handed to `finalFocusRef`.
+  const absagenOpenerRef = React.useRef<HTMLElement | null>(null);
 
   const load = React.useCallback(async () => {
     setPhase('loading');
     for (let attempt = 0; attempt < 3; attempt++) {
       try {
-        const [terms, rems, behoerden] = await Promise.all([
+        const [terms, rems, behoerden, profile] = await Promise.all([
           api.getTermine(),
           api.getReminders(),
           api.getBehoerden(),
+          api.getProfile(),
         ]);
         setTermine(terms);
         setReminders(rems);
         setBehoerdenById(Object.fromEntries(behoerden.map((b) => [b.id, b])));
+        setActivePersonaId(profile.id);
         setPhase('ready');
         return;
       } catch {
@@ -151,12 +184,9 @@ export function TermineView({ nowIso }: TermineViewProps) {
     };
   }, [load]);
 
-  /* C1/§1.2: react live when the autopilot mints/updates a Termin.
-     The SSE connection (EventSource) is a long-lived request; opening it during
-     the initial page load would keep the network permanently busy. We defer it
-     past the first settle so the page can reach an idle network for SSR/axe,
-     then attach for the rest of the session (autopilot events arrive far later
-     in the demo, so the small delay is invisible). */
+  /* React live when the autopilot mints/updates a Termin. The SSE connection is
+     deferred past the first settle so the page can reach an idle network for
+     SSR/axe (autopilot events arrive far later in the demo). */
   React.useEffect(() => {
     let unsubscribe: (() => void) | undefined;
     const handle = window.setTimeout(() => {
@@ -190,151 +220,299 @@ export function TermineView({ nowIso }: TermineViewProps) {
     setTermine((prev) => prev.map((x) => (x.id === updated.id ? updated : x)));
   }, []);
 
+  // --------------------------------------------------------------------------
+  // Persona scoping. getTermine() returns ALL personas' termine; scope to the
+  // active persona by `owner_persona_id` (reminders are already persona-scoped
+  // server-side). Termine without the field stay visible defensively.
+  // --------------------------------------------------------------------------
+  const ownTermine = React.useMemo(
+    () =>
+      termine.filter(
+        (term) =>
+          !term.owner_persona_id ||
+          !activePersonaId ||
+          term.owner_persona_id === activePersonaId,
+      ),
+    [termine, activePersonaId],
+  );
+
+  // --------------------------------------------------------------------------
+  // Operations — optimistic, revert-on-error, visible toast (no empty catch).
+  // --------------------------------------------------------------------------
+
   const handleBestaetigen = React.useCallback(
     async (termin: Termin) => {
+      const prev = termin;
       setBusy(termin.id);
+      setRecentlyConfirmedId(termin.id);
+      setSelectedId(termin.id);
       applyTermin({ ...termin, status: 'bestaetigt' });
       try {
         await api.bestaetigeTerminVorschlag(termin.id);
       } catch {
-        /* optimistic update already applied */
+        applyTermin(prev);
+        toast.error(tTermine('bestaetigen.toast_error'));
       } finally {
         setBusy(null);
       }
     },
-    [applyTermin],
+    [applyTermin, tTermine],
   );
 
   const handleReschedule = React.useCallback(
     async (termin: Termin, neuesDatumIso: string) => {
+      const prevDatum = termin.datum;
       setBusy(termin.id);
-      applyTermin({ ...termin, datum: neuesDatumIso, status: 'verschoben' });
+      applyTermin({ ...termin, datum: neuesDatumIso });
       setRescheduleTermin(null);
       try {
         await api.verschiebeTermin(termin.id, neuesDatumIso);
+        toast.success(
+          tTermine('reschedule.toast_template', {
+            datum: formatDateLong(neuesDatumIso, dateLocale),
+          }),
+        );
       } catch {
-        /* optimistic update already applied */
+        applyTermin({ ...termin, datum: prevDatum });
+        toast.error(tTermine('reschedule.toast_error'));
       } finally {
         setBusy(null);
       }
     },
-    [applyTermin],
+    [applyTermin, dateLocale, tTermine],
   );
 
-  const handleAbsagen = React.useCallback(
+  const handleWaitlist = React.useCallback(() => {
+    setRescheduleTermin(null);
+    toast(tTermine('reschedule.warteliste_toast'));
+  }, [tTermine]);
+
+  const handleAbsagenConfirm = React.useCallback(
     async (termin: Termin) => {
-      if (
-        typeof window !== 'undefined' &&
-        !window.confirm(tAction('confirm_cancel'))
-      ) {
-        return;
-      }
+      const prevStatus = termin.status;
+      setAbsagenTermin(null);
       setBusy(termin.id);
       applyTermin({ ...termin, status: 'abgesagt' });
       try {
         await api.sageTerminAb(termin.id);
+        // Honest „Rückgängig": 6 s window. The undo restores the prior status
+        // client-side via the same mutate path; the 5% error on undo is surfaced.
+        toast(tTermine('absagen.toast'), {
+          duration: 6000,
+          action: {
+            label: tTermine('absagen.toast_undo'),
+            onClick: () => {
+              void (async () => {
+                applyTermin({ ...termin, status: prevStatus });
+                try {
+                  // The only backend op that re-activates an appointment is
+                  // bestaetigeTerminVorschlag → 'bestaetigt'. A previously
+                  // 'vorgeschlagen' termin is restored client-side only (no op
+                  // writes 'vorgeschlagen' back — keeps this honest rather than
+                  // firing a misleading no-op).
+                  if (prevStatus !== 'vorgeschlagen') {
+                    await api.bestaetigeTerminVorschlag(termin.id);
+                  }
+                  toast.success(tTermine('absagen.undo_done'));
+                } catch {
+                  applyTermin({ ...termin, status: 'abgesagt' });
+                  toast.error(tTermine('absagen.toast_error'));
+                }
+              })();
+            },
+          },
+        });
       } catch {
-        /* optimistic update already applied */
+        applyTermin({ ...termin, status: prevStatus });
+        toast.error(tTermine('absagen.toast_error'));
       } finally {
         setBusy(null);
       }
     },
-    [applyTermin, tAction],
+    [applyTermin, tTermine],
   );
 
-  function toggleFilter(key: TermineFilterKey) {
-    setFilters((prev) => ({ ...prev, [key]: !prev[key] }));
-  }
+  // --------------------------------------------------------------------------
+  // Derived data.
+  // --------------------------------------------------------------------------
 
-  /**
-   * Filter-Gate für einen Termin. Buchung vs. Behördentermin über `kategorie`
-   * (Fallback: Präsenz ⇒ Behördentermin). „Abgeschlossen" steuert, ob
-   * abgesagte Termine sichtbar sind.
-   */
-  const isTerminVisible = React.useCallback(
-    (termin: Termin): boolean => {
-      const istBuchung =
-        (termin.kategorie ??
-          (termin.ort.typ === 'praesenz' ? 'behoerdentermin' : 'buchung')) ===
-        'buchung';
-      if (istBuchung) {
-        if (!filters.buchungen) return false;
-      } else if (!filters.behoerdentermine) {
-        return false;
-      }
-      if (termin.status === 'abgesagt' && !filters.abgeschlossen) return false;
-      return true;
-    },
-    [filters],
+  const isUpcoming = React.useCallback(
+    (iso: string) =>
+      new Date(iso).getTime() >= now.getTime() - TWENTY_FOUR_HOURS_MS,
+    [now],
   );
-
-  const visibleTermine = React.useMemo(
-    () => termine.filter(isTerminVisible),
-    [termine, isTerminVisible],
-  );
-
-  const visibleReminders = React.useMemo(
-    () => (filters.erinnerungen ? reminders : []),
-    [filters.erinnerungen, reminders],
-  );
-
-  const eventCounts = React.useMemo(() => {
-    const counts: Record<string, number> = {};
-    for (const item of [...visibleTermine, ...visibleReminders]) {
-      const key = dayKey(item.datum);
-      counts[key] = (counts[key] ?? 0) + 1;
-    }
-    return counts;
-  }, [visibleTermine, visibleReminders]);
 
   const matchesSelectedDay = React.useCallback(
     (iso: string) => !selectedIso || dayKey(iso) === selectedIso,
     [selectedIso],
   );
 
-  const futureTermine = React.useMemo(
+  const matchesQuery = React.useCallback(
+    (haystack: string) => {
+      const needle = query.trim().toLowerCase();
+      return needle.length === 0 || haystack.toLowerCase().includes(needle);
+    },
+    [query],
+  );
+
+  /** Upcoming, persona-scoped, active termine (not cancelled, not past). */
+  const upcomingTermine = React.useMemo(
     () =>
-      visibleTermine
-        .filter(
-          (term) =>
-            new Date(term.datum).getTime() >=
-            now.getTime() - 24 * 3600 * 1000,
-        )
+      ownTermine
+        .filter((term) => {
+          const ds = displayStatus(term, nowIso);
+          return ds !== 'abgesagt' && ds !== 'erledigt' && isUpcoming(term.datum);
+        })
         .sort((a, b) => a.datum.localeCompare(b.datum)),
-    [visibleTermine, now],
+    [ownTermine, nowIso, isUpcoming],
   );
 
-  const dayTermine = React.useMemo(
-    () => futureTermine.filter((term) => matchesSelectedDay(term.datum)),
-    [futureTermine, matchesSelectedDay],
-  );
-
-  const naechster = dayTermine[0] ?? null;
-  const weitere = dayTermine.slice(1);
-
-  const futureFristen = React.useMemo(
+  /** Past / cancelled termine for the „Vergangen" tab. */
+  const pastTermine = React.useMemo(
     () =>
-      visibleReminders
-        .filter(
-          (r) =>
-            new Date(r.datum).getTime() >= now.getTime() - 24 * 3600 * 1000,
-        )
+      ownTermine
+        .filter((term) => {
+          const ds = displayStatus(term, nowIso);
+          return ds === 'abgesagt' || ds === 'erledigt';
+        })
+        .sort((a, b) => b.datum.localeCompare(a.datum)),
+    [ownTermine, nowIso],
+  );
+
+  const upcomingReminders = React.useMemo(
+    () =>
+      reminders
+        .filter((r) => !r.erledigt && isUpcoming(r.datum))
         .sort((a, b) => a.datum.localeCompare(b.datum)),
-    [visibleReminders, now],
+    [reminders, isUpcoming],
   );
 
-  const dayFristen = React.useMemo(
-    () => futureFristen.filter((r) => matchesSelectedDay(r.datum)),
-    [futureFristen, matchesSelectedDay],
+  const pastReminders = React.useMemo(
+    () =>
+      reminders
+        .filter((r) => r.erledigt || !isUpcoming(r.datum))
+        .sort((a, b) => b.datum.localeCompare(a.datum)),
+    [reminders, isUpcoming],
   );
 
-  const hasDayContent = dayTermine.length > 0 || dayFristen.length > 0;
+  /* Auto-select once after first load: a Bürgeramt §17 `vorgemerkt` termin wins
+     (its confirm CTA + §17 reasoning = the wow); else the nächster Termin. */
+  React.useEffect(() => {
+    if (phase !== 'ready' || autoSelectedRef.current) return;
+    if (upcomingTermine.length === 0) return;
+    autoSelectedRef.current = true;
+    const hero = upcomingTermine.find((term) =>
+      istBuergeramtVorgemerkt(term, nowIso),
+    );
+    setSelectedId(hero?.id ?? upcomingTermine[0]?.id ?? null);
+  }, [phase, upcomingTermine, nowIso]);
+
+  /** Tab + day + search filtered appointment rows for the center list. */
+  const visibleTermine = React.useMemo(() => {
+    const base = activeTab === 'vergangen' ? pastTermine : upcomingTermine;
+    return base
+      .filter((term) => matchesSelectedDay(term.datum))
+      .filter((term) =>
+        matchesQuery(`${behoerdeName(term.behoerde_id)} ${term.betreff}`),
+      );
+  }, [
+    activeTab,
+    pastTermine,
+    upcomingTermine,
+    matchesSelectedDay,
+    matchesQuery,
+    behoerdeName,
+  ]);
+
+  /** Tab + day + search filtered Frist/Erinnerung rows for the center list. */
+  const visibleReminders = React.useMemo(() => {
+    const base = activeTab === 'vergangen' ? pastReminders : upcomingReminders;
+    return base
+      .filter((r) => {
+        if (activeTab === 'fristen') return r.kategorie === 'frist';
+        if (activeTab === 'erinnerungen') return r.kategorie === 'erinnerung';
+        return true;
+      })
+      .filter((r) => matchesSelectedDay(r.datum))
+      .filter((r) => matchesQuery(`${r.titel} ${behoerdeName(r.behoerde_id)}`));
+  }, [
+    activeTab,
+    pastReminders,
+    upcomingReminders,
+    matchesSelectedDay,
+    matchesQuery,
+    behoerdeName,
+  ]);
+
+  const showTermineSection = activeTab === 'alle' || activeTab === 'termine' || activeTab === 'vergangen';
+  const showFristenSection = activeTab === 'alle' || activeTab === 'fristen' || activeTab === 'erinnerungen' || activeTab === 'vergangen';
+
+  const fristenHeading =
+    activeTab === 'erinnerungen'
+      ? tTermine('liste.erinnerungen_titel')
+      : tTermine('spur.fristen_titel');
+
+  const visibleCount =
+    (showTermineSection ? visibleTermine.length : 0) +
+    (showFristenSection ? visibleReminders.length : 0);
+
+  const detailTermin = React.useMemo(
+    () => ownTermine.find((term) => term.id === selectedId) ?? null,
+    [ownTermine, selectedId],
+  );
+
+  /** Calendar dots — per-day category breakdown across termine + reminders. */
+  const calendarEvents = React.useMemo(() => {
+    const events: Record<string, DayEventBreakdown> = {};
+    const bump = (
+      iso: string,
+      cat: keyof DayEventBreakdown,
+    ) => {
+      const key = dayKey(iso);
+      const cur = events[key] ?? {
+        termine: 0,
+        fristen: 0,
+        erinnerungen: 0,
+      };
+      cur[cat] += 1;
+      events[key] = cur;
+    };
+    for (const term of ownTermine) {
+      if (displayStatus(term, nowIso) === 'abgesagt') continue;
+      bump(term.datum, 'termine');
+    }
+    for (const r of reminders) {
+      if (r.erledigt) continue;
+      bump(r.datum, r.kategorie === 'frist' ? 'fristen' : 'erinnerungen');
+    }
+    return events;
+  }, [ownTermine, reminders, nowIso]);
+
+  // --------------------------------------------------------------------------
+  // KPI predicates (persona-filtered, honest — numbers come from the real seed).
+  // --------------------------------------------------------------------------
+  const kpis = React.useMemo(() => {
+    const naechster = upcomingTermine.find((term) => {
+      const b = viewBadge(term, nowIso);
+      return b === 'bestaetigt' || b === 'vorgemerkt' || b === 'wartet';
+    });
+    const offeneFristen = upcomingReminders.length;
+    const bestaetigte = upcomingTermine.filter(
+      (term) =>
+        viewBadge(term, nowIso) === 'bestaetigt' &&
+        new Date(term.datum).getTime() <= now.getTime() + THIRTY_DAYS_MS,
+    ).length;
+    const warten = upcomingTermine.filter((term) => {
+      const b = viewBadge(term, nowIso);
+      return b === 'vorgemerkt' || b === 'wartet';
+    }).length;
+    return { naechster, offeneFristen, bestaetigte, warten };
+  }, [upcomingTermine, upcomingReminders, now, nowIso]);
 
   function fristTage(iso: string): number {
     return differenceInCalendarDays(parseISO(iso), now);
   }
 
-  /** Frist-Badge text + tone (relativ ≤30, danger ≤7, sonst absolutes Datum). */
   function fristBadge(iso: string): {
     label: string;
     variant: 'neutral' | 'warning' | 'danger';
@@ -354,32 +532,19 @@ export function TermineView({ nowIso }: TermineViewProps) {
     return { label, variant };
   }
 
-  function statusLabel(status: TerminStatus): string {
-    return tStatus(status);
-  }
-
-  function statusBadgeClass(status: TerminStatus): string {
-    switch (status) {
-      case 'abgesagt':
-        return 'red';
-      case 'verschoben':
-        return 'amber';
-      case 'bestaetigt':
-        return 'green';
-      // Termin-Autopilot proposal: still awaiting the citizen's confirmation —
-      // reads as "in progress", visually distinct from the confirmed green.
-      case 'vorgeschlagen':
-        return 'brand';
-      default:
-        return 'brand';
-    }
+  function statusLabel(badge: ViewBadge): string {
+    return tStatus(viewBadgeLabelKey(badge));
   }
 
   function termineIconTone(term: Termin): {
     tone: string;
     Icon: React.ComponentType<{ className?: string }>;
   } {
-    const lower = (behoerdeName(term.behoerde_id) || term.betreff || '').toLowerCase();
+    const lower = (
+      behoerdeName(term.behoerde_id) ||
+      term.betreff ||
+      ''
+    ).toLowerCase();
     if (lower.includes('kinderarzt') || lower.includes('arzt'))
       return { tone: 'violet', Icon: Stethoscope };
     if (lower.includes('finanz') || lower.includes('steuer'))
@@ -389,33 +554,25 @@ export function TermineView({ nowIso }: TermineViewProps) {
     return { tone: '', Icon: Landmark };
   }
 
-  function reminderIcon(r: Reminder): React.ComponentType<{ className?: string }> {
+  function reminderIcon(
+    r: Reminder,
+  ): React.ComponentType<{ className?: string }> {
     const lower = (r.titel || '').toLowerCase();
     if (lower.includes('steuer')) return ReceiptText;
     if (lower.includes('rundfunk') || lower.includes('beitrag')) return Euro;
     return Bell;
   }
 
-  /** Drei Vorschlags-Slots: nächste 3 Werktage je 09:00 nach dem aktuellen Termin. */
-  const rescheduleSlots = React.useMemo(() => {
-    if (!rescheduleTermin) return [] as string[];
-    const slots: string[] = [];
-    let cursor = parseISO(rescheduleTermin.datum);
-    const hours = [9, 11, 14];
-    let i = 0;
-    while (slots.length < 3 && i < 21) {
-      cursor = addDays(cursor, 1);
-      i += 1;
-      const dow = cursor.getDay();
-      if (dow === 0 || dow === 6) continue;
-      const slot = setMinutes(setHours(cursor, hours[slots.length]!), 0);
-      slots.push(slot.toISOString());
-    }
-    return slots;
-  }, [rescheduleTermin]);
+  /* Mock-ICS-Export aller aktiven (persona-scoped) Termine. */
+  const futureTermine = React.useMemo(
+    () =>
+      ownTermine
+        .filter((term) => displayStatus(term, nowIso) !== 'abgesagt')
+        .filter((term) => isUpcoming(term.datum)),
+    [ownTermine, nowIso, isUpcoming],
+  );
 
-  /* Mock-ICS-Export: VCALENDAR aus den aktuell sichtbaren Terminen. */
-  function handleIcsExport() {
+  const handleIcsExport = React.useCallback(() => {
     if (futureTermine.length === 0) return;
     const pad = (n: number) => n.toString().padStart(2, '0');
     const toIcsStamp = (d: Date) =>
@@ -441,7 +598,7 @@ export function TermineView({ nowIso }: TermineViewProps) {
         `SUMMARY:${escapeIcs(`[MOCK] ${behoerdeName(termin.behoerde_id)} — ${termin.betreff}`)}`,
         `LOCATION:${escapeIcs(termin.ort.details)}`,
         termin.buchungsreferenz
-          ? `DESCRIPTION:${escapeIcs(`[MOCK] Buchungsreferenz: ${termin.buchungsreferenz}`)}`
+          ? `DESCRIPTION:${escapeIcs(`[MOCK] ${termin.buchungsreferenz}`)}`
           : 'DESCRIPTION:[MOCK]',
         'END:VEVENT',
       );
@@ -455,15 +612,21 @@ export function TermineView({ nowIso }: TermineViewProps) {
     a.download = 'MOCK-termine.ics';
     a.click();
     URL.revokeObjectURL(url);
-  }
+  }, [futureTermine, now, behoerdeName]);
 
   const selectedDateLabel = selectedIso
-    ? format(parseISO(selectedIso), 'EEEE, dd. MMMM yyyy', { locale: dateLocale })
+    ? format(parseISO(selectedIso), 'EEEE, dd. MMMM yyyy', {
+        locale: dateLocale,
+      })
     : '';
+
+  // --------------------------------------------------------------------------
+  // Render.
+  // --------------------------------------------------------------------------
 
   if (phase === 'error') {
     return (
-      <>
+      <div>
         <div className="gt-page-head">
           <h1>{t('termine.title')}</h1>
           <div className="sub">{t('termine.subtitle')}</div>
@@ -478,64 +641,199 @@ export function TermineView({ nowIso }: TermineViewProps) {
             </Button>
           }
         />
-      </>
+      </div>
     );
   }
 
-  const loading = phase === 'loading';
+  if (phase === 'loading') {
+    return (
+      <div role="status" aria-busy="true">
+        <span className="sr-only">{t('common.loading')}</span>
+        <div className="gt-page-head">
+          <Skeleton shape="text" className="h-8 w-48" />
+          <Skeleton shape="text" className="mt-2 w-72" />
+        </div>
+        <div className="tm-kpis">
+          <Skeleton className="h-24 rounded-2xl" />
+          <Skeleton className="h-24 rounded-2xl" />
+          <Skeleton className="h-24 rounded-2xl" />
+          <Skeleton className="h-24 rounded-2xl" />
+        </div>
+        <div className="tm-layout">
+          <Skeleton className="h-80 rounded-2xl" />
+          <Skeleton className="h-80 rounded-2xl" />
+          <Skeleton className="h-80 rounded-2xl" />
+        </div>
+      </div>
+    );
+  }
+
+  const TABS: Array<{ id: TabId; label: string }> = [
+    { id: 'alle', label: tTermine('tabs.alle') },
+    { id: 'termine', label: tTermine('tabs.termine') },
+    { id: 'fristen', label: tTermine('tabs.fristen') },
+    { id: 'erinnerungen', label: tTermine('tabs.erinnerungen') },
+    { id: 'vergangen', label: tTermine('tabs.vergangen') },
+  ];
+
+  const naechsterDatum = kpis.naechster
+    ? formatDateLong(kpis.naechster.datum, dateLocale)
+    : t('termine.kpi.kein_termin');
+  const naechsterZeit = kpis.naechster
+    ? formatTimeRange(kpis.naechster.datum)
+    : '—';
 
   return (
-    <>
+    <div>
       <div className="gt-page-head">
         <h1>{t('termine.title')}</h1>
         <div className="sub">{t('termine.subtitle')}</div>
       </div>
 
-      <div className="tm-layout">
-        {/* Left: calendar + filter */}
-        <div>
-          <div className="tm-card">
-            {loading ? (
-              <div role="status" aria-busy="true">
-                <span className="sr-only">{t('common.loading')}</span>
-                <Skeleton className="rounded-md" style={{ height: 280 }} />
-              </div>
-            ) : (
-              <MonthCalendar
-                selectedIso={selectedIso}
-                todayIso={todayIso}
-                eventCounts={eventCounts}
-                onSelect={setSelectedIso}
-              />
-            )}
+      {/* Row 1 — KPI tiles. */}
+      <div className="tm-kpis">
+        <div className="tm-kpi">
+          <span className="icon-circle lg green">
+            <Calendar aria-hidden="true" />
+          </span>
+          <div className="tm-kpi-body">
+            <span className="k-label">{t('termine.kpi.naechster_termin')}</span>
+            <span className="k-val tabular-nums">{naechsterDatum}</span>
+            <span className="k-sub tabular-nums">{naechsterZeit}</span>
           </div>
+        </div>
+        <div className="tm-kpi">
+          <span className="icon-circle lg amber">
+            <Clock aria-hidden="true" />
+          </span>
+          <div className="tm-kpi-body">
+            <span className="k-label">{t('termine.kpi.offene_fristen')}</span>
+            <span className="k-val tabular-nums">{kpis.offeneFristen}</span>
+            <span className="k-sub">{t('termine.kpi.offene_fristen_sub')}</span>
+          </div>
+        </div>
+        <div className="tm-kpi">
+          <span className="icon-circle lg green">
+            <CheckCircle2 aria-hidden="true" />
+          </span>
+          <div className="tm-kpi-body">
+            <span className="k-label">{t('termine.kpi.bestaetigte')}</span>
+            <span className="k-val tabular-nums">{kpis.bestaetigte}</span>
+            <span className="k-sub">{t('termine.kpi.bestaetigte_sub')}</span>
+          </div>
+        </div>
+        <div className="tm-kpi">
+          <span className="icon-circle lg">
+            <Users aria-hidden="true" />
+          </span>
+          <div className="tm-kpi-body">
+            <span className="k-label">{t('termine.kpi.warten')}</span>
+            <span className="k-val tabular-nums">{kpis.warten}</span>
+            <span className="k-sub">{t('termine.kpi.warten_sub')}</span>
+          </div>
+        </div>
+      </div>
 
-          <div className="tm-card filter-card">
-            <TermineFilter
-              active={(
-                Object.keys(filters) as TermineFilterKey[]
-              ).filter((k) => filters[k])}
-              onToggle={toggleFilter}
+      {/* Toolbar — tabs + search + Filter + Export. */}
+      <div className="tm-toolbar">
+        <div className="tab-chips">
+          {TABS.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              className={`chip${activeTab === tab.id ? ' active' : ''}`}
+              aria-pressed={activeTab === tab.id}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+        <div className="tm-toolbar-actions">
+          <div className="vg-search" role="search">
+            <label htmlFor="tm-search-input" className="sr-only">
+              {t('termine.toolbar.suche_label')}
+            </label>
+            <Search className="vg-search-icon" aria-hidden="true" />
+            <input
+              id="tm-search-input"
+              type="search"
+              className="vg-search-input"
+              placeholder={t('termine.toolbar.suche_placeholder')}
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              autoComplete="off"
             />
+          </div>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            disabled
+            aria-disabled="true"
+          >
+            <Filter aria-hidden="true" />
+            {t('termine.toolbar.filter')}
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={handleIcsExport}
+            aria-label={t('termine.card.ics_aria_all')}
+          >
+            <CalendarDays aria-hidden="true" />
+            {t('termine.toolbar.export')}
+          </button>
+        </div>
+      </div>
+
+      <p className="sr-only" aria-live="polite">
+        {t('termine.liste.anstehende_titel')}: {visibleTermine.length} ·{' '}
+        {t('termine.fristen_offen', { count: visibleReminders.length })}
+      </p>
+
+      <div className="tm-layout">
+        {/* LEFT rail — calendar + legend. */}
+        <div className="tm-card">
+          <MonthCalendar
+            selectedIso={selectedIso}
+            todayIso={todayIso}
+            events={calendarEvents}
+            onSelect={setSelectedIso}
+          />
+          <div
+            className="cal-legend"
+            role="group"
+            aria-label={t('termine.cal.legend.titel')}
+          >
+            <div className="cal-legend-row">
+              <span className="cal-legend-dot cal-dot-termin" aria-hidden="true" />
+              {t('termine.cal.legend.termine')}
+            </div>
+            <div className="cal-legend-row">
+              <span className="cal-legend-dot cal-dot-frist" aria-hidden="true" />
+              {t('termine.cal.legend.fristen')}
+            </div>
+            <div className="cal-legend-row">
+              <span
+                className="cal-legend-dot cal-dot-erinnerung"
+                aria-hidden="true"
+              />
+              {t('termine.cal.legend.erinnerungen')}
+            </div>
+            <div className="cal-legend-row">
+              <span
+                className="cal-legend-dot cal-dot-mehrere"
+                aria-hidden="true"
+              />
+              {t('termine.cal.legend.mehrere')}
+            </div>
           </div>
         </div>
 
-        {/* Middle: next termin + further list */}
+        {/* CENTER — appointment + Frist sections. */}
         <div>
-          <h2 className="text-md fw-600" style={{ marginBottom: 12 }}>
-            {t('termine.naechste.title')}
-          </h2>
-
           {selectedIso ? (
-            <div
-              className="filter-chip-row"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 10,
-                marginBottom: 12,
-              }}
-            >
+            <div className="tm-selected-row">
               <span className="badge brand">
                 <span className="tabular-nums">
                   {t('termine.auswahl.label', { datum: selectedDateLabel })}
@@ -551,646 +849,482 @@ export function TermineView({ nowIso }: TermineViewProps) {
             </div>
           ) : null}
 
-          {loading ? (
-            <div role="status" aria-busy="true">
-              <span className="sr-only">{t('common.loading')}</span>
-              <Skeleton className="rounded-lg" style={{ minHeight: 120 }} />
-              <Skeleton
-                className="rounded-lg"
-                style={{ marginTop: 22, height: 72 }}
-              />
-              <Skeleton
-                className="rounded-lg"
-                style={{ marginTop: 10, height: 72 }}
-              />
-            </div>
-          ) : naechster ? (
-            <div className="tm-next">
-              {/* Info area = details entry point. The whole block is clickable
-                  (mouse), and a focusable Details button in the header makes the
-                  same destination keyboard-reachable. The lifecycle action
-                  buttons stopPropagation so they never trigger the dialog. */}
-              <div
-                className="row1 is-clickable"
-                onClick={() => setDetailTermin(naechster)}
-              >
-                <span className="icon-circle">
-                  <Calendar />
-                </span>
-                <div className="grow">
-                  <div className="t">
-                    {behoerdeName(naechster.behoerde_id)} — {naechster.betreff}
-                  </div>
-                  <div className="meta">
-                    <span className="tabular-nums">
-                      <Calendar style={{ width: 14, height: 14 }} />
-                      {formatDateLong(naechster.datum, dateLocale)} &nbsp;
-                      <Clock style={{ width: 14, height: 14 }} />
-                      {formatTimeRange(naechster.datum)}
-                    </span>
-                    <span>
-                      <MapPin style={{ width: 14, height: 14 }} />
-                      {naechster.ort.details}
-                    </span>
-                    {naechster.buchungsreferenz ? (
-                      <span className="tabular-nums">
-                        {t('termine.card.buchungsreferenz', {
-                          ref: naechster.buchungsreferenz,
-                        })}
+          {showTermineSection ? (
+            <section className="tm-section" aria-labelledby="tm-anstehende">
+              <div className="tm-section-head">
+                <h2 id="tm-anstehende">{t('termine.liste.anstehende_titel')}</h2>
+              </div>
+
+              {visibleTermine.length > 0 ? (
+                visibleTermine.map((term) => {
+                  const { tone, Icon } = termineIconTone(term);
+                  const badge = viewBadge(term, nowIso);
+                  const isSelected = term.id === selectedId;
+                  return (
+                    <button
+                      key={term.id}
+                      type="button"
+                      className={`tm-list-item is-interactive${isSelected ? ' is-selected' : ''}`}
+                      style={{ width: '100%', textAlign: 'left' }}
+                      aria-pressed={isSelected}
+                      aria-label={t('termine.row.details_aria', {
+                        betreff: `${behoerdeName(term.behoerde_id)} — ${term.betreff}, ${statusLabel(badge)}`,
+                      })}
+                      onClick={() => setSelectedId(term.id)}
+                    >
+                      <span className={`icon-circle${tone ? ` ${tone}` : ''}`}>
+                        <Icon />
                       </span>
-                    ) : null}
-                  </div>
-                </div>
-                <div className="row1-end">
-                  <span
-                    className={`badge ${statusBadgeClass(naechster.status)}`}
-                  >
-                    {statusLabel(naechster.status)}
-                  </span>
+                      <div>
+                        <div className="t">
+                          {behoerdeName(term.behoerde_id)} — {term.betreff}
+                        </div>
+                        <div className="meta tabular-nums">
+                          <span>
+                            <Calendar style={{ width: 14, height: 14 }} />
+                            {formatDateLong(term.datum, dateLocale)}
+                          </span>{' '}
+                          <span>
+                            <Clock style={{ width: 14, height: 14 }} />
+                            {t('termine.uhr_dauer', {
+                              zeit: formatTimeRange(term.datum),
+                              dauer: 45,
+                            })}
+                          </span>
+                        </div>
+                        <div className="meta">
+                          <span>
+                            <MapPin style={{ width: 14, height: 14 }} />
+                            {term.ort.details}
+                          </span>
+                        </div>
+                      </div>
+                      <span className={`badge ${viewBadgeTone(badge)}`}>
+                        {statusLabel(badge)}
+                      </span>
+                      <span className="tm-row-cta" aria-hidden="true">
+                        {t('termine.row.details_cta')}
+                        <ChevronRight />
+                      </span>
+                    </button>
+                  );
+                })
+              ) : (
+                <EmptyState
+                  icon={<Calendar aria-hidden="true" />}
+                  title={t('termine.spur.termine_leer')}
+                />
+              )}
+
+              {visibleTermine.length > 0 && activeTab === 'alle' ? (
+                <div className="tm-section-foot">
                   <button
                     type="button"
-                    className="tm-row-cta tm-row-cta-btn"
-                    aria-label={t('termine.naechste.details_aria', {
-                      betreff: naechster.betreff,
-                    })}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setDetailTermin(naechster);
-                    }}
+                    className="btn btn-secondary"
+                    onClick={() => setActiveTab('termine')}
                   >
-                    {t('termine.row.details_cta')}
+                    {t('termine.liste.alle_termine')}
                     <ChevronRight aria-hidden="true" />
                   </button>
                 </div>
+              ) : null}
+            </section>
+          ) : null}
+
+          {showFristenSection ? (
+            <section className="tm-section" aria-labelledby="tm-fristen">
+              <div className="tm-section-head">
+                <h2 id="tm-fristen">{fristenHeading}</h2>
               </div>
-              <div className="appt-actions">
-                {naechster.status !== 'bestaetigt' &&
-                naechster.status !== 'abgesagt' ? (
+
+              {visibleReminders.length > 0 ? (
+                visibleReminders.map((r) => {
+                  const Icon = reminderIcon(r);
+                  const isFrist = r.kategorie === 'frist';
+                  const badge = fristBadge(r.datum);
+                  const content = (
+                    <>
+                      <span className="icon-circle green">
+                        <Icon />
+                      </span>
+                      <div>
+                        <div className="t">{r.titel}</div>
+                        <div className="meta tabular-nums">
+                          <span>
+                            <Calendar style={{ width: 14, height: 14 }} />
+                            {isFrist
+                              ? t('termine.frist_praefix', {
+                                  datum: formatDateLong(r.datum, dateLocale),
+                                })
+                              : t('termine.faellig_praefix', {
+                                  datum: formatDateLong(r.datum, dateLocale),
+                                })}
+                          </span>
+                        </div>
+                        {r.behoerde_id ? (
+                          <div className="meta">
+                            {behoerdeName(r.behoerde_id)}
+                          </div>
+                        ) : null}
+                      </div>
+                      <Badge variant={badge.variant}>{badge.label}</Badge>
+                    </>
+                  );
+                  return r.vorgang_id ? (
+                    <Link
+                      key={r.id}
+                      href={`/vorgaenge/${r.vorgang_id}`}
+                      className="tm-list-item is-interactive"
+                      aria-label={t('termine.row.zum_vorgang_aria', {
+                        titel: r.titel,
+                      })}
+                    >
+                      {content}
+                      <span className="tm-row-cta" aria-hidden="true">
+                        {t('termine.row.zum_vorgang_cta')}
+                        <ChevronRight />
+                      </span>
+                    </Link>
+                  ) : (
+                    <div key={r.id} className="tm-list-item">
+                      {content}
+                    </div>
+                  );
+                })
+              ) : (
+                <EmptyState
+                  icon={<Bell aria-hidden="true" />}
+                  title={t('termine.spur.fristen_leer')}
+                />
+              )}
+
+              {visibleReminders.length > 0 && activeTab === 'alle' ? (
+                <div className="tm-section-foot">
                   <button
                     type="button"
-                    className="btn btn-primary btn-sm"
-                    disabled={busy === naechster.id}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleBestaetigen(naechster);
-                    }}
+                    className="btn btn-secondary"
+                    onClick={() => setActiveTab('fristen')}
                   >
-                    <CheckCircle2 />
-                    {tAction('bestaetigen')}
+                    {t('termine.liste.alle_fristen')}
+                    <ChevronRight aria-hidden="true" />
                   </button>
-                ) : null}
-                {naechster.status !== 'abgesagt' ? (
-                  <button
-                    type="button"
-                    className="btn btn-secondary btn-sm"
-                    disabled={busy === naechster.id}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setRescheduleTermin(naechster);
-                    }}
-                  >
-                    <CalendarPlus />
-                    {tAction('verschieben')}
-                  </button>
-                ) : null}
-                {naechster.status !== 'abgesagt' ? (
-                  <button
-                    type="button"
-                    className="btn btn-danger btn-sm"
-                    disabled={busy === naechster.id}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleAbsagen(naechster);
-                    }}
-                  >
-                    {tAction('absagen')}
-                  </button>
-                ) : null}
-              </div>
-            </div>
-          ) : !hasDayContent && selectedIso ? (
+                </div>
+              ) : null}
+            </section>
+          ) : null}
+
+          {visibleCount === 0 ? (
             <EmptyState
               icon={<Calendar aria-hidden="true" />}
               title={t('termine.empty.filter_title')}
             />
-          ) : (
-            <EmptyState
-              icon={<Calendar aria-hidden="true" />}
-              title={t('termine.empty.title')}
-              description={t('termine.empty.description')}
-            />
-          )}
-
-          <h2 className="text-md fw-600" style={{ margin: '22px 0 12px' }}>
-            {t('termine.weitere.title')}
-          </h2>
-
-          {!loading &&
-            weitere.map((term) => {
-              const { tone, Icon } = termineIconTone(term);
-              return (
-                <button
-                  key={term.id}
-                  type="button"
-                  className="tm-list-item is-interactive"
-                  style={{ width: '100%', textAlign: 'left' }}
-                  aria-label={t('termine.row.details_aria', {
-                    betreff: `${behoerdeName(term.behoerde_id)} — ${term.betreff}`,
-                  })}
-                  onClick={() => setDetailTermin(term)}
-                >
-                  <span className={`icon-circle${tone ? ` ${tone}` : ''}`}>
-                    <Icon />
-                  </span>
-                  <div>
-                    <div className="t">
-                      {behoerdeName(term.behoerde_id)} — {term.betreff}
-                    </div>
-                    <div className="meta tabular-nums">
-                      <span>
-                        <Calendar style={{ width: 14, height: 14 }} />
-                        {formatDateLong(term.datum, dateLocale)}
-                      </span>{' '}
-                      <span>
-                        <Clock style={{ width: 14, height: 14 }} />
-                        {formatTimeRange(term.datum)}
-                      </span>
-                    </div>
-                    <div className="meta">
-                      <span>
-                        <MapPin style={{ width: 14, height: 14 }} />
-                        {term.ort.details}
-                      </span>
-                    </div>
-                  </div>
-                  <span className={`badge ${statusBadgeClass(term.status)}`}>
-                    {statusLabel(term.status)}
-                  </span>
-                  <span className="tm-row-cta" aria-hidden="true">
-                    {t('termine.row.details_cta')}
-                    <ChevronRight />
-                  </span>
-                </button>
-              );
-            })}
-
-          {!loading &&
-            dayFristen.map((r) => {
-              const Icon = reminderIcon(r);
-              const isFrist = r.kategorie === 'frist';
-              const content = (
-                <>
-                  <span className="icon-circle green">
-                    <Icon />
-                  </span>
-                  <div>
-                    <div className="t">{r.titel}</div>
-                    <div className="meta tabular-nums">
-                      <span>
-                        <Calendar style={{ width: 14, height: 14 }} />
-                        {isFrist
-                          ? t('termine.frist_praefix', {
-                              datum: formatDateLong(r.datum, dateLocale),
-                            })
-                          : t('termine.faellig_praefix', {
-                              datum: formatDateLong(r.datum, dateLocale),
-                            })}
-                      </span>
-                    </div>
-                    {r.behoerde_id ? (
-                      <div className="meta">{behoerdeName(r.behoerde_id)}</div>
-                    ) : null}
-                  </div>
-                  <Badge variant={fristBadge(r.datum).variant}>
-                    {fristBadge(r.datum).label}
-                  </Badge>
-                </>
-              );
-              /* Interactive iff there is a destination (a Vorgang). The whole
-                 row is the single click target, with a destination-accurate
-                 trailing affordance. Reminders without a Vorgang render flat:
-                 plain div, no link styling, no CTA, not focusable. */
-              return r.vorgang_id ? (
-                <Link
-                  key={r.id}
-                  href={`/vorgaenge/${r.vorgang_id}`}
-                  className="tm-list-item is-interactive"
-                  aria-label={t('termine.row.zum_vorgang_aria', {
-                    titel: r.titel,
-                  })}
-                >
-                  {content}
-                  <span className="tm-row-cta" aria-hidden="true">
-                    {t('termine.row.zum_vorgang_cta')}
-                    <ChevronRight />
-                  </span>
-                </Link>
-              ) : (
-                <div key={r.id} className="tm-list-item">
-                  {content}
-                </div>
-              );
-            })}
-
-          {!loading ? (
-            <button
-              type="button"
-              className="btn btn-secondary"
-              style={{ marginTop: 14 }}
-              onClick={() => toggleFilter('abgeschlossen')}
-            >
-              <Calendar />
-              {filters.abgeschlossen
-                ? t('termine.alle_anzeigen.hide')
-                : t('termine.alle_anzeigen.show')}
-            </button>
           ) : null}
         </div>
 
-        {/* Right: prepare-for-the-appointment + fristen */}
-        <div>
-          <h2 className="text-md fw-600" style={{ marginBottom: 2 }}>
-            {t('termine.naechster_schritt.title')}
-          </h2>
-          <div className="text-xs muted" style={{ marginBottom: 12 }}>
-            {t('termine.naechster_schritt.untertitel')}
-          </div>
-          <div className="tm-card ns-card">
-            <div className="heading">
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <span className="icon-circle">
-                  <Calendar />
-                </span>
-                <div className="t">
-                  {naechster
-                    ? `${behoerdeName(naechster.behoerde_id)} — ${naechster.betreff}`
-                    : t('termine.naechster_schritt.kein_termin')}
-                </div>
-              </div>
-              {naechster ? (
-                <span className={`badge ${statusBadgeClass(naechster.status)}`}>
-                  {statusLabel(naechster.status)}
-                </span>
-              ) : null}
-            </div>
-
-            <div className="ns-info">
-              <div className="row tabular-nums">
-                <Calendar />
-                {naechster ? formatDateLong(naechster.datum, dateLocale) : '—'}
-              </div>
-              <div className="row tabular-nums">
-                <Clock />
-                {naechster
-                  ? t('termine.uhr_dauer', {
-                      zeit: formatTimeRange(naechster.datum),
-                      dauer: 45,
-                    })
-                  : '—'}
-              </div>
-              <div className="row">
-                <MapPin />
-                <div>
-                  <span className="link">
-                    {behoerdeName(naechster?.behoerde_id)}
-                  </span>
-                  <br />
-                  {naechster?.ort.details ?? ''}
-                </div>
-              </div>
-              {naechster?.buchungsreferenz ? (
-                <div className="row" style={{ marginTop: 6 }}>
-                  <FileText />
-                  <div>
-                    {t('termine.card.buchungsreferenz_label')}
-                    <br />
-                    <span className="mono tabular-nums">
-                      {naechster.buchungsreferenz}
-                    </span>
-                  </div>
-                </div>
-              ) : null}
-            </div>
-
-            <button
-              type="button"
-              className="btn btn-primary"
-              style={{ width: '100%' }}
-              disabled={futureTermine.length === 0}
-              aria-disabled={futureTermine.length === 0}
-              aria-label={t('termine.card.ics_aria_all')}
-              onClick={handleIcsExport}
-            >
-              <CalendarPlus />
-              {t('termine.card.ics')}
-            </button>
-
-            <div className="prep-card">
-              <h3>{t('termine.vorbereitung.title')}</h3>
-              {naechster?.vorbereitung && naechster.vorbereitung.length > 0 ? (
-                naechster.vorbereitung.map((item) => (
-                  <div key={item.label_i18n_key} className="prep-row">
-                    <FileText className="icon" />
-                    <div>
-                      <div className="t">{t(item.label_i18n_key)}</div>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="prep-row">
-                  <FileText className="icon" />
-                  <div>
-                    <div className="s">
-                      {t('termine.empty.naechster_schritt')}
-                    </div>
-                  </div>
-                </div>
-              )}
-              <div className="ns-notes">
-                <div className="ns-note">
-                  <Clock className="icon" aria-hidden="true" />
-                  <div>
-                    <div className="t">
-                      {t('termine.naechster_schritt.vorerinnerung_titel')}
-                    </div>
-                    <div className="s">
-                      {t('termine.naechster_schritt.vorerinnerung_text')}
-                    </div>
-                  </div>
-                </div>
-                <div className="ns-note">
-                  <Info className="icon" aria-hidden="true" />
-                  <div>
-                    <div className="t">
-                      {t('termine.naechster_schritt.storno_titel')}
-                    </div>
-                    <div className="s">
-                      {t('termine.naechster_schritt.storno_text')}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {(() => {
-              const hasFristen = dayFristen.length > 0;
-              const urgentCount = dayFristen.filter(
-                (r) => fristTage(r.datum) <= 7,
-              ).length;
-
-              const buckets: {
-                key: 'diese_woche' | 'demnaechst' | 'spaeter';
-                rows: typeof dayFristen;
-              }[] = [
-                { key: 'diese_woche', rows: [] },
-                { key: 'demnaechst', rows: [] },
-                { key: 'spaeter', rows: [] },
-              ];
-              for (const r of dayFristen) {
-                const days = fristTage(r.datum);
-                if (days <= 7) buckets[0]!.rows.push(r);
-                else if (days <= 30) buckets[1]!.rows.push(r);
-                else buckets[2]!.rows.push(r);
-              }
-
-              function renderRow(r: (typeof dayFristen)[number]) {
-                const badge = fristBadge(r.datum);
-                const row = (
-                  <div className={`frist-rail-row frist-rail-row--${badge.variant}`}>
-                    <span className="frist-rail-row__title">{r.titel}</span>
-                    <span className="frist-rail-row__end">
-                      <Badge variant={badge.variant}>{badge.label}</Badge>
-                      {r.vorgang_id ? (
-                        <ChevronRight
-                          className="frist-rail-row__chev"
-                          aria-hidden="true"
-                        />
-                      ) : null}
-                    </span>
-                  </div>
-                );
-                /* A destination (Vorgang) makes the whole row a link; the
-                   trailing chevron + the aria-label carry the affordance.
-                   Rows without a Vorgang stay flat, static information. */
-                return (
-                  <li key={r.id}>
-                    {r.vorgang_id ? (
-                      <Link
-                        href={`/vorgaenge/${r.vorgang_id}`}
-                        className="frist-rail-link"
-                        aria-label={t('termine.row.zum_vorgang_aria', {
-                          titel: r.titel,
-                        })}
-                      >
-                        {row}
-                      </Link>
-                    ) : (
-                      row
-                    )}
-                  </li>
-                );
-              }
-
-              return (
-                <div
-                  className={hasFristen ? 'frist-panel' : undefined}
-                  style={
-                    hasFristen
-                      ? undefined
-                      : {
-                          marginTop: 16,
-                          padding: 14,
-                          background: 'var(--banner-success-bg)',
-                          borderRadius: 'var(--r-md)',
-                        }
-                  }
-                >
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 10,
-                      marginBottom: hasFristen ? 12 : 0,
-                    }}
-                  >
-                    {hasFristen ? (
-                      <Bell
-                        style={{
-                          color: 'var(--ink-2)',
-                          width: 18,
-                          height: 18,
-                          flexShrink: 0,
-                        }}
-                        aria-hidden="true"
-                      />
-                    ) : (
-                      <CheckCircle2
-                        style={{
-                          color: 'var(--green-600)',
-                          width: 18,
-                          height: 18,
-                          flexShrink: 0,
-                        }}
-                        aria-hidden="true"
-                      />
-                    )}
-                    <div>
-                      <h3 className="fw-600" style={{ margin: 0, fontSize: 14 }}>
-                        {t('termine.fristen.title')}
-                      </h3>
-                      <div className="text-xs muted">
-                        {urgentCount > 0
-                          ? t('termine.fristen.summary', {
-                              urgent: urgentCount,
-                              total: dayFristen.length,
-                            })
-                          : t('termine.fristen_offen', {
-                              count: dayFristen.length,
-                            })}
-                      </div>
-                    </div>
-                  </div>
-                  {hasFristen
-                    ? buckets
-                        .filter((b) => b.rows.length > 0)
-                        .map((b) => (
-                          <React.Fragment key={b.key}>
-                            <h4 className="frist-group-head">
-                              {t(`termine.fristen.group.${b.key}`)}
-                            </h4>
-                            <ul className="frist-panel__group">
-                              {b.rows.map(renderRow)}
-                            </ul>
-                          </React.Fragment>
-                        ))
-                    : null}
-                </div>
-              );
-            })()}
-          </div>
+        {/* RIGHT rail — Termindetails panel. */}
+        <div className="tm-card tm-detail">
+          <TerminDetailPanel
+            termin={detailTermin}
+            nowIso={nowIso}
+            dateLocale={dateLocale}
+            busy={detailTermin ? busy === detailTermin.id : false}
+            behoerdeName={behoerdeName}
+            statusLabel={statusLabel}
+            recentlyConfirmed={
+              detailTermin !== null &&
+              detailTermin.id === recentlyConfirmedId &&
+              displayStatus(detailTermin, nowIso) === 'bestaetigt'
+            }
+            onClose={() => setSelectedId(null)}
+            onBestaetigen={() => {
+              if (detailTermin) void handleBestaetigen(detailTermin);
+            }}
+            onReschedule={() => {
+              if (detailTermin) setRescheduleTermin(detailTermin);
+            }}
+            onAbsagen={() => {
+              if (!detailTermin) return;
+              absagenOpenerRef.current =
+                document.activeElement as HTMLElement | null;
+              setAbsagenTermin(detailTermin);
+            }}
+          />
         </div>
       </div>
 
-      {/* Detail dialog (focus-trapped shared primitive). */}
-      <Dialog
-        open={detailTermin !== null}
-        onOpenChange={(open) => {
-          if (!open) setDetailTermin(null);
+      <TerminRescheduleDialog
+        termin={rescheduleTermin}
+        nowIso={nowIso}
+        dateLocale={dateLocale}
+        busy={rescheduleTermin ? busy === rescheduleTermin.id : false}
+        onPick={(slot) => {
+          if (rescheduleTermin) void handleReschedule(rescheduleTermin, slot);
         }}
-      >
-        <DialogContent>
-          {detailTermin ? (
-            <>
-              <DialogHeader>
-                <DialogTitle>
-                  {behoerdeName(detailTermin.behoerde_id)} —{' '}
-                  {detailTermin.betreff}
-                </DialogTitle>
-                <DialogDescription>
-                  {t('termine.detail.status_label', {
-                    status: statusLabel(detailTermin.status),
-                  })}
-                </DialogDescription>
-              </DialogHeader>
-              <div className="ns-info">
-                <div className="row tabular-nums">
-                  <Calendar />
-                  {formatDateLong(detailTermin.datum, dateLocale)}
-                </div>
-                <div className="row tabular-nums">
-                  <Clock />
-                  {t('termine.uhr_dauer', {
-                    zeit: formatTimeRange(detailTermin.datum),
-                    dauer: 45,
-                  })}
-                </div>
-                <div className="row">
-                  <MapPin />
-                  <div>
-                    <span className="link">
-                      {behoerdeName(detailTermin.behoerde_id)}
-                    </span>
-                    <br />
-                    {detailTermin.ort.details}
-                  </div>
-                </div>
-                {detailTermin.buchungsreferenz ? (
-                  <div className="row" style={{ marginTop: 6 }}>
-                    <FileText />
-                    <div>
-                      {t('termine.card.buchungsreferenz_label')}
-                      <br />
-                      <span className="mono tabular-nums">
-                        {detailTermin.buchungsreferenz}
-                      </span>
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-              <DialogFooter>
-                {detailTermin.vorgang_id ? (
-                  <Button variant="outline" render={<Link href={`/vorgaenge/${detailTermin.vorgang_id}`} />}>
-                    {t('termine.row.zum_vorgang_cta')}
-                  </Button>
-                ) : null}
-                <DialogClose render={<Button />}>
-                  {t('common.actions.close')}
-                </DialogClose>
-              </DialogFooter>
-            </>
-          ) : null}
-        </DialogContent>
-      </Dialog>
-
-      {/* Reschedule dialog (focus-trapped shared primitive). */}
-      <Dialog
-        open={rescheduleTermin !== null}
+        onWaitlist={handleWaitlist}
         onOpenChange={(open) => {
           if (!open) setRescheduleTermin(null);
         }}
-      >
-        <DialogContent>
-          {rescheduleTermin ? (
-            <>
-              <DialogHeader>
-                <DialogTitle>{t('termine.reschedule.title')}</DialogTitle>
-                <DialogDescription>
-                  {t('termine.reschedule.intro')}
-                </DialogDescription>
-              </DialogHeader>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 10,
-                  marginTop: 4,
-                }}
+      />
+
+      <TerminAbsagenDialog
+        open={absagenTermin !== null}
+        onOpenChange={(open) => {
+          if (!open) setAbsagenTermin(null);
+        }}
+        pending={absagenTermin ? busy === absagenTermin.id : false}
+        onConfirm={() => {
+          if (absagenTermin) void handleAbsagenConfirm(absagenTermin);
+        }}
+        onCancel={() => setAbsagenTermin(null)}
+        finalFocusRef={absagenOpenerRef}
+      />
+    </div>
+  );
+}
+
+interface TerminDetailPanelProps {
+  termin: Termin | null;
+  nowIso: string;
+  dateLocale: Locale;
+  busy: boolean;
+  behoerdeName: (id?: string) => string;
+  statusLabel: (badge: ViewBadge) => string;
+  recentlyConfirmed: boolean;
+  onClose: () => void;
+  onBestaetigen: () => void;
+  onReschedule: () => void;
+  onAbsagen: () => void;
+}
+
+/**
+ * „Termindetails" right panel — replaces the old detail Dialog. Persistent
+ * `.tm-detail` card bound to the selected termin. For a Bürgeramt §17 termin it
+ * surfaces the live „noch N Tage"-§17-reasoning + the primary „Termin bestätigen"
+ * CTA; after confirm it flips green and renders the honest Datenminimierungs-
+ * Quittung („Gelesen: nichts aus Ihrem Kalender.") — never a Posteingang claim.
+ */
+function TerminDetailPanel({
+  termin,
+  nowIso,
+  dateLocale,
+  busy,
+  behoerdeName,
+  statusLabel,
+  recentlyConfirmed,
+  onClose,
+  onBestaetigen,
+  onReschedule,
+  onAbsagen,
+}: TerminDetailPanelProps) {
+  const t = useTranslations('termine');
+  const tRoot = useTranslations();
+  const [done, setDone] = React.useState<Record<number, boolean>>({});
+
+  // Reset the local checklist toggles when the selected termin changes.
+  React.useEffect(() => {
+    setDone({});
+  }, [termin?.id]);
+
+  const reasoningLine = React.useMemo(() => {
+    if (!termin || termin.reasoning_typ !== 'bmg_17' || !termin.frist_iso) {
+      return t('hero.reasoning_bmg17_statisch');
+    }
+    const frist = parseISO(termin.frist_iso);
+    if (Number.isNaN(frist.getTime())) {
+      return t('hero.reasoning_bmg17_statisch');
+    }
+    const tage = differenceInCalendarDays(frist, parseISO(nowIso));
+    if (tage < 0) return t('hero.reasoning_bmg17_statisch');
+    return t('hero.reasoning_bmg17', { tage });
+  }, [termin, nowIso, t]);
+
+  if (!termin) {
+    return (
+      <>
+        <div className="tm-detail-head">
+          <h2>{t('detail.titel')}</h2>
+        </div>
+        <p className="tm-detail-empty">{t('empty.naechster_schritt')}</p>
+      </>
+    );
+  }
+
+  const badge = viewBadge(termin, nowIso);
+  const istVorgemerktHero = istBuergeramtVorgemerkt(termin, nowIso);
+  const isVideo = termin.ort.typ === 'video';
+  const ortLabel =
+    termin.ort.typ === 'video'
+      ? t('ort.video')
+      : termin.ort.typ === 'telefon'
+        ? t('ort.telefon')
+        : t('ort.praesenz');
+
+  return (
+    <>
+      <div className="tm-detail-head">
+        <h2>{t('detail.titel')}</h2>
+        <button
+          type="button"
+          className="tm-detail-close"
+          aria-label={t('detail.schliessen')}
+          onClick={onClose}
+        >
+          <X aria-hidden="true" />
+        </button>
+      </div>
+
+      <div className="tm-detail-title">
+        <span className="t">
+          {behoerdeName(termin.behoerde_id)} — {termin.betreff}
+        </span>
+        <span className={`badge ${viewBadgeTone(badge)}`}>
+          {statusLabel(badge)}
+        </span>
+      </div>
+
+      <div className="ns-info">
+        <div className="row tabular-nums">
+          <Calendar aria-hidden="true" />
+          {formatDateLong(termin.datum, dateLocale)}
+        </div>
+        <div className="row tabular-nums">
+          <Clock aria-hidden="true" />
+          {t('uhr_dauer', { zeit: formatTimeRange(termin.datum), dauer: 45 })}
+        </div>
+        <div className="row">
+          <Landmark aria-hidden="true" />
+          <div>
+            <span className="link">{behoerdeName(termin.behoerde_id)}</span>
+            <br />
+            {ortLabel} · {termin.ort.details}
+          </div>
+        </div>
+        {termin.buchungsreferenz ? (
+          <div className="row">
+            <FileText aria-hidden="true" />
+            <span className="mono tabular-nums">{termin.buchungsreferenz}</span>
+          </div>
+        ) : null}
+      </div>
+
+      {termin.vorbereitung && termin.vorbereitung.length > 0 ? (
+        <div className="prep-card">
+          <h3>{t('detail.vorbereitung_titel')}</h3>
+          {termin.vorbereitung.map((item, idx) => {
+            const checked = done[idx] ?? item.done ?? false;
+            return (
+              <button
+                key={item.label_i18n_key}
+                type="button"
+                className="prep-toggle"
+                aria-pressed={checked}
+                onClick={() =>
+                  setDone((prev) => ({ ...prev, [idx]: !checked }))
+                }
               >
-                {rescheduleSlots.map((slot) => (
-                  <button
-                    key={slot}
-                    type="button"
-                    className="btn btn-secondary"
-                    style={{ justifyContent: 'flex-start' }}
-                    disabled={busy === rescheduleTermin.id}
-                    onClick={() => handleReschedule(rescheduleTermin, slot)}
-                  >
-                    <Calendar />
-                    <span className="tabular-nums">
-                      {formatDateLong(slot, dateLocale)} · {formatTimeRange(slot)}
-                    </span>
-                  </button>
-                ))}
-              </div>
-              <DialogFooter>
-                <DialogClose render={<Button variant="outline" />}>
-                  {t('common.actions.abbrechen')}
-                </DialogClose>
-              </DialogFooter>
-            </>
-          ) : null}
-        </DialogContent>
-      </Dialog>
+                <span className="pt-icon" aria-hidden="true">
+                  {checked ? <CheckCircle2 /> : <Circle />}
+                </span>
+                <span className="pt-label">
+                  {tRoot(item.label_i18n_key as never)}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
+
+      {termin.vorgang_id ? (
+        <div className="ns-info" style={{ marginBottom: 8 }}>
+          <div className="row">
+            <FileText aria-hidden="true" />
+            <Link href={`/vorgaenge/${termin.vorgang_id}`} className="link">
+              {t('detail.zugehoeriger_vorgang')}
+            </Link>
+          </div>
+        </div>
+      ) : null}
+
+      {istVorgemerktHero ? (
+        <div className="tm-detail-reason">
+          <Info aria-hidden="true" />
+          <div>
+            <span className="tabular-nums">{reasoningLine}</span>
+            <br />
+            <span className="open">{t('hero.nicht_abgeschlossen')}</span>
+          </div>
+        </div>
+      ) : null}
+
+      {recentlyConfirmed ? (
+        <section
+          className="vr-card"
+          aria-live="polite"
+          aria-label={t('quittung.titel')}
+          style={{ marginBottom: 12 }}
+        >
+          <div className="vr-head">
+            <span className="vr-icon" aria-hidden="true">
+              <CheckCircle2 />
+            </span>
+            <h3 className="vr-title">{t('quittung.titel')}</h3>
+          </div>
+          <p style={{ fontSize: 13.5, lineHeight: 1.6, margin: 0 }}>
+            {t('quittung.gelesen')}
+          </p>
+        </section>
+      ) : null}
+
+      <div className="tm-detail-actions">
+        {istVorgemerktHero ? (
+          <button
+            type="button"
+            className="btn btn-primary"
+            disabled={busy}
+            aria-label={t('hero.aria_bestaetigen', {
+              behoerde: behoerdeName(termin.behoerde_id),
+              datum: formatDateLong(termin.datum, dateLocale),
+            })}
+            onClick={onBestaetigen}
+          >
+            <CheckCircle2 aria-hidden="true" />
+            {t('hero.cta_bestaetigen')}
+          </button>
+        ) : null}
+
+        {termin.vorgang_id ? (
+          <Link
+            href={`/vorgaenge/${termin.vorgang_id}`}
+            className="btn btn-primary"
+          >
+            {t('detail.zum_vorgang')}
+          </Link>
+        ) : null}
+
+        <button
+          type="button"
+          className="btn btn-secondary"
+          disabled={busy}
+          onClick={onReschedule}
+        >
+          <Calendar aria-hidden="true" />
+          {t('detail.verschieben')}
+        </button>
+
+        <button
+          type="button"
+          className="btn btn-danger"
+          disabled={busy}
+          onClick={onAbsagen}
+        >
+          <X aria-hidden="true" />
+          {t('action.absagen')}
+        </button>
+      </div>
+
+      {isVideo ? (
+        <div className="tm-detail-foot">{t('detail.link_hinweis')}</div>
+      ) : null}
     </>
   );
 }

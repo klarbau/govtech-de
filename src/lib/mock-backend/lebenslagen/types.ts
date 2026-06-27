@@ -58,6 +58,13 @@ export interface CascadeStepConfig {
   gate: 'auto' | 'eid' | 'consent';
   /** Klartext-Aktion (DE data, not an i18n key) → AutopilotStep.aktion. */
   aktion: string;
+  /** Kurzer DE-Schritttitel für den Detail-Stepper (DE-Daten, kein i18n-Key,
+   *  konsistent mit `aktion`/`agentLabel`), z.B. „Geburt beurkunden". Optional;
+   *  die View fällt sonst auf `aktion` zurück. */
+  kurzlabel?: string;
+  /** Kurzes DE-Behörden-Label für die Stepper-Sublabel (DE-Daten, kein i18n-Key),
+   *  z.B. „Standesamt". Optional. */
+  behoerdeKurz?: string;
   /** Delegated agent-voice primary line (DE data) → AutopilotStep.agent_label. */
   agentLabel: string;
   /** Short norm tag → AutopilotStep.rechtsgrundlage. */
@@ -135,8 +142,38 @@ export interface LebenslageConfig {
     minuten_gespart: number;
     hinweis_key: string;
   };
+  /**
+   * Optionales Ergebnis-Dossier — nur der completed-state „Gesamtergebnis"-Band
+   * (`VorgangAbgeschlossen`). Liefert zwei fachliche Outcome-Kennzahl-Zellen +
+   * Lead-Satz; die dritte Zelle bleibt generisch „Beteiligte Stellen". Fehlt das
+   * Feld, fällt die View auf die generischen Zellen (Stellen / Nachweise / Zeit)
+   * zurück. Werte sind synthetische `[MOCK]`-Demo-Daten (Guardrail §8).
+   */
+  ergebnis?: {
+    /** Lead-Satz unter „Abgeschlossen" (i18n-Key). */
+    lead_key: string;
+    /** Zelle 1 — primäre Outcome-Kennzahl (z. B. Pflegegrad). */
+    kennzahl: {
+      label_key: string;
+      /** Anzeigewert (DE-Daten). Bei `mock: true` mit [MOCK]-Marker gerendert. */
+      wert: string;
+      /** Sub-Zeile (i18n-Key); `{date}` wird mit dem Abschlussdatum ersetzt. */
+      sub_key: string;
+      mock?: boolean;
+    };
+    /** Zelle 2 — sekundäres Outcome (z. B. Leistungseinrichtung). */
+    status: {
+      label_key: string;
+      /** Wert-Zeile (i18n-Key); `{date}` wird substituiert. */
+      wert_key: string;
+      sub_key: string;
+    };
+  };
   /** For mode='antragslos': the "kein Antrag nötig" explainer key. */
   antragslos_note_key?: string;
+  /** i18n key for an estimated total duration string, e.g.
+   *  `lebenslagen.{slug}.dauer_geschaetzt` → „30–45 Min". */
+  dauer_geschaetzt_key?: string;
 
   // ── §2.1 additions: catalog routing ──────────────────────────────────────
   /** 'umzug-saga' = the existing resilient OrchestrationEngine + run page;
@@ -166,4 +203,11 @@ export interface LebenslageCatalogEntry {
   title_key: string;
   /** i18n key ref: `lebenslagen.{slug}.lead`. */
   lead_key: string;
+  /** Cascade-Schritt-Zahl (= `config.cascade.length`). Für die Hub-Kachel
+   *  („6 Schritte"). Der Umzug-Stub hat eine leere Cascade → 0 (die Hub zeigt
+   *  dann „teilweise automatisch"). */
+  schritte: number;
+  /** Zahl der beteiligten Behörden (= `config.zustaendige_behoerden.length`).
+   *  Für die Hub-Kachel („6 Behörden gebündelt"). */
+  behoerden: number;
 }

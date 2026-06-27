@@ -6,23 +6,27 @@ import { notFound } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import {
   ArrowRight,
+  Bookmark,
   Check,
+  ChevronRight,
   Clock,
-  Euro,
+  Eye,
   FileText,
   Info,
   Landmark,
+  ListChecks,
   Lock,
+  MapPin,
+  Rocket,
   Scale,
   ShieldCheck,
-  Sparkles,
   UploadCloud,
 } from 'lucide-react';
 
 import { api } from '@/lib/mock-backend';
 import type { LebenslageConfig } from '@/lib/mock-backend/lebenslagen/types';
 import type { Behoerde } from '@/types';
-import { iconForConfig } from './lebenslagen-shared';
+import { iconForConfig, isGenuineNotFound, loadWithRetry } from './lebenslagen-shared';
 
 interface LeistungDetailViewProps {
   slug: string;
@@ -31,16 +35,29 @@ interface LeistungDetailViewProps {
 type LoadState =
   | { kind: 'loading' }
   | { kind: 'not-found' }
+  | { kind: 'error' }
   | { kind: 'ready'; config: LebenslageConfig; behoerden: Behoerde[] };
+
+/** config.kategorie → Lebensphasen-Label (Breadcrumb). */
+const PHASE_LABEL_KEY: Record<LebenslageConfig['kategorie'], string> = {
+  familie: 'familie',
+  wohnen: 'wohnen',
+  arbeit: 'arbeit',
+  migration: 'migration',
+  steuern: 'steuern',
+  mehr: 'mehr',
+};
 
 export function LeistungDetailView({ slug }: LeistungDetailViewProps) {
   const [state, setState] = React.useState<LoadState>({ kind: 'loading' });
+  const [reloadKey, setReloadKey] = React.useState(0);
 
   React.useEffect(() => {
     let cancelled = false;
+    setState({ kind: 'loading' });
     (async () => {
       try {
-        const config = await api.getLebenslageConfig(slug);
+        const config = await loadWithRetry(() => api.getLebenslageConfig(slug));
         if (cancelled) return;
         if (!config) {
           setState({ kind: 'not-found' });
@@ -48,24 +65,45 @@ export function LeistungDetailView({ slug }: LeistungDetailViewProps) {
         }
         let behoerden: Behoerde[] = [];
         try {
-          behoerden = await api.getBehoerden();
+          behoerden = await loadWithRetry(() => api.getBehoerden());
         } catch {
           behoerden = [];
         }
         if (!cancelled) setState({ kind: 'ready', config, behoerden });
-      } catch {
-        if (!cancelled) setState({ kind: 'not-found' });
+      } catch (err) {
+        // Nur ein genuiner Not-Found-Fehler darf 404 rendern; ein transienter
+        // (5%) Latenzfehler nach erschöpften Retries zeigt einen Retry-Zustand.
+        if (!cancelled) setState({ kind: isGenuineNotFound(err) ? 'not-found' : 'error' });
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [slug]);
+  }, [slug, reloadKey]);
 
   if (state.kind === 'loading') return <DetailSkeleton />;
   if (state.kind === 'not-found') return notFound();
+  if (state.kind === 'error') return <DetailLoadError onRetry={() => setReloadKey((k) => k + 1)} />;
 
   return <DetailReady config={state.config} behoerden={state.behoerden} />;
+}
+
+function DetailLoadError({ onRetry }: { onRetry: () => void }) {
+  const td = useTranslations('lebenslagen.detail');
+  const tc = useTranslations('common.cta');
+  return (
+    <div className="gt-page-head">
+      <div className="gt-banner amber" role="alert">
+        <Info aria-hidden="true" />
+        <div>
+          <strong>{td('load_error')}</strong>
+        </div>
+      </div>
+      <button type="button" className="btn btn-secondary" onClick={onRetry} style={{ marginTop: 12 }}>
+        {tc('erneut_versuchen')}
+      </button>
+    </div>
+  );
 }
 
 function DetailSkeleton() {
@@ -105,20 +143,62 @@ function DetailReady({ config, behoerden }: { config: LebenslageConfig; behoerde
     .slice(1)
     .map((id) => behoerdenById[id]?.name_de ?? id);
 
-  const prefilledCount = config.formFields.filter(
+  /** Once-Only: register-sourced, non-user-decision fields are auto-prepared. */
+  const autoFields = config.formFields.filter(
     (f) => f.prefill.path && !f.prefill.user_decision,
-  ).length;
+  );
 
   const istAntragslos = config.mode === 'antragslos';
   const antragHref = `/lebenslagen/${config.slug}/antrag`;
   const cascadeHref = `/lebenslagen/${config.slug}/cascade`;
+  const phaseLabel = td(`phase.${PHASE_LABEL_KEY[config.kategorie]}`);
+  const dauer = config.dauer_geschaetzt_key ? t(config.dauer_geschaetzt_key) : '—';
+  const docCount = config.benoetigte_dokumente_keys.length;
 
   return (
     <div>
+      <nav className="ll-breadcrumb" aria-label={td('breadcrumb_label')}>
+        <Link href="/lebenslagen">{td('breadcrumb_root')}</Link>
+        <ChevronRight aria-hidden="true" />
+        <span className="ll-breadcrumb-current">{phaseLabel}</span>
+      </nav>
+
       <div className="gt-page-head">
         <h1>{t(`lebenslagen.${config.slug}.title`)}</h1>
         <div className="sub">{t(`lebenslagen.${config.slug}.lead`)}</div>
       </div>
+
+      {/* Stepper — config.cascade order */}
+      {config.cascade.length > 0 ? (
+        <div
+          className="ll-stepper"
+          role="group"
+          aria-label={td('stepper_label')}
+          tabIndex={0}
+        >
+          <ol className="ll-stepper-track">
+            {config.cascade.map((step, idx) => (
+              <li
+                key={step.id}
+                className={`ll-step${idx === 0 ? ' is-current' : ''}`}
+              >
+                <span className="ll-step-num" aria-hidden="true">
+                  {idx + 1}
+                </span>
+                <span className="ll-step-body">
+                  <span className="ll-step-label">{step.kurzlabel ?? step.aktion}</span>
+                  {step.behoerdeKurz ? (
+                    <span className="ll-step-sub">{step.behoerdeKurz}</span>
+                  ) : null}
+                </span>
+                {idx < config.cascade.length - 1 ? (
+                  <ChevronRight className="ll-step-sep" aria-hidden="true" />
+                ) : null}
+              </li>
+            ))}
+          </ol>
+        </div>
+      ) : null}
 
       {config.zukunft ? (
         <div className="gt-banner amber ll-zukunft-banner" role="note">
@@ -131,7 +211,7 @@ function DetailReady({ config, behoerden }: { config: LebenslageConfig; behoerde
 
       <div className="lk-layout" style={{ marginTop: 20 }}>
         <div className="ll-main">
-          {/* 1 — Intro + zuständige Behörde */}
+          {/* L1 — Was enthalten ist */}
           <section className="gt-card" aria-labelledby="ll-intro-title">
             <div className="ll-intro-head">
               <span className="icon-circle lg" aria-hidden="true">
@@ -139,153 +219,240 @@ function DetailReady({ config, behoerden }: { config: LebenslageConfig; behoerde
               </span>
               <div>
                 <h2 id="ll-intro-title" className="gt-card-title">
-                  {td('section.intro')}
+                  {td('section.enthalten')}
                 </h2>
                 <p className="ll-intro-lead">{t(`lebenslagen.${config.slug}.lead`)}</p>
               </div>
             </div>
-            <dl className="ll-behoerde-row">
-              <dt>{td('zustaendige_behoerde')}</dt>
-              <dd>
-                <span className="ll-behoerde-name">
-                  {primaryBehoerde?.name_de ?? config.zustaendige_behoerden[0]}
-                </span>
-                {primaryBehoerde ? (
-                  <span className="badge outline ll-kat-badge">
-                    {td(`kategorie.${primaryBehoerde.kategorie}`)}
+
+            <div className="ll-stellen">
+              <div className="ll-stellen-block">
+                <span className="ll-stellen-label">{td('zustaendige_behoerde')}</span>
+                <div className="ll-stellen-primary">
+                  <span className="ll-behoerde-name">
+                    {primaryBehoerde?.name_de ?? config.zustaendige_behoerden[0]}
                   </span>
-                ) : null}
-              </dd>
-            </dl>
-            {weitereBehoerden.length > 0 ? (
-              <p className="ll-weitere">
-                {td('weitere_behoerden')}: {weitereBehoerden.join(' · ')}
-              </p>
-            ) : null}
-          </section>
-
-          {/* 2 — Voraussetzungen */}
-          <section className="gt-card" aria-labelledby="ll-vor-title">
-            <div className="gt-card-head">
-              <h2 id="ll-vor-title" className="gt-card-title">
-                <Check aria-hidden="true" />
-                {td('section.voraussetzungen')}
-              </h2>
-            </div>
-            <ul className="ll-checklist">
-              {config.voraussetzungen_keys.map((key) => (
-                <li key={key}>
-                  <Check aria-hidden="true" />
-                  <span>{t(key)}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          {/* 3 — Benötigte Dokumente */}
-          <section className="gt-card" aria-labelledby="ll-dok-title">
-            <div className="gt-card-head">
-              <h2 id="ll-dok-title" className="gt-card-title">
-                <FileText aria-hidden="true" />
-                {td('section.dokumente')}
-              </h2>
-            </div>
-            <ul className="ll-doklist">
-              {config.benoetigte_dokumente_keys.map((key) => (
-                <li key={key}>
-                  <FileText aria-hidden="true" />
-                  <span className="ll-dok-name">{t(key)}</span>
-                  <span className="ll-prefill-chip is-upload">
-                    <UploadCloud aria-hidden="true" />
-                    {td('upload_mock_chip')}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          {/* 4 — Rechtsgrundlagen */}
-          <section className="gt-card" aria-labelledby="ll-recht-title">
-            <div className="gt-card-head">
-              <h2 id="ll-recht-title" className="gt-card-title">
-                <Scale aria-hidden="true" />
-                {td('section.rechtsgrundlagen')}
-              </h2>
-            </div>
-            <dl className="ll-recht-list">
-              {config.rechtsgrundlagen.map((rg) => (
-                <div key={rg.norm} className="ll-recht-row">
-                  <dt className="ll-recht-norm">{rg.norm}</dt>
-                  <dd className="ll-recht-bedeutung">{t(rg.bedeutung_key)}</dd>
-                </div>
-              ))}
-            </dl>
-          </section>
-
-          {/* 5 — Frist / Gebühr */}
-          <div className="ll-ministats">
-            <section className="gt-card ll-ministat" aria-labelledby="ll-frist-title">
-              <span className="icon-circle" aria-hidden="true">
-                <Clock />
-              </span>
-              <h3 id="ll-frist-title">{td('section.frist')}</h3>
-              <p>
-                {config.frist
-                  ? t(config.frist.beschreibung_key)
-                  : td('keine_frist')}
-              </p>
-            </section>
-            <section className="gt-card ll-ministat" aria-labelledby="ll-geb-title">
-              <span className="icon-circle" aria-hidden="true">
-                <Euro />
-              </span>
-              <h3 id="ll-geb-title">{td('section.gebuehr')}</h3>
-              {config.gebuehr.gibt_es ? (
-                <>
-                  <p className="ll-geb-betrag">
-                    {config.gebuehr.betrag_key ? t(config.gebuehr.betrag_key) : ''}
-                    <span className="ll-mock-rail">{td('mock_payment')}</span>
-                  </p>
-                  {config.gebuehr.hinweis_key ? (
-                    <p className="ll-geb-hinweis">{t(config.gebuehr.hinweis_key)}</p>
+                  {primaryBehoerde ? (
+                    <span className="badge outline ll-kat-badge">
+                      {td(`kategorie.${primaryBehoerde.kategorie}`)}
+                    </span>
                   ) : null}
-                </>
-              ) : (
-                <p>{config.gebuehr.hinweis_key ? t(config.gebuehr.hinweis_key) : td('keine_gebuehr')}</p>
-              )}
+                </div>
+                {primaryBehoerde ? (
+                  <p className="ll-stellen-addr">
+                    <MapPin aria-hidden="true" />
+                    <span>
+                      {primaryBehoerde.adresse.strasse} {primaryBehoerde.adresse.hausnummer}
+                      {', '}
+                      {primaryBehoerde.adresse.plz} {primaryBehoerde.adresse.ort}
+                    </span>
+                  </p>
+                ) : null}
+              </div>
+
+              {weitereBehoerden.length > 0 ? (
+                <div className="ll-stellen-block">
+                  <span className="ll-stellen-label">{td('beteiligte_stellen')}</span>
+                  <div className="ll-stellen-chips">
+                    {weitereBehoerden.map((name) => (
+                      <span key={name} className="badge outline">
+                        {name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          </section>
+
+          {/* L2 — Voraussetzungen */}
+          {config.voraussetzungen_keys.length > 0 ? (
+            <section className="gt-card" aria-labelledby="ll-vor-title">
+              <div className="gt-card-head">
+                <h2 id="ll-vor-title" className="gt-card-title">
+                  <Check aria-hidden="true" />
+                  {td('section.voraussetzungen')}
+                </h2>
+              </div>
+              <ul className="ll-checklist">
+                {config.voraussetzungen_keys.map((key) => (
+                  <li key={key}>
+                    <Check aria-hidden="true" />
+                    <span>{t(key)}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+
+          {/* L3 — Benötigte Nachweise (presentational [MOCK] status) */}
+          {docCount > 0 ? (
+            <section className="gt-card" aria-labelledby="ll-dok-title">
+              <div className="gt-card-head">
+                <h2 id="ll-dok-title" className="gt-card-title">
+                  <FileText aria-hidden="true" />
+                  {td('section.dokumente')}
+                </h2>
+                <span className="ll-mock-rail">{td('mock_marker')}</span>
+              </div>
+              <ul className="ll-doklist">
+                {config.benoetigte_dokumente_keys.map((key, idx) => {
+                  const ausstehend = idx === docCount - 1;
+                  return (
+                    <li key={key}>
+                      <FileText aria-hidden="true" />
+                      <span className="ll-dok-name">{t(key)}</span>
+                      {ausstehend ? (
+                        <span className="badge amber ll-dok-status">
+                          {td('nachweis_ausstehend')}
+                        </span>
+                      ) : (
+                        <span className="badge green ll-dok-status">
+                          <Check aria-hidden="true" />
+                          {td('nachweis_hochgeladen')}
+                        </span>
+                      )}
+                      <button type="button" className="btn btn-secondary btn-sm ll-dok-action">
+                        {ausstehend ? td('nachweis_hochladen') : td('nachweis_anzeigen')}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+              <button type="button" className="ll-dropzone ll-dok-dropzone">
+                <UploadCloud aria-hidden="true" />
+                <span>{td('nachweis_dropzone')}</span>
+                <span className="ll-mock-rail">{td('mock_marker')}</span>
+              </button>
+            </section>
+          ) : null}
+
+          {/* L4 — Once-Only auto-prepared fields */}
+          {autoFields.length > 0 ? (
+            <section className="gt-card" aria-labelledby="ll-oo-auto-title">
+              <div className="gt-card-head ll-oo-head">
+                <h2 id="ll-oo-auto-title" className="gt-card-title">
+                  {td('section.once_only_auto')}
+                  <span className="ll-oo-qualifier">{td('once_only_qualifier')}</span>
+                </h2>
+                <span className="badge green ll-oo-badge">
+                  <ShieldCheck aria-hidden="true" />
+                  {td('datensparsam')}
+                </span>
+              </div>
+              <p className="ll-oo-intro">{td('once_only_intro')}</p>
+              <ul className="ll-oo-grid">
+                {autoFields.map((field) => (
+                  <li key={field.key}>
+                    <Check aria-hidden="true" />
+                    <span>{t(`lebenslagen.${config.slug}.fields.${field.key}.label`)}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+
+          {/* L5 — Rechtsgrundlagen + Fristen & Gebühren */}
+          <div className="ll-bottom-row">
+            <section className="gt-card" aria-labelledby="ll-recht-title">
+              <div className="gt-card-head">
+                <h2 id="ll-recht-title" className="gt-card-title">
+                  <Scale aria-hidden="true" />
+                  {td('section.rechtsgrundlagen')}
+                </h2>
+              </div>
+              <dl className="ll-recht-list">
+                {config.rechtsgrundlagen.map((rg) => (
+                  <div key={rg.norm} className="ll-recht-row">
+                    <dt className="ll-recht-norm">{rg.norm}</dt>
+                    <dd className="ll-recht-bedeutung">{t(rg.bedeutung_key)}</dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+
+            <section className="gt-card" aria-labelledby="ll-fg-title">
+              <div className="gt-card-head">
+                <h2 id="ll-fg-title" className="gt-card-title">
+                  <Clock aria-hidden="true" />
+                  {td('section.fristen_gebuehren')}
+                </h2>
+              </div>
+              <dl className="ll-fg-list">
+                <div className="ll-fg-row">
+                  <dt>{td('frist_label')}</dt>
+                  <dd>
+                    {config.frist ? t(config.frist.beschreibung_key) : td('keine_frist')}
+                  </dd>
+                </div>
+                <div className="ll-fg-row">
+                  <dt>{td('dauer_geschaetzt')}</dt>
+                  <dd>{dauer}</dd>
+                </div>
+                <div className="ll-fg-row">
+                  <dt>{td('gebuehren_label')}</dt>
+                  <dd>
+                    {config.gebuehr.gibt_es ? (
+                      <span className="ll-fg-geb">
+                        <span className="ll-fg-betrag">
+                          {config.gebuehr.betrag_key ? t(config.gebuehr.betrag_key) : ''}
+                        </span>
+                        <span className="ll-mock-rail">{td('mock_payment')}</span>
+                        {config.gebuehr.hinweis_key ? (
+                          <span className="ll-fg-hinweis">{t(config.gebuehr.hinweis_key)}</span>
+                        ) : null}
+                      </span>
+                    ) : config.gebuehr.hinweis_key ? (
+                      t(config.gebuehr.hinweis_key)
+                    ) : (
+                      td('keine_gebuehr')
+                    )}
+                  </dd>
+                </div>
+              </dl>
             </section>
           </div>
-
-          {/* CTA */}
-          {istAntragslos ? (
-            <section className="ll-antragslos" aria-labelledby="ll-antragslos-title">
-              <span className="icon-circle green" aria-hidden="true">
-                <Sparkles />
-              </span>
-              <div className="ll-antragslos-body">
-                <h2 id="ll-antragslos-title">{td('antragslos.kein_antrag_title')}</h2>
-                <p>
-                  {config.antragslos_note_key
-                    ? t(config.antragslos_note_key)
-                    : td('antragslos.kein_antrag_body')}
-                </p>
-                <Link href={cascadeHref} className="btn btn-primary">
-                  <ArrowRight aria-hidden="true" />
-                  {td('cta_cascade_view')}
-                </Link>
-              </div>
-            </section>
-          ) : (
-            <div className="ll-cta-row">
-              <Link href={antragHref} className="btn btn-primary btn-lg">
-                {td('cta_beantragen')}
-                <ArrowRight aria-hidden="true" />
-              </Link>
-            </div>
-          )}
         </div>
 
         <aside className="lk-rail" aria-label={td('rail_label')}>
+          {/* R1 — Auf einen Blick */}
+          <section className="gt-card" aria-labelledby="ll-blick-title">
+            <h2 id="ll-blick-title" className="gt-card-title llh-rail-title">
+              <Eye aria-hidden="true" />
+              {td('auf_einen_blick')}
+            </h2>
+            <dl className="ll-blick-list">
+              <div className="ll-blick-row">
+                <dt>
+                  <Clock aria-hidden="true" />
+                  {td('gesamtdauer')}
+                </dt>
+                <dd>{dauer}</dd>
+              </div>
+              <div className="ll-blick-row">
+                <dt>
+                  <ListChecks aria-hidden="true" />
+                  {td('schritte_insgesamt')}
+                </dt>
+                <dd>{config.cascade.length}</dd>
+              </div>
+              <div className="ll-blick-row">
+                <dt>
+                  <Landmark aria-hidden="true" />
+                  {td('beteiligte_behoerden_count')}
+                </dt>
+                <dd>{config.zustaendige_behoerden.length}</dd>
+              </div>
+            </dl>
+            {config.cascade.length > 0 ? (
+              <Link href={cascadeHref} className="llh-card-link ll-blick-foot">
+                {td('alle_schritte')}
+                <ArrowRight aria-hidden="true" />
+              </Link>
+            ) : null}
+          </section>
+
+          {/* R2 — Ihre Daten sind geschützt */}
           <section className="gt-card lk-secure">
             <span className="icon-circle green" aria-hidden="true">
               <Lock />
@@ -298,16 +465,41 @@ function DetailReady({ config, behoerden }: { config: LebenslageConfig; behoerde
             </Link>
           </section>
 
-          <section className="gt-card ll-once-only" aria-labelledby="ll-oo-title">
-            <span className="icon-circle" aria-hidden="true">
-              <Landmark />
-            </span>
-            <h2 id="ll-oo-title" className="ll-once-only-title">
-              {td('once_only_title')}
-            </h2>
-            <p className="ll-once-only-note">
-              {td('once_only_note', { count: prefilledCount })}
+          {/* R3 — Nächster Schritt (CTA) */}
+          <section className="gt-card ll-next" aria-labelledby="ll-next-title">
+            <div className="ll-next-head">
+              <span className="icon-circle green" aria-hidden="true">
+                <Rocket />
+              </span>
+              <h2 id="ll-next-title" className="gt-card-title">
+                {istAntragslos ? td('antragslos.kein_antrag_title') : td('naechster_schritt')}
+              </h2>
+            </div>
+            <p className="ll-next-body">
+              {istAntragslos
+                ? config.antragslos_note_key
+                  ? t(config.antragslos_note_key)
+                  : td('antragslos.kein_antrag_body')
+                : td('naechster_schritt_body')}
             </p>
+            <div className="ll-next-actions">
+              {istAntragslos ? (
+                <Link href={cascadeHref} className="btn btn-primary ll-next-primary">
+                  <ArrowRight aria-hidden="true" />
+                  {td('cta_cascade_view')}
+                </Link>
+              ) : (
+                <Link href={antragHref} className="btn btn-primary ll-next-primary">
+                  {td('cta_beantragen')}
+                  <ArrowRight aria-hidden="true" />
+                </Link>
+              )}
+              <button type="button" className="btn btn-secondary ll-next-save">
+                <Bookmark aria-hidden="true" />
+                {td('vorgang_speichern')}
+              </button>
+            </div>
+            <p className="ll-next-foot">{td('vorgang_fortsetzen')}</p>
           </section>
         </aside>
       </div>
