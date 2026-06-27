@@ -55,9 +55,17 @@ established press). Note the date of each development.
 1. Append each candidate to the **"Candidate tasks"** section of `BACKLOG.md`, directly below the
    `<!-- BACKLOG-SCOUT-APPEND-BELOW -->` marker, newest first, using the entry format defined in
    `BACKLOG.md`.
-2. **Only edit `BACKLOG.md`.** Do not touch *Accepted*/*Done*, do not edit any other file, do not change code.
-3. Commit just `BACKLOG.md` to a new branch **`claude/backlog-<YYYY-MM-DD>`** and stop. Do **not** merge,
-   do not push to `main`/`feat/*`. The human reviews the branch and promotes items.
+2. **Only edit `BACKLOG.md`.** Do not touch *Accepted*/*Done*, do not edit any other file, do not change
+   code — you scout; implementation happens later **on this same branch** (see step 5).
+3. **Name the branch yourself, descriptively.** Derive a short kebab-case slug (2–4 words) from the run's
+   dominant theme(s) and create the branch **`claude/<YYYY-MM-DD>-<slug>`** — e.g.
+   `claude/2026-06-27-eudi-kindergeld-once-only`. The `claude/` prefix is **mandatory** (routines may only
+   push to `claude/`-prefixed branches); slug is lowercase, hyphen-separated, no spaces, no umlauts.
+4. Commit just `BACKLOG.md` to that branch and stop. Do **not** merge, do not push to `main`/`feat/*`.
+5. **This branch is the working branch.** A human or an interactive implementation session will check it out
+   and build the promoted items **on this same branch**, then open a PR. So name it like a feature branch
+   you'd be happy to work in, not a throwaway.
+6. In your final run summary, state the **branch name** and a one-line theme so the reviewer knows what to open.
 
 ## What NOT to do
 
@@ -74,5 +82,6 @@ needed domains — see agent-context "Cloud env".)
 
 ## Success looks like
 
-A reviewer opens the `claude/backlog-<date>` session, sees 0–7 honest, sourced, relevant, non-duplicate
-candidate tasks, and can promote the good ones into real work in under five minutes.
+A reviewer opens the descriptively-named `claude/<date>-<slug>` branch/session, sees 0–7 honest, sourced,
+relevant, non-duplicate candidate tasks, and can promote the good ones — then build them out on that same
+branch — without first untangling what the run was about.

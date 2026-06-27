@@ -114,8 +114,10 @@ The project's #1 recurring failure is the false-PASS. Re-run gates yourself, det
 
 - **`BACKLOG.md`** (root) is the project task list. A daily Claude Code **routine** ("GovTech Backlog
   Scout", spec in `routine-backlog-scout.md`) researches the German GovTech ecosystem + legal changes +
-  citizen pain points and **appends** dated, source-cited candidate tasks on a `claude/backlog-<date>`
-  branch — review-gated, append-only, never edits code. Humans triage candidates into *Accepted*.
+  citizen pain points and **appends** dated, source-cited candidate tasks on a **self-named
+  `claude/<date>-<slug>` branch** (the routine derives the slug from the day's themes) — review-gated,
+  append-only, never edits code. That branch is also the **working branch** for implementing the promoted
+  items (interactive session checks it out, builds, opens a PR). Humans triage candidates into *Accepted*.
 - If you're a routine run: follow `routine-backlog-scout.md` exactly. Otherwise: the routine env needs
   **Full** (or Custom) network access for open web research — Trusted blocks arbitrary domains.
 
