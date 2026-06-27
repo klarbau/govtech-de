@@ -89,8 +89,10 @@ The project's #1 recurring failure is the false-PASS. Re-run gates yourself, det
 
 ## Tooling
 
-- **CodeGraph MCP** — local auto-syncing code graph; **absent in the web/cloud env** unless reconfigured
-  there. Fall back to Read/Grep if a symbol isn't found.
+- **CodeGraph MCP** — local **stdio** code graph (`@colbymchenry/codegraph`, index in gitignored
+  `.codegraph/`). **Cannot run in Claude Code web**: the web sandbox doesn't support stdio MCP servers and
+  codegraph has no HTTP/remote transport (`serve` is stdio-only). On web, use Read/Grep/Glob (full ripgrep
+  is available) — codegraph is a token optimization, not a capability. Verified 2026-06-27.
 - **Demo recorders** — `demo-record` skill; clean takes `green-tour-clean` (functional Lebenslagen tour)
   and `update-arc-clean` (FIT-Connect security arc) render via the post-process pipeline.
 
