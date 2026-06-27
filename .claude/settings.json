@@ -42,7 +42,16 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo [agent-context] Read docs/agent-context.md first and keep it updated - append a dated line and commit it when you learn a durable project fact."
+            "command": "echo [agent-context] Read agent-context.md first and keep it updated - append a dated line and commit it when you learn a durable project fact."
+          }
+        ]
+      },
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/scripts/install_pkgs.sh"
           }
         ]
       }

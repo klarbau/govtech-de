@@ -96,6 +96,20 @@ The project's #1 recurring failure is the false-PASS. Re-run gates yourself, det
 - **Demo recorders** — `demo-record` skill; clean takes `green-tour-clean` (functional Lebenslagen tour)
   and `update-arc-clean` (FIT-Connect security arc) render via the post-process pipeline.
 
+## Cloud env (Claude Code on the web) — verified 2026-06-27
+
+- Point the cloud session at the **private** repo `govtech-de-private`; CLAUDE.md + `@agent-context.md`
+  load automatically from the clone.
+- **Dependency install split** (the env Setup script runs in `/home/user` BEFORE the repo is the cwd, so
+  `pnpm install` there fails `ERR_PNPM_NO_PKG_MANIFEST`):
+  - **Env "Setup script" field** (cached snapshot, no repo needed) → cache the heavy browser:
+    `npx -y playwright@1.49.1 install --with-deps chromium`
+  - **SessionStart hook** (`.claude/settings.json` → `scripts/install_pkgs.sh`, runs in the repo dir each
+    session, cloud-guarded via `CLAUDE_CODE_REMOTE`) → `pnpm install --frozen-lockfile`.
+- Keep **Network access = Trusted** (npm registry); deps reinstall each session (~1 min) — only global
+  tools/browsers are snapshot-cached, repo `node_modules` is not. Don't set `NODE_ENV=production` (skips
+  devDependencies). No Node pin / no native deps; all Playwright configs are Chromium-only.
+
 ## Open threads / followups
 
 - `d02b3cd` (feat/termine-vorgemerkt) bundles, all NOT yet merged to `main` / `public`: green `/termine`

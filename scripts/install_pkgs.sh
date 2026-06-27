@@ -1,27 +1,34 @@
 #!/usr/bin/env bash
 #
-# Cloud setup script for Claude Code on the web (reusable across sessions).
+# Cloud dependency installer for Claude Code on the web.
 #
-# Set this ONCE in the web environment's "Setup script" field as:
-#     bash scripts/install_pkgs.sh
+# This runs as a SessionStart hook (wired in .claude/settings.json), NOT as the
+# environment "Setup script". SessionStart hooks run AFTER Claude Code launches,
+# inside the cloned repo directory, so package.json is present. The environment
+# Setup script runs earlier in /home/user (before the repo is the cwd), where
+# `pnpm install` fails with ERR_PNPM_NO_PKG_MANIFEST.
 #
-# Its output is filesystem-snapshotted by Anthropic and reused as the starting
-# point for later sessions, so dependencies and the Playwright browser are NOT
-# reinstalled every session. The setup step only re-runs when you edit the
-# script, change allowed network hosts, or after the ~7-day cache expiry.
-# See agent-context.md and https://code.claude.com/docs/en/claude-code-on-the-web
+# Cache the heavy Playwright browser via the env *Setup script* field instead
+# (it needs no repo and is snapshot-cached). Set the Setup script to:
+#     npx -y playwright@1.49.1 install --with-deps chromium
 #
-# Needs "Trusted" network access (default) so pnpm/Playwright can reach registries.
+# Skips local machines — only runs in cloud sessions (CLAUDE_CODE_REMOTE=true).
+# See agent-context.md.
 
-set -euo pipefail
+if [ "${CLAUDE_CODE_REMOTE:-}" != "true" ]; then
+  exit 0
+fi
 
-echo "[setup] enabling pnpm via corepack…"
+set -e
+
 corepack enable >/dev/null 2>&1 || true
 
-echo "[setup] installing dependencies (pnpm, frozen lockfile)…"
+echo "[install] pnpm install (cloud session)…"
 pnpm install --frozen-lockfile
 
-echo "[setup] installing Playwright Chromium + OS deps (for a11y/e2e gates)…"
-pnpm exec playwright install --with-deps chromium
+# Browser + OS libs are pre-cached by the env Setup script; this is a fast no-op
+# if the matching Chromium build is already on disk.
+pnpm exec playwright install chromium >/dev/null 2>&1 || true
 
-echo "[setup] done — deps + Chromium are now on disk and will be cached."
+echo "[install] done."
+exit 0
