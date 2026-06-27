@@ -110,6 +110,15 @@ The project's #1 recurring failure is the false-PASS. Re-run gates yourself, det
   tools/browsers are snapshot-cached, repo `node_modules` is not. Don't set `NODE_ENV=production` (skips
   devDependencies). No Node pin / no native deps; all Playwright configs are Chromium-only.
 
+## Automation — scheduled routine (2026-06-27)
+
+- **`BACKLOG.md`** (root) is the project task list. A daily Claude Code **routine** ("GovTech Backlog
+  Scout", spec in `routine-backlog-scout.md`) researches the German GovTech ecosystem + legal changes +
+  citizen pain points and **appends** dated, source-cited candidate tasks on a `claude/backlog-<date>`
+  branch — review-gated, append-only, never edits code. Humans triage candidates into *Accepted*.
+- If you're a routine run: follow `routine-backlog-scout.md` exactly. Otherwise: the routine env needs
+  **Full** (or Custom) network access for open web research — Trusted blocks arbitrary domains.
+
 ## Open threads / followups
 
 - `d02b3cd` (feat/termine-vorgemerkt) bundles, all NOT yet merged to `main` / `public`: green `/termine`
