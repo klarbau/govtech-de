@@ -1,0 +1,3 @@
+# Shell scripts must keep LF line endings so they run in the Linux cloud sandbox
+# (Claude Code on the web). CRLF would break the shebang.
+*.sh text eol=lf
