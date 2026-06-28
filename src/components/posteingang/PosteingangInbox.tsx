@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
 import {
   Archive,
@@ -21,6 +21,7 @@ import {
   Info,
   Inbox,
   Landmark,
+  Languages,
   Link2,
   ListChecks,
   Mail,
@@ -39,9 +40,14 @@ import { api } from '@/lib/mock-backend';
 import { bridgeTargetForArchetype } from '@/lib/mock-backend/brief-bridge';
 import { useMediaQuery } from '@/lib/hooks/use-media-query';
 import { Skeleton } from '@/components/shared/Skeleton';
+import { isLocale, type Locale } from '@/i18n/routing';
 import type { Behoerde, BehoerdeKategorie, Letter, LetterFrist, Vorgang } from '@/types';
 
 import { ErkannteAufgabePanel } from './ErkannteAufgabePanel';
+import { ErklaererBulletList } from './ErklaererBulletList';
+import { ErklaererLangToggle } from './ErklaererLangToggle';
+import { TranslationDisclaimerBadge } from './TranslationDisclaimerBadge';
+import { seededLangsFor, useErklaererLang } from './use-erklaerer-lang';
 import { downloadIcs } from './download-ics';
 import { NeuerVorgangAusBriefModal } from './NeuerVorgangAusBriefModal';
 import { ReplyInlinePanel } from './ReplyInlinePanel';
@@ -845,6 +851,7 @@ function PostItemRow({
   onSelect: () => void;
 }) {
   const tBadge = useTranslations('posteingang');
+  const tCard = useTranslations('posteingang.card');
   const variant = avatarVariant(letter.absender_behoerde_id);
   const archetypeLabel = archetypeText(letter);
   const earliestFrist = (letter.fristen ?? [])
@@ -853,6 +860,14 @@ function PostItemRow({
   const fristLabel = earliestFrist ? formatFristLabel(earliestFrist) : null;
   const eingangLabel = formatEingangLabel(letter.empfangen_am, nowIso);
   const behoerdeName = behoerde?.name_de ?? '';
+
+  // Mehrsprachiger Brief-Erklärer (Spec §4.1) — dezenter Affordance-Hinweis:
+  // nur wenn UI-Locale ≠ de UND dieser Brief für genau diese Locale geseedet ist.
+  const uiLocaleRaw = useLocale();
+  const uiLocale: Locale = isLocale(uiLocaleRaw) ? uiLocaleRaw : 'de';
+  const showSpracheHint =
+    uiLocale !== 'de' &&
+    (seededLangsFor(letter.ai_summary) as readonly string[]).includes(uiLocale);
 
   return (
     <Link
@@ -892,6 +907,18 @@ function PostItemRow({
             >
               <Link2 className="size-3" aria-hidden="true" />
               {tBadge('linkedBadge')}
+            </span>
+          )}
+          {showSpracheHint && (
+            <span
+              data-testid="post-item-sprache-hint"
+              className="ml-1.5 inline-flex items-center align-middle"
+            >
+              <Languages
+                className="size-3.5 text-primary"
+                aria-hidden="true"
+              />
+              <span className="sr-only">{tCard('in_ihrer_sprache_hint')}</span>
             </span>
           )}
           <br />
@@ -943,6 +970,7 @@ function PostDetail({
   const t3 = useTranslations('posteingang.mockup3');
   const tWas = useTranslations('posteingang.was_kann_ich_tun');
   const tPost = useTranslations('posteingang');
+  const tErkl = useTranslations('posteingang.erklaerer');
   const [docTab, setDocTab] = React.useState<'original' | 'anhaenge' | 'verlauf'>(
     'original',
   );
@@ -995,7 +1023,20 @@ function PostDetail({
     [letter, tPost],
   );
 
-  const ai = letter.ai_summary?.post_open;
+  // Mehrsprachiger Brief-Erklärer (Spec §4.2): locale-bewusste Bullet-Auswahl.
+  // Die brief-lokale Sprachwahl folgt initial der UI-Locale (sofern geseedet),
+  // ändert sie aber NICHT. `activeSummary` = übersetzte `post_open` ODER DE-Fallback.
+  const dePostOpen = letter.ai_summary?.post_open;
+  const {
+    activeLang,
+    setActiveLang,
+    options,
+    activeSummary,
+    isTranslated,
+    isFallbackDe,
+  } = useErklaererLang(letter.ai_summary, dePostOpen);
+
+  const ai = activeSummary;
   const bullets = ai?.bullets?.slice(0, 3).map((b) => b.text) ?? [];
   const worum = bullets[0] ?? t3('erklaerer.worum_fallback');
 
@@ -1008,16 +1049,31 @@ function PostDetail({
     ? letter.body_de.split('\n').filter(Boolean).slice(2, 5).join(' ').slice(0, 280)
     : '';
 
+  // HONESTY-GUARDRAIL: Betrag/Frist sind deutsch-abgeleitete €/Datums-Werte und
+  // werden NIE lokalisiert/neu gerendert — nur der deskriptive Bullet-Text wechselt
+  // die Sprache (Spec §4.2.3 / §10).
   const betragText = formatBetragErklaerung(letter, t3);
   const bisWannText = fristLabel
     ? t3('erklaerer.bis_wann_template', { datum: fristLabel })
     : t3('erklaerer.bis_wann_keine');
 
   const bedeutung = formatBedeutung(letter, tWas, t3);
-  // „Was bedeutet das" als abgehakte Liste, wenn die KI-Zusammenfassung mehrere
-  // Punkte liefert (Bullet 0 ist die „Worum geht es"-Kurzfassung, oben im
-  // KI-Erklärer; ab Bullet 1 sind es die bedeutungstragenden Punkte). Andernfalls
-  // Single-Absatz-Fallback. Datenquelle: echte ai_summary.post_open.bullets.
+  // „Was bedeutet das" — Bullets ab Index 1 (Bullet 0 ist die „Worum"-Kurzfassung
+  // oben im KI-Erklärer). Bei übersetzter Ansicht rendert `ErklaererBulletList`
+  // diese Bullets locale-bewusst inkl. unübersetztem deutschem `original_zitat`,
+  // `lang`/`dir`/`<bdi>` und [MOCK]-Watermark. Für die DE-Ansicht bleibt die
+  // bestehende `.post-bullets`-Darstellung.
+  const bedeutungSummary =
+    ai && ai.bullets.length > 1
+      ? {
+          ...ai,
+          bullets: ai.bullets.slice(1),
+          // Citations auf den neuen 0-basierten Index der gesliceten Bullets mappen.
+          citations: ai.citations
+            .filter((c) => c.bullet_index >= 1)
+            .map((c) => ({ ...c, bullet_index: c.bullet_index - 1 })),
+        }
+      : undefined;
   const bedeutungBullets = (ai?.bullets ?? [])
     .slice(1, 5)
     .map((b) => b.text)
@@ -1157,19 +1213,45 @@ function PostDetail({
             <div className="ai-card-body">
               <div className="ai-card-top">
                 <div className="h">{t3('erklaerer.title')}</div>
-                <span className="ai-pill">
-                  <Sparkles aria-hidden="true" />
-                  {t3('erklaerer.pill')}
+                <span className="flex items-center gap-2">
+                  <ErklaererLangToggle
+                    activeLang={activeLang}
+                    options={options}
+                    onChange={setActiveLang}
+                  />
+                  <span className="ai-pill">
+                    <Sparkles aria-hidden="true" />
+                    {t3('erklaerer.pill')}
+                  </span>
                 </span>
               </div>
               <p className="ai-intro">{t3('erklaerer.intro')}</p>
+              {isFallbackDe && (
+                <p
+                  role="status"
+                  className="mt-2 text-xs leading-relaxed text-muted-foreground"
+                >
+                  {tErkl('fallback_de_note')}
+                </p>
+              )}
+              {isTranslated && activeLang !== 'de' && (
+                <div className="mt-3">
+                  <TranslationDisclaimerBadge activeLang={activeLang} />
+                </div>
+              )}
               <div className="ai-blocks">
                 <div className="ai-block">
                   <div className="ai-block-q">
                     <Info aria-hidden="true" />
                     {t3('erklaerer.worum_label')}
                   </div>
-                  <p className="ai-block-a">{worum}</p>
+                  <p
+                    className="ai-block-a"
+                    lang={isTranslated ? activeLang : undefined}
+                    dir={isTranslated && activeLang === 'ar' ? 'rtl' : undefined}
+                  >
+                    {worum}
+                  </p>
                 </div>
                 <div className="ai-block">
                   <div className="ai-block-q">
@@ -1227,7 +1309,18 @@ function PostDetail({
               <Info aria-hidden="true" />
               <h3>{t3('bedeutung.title')}</h3>
             </div>
-            {bedeutungBullets.length > 1 ? (
+            {isTranslated && bedeutungSummary ? (
+              // Übersetzte Ansicht: locale-bewusste Bullets mit unübersetztem
+              // deutschem `original_zitat` (CitationFootnote), lang/dir/<bdi> für
+              // ar-RTL und [MOCK]-Watermark (Spec §4.2.3 / §4.2.4).
+              <ErklaererBulletList
+                summary={bedeutungSummary}
+                activeLang={activeLang}
+                isTranslated={isTranslated}
+                onShowInOriginal={(c) => handleScrollToZitat(c.original_zitat)}
+                className="post-bullets-erklaerer"
+              />
+            ) : bedeutungBullets.length > 1 ? (
               <ul className="post-bullets">
                 {bedeutungBullets.map((text, i) => (
                   <li key={i}>

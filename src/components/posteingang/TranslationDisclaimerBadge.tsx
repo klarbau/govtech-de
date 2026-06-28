@@ -126,7 +126,7 @@ export function TranslationDisclaimerBadge({
         <p
           lang={activeLang}
           dir={isRtl ? 'rtl' : undefined}
-          className="text-amber-700/90 dark:text-amber-300/80"
+          className="text-amber-800 dark:text-amber-300/80"
         >
           {activeHint}
         </p>

@@ -393,3 +393,19 @@ hand-geprüfte Übersetzungen je Locale (ru/uk/ar/tr/en); die übrigen Chrome-Ke
 - run-to-verify: `next dev` :3000 läuft; `/posteingang` 200, `/posteingang/letter-abh-erinnerung-verlaengerung` 200.
 - known gaps: keine. Persistenz der brief-lokalen Sprachwahl (localStorage, §6) bewusst nicht implementiert (laut Spec nice-to-have, nicht ship-blockierend).
 - next: a11y-tester (Toggle-Control, `lang`-Auszeichnung, AR-RTL/`<bdi>`, WCAG 2.1 AA supporting-tier) → code-reviewer.
+
+## Build log — frontend-coder (FIX: live-Pfad-Integration)
+- date: 2026-06-28
+- problem behoben: die erste Runde verdrahtete die Feature in `LetterReader.tsx`/`LetterReaderProto.tsx` + `AISummaryBlock`/`AiErklaererCard` — das sind aber TOTE Komponenten ohne Live-Importeur. Die Live-Route (`/posteingang`, `/posteingang/[id]`) rendert `src/components/posteingang/PosteingangInbox.tsx` mit in-file `PostDetail` + `PostItemRow`. Live-DOM-Probe (RU/AR) zeigte vorher 0 erklaerer-Knoten. Die toten Edits bleiben harmlos liegen; die Feature lebt jetzt im Live-Pfad.
+- LIVE-Datei geändert: `src/components/posteingang/PosteingangInbox.tsx`
+  - `PostDetail` (in-file): `useErklaererLang(letter.ai_summary, post_open)` ersetzt das direkte `letter.ai_summary?.post_open`. `worum` (bullets[0]) + „Was bedeutet das"-Bullets (bullets[1..]) kommen jetzt aus `activeSummary` (übersetzt ODER DE-Fallback). `ErklaererLangToggle` im `.ai-card-top` (neben der `ai-pill`). `TranslationDisclaimerBadge` (DE + aktive Sprache, nicht wegklappbar) im `.ai-card` über dem Inhalt bei `isTranslated`. `fallback_de_note` bei `isFallbackDe`. Die übersetzten Bedeutungs-Bullets rendert `ErklaererBulletList` (deutsches `original_zitat` je Bullet via CitationFootnote, `lang`/`dir=rtl`/`<bdi>`, [MOCK]-Watermark); DE-Ansicht behält die bestehende `.post-bullets`-Darstellung.
+  - HONESTY-Guardrail eingehalten: `betragText`/`bisWannText`/`fristLabel` (deutsch-abgeleitete €/Daten via `formatBetragErklaerung`/`formatFristLabel`) UNVERÄNDERT — nur deskriptiver Bullet-Text wechselt die Sprache. Citation-`bullet_index` wird beim Bullet-1-Slice korrekt auf 0-basiert re-gemappt, damit das deutsche Zitat am richtigen Bullet bleibt.
+  - `PostItemRow` (live Listen-Item, Default-`chronologisch`-View): dezenter `Languages`-Icon (`aria-hidden`) + sr-only `card.in_ihrer_sprache_hint`, nur wenn UI-Locale ≠ de UND Brief für genau diese Locale geseedet (`seededLangsFor`). `data-testid="post-item-sprache-hint"`.
+  - `VorgangsGruppe`/`SonstigeGruppe` (gruppierte View) rendern `LetterCard` → erben bereits den in Runde 1 hinzugefügten Hinweis; kein zusätzlicher Eingriff nötig.
+- run-to-verify (LIVE-DOM-Probe via Playwright/Chromium gegen :3000, Anna-Brief `letter-abh-erinnerung-verlaengerung`):
+  - RU: `ol[lang=ru]` mit 5 Bullets; Badge bilingual (DE + „Переведённое пояснение …"); 3 deutsche Citation-Marker (`button[aria-haspopup=dialog]`); [MOCK]-Watermark TRUE; Toggle echtes Control (`aria-label="Язык пояснения"`); `worum` `lang=ru`; Betrag/Frist-Blöcke deutsch (`14.05.2027` verbatim); Listen-Hint 2×.
+  - AR: `ol[lang=ar]` `dir="rtl"`; 5 `<bdi>` LTR-Inseln (§ 18g AufenthG + Datum stabil); Badge bilingual (DE + „شرح مترجَم — …"); 3 Citation-Marker; Watermark TRUE; Toggle `aria-label="لغة الشرح"`; `worum` `lang=ar` + Datum LTR.
+- typecheck: pass (`tsc --noEmit`, exit 0).
+- lint: keine NEUEN Findings durch diese Änderung. Zwei Findings im File sind PRE-EXISTING (auf HEAD nachgewiesen): `replyLabel`-unused-Warning (PostDetail-Prop) + `react/no-unescaped-entities` in der bestehenden „Auszug"-Quote-Zeile — nicht von dieser Feature berührt, bewusst nicht angefasst.
+- known gaps: keine neuen.
+- next: a11y-tester (re-audit am LIVE-Pfad PosteingangInbox) → code-reviewer.
