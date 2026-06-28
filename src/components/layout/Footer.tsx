@@ -25,6 +25,17 @@ export async function Footer() {
             {t('accessibility')}
           </Link>
         </nav>
+        <p className="text-xs text-text-muted">
+          {t('kern_attribution')}{' '}
+          <a
+            href="https://www.designsystem.gov.de"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-text-primary"
+          >
+            {t('kern_attribution_link')}
+          </a>
+        </p>
       </div>
     </footer>
   );
