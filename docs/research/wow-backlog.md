@@ -265,3 +265,40 @@ Der eine echte "es ist schon da"-Beat, der die emotionale Inversion von Pflicht 
 Der am natürlichsten Spine-integrierte Entitlement-Beat: kettet direkt an die existierende Umzug-Value-Receipt, weil der Autopilot den Move-Moment schon besitzt und jetzt Miete+Adresse kennt — verlängert den Helden, statt einen disconnected Screen zu öffnen. Liefert den ersten echten Eintrag für die #4-Bring-Prinzip-Lane (die nicht vor einem realen Entitlement-Beat shippen sollte). Mit der antragsgebunden-Korrektur ("Antrag vorbereiten" + "geschätzt ca.") ist es ehrlicher und damit stärker bei Insidern als ein fakes "läuft schon". **Reinforces hero: ja (verlängert die Umzug-Kaskade). Buildable on mock-backend: ja.**
 
 > **Net:** Die Demo braucht nicht mehr Screens — sie braucht ihren existierenden Helden KONTINUIERLICH gemacht (#1) und genau einen ehrlichen Entitlement-Beat, der Pflicht→Anspruch kippt (#2, dann #3). Dem langen Schwanz von Net-New-Persona-Verticals widerstehen, bis diese drei landen.
+
+---
+
+## 5. Neue Kandidaten (Stand 2026-06-28) — Bürgerservice-Wow, zweite Runde
+
+_Append-only erweiterung des Pools nach #1–#16. Dieselbe Realismus-Disziplin (§2-Hard-Rules) gilt. Reihenfolge nach Spine-Fit: zuerst die drei, die den existierenden Helden VERSTÄRKEN (billig, hoher Fit), dann ehrliche neue Beats mit niedrigerer Prio. Triage-Empfehlung des Orchestrators: **A zuerst durch die Pipeline**, dann B, dann D._
+
+### A — Mehrsprachiger Brief-Erklärer: der Bescheid in *Ihrer* Sprache · [AMPLIFY] · **Top-Pick der Runde**
+
+- **Bürger-Pitch:** "Ein Behördenbrief liegt in Schachtelsatz-Behördendeutsch im Posteingang — ein Tipp, und die Klartext-Erklärung erscheint in Ihrer Sprache (RU/UK/AR/TR), inklusive *Das müssen Sie tun* und Frist."
+- **Wow-Moment:** Der existierende Brief-Erklärer (`AISummaryBlock`) erscheint nicht nur in Klartext-Deutsch, sondern auf einen Tipp in der **Sprache des Bürgers**. Behördendeutsch UND Sprachbarriere lösen sich in einem Beat auf. Sichtbar gelabelt: "Übersetzte Erläuterung — rechtsverbindlich ist das deutsche Original."
+- **Reale Pain entfernt:** Behördendeutsch (nur ~4% finden es verständlich) × Sprachbarriere ist die härteste Doppel-Last, die das System Zugewanderten auflädt. Trifft **Annas + Mehmets dokumentierte #1-Pain** exakt.
+- **Grounding:** N/A (interpretiert empfangene Post). Nutzt die schon vorhandene 6-Locale-i18n-Maschine + den schon vorhandenen Brief-Erklärer wieder → **fast reines Re-Wire validierter Assets, kein neuer Datenfluss.** Macht das CLAUDE.md-Mehrsprachen-Mandat zum gefühlten Moment statt zur Umschalter-Fußnote.
+- **Landet auf:** **AMPLIFY** Posteingang (erweitert #6).
+- **Demo-Feasibility:** 4–5. **Effort:** S–M.
+- **HARTE FLAGS:** (a) "rechtsverbindlich ist das deutsche Original" muss an JEDER Übersetzung kleben — sonst impliziert man amtliche Übersetzung. (b) Übersetzung als Verständnishilfe rahmen, nicht als Rechtstext. (c) Gist/Übersetzung handgeprüft (fehlerhafter Gist auf Inbox-Ebene prägt Vertrauen, bevor der Nutzer liest — siehe #6-Flag).
+
+### B — Klartext-Rückkanal → fertiger Widerspruch · [AMPLIFY]
+
+- **Bürger-Pitch:** "Sie schreiben in normalen Worten, was nicht stimmt — wir machen daraus den korrekten Widerspruch/Einspruch, mit Aktenzeichen, Frist und Anrede, zur Bestätigung."
+- **Wow-Moment:** Unter dem erklärten Brief tippt der Bürger umgangssprachlich ("Stimmt nicht, ich war im Mai schon umgezogen") → das System formt den korrekten Schriftsatz nach der einschlägigen Norm und zeigt ihn als Entwurf. Verwandelt die existierenden Antwort-/Rechtsbehelf-Skelette von Vorlage zu lebendem Beat.
+- **Reale Pain entfernt:** Asymmetrie "Bürger muss formell schreiben, Behörde antwortet in Floskeln" — echte Zugangsbarriere.
+- **Grounding:** Einspruch §347 AO; Widerspruch §69 VwGO (Fristen/Normen pro Brieftyp vor Bau verifizieren). **HARTE FLAGS:** "Entwurf — Sie reichen ein", nie impliziert eingereicht. Formulierungshilfe, KEIN Rechtsrat.
+- **Landet auf:** **AMPLIFY** Posteingang. **Demo-Feasibility:** 4. **Effort:** M.
+
+### D — Heirats-/Namens-Kaskade: derselbe Motor, neuer Auslöser · [AMPLIFY → zweite Vertical]
+
+- **Bürger-Pitch:** "Ich habe geheiratet und heiße jetzt anders." → dieselbe Inline-Kaskade wie beim Umzug propagiert den neuen Namen durch die zuständigen Stellen; der Dokumenten-Vault zeigt live, welche Nachweise neu ausgestellt werden.
+- **Wow-Moment:** Wiederverwendet die komplette Kaskaden-+Receipt-Maschine (`InlineCascade`, `ValueReceiptCard`) als **zweite Vertical, billiger als eine Leistungs-Vertical** — beweist dem Zuschauer "das ist kein Umzug-Einzeltrick, das ist ein Muster."
+- **Grounding:** Standesamt (kommunal); Namensänderung → Neuausstellung Personalausweis/Pass. **HARTE FLAGS:** Dokumente werden *neu ausgestellt*, nicht "automatisch geändert". Föderalismus-Labels korrekt. Keine reale Übermittlung implizieren (`[MOCK]`).
+- **Landet auf:** **NEW** zweite Kaskaden-Vertical (reused Maschine). **Demo-Feasibility:** 4. **Effort:** M.
+
+### Niedrigere Prio (ehrliche neue Beats, advancieren den Autopilot-Helden nicht direkt)
+
+- **E — Leichte-Sprache-Umschalter** · [NEW, credibility]: ganzer aktiver Vorgang in Leichter Sprache + größere Targets. BITV 2.0 §3. Gelebte Barrierefreiheit als Glaubwürdigkeitssignal für die DigitalService/BMDS-Audience. Feas 3 / Effort M. Nur Spine-Surfaces ausliefern, keine leere App-weite Flag.
+- **F — Daten-Korrektur-Radar** · [NEW]: "Das Finanzamt führt noch Ihre alte Adresse — korrigieren?" Berichtigung Art. 16 DSGVO; passt zum Datenschutzcockpit (#13). Kippt "der Staat weiß alles" → "ich habe die Kontrolle". Flag: "Korrektur vorbereitet — Sie bestätigen", nie "geändert". Feas 3 / Effort M.
+- **G — Trauerfall/Nachlass-Lebenslage** · [NEW, NUR Katalog-Teaser]: emotional resonanteste Lebenslage (Estland/Dänemark-Flaggschiff), aber **keine Persona-Verankerung** (kein Sterbefall unter Anna/Schmidt/Mehmet) + ganze ungebaute Vertical → wie Grundsicherung im cut-list: NICHT bauen, nur als glaubwürdige Micro-Preview im Autopilot-Katalog (#16) zeigen.
