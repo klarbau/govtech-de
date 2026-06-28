@@ -123,6 +123,13 @@ The project's #1 recurring failure is the false-PASS. Re-run gates yourself, det
 
 ## Open threads / followups
 
+- **SHIPPED 2026-06-28 (branch `claude/buergerservice-ideas-k5c08z`)** — wow-round-2 **idea A: Mehrsprachiger
+  Brief-Erklärer**. Posteingang brief-explainer is now locale-aware (RU/UK/AR/TR/EN) as a comprehension aid;
+  German original authoritative + one tap away. Reuses the dormant `LetterAiSummary.translations` type slot +
+  6-locale i18n. **Gotcha learned:** the **live** Posteingang renders `PosteingangInbox.tsx` (in-file
+  `PostDetail` + `PostItemRow`), NOT `LetterReader`/`AISummaryBlock`/`AiErklaererCard` (those are orphaned/dead)
+  — integrate UI there. Ideas B (Klartext-Rückkanal) + D (Heirats-/Namens-Kaskade) still queued on this branch.
+  Backlog round-2 candidates = `wow-backlog.md §5`.
 - `d02b3cd` (feat/termine-vorgemerkt) bundles, all NOT yet merged to `main` / `public`: green `/termine`
   command-center relayout, Lebenslagen hub + detail relayout, Pflegegrad results-dossier, Umzug `/run` →
   shared dossier, dossier dedup into `lebenslagen-shared.ts`, proactive Wohngeld nudge, `brief-bridge`

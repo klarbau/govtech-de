@@ -274,6 +274,8 @@ _Append-only erweiterung des Pools nach #1–#16. Dieselbe Realismus-Disziplin (
 
 ### A — Mehrsprachiger Brief-Erklärer: der Bescheid in *Ihrer* Sprache · [AMPLIFY] · **Top-Pick der Runde**
 
+> **SHIPPED 2026-06-28** (branch `claude/buergerservice-ideas-k5c08z`): live in `PosteingangInbox` (PostDetail + PostItemRow); 3 Briefe × 5 Locales seeded; honesty-Flags eingehalten (Erläuterung≠Übersetzung, deutsche Frist/€ verbatim, deutsche Zitate, §86a-SGG ausgeschlossen). Gates: Verifier PROCEED, code-review APPROVE, a11y PASS (RU/AR light+dark), tsc, 6-Locale parity, `next build`, spine e2e 2/2. Spec: `docs/specs/2026-06-28-mehrsprachiger-brief-erklaerer.md`.
+
 - **Bürger-Pitch:** "Ein Behördenbrief liegt in Schachtelsatz-Behördendeutsch im Posteingang — ein Tipp, und die Klartext-Erklärung erscheint in Ihrer Sprache (RU/UK/AR/TR), inklusive *Das müssen Sie tun* und Frist."
 - **Wow-Moment:** Der existierende Brief-Erklärer (`AISummaryBlock`) erscheint nicht nur in Klartext-Deutsch, sondern auf einen Tipp in der **Sprache des Bürgers**. Behördendeutsch UND Sprachbarriere lösen sich in einem Beat auf. Sichtbar gelabelt: "Übersetzte Erläuterung — rechtsverbindlich ist das deutsche Original."
 - **Reale Pain entfernt:** Behördendeutsch (nur ~4% finden es verständlich) × Sprachbarriere ist die härteste Doppel-Last, die das System Zugewanderten auflädt. Trifft **Annas + Mehmets dokumentierte #1-Pain** exakt.

@@ -1,7 +1,7 @@
 ---
 feature: mehrsprachiger-brief-erklaerer
 title: Mehrsprachiger Brief-Erklärer — Erläuterung in der Sprache der Bürger:in
-status: spec
+status: shipped   # 2026-06-28: live in PosteingangInbox; gates green (code-review APPROVE, a11y PASS RU/AR light+dark, tsc, 6-locale parity, next build, spine e2e 2/2).
 track: supporting   # Posteingang-Begleitfläche (wow-backlog #6 / AISummaryBlock-Amplify). NICHT die Spine.
 owner_agents: [frontend-coder, mock-backend-coder, i18n-localizer, a11y-tester, code-reviewer]
 inputs:
