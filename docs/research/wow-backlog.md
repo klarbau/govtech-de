@@ -286,6 +286,8 @@ _Append-only erweiterung des Pools nach #1–#16. Dieselbe Realismus-Disziplin (
 
 ### B — Klartext-Rückkanal → fertiger Widerspruch · [AMPLIFY]
 
+> **SHIPPED 2026-06-28** (branch `claude/buergerservice-ideas-k5c08z`): live in `ReplyComposeContent` (`RechtsbehelfFaktenCapture` + `NoSuspensionHintBanner`); new RDG-fenced AI tool `formuliere_sachverhalt` (offline-graceful, restates facts only, never advises/cites/touches Frist). Non-skippable §86a-SGG/§80-VwGO no-suspension hint on all Beitrag letters (both Fristen visible) — the verifier's lethal-risk mitigation. Mechanical archetype-routed remedy (no free-text inference). Gates: Verifier PROCEED, code-review APPROVE, a11y PASS (light+dark, 0 violations), tsc, 63 unit tests, 6-locale parity, `next build`, spine e2e 2/2. Spec: `docs/specs/2026-06-28-klartext-rueckkanal.md`.
+
 - **Bürger-Pitch:** "Sie schreiben in normalen Worten, was nicht stimmt — wir machen daraus den korrekten Widerspruch/Einspruch, mit Aktenzeichen, Frist und Anrede, zur Bestätigung."
 - **Wow-Moment:** Unter dem erklärten Brief tippt der Bürger umgangssprachlich ("Stimmt nicht, ich war im Mai schon umgezogen") → das System formt den korrekten Schriftsatz nach der einschlägigen Norm und zeigt ihn als Entwurf. Verwandelt die existierenden Antwort-/Rechtsbehelf-Skelette von Vorlage zu lebendem Beat.
 - **Reale Pain entfernt:** Asymmetrie "Bürger muss formell schreiben, Behörde antwortet in Floskeln" — echte Zugangsbarriere.

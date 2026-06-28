@@ -1,7 +1,7 @@
 ---
 feature: klartext-rueckkanal
 title: Klartext-Rückkanal → fertiger Widerspruch/Einspruch-Entwurf aus Alltagssprache
-status: spec
+status: shipped   # 2026-06-28: live in ReplyComposeContent; gates green (concept-verifier PROCEED, code-review APPROVE, a11y PASS light+dark 0 violations, tsc, 63 unit tests, 6-locale parity, next build, spine e2e 2/2).
 track: supporting   # amplifies the Posteingang Brief-Erklärer → Antwort/Rechtsbehelf arc; NOT the Umzug spine. Reduced rigor tier (DE-source i18n + a11y PASS), no AR-RTL ceremony, no sub-versioning.
 owner_agents: [frontend-coder, mock-backend-coder, assistant-engineer, i18n-localizer]
 inputs:

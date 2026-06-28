@@ -130,6 +130,15 @@ The project's #1 recurring failure is the false-PASS. Re-run gates yourself, det
   `PostDetail` + `PostItemRow`), NOT `LetterReader`/`AISummaryBlock`/`AiErklaererCard` (those are orphaned/dead)
   — integrate UI there. Ideas B (Klartext-Rückkanal) + D (Heirats-/Namens-Kaskade) still queued on this branch.
   Backlog round-2 candidates = `wow-backlog.md §5`.
+- **SHIPPED 2026-06-28 (same branch)** — wow-round-2 **idea B: Klartext-Rückkanal**. Under an explained
+  letter with a Rechtsbehelf-Skelett active, the citizen types plain-language facts; a new RDG-fenced AI tool
+  `formuliere_sachverhalt` (server one-shot at `/api/reply/sachverhalt`, mirrors `/api/reply/rewrite`,
+  offline-graceful verbatim fallback) restates ONLY those facts into the skeleton's `begruendung_kurz`. Live
+  in `ReplyComposeContent` (`RechtsbehelfFaktenCapture` + non-skippable `NoSuspensionHintBanner`).
+  **Durable legal note:** a Widerspruch against a Beitragsbescheid has NO aufschiebende Wirkung (§86a Abs.2
+  SGG / §80 Abs.2 Nr.1 VwGO) — the no-suspension hint + independent Zahlungsfrist must stay non-skippable on
+  ALL Beitrag letters or the feature misleads. Reply templates are DE-only by design (`body_template_de`).
+  Idea D (Heirats-/Namens-Kaskade) still queued.
 - `d02b3cd` (feat/termine-vorgemerkt) bundles, all NOT yet merged to `main` / `public`: green `/termine`
   command-center relayout, Lebenslagen hub + detail relayout, Pflegegrad results-dossier, Umzug `/run` →
   shared dossier, dossier dedup into `lebenslagen-shared.ts`, proactive Wohngeld nudge, `brief-bridge`
