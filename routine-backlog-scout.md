@@ -35,12 +35,18 @@ established press). Note the date of each development.
 
 ## Honesty rules (non-negotiable)
 
-- **Cite a real source URL** for every candidate. No source → don't add it.
+- **Cite a real source URL you actually opened** for every candidate. Before writing an item, FETCH the
+  source and confirm the specific claim is on that page. A URL you could not open is not a citation — drop it.
+- **Assert only what the fetched source states.** Do not add names, renames, dates, figures, or "confirms X"
+  details that are not on the page. (First run: a `confidence: high` item claimed a "BundID → DeutschlandID
+  rename" the cited source never mentioned.) If part of a task is your own inference, keep it separate and
+  tag it `speculative` — never fold an unsourced guess into a high-confidence claim.
 - **No fabricated "developments."** If you're inferring or speculating, tag it `confidence: speculative`
   and say so plainly.
 - Distinguish **shipped reality** from **roadmap/future** (the project marks future things `[ZUKUNFT 20xx]`).
 - Stay inside the demo's honesty guardrails (no false claims about what German systems do; no
-  Melderegister→Ausländerbehörde push; antragsloses Kindergeld is `[ZUKUNFT 2027]`, etc. — see agent-context).
+  Melderegister→Ausländerbehörde push). Note: **antragsloses Kindergeld is now enacted law** (Kabinett
+  18.03.2026; automatic payment phased März 2027 / Nov 2027), no longer `[ZUKUNFT]` speculation.
 - **Cap: 3–7 candidates per run.** If nothing genuinely new/relevant today, append fewer — or none, and say
   so in the run. An empty honest run is better than padding.
 
@@ -49,9 +55,17 @@ established press). Note the date of each development.
 1. Append each candidate to the **"Candidate tasks"** section of `BACKLOG.md`, directly below the
    `<!-- BACKLOG-SCOUT-APPEND-BELOW -->` marker, newest first, using the entry format defined in
    `BACKLOG.md`.
-2. **Only edit `BACKLOG.md`.** Do not touch *Accepted*/*Done*, do not edit any other file, do not change code.
-3. Commit just `BACKLOG.md` to a new branch **`claude/backlog-<YYYY-MM-DD>`** and stop. Do **not** merge,
-   do not push to `main`/`feat/*`. The human reviews the branch and promotes items.
+2. **Only edit `BACKLOG.md`.** Do not touch *Accepted*/*Done*, do not edit any other file, do not change
+   code — you scout; implementation happens later **on this same branch** (see step 5).
+3. **Name the branch yourself, descriptively.** Derive a short kebab-case slug (2–4 words) from the run's
+   dominant theme(s) and create the branch **`claude/<YYYY-MM-DD>-<slug>`** — e.g.
+   `claude/2026-06-27-eudi-kindergeld-once-only`. The `claude/` prefix is **mandatory** (routines may only
+   push to `claude/`-prefixed branches); slug is lowercase, hyphen-separated, no spaces, no umlauts.
+4. Commit just `BACKLOG.md` to that branch and stop. Do **not** merge, do not push to `main`/`feat/*`.
+5. **This branch is the working branch.** A human or an interactive implementation session will check it out
+   and build the promoted items **on this same branch**, then open a PR. So name it like a feature branch
+   you'd be happy to work in, not a throwaway.
+6. In your final run summary, state the **branch name** and a one-line theme so the reviewer knows what to open.
 
 ## What NOT to do
 
@@ -68,5 +82,6 @@ needed domains — see agent-context "Cloud env".)
 
 ## Success looks like
 
-A reviewer opens the `claude/backlog-<date>` session, sees 0–7 honest, sourced, relevant, non-duplicate
-candidate tasks, and can promote the good ones into real work in under five minutes.
+A reviewer opens the descriptively-named `claude/<date>-<slug>` branch/session, sees 0–7 honest, sourced,
+relevant, non-duplicate candidate tasks, and can promote the good ones — then build them out on that same
+branch — without first untangling what the run was about.

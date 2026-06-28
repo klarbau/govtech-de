@@ -196,6 +196,30 @@ govtech/
 
 Full schemas live in `src/types/`. Any agent extending the model must update both the type file and `docs/architecture.md`.
 
+## Working the backlog (human trigger)
+
+When the human tells you to **work the backlog / integrate features** (e.g. "работай по бэклогу",
+"integrate the features", "build out the backlog"):
+
+1. **Decompose into tasks — don't free-style.** Read `BACKLOG.md` (the Backlog Scout's findings). Take the
+   *Accepted* items (or the *Candidate* items the human points at) and break each into concrete, ordered
+   implementation tasks tracked with a task list (`TaskCreate`/`TaskUpdate`). One backlog item ≈ a small
+   spec + implementation + gates + review.
+2. **Verify before you build.** The Scout is reliable on topics/sources but **inflates specifics** (dates,
+   names, versions, "the source says X"). Open each item's cited source and confirm the facts before
+   implementing; drop or correct anything the source doesn't support (see `routine-backlog-scout.md`).
+3. **Execute** through the project's quality flow: product-architect spec → coder
+   (frontend / mock-backend / assistant) → i18n + a11y → code-reviewer → run the gates → review-gated PR.
+   Honor the honesty guardrails and the Demo-Spine.
+4. **Orchestration mode:**
+   - **If multi-agent Workflow orchestration is enabled** (ultracode on, or the human asked for a workflow):
+     run the decomposition + per-item pipeline **as a `Workflow`** (fan out, adversarially verify, synthesize).
+   - **If Workflow is off / unavailable:** do the same work **outside** it — orchestrate the pipeline agents
+     via the `Agent` tool (or, for trivial one-liners, the main thread).
+5. **Branch:** when implementing an item the Scout raised, build on its working branch
+   `claude/<date>-<slug>`; otherwise the relevant feature branch. The main thread orchestrates — it does not
+   write feature code directly when the pipeline applies.
+
 ## Autonomous workflow (READ docs/WORKFLOW.md)
 
 Every new feature passes through this pipeline. The main thread does NOT write code directly — it orchestrates agents.
