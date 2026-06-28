@@ -19,6 +19,7 @@ export const geburtConfig: LebenslageConfig = {
   engine: 'lebenslage-cascade',
   href: '/lebenslagen/geburt',
   dauer_geschaetzt_key: 'lebenslagen.geburt.dauer_geschaetzt',
+  antragslos_note_key: 'lebenslagen.geburt.antragslos_note',
   zustaendige_behoerden: [
     'standesamt-berlin-mitte',
     'buergeramt-berlin-mitte',
@@ -205,11 +206,12 @@ export const geburtConfig: LebenslageConfig = {
       block: 'D',
       gate: 'eid',
       aktion:
-        'Kindergeld festsetzen (heute § 67 EStG antragsbasiert; antragslose Festsetzung = ZUKUNFT)',
+        'Kindergeld festsetzen — heute antragsbasiert (§ 67 EStG); antragslose Festsetzung als Gesetzentwurf eingebracht (BT-Drs. 21/5874), noch nicht in Kraft [ZUKUNFT]',
       kurzlabel: 'Kindergeld',
       behoerdeKurz: 'Familienkasse',
-      agentLabel: 'Wir setzen mit Ihrer eID-Bestätigung das Kindergeld bei der Familienkasse fest',
-      rechtsgrundlage: '§§ 62, 67 EStG · §§ 62 ff. antragslos',
+      agentLabel:
+        'Wir setzen das Kindergeld bei der Familienkasse fest — künftig antragslos aus der Datenkette (BT-Drs. 21/5874); heute bestätigen Sie die Bankverbindung mit Ihrer eID',
+      rechtsgrundlage: '§§ 62, 67 EStG · antragslos: Gesetzentwurf BT-Drs. 21/5874 [ZUKUNFT]',
       datenkategorien: ['Identität', 'Steuer-ID', 'Bankverbindung'],
       aktenzeichen: '[MOCK] 234 FK 567890',
       zukunft: true,
