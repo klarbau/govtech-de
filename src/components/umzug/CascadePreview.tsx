@@ -30,6 +30,8 @@ const blockARechtsgrundlagen = [
   { norm: '§ 33 BMG', i18nKey: 'umzug.rechtsgrundlage.bmg_33' },
   { norm: '§ 34 BMG', i18nKey: 'umzug.rechtsgrundlage.bmg_34' },
   { norm: '§ 36 BMG', i18nKey: 'umzug.rechtsgrundlage.bmg_36' },
+  // Once-Only / Registermodernisierung (Spec autopilot-rechtsgrundlage-once-only §6).
+  { norm: 'Art. 22 Satz 3 RegMoG', i18nKey: 'umzug.rechtsgrundlage.regmog_art22s3' },
 ];
 
 const blockBRechtsgrundlagen = [
@@ -38,6 +40,9 @@ const blockBRechtsgrundlagen = [
 
 const blockDRechtsgrundlagen = [
   { norm: '§ 18 PAuswG', i18nKey: 'umzug.rechtsgrundlage.pauswg_18' },
+  // Once-Only / Registermodernisierung + NOOTS (Spec §6).
+  { norm: 'Art. 22 Satz 3 RegMoG', i18nKey: 'umzug.rechtsgrundlage.regmog_art22s3' },
+  { norm: 'NOOTS-Staatsvertrag', i18nKey: 'umzug.rechtsgrundlage.noots_staatsvertrag' },
 ];
 
 function getBehoerdeName(
