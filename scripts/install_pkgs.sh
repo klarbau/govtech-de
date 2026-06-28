@@ -13,7 +13,6 @@
 #     npx -y playwright@1.49.1 install --with-deps chromium
 #
 # Skips local machines — only runs in cloud sessions (CLAUDE_CODE_REMOTE=true).
-# See agent-context.md.
 
 if [ "${CLAUDE_CODE_REMOTE:-}" != "true" ]; then
   exit 0

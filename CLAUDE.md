@@ -7,20 +7,6 @@ The artefact is a portfolio-grade demo intended to:
 2. Communicate the idea via live demo, GitHub repo, and Loom video
 3. Open doors to roles or programs in the German GovTech ecosystem
 
-## Working memory — READ FIRST, keep updated
-
-`agent-context.md` is the project's **durable cross-session memory** (git/publishing model, how to
-run the gates, known gotchas, open threads). It is imported below, so it loads into context at the start
-of every session — local or web:
-
-@agent-context.md
-
-**You must maintain it.** When you learn a durable project fact, make a cross-session decision, or hit a
-non-obvious gotcha, append a **dated one-line entry** to the right section of `agent-context.md` and
-commit it (convert relative dates to absolute). Keep it curated and public-safe — one fact per line, no
-machine-local paths or secrets. Treat it as the in-repo source-of-truth that lets any environment
-understand this project from the first message.
-
 ## Mission constraints
 
 - **Visual + linguistic register**: serious, citizen-respectful, gov.uk / DigitalService DE-style minimalism. Never cloning Russian Gosuslugi aesthetics.

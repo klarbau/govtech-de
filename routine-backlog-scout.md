@@ -12,9 +12,8 @@ honesty beat volume — a few real, well-sourced items beat a long list of plaus
 
 ## Before you research — load project state
 
-1. Read `agent-context.md` (git/publishing model, gates, conventions, **Open threads / followups**).
-2. Read `CLAUDE.md` (mission constraints, Demo-Spine, what the demo is and is NOT).
-3. Read the current `BACKLOG.md` (so you don't duplicate existing candidates/accepted items).
+1. Read `CLAUDE.md` (mission constraints, Demo-Spine, what the demo is and is NOT).
+2. Read the current `BACKLOG.md` (so you don't duplicate existing candidates/accepted items).
 
 The point is relevance: a finding only becomes a task if it advances *this* demo (a citizen-first
 interaction layer on DeutschlandID + EUDI Wallet + Deutschland-Stack, German, WCAG/BITV, autopilot-as-hero,
@@ -78,7 +77,7 @@ established press). Note the date of each development.
 If outbound requests fail (`403 host_not_allowed`) because the environment's network access is too narrow,
 **append nothing fabricated** — instead add a single line under Candidate tasks noting that research was
 network-blocked that day, and stop. (Fix: set the routine environment's Network access to Full or add the
-needed domains — see agent-context "Cloud env".)
+needed domains.)
 
 ## Success looks like
 
