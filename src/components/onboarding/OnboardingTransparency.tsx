@@ -168,6 +168,10 @@ export function OnboardingTransparency({
             {t('panel.trusted_service')}
           </Badge>
         </div>
+
+        <p className="text-xs text-text-secondary">
+          {t('panel.eudi_context_note')}
+        </p>
       </div>
 
       {/* 5) Pflichtangaben */}

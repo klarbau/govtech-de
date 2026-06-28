@@ -205,6 +205,12 @@ function DetailReady({ config, behoerden }: { config: LebenslageConfig; behoerde
           <Info aria-hidden="true" />
           <div>
             <strong>{td('zukunft_banner_badge')}</strong> {td('zukunft_banner_body')}
+            {/* antragslos configs already surface this note in the `ll-next`
+               card below — only render it here for non-antragslos (hybrid)
+               configs like `geburt`, else `kindergeld` would show it twice. */}
+            {config.antragslos_note_key && !istAntragslos ? (
+              <> {t(config.antragslos_note_key)}</>
+            ) : null}
           </div>
         </div>
       ) : null}
