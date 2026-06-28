@@ -102,6 +102,27 @@ export function pickNormFamilie(
 }
 
 /**
+ * Beitrags-Archetypes, deren Widerspruch keine aufschiebende Wirkung hat
+ * (§ 86a Abs. 2 SGG / § 80 Abs. 2 VwGO). Für diese rendert das nicht-skip-bare
+ * Pre-Insertion-Modal zusätzlich den verbatim No-Suspension-Hinweis (Spec
+ * `2026-06-28-klartext-rueckkanal.md` § 4.3 / Correction #2). Mislead-Prevention-
+ * Control, **nicht** dismissible Deko — erbt die Verbindlichkeit des Modals.
+ */
+const BEITRAG_NO_SUSPENSION_ARCHETYPES: ReadonlySet<string> = new Set([
+  'krankenkasse-beitrag',
+  'berufsgenossenschaft-beitrag',
+  'ihk-beitrag',
+  'beitragsservice-mahnung',
+]);
+
+/**
+ * i18n-Key des verbatim No-Suspension-Hinweises (Correction #2). Owner der
+ * Locale-Kopie ist i18n-localizer; hier wird nur der Key referenziert.
+ */
+export const NO_SUSPENSION_HINT_BEITRAG_KEY =
+  'posteingang.compose.no_suspension_hint.beitrag';
+
+/**
  * Liefert die Pre-Insertion-Modal-Spec für eine Norm-Familie + den konkreten
  * Letter (für die Familienkasse-Zusatz-Sentence-Konditionalität, Domain-Doc
  * § 2.1 + § 5 Hard-Rule 6).
@@ -118,10 +139,18 @@ export function getPreInsertionModalSpec(
   // — die Frist-Typ-Bedingung ist schon durch das Master-Predicate gefiltert,
   // bevor der Modal aufgerufen wird (Skelett-Templates erscheinen nicht ohne
   // einspruch-/widerspruch-Frist).
+  //
+  // No-Suspension-Hinweis (Correction #2): für die SGG-/VwGO-Norm-Familien
+  // eines Beitrags-Bescheids erbt der verbatim Hinweis dieselbe nicht-skip-bare
+  // Gewichtung über denselben `additional_explainer_key`-Mechanismus wie der
+  // Familienkasse-AO-Erklärer. Beide Pfade sind disjunkt (ao vs. sgg/vwgo).
   const additional_explainer_key =
     norm === 'ao' && letter.archetype === 'familienkasse-nachweis'
       ? 'posteingang.compose.pre_insertion_modal.einspruch_ao_familienkasse_zusatz'
-      : undefined;
+      : (norm === 'sgg' || norm === 'vwgo') &&
+          BEITRAG_NO_SUSPENSION_ARCHETYPES.has(letter.archetype ?? '')
+        ? NO_SUSPENSION_HINT_BEITRAG_KEY
+        : undefined;
 
   switch (norm) {
     case 'ao':
@@ -144,6 +173,7 @@ export function getPreInsertionModalSpec(
           'posteingang.compose.pre_insertion_modal.widerspruch_sgg.title',
         modal_body_key:
           'posteingang.compose.pre_insertion_modal.widerspruch_sgg.body',
+        additional_explainer_key,
         cta_continue_key:
           'posteingang.compose.pre_insertion_modal.widerspruch_sgg.cta_continue',
         cta_cancel_key:
@@ -157,6 +187,7 @@ export function getPreInsertionModalSpec(
           'posteingang.compose.pre_insertion_modal.widerspruch_vwgo.title',
         modal_body_key:
           'posteingang.compose.pre_insertion_modal.widerspruch_vwgo.body',
+        additional_explainer_key,
         cta_continue_key:
           'posteingang.compose.pre_insertion_modal.widerspruch_vwgo.cta_continue',
         cta_cancel_key:

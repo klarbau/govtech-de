@@ -50,6 +50,17 @@ export const TOOL_NAMES = [
   // `hole_autopilot_katalog` answers "was kannst du noch automatisieren?".
   'hole_ersparnis',
   'hole_autopilot_katalog',
+  // Klartext-Rückkanal (klartext-rueckkanal.md §7). NEW, tightly-fenced
+  // restatement tool that fills the `begruendung_kurz` slot of an
+  // already-selected Rechtsbehelf-Skelett from the citizen's own words. NOT an
+  // un-gating of the `disabledForSkelett` rewrite chips — those stay disabled.
+  // This tool is NOT dispatched via the client tool-dispatch table: its
+  // execution is a server-side one-shot AI call (key-safe), reached via the
+  // route `POST /api/reply/sachverhalt` and the typed helper
+  // `requestSachverhalt` (src/lib/ai/sachverhalt-client.ts) — mirrors the
+  // reply-rewrite path, NOT the conversational tool-loop. Registered here for
+  // single-source-of-truth documentation of the assistant's capabilities.
+  'formuliere_sachverhalt',
 ] as const;
 
 export type ToolName = (typeof TOOL_NAMES)[number];
@@ -378,6 +389,40 @@ export const tools: Anthropic.Tool[] = [
     input_schema: {
       type: 'object',
       properties: {},
+    },
+  },
+
+  /* ──────────────────────────── formuliere_sachverhalt ──────────────────────
+   * Klartext-Rückkanal (klartext-rueckkanal.md §7). Registered for capability
+   * documentation; executed server-side as a one-shot (NOT via the client
+   * tool-loop) at `POST /api/reply/sachverhalt`. The locked boundary lives in
+   * `SACHVERHALT_SYSTEM_PROMPT` (src/lib/ai/sachverhalt.ts), baked verbatim.
+   * This is NOT an un-gating of the `disabledForSkelett` rewrite chips. */
+  {
+    name: 'formuliere_sachverhalt',
+    description: [
+      'Bringt die eigenen Tatsachen-Angaben der Bürger:in in eine sachliche, neutrale Form (Ich-/Sie-Form) für den Begründungs-Slot eines bereits ausgewählten Rechtsbehelf-Entwurfs.',
+      '',
+      'Bewertet nichts, empfiehlt nichts, sagt keinen Erfolg voraus, nennt keine Norm, fügt kein §-Zitat hinzu, rührt die Frist nicht an und leitet den Rechtsbehelf nicht um. Gibt nur den sachlichen Sachverhalt zurück; fehlende Tatsachen werden als […]-Platzhalter markiert, nie erfunden. Zahlen/Daten der Bürger:in werden wörtlich übernommen.',
+      '',
+      'Dies ist KEIN Un-Gaten der gesperrten Umformulieren-Chips (umformulieren/kürzer/formeller/einfacher) — diese bleiben auf Skeletten deaktiviert. Ausführung als ein-shot über POST /api/reply/sachverhalt; offline droppt der Tool-Pfad den Rohtext wörtlich (source:"fallback"), nie stille Rechtsformulierung.',
+    ].join('\n'),
+    input_schema: {
+      type: 'object',
+      properties: {
+        rohtext: {
+          type: 'string',
+          description:
+            'Die eigenen Worte der Bürger:in — was am Bescheid nicht stimmt.',
+        },
+        norm_familie: {
+          type: 'string',
+          enum: ['ao', 'sgg', 'vwgo'],
+          description:
+            'Mechanisch aus letter.archetype via pickNormFamilie — NUR damit der Restatement-Ton (Einspruch/Widerspruch) zur Anrede passt; NIE zum Inferieren des Rechtsbehelfs aus dem Rohtext.',
+        },
+      },
+      required: ['rohtext', 'norm_familie'],
     },
   },
 ];

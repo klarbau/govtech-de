@@ -2415,6 +2415,31 @@
         "disclaimer": "Die KI kann Fehler machen. Bitte prüfen Sie den Text.",
         "disabled_skelett_hint": "Für Rechtsbehelf-Vorlagen nicht verfügbar: Die App formuliert keine rechtlichen Begründungen (§ 2 RDG)."
       },
+      "fakten_capture": {
+        "heading": "Was stimmt nicht?",
+        "intro": "Sagen Sie in eigenen Worten, was am Bescheid nicht stimmt. Wir bringen Ihre Angaben in eine sachliche Form für Ihren Entwurf.",
+        "textarea_label": "Ihre Angaben in eigenen Worten",
+        "textarea_placeholder": "z. B. „stimmt nicht, ich war im Mai schon umgezogen“",
+        "cta": "Entwurf erstellen",
+        "cta_fallback": "Text übernehmen",
+        "pending": "Wird in Form gebracht …",
+        "success_announce": "Entwurf bereit — Sie prüfen und reichen selbst ein.",
+        "fallback_note": "Text unverändert übernommen — bitte selbst in Form bringen.",
+        "error_note": "Übernahme fehlgeschlagen. Ihr Text wurde unverändert eingesetzt.",
+        "remedy_confirm": "Für diesen Bescheid: {remedy} — stimmt das?",
+        "remedy_label": {
+          "ao": "Einspruch (§ 347 AO)",
+          "sgg": "Widerspruch (§ 84 SGG)",
+          "vwgo": "Widerspruch (§ 70 VwGO)"
+        },
+        "disclaimer": "Formulierungshilfe — keine Rechtsberatung. Diese Funktion bringt Ihre eigenen Angaben in eine sachliche Form für Ihren Entwurf. Sie prüft Ihren Fall nicht rechtlich, bewertet die Erfolgsaussichten nicht und empfiehlt nicht, ob Sie einen Rechtsbehelf einlegen sollten (§ 2 RDG). Ob und was Sie einreichen, entscheiden Sie selbst."
+      },
+      "no_suspension_hint": {
+        "beitrag": "Ein Widerspruch gegen einen Beitragsbescheid hat keine aufschiebende Wirkung (§ 86a Abs. 2 SGG / § 80 Abs. 2 VwGO). Die Zahlungsfrist läuft unabhängig vom Widerspruch weiter. Eine Aussetzung müssten Sie gesondert beantragen.",
+        "banner_title": "Wichtiger Hinweis zur Zahlung",
+        "widerspruch_frist_template": "Frist für den Widerspruch: {datum}",
+        "zahlung_frist_template": "Zahlungsfrist (läuft unabhängig weiter): {datum}"
+      },
       "outbound_speculative": "Stand 2027 — Speculative Design. In dieser Demo simulieren wir antrags-thread-gebundene bidirektionale Kommunikation auf Basis des ZBP/BundID-Modells: Antworten leben immer im Thread eines konkreten Briefs (Aktenzeichen-Anker), nie als freies Postfach. Heute (Mai 2026) wäre der Antwort-Kanal je nach Behörde unterschiedlich: Mein ELSTER für das Finanzamt, das Kassen-Portal für Krankenkassen, ein Landes-Service-Portal für Bürger- und Ausländerbehörden, häufig noch der Briefweg. Es wird nichts an {behoerde} gesendet.",
       "behoerde_kanal": {
         "bundid_postfach_2027": "BundID-Postfach (Speculative 2027)",
@@ -2500,14 +2525,14 @@
           "disclaimer_inline": "Sie schreiben ohne Vorlage. Datum, Aktenzeichen und Empfänger sind aus dem Brief vorbefüllt."
         },
         "rechtsbehelf_einspruch_skelett": {
-          "body_template_de": "{absender_name}\n{absender_strasse}\n{absender_plz} {absender_ort}\n\n{empfaenger_behoerde}\n{empfaenger_strasse}\n{empfaenger_plz} {empfaenger_ort}\n\n{ort}, {datum}\n\nAktenzeichen: {aktenzeichen}\nBetreff: Einspruch gegen den Bescheid vom {datum_bescheid}\n\nSehr geehrte Damen und Herren,\n\nhiermit lege ich gegen Ihren Bescheid vom {datum_bescheid} mit dem oben genannten Aktenzeichen Einspruch ein.\n\nMit freundlichen Grüßen,\n\n{absender_name}",
+          "body_template_de": "{absender_name}\n{absender_strasse}\n{absender_plz} {absender_ort}\n\n{empfaenger_behoerde}\n{empfaenger_strasse}\n{empfaenger_plz} {empfaenger_ort}\n\n{ort}, {datum}\n\nAktenzeichen: {aktenzeichen}\nBetreff: Einspruch gegen den Bescheid vom {datum_bescheid}\n\nSehr geehrte Damen und Herren,\n\nhiermit lege ich gegen Ihren Bescheid vom {datum_bescheid} mit dem oben genannten Aktenzeichen Einspruch ein.\n\nBegründung: {begruendung_kurz}\n\nMit freundlichen Grüßen,\n\n{absender_name}",
           "label": "Einspruch einlegen",
           "beschreibung": "Skelett-Brief mit Pflicht-Angaben — Begründung schreiben Sie selbst.",
           "disclaimer_pre_insertion": "Diese Vorlage enthält nur die Pflicht-Angaben (Datum, Aktenzeichen, Empfänger und die Erklärung des Rechtsbehelfs). Eine **Begründung schreiben Sie selbst** — die App schlägt keine Argumente vor, weil die Bewertung Ihres Einzelfalls eine Rechtsdienstleistung im Sinne des § 2 RDG ist und nur durch Anwält:innen, registrierte Personen, Verbraucherzentralen oder Sozialverbände erfolgen darf.",
           "disclaimer_inline": "Hinweis: Die Begründung schreiben Sie selbst — die App generiert sie nicht."
         },
         "rechtsbehelf_widerspruch_skelett": {
-          "body_template_de": "{absender_name}\n{absender_strasse}\n{absender_plz} {absender_ort}\n\n{empfaenger_behoerde}\n{empfaenger_strasse}\n{empfaenger_plz} {empfaenger_ort}\n\n{ort}, {datum}\n\nAktenzeichen: {aktenzeichen}\nBetreff: Widerspruch gegen den Bescheid vom {datum_bescheid}\n\nSehr geehrte Damen und Herren,\n\nhiermit lege ich gegen Ihren Bescheid vom {datum_bescheid} mit dem oben genannten Aktenzeichen Widerspruch ein.\n\nMit freundlichen Grüßen,\n\n{absender_name}",
+          "body_template_de": "{absender_name}\n{absender_strasse}\n{absender_plz} {absender_ort}\n\n{empfaenger_behoerde}\n{empfaenger_strasse}\n{empfaenger_plz} {empfaenger_ort}\n\n{ort}, {datum}\n\nAktenzeichen: {aktenzeichen}\nBetreff: Widerspruch gegen den Bescheid vom {datum_bescheid}\n\nSehr geehrte Damen und Herren,\n\nhiermit lege ich gegen Ihren Bescheid vom {datum_bescheid} mit dem oben genannten Aktenzeichen Widerspruch ein.\n\nBegründung: {begruendung_kurz}\n\nMit freundlichen Grüßen,\n\n{absender_name}",
           "label": "Widerspruch einlegen",
           "beschreibung": "Skelett-Brief mit Pflicht-Angaben — Begründung schreiben Sie selbst.",
           "disclaimer_pre_insertion": "Diese Vorlage enthält nur die Pflicht-Angaben (Datum, Aktenzeichen, Empfänger und die Erklärung des Rechtsbehelfs). Eine **Begründung schreiben Sie selbst** — die App schlägt keine Argumente vor, weil die Bewertung Ihres Einzelfalls eine Rechtsdienstleistung im Sinne des § 2 RDG ist und nur durch Anwält:innen, registrierte Personen, Verbraucherzentralen oder Sozialverbände erfolgen darf.",

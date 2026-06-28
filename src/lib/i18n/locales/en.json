@@ -2413,6 +2413,31 @@
         "disclaimer": "AI can make mistakes. Please review the text.",
         "disabled_skelett_hint": "Not available for legal-remedy templates: the app does not draft legal reasoning (§ 2 RDG, German Legal Services Act)."
       },
+      "fakten_capture": {
+        "heading": "What is wrong?",
+        "intro": "Tell us in your own words what is wrong with the decision. We put your statements into a factual form for your draft.",
+        "textarea_label": "Your statements in your own words",
+        "textarea_placeholder": "e.g. “that's not right, I had already moved in May”",
+        "cta": "Create draft",
+        "cta_fallback": "Use text as is",
+        "pending": "Putting it into form …",
+        "success_announce": "Draft ready — you review and submit it yourself.",
+        "fallback_note": "Text used unchanged — please put it into form yourself.",
+        "error_note": "Could not process it. Your text was inserted unchanged.",
+        "remedy_confirm": "For this decision: {remedy} — is that correct?",
+        "remedy_label": {
+          "ao": "Einspruch (§ 347 AO)",
+          "sgg": "Widerspruch (§ 84 SGG)",
+          "vwgo": "Widerspruch (§ 70 VwGO)"
+        },
+        "disclaimer": "Drafting aid — not legal advice. This function puts your own statements into a factual form for your draft. It does not review your case legally, does not assess your chances of success and does not recommend whether you should lodge a legal remedy (§ 2 RDG, German Legal Services Act). Whether and what you submit is your decision."
+      },
+      "no_suspension_hint": {
+        "beitrag": "An objection against a contribution assessment has no suspensive effect (§ 86a Abs. 2 SGG / § 80 Abs. 2 VwGO). The payment deadline continues to run regardless of the objection. You would have to apply for a suspension separately.",
+        "banner_title": "Important note on payment",
+        "widerspruch_frist_template": "Deadline for the objection: {datum}",
+        "zahlung_frist_template": "Payment deadline (continues to run regardless): {datum}"
+      },
       "outbound_speculative": "As of 2027 — speculative design. In this demo we simulate request-thread-bound bidirectional communication on the ZBP/BundID model: replies always live in the thread of a specific letter (anchored by file reference / Aktenzeichen), never as an open mailbox. Today (May 2026) the reply channel would differ by authority: Mein ELSTER for the tax office (Finanzamt), the health insurance portal for health insurance funds, a state service portal (Landes-Service-Portal) for citizens' offices and immigration authorities, often still postal mail. Nothing is sent to {behoerde}.",
       "behoerde_kanal": {
         "bundid_postfach_2027": "BundID mailbox (BundID-Postfach, speculative 2027)",

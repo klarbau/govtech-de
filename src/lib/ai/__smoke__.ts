@@ -49,9 +49,13 @@ check(
   isKnownTool('vorschlage_naechsten_schritt'),
 );
 check(
-  'TOOL_NAMES has 11 entries (5 legacy + 3 posteingang + 1 preview_umzug + 2 convenience)',
-  TOOL_NAMES.length === 11,
+  'TOOL_NAMES has 12 entries (5 legacy + 3 posteingang + 1 preview_umzug + 2 convenience + 1 sachverhalt)',
+  TOOL_NAMES.length === 12,
   TOOL_NAMES,
+);
+check(
+  'TOOL_NAMES contains formuliere_sachverhalt',
+  isKnownTool('formuliere_sachverhalt'),
 );
 check('TOOL_NAMES contains preview_umzug', isKnownTool('preview_umzug'));
 check('TOOL_NAMES contains hole_ersparnis', isKnownTool('hole_ersparnis'));

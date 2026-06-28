@@ -17,6 +17,13 @@
  * DE is the source-of-truth. The model is instructed to reply in the user's
  * language but think against this DE base — no per-locale prompt copies, so
  * the cache works across languages.
+ *
+ * NOTE — separate one-shot surfaces carry their OWN cached system block, NOT
+ * this conversational base (keeps each cache key byte-stable):
+ *   - reply-rewrite.ts  → `REWRITE_SYSTEM_PROMPT` (KI-Umformulieren chips).
+ *   - sachverhalt.ts    → `SACHVERHALT_SYSTEM_PROMPT` (Klartext-Rückkanal
+ *     `formuliere_sachverhalt`; the LOCKED restatement boundary,
+ *     klartext-rueckkanal.md §7.2 Correction #4, lives there verbatim).
  */
 
 import type { SupportedLocale } from './language';

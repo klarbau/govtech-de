@@ -52,7 +52,12 @@ import {
 import { BekanntgabeCaveatDetails } from './BekanntgabeCaveatDetails';
 import { FristAbgelaufenWarnung } from './FristAbgelaufenWarnung';
 import { FristCitedFormatHeader } from './FristCitedFormatHeader';
+import {
+  NoSuspensionHintBanner,
+  isBeitragNoSuspensionLetter,
+} from './NoSuspensionHintBanner';
 import { PreInsertionModal } from './PreInsertionModal';
+import { RechtsbehelfFaktenCapture } from './RechtsbehelfFaktenCapture';
 import { PreVersandModal } from './PreVersandModal';
 import { ReplyConfirmationView } from './ReplyConfirmationView';
 import { ReplyDiscardConfirmDialog } from './ReplyDiscardConfirmDialog';
@@ -61,8 +66,10 @@ import {
   getReplyTemplatePickerOrder,
   isCompanionSkelettSwitch,
   isSkelettTemplate,
+  pickNormFamilie,
   type ReplyTemplateChoice,
 } from './preInsertionModalLookup';
+import type { SachverhaltNormFamilie } from '@/lib/ai/sachverhalt-client';
 
 /** Stable className constants — previously the Sheet{Header,Body,Footer} slots. */
 const composeHeaderClass =
@@ -127,6 +134,13 @@ interface FormState {
   persistedAttachments: ReplyDraft['attachments'];
   /** Controlled-list-Auswahl für `nachweis_einreichen`. */
   nachweisBezeichnung: string | null;
+  /**
+   * Klartext-Rückkanal (Spec 2026-06-28 § 4.2): der sachliche Sachverhalt für
+   * den `begruendung_kurz`-Slot der Rechtsbehelf-Skelette. Wird von der
+   * `RechtsbehelfFaktenCapture`-Box gesetzt und beim Body-Re-Resolve
+   * durchgereicht.
+   */
+  begruendungKurz: string | null;
 }
 
 interface AttachmentError {
@@ -196,6 +210,7 @@ export function ReplyComposeContent({
     attachments: [],
     persistedAttachments: [],
     nachweisBezeichnung: null,
+    begruendungKurz: null,
   });
   /**
    * Visual-only Default-Highlight für `pickerOrder[0]`, wenn dieses ein
@@ -248,6 +263,9 @@ export function ReplyComposeContent({
     () => getReplyTemplatePickerOrder(letter),
     [letter],
   );
+
+  /** Fokus-Ziel nach „Entwurf erstellen" der Fakten-Capture-Box (§ 4.2 a11y). */
+  const bodyTextareaRef = React.useRef<HTMLTextAreaElement>(null);
 
   // M2-Stagger nur beim ERSTEN Öffnen pro Letter (Spec §7 M2) und nur inline.
   const staggeredLettersRef = React.useRef<Set<string>>(new Set());
@@ -316,6 +334,7 @@ export function ReplyComposeContent({
             attachments: [],
             persistedAttachments: draft.attachments,
             nachweisBezeichnung: null,
+            begruendungKurz: null,
           });
           setDraftId(draft.id);
           setDraftCreatedAt(draft.created_at);
@@ -433,6 +452,12 @@ export function ReplyComposeContent({
     next: ReplyTemplateChoice,
     modeNext: ReplyTerminMode | null,
     nachweisNext: string | null,
+    /**
+     * Klartext-Rückkanal: bei `null` wird der bestehende `begruendungKurz`
+     * (falls vorhanden) durchgereicht; bei einem String wird der Slot mit
+     * dem neuen Sachverhalt überschrieben (Fakten-Capture „Entwurf erstellen").
+     */
+    begruendungOverride?: string,
   ) {
     // Sobald ein echter Template-Wechsel passiert, ist die initiale
     // Skelett-Empfehlung obsolet — sonst doppelter Highlight (recommended +
@@ -447,6 +472,10 @@ export function ReplyComposeContent({
       }));
       return;
     }
+    const begruendungKurz =
+      begruendungOverride !== undefined
+        ? begruendungOverride
+        : (formState.begruendungKurz ?? null);
     if (!personaId) {
       setFormState((s) => ({
         ...s,
@@ -454,6 +483,7 @@ export function ReplyComposeContent({
         mode: next === 'termin_antwort' ? (modeNext ?? 'bestaetigen') : null,
         nachweisBezeichnung:
           next === 'nachweis_einreichen' ? nachweisNext : null,
+        begruendungKurz,
       }));
       return;
     }
@@ -467,6 +497,9 @@ export function ReplyComposeContent({
         ...(next === 'nachweis_einreichen' && nachweisNext
           ? { userInput: { nachweis_bezeichnung: nachweisNext } }
           : {}),
+        ...(isSkelettTemplate(next) && begruendungKurz
+          ? { userInput: { begruendung_kurz: begruendungKurz } }
+          : {}),
       });
       setFormState((s) => ({
         ...s,
@@ -474,6 +507,7 @@ export function ReplyComposeContent({
         mode: next === 'termin_antwort' ? (modeNext ?? 'bestaetigen') : null,
         nachweisBezeichnung:
           next === 'nachweis_einreichen' ? nachweisNext : null,
+        begruendungKurz,
         body: resolved,
       }));
     } catch {
@@ -750,6 +784,42 @@ export function ReplyComposeContent({
     isCompanionSkelettSwitch(formState.template, templateSwitchTarget);
 
   const currentIsSkelett = isSkelettTemplate(formState.template);
+
+  /**
+   * Klartext-Rückkanal (Spec 2026-06-28 § 4.2 / Correction #5): die Norm-Familie
+   * für die Fakten-Capture-Box wird MECHANISCH aus dem aktiven Skelett +
+   * `letter.archetype` via `pickNormFamilie` abgeleitet — NIE aus dem Freitext
+   * inferiert. Die Box rendert nur für die drei zivilen Pfade (ao/sgg/vwgo); das
+   * Aussetzungs-Skelett (`aussetzung_ao`) ist hier ausgenommen.
+   */
+  const faktenNormFamilie: SachverhaltNormFamilie | null = (() => {
+    if (!isSkelettTemplate(formState.template)) return null;
+    if (formState.template === 'aussetzung_vollziehung_skelett') return null;
+    try {
+      const norm = pickNormFamilie(letter, formState.template);
+      if (norm === 'ao' || norm === 'sgg' || norm === 'vwgo') return norm;
+      return null;
+    } catch {
+      return null;
+    }
+  })();
+
+  /**
+   * „Entwurf erstellen" aus der Fakten-Capture-Box: der Sachverhalt landet im
+   * `begruendung_kurz`-Slot, dann re-resolved `loadTemplateBody` den Body über
+   * den bestehenden Pfad (keine separate Body-Generierung) und fokussiert die
+   * Entwurf-Textarea. Überschreibt NUR den Slot, nie den restlichen Body.
+   */
+  async function onFaktenSachverhalt(sachverhalt: string) {
+    if (!isSkelettTemplate(formState.template)) return;
+    await loadTemplateBody(formState.template, null, null, sachverhalt);
+    window.requestAnimationFrame(() => {
+      bodyTextareaRef.current?.focus();
+    });
+  }
+
+  const showNoSuspensionBanner =
+    currentIsSkelett && isBeitragNoSuspensionLetter(letter);
 
   /**
    * Template, dessen Frist-Kontext (FristAbgelaufenWarnung + FristCitedFormat-
@@ -1108,6 +1178,26 @@ export function ReplyComposeContent({
           </div>
         )}
 
+        {/* Klartext-Rückkanal (Spec 2026-06-28): persistente, nicht
+            wegklickbare No-Suspension-Banderole über dem Entwurf bei
+            Beitrags-Bescheiden (Correction #2) + die Fakten-Capture-Box
+            (Correction #6), beide nur bei aktivem Rechtsbehelf-Skelett. */}
+        {showNoSuspensionBanner && (
+          <motion.div {...staggerProps()}>
+            <NoSuspensionHintBanner letter={letter} />
+          </motion.div>
+        )}
+
+        {faktenNormFamilie && (
+          <motion.div {...staggerProps()}>
+            <RechtsbehelfFaktenCapture
+              normFamilie={faktenNormFamilie}
+              resolvePending={templatePending}
+              onSachverhalt={onFaktenSachverhalt}
+            />
+          </motion.div>
+        )}
+
         <motion.div className="flex flex-col gap-2" {...staggerProps()}>
           <label
             htmlFor="reply-body"
@@ -1132,6 +1222,7 @@ export function ReplyComposeContent({
           )}
           <div className="relative overflow-hidden rounded-lg border border-border-strong bg-background shadow-sm focus-within:ring-2 focus-within:ring-ring/60">
             <textarea
+              ref={bodyTextareaRef}
               id="reply-body"
               aria-describedby="reply-body-hint"
               aria-busy={templatePending || rewritePending}

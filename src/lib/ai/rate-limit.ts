@@ -88,6 +88,18 @@ export const REPLY_REWRITE_RATE_LIMIT: RateLimitConfig = {
 };
 
 /**
+ * Budget for the Klartext-Rückkanal Sachverhalt restatement one-shot
+ * (`/api/reply/sachverhalt`, klartext-rueckkanal.md §7). A human taps "Entwurf
+ * erstellen" a handful of times per draft; generous for that while still capping
+ * a scripted abuser. Distinct bucket → does not starve the assistant, the
+ * dashboard sort, or the reply-rewrite path.
+ */
+export const SACHVERHALT_RATE_LIMIT: RateLimitConfig = {
+  limit: 20,
+  windowMs: 60_000,
+};
+
+/**
  * Fixed-window check. Distinct `bucket` namespaces keep the two endpoints'
  * counters separate even when they share a `key` (the session id), so heavy
  * assistant use doesn't starve the dashboard sort.
@@ -194,6 +206,13 @@ export const CAPS = {
    * headroom while keeping a megabyte of text out of the (cached) prompt.
    */
   maxReplyBodyChars: 16_000,
+  /**
+   * Max characters in the citizen's raw fact-statement sent to
+   * `/api/reply/sachverhalt`. A plain-language "was nicht stimmt" is a sentence
+   * or a short paragraph; 4k chars is comfortable headroom while keeping bulk
+   * text out of the (cached) prompt.
+   */
+  maxSachverhaltRohtextChars: 4_000,
 } as const;
 
 /**

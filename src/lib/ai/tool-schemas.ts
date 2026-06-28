@@ -240,7 +240,17 @@ export interface ToolDispatchEntry {
     | 'umzug_started_card';
 }
 
-export const TOOL_DISPATCH: Record<ToolName, ToolDispatchEntry> = {
+/**
+ * Tool names that the CONVERSATIONAL client dispatcher executes. Excludes
+ * `formuliere_sachverhalt` (Klartext-Rückkanal, klartext-rueckkanal.md §7): that
+ * tool is registered for capability documentation but is NOT run through the
+ * chat tool-loop — its execution is a server-side one-shot at
+ * `POST /api/reply/sachverhalt` (key-safe, mirrors reply-rewrite). It therefore
+ * has no `api.*` dispatch entry and no confirm-gate row here.
+ */
+export type DispatchableToolName = Exclude<ToolName, 'formuliere_sachverhalt'>;
+
+export const TOOL_DISPATCH: Record<DispatchableToolName, ToolDispatchEntry> = {
   lese_posteingang: {
     api_method: 'getLetters',
     requires_confirmation: false,
@@ -312,7 +322,7 @@ export const TOOL_DISPATCH: Record<ToolName, ToolDispatchEntry> = {
 export function requiresConfirmation(name: string): boolean {
   return (
     name in TOOL_DISPATCH &&
-    TOOL_DISPATCH[name as ToolName].requires_confirmation
+    TOOL_DISPATCH[name as DispatchableToolName].requires_confirmation
   );
 }
 

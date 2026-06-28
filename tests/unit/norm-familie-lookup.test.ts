@@ -176,7 +176,10 @@ describe('getPreInsertionModalSpec — Modal-Variante × Norm-Familie', () => {
     expect(spec.modal_title_key).toBe(
       'posteingang.compose.pre_insertion_modal.widerspruch_sgg.title',
     );
-    expect(spec.additional_explainer_key).toBeUndefined();
+    // Beitrags-Archetyp → No-Suspension-Hinweis (Correction #2, non-skippable).
+    expect(spec.additional_explainer_key).toBe(
+      'posteingang.compose.no_suspension_hint.beitrag',
+    );
   });
 
   test('VwGO-Familie → widerspruch_vwgo Modal', () => {
@@ -243,6 +246,62 @@ describe('getPreInsertionModalSpec — Familienkasse-AO-Zusatz (Spec § 11.4 Har
     });
     const spec = getPreInsertionModalSpec('aussetzung_ao', letter);
     expect(spec.additional_explainer_key).toBeUndefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// No-Suspension-Hinweis (Klartext-Rückkanal Spec 2026-06-28 § 4.3 / Correction #2).
+// Non-skippable: rendert über denselben additional_explainer_key-Mechanismus
+// wie der Familienkasse-AO-Erklärer, für die SGG-/VwGO-Beitrags-Archetypes.
+// ---------------------------------------------------------------------------
+
+describe('getPreInsertionModalSpec — No-Suspension-Hinweis (Correction #2)', () => {
+  const HINT_KEY = 'posteingang.compose.no_suspension_hint.beitrag';
+
+  test('SGG + krankenkasse-beitrag → No-Suspension-Hinweis-Key', () => {
+    const letter = syntheticLetter({ archetype: 'krankenkasse-beitrag' });
+    expect(getPreInsertionModalSpec('sgg', letter).additional_explainer_key).toBe(
+      HINT_KEY,
+    );
+  });
+
+  test('SGG + berufsgenossenschaft-beitrag → No-Suspension-Hinweis-Key', () => {
+    const letter = syntheticLetter({
+      archetype: 'berufsgenossenschaft-beitrag',
+    });
+    expect(getPreInsertionModalSpec('sgg', letter).additional_explainer_key).toBe(
+      HINT_KEY,
+    );
+  });
+
+  test('VwGO + ihk-beitrag → No-Suspension-Hinweis-Key', () => {
+    const letter = syntheticLetter({ archetype: 'ihk-beitrag' });
+    expect(
+      getPreInsertionModalSpec('vwgo', letter).additional_explainer_key,
+    ).toBe(HINT_KEY);
+  });
+
+  test('VwGO + beitragsservice-mahnung → No-Suspension-Hinweis-Key', () => {
+    const letter = syntheticLetter({ archetype: 'beitragsservice-mahnung' });
+    expect(
+      getPreInsertionModalSpec('vwgo', letter).additional_explainer_key,
+    ).toBe(HINT_KEY);
+  });
+
+  test('AO + steuerbescheid → KEIN No-Suspension-Hinweis (kein Beitrag, AO)', () => {
+    const letter = findLetter('letter-mehmet-fa-steuerbescheid-2024');
+    expect(
+      getPreInsertionModalSpec('ao', letter).additional_explainer_key,
+    ).toBeUndefined();
+  });
+
+  test('VwGO + abh-verlaengerung → KEIN No-Suspension-Hinweis (kein Beitrag)', () => {
+    // abh-verlaengerung ist kein Beitrag-Archetyp; selbst wenn der Pfad je
+    // erreicht würde, darf der Beitrags-Hinweis nicht erscheinen.
+    const letter = syntheticLetter({ archetype: 'abh-verlaengerung' });
+    expect(
+      getPreInsertionModalSpec('vwgo', letter).additional_explainer_key,
+    ).toBeUndefined();
   });
 });
 

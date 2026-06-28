@@ -65,6 +65,14 @@
     "auth_channel": "briefpost",
     "fristen": [
       {
+        "typ": "zahlung",
+        "datum": "2026-01-15",
+        "original_zitat": "Fälligkeit: vierteljährlich zum 15.",
+        "citation_match": true,
+        "rechtsgrundlage": "§ 7 Abs. 3 RBStV",
+        "cta_label": "Rundfunkbeitrag zahlen"
+      },
+      {
         "typ": "widerspruch",
         "datum": "2026-02-08",
         "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch eingelegt werden.",
@@ -704,13 +712,21 @@
     "empfaenger_persona_id": "markus-schmidt",
     "aktenzeichen": "[MOCK] M845192036",
     "betreff": "Festsetzung des Beitrags zur Kranken- und Pflegeversicherung — Versicherungsnummer [MOCK] M845192036",
-    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nTechniker Krankenkasse — Hauptverwaltung\nBramfelder Straße 140, 22305 Hamburg\n\nSehr geehrter Herr Schmidt,\n\nin oben genannter Angelegenheit setzen wir Ihren Beitrag zur Kranken- und Pflegeversicherung ab dem 01.06.2026 wie folgt fest:\n\nKV-Beitrag: 421,17 €/Monat\nPV-Beitrag: 76,12 €/Monat\nGesamt: 497,29 €/Monat\n\nBitte beachten Sie, dass die Beiträge auch dann zu zahlen sind, wenn Sie Widerspruch eingelegt haben (aufschiebende Wirkung gemäß § 86a SGG entfällt insoweit).\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden. Der Widerspruch ist schriftlich oder zur Niederschrift bei der Techniker Krankenkasse, Bramfelder Straße 140, 22305 Hamburg einzulegen.\n\nMit freundlichen Grüßen\nTechniker Krankenkasse\nAz. [MOCK] M845192036",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nTechniker Krankenkasse — Hauptverwaltung\nBramfelder Straße 140, 22305 Hamburg\n\nSehr geehrter Herr Schmidt,\n\nin oben genannter Angelegenheit setzen wir Ihren Beitrag zur Kranken- und Pflegeversicherung ab dem 01.06.2026 wie folgt fest:\n\nKV-Beitrag: 421,17 €/Monat\nPV-Beitrag: 76,12 €/Monat\nGesamt: 497,29 €/Monat\n\nFällig zum 15.06.2026; danach jeweils zum 15. des Folgemonats.\n\nBitte beachten Sie, dass die Beiträge auch dann zu zahlen sind, wenn Sie Widerspruch eingelegt haben (aufschiebende Wirkung gemäß § 86a SGG entfällt insoweit).\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden. Der Widerspruch ist schriftlich oder zur Niederschrift bei der Techniker Krankenkasse, Bramfelder Straße 140, 22305 Hamburg einzulegen.\n\nMit freundlichen Grüßen\nTechniker Krankenkasse\nAz. [MOCK] M845192036",
     "ai_summary": {
       "de": "TK setzt Ihren Beitrag ab 01.06.2026 auf 497,29 €/Monat fest. Widerspruchsfrist 1 Monat — Beiträge bleiben trotzdem fällig."
     },
     "archetype": "krankenkasse-beitrag",
     "auth_channel": "krankenkassen-portal",
     "fristen": [
+      {
+        "typ": "zahlung",
+        "datum": "2026-06-15",
+        "original_zitat": "Fällig zum 15.06.2026; danach jeweils zum 15. des Folgemonats.",
+        "citation_match": true,
+        "rechtsgrundlage": "§ 23 Abs. 1 SGB IV",
+        "cta_label": "Beitrag zahlen"
+      },
       {
         "typ": "widerspruch",
         "datum": "2026-06-15",
@@ -774,13 +790,21 @@
     "empfaenger_persona_id": "markus-schmidt",
     "aktenzeichen": "[MOCK] 624 188 905",
     "betreff": "Festsetzungsbescheid Rundfunkbeitrag — Beitragsnummer [MOCK] 624 188 905",
-    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nARD ZDF Deutschlandradio Beitragsservice, 50656 Köln\n\nSehr geehrter Herr Schmidt,\n\nin oben genannter Angelegenheit setzen wir den Rundfunkbeitrag für den Zeitraum 01.04.2026–30.06.2026 wie folgt fest:\n\nRückständiger Beitrag: 55,08 €\nSäumniszuschlag (§ 9 RBStV): 8,00 €\nGesamt: 63,08 €\n\nTrotz mehrfacher Aufforderung haben Sie den Rundfunkbeitrag in Höhe von 55,08 € bislang nicht entrichtet. Wir setzen den rückständigen Beitrag hiermit förmlich fest.\n\nDieser Bescheid ist ein vollstreckbarer Titel iSv § 9 RBStV i.V.m. dem jeweiligen Landesvollstreckungsgesetz.\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch eingelegt werden. Der Widerspruch ist schriftlich oder elektronisch beim ARD ZDF Deutschlandradio Beitragsservice einzureichen.\n\nMit freundlichen Grüßen\nBeitragsservice\nAz. [MOCK] 624 188 905",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nARD ZDF Deutschlandradio Beitragsservice, 50656 Köln\n\nSehr geehrter Herr Schmidt,\n\nin oben genannter Angelegenheit setzen wir den Rundfunkbeitrag für den Zeitraum 01.04.2026–30.06.2026 wie folgt fest:\n\nRückständiger Beitrag: 55,08 €\nSäumniszuschlag (§ 9 RBStV): 8,00 €\nGesamt: 63,08 €\n\nTrotz mehrfacher Aufforderung haben Sie den Rundfunkbeitrag in Höhe von 55,08 € bislang nicht entrichtet. Wir setzen den rückständigen Beitrag hiermit förmlich fest.\n\nDer Gesamtbetrag von 63,08 € ist sofort fällig, spätestens zahlbar bis zum 26.05.2026.\n\nDieser Bescheid ist ein vollstreckbarer Titel iSv § 9 RBStV i.V.m. dem jeweiligen Landesvollstreckungsgesetz.\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch eingelegt werden. Der Widerspruch ist schriftlich oder elektronisch beim ARD ZDF Deutschlandradio Beitragsservice einzureichen.\n\nMit freundlichen Grüßen\nBeitragsservice\nAz. [MOCK] 624 188 905",
     "ai_summary": {
       "de": "Beitragsservice fordert 63,08 € Rückstand inkl. Säumniszuschlag. Widerspruchsfrist 1 Monat — Bescheid ist vollstreckbar."
     },
     "archetype": "beitragsservice-mahnung",
     "auth_channel": "briefpost",
     "fristen": [
+      {
+        "typ": "zahlung",
+        "datum": "2026-05-26",
+        "original_zitat": "Der Gesamtbetrag von 63,08 € ist sofort fällig, spätestens zahlbar bis zum 26.05.2026.",
+        "citation_match": true,
+        "rechtsgrundlage": "§ 7 Abs. 3 RBStV",
+        "cta_label": "Rundfunkbeitrag zahlen"
+      },
       {
         "typ": "widerspruch",
         "datum": "2026-06-12",
@@ -1114,6 +1138,14 @@
     "auth_channel": "briefpost",
     "fristen": [
       {
+        "typ": "zahlung",
+        "datum": "2026-06-08",
+        "original_zitat": "Fälligkeit: 30 Tage nach Bekanntgabe.",
+        "citation_match": true,
+        "rechtsgrundlage": "§ 3 Abs. 7 IHKG i.V.m. Beitragsordnung",
+        "cta_label": "Beitrag zahlen"
+      },
+      {
         "typ": "widerspruch",
         "datum": "2026-06-12",
         "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden.",
@@ -1172,13 +1204,21 @@
     "empfaenger_persona_id": "mehmet-yildiz",
     "aktenzeichen": "[MOCK] Q672013485",
     "betreff": "Festsetzung des freiwilligen Beitrags zur Kranken- und Pflegeversicherung — Versicherungsnummer [MOCK] Q672013485",
-    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nAOK Rheinland/Hamburg — Die Gesundheitskasse\nKasernenstraße 61, 40213 Düsseldorf\n\nSehr geehrter Herr Yıldız,\n\nin oben genannter Angelegenheit setzen wir Ihren freiwilligen Beitrag zur Kranken- und Pflegeversicherung ab dem 01.06.2026 wie folgt fest:\n\nKV-Beitrag: 421,17 €/Monat\nPV-Beitrag: 76,12 €/Monat\nGesamt: 497,29 €/Monat\n\nBitte beachten Sie, dass die Beiträge auch dann zu zahlen sind, wenn Sie Widerspruch eingelegt haben (aufschiebende Wirkung gemäß § 86a SGG entfällt insoweit).\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden. Der Widerspruch ist schriftlich oder zur Niederschrift bei der AOK Rheinland/Hamburg, Kasernenstraße 61, 40213 Düsseldorf einzulegen.\n\nMit freundlichen Grüßen\nAOK Rheinland/Hamburg\nAz. [MOCK] Q672013485",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nAOK Rheinland/Hamburg — Die Gesundheitskasse\nKasernenstraße 61, 40213 Düsseldorf\n\nSehr geehrter Herr Yıldız,\n\nin oben genannter Angelegenheit setzen wir Ihren freiwilligen Beitrag zur Kranken- und Pflegeversicherung ab dem 01.06.2026 wie folgt fest:\n\nKV-Beitrag: 421,17 €/Monat\nPV-Beitrag: 76,12 €/Monat\nGesamt: 497,29 €/Monat\n\nFällig zum 15.06.2026; danach jeweils zum 15. des Folgemonats.\n\nBitte beachten Sie, dass die Beiträge auch dann zu zahlen sind, wenn Sie Widerspruch eingelegt haben (aufschiebende Wirkung gemäß § 86a SGG entfällt insoweit).\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden. Der Widerspruch ist schriftlich oder zur Niederschrift bei der AOK Rheinland/Hamburg, Kasernenstraße 61, 40213 Düsseldorf einzulegen.\n\nMit freundlichen Grüßen\nAOK Rheinland/Hamburg\nAz. [MOCK] Q672013485",
     "ai_summary": {
       "de": "AOK setzt Ihren freiwilligen Beitrag ab 01.06.2026 auf 497,29 €/Monat fest. Widerspruch möglich, aber Beiträge bleiben fällig."
     },
     "archetype": "krankenkasse-beitrag",
     "auth_channel": "briefpost",
     "fristen": [
+      {
+        "typ": "zahlung",
+        "datum": "2026-06-15",
+        "original_zitat": "Fällig zum 15.06.2026; danach jeweils zum 15. des Folgemonats.",
+        "citation_match": true,
+        "rechtsgrundlage": "§ 23 Abs. 1 SGB IV",
+        "cta_label": "Beitrag zahlen"
+      },
       {
         "typ": "widerspruch",
         "datum": "2026-06-13",
@@ -1202,13 +1242,21 @@
     "empfaenger_persona_id": "mehmet-yildiz",
     "aktenzeichen": "[MOCK] 088 314 502",
     "betreff": "Festsetzungsbescheid Rundfunkbeitrag — Beitragsnummer [MOCK] 088 314 502",
-    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nARD ZDF Deutschlandradio Beitragsservice, 50656 Köln\n\nSehr geehrter Herr Yıldız,\n\nin oben genannter Angelegenheit setzen wir den Rundfunkbeitrag für den Zeitraum 01.01.2026–31.03.2026 förmlich fest:\n\nRückständiger Beitrag: 55,08 €\nSäumniszuschlag (§ 9 RBStV): 8,00 €\nGesamt: 63,08 €\n\nTrotz mehrfacher Aufforderung haben Sie den Rundfunkbeitrag in Höhe von 55,08 € bislang nicht entrichtet. Wir setzen den rückständigen Beitrag hiermit förmlich fest.\n\nDieser Bescheid ist ein vollstreckbarer Titel iSv § 9 RBStV i.V.m. dem jeweiligen Landesvollstreckungsgesetz.\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch eingelegt werden. Der Widerspruch ist schriftlich oder elektronisch beim ARD ZDF Deutschlandradio Beitragsservice einzureichen.\n\nMit freundlichen Grüßen\nBeitragsservice\nAz. [MOCK] 088 314 502",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nARD ZDF Deutschlandradio Beitragsservice, 50656 Köln\n\nSehr geehrter Herr Yıldız,\n\nin oben genannter Angelegenheit setzen wir den Rundfunkbeitrag für den Zeitraum 01.01.2026–31.03.2026 förmlich fest:\n\nRückständiger Beitrag: 55,08 €\nSäumniszuschlag (§ 9 RBStV): 8,00 €\nGesamt: 63,08 €\n\nTrotz mehrfacher Aufforderung haben Sie den Rundfunkbeitrag in Höhe von 55,08 € bislang nicht entrichtet. Wir setzen den rückständigen Beitrag hiermit förmlich fest.\n\nDer Gesamtbetrag von 63,08 € ist sofort fällig, spätestens zahlbar bis zum 26.05.2026.\n\nDieser Bescheid ist ein vollstreckbarer Titel iSv § 9 RBStV i.V.m. dem jeweiligen Landesvollstreckungsgesetz.\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch eingelegt werden. Der Widerspruch ist schriftlich oder elektronisch beim ARD ZDF Deutschlandradio Beitragsservice einzureichen.\n\nMit freundlichen Grüßen\nBeitragsservice\nAz. [MOCK] 088 314 502",
     "ai_summary": {
       "de": "Beitragsservice fordert 63,08 € (inkl. Säumniszuschlag) — Widerspruchsfrist 1 Monat, Bescheid ist vollstreckbar."
     },
     "archetype": "beitragsservice-mahnung",
     "auth_channel": "briefpost",
     "fristen": [
+      {
+        "typ": "zahlung",
+        "datum": "2026-05-26",
+        "original_zitat": "Der Gesamtbetrag von 63,08 € ist sofort fällig, spätestens zahlbar bis zum 26.05.2026.",
+        "citation_match": true,
+        "rechtsgrundlage": "§ 7 Abs. 3 RBStV",
+        "cta_label": "Rundfunkbeitrag zahlen"
+      },
       {
         "typ": "widerspruch",
         "datum": "2026-06-12",

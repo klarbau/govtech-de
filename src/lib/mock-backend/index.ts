@@ -49,6 +49,9 @@ export {
   getReplyTemplatePickerOrder,
   pickNormFamilie,
   getPreInsertionModalSpec,
+  // Klartext-Rückkanal (Spec 2026-06-28) § 4.3 / Correction #2 — verbatim
+  // No-Suspension-Hinweis-Key für die persistente Banderole über dem Entwurf.
+  NO_SUSPENSION_HINT_BEITRAG_KEY,
 } from './reply-template-order';
 export type {
   NormFamilie,
