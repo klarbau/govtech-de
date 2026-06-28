@@ -1,12 +1,16 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
+import { Languages } from 'lucide-react';
 
 import { DatenschutzCockpitLink } from '@/components/shared/DatenschutzCockpitLink';
+import { isLocale, type Locale } from '@/i18n/routing';
 import { cn } from '@/lib/utils';
 import type { Behoerde, Letter } from '@/types';
+
+import { seededLangsFor } from './use-erklaerer-lang';
 
 import { ARCHETYPE_TO_VORGANG_TYP } from './letter-archetype-actions';
 import { AuthentizitaetsBadge, DEFAULT_AUTH_CHANNEL } from './AuthentizitaetsBadge';
@@ -66,6 +70,16 @@ export function LetterCard({
 }: LetterCardProps) {
   const t = useTranslations('posteingang.card');
   const tArche = useTranslations('posteingang.archetype.label');
+
+  // Mehrsprachiger Brief-Erklärer (Spec §4.1) — dezenter Affordance-Hinweis:
+  // sichtbar nur, wenn die aktive UI-Locale ≠ de IST und dieser Brief für genau
+  // diese Locale eine seeded `post_open`-Übersetzung trägt. Reines Signal, kein
+  // Steuerelement (Icon `aria-hidden`, sr-only-Begleittext).
+  const uiLocaleRaw = useLocale();
+  const uiLocale: Locale = isLocale(uiLocaleRaw) ? uiLocaleRaw : 'de';
+  const showSpracheHint =
+    uiLocale !== 'de' &&
+    (seededLangsFor(letter.ai_summary) as readonly string[]).includes(uiLocale);
 
   const authChannel = letter.auth_channel ?? DEFAULT_AUTH_CHANNEL;
   const fristen = letter.fristen ?? [];
@@ -202,8 +216,19 @@ export function LetterCard({
               <span className="text-text-muted"> — </span>
               <span className="font-medium">{letter.betreff}</span>
             </span>
-            <span className="mt-0.5 block truncate text-[12.5px] leading-snug text-text-secondary">
+            <span className="mt-0.5 flex items-center gap-1.5 truncate text-[12.5px] leading-snug text-text-secondary">
               {brieftyp}
+              {showSpracheHint && (
+                <>
+                  <Languages
+                    className="size-3.5 shrink-0 text-primary"
+                    aria-hidden="true"
+                  />
+                  <span className="sr-only">
+                    {t('in_ihrer_sprache_hint')}
+                  </span>
+                </>
+              )}
             </span>
             <span className="mt-0.5 block truncate font-mono text-[11.5px] leading-snug text-text-muted">
               {t('aktenzeichen_label')}: {letter.aktenzeichen}
@@ -333,6 +358,15 @@ export function LetterCard({
         <span className="truncate text-[var(--ds-color-text-secondary)]">
           {brieftyp}
         </span>
+        {showSpracheHint && (
+          <>
+            <Languages
+              className="size-3.5 shrink-0 text-primary"
+              aria-hidden="true"
+            />
+            <span className="sr-only">{t('in_ihrer_sprache_hint')}</span>
+          </>
+        )}
       </div>
 
       {/* Zeile 3: Aktenzeichen */}

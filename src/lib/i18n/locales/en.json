@@ -2076,7 +2076,19 @@
       "relative": {
         "heute": "Today",
         "gestern": "Yesterday"
-      }
+      },
+      "in_ihrer_sprache_hint": "Can be explained in your language"
+    },
+    "erklaerer": {
+      "sprache_label": "Language of the explanation",
+      "sprache_de": "German",
+      "badge_nonbinding": "Translated explanation — only the German original is legally binding.",
+      "badge_nonbinding_hint": "This explanation is a comprehension aid. Only the German original is authoritative.",
+      "frist_laut_schreiben": "Deadline per the letter:",
+      "bitte_original_pruefen": "Please verify against the German original.",
+      "fallback_de_note": "No explanation is available in this language yet — the German version is shown instead.",
+      "mock_watermark": "[MOCK] Prototype — 2027 speculative. No authority was involved; explanation generated client-side from mock data.",
+      "original_zitat_label": "Quote (German original):"
     },
     "gruppe": {
       "titel_template": "Case (Vorgang): {titel} ({count})",

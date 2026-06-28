@@ -2076,7 +2076,19 @@
       "relative": {
         "heute": "Bugün",
         "gestern": "Dün"
-      }
+      },
+      "in_ihrer_sprache_hint": "Kendi dilinizde açıklanabilir"
+    },
+    "erklaerer": {
+      "sprache_label": "Açıklamanın dili",
+      "sprache_de": "Almanca",
+      "badge_nonbinding": "Çevrilmiş açıklama — yalnızca Almanca aslı hukuken bağlayıcıdır.",
+      "badge_nonbinding_hint": "Bu açıklama bir anlama yardımcısıdır. Yalnızca Almanca aslı geçerlidir.",
+      "frist_laut_schreiben": "Yazıya göre süre:",
+      "bitte_original_pruefen": "Lütfen Almanca aslından kontrol edin.",
+      "fallback_de_note": "Bu dilde henüz bir açıklama mevcut değil — Almanca sürüm gösteriliyor.",
+      "mock_watermark": "[MOCK] Prototip — 2027 kurgusu. Hiçbir resmî kurum dahil olmadı; açıklama, test verilerinden istemci tarafında oluşturuldu.",
+      "original_zitat_label": "Alıntı (Almanca aslı):"
     },
     "gruppe": {
       "titel_template": "İşlem (Vorgang): {titel} ({count})",

@@ -394,6 +394,7 @@ export function LetterReader({
           <TabsContent value="zusammenfassung" className="mt-4">
             <AISummaryBlock
               summary={summary ?? undefined}
+              aiSummary={letter.ai_summary}
               loading={summaryLoading}
               error={summaryError}
               describedById="original"
@@ -419,6 +420,7 @@ export function LetterReader({
       <div className="hidden gap-6 md:grid md:grid-cols-2">
         <AISummaryBlock
           summary={summary ?? undefined}
+          aiSummary={letter.ai_summary}
           loading={summaryLoading}
           error={summaryError}
           describedById="original"

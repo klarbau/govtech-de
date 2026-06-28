@@ -63,6 +63,7 @@ import type {
   LetterActivityEvent,
   LetterActivityLog,
   LetterActivityLogEntry,
+  LetterAiSummary,
   LetterAiSummaryPostOpen,
   LetterArchetype,
   LetterArchetypeAction,
@@ -506,7 +507,18 @@ export function getMockKanalForBehoerde(behoerdeId: string): string {
 // Pre-baked AI-Summaries (deterministisch für Demo) — `src/data/letter-summaries.json`
 // ----------------------------------------------------------------------------
 
-type LetterSummaryEntry = z.infer<typeof letterSummariesMapSchema>[string];
+/**
+ * Pre-baked Summary-Eintrag. Das zod-Schema lässt zusätzliche Felder via
+ * `.passthrough()` durch; der Brief-Erklärer-Seed (Spec
+ * `2026-06-28-mehrsprachiger-brief-erklaerer.md` §6) kann pro Eintrag eine
+ * optionale, hand-geprüfte `translations`-Map (locale → { post_open }) tragen.
+ * Sie wird in `extrahiereAktion` rein durchgereicht — kein Lazy-AI-Fetch, keine
+ * Live-Übersetzung. Quelle ist alternativ das pro Brief in `letters.json`
+ * geseedete `ai_summary.translations`.
+ */
+type LetterSummaryEntry = z.infer<typeof letterSummariesMapSchema>[string] & {
+  translations?: LetterAiSummary['translations'];
+};
 
 let _summariesCache: Record<string, LetterSummaryEntry> | undefined;
 
@@ -2586,6 +2598,11 @@ export const api: MockBackendApi & {
         const idx = letters.findIndex((l) => l.id === letterId);
         if (idx >= 0) {
           const existing = letters[idx].ai_summary ?? { de: '' };
+          // Brief-Erklärer (Spec 2026-06-28 §6): hand-geprüfte, vorab geseedete
+          // Mehrsprach-Erläuterungen rein durchreichen. Quelle = Summaries-Map-
+          // Seed (`seed.translations`) oder das pro Brief in letters.json
+          // geseedete `ai_summary.translations`. Kein Lazy-AI-Fetch.
+          const translations = seed.translations ?? existing.translations;
           letters[idx] = {
             ...letters[idx],
             ai_summary: {
@@ -2593,6 +2610,7 @@ export const api: MockBackendApi & {
               de: existing.de || post.bullets.map((b) => b.text).join(' '),
               pre_open: seed.pre_open,
               post_open: post,
+              ...(translations ? { translations } : {}),
             },
           };
           saveLetters(letters);

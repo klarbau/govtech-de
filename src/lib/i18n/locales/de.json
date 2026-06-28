@@ -2078,7 +2078,19 @@
       "relative": {
         "heute": "Heute",
         "gestern": "Gestern"
-      }
+      },
+      "in_ihrer_sprache_hint": "In Ihrer Sprache erklärbar"
+    },
+    "erklaerer": {
+      "sprache_label": "Sprache der Erläuterung",
+      "sprache_de": "Deutsch",
+      "badge_nonbinding": "Übersetzte Erläuterung — rechtsverbindlich ist allein das deutsche Original.",
+      "badge_nonbinding_hint": "Diese Erläuterung ist eine Verständnishilfe. Maßgeblich ist allein das deutsche Original.",
+      "frist_laut_schreiben": "Frist laut Schreiben:",
+      "bitte_original_pruefen": "Bitte im deutschen Original prüfen.",
+      "fallback_de_note": "Für diese Sprache liegt noch keine Erläuterung vor — angezeigt wird die deutsche Fassung.",
+      "mock_watermark": "[MOCK] Prototyp — 2027-Speculative. Keine Behörde war beteiligt; Erläuterung clientseitig aus Mock-Daten.",
+      "original_zitat_label": "Zitat (deutsches Original):"
     },
     "gruppe": {
       "titel_template": "Vorgang: {titel} ({count})",

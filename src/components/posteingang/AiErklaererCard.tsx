@@ -2,20 +2,30 @@
 
 import * as React from 'react';
 import { useTranslations } from 'next-intl';
-import { motion, useReducedMotion } from 'framer-motion';
 import { RefreshCw, Sparkles, Coins, FileText } from 'lucide-react';
 
-import { NormTooltip } from '@/components/shared/NormTooltip';
 import { Skeleton } from '@/components/shared/Skeleton';
 import { cn } from '@/lib/utils';
-import type { LetterAiSummaryPostOpen, LetterCitation } from '@/types';
+import type {
+  LetterAiSummary,
+  LetterAiSummaryPostOpen,
+  LetterCitation,
+} from '@/types';
 
-import { CitationFootnote } from './CitationFootnote';
+import { ErklaererBulletList } from './ErklaererBulletList';
+import { ErklaererLangToggle } from './ErklaererLangToggle';
 import { RoterHinweisBanner } from './RoterHinweisBanner';
-import { parseBoldAndNorms } from './utils/parse-bold-norms';
+import { TranslationDisclaimerBadge } from './TranslationDisclaimerBadge';
+import { useErklaererLang } from './use-erklaerer-lang';
 
 interface AiErklaererCardProps {
   summary: LetterAiSummaryPostOpen | undefined;
+  /**
+   * Vollständige `ai_summary` — trägt `translations` für die locale-bewusste
+   * Erläuterung (Mehrsprachiger Brief-Erklärer, Spec §4.2). Ohne dieses Prop
+   * rendert die Card rein deutsch (Alt-Verhalten).
+   */
+  aiSummary?: LetterAiSummary;
   loading?: boolean;
   error?: string | null;
   onRetry?: () => void;
@@ -30,27 +40,6 @@ interface AiErklaererCardProps {
    */
   illustration?: React.ReactNode | null;
   className?: string;
-}
-
-function renderBulletText(text: string): React.ReactNode {
-  const segments = parseBoldAndNorms(text);
-  return (
-    <>
-      {segments.map((seg, idx) => {
-        if (seg.kind === 'bold') {
-          return (
-            <strong key={`b-${idx}`} className="font-semibold text-foreground">
-              {seg.text}
-            </strong>
-          );
-        }
-        if (seg.kind === 'norm') {
-          return <NormTooltip key={`n-${idx}`} norm={seg.norm} />;
-        }
-        return <React.Fragment key={`t-${idx}`}>{seg.text}</React.Fragment>;
-      })}
-    </>
-  );
 }
 
 function defaultIllustration(): React.ReactNode {
@@ -78,6 +67,7 @@ function defaultIllustration(): React.ReactNode {
  */
 export function AiErklaererCard({
   summary,
+  aiSummary,
   loading,
   error,
   onRetry,
@@ -88,14 +78,18 @@ export function AiErklaererCard({
   className,
 }: AiErklaererCardProps) {
   const t = useTranslations('posteingang.reader');
+  const tErkl = useTranslations('posteingang.erklaerer');
   const tDisclaimer = useTranslations('posteingang.disclaimer');
   const tCommon = useTranslations('common');
-  const prefersReducedMotion = useReducedMotion();
 
-  const variants = {
-    hidden: { opacity: 1, y: prefersReducedMotion ? 0 : 4 },
-    visible: { opacity: 1, y: 0 },
-  };
+  const {
+    activeLang,
+    setActiveLang,
+    options,
+    activeSummary,
+    isTranslated,
+    isFallbackDe,
+  } = useErklaererLang(aiSummary, summary);
 
   return (
     <section
@@ -128,6 +122,14 @@ export function AiErklaererCard({
             </p>
           ) : null}
         </div>
+        {!loading && !error && summary && (
+          <ErklaererLangToggle
+            activeLang={activeLang}
+            options={options}
+            onChange={setActiveLang}
+            className="shrink-0"
+          />
+        )}
         {illustration ? (
           <div className="hidden shrink-0 sm:block">{illustration}</div>
         ) : null}
@@ -162,45 +164,30 @@ export function AiErklaererCard({
         </div>
       )}
 
-      {!loading && !error && summary && (
-        <ol className="mt-3 flex list-none flex-col gap-2 text-sm leading-relaxed text-text-primary sm:mt-4 sm:gap-2.5">
-          {summary.bullets.map((bullet, idx) => {
-            const citation = summary.citations.find(
-              (c) => c.bullet_index === idx,
-            );
-            const hasZitat =
-              citation && citation.original_zitat.trim().length > 0;
-            return (
-              <motion.li
-                key={`b-${idx}`}
-                initial="hidden"
-                animate="visible"
-                transition={
-                  prefersReducedMotion
-                    ? { duration: 0 }
-                    : { duration: 0.22, delay: idx * 0.035 }
-                }
-                variants={variants}
-                className="flex items-start gap-2"
-              >
-                <span
-                  aria-hidden="true"
-                  className="mt-2 inline-block size-1.5 shrink-0 rounded-full bg-primary/70"
-                />
-                <span className="flex-1">
-                  {renderBulletText(bullet.text)}
-                  {hasZitat && citation && (
-                    <CitationFootnote
-                      citation={citation}
-                      number={idx + 1}
-                      onShowInOriginal={onShowInOriginal}
-                    />
-                  )}
-                </span>
-              </motion.li>
-            );
-          })}
-        </ol>
+      {!loading && !error && isFallbackDe && (
+        <p
+          role="status"
+          className="mt-3 text-xs leading-relaxed text-text-muted"
+        >
+          {tErkl('fallback_de_note')}
+        </p>
+      )}
+
+      {!loading && !error && isTranslated && activeLang !== 'de' && (
+        <div className="mt-3">
+          <TranslationDisclaimerBadge activeLang={activeLang} />
+        </div>
+      )}
+
+      {!loading && !error && activeSummary && (
+        <ErklaererBulletList
+          summary={activeSummary}
+          activeLang={activeLang}
+          isTranslated={isTranslated}
+          onShowInOriginal={onShowInOriginal}
+          bulletDotClassName="bg-primary/70"
+          className="mt-3 text-text-primary sm:mt-4"
+        />
       )}
 
       <p className="mt-3 text-[11px] leading-relaxed text-text-muted">

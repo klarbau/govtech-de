@@ -335,6 +335,7 @@ export function LetterReaderProto({
 
       <AiErklaererCard
         summary={summary ?? undefined}
+        aiSummary={letter.ai_summary}
         loading={summaryLoading}
         error={summaryError}
         onShowInOriginal={onShowInOriginal}

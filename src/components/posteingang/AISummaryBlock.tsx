@@ -1,21 +1,30 @@
 'use client';
 
-import * as React from 'react';
 import { useTranslations } from 'next-intl';
-import { motion, useReducedMotion } from 'framer-motion';
 import { Info, Sparkles } from 'lucide-react';
 
-import { NormTooltip } from '@/components/shared/NormTooltip';
 import { Skeleton } from '@/components/shared/Skeleton';
 import { cn } from '@/lib/utils';
-import type { LetterAiSummaryPostOpen, LetterCitation } from '@/types';
+import type {
+  LetterAiSummary,
+  LetterAiSummaryPostOpen,
+  LetterCitation,
+} from '@/types';
 
-import { CitationFootnote } from './CitationFootnote';
+import { ErklaererBulletList } from './ErklaererBulletList';
+import { ErklaererLangToggle } from './ErklaererLangToggle';
 import { RoterHinweisBanner } from './RoterHinweisBanner';
-import { parseBoldAndNorms } from './utils/parse-bold-norms';
+import { TranslationDisclaimerBadge } from './TranslationDisclaimerBadge';
+import { useErklaererLang } from './use-erklaerer-lang';
 
 interface AISummaryBlockProps {
   summary: LetterAiSummaryPostOpen | undefined;
+  /**
+   * Vollständige `ai_summary` des Briefs — trägt `translations` für die
+   * locale-bewusste Erläuterung (Mehrsprachiger Brief-Erklärer, Spec §4.2).
+   * Wenn nicht gesetzt, rendert der Block rein deutsch (Alt-Verhalten).
+   */
+  aiSummary?: LetterAiSummary;
   /** Status der Lazy-AI-Erklärung. */
   loading?: boolean;
   error?: string | null;
@@ -24,27 +33,6 @@ interface AISummaryBlockProps {
   /** id-Anker für `aria-describedby` von Original-Block (Erweiterung, kein Ersatz). */
   describedById?: string;
   className?: string;
-}
-
-function renderBulletText(text: string): React.ReactNode {
-  const segments = parseBoldAndNorms(text);
-  return (
-    <>
-      {segments.map((seg, idx) => {
-        if (seg.kind === 'bold') {
-          return (
-            <strong key={`b-${idx}`} className="font-semibold text-foreground">
-              {seg.text}
-            </strong>
-          );
-        }
-        if (seg.kind === 'norm') {
-          return <NormTooltip key={`n-${idx}`} norm={seg.norm} />;
-        }
-        return <React.Fragment key={`t-${idx}`}>{seg.text}</React.Fragment>;
-      })}
-    </>
-  );
 }
 
 /**
@@ -56,6 +44,7 @@ function renderBulletText(text: string): React.ReactNode {
  */
 export function AISummaryBlock({
   summary,
+  aiSummary,
   loading,
   error,
   onRetry,
@@ -64,17 +53,18 @@ export function AISummaryBlock({
   className,
 }: AISummaryBlockProps) {
   const t = useTranslations('posteingang.reader');
+  const tErkl = useTranslations('posteingang.erklaerer');
   const tDisclaimer = useTranslations('posteingang.disclaimer');
   const tCommon = useTranslations('common');
-  const prefersReducedMotion = useReducedMotion();
 
-  // Subtle entry-animation only via Y-translate; opacity bleibt durchgehend
-  // 1, damit Bullets nie Niedrig-Kontrast-States während des Fade-Ins
-  // durchlaufen (a11y-tester 2026-05-09 — color-contrast für animierte Bullets).
-  const variants = {
-    hidden: { opacity: 1, y: prefersReducedMotion ? 0 : 4 },
-    visible: { opacity: 1, y: 0 },
-  };
+  const {
+    activeLang,
+    setActiveLang,
+    options,
+    activeSummary,
+    isTranslated,
+    isFallbackDe,
+  } = useErklaererLang(aiSummary, summary);
 
   return (
     <section
@@ -84,7 +74,7 @@ export function AISummaryBlock({
       aria-live="polite"
       className={cn('flex flex-col gap-3', className)}
     >
-      <header className="flex items-center justify-between gap-2">
+      <header className="flex flex-wrap items-center justify-between gap-2">
         <h2
           id="summary-heading"
           className="flex items-center gap-2 text-sm font-semibold tracking-tight"
@@ -95,6 +85,13 @@ export function AISummaryBlock({
           />
           {t('summary_heading')}
         </h2>
+        {!loading && !error && summary && (
+          <ErklaererLangToggle
+            activeLang={activeLang}
+            options={options}
+            onChange={setActiveLang}
+          />
+        )}
       </header>
 
       <div
@@ -131,45 +128,26 @@ export function AISummaryBlock({
         </div>
       )}
 
-      {!loading && !error && summary && (
-        <ol className="flex list-none flex-col gap-2.5 text-sm leading-relaxed">
-          {summary.bullets.map((bullet, idx) => {
-            const citation = summary.citations.find(
-              (c) => c.bullet_index === idx,
-            );
-            const hasZitat =
-              citation && citation.original_zitat.trim().length > 0;
-            return (
-              <motion.li
-                key={`b-${idx}`}
-                initial="hidden"
-                animate="visible"
-                transition={
-                  prefersReducedMotion
-                    ? { duration: 0 }
-                    : { duration: 0.25, delay: idx * 0.04 }
-                }
-                variants={variants}
-                className="flex items-start gap-2"
-              >
-                <span
-                  aria-hidden="true"
-                  className="mt-2 inline-block size-1.5 shrink-0 rounded-full bg-foreground/40"
-                />
-                <span className="flex-1">
-                  {renderBulletText(bullet.text)}
-                  {hasZitat && citation && (
-                    <CitationFootnote
-                      citation={citation}
-                      number={idx + 1}
-                      onShowInOriginal={onShowInOriginal}
-                    />
-                  )}
-                </span>
-              </motion.li>
-            );
-          })}
-        </ol>
+      {!loading && !error && isFallbackDe && (
+        <p
+          role="status"
+          className="text-xs leading-relaxed text-muted-foreground"
+        >
+          {tErkl('fallback_de_note')}
+        </p>
+      )}
+
+      {!loading && !error && isTranslated && activeLang !== 'de' && (
+        <TranslationDisclaimerBadge activeLang={activeLang} />
+      )}
+
+      {!loading && !error && activeSummary && (
+        <ErklaererBulletList
+          summary={activeSummary}
+          activeLang={activeLang}
+          isTranslated={isTranslated}
+          onShowInOriginal={onShowInOriginal}
+        />
       )}
 
       <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">

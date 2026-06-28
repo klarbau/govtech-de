@@ -89,7 +89,234 @@
     "betreff": "Ihr Aufenthaltstitel nach § 18g AufenthG — Erinnerung Verlängerungsfrist",
     "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nLandesamt für Einwanderung Berlin (LEA)\nFriedrich-Krause-Ufer 24, 13353 Berlin\n\nSehr geehrte Frau Petrov,\n\nin oben genannter Angelegenheit weisen wir Sie darauf hin, dass Ihr Aufenthaltstitel nach § 18g AufenthG (Blue Card EU) am 14.09.2027 abläuft. Wir empfehlen, mindestens vier Monate vorher einen Termin zur Verlängerung über unser Online-Terminbuchungssystem zu vereinbaren.\n\nWir bitten Sie, folgende Unterlagen bis zum Termin bereitzuhalten: aktueller Reisepass, Arbeitsvertrag, Gehaltsnachweise der letzten sechs Monate, aktuelle Meldebestätigung, Krankenversicherungsnachweis.\n\nBeachten Sie Ihre Mitwirkungspflichten nach § 82 AufenthG.\n\nMit freundlichen Grüßen\nIm Auftrag\nS. Wegener, Sachbearbeiter:in\nAz. [MOCK] ABH-B-2024/IV-A-1782",
     "ai_summary": {
-      "de": "Ihr Aufenthaltstitel läuft am 14.09.2027 ab. Termin zur Verlängerung sollten Sie vier Monate vorher buchen — also spätestens Mai 2027."
+      "de": "Ihr Aufenthaltstitel läuft am 14.09.2027 ab. Termin zur Verlängerung sollten Sie vier Monate vorher buchen — also spätestens Mai 2027.",
+      "translations": {
+        "en": {
+          "post_open": {
+            "bullets": [
+              {
+                "text": "The authority states that your residence permit under § 18g AufenthG (Blue Card EU) expires. Deadline per letter: 14.09.2027."
+              },
+              {
+                "text": "The letter recommends booking an extension appointment well in advance. Exact wording and timing: please check the German original."
+              },
+              {
+                "text": "Documents the letter asks you to keep ready: passport, employment contract, salary statements, registration certificate, health-insurance proof."
+              },
+              {
+                "text": "The letter points to your duty to cooperate under § 82 AufenthG."
+              },
+              {
+                "text": "The letter notes that a timely application triggers continued-validity fiction under § 81 Abs. 4 AufenthG."
+              }
+            ],
+            "citations": [
+              {
+                "bullet_index": 0,
+                "original_zitat": "Ihr Aufenthaltstitel nach § 18g AufenthG (Blue Card EU) am 14.09.2027 abläuft."
+              },
+              {
+                "bullet_index": 1,
+                "original_zitat": "Wir empfehlen, mindestens vier Monate vorher einen Termin zur Verlängerung über unser Online-Terminbuchungssystem zu vereinbaren."
+              },
+              {
+                "bullet_index": 2,
+                "original_zitat": "aktueller Reisepass, Arbeitsvertrag, Gehaltsnachweise der letzten sechs Monate, aktuelle Meldebestätigung, Krankenversicherungsnachweis."
+              },
+              {
+                "bullet_index": 3,
+                "original_zitat": "Beachten Sie Ihre Mitwirkungspflichten nach § 82 AufenthG."
+              },
+              {
+                "bullet_index": 4,
+                "original_zitat": ""
+              }
+            ],
+            "generated_at": "2026-06-28T00:00:00.000Z",
+            "model": "[MOCK] hand-translated, human-reviewed"
+          }
+        },
+        "ru": {
+          "post_open": {
+            "bullets": [
+              {
+                "text": "Ведомство сообщает, что Ваш вид на жительство по § 18g AufenthG (Blue Card EU) истекает. Срок по письму: 14.09.2027."
+              },
+              {
+                "text": "В письме рекомендуется заблаговременно записаться на приём для продления. Точную формулировку и срок см. в немецком оригинале."
+              },
+              {
+                "text": "Документы, которые письмо просит подготовить: загранпаспорт, трудовой договор, справки о зарплате, справка о регистрации, подтверждение медицинской страховки."
+              },
+              {
+                "text": "Письмо указывает на Вашу обязанность содействия по § 82 AufenthG."
+              },
+              {
+                "text": "В письме отмечается, что при своевременной подаче действует фикция сохранения статуса по § 81 Abs. 4 AufenthG."
+              }
+            ],
+            "citations": [
+              {
+                "bullet_index": 0,
+                "original_zitat": "Ihr Aufenthaltstitel nach § 18g AufenthG (Blue Card EU) am 14.09.2027 abläuft."
+              },
+              {
+                "bullet_index": 1,
+                "original_zitat": "Wir empfehlen, mindestens vier Monate vorher einen Termin zur Verlängerung über unser Online-Terminbuchungssystem zu vereinbaren."
+              },
+              {
+                "bullet_index": 2,
+                "original_zitat": "aktueller Reisepass, Arbeitsvertrag, Gehaltsnachweise der letzten sechs Monate, aktuelle Meldebestätigung, Krankenversicherungsnachweis."
+              },
+              {
+                "bullet_index": 3,
+                "original_zitat": "Beachten Sie Ihre Mitwirkungspflichten nach § 82 AufenthG."
+              },
+              {
+                "bullet_index": 4,
+                "original_zitat": ""
+              }
+            ],
+            "generated_at": "2026-06-28T00:00:00.000Z",
+            "model": "[MOCK] hand-translated, human-reviewed"
+          }
+        },
+        "uk": {
+          "post_open": {
+            "bullets": [
+              {
+                "text": "Відомство повідомляє, що Ваш дозвіл на проживання за § 18g AufenthG (Blue Card EU) спливає. Строк за листом: 14.09.2027."
+              },
+              {
+                "text": "У листі рекомендується завчасно записатися на прийом для продовження. Точне формулювання та строк див. у німецькому оригіналі."
+              },
+              {
+                "text": "Документи, які лист просить підготувати: закордонний паспорт, трудовий договір, довідки про зарплату, довідка про реєстрацію, підтвердження медичного страхування."
+              },
+              {
+                "text": "Лист вказує на Ваш обовʼязок співпраці за § 82 AufenthG."
+              },
+              {
+                "text": "У листі зазначається, що за своєчасної подачі діє фікція збереження статусу за § 81 Abs. 4 AufenthG."
+              }
+            ],
+            "citations": [
+              {
+                "bullet_index": 0,
+                "original_zitat": "Ihr Aufenthaltstitel nach § 18g AufenthG (Blue Card EU) am 14.09.2027 abläuft."
+              },
+              {
+                "bullet_index": 1,
+                "original_zitat": "Wir empfehlen, mindestens vier Monate vorher einen Termin zur Verlängerung über unser Online-Terminbuchungssystem zu vereinbaren."
+              },
+              {
+                "bullet_index": 2,
+                "original_zitat": "aktueller Reisepass, Arbeitsvertrag, Gehaltsnachweise der letzten sechs Monate, aktuelle Meldebestätigung, Krankenversicherungsnachweis."
+              },
+              {
+                "bullet_index": 3,
+                "original_zitat": "Beachten Sie Ihre Mitwirkungspflichten nach § 82 AufenthG."
+              },
+              {
+                "bullet_index": 4,
+                "original_zitat": ""
+              }
+            ],
+            "generated_at": "2026-06-28T00:00:00.000Z",
+            "model": "[MOCK] hand-translated, human-reviewed"
+          }
+        },
+        "ar": {
+          "post_open": {
+            "bullets": [
+              {
+                "text": "تُفيد السلطة بأن تصريح إقامتك بموجب § 18g AufenthG (Blue Card EU) ينتهي. الموعد النهائي بحسب الخطاب: 14.09.2027."
+              },
+              {
+                "text": "يوصي الخطاب بحجز موعد للتمديد مبكرًا بوقتٍ كافٍ. للاطلاع على الصياغة والموعد الدقيقين يُرجى مراجعة الأصل الألماني."
+              },
+              {
+                "text": "المستندات التي يطلب الخطاب تجهيزها: جواز السفر، عقد العمل، إثباتات الراتب، شهادة التسجيل، إثبات التأمين الصحي."
+              },
+              {
+                "text": "يشير الخطاب إلى واجب التعاون المترتب عليك بموجب § 82 AufenthG."
+              },
+              {
+                "text": "يذكر الخطاب أن تقديم الطلب في الوقت المناسب يُفعّل افتراض استمرار الصلاحية بموجب § 81 Abs. 4 AufenthG."
+              }
+            ],
+            "citations": [
+              {
+                "bullet_index": 0,
+                "original_zitat": "Ihr Aufenthaltstitel nach § 18g AufenthG (Blue Card EU) am 14.09.2027 abläuft."
+              },
+              {
+                "bullet_index": 1,
+                "original_zitat": "Wir empfehlen, mindestens vier Monate vorher einen Termin zur Verlängerung über unser Online-Terminbuchungssystem zu vereinbaren."
+              },
+              {
+                "bullet_index": 2,
+                "original_zitat": "aktueller Reisepass, Arbeitsvertrag, Gehaltsnachweise der letzten sechs Monate, aktuelle Meldebestätigung, Krankenversicherungsnachweis."
+              },
+              {
+                "bullet_index": 3,
+                "original_zitat": "Beachten Sie Ihre Mitwirkungspflichten nach § 82 AufenthG."
+              },
+              {
+                "bullet_index": 4,
+                "original_zitat": ""
+              }
+            ],
+            "generated_at": "2026-06-28T00:00:00.000Z",
+            "model": "[MOCK] hand-translated, human-reviewed"
+          }
+        },
+        "tr": {
+          "post_open": {
+            "bullets": [
+              {
+                "text": "Makam, § 18g AufenthG (Blue Card EU) kapsamındaki oturma izninizin sona ereceğini bildiriyor. Yazıya göre süre: 14.09.2027."
+              },
+              {
+                "text": "Yazı, uzatma için randevuyu önceden almanızı öneriyor. Kesin ifade ve süre için lütfen Almanca aslına bakın."
+              },
+              {
+                "text": "Yazının hazır bulundurmanızı istediği belgeler: pasaport, iş sözleşmesi, maaş belgeleri, ikamet kaydı belgesi, sağlık sigortası kanıtı."
+              },
+              {
+                "text": "Yazı, § 82 AufenthG uyarınca işbirliği yükümlülüğünüze işaret ediyor."
+              },
+              {
+                "text": "Yazı, zamanında başvuru hâlinde § 81 Abs. 4 AufenthG uyarınca devam fiksiyonunun geçerli olduğunu belirtiyor."
+              }
+            ],
+            "citations": [
+              {
+                "bullet_index": 0,
+                "original_zitat": "Ihr Aufenthaltstitel nach § 18g AufenthG (Blue Card EU) am 14.09.2027 abläuft."
+              },
+              {
+                "bullet_index": 1,
+                "original_zitat": "Wir empfehlen, mindestens vier Monate vorher einen Termin zur Verlängerung über unser Online-Terminbuchungssystem zu vereinbaren."
+              },
+              {
+                "bullet_index": 2,
+                "original_zitat": "aktueller Reisepass, Arbeitsvertrag, Gehaltsnachweise der letzten sechs Monate, aktuelle Meldebestätigung, Krankenversicherungsnachweis."
+              },
+              {
+                "bullet_index": 3,
+                "original_zitat": "Beachten Sie Ihre Mitwirkungspflichten nach § 82 AufenthG."
+              },
+              {
+                "bullet_index": 4,
+                "original_zitat": ""
+              }
+            ],
+            "generated_at": "2026-06-28T00:00:00.000Z",
+            "model": "[MOCK] hand-translated, human-reviewed"
+          }
+        }
+      }
     },
     "required_action": {
       "typ": "termin_buchen",
@@ -126,7 +353,234 @@
     "betreff": "Ihr Kindergeld — Kindergeldnummer [MOCK] 115FK668412",
     "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nFamilienkasse Berlin-Brandenburg, 14460 Potsdam\n\nSehr geehrte Frau Petrov,\n\nin oben genannter Angelegenheit teilen wir Ihnen mit, dass Ihr Antrag auf Kindergeld für Ihren Sohn Lev (geb. 03.11.2024) bewilligt wurde.\n\nMonatlicher Anspruch: 250,00 €\nLaufzeit: ab 01.12.2024\n\nDie Auszahlung erfolgt monatlich auf das uns vorliegende Konto.\n\nMit freundlichen Grüßen\nFamilienkasse Berlin-Brandenburg\nAz. [MOCK] 115FK668412",
     "ai_summary": {
-      "de": "Kindergeld für Ihren Sohn Lev bewilligt: 250 €/Monat ab Dezember 2024."
+      "de": "Kindergeld für Ihren Sohn Lev bewilligt: 250 €/Monat ab Dezember 2024.",
+      "translations": {
+        "en": {
+          "post_open": {
+            "bullets": [
+              {
+                "text": "The authority states that child benefit for Lev (born 03.11.2024) has been approved."
+              },
+              {
+                "text": "Monthly entitlement per letter: 250,00 €."
+              },
+              {
+                "text": "Period per letter: ab 01.12.2024."
+              },
+              {
+                "text": "The letter states that payment is made monthly to the account on file."
+              },
+              {
+                "text": "The letter notes that no action is required."
+              }
+            ],
+            "citations": [
+              {
+                "bullet_index": 0,
+                "original_zitat": "Ihr Antrag auf Kindergeld für Ihren Sohn Lev (geb. 03.11.2024) bewilligt wurde."
+              },
+              {
+                "bullet_index": 1,
+                "original_zitat": "Monatlicher Anspruch: 250,00 €"
+              },
+              {
+                "bullet_index": 2,
+                "original_zitat": "Laufzeit: ab 01.12.2024"
+              },
+              {
+                "bullet_index": 3,
+                "original_zitat": "Die Auszahlung erfolgt monatlich auf das uns vorliegende Konto."
+              },
+              {
+                "bullet_index": 4,
+                "original_zitat": ""
+              }
+            ],
+            "generated_at": "2026-06-28T00:00:00.000Z",
+            "model": "[MOCK] hand-translated, human-reviewed"
+          }
+        },
+        "ru": {
+          "post_open": {
+            "bullets": [
+              {
+                "text": "Ведомство сообщает, что детское пособие на Lev (род. 03.11.2024) одобрено."
+              },
+              {
+                "text": "Ежемесячное право по письму: 250,00 €."
+              },
+              {
+                "text": "Срок действия по письму: ab 01.12.2024."
+              },
+              {
+                "text": "В письме указано, что выплата производится ежемесячно на имеющийся счёт."
+              },
+              {
+                "text": "В письме отмечается, что никаких действий не требуется."
+              }
+            ],
+            "citations": [
+              {
+                "bullet_index": 0,
+                "original_zitat": "Ihr Antrag auf Kindergeld für Ihren Sohn Lev (geb. 03.11.2024) bewilligt wurde."
+              },
+              {
+                "bullet_index": 1,
+                "original_zitat": "Monatlicher Anspruch: 250,00 €"
+              },
+              {
+                "bullet_index": 2,
+                "original_zitat": "Laufzeit: ab 01.12.2024"
+              },
+              {
+                "bullet_index": 3,
+                "original_zitat": "Die Auszahlung erfolgt monatlich auf das uns vorliegende Konto."
+              },
+              {
+                "bullet_index": 4,
+                "original_zitat": ""
+              }
+            ],
+            "generated_at": "2026-06-28T00:00:00.000Z",
+            "model": "[MOCK] hand-translated, human-reviewed"
+          }
+        },
+        "uk": {
+          "post_open": {
+            "bullets": [
+              {
+                "text": "Відомство повідомляє, що допомогу на дитину для Lev (нар. 03.11.2024) схвалено."
+              },
+              {
+                "text": "Щомісячне право за листом: 250,00 €."
+              },
+              {
+                "text": "Строк дії за листом: ab 01.12.2024."
+              },
+              {
+                "text": "У листі зазначено, що виплата здійснюється щомісяця на наявний рахунок."
+              },
+              {
+                "text": "У листі зазначається, що жодних дій не потрібно."
+              }
+            ],
+            "citations": [
+              {
+                "bullet_index": 0,
+                "original_zitat": "Ihr Antrag auf Kindergeld für Ihren Sohn Lev (geb. 03.11.2024) bewilligt wurde."
+              },
+              {
+                "bullet_index": 1,
+                "original_zitat": "Monatlicher Anspruch: 250,00 €"
+              },
+              {
+                "bullet_index": 2,
+                "original_zitat": "Laufzeit: ab 01.12.2024"
+              },
+              {
+                "bullet_index": 3,
+                "original_zitat": "Die Auszahlung erfolgt monatlich auf das uns vorliegende Konto."
+              },
+              {
+                "bullet_index": 4,
+                "original_zitat": ""
+              }
+            ],
+            "generated_at": "2026-06-28T00:00:00.000Z",
+            "model": "[MOCK] hand-translated, human-reviewed"
+          }
+        },
+        "ar": {
+          "post_open": {
+            "bullets": [
+              {
+                "text": "تُفيد السلطة بأنه تمت الموافقة على إعانة الطفل لـ Lev (المولود في 03.11.2024)."
+              },
+              {
+                "text": "الاستحقاق الشهري بحسب الخطاب: 250,00 €."
+              },
+              {
+                "text": "مدة السريان بحسب الخطاب: ab 01.12.2024."
+              },
+              {
+                "text": "يذكر الخطاب أن الصرف يتم شهريًا على الحساب المُسجَّل لدى الجهة."
+              },
+              {
+                "text": "يشير الخطاب إلى أنه لا يلزم اتخاذ أي إجراء."
+              }
+            ],
+            "citations": [
+              {
+                "bullet_index": 0,
+                "original_zitat": "Ihr Antrag auf Kindergeld für Ihren Sohn Lev (geb. 03.11.2024) bewilligt wurde."
+              },
+              {
+                "bullet_index": 1,
+                "original_zitat": "Monatlicher Anspruch: 250,00 €"
+              },
+              {
+                "bullet_index": 2,
+                "original_zitat": "Laufzeit: ab 01.12.2024"
+              },
+              {
+                "bullet_index": 3,
+                "original_zitat": "Die Auszahlung erfolgt monatlich auf das uns vorliegende Konto."
+              },
+              {
+                "bullet_index": 4,
+                "original_zitat": ""
+              }
+            ],
+            "generated_at": "2026-06-28T00:00:00.000Z",
+            "model": "[MOCK] hand-translated, human-reviewed"
+          }
+        },
+        "tr": {
+          "post_open": {
+            "bullets": [
+              {
+                "text": "Makam, Lev (doğum 03.11.2024) için çocuk parasının onaylandığını bildiriyor."
+              },
+              {
+                "text": "Yazıya göre aylık hak: 250,00 €."
+              },
+              {
+                "text": "Yazıya göre süre: ab 01.12.2024."
+              },
+              {
+                "text": "Yazıda, ödemenin kayıtlı hesaba aylık olarak yapıldığı belirtiliyor."
+              },
+              {
+                "text": "Yazı, herhangi bir işlem gerekmediğini belirtiyor."
+              }
+            ],
+            "citations": [
+              {
+                "bullet_index": 0,
+                "original_zitat": "Ihr Antrag auf Kindergeld für Ihren Sohn Lev (geb. 03.11.2024) bewilligt wurde."
+              },
+              {
+                "bullet_index": 1,
+                "original_zitat": "Monatlicher Anspruch: 250,00 €"
+              },
+              {
+                "bullet_index": 2,
+                "original_zitat": "Laufzeit: ab 01.12.2024"
+              },
+              {
+                "bullet_index": 3,
+                "original_zitat": "Die Auszahlung erfolgt monatlich auf das uns vorliegende Konto."
+              },
+              {
+                "bullet_index": 4,
+                "original_zitat": ""
+              }
+            ],
+            "generated_at": "2026-06-28T00:00:00.000Z",
+            "model": "[MOCK] hand-translated, human-reviewed"
+          }
+        }
+      }
     },
     "archetype": "familienkasse-nachweis",
     "auth_channel": "briefpost",
@@ -392,7 +846,269 @@
     "betreff": "IHK-Beitragsbescheid 2026 — Mitgliedsnummer [MOCK] IHK-K-2026/MITGLIED-77418",
     "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nIndustrie- und Handelskammer zu Köln\nUnter Sachsenhausen 10-26, 50667 Köln\n\nSehr geehrter Herr Yıldız,\n\nin oben genannter Angelegenheit setzen wir Ihren IHK-Beitrag für das Beitragsjahr 2026 wie folgt fest:\n\nGrundbeitrag: 195,00 €\nUmlage 0,21 % vom Gewerbeertrag (Bemessungsjahr 2024): 312,40 €\nGesamt: 507,40 €\n\nFälligkeit: 30 Tage nach Bekanntgabe.\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden. Der Widerspruch ist schriftlich bei der IHK Köln, Unter Sachsenhausen 10-26, 50667 Köln einzulegen.\n\nMit freundlichen Grüßen\nIHK Köln — Beitragsabteilung\nAz. [MOCK] IHK-K-2026/MITGLIED-77418",
     "ai_summary": {
-      "de": "IHK-Beitrag 2026: 507,40 € (Grundbeitrag 195 € + Umlage 312,40 €). Widerspruchsfrist 1 Monat."
+      "de": "IHK-Beitrag 2026: 507,40 € (Grundbeitrag 195 € + Umlage 312,40 €). Widerspruchsfrist 1 Monat.",
+      "translations": {
+        "en": {
+          "post_open": {
+            "bullets": [
+              {
+                "text": "The letter sets the basic contribution at: 195,00 €."
+              },
+              {
+                "text": "The letter sets the levy of 0,21 % on the business profit (assessment year 2024) at: 312,40 €."
+              },
+              {
+                "text": "Total amount per letter: 507,40 €."
+              },
+              {
+                "text": "The letter states the amount is due 30 days after notification (Fälligkeit: 30 Tage nach Bekanntgabe)."
+              },
+              {
+                "text": "The letter mentions an objection period of one month after notification (Widerspruch, § 70 VwGO). Exact deadline: please check the German original."
+              },
+              {
+                "text": "The letter notes that an application for a deviating assessment (hardship) is possible."
+              }
+            ],
+            "citations": [
+              {
+                "bullet_index": 0,
+                "original_zitat": "Grundbeitrag: 195,00 €"
+              },
+              {
+                "bullet_index": 1,
+                "original_zitat": "Umlage 0,21 % vom Gewerbeertrag (Bemessungsjahr 2024): 312,40 €"
+              },
+              {
+                "bullet_index": 2,
+                "original_zitat": "Gesamt: 507,40 €"
+              },
+              {
+                "bullet_index": 3,
+                "original_zitat": "Fälligkeit: 30 Tage nach Bekanntgabe."
+              },
+              {
+                "bullet_index": 4,
+                "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden."
+              },
+              {
+                "bullet_index": 5,
+                "original_zitat": ""
+              }
+            ],
+            "generated_at": "2026-06-28T00:00:00.000Z",
+            "model": "[MOCK] hand-translated, human-reviewed"
+          }
+        },
+        "ru": {
+          "post_open": {
+            "bullets": [
+              {
+                "text": "В письме установлен основной взнос: 195,00 €."
+              },
+              {
+                "text": "В письме установлен сбор 0,21 % с дохода от предпринимательства (расчётный год 2024): 312,40 €."
+              },
+              {
+                "text": "Общая сумма по письму: 507,40 €."
+              },
+              {
+                "text": "В письме указано, что сумма подлежит уплате через 30 дней после уведомления (Fälligkeit: 30 Tage nach Bekanntgabe)."
+              },
+              {
+                "text": "В письме упоминается срок для возражения один месяц после уведомления (Widerspruch, § 70 VwGO). Точный срок см. в немецком оригинале."
+              },
+              {
+                "text": "В письме отмечается возможность подать заявление об отклоняющемся начислении (случай неоправданной тяготы)."
+              }
+            ],
+            "citations": [
+              {
+                "bullet_index": 0,
+                "original_zitat": "Grundbeitrag: 195,00 €"
+              },
+              {
+                "bullet_index": 1,
+                "original_zitat": "Umlage 0,21 % vom Gewerbeertrag (Bemessungsjahr 2024): 312,40 €"
+              },
+              {
+                "bullet_index": 2,
+                "original_zitat": "Gesamt: 507,40 €"
+              },
+              {
+                "bullet_index": 3,
+                "original_zitat": "Fälligkeit: 30 Tage nach Bekanntgabe."
+              },
+              {
+                "bullet_index": 4,
+                "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden."
+              },
+              {
+                "bullet_index": 5,
+                "original_zitat": ""
+              }
+            ],
+            "generated_at": "2026-06-28T00:00:00.000Z",
+            "model": "[MOCK] hand-translated, human-reviewed"
+          }
+        },
+        "uk": {
+          "post_open": {
+            "bullets": [
+              {
+                "text": "У листі встановлено основний внесок: 195,00 €."
+              },
+              {
+                "text": "У листі встановлено збір 0,21 % з доходу від підприємництва (розрахунковий рік 2024): 312,40 €."
+              },
+              {
+                "text": "Загальна сума за листом: 507,40 €."
+              },
+              {
+                "text": "У листі зазначено, що сума підлягає сплаті через 30 днів після повідомлення (Fälligkeit: 30 Tage nach Bekanntgabe)."
+              },
+              {
+                "text": "У листі згадується строк для заперечення один місяць після повідомлення (Widerspruch, § 70 VwGO). Точний строк див. у німецькому оригіналі."
+              },
+              {
+                "text": "У листі зазначається можливість подати заяву про відхильне нарахування (випадок надмірного тягаря)."
+              }
+            ],
+            "citations": [
+              {
+                "bullet_index": 0,
+                "original_zitat": "Grundbeitrag: 195,00 €"
+              },
+              {
+                "bullet_index": 1,
+                "original_zitat": "Umlage 0,21 % vom Gewerbeertrag (Bemessungsjahr 2024): 312,40 €"
+              },
+              {
+                "bullet_index": 2,
+                "original_zitat": "Gesamt: 507,40 €"
+              },
+              {
+                "bullet_index": 3,
+                "original_zitat": "Fälligkeit: 30 Tage nach Bekanntgabe."
+              },
+              {
+                "bullet_index": 4,
+                "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden."
+              },
+              {
+                "bullet_index": 5,
+                "original_zitat": ""
+              }
+            ],
+            "generated_at": "2026-06-28T00:00:00.000Z",
+            "model": "[MOCK] hand-translated, human-reviewed"
+          }
+        },
+        "ar": {
+          "post_open": {
+            "bullets": [
+              {
+                "text": "يحدد الخطاب الاشتراك الأساسي بمبلغ: 195,00 €."
+              },
+              {
+                "text": "يحدد الخطاب الرسم البالغ 0,21 % من ربح النشاط التجاري (سنة التقدير 2024) بمبلغ: 312,40 €."
+              },
+              {
+                "text": "المبلغ الإجمالي بحسب الخطاب: 507,40 €."
+              },
+              {
+                "text": "يذكر الخطاب أن المبلغ يُستحق بعد 30 يومًا من الإبلاغ (Fälligkeit: 30 Tage nach Bekanntgabe)."
+              },
+              {
+                "text": "يذكر الخطاب مهلة اعتراض مدتها شهر واحد بعد الإبلاغ (Widerspruch، § 70 VwGO). للاطلاع على الموعد الدقيق يُرجى مراجعة الأصل الألماني."
+              },
+              {
+                "text": "يشير الخطاب إلى إمكانية تقديم طلب لتقدير مغاير (حالة العسر)."
+              }
+            ],
+            "citations": [
+              {
+                "bullet_index": 0,
+                "original_zitat": "Grundbeitrag: 195,00 €"
+              },
+              {
+                "bullet_index": 1,
+                "original_zitat": "Umlage 0,21 % vom Gewerbeertrag (Bemessungsjahr 2024): 312,40 €"
+              },
+              {
+                "bullet_index": 2,
+                "original_zitat": "Gesamt: 507,40 €"
+              },
+              {
+                "bullet_index": 3,
+                "original_zitat": "Fälligkeit: 30 Tage nach Bekanntgabe."
+              },
+              {
+                "bullet_index": 4,
+                "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden."
+              },
+              {
+                "bullet_index": 5,
+                "original_zitat": ""
+              }
+            ],
+            "generated_at": "2026-06-28T00:00:00.000Z",
+            "model": "[MOCK] hand-translated, human-reviewed"
+          }
+        },
+        "tr": {
+          "post_open": {
+            "bullets": [
+              {
+                "text": "Yazı, temel katkı payını şöyle belirliyor: 195,00 €."
+              },
+              {
+                "text": "Yazı, işletme kârı üzerinden 0,21 % oranındaki katılım payını (değerlendirme yılı 2024) şöyle belirliyor: 312,40 €."
+              },
+              {
+                "text": "Yazıya göre toplam tutar: 507,40 €."
+              },
+              {
+                "text": "Yazı, tutarın bildirimden 30 gün sonra muaccel olduğunu belirtiyor (Fälligkeit: 30 Tage nach Bekanntgabe)."
+              },
+              {
+                "text": "Yazı, bildirimden sonra bir aylık itiraz süresinden söz ediyor (Widerspruch, § 70 VwGO). Kesin süre için lütfen Almanca aslına bakın."
+              },
+              {
+                "text": "Yazı, sapan bir tahakkuk (mağduriyet hâli) için başvurunun mümkün olduğunu belirtiyor."
+              }
+            ],
+            "citations": [
+              {
+                "bullet_index": 0,
+                "original_zitat": "Grundbeitrag: 195,00 €"
+              },
+              {
+                "bullet_index": 1,
+                "original_zitat": "Umlage 0,21 % vom Gewerbeertrag (Bemessungsjahr 2024): 312,40 €"
+              },
+              {
+                "bullet_index": 2,
+                "original_zitat": "Gesamt: 507,40 €"
+              },
+              {
+                "bullet_index": 3,
+                "original_zitat": "Fälligkeit: 30 Tage nach Bekanntgabe."
+              },
+              {
+                "bullet_index": 4,
+                "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden."
+              },
+              {
+                "bullet_index": 5,
+                "original_zitat": ""
+              }
+            ],
+            "generated_at": "2026-06-28T00:00:00.000Z",
+            "model": "[MOCK] hand-translated, human-reviewed"
+          }
+        }
+      }
     },
     "archetype": "ihk-beitrag",
     "auth_channel": "briefpost",
