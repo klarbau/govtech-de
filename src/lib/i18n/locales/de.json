@@ -4031,6 +4031,7 @@
       "button": "In EUDI Wallet exportieren (Vorschau)",
       "dialog_title": "EUDI-Wallet-Export — Vorschau [MOCK]",
       "disclaimer_2027": "[MOCK] Simulierte EUDI-Wallet-Vorschau. Die EUDI Wallet befindet sich 2027 im Rollout; hier wird kein echter Nachweis exportiert.",
+      "rechtsgrundlage": "Rechtsgrundlage: Digitale-Identitäten-Gesetz (DIdG) — Regierungsentwurf, Kabinettsbeschluss vom 20. Mai 2026; verantwortliche Stelle ist das BMDS. Die EUDI-Wallet wird ab dem 2. Januar 2027 flächendeckend bereitgestellt (unionsrechtliche Frist: 24. Dezember 2026).",
       "download": "Vorschau herunterladen",
       "mock_badge": "[MOCK]",
       "close": "Schließen",
@@ -4526,7 +4527,9 @@
       "badge_encrypted": "Ende-zu-Ende verschlüsselt",
       "badge_germany": "Speicherung in Deutschland",
       "badge_iso": "ISO/IEC 27001",
-      "badge_dsgvo": "DSGVO-konform"
+      "badge_dsgvo": "DSGVO-konform",
+      "rechtsgrundlage": "Rechtsgrundlage für digitale Identität und Wallet: Digitale-Identitäten-Gesetz (DIdG) — Regierungsentwurf, Kabinettsbeschluss vom 20. Mai 2026; verantwortliche Stelle ist das Bundesministerium für Digitales und Staatsmodernisierung (BMDS). Die EUDI-Wallet wird ab dem 2. Januar 2027 flächendeckend bereitgestellt (unionsrechtliche Frist: 24. Dezember 2026).",
+      "noots": "Der register-übergreifende Datenaustausch nach dem Once-Only-Prinzip soll künftig über das NOOTS (Nationales Once-Only-Technical-System) laufen — Rechtsgrundlage Registermodernisierungsgesetz (RegMoG). NOOTS ist seit 2025 in Erprobung (Referenzumgebung, Pilot Elterngeld) und noch nicht im Produktivbetrieb."
     },
     "aktivitaet": {
       "title": "Letzte Aktivitäten",

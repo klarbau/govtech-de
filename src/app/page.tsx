@@ -270,6 +270,38 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* ── Evidence: Warum DeutschlandID-first? (kommunal.de) ────────────── */}
+        <section className="evidence" aria-labelledby="evidence-title">
+          <div className="evidence-head">
+            <h2 id="evidence-title">Warum DeutschlandID-first?</h2>
+            <p className="section-sub">
+              Anmeldung und Identität entscheiden, ob ein Vorgang gelingt – oder
+              abgebrochen wird.
+            </p>
+          </div>
+          <ul className="evidence-grid">
+            <li className="evidence-fact">
+              <span className="evidence-num">91 %</span>
+              <p className="evidence-text">
+                brechen in Hamburg den Vorgang ab, sobald sie im Online-Antrag auf
+                die BundID-Anmeldung treffen.
+              </p>
+            </li>
+            <li className="evidence-fact">
+              <span className="evidence-num">14 von 306</span>
+              <p className="evidence-text">
+                bundesfinanzierten EfA-Lösungen werden flächendeckend nachgenutzt –
+                rund fünf Prozent.
+              </p>
+            </li>
+          </ul>
+          <p className="evidence-source">
+            Zahlen: kommunal.de. Der Deutschland-Stack ist seit 2026 in Pilotierung
+            (Pilot 2026: 50–100 Kommunen, 1–2 Bundesleistungen; MVP 2028; Vollausbau
+            ab 2030).
+          </p>
+        </section>
+
         {/* ── Trust-principles band ─────────────────────────────────────── */}
         <section className="principles" id="sicherheit" aria-labelledby="principles-title">
           <h2 id="principles-title" className="sr-only">

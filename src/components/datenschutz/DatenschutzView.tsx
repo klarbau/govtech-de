@@ -702,6 +702,8 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
             {t('datenschutz.footer.badge_dsgvo')}
           </li>
         </ul>
+        <p className="ds2-footer-basis">{t('datenschutz.footer.rechtsgrundlage')}</p>
+        <p className="ds2-footer-basis">{t('datenschutz.footer.noots')}</p>
       </div>
 
       <Dialog open={logDialogOpen} onOpenChange={setLogDialogOpen}>

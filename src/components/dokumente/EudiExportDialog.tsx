@@ -191,6 +191,10 @@ export function EudiExportDialog({ open, onOpenChange, doc }: EudiExportDialogPr
               <p>{t('disclaimer_2027')}</p>
             </div>
 
+            <p className="text-[11px] leading-relaxed text-muted-foreground">
+              {t('rechtsgrundlage')}
+            </p>
+
             <div>
               <div className="mb-1 flex items-center gap-2 text-xs font-medium text-muted-foreground">
                 <span>{t('payload_label')}</span>

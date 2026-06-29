@@ -2392,6 +2392,11 @@ button { font: inherit; cursor: pointer; }
   color: var(--ink-2); font-size: 12.5px; font-weight: 500;
 }
 .ds2-badges li svg { width: 14px; height: 14px; color: var(--green-600); }
+.ds2-footer-basis {
+  flex-basis: 100%; margin: 0;
+  font-size: 12px; line-height: 1.6; color: var(--ink-3);
+}
+.ds2-footer-basis + .ds2-footer-basis { margin-top: 2px; }
 
 @media (max-width: 980px) {
   .ds2-layout { grid-template-columns: minmax(0, 1fr); }
@@ -2757,6 +2762,36 @@ button { font: inherit; cursor: pointer; }
 }
 .principle-desc { font-size: 13.5px; color: var(--ink-2); line-height: 1.55; margin: 0; }
 
+/* ── Evidence band: „Warum DeutschlandID-first?" (kommunal.de) ───────────── */
+.evidence { margin-bottom: 72px; }
+.evidence-head { margin-bottom: 24px; }
+.evidence-head h2 {
+  font-family: var(--font-display);
+  font-size: 28px; font-weight: 600; letter-spacing: -0.015em;
+  margin: 0; color: var(--ink);
+}
+.evidence-grid {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+}
+.evidence-fact {
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+}
+.evidence-num {
+  font-family: var(--font-display);
+  font-size: 34px; font-weight: 600; letter-spacing: -0.02em;
+  color: var(--brand-600); font-variant-numeric: tabular-nums;
+  line-height: 1.05;
+}
+.evidence-text { font-size: 14px; color: var(--ink-2); line-height: 1.55; margin: 0; }
+.evidence-source {
+  margin: 16px 0 0; font-size: 12.5px; color: var(--ink-3); line-height: 1.6;
+}
+
 /* ── 4.5 Footer trust bar ────────────────────────────────────────────────── */
 .landing-footer {
   border-top: 1px solid var(--border);
@@ -2867,6 +2902,7 @@ button { font: inherit; cursor: pointer; }
   .hero-cta .btn { flex-basis: 100%; }
   .flow-recipients { grid-template-columns: 1fr; }
   .lebenslagen-grid { grid-template-columns: 1fr; }
+  .evidence-grid { grid-template-columns: 1fr; }
 }
 
 
