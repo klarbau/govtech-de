@@ -23,7 +23,8 @@
       "PowerShell(node*)",
       "PowerShell(git status*)",
       "PowerShell(git diff*)",
-      "PowerShell(git log*)"
+      "PowerShell(git log*)",
+      "mcp__codegraph__*"
     ],
     "deny": [
       "Bash(rm -rf:*)",
@@ -44,6 +45,16 @@
           {
             "type": "command",
             "command": "\"$CLAUDE_PROJECT_DIR\"/scripts/install_pkgs.sh"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "codegraph prompt-hook"
           }
         ]
       }
