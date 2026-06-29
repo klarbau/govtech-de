@@ -28,6 +28,11 @@ function resolveAjv2020(): string | null {
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // Allow the Cloudflare Tunnel host to make cross-origin dev requests
+  // (HMR WebSocket + /_next assets) so live-reload works over the public
+  // preview URL. Quick tunnels are *.trycloudflare.com; add a named tunnel
+  // host here too if one is provisioned.
+  allowedDevOrigins: ['*.trycloudflare.com'],
   // Pin the file-tracing root to this project. A parent-dir lockfile
   // (C:\Users\iaiaa\package-lock.json) otherwise makes Next infer the wrong
   // workspace root, which can duplicate bundled modules.
