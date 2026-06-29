@@ -57,6 +57,26 @@ Whenever you add or change something the user can see or interact with (a screen
 
 Formal gates (axe a11y, `next build`, spine e2e) need a clean prod build that pauses :3000 — coordinate that pause with the user rather than silently killing their dev server.
 
+## Live preview / dev tunnel (always-on)
+
+The dev server is exposed publicly for the user to watch progress live, run as **systemd** units (survive reboot, auto-restart on crash):
+
+- `govtech-dev.service` — `next dev` on `localhost:3000` (HMR). ExecStart runs the bin via `node node_modules/next/dist/bin/next dev` (the pnpm `.bin/next` shim has a broken shebang on this host).
+- `govtech-tunnel.service` — `cloudflared tunnel --url http://localhost:3000` (Requires/After the dev unit), giving a public `*.trycloudflare.com` URL with full HMR over WebSocket. `next.config.ts` carries `allowedDevOrigins: ['*.trycloudflare.com']` so Next 15 doesn't block the cross-origin HMR socket.
+
+Operate it:
+
+```bash
+# current public URL (a *quick* tunnel — the host ROTATES on every tunnel restart)
+journalctl -u govtech-tunnel.service | grep -oE "https://[a-z0-9-]+\.trycloudflare\.com" | tail -1
+systemctl status  govtech-dev.service govtech-tunnel.service   # health
+journalctl -u govtech-dev.service -f                           # live build log / errors
+systemctl restart govtech-dev.service                          # after next.config.ts / .env.local / dep changes (NOT picked up by HMR)
+systemctl restart govtech-tunnel.service                       # only if the tunnel dies — note the URL changes
+```
+
+`.tsx/.ts/.css/de.json` edits reload live via HMR — no restart. Setup gotcha: deps install with **`npx -y pnpm@10.15.0 install`** (the `pnpm-workspace.yaml` needs pnpm 10; corepack's pnpm 11 crashes on `node:sqlite` under Node 20). For a **stable** address instead of the rotating one, switch to a named Cloudflare tunnel (`cloudflared login`). Do **not** background the dev server with bare `&`/`nohup` — it gets killed in the sandbox; use the systemd unit.
+
 ## Folder structure
 
 ```
