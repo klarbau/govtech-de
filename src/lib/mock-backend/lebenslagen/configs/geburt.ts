@@ -206,7 +206,7 @@ export const geburtConfig: LebenslageConfig = {
       block: 'D',
       gate: 'eid',
       aktion:
-        'Kindergeld festsetzen — heute antragsbasiert (§ 67 EStG); antragslose Festsetzung als Gesetzentwurf eingebracht (BT-Drs. 21/5874), noch nicht in Kraft [ZUKUNFT]',
+        'Kindergeld festsetzen — heute antragsbasiert (§ 67 EStG); antragslose Festsetzung als Gesetzentwurf eingebracht (BT-Drs. 21/5874, Schlussabstimmung terminiert für 09.07.2026), noch nicht in Kraft [ZUKUNFT]',
       kurzlabel: 'Kindergeld',
       behoerdeKurz: 'Familienkasse',
       agentLabel:

@@ -627,7 +627,7 @@
     "kindergeld": {
       "title": "Çocuk parası (Kindergeld)",
       "lead": "Bugün önceden doldurulmuş bir başvuru; 2027'den itibaren tespit büyük ölçüde otomatik yürür — siz yalnızca banka bilgilerini onaylarsınız.",
-      "antragslos_note": "Otomatik ödeme yasayla kabul edildi ancak henüz yürürlükte değil (2027'den itibaren kademeli). Bu demo gelecekteki süreci gösterir: nüfus sicili, Federal Merkezi Vergi Dairesi (BZSt) ve aile yardım kasası (Familienkasse) verileri paylaşır; eID'nizle yalnızca banka bilgilerini onaylarsınız.",
+      "antragslos_note": "Otomatik ödeme henüz yürürlükteki hukuk değil: Federal Kabine (Bundeskabinett) yasa tasarısını 18.03.2026 tarihinde kabul etti; Federal Meclis'teki (Bundestag) nihai oylama ise 09.07.2026 tarihine planlandı. Yürürlüğe girişi 2027 için kademeli olarak öngörülüyor. Bu demo gelecekteki süreci gösterir: nüfus sicili, Federal Merkezi Vergi Dairesi (BZSt) ve aile yardım kasası (Familienkasse) verileri paylaşır; eID'nizle yalnızca banka bilgilerini onaylarsınız.",
       "voraussetzungen": {
         "0": "Almanya'da kayıtlı ve vergi kimlik numarası atanmış çocuk.",
         "1": "Ebeveynin çocuk parası hakkı (§ 62 EStG)."
@@ -672,7 +672,7 @@
           "bedeutung": "Çocuk parası (Kindergeld) hakkı; ödeme doğum ayından itibaren, geriye dönük en fazla 6 ay."
         },
         "btdrs": {
-          "bedeutung": "Başvurusuz ödeme için planlanan yasal dayanak (henüz yürürlükte değil)."
+          "bedeutung": "Başvurusuz ödeme için yasa tasarısı (Kabine 18.03.2026; Federal Meclis'teki nihai oylama 09.07.2026 tarihine planlandı) — henüz yürürlükte değil."
         }
       },
       "dauer_geschaetzt": "yaklaşık 10 dk",

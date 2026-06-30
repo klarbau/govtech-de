@@ -627,7 +627,7 @@
     "kindergeld": {
       "title": "Child benefit (Kindergeld)",
       "lead": "Today a pre-filled application; from 2027 the determination will largely run automatically — you only confirm the bank details.",
-      "antragslos_note": "Automatic payment has been enacted in law but is not yet in force (phased from 2027). This demo shows the future procedure: the population register, the Federal Central Tax Office (BZSt) and the family benefits office (Familienkasse) exchange the data; with your eID you only confirm the bank details.",
+      "antragslos_note": "Automatic payment is not yet applicable law: the Federal Cabinet (Bundeskabinett) approved the bill on 18.03.2026; the final vote in the Bundestag is scheduled for 09.07.2026. Entry into force is planned in stages for 2027. This demo shows the future procedure: the population register, the Federal Central Tax Office (BZSt) and the family benefits office (Familienkasse) exchange the data; with your eID you only confirm the bank details.",
       "voraussetzungen": {
         "0": "Child registered in Germany with an allocated tax ID.",
         "1": "Child benefit entitlement of the parent (§ 62 EStG)."
@@ -672,7 +672,7 @@
           "bedeutung": "Entitlement to child benefit (Kindergeld); payment from the month of birth, retroactive for max. 6 months."
         },
         "btdrs": {
-          "bedeutung": "Planned legal basis for application-free payment (not yet in force)."
+          "bedeutung": "Bill for application-free payment (Cabinet 18.03.2026; final vote in the Bundestag scheduled for 09.07.2026) — not yet in force."
         }
       },
       "dauer_geschaetzt": "approx. 10 min",

@@ -626,7 +626,7 @@
     "kindergeld": {
       "title": "Kindergeld",
       "lead": "Heute ein vorausgefüllter Antrag; ab 2027 läuft die Festsetzung weitgehend automatisch — Sie bestätigen nur die Bankverbindung.",
-      "antragslos_note": "Die automatische Auszahlung ist gesetzlich beschlossen, aber noch nicht in Kraft (gestuft ab 2027). Diese Demo zeigt den künftigen Ablauf: Melderegister, BZSt und Familienkasse tauschen die Daten aus; Sie bestätigen mit Ihrer eID nur die Bankverbindung.",
+      "antragslos_note": "Die automatische Auszahlung ist noch nicht geltendes Recht: Den Gesetzentwurf hat das Bundeskabinett am 18.03.2026 beschlossen; die Schlussabstimmung im Bundestag ist für den 09.07.2026 terminiert. Das Inkrafttreten ist gestuft für 2027 vorgesehen. Diese Demo zeigt den künftigen Ablauf: Melderegister, BZSt und Familienkasse tauschen die Daten aus; Sie bestätigen mit Ihrer eID nur die Bankverbindung.",
       "voraussetzungen": {
         "0": "In Deutschland gemeldetes Kind mit zugeteilter Steuer-ID.",
         "1": "Kindergeldberechtigung des Elternteils (§ 62 EStG)."
@@ -671,7 +671,7 @@
           "bedeutung": "Anspruch auf Kindergeld; Auszahlung ab Geburtsmonat, rückwirkend max. 6 Monate."
         },
         "btdrs": {
-          "bedeutung": "Geplante Rechtsgrundlage für die antraglose Auszahlung (noch nicht in Kraft)."
+          "bedeutung": "Gesetzentwurf für die antragslose Auszahlung (Kabinett 18.03.2026; Schlussabstimmung im Bundestag terminiert für 09.07.2026) — noch nicht in Kraft."
         }
       },
       "dauer_geschaetzt": "ca. 10 Min",

@@ -3,8 +3,9 @@
  * vorausgefüllter Antrag (heute). Spec §3.3.
  *
  * mode: antragslos · zukunft: true.
- * Realismus (verdict-CORRECTED §3.3/§8): antragslos ist legislatiert, aber NICHT
- * in Kraft (Kabinett 18.03.2026, BT-Drs. 21/5874; gestuft 03/2027 → 11/2027).
+ * Realismus (verdict-CORRECTED §3.3/§8): antragslos ist Kabinettsentwurf in
+ * parlamentarischer Beratung, NICHT in Kraft (Kabinett 18.03.2026, BT-Drs. 21/5874;
+ * Schlussabstimmung BT terminiert 09.07.2026; gestuft 03/2027 → 11/2027).
  * Der GESAMTE Auto-Flow trägt **[ZUKUNFT 2027]**; heute = § 67 EStG
  * antragspflichtig (ehrlicher Heute-Wert = vorausgefüllter Antrag). NUR
  * Melderegister→BZSt ist produktiv (kein Heute-realer BZSt→Familienkasse-Push).
