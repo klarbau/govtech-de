@@ -8,7 +8,8 @@
  * (strenge Datenminimierung: nur Name/Geb.datum/Anschrift/Status/Bezugszeitraum)
  * — KEIN Prefill-Push; als „Prüfung/Plausibilisierung" streamen (Ergebnis = keine),
  * NICHT in der Wertquittung doppelt zählen. Kein konkreter Wohngeld-Höhe
- * (unverbindliche Schätzung, [MOCK]). § 7-Ausschluss (Bürgergeld) ehrlich nennen.
+ * (unverbindliche Schätzung, [MOCK]). § 7-Ausschluss (Grundsicherungsgeld, vormals
+ * Bürgergeld — Umbenennung in Kraft seit 01.07.2026) ehrlich nennen.
  */
 import type { LebenslageConfig } from '../types';
 
@@ -196,7 +197,7 @@ export const wohngeldConfig: LebenslageConfig = {
       behoerdeId: 'bundesagentur-fuer-arbeit-datenabgleich',
       block: 'A',
       gate: 'auto',
-      aktion: 'Ausschlussprüfung Bürgergeld/ALG (§ 7) — Prüfung/Plausibilisierung',
+      aktion: 'Ausschlussprüfung Grundsicherungsgeld (§ 7) — Prüfung/Plausibilisierung',
       kurzlabel: 'Ausschlussprüfung',
       behoerdeKurz: 'Bundesagentur für Arbeit',
       agentLabel: 'Die Bundesagentur prüft einen möglichen Leistungsausschluss nach § 7 WoGG',
@@ -251,7 +252,7 @@ export const wohngeldConfig: LebenslageConfig = {
           absender: 'Bezirksamt Mitte von Berlin — Wohngeldstelle',
           betreffTemplate: 'Wohngeldbescheid — Wohngeldnummer {az}',
           floskel:
-            'Sehr geehrte/r Herr/Frau {name},\n\nin oben genannter Angelegenheit erlassen wir Ihren Wohngeldbescheid (Wohngeldnummer {az}). Die konkrete Höhe ergibt sich aus dem beigefügten Bescheid; bei laufendem Bürgergeld-/ALG-II-Bezug ist Wohngeld nach § 7 WoGG ausgeschlossen. Die Bewilligung gilt i.d.R. für 12 Monate (§ 25 WoGG); Zahlbeginn ab dem {datum}.\n\n[MOCK – Verwaltungsdemo, keine echten Daten]',
+            'Sehr geehrte/r Herr/Frau {name},\n\nin oben genannter Angelegenheit erlassen wir Ihren Wohngeldbescheid (Wohngeldnummer {az}). Die konkrete Höhe ergibt sich aus dem beigefügten Bescheid; bei laufendem Grundsicherungsgeld-Bezug (vormals Bürgergeld) ist Wohngeld nach § 7 WoGG ausgeschlossen. Die Bewilligung gilt i.d.R. für 12 Monate (§ 25 WoGG); Zahlbeginn ab dem {datum}.\n\n[MOCK – Verwaltungsdemo, keine echten Daten]',
           abschluss: 'Mit freundlichen Grüßen, Wohngeldstelle Mitte, Az. {az}',
           archetype: 'bescheid',
         },

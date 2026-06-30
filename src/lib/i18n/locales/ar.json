@@ -143,7 +143,7 @@
         "items": {
           "arbeit_aufnehmen": "بدء العمل",
           "arbeitslos": "التسجيل كعاطل عن العمل",
-          "buergergeld": "طلب دخل المواطن (Bürgergeld)"
+          "buergergeld": "طلب Grundsicherungsgeld"
         }
       },
       "migration": {
@@ -908,7 +908,7 @@
       "voraussetzungen": {
         "0": "مسكن خاص مع عبء إيجار (محل الإقامة الرئيسي).",
         "1": "دخل ضمن حدود إعانة السكن (Wohngeld).",
-        "2": "عدم تلقّي إعانة المواطن (Bürgergeld) / ALG II حاليًا (الاستثناء بموجب § 7 WoGG)."
+        "2": "عدم تلقّي Grundsicherungsgeld حاليًا (سابقًا Bürgergeld؛ الاستثناء بموجب § 7 WoGG)."
       },
       "dokumente": {
         "0": "عقد الإيجار",
@@ -964,7 +964,7 @@
           "bedeutung": "مطابقة بيانات تبدأها الجهة للتحقق من المعقولية بعد تقديم الطلب."
         },
         "wogg7": {
-          "bedeutung": "الاستثناء عند تلقّي إعانة المواطن (Bürgergeld) / ALG II وما شابه."
+          "bedeutung": "الاستثناء عند تلقّي Grundsicherungsgeld (سابقًا Bürgergeld) وما شابه."
         },
         "wogg2425": {
           "bedeutung": "إصدار القرار؛ الموافقة عادةً لمدة 12 شهرًا."
@@ -3404,7 +3404,7 @@
             "label": "الضرائب (Finanzamt / BZSt)"
           },
           "sozial": {
-            "label": "المزايا الاجتماعية (DRV / GKV / Bürgergeld)"
+            "label": "المزايا الاجتماعية (DRV / GKV / Grundsicherungsgeld)"
           },
           "familie": {
             "label": "الأسرة (Familienkasse / Elterngeld)"

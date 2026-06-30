@@ -143,7 +143,7 @@
         "items": {
           "arbeit_aufnehmen": "Розпочати роботу",
           "arbeitslos": "Стати на облік як безробітний",
-          "buergergeld": "Подати на базову допомогу (Bürgergeld)"
+          "buergergeld": "Подати на Grundsicherungsgeld"
         }
       },
       "migration": {
@@ -908,7 +908,7 @@
       "voraussetzungen": {
         "0": "Власне житло з витратами на оренду (основне місце проживання).",
         "1": "Дохід у межах граничних значень житлової допомоги (Wohngeld).",
-        "2": "Відсутність поточного отримання громадянської допомоги (Bürgergeld) / ALG II (виключення згідно з § 7 WoGG)."
+        "2": "Відсутність поточного отримання Grundsicherungsgeld (раніше Bürgergeld; виключення згідно з § 7 WoGG)."
       },
       "dokumente": {
         "0": "Договір оренди",
@@ -964,7 +964,7 @@
           "bedeutung": "Ініційована органом звірка даних для перевірки правдоподібності після подання заяви."
         },
         "wogg7": {
-          "bedeutung": "Виключення при отриманні громадянської допомоги (Bürgergeld) / ALG II тощо."
+          "bedeutung": "Виключення при отриманні Grundsicherungsgeld (раніше Bürgergeld) тощо."
         },
         "wogg2425": {
           "bedeutung": "Винесення рішення; схвалення, як правило, на 12 місяців."
@@ -3404,7 +3404,7 @@
             "label": "Податки (Finanzamt / BZSt)"
           },
           "sozial": {
-            "label": "Соціальні виплати (DRV / GKV / Bürgergeld)"
+            "label": "Соціальні виплати (DRV / GKV / Grundsicherungsgeld)"
           },
           "familie": {
             "label": "Сім'я (Familienkasse / Elterngeld)"

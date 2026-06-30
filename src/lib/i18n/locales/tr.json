@@ -143,7 +143,7 @@
         "items": {
           "arbeit_aufnehmen": "İşe başlama",
           "arbeitslos": "İşsiz olarak kaydolma",
-          "buergergeld": "Vatandaş geliri başvurusu (Bürgergeld)"
+          "buergergeld": "Grundsicherungsgeld başvurusu"
         }
       },
       "migration": {
@@ -908,7 +908,7 @@
       "voraussetzungen": {
         "0": "Kira yükü olan kendine ait konut (ana ikametgâh).",
         "1": "Konut yardımı (Wohngeld) sınırları içinde gelir.",
-        "2": "Devam eden vatandaş parası (Bürgergeld) / ALG II alımının olmaması (istisna § 7 WoGG)."
+        "2": "Devam eden Grundsicherungsgeld alımının olmaması (eski adıyla Bürgergeld; istisna § 7 WoGG)."
       },
       "dokumente": {
         "0": "Kira sözleşmesi",
@@ -964,7 +964,7 @@
           "bedeutung": "Başvurudan sonra makullük kontrolü için makam tarafından başlatılan veri karşılaştırması."
         },
         "wogg7": {
-          "bedeutung": "Vatandaş parası (Bürgergeld) / ALG II vb. alımında istisna."
+          "bedeutung": "Grundsicherungsgeld (eski adıyla Bürgergeld) vb. alımında istisna."
         },
         "wogg2425": {
           "bedeutung": "Kararın çıkarılması; onay genellikle 12 ay için."
@@ -3404,7 +3404,7 @@
             "label": "Vergi (Finanzamt / BZSt)"
           },
           "sozial": {
-            "label": "Sosyal yardımlar (DRV / GKV / Bürgergeld)"
+            "label": "Sosyal yardımlar (DRV / GKV / Grundsicherungsgeld)"
           },
           "familie": {
             "label": "Aile (Familienkasse / Elterngeld)"

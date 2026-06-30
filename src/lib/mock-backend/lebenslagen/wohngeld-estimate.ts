@@ -103,7 +103,7 @@ export function estimateWohngeldAnspruch(
     persona.wohngeld_indikation === true || beschaeftigungIndiziert;
   if (!einkommensIndikation) return null;
 
-  // (3) Kein realer Ausschluss-Check (kein Bürgergeld-Feld in den Stammdaten;
+  // (3) Kein realer Ausschluss-Check (kein Grundsicherungsgeld-Feld in den Stammdaten;
   //     § 7 WoGG-Ausschluss wird erst im Antrag/§-33-Abgleich real geprüft).
 
   const haushaltsgroesse = haushaltsgroesseFor(persona);

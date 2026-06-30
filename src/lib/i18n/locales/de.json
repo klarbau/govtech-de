@@ -143,7 +143,7 @@
         "items": {
           "arbeit_aufnehmen": "Arbeit aufnehmen",
           "arbeitslos": "Arbeitslos melden",
-          "buergergeld": "Bürgergeld beantragen"
+          "buergergeld": "Grundsicherungsgeld beantragen"
         }
       },
       "migration": {
@@ -907,7 +907,7 @@
       "voraussetzungen": {
         "0": "Eigener Wohnraum mit Mietbelastung (Hauptwohnsitz).",
         "1": "Einkommen innerhalb der Wohngeldgrenzen.",
-        "2": "Kein laufender Bürgergeld-/ALG-II-Bezug (Ausschluss § 7 WoGG)."
+        "2": "Kein laufender Grundsicherungsgeld-Bezug (vormals Bürgergeld; Ausschluss § 7 WoGG)."
       },
       "dokumente": {
         "0": "Mietvertrag",
@@ -963,7 +963,7 @@
           "bedeutung": "Behördeninitiierter Datenabgleich zur Plausibilisierung nach dem Antrag."
         },
         "wogg7": {
-          "bedeutung": "Ausschluss bei Bezug von Bürgergeld/ALG II u. ä."
+          "bedeutung": "Ausschluss bei Bezug von Grundsicherungsgeld (vormals Bürgergeld) u. ä."
         },
         "wogg2425": {
           "bedeutung": "Erlass des Bescheids; Bewilligung in der Regel für 12 Monate."
@@ -3446,7 +3446,7 @@
             "label": "Steuer (Finanzamt / BZSt)"
           },
           "sozial": {
-            "label": "Sozialleistungen (DRV / GKV / Bürgergeld)"
+            "label": "Sozialleistungen (DRV / GKV / Grundsicherungsgeld)"
           },
           "familie": {
             "label": "Familie (Familienkasse / Elterngeld)"

@@ -143,7 +143,7 @@
         "items": {
           "arbeit_aufnehmen": "Начать работу",
           "arbeitslos": "Встать на учёт как безработный",
-          "buergergeld": "Подать на базовое пособие (Bürgergeld)"
+          "buergergeld": "Подать на Grundsicherungsgeld"
         }
       },
       "migration": {
@@ -908,7 +908,7 @@
       "voraussetzungen": {
         "0": "Собственное жильё с расходами на аренду (основное место жительства).",
         "1": "Доход в пределах границ жилищного пособия (Wohngeld).",
-        "2": "Отсутствие текущего получения гражданского пособия (Bürgergeld) / ALG II (исключение согласно § 7 WoGG)."
+        "2": "Отсутствие текущего получения Grundsicherungsgeld (ранее Bürgergeld; исключение согласно § 7 WoGG)."
       },
       "dokumente": {
         "0": "Договор аренды",
@@ -964,7 +964,7 @@
           "bedeutung": "Инициируемая ведомством сверка данных для проверки правдоподобности после подачи заявления."
         },
         "wogg7": {
-          "bedeutung": "Исключение при получении гражданского пособия (Bürgergeld) / ALG II и т. п."
+          "bedeutung": "Исключение при получении Grundsicherungsgeld (ранее Bürgergeld) и т. п."
         },
         "wogg2425": {
           "bedeutung": "Вынесение решения; одобрение, как правило, на 12 месяцев."
@@ -3404,7 +3404,7 @@
             "label": "Налоги (Finanzamt / BZSt)"
           },
           "sozial": {
-            "label": "Социальные выплаты (DRV / GKV / Bürgergeld)"
+            "label": "Социальные выплаты (DRV / GKV / Grundsicherungsgeld)"
           },
           "familie": {
             "label": "Семья (Familienkasse / Elterngeld)"

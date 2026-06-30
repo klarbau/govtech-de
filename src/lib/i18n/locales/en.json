@@ -143,7 +143,7 @@
         "items": {
           "arbeit_aufnehmen": "Starting work",
           "arbeitslos": "Register as unemployed",
-          "buergergeld": "Apply for citizen's income (Bürgergeld)"
+          "buergergeld": "Apply for Grundsicherungsgeld"
         }
       },
       "migration": {
@@ -908,7 +908,7 @@
       "voraussetzungen": {
         "0": "Own living space with rent costs (main residence).",
         "1": "Income within the housing benefit (Wohngeld) limits.",
-        "2": "No ongoing receipt of citizen's allowance (Bürgergeld) / ALG II (exclusion under § 7 WoGG)."
+        "2": "No current Grundsicherungsgeld benefit (formerly Bürgergeld; exclusion under § 7 WoGG)."
       },
       "dokumente": {
         "0": "Rental contract",
@@ -964,7 +964,7 @@
           "bedeutung": "Authority-initiated data matching for plausibility checks after the application."
         },
         "wogg7": {
-          "bedeutung": "Exclusion when receiving citizen's allowance (Bürgergeld) / ALG II and similar."
+          "bedeutung": "Exclusion when receiving Grundsicherungsgeld (formerly Bürgergeld) and similar."
         },
         "wogg2425": {
           "bedeutung": "Issuance of the decision; approval usually for 12 months."
@@ -3404,7 +3404,7 @@
             "label": "Tax (Finanzamt / BZSt)"
           },
           "sozial": {
-            "label": "Social benefits (DRV / GKV / Bürgergeld)"
+            "label": "Social benefits (DRV / GKV / Grundsicherungsgeld)"
           },
           "familie": {
             "label": "Family (Familienkasse / Elterngeld)"

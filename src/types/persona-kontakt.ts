@@ -105,7 +105,7 @@ export type NotificationKanal =
  */
 export type VorgangsKategorie =
   | 'steuer'    // Finanzamt / BZSt → Norm: § 122a Abs. 4 AO
-  | 'sozial'    // DRV / GKV / Bürgergeld → Norm: § 36a SGB I + § 41 Abs. 2a VwVfG
+  | 'sozial'    // DRV / GKV / Grundsicherungsgeld → Norm: § 36a SGB I + § 41 Abs. 2a VwVfG
   | 'familie'   // Familienkasse / Elterngeld / Wohngeld → Norm: § 9 OZG
   | 'verkehr'   // KFZ / Bußgeld / Führerschein → Norm: § 41 Abs. 2 VwVfG (postalisch)
   | 'sonstige'; // Bürgeramt / Aufenthalt / sonstige → Norm: § 9 OZG
