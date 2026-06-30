@@ -69,6 +69,17 @@ export function OnboardingWelcome({ onSelectMethod }: OnboardingWelcomeProps) {
           />
         </div>
 
+        {/*
+          Inline-German per prototype-v2 hard rule #2 (onboarding strings are
+          hardcoded, not in i18n JSON). Honest [MOCK] scope note: the real EUDI
+          Wallet launches in 2027 with PID only — keeps the demo from overclaiming.
+        */}
+        <p className="text-xs text-text-muted">
+          [MOCK] EUDI-Wallet, Phase 1 (ab 2027): zunächst nur der
+          Identitätsnachweis (PID) — Zahlungen und Qualifikationsnachweise
+          folgen erst in späteren Ausbaustufen.
+        </p>
+
         <OnboardingMethodCard
           icon={<FlaskConical />}
           title={t('method.demo.title')}
