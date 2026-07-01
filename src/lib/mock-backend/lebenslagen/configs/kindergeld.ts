@@ -21,6 +21,10 @@ export const kindergeldConfig: LebenslageConfig = {
   kategorie: 'familie',
   mode: 'antragslos',
   zukunft: true,
+  // Einzige echt antragslose Lebenslage → der Assistant feuert die in-thread
+  // Kaskade (preview_lebenslage → starte_lebenslage). Regierungsentwurf
+  // (BT-Drs. 21/5874, Schlussabstimmung BT terminiert 09.07.2026, gestuft 2027).
+  assistant_trigger: 'antragslos-cascade',
   engine: 'lebenslage-cascade',
   href: '/lebenslagen/kindergeld',
   antragslos_note_key: 'lebenslagen.kindergeld.antragslos_note',
@@ -39,6 +43,15 @@ export const kindergeldConfig: LebenslageConfig = {
     'lebenslagen.kindergeld.dokumente.0',
   ],
   // antragslos: das einzige nutzerberührte Feld ist die IBAN-Bestätigung (eID).
+  //
+  // Kind-Invariante: `familie.kinder[0]` = das JÜNGSTE Kind (das neu geborene,
+  // für das die Erstauszahlung läuft — Familie Schmidt: Mia, *2026-06-18), NICHT
+  // das ältere Geschwisterkind (Felix, *2022-01-15). Der positionale `[0]`-Zugriff
+  // ist bewusst (Frontend-`resolvePath` kann nur numerische Indizes); die
+  // „jüngstes zuerst"-Garantie erzwingt `withNewestChildFirst()` in
+  // `loadProfile` (api.ts) beim Lesen — unabhängig von der Seed-Reihenfolge.
+  // Felix bleibt reiner IBAN-Anker (Stufe 1: Konto bereits aus seinem laufenden
+  // Kindergeld bekannt → nur Bestätigung, kein Lückenschluss).
   formFields: [
     {
       key: 'kindName',
@@ -170,13 +183,22 @@ export const kindergeldConfig: LebenslageConfig = {
       behoerdeId: 'familienkasse-berlin-brandenburg',
       block: 'D',
       gate: 'eid',
-      aktion: 'Bankverbindung bestätigen (Schutz vor Fehlleitung)',
-      kurzlabel: 'Bankverbindung bestätigen',
+      aktion: 'Auszahlungskonto bestätigen (Schutz vor Fehlleitung)',
+      kurzlabel: 'Auszahlungskonto bestätigen',
       behoerdeKurz: 'Familienkasse',
-      agentLabel: 'Bitte bestätigen Sie mit Ihrer eID die Bankverbindung für die Auszahlung',
-      rechtsgrundlage: '§ 67 EStG / BT-Drs. 21/5874',
+      // Stufe 1 (Geschwisterkind): das Auszahlungskonto ist bereits bekannt
+      // (Kindergeld des älteren Kindes) → BESTÄTIGUNG, keine Eingabe. Nie „IBAN
+      // eingeben". eID-Rechtsgrundlage = § 18 PAuswG (nutzergetriebene
+      // Bestätigung); § 67 EStG ist nur der Sach-Kontext (i18n-bedeutung).
+      agentLabel:
+        'Bitte bestätigen Sie mit Ihrer eID das Auszahlungskonto — die IBAN kennen wir in Stufe 1 bereits aus dem Kindergeld für Ihr älteres Kind',
+      rechtsgrundlage: '§ 18 PAuswG',
       datenkategorien: ['Bankverbindung'],
       aktenzeichen: '[MOCK] 134FK072519',
+      // Einzel-Datum-„input"-Schritt: Stufe-1-CONFIRM eines bekannten Kontos.
+      // Die Engine mappt daraus `AutopilotStep.eid_preview` (maskiert, z. B.
+      // `DE.. •••• 4711`) aus `persona.bankverbindung.iban`.
+      eidInput: { kind: 'confirm', fieldKey: 'iban' },
       isPrimarySubmission: true,
       latencyMs: 1000,
       mints: {},

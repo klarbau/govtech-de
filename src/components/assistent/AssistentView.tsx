@@ -20,7 +20,9 @@ import { api } from '@/lib/mock-backend';
 import { formatDateDe } from '@/lib/utils';
 import {
   requiresConfirmation,
+  validateLebenslageToolInput,
   validateUmzugToolInput,
+  type StarteLebenslageInput,
   type StarteUmzugInput,
 } from '@/lib/ai/tool-schemas';
 import type { AssistantStreamEvent } from '@/lib/ai/stream';
@@ -32,6 +34,7 @@ import { Skeleton } from '@/components/shared/Skeleton';
 import { OrchestrationTestBridge } from '@/components/orchestration';
 
 import { ChatComposer } from './ChatComposer';
+import { LebenslageConfirmCard } from './LebenslageConfirmCard';
 import { MessageBubble } from './MessageBubble';
 import { ToolCallCard } from './ToolCallCard';
 import { UmzugConfirmCard } from './UmzugConfirmCard';
@@ -40,7 +43,7 @@ import {
   dispatchStarteUmzug,
   type PreviewResult,
 } from './dispatch-tool';
-import type { ChatMessage, UmzugProposal } from './types';
+import type { ChatMessage, LebenslageProposal, UmzugProposal } from './types';
 
 const MAX_TOOL_ROUNDS = 4;
 
@@ -315,10 +318,32 @@ export function AssistentView() {
       const toolResults: Anthropic.ToolResultBlockParam[] = [];
       let heldUmzug: UmzugProposal | null = null;
       let heldUmzugToolUseId: string | undefined;
+      let heldLebenslage: LebenslageProposal | null = null;
+      let heldLebenslageToolUseId: string | undefined;
 
       for (const tu of toolUses) {
         if (requiresConfirmation(tu.name)) {
           const input = (tu.input ?? {}) as Record<string, unknown>;
+
+          // The antragslos-cascade write (`starte_lebenslage`) is confirm-gated
+          // exactly like `starte_umzug`: build the held proposal, surface the
+          // <LebenslageConfirmCard>, and dispatch ONLY on the explicit click.
+          if (tu.name === 'starte_lebenslage') {
+            const result = await buildProposalFromStarteLebenslage(input);
+            if (!result.ok) {
+              toolResults.push({
+                type: 'tool_result',
+                tool_use_id: tu.id,
+                is_error: true,
+                content: JSON.stringify({ error: result.error }),
+              });
+              continue;
+            }
+            heldLebenslageToolUseId = tu.id;
+            heldLebenslage = result.proposal;
+            continue;
+          }
+
           const result = await buildProposalFromStarteUmzug(input);
           if (!result.ok) {
             // Irreversible-write input failed structural validation: do NOT
@@ -351,6 +376,51 @@ export function AssistentView() {
               : m,
           ),
         );
+
+        // `preview_lebenslage` is read-only (slug → config): it feeds the
+        // <LebenslageConfirmCard> without writing, mirroring `preview_umzug`.
+        // The proposal builder validates + enriches (beteiligte Behörden,
+        // masked IBAN); we then echo a compact preview back to the model.
+        if (tu.name === 'preview_lebenslage') {
+          const built = await buildProposalFromStarteLebenslage(
+            (tu.input ?? {}) as Record<string, unknown>,
+          );
+          if (built.ok) {
+            heldLebenslage = built.proposal;
+            toolResults.push({
+              type: 'tool_result',
+              tool_use_id: tu.id,
+              content: JSON.stringify({
+                slug: built.proposal.slug,
+                beteiligte_behoerden: built.proposal.beteiligteBehoerden,
+                zukunft: built.proposal.zukunft,
+                note: 'Vorschau erstellt. Die Nutzerin bestätigt in der Karte „Kindergeld einrichten".',
+              }),
+            });
+          } else {
+            toolResults.push({
+              type: 'tool_result',
+              tool_use_id: tu.id,
+              is_error: true,
+              content: JSON.stringify({ error: built.error }),
+            });
+          }
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === assistantId
+                ? {
+                    ...m,
+                    toolCalls: (m.toolCalls ?? []).map((c) =>
+                      c.id === callId
+                        ? { ...c, status: built.ok ? 'done' : 'error' }
+                        : c,
+                    ),
+                  }
+                : m,
+            ),
+          );
+          continue;
+        }
 
         const outcome = await dispatchReadTool(tu.name, tu.input, tu.id);
         toolResults.push(outcome.toolResult);
@@ -391,6 +461,20 @@ export function AssistentView() {
         );
       }
 
+      if (heldLebenslage) {
+        const finalProposal: LebenslageProposal = {
+          ...heldLebenslage,
+          toolUseId: heldLebenslageToolUseId,
+        };
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === assistantId
+              ? { ...m, lebenslageProposal: finalProposal }
+              : m,
+          ),
+        );
+      }
+
       if (heldUmzugToolUseId) {
         toolResults.push({
           type: 'tool_result',
@@ -402,6 +486,17 @@ export function AssistentView() {
         });
       }
 
+      if (heldLebenslageToolUseId) {
+        toolResults.push({
+          type: 'tool_result',
+          tool_use_id: heldLebenslageToolUseId,
+          content: JSON.stringify({
+            status: 'awaiting_user_confirmation',
+            note: 'Die Nutzerin muss in der Bestätigungskarte „Kindergeld einrichten" klicken.',
+          }),
+        });
+      }
+
       if (toolResults.length === 0) return;
 
       apiMessagesRef.current = [
@@ -409,7 +504,9 @@ export function AssistentView() {
         { role: 'user', content: toolResults },
       ];
 
-      if (!heldUmzugToolUseId) {
+      // A held confirm-gated write (Umzug or Lebenslage) parks the turn until the
+      // citizen clicks; any other tool round continues the loop.
+      if (!heldUmzugToolUseId && !heldLebenslageToolUseId) {
         await runTurn(round + 1);
       }
     },
@@ -514,6 +611,95 @@ export function AssistentView() {
     ];
   }, []);
 
+  const onConfirmLebenslage = React.useCallback(
+    async (messageId: string) => {
+      const message = messages.find((m) => m.id === messageId);
+      const proposal = message?.lebenslageProposal;
+      if (!proposal || proposal.resolution || !persona) return;
+
+      setConfirmBusyId(messageId);
+      const callId = makeId('tc');
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === messageId
+            ? {
+                ...m,
+                lebenslageProposal: { ...proposal, resolution: 'started' },
+                toolCalls: [
+                  ...(m.toolCalls ?? []),
+                  {
+                    id: callId,
+                    name: 'starte_lebenslage',
+                    status: 'running',
+                    vorgangTyp: proposal.vorgangTyp,
+                  },
+                ],
+              }
+            : m,
+        ),
+      );
+
+      let ok = false;
+      let vorgangId: string | undefined;
+      try {
+        // The irreversible antragslos-cascade write — dispatched ONLY after the
+        // explicit „Kindergeld einrichten" click. Kindergeld carries no
+        // consent step, so `consents` is `[]`; form values stay empty (the
+        // engine reads the register/Stammdaten, no PII round-trips the model).
+        const result = await api.starteLebenslage(
+          proposal.slug,
+          {},
+          proposal.consents,
+        );
+        vorgangId = result.vorgangId;
+        ok = true;
+      } catch {
+        ok = false;
+      }
+
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === messageId
+            ? {
+                ...m,
+                toolCalls: (m.toolCalls ?? []).map((c) =>
+                  c.id === callId
+                    ? { ...c, status: ok ? 'done' : 'error', vorgangId }
+                    : c,
+                ),
+              }
+            : m,
+        ),
+      );
+      setConfirmBusyId(null);
+      if (ok) setLiveAnnouncement('Kindergeld eingerichtet.');
+    },
+    [messages, persona],
+  );
+
+  const onCancelLebenslage = React.useCallback((messageId: string) => {
+    setMessages((prev) =>
+      prev.map((m) =>
+        m.id === messageId && m.lebenslageProposal
+          ? {
+              ...m,
+              lebenslageProposal: {
+                ...m.lebenslageProposal,
+                resolution: 'cancelled',
+              },
+            }
+          : m,
+      ),
+    );
+    apiMessagesRef.current = [
+      ...apiMessagesRef.current,
+      {
+        role: 'user',
+        content: 'Bitte das Kindergeld jetzt nicht einrichten.',
+      },
+    ];
+  }, []);
+
   const interactionDisabled = streaming || confirmBusyId !== null;
 
   const threadEndRef = React.useRef<HTMLDivElement>(null);
@@ -578,6 +764,15 @@ export function AssistentView() {
                     busy={confirmBusyId === message.id}
                     onConfirm={() => void onConfirmUmzug(message.id)}
                     onCancel={() => onCancelUmzug(message.id)}
+                  />
+                ) : null}
+                {message.lebenslageProposal ? (
+                  <LebenslageConfirmCard
+                    proposal={message.lebenslageProposal}
+                    behoerdeName={behoerdeName}
+                    busy={confirmBusyId === message.id}
+                    onConfirm={() => void onConfirmLebenslage(message.id)}
+                    onCancel={() => onCancelLebenslage(message.id)}
                   />
                 ) : null}
               </li>
@@ -733,6 +928,94 @@ async function buildProposalFromStarteUmzug(
     return {
       ok: false,
       error: 'Die Umzugsvorschau konnte nicht erstellt werden. Bitte versuchen Sie es erneut.',
+    };
+  }
+}
+
+type BuildLebenslageProposalResult =
+  | { ok: true; proposal: LebenslageProposal }
+  | { ok: false; error: string };
+
+/**
+ * Maskiert eine (`[MOCK]`-präfixierte) IBAN auf `DE.. •••• 4711` — die
+ * Auszahlungskonto-Vorschau des Stufe-1-eID-Bestätigungsschritts. Spiegelt
+ * `maskIban` der Cascade-Engine (das Länderpräfix wird aus der IBAN abgeleitet,
+ * nicht hart auf „DE" gesetzt). `undefined`, wenn keine (brauchbare) IBAN
+ * vorliegt — dann trägt die Karte nur „Mit eID bestätigen".
+ */
+function maskIbanForConfirm(iban?: string): string | undefined {
+  if (!iban) return undefined;
+  const cleaned = iban.replace(/\[MOCK\]\s*/i, '').replace(/\s+/g, '');
+  if (cleaned.length < 4) return undefined;
+  const prefix = /^[A-Za-z]{2}/.test(cleaned)
+    ? cleaned.slice(0, 2).toUpperCase()
+    : 'DE';
+  return `${prefix}.. •••• ${cleaned.slice(-4)}`;
+}
+
+/**
+ * Build the held confirm-card proposal from a `preview_lebenslage` /
+ * `starte_lebenslage` tool_use.input — the antragslos-cascade mirror of
+ * `buildProposalFromStarteUmzug`.
+ *
+ * `validateLebenslageToolInput('starte_lebenslage', …)` enforces the whitelisted
+ * `slug` enum (`STARTE_LEBENSLAGE_SLUGS`, currently only `kindergeld`) so
+ * antragsgebundene Leistungen can never be drawn as an auto-cascade, and lifts
+ * the optional `consents` array (defaults `[]`; kindergeld has no consent step).
+ * The preview input (`{slug}`) also validates cleanly here (consents defaults).
+ *
+ * On success it enriches with `api.getLebenslageConfig(slug)` (beteiligte
+ * Behörden in Datenketten-Reihenfolge + `zukunft` + `vorgangTyp`) and
+ * `api.getProfile()` (masked IBAN for the Stufe-1 confirmation line). On any
+ * failure it REFUSES with an error the caller surfaces rather than hold a card
+ * for an unbuildable cascade.
+ */
+async function buildProposalFromStarteLebenslage(
+  input: Record<string, unknown>,
+): Promise<BuildLebenslageProposalResult> {
+  const validation = validateLebenslageToolInput('starte_lebenslage', input);
+  if (!validation.ok) {
+    return {
+      ok: false,
+      error: 'Diese Lebenslage kann nicht als automatische Kaskade eingerichtet werden. Antragslos läuft derzeit nur das Kindergeld (Regierungsentwurf, gestuft 2027).',
+    };
+  }
+  const data = validation.data as StarteLebenslageInput;
+  try {
+    const [config, profile] = await Promise.all([
+      api.getLebenslageConfig(data.slug),
+      api.getProfile(),
+    ]);
+    if (!config || config.engine !== 'lebenslage-cascade') {
+      return {
+        ok: false,
+        error: `Die Lebenslage „${data.slug}" ist nicht als antragslose Kaskade verfügbar.`,
+      };
+    }
+    // Beteiligte Behörden = distinkte Cascade-Behörden in Datenketten-Reihenfolge
+    // (persona-gefiltert), identisch zur Backend-Ableitung in starteLebenslage.
+    const beteiligteBehoerden = Array.from(
+      new Set(
+        config.cascade
+          .filter((s) => !s.visibleIf || s.visibleIf(profile))
+          .map((s) => s.behoerdeId),
+      ),
+    );
+    return {
+      ok: true,
+      proposal: {
+        slug: config.slug,
+        vorgangTyp: config.vorgangTyp,
+        beteiligteBehoerden,
+        zukunft: config.zukunft,
+        maskedIban: maskIbanForConfirm(profile.bankverbindung?.iban),
+        consents: data.consents,
+      },
+    };
+  } catch {
+    return {
+      ok: false,
+      error: 'Die Kaskaden-Vorschau konnte nicht erstellt werden. Bitte versuchen Sie es erneut.',
     };
   }
 }

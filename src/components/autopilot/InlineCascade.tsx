@@ -22,6 +22,7 @@ import {
 } from '@/components/autopilot/TerminVorschlagRow';
 import { MeldebestaetigungInlineBeat } from '@/components/once-only/MeldebestaetigungInlineBeat';
 import { BehoerdenBadge } from '@/components/shared/BehoerdenBadge';
+import { BLOCK_RANK } from '@/components/lebenslagen/lebenslagen-shared';
 import { submitViaFitConnect } from '@/app/actions/fit-connect';
 import { api, MockBackendError } from '@/lib/mock-backend';
 import { cn } from '@/lib/utils';
@@ -34,6 +35,7 @@ import type {
   Termin,
   ValueReceipt,
   Vorgang,
+  VorgangTyp,
 } from '@/types';
 import type {
   FitConnectBehoerdeId,
@@ -43,18 +45,24 @@ import type {
 interface InlineCascadeProps {
   /** Live run id. Subscribes to api tick stream for this vorgang. */
   vorgangId: string;
+  /**
+   * Run kind hint. Used BEFORE the live Vorgang record arrives (and in the ~5%
+   * getVorgang-failure fallback seed) to gate the Umzug-only decorations and
+   * pick the correct eID-resume op. `'umzug'` → Umzug-saga run; anything else
+   * (e.g. `'kindergeld'`) → lebenslage-cascade run. The loaded `vorgang.typ`
+   * takes precedence once available.
+   */
+  vorgangTyp?: VorgangTyp;
   /** 'live' (in-session, the only caller for now) → animated, single polite region. */
   variant?: 'live';
   className?: string;
 }
 
-/**
- * Row ordering: A→D→B, block C dropped. All non-C rows are shown (no slice cap)
- * so the eID-gated Block-D rows completion depends on stay visible (P3). This
- * mirrors run/page.tsx's block ranking (C2: duplicated, not extracted) — but
- * run/page.tsx keeps its own .slice(0,5); the inline hero intentionally does not.
- */
-const BLOCK_RANK: Record<BlockTyp, number> = { A: 0, D: 1, B: 2, C: 99 };
+/* Row ordering A→D→B (block C dropped) comes from the SHARED `BLOCK_RANK`
+ * (`@/components/lebenslagen/lebenslagen-shared`), so Umzug and the lebenslage
+ * cascade never drift on ordering (Spec § 5.6 / F7). All non-C rows are shown
+ * (no slice cap) so the eID-gated Block-D rows completion depends on stay
+ * visible; run/page.tsx keeps its own `.slice(0,5)`, the inline hero does not. */
 
 /**
  * Per-row transport layer (Spec § 5.1, Domain § 5 Layer A–E). DERIVED purely on
@@ -191,6 +199,12 @@ interface CascadeNode {
   showFrist3wt: boolean;
   /** Datenkategorien carried through for the FIT-Connect submission (Datenminimierung). */
   datenkategorien: string[];
+  /**
+   * Masked account for a `gate:'eid'` CONFIRMATION beat (Stufe-1 Kindergeld,
+   * Spec § 5.6.5): `'DE.. •••• 4711'`. Rendered next to „Mit eID bestätigen" as
+   * „an dieses Konto auszahlen" — NEVER „IBAN eingeben". From `step.eid_preview`.
+   */
+  eidPreview?: string;
 }
 
 /**
@@ -202,6 +216,7 @@ interface CascadeNode {
  */
 export function InlineCascade({
   vorgangId,
+  vorgangTyp,
   variant = 'live',
   className,
 }: InlineCascadeProps) {
@@ -211,6 +226,13 @@ export function InlineCascade({
   const reduceMotion = useReducedMotion();
 
   const [vorgang, setVorgang] = useState<Vorgang | null>(null);
+
+  /* Gate the Umzug-only decorations (Anmeldung-Termin, §33 Frist chip, FIT-
+   * Connect panels + long disclaimer) and pick the eID-resume op. The loaded
+   * `vorgang.typ` is authoritative; before it arrives we fall back to the
+   * `vorgangTyp` hint the caller passed (Spec § 5.6.2/§ 5.6.4/§ 5.6.7). */
+  const isUmzugRun = (vorgang?.typ ?? vorgangTyp) === 'umzug';
+
   const [behoerdenById, setBehoerdenById] = useState<
     Record<BehoerdeId, Pick<Behoerde, 'name_de'>>
   >({});
@@ -277,7 +299,15 @@ export function InlineCascade({
     setConfirmState((s) => ({ ...s, [stepId]: 'confirming' }));
     justConfirmedStepIdRef.current = stepId;
     try {
-      await api.bestaetigeAutopilotSchritt(vorgangId, stepId);
+      /* Umzug-saga steps resume via `bestaetigeAutopilotSchritt`; lebenslage-
+       * cascade steps (e.g. the Kindergeld IBAN-Bestätigung) resume via
+       * `bestaetigeLebenslageSchritt` (Spec § 5.6.4). Both replay their status
+       * ticks through the same subscription below. */
+      if (isUmzugRun) {
+        await api.bestaetigeAutopilotSchritt(vorgangId, stepId);
+      } else {
+        await api.bestaetigeLebenslageSchritt(vorgangId, stepId);
+      }
       setConfirmState((s) => ({ ...s, [stepId]: 'idle' }));
     } catch {
       justConfirmedStepIdRef.current = null;
@@ -404,7 +434,9 @@ export function InlineCascade({
             prev ??
             {
               id: event.vorgangId,
-              typ: 'umzug',
+              /* Fix (Spec § 5.6.7): seed the kind from the caller's hint so a
+               * kindergeld run is never mislabelled 'umzug' in the fallback. */
+              typ: vorgangTyp ?? 'umzug',
               titel: '',
               status: 'in_pruefung',
               beteiligte_behoerden_ids: [],
@@ -462,7 +494,7 @@ export function InlineCascade({
     return () => {
       unsubscribe();
     };
-  }, [vorgangId]);
+  }, [vorgangId, vorgangTyp]);
 
   /* Seed the Anmeldung-Termin from `getVorgangRelated` for the case where it was
      minted BEFORE this component subscribed (re-open / late mount) — the event
@@ -547,11 +579,17 @@ export function InlineCascade({
         block: step.block,
         rechtsgrundlage: step.rechtsgrundlage,
         transportLayer: transportLayerFor(step.behoerde_id, step.block),
-        zukunft: ZUKUNFT_ROWS.has(step.behoerde_id),
-        showFrist3wt: step.behoerde_id === RUECKMELDUNG_BEHOERDE_ID,
+        /* Per-row zukunft: cascade runs carry it on the step (kindergeld's two
+         * speculative-2027 hops); Umzug keeps the derived behoerde-id set
+         * (Spec § 5.6.3). */
+        zukunft: step.zukunft ?? ZUKUNFT_ROWS.has(step.behoerde_id),
+        /* §33-BMG „≤ 3 Werktage" Frist chip is an Umzug decoration only. */
+        showFrist3wt:
+          isUmzugRun && step.behoerde_id === RUECKMELDUNG_BEHOERDE_ID,
         datenkategorien: step.datenkategorien ?? [],
+        eidPreview: step.eid_preview,
       }));
-  }, [vorgang, behoerdenById]);
+  }, [vorgang, behoerdenById, isUmzugRun]);
 
   /* Flag #2: scope the consent-gate hint — show it only when ≥1 Block-D row is
    * still awaiting the user's eID tap. The copy is scoped to the Block-D rows
@@ -671,6 +709,10 @@ export function InlineCascade({
    * client passes only `{ behoerdeId, datenkategorien }` (no server-only import,
    * no secret). Does NOT touch focus — the panel appears below the row. */
   useEffect(() => {
+    /* FIT-Connect submissions are an Umzug-saga decoration (Spec § 5.6.2) — the
+     * three Block-D umzug rows. A lebenslage cascade (kindergeld) never fires
+     * one; skip the whole scan so no receipt panel can leak into it. */
+    if (!isUmzugRun) return;
     let cancelled = false;
     for (const node of cascadeNodes) {
       if (
@@ -701,7 +743,7 @@ export function InlineCascade({
     return () => {
       cancelled = true;
     };
-  }, [cascadeNodes]);
+  }, [cascadeNodes, isUmzugRun]);
 
   return (
     <div
@@ -804,7 +846,8 @@ export function InlineCascade({
                        * under it, collapsed by default. No new block / card /
                        * slot-grid [Cond 5]. Confirm reuses bestaetigeTerminVorschlag,
                        * the SAME op /termine uses [Cond 4]. */}
-                      {node.behoerdeId === BUERGERAMT_BEHOERDE_ID &&
+                      {isUmzugRun &&
+                      node.behoerdeId === BUERGERAMT_BEHOERDE_ID &&
                       anmeldungTermin &&
                       terminMeta ? (
                         <TerminVorschlagRow
@@ -824,7 +867,21 @@ export function InlineCascade({
                       ) : null}
                       {/* Decision A: the per-step eID-confirm affordance. */}
                       {isEidGate ? (
-                        <div className="ml-9 mt-1 flex flex-col gap-1">
+                        <div className="ml-9 mt-1 flex flex-col gap-1.5">
+                          {/* Stufe-1 CONFIRMATION beat (Spec § 5.6.5): a masked
+                           * KNOWN account + „an dieses Konto auszahlen" — the
+                           * eID tap confirms it, it is NEVER an IBAN entry. */}
+                          {node.eidPreview ? (
+                            <p
+                              data-testid="inline-eid-iban-preview"
+                              className="text-xs text-text-secondary"
+                            >
+                              <span className="font-medium tabular-nums text-text-primary">
+                                {node.eidPreview}
+                              </span>{' '}
+                              {t('eid_iban_auszahlen')}
+                            </p>
+                          ) : null}
                           <button
                             type="button"
                             ref={(el) => {
@@ -938,26 +995,44 @@ export function InlineCascade({
        * (mirror of ValueReceiptCard, C7). Additive + quiet: an issuance/verify
        * failure shows a calm note and NEVER breaks the cascade. Never steals
        * focus (appears passively under the receipt). */}
-      {vorgang && vorgang.status === 'abgeschlossen' ? (
+      {isUmzugRun && vorgang && vorgang.status === 'abgeschlossen' ? (
         <MeldebestaetigungInlineBeat
           personaId={vorgang.persona_id || undefined}
           vorgangId={vorgang.id}
         />
       ) : null}
 
-      {/* Spec § 5.3 / § 10.3: the long legal-realism disclaimer, ONCE at the
-       * cascade foot, whenever FIT-Connect chips are present. Replaces the short
-       * [MOCK] line in that case (the long text subsumes it). */}
-      {hasFitConnectChips ? (
-        <p
-          data-testid="inline-cascade-disclaimer-long"
-          className="text-xs text-text-muted"
-        >
-          {tTransport('disclaimer_long')}
-        </p>
+      {/* Foot disclaimer. Umzug: FIT-Connect present → the long legal-realism
+       * text (Spec § 5.3/§ 10.3), else the short [MOCK] line. Lebenslage cascade
+       * (kindergeld, Spec § 5.6.6): a persistent [MOCK]-Übermittlungshinweis for
+       * the Familienkasse + one expandable Regierungsentwurf-Rechtsnotiz. */}
+      {isUmzugRun ? (
+        hasFitConnectChips ? (
+          <p
+            data-testid="inline-cascade-disclaimer-long"
+            className="text-xs text-text-muted"
+          >
+            {tTransport('disclaimer_long')}
+          </p>
+        ) : (
+          /* C3: the short [MOCK] disclaimer travels with the inline beat. */
+          <p className="text-xs text-text-muted">{t('disclaimer')}</p>
+        )
       ) : (
-        /* C3: the short [MOCK] disclaimer travels with the inline beat. */
-        <p className="text-xs text-text-muted">{t('disclaimer')}</p>
+        <div className="flex flex-col gap-1.5">
+          <p
+            data-testid="inline-cascade-disclaimer-kindergeld"
+            className="text-xs text-text-muted"
+          >
+            {t('kindergeld.disclaimer')}
+          </p>
+          <details className="text-xs text-text-muted">
+            <summary className="cursor-pointer font-medium text-text-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+              {t('kindergeld.legal_note_summary')}
+            </summary>
+            <p className="mt-1.5">{t('kindergeld.legal_note_body')}</p>
+          </details>
+        </div>
       )}
     </div>
   );

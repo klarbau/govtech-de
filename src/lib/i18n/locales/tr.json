@@ -405,7 +405,6 @@
         "gate_auto": "Otomatik",
         "gate_consent": "Onayınızla",
         "gate_eid_done": "eID ile onaylandı",
-
         "step_done": "tamamlandı",
         "dsgvo_micro": "Tüm veri aktarımları güvenli, izlenebilir ve GDPR'ye (DSGVO) uygundur.",
         "docs_title": "Kararlar ve belgeler",
@@ -1533,7 +1532,29 @@
     "zukunft_schaetzung": "[ZUKUNFT 2027] Verilerinize dayanan bağlayıcı olmayan tahmin — bir onay değildir. Gerçek tutar yalnızca resmî kararla (Bescheid) belirlenir.",
     "dismiss": "Bildirimi kapat",
     "snooze": "Daha sonra hatırlat",
-    "behoerde": "Yetkili: Bezirksamt Mitte von Berlin — Wohngeldstelle (konut yardımı dairesi)"
+    "behoerde": "Yetkili: Bezirksamt Mitte von Berlin — Wohngeldstelle (konut yardımı dairesi)",
+    "headline": "Konut yardımına (Wohngeld) hak kazanmış olabilirsiniz",
+    "betrag_label": "Tahmini tutar",
+    "amount_value": "yakl. {min}–{max} €",
+    "amount_per": "/ ay",
+    "subline": "Hak durumunuzu kontrol edin ve başvurunuzu birkaç adımda hazırlayın.",
+    "reasons_title": "Neden geçerli",
+    "reason_datenabgleich": "Veri eşleştirme: resmi kayıtlarla doğrulandı",
+    "needed_title": "Hâlâ gerekli",
+    "needed_einkommen": "Brüt gelir",
+    "needed_mietvertrag": "Kira sözleşmesi",
+    "how_calculated": "Bu nasıl hesaplandı?",
+    "rail_aria": "Tahmine ilişkin temel veriler",
+    "rail_betrag_label": "Tahmini aylık tutar",
+    "rail_betrag_value": "{min} – {max} €",
+    "rail_zeit_label": "Kazanılan zaman",
+    "rail_zeit_value": "yakl. 8 saat",
+    "rail_behoerde_label": "Yetkili makam",
+    "rail_behoerde_value": "Bezirksamt Mitte von Berlin",
+    "rail_sicher_title": "Verileriniz güvende",
+    "rail_sicher_body": "Şifreli aktarım ve işleme",
+    "disclaimer": "Bu, verdiğiniz bilgilere ve resmi kaynaklardan gelen verilere dayanan, bağlayıcı olmayan bir tahmindir. Gerçek tutar yalnızca yetkili makam tarafından belirlenir. Devam ederek proaktif hak kontrolüne onay vermiş olursunuz.",
+    "learn_more": "Daha fazla bilgi"
   },
   "common": {
     "cta": {
@@ -1897,10 +1918,13 @@
       "done": "Tamam",
       "failed": "Başarısız",
       "umzug_started": "Taşınma başlatıldı — kurumlar şimdi bilgilendiriliyor.",
+      "lebenslage_started": "Çocuk parası kuruldu — ilgili kurumlar şimdi bilgilendiriliyor.",
       "cta_kaskade": "Akışı görüntüle",
       "label": {
         "starte_umzug": "Taşınmayı başlat",
         "preview_umzug": "Taşınmayı hazırla",
+        "starte_lebenslage": "Çocuk parasını kur",
+        "preview_lebenslage": "Çocuk parasını hazırla",
         "lese_posteingang": "Gelen kutusunu oku",
         "hole_vorgang": "İşlemi getir",
         "hole_profil": "Ana verileri getir",
@@ -1924,6 +1948,19 @@
       "cta_cancel": "İptal",
       "cancelled": "İptal edildi.",
       "consent_note": "B grubu alıcıları yalnızca sizin onayınızla bilgilendirilir (GDPR md. 6 f. 1 b. a / Art. 6 Abs. 1 lit. a DSGVO); onay istediğiniz zaman geri alınabilir."
+    },
+    "lebenslage_confirm": {
+      "title": "Çocuk parasını kur",
+      "subtitle": "Lütfen bilgileri kontrol edin. Kurumlar yalnızca onayınızdan sonra bilgilendirilir.",
+      "zukunft_chip": "[ZUKUNFT 2027]",
+      "verfahrensstand_chip": "Hükûmet tasarısı (Regierungsentwurf) — nihai oylama 09.07.2026 tarihine planlandı",
+      "behoerden_label": "İlgili kurumlar",
+      "behoerden_leer": "—",
+      "iban_auszahlen": "bu hesaba ödeme yapılsın — IBAN'ı büyük çocuğunuzun çocuk parasından biliyoruz.",
+      "mock_note": "[MOCK] · Prototip süreci taklit eder — aile yardım kasasına (Familienkasse) gerçek bir aktarım yoktur. Başvurusuz çocuk parası bir hükûmet tasarısıdır (Regierungsentwurf); ödeme 2027'den itibaren kademeli başlar.",
+      "cta_start": "Çocuk parasını kur",
+      "cta_cancel": "İptal",
+      "cancelled": "İptal edildi."
     },
     "kontext": {
       "title": "Bağlam",
@@ -4590,6 +4627,7 @@
       "eid_confirming": "Onaylanıyor …",
       "eid_confirm_error": "Onay başarısız oldu. Lütfen tekrar deneyin.",
       "eid_gate_hint": "Aşağıdaki iki kurum, kimlik kartınızla açık onayınızı gerektirir — bu iki kurum, dokunmanız olmadan hiçbir şey iletmez.",
+      "eid_iban_auszahlen": "bu hesaba ödeme yapılsın",
       "row_status_sr_prefix": "Durum: ",
       "row_status": {
         "in_progress": "İletiliyor",
@@ -4597,6 +4635,11 @@
         "confirmed": "Onaylandı",
         "pending": "Bekliyor",
         "failed": "Başarısız"
+      },
+      "kindergeld": {
+        "disclaimer": "[MOCK] · Prototip süreci taklit eder — aile yardım kasasına (Familienkasse) gerçek bir aktarım yoktur.",
+        "legal_note_summary": "Başvurusuz çocuk parasına ilişkin hukuki not",
+        "legal_note_body": "Başvurusuz çocuk parası bir hükûmet tasarısıdır (Regierungsentwurf, 18.03.2026 kabine kararı); Federal Meclis'teki (Bundestag) nihai oylama 09.07.2026 tarihine planlandı ve henüz kabul edilmedi. Yürürlüğe girişi 01.01.2027 için öngörülüyor, otomatik ödeme 2027'den itibaren kademeli olarak devreye girer. Halihazırda yürürlükte olan, temeldeki veri zinciridir: nüfus dairesi (Standesamt) doğumu tescil eder (§ 21 PStG), nüfus kayıt makamı (Meldebehörde) ve BZSt vergi kimliğini atar (§ 139b AO), aile yardım kasası (Familienkasse) çocuk parasını tespit eder ve öder (§ 66/§ 70 EStG). Ödeme hesabının eID ile onaylanması § 18 PAuswG'ye dayanır. Tüm veriler sentetiktir ([MOCK])."
       }
     }
   },

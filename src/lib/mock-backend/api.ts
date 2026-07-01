@@ -245,10 +245,40 @@ function ensureBooted(): void {
 // Helpers (intern)
 // ----------------------------------------------------------------------------
 
+/**
+ * Erzwingt die „jüngstes Kind zuerst"-Invariante auf `familie.kinder[0]`.
+ *
+ * Die antragslose Kindergeld-Kaskade (§3.3) füllt kindName/kindGeburtsdatum/
+ * kindSteuerId positional aus `familie.kinder[0]` vor — der Frontend-Resolver
+ * (`resolvePath`, src/components/lebenslagen) versteht ausschließlich numerische
+ * Indizes, keinen „newest child"-Selektor. `[0]` MUSS deshalb das JÜNGSTE Kind
+ * sein: das neu geborene Kind, für das die Erstauszahlung angestoßen wird
+ * (Familie Schmidt → Mia, *2026-06-18), NICHT das ältere Geschwisterkind
+ * (Felix, *2022-01-15), dessen bereits laufendes Kindergeld nur den bekannten
+ * IBAN-Anker liefert (Stufe-1 = reine Konto-Bestätigung, kein Lückenschluss).
+ *
+ * Statt diese Invariante der Seed-Reihenfolge in `personas.json` zu überlassen
+ * (fragil — ein späteres Umsortieren würde stillschweigend das falsche Kind
+ * zeigen), garantieren wir sie beim Lesen: stabile Sortierung nach Geburtsdatum
+ * absteigend (ISO-Datum → lexikografisch). Reine Read-Transformation, mutiert die
+ * Persistenz nicht. No-op auf der aktuellen Fixture (Mia steht bereits an [0]) →
+ * kein Verhaltens-/Render-Change, nur Absicherung gegen Regression.
+ */
+function withNewestChildFirst(persona: Persona): Persona {
+  const kinder = persona.familie?.kinder;
+  if (!kinder || kinder.length < 2) return persona;
+  const sorted = [...kinder].sort((a, b) =>
+    b.geburtsdatum.localeCompare(a.geburtsdatum),
+  );
+  // Reihenfolge unverändert → Objektidentität bewahren (kein unnötiges Re-Render).
+  if (sorted.every((k, i) => k === kinder[i])) return persona;
+  return { ...persona, familie: { ...persona.familie, kinder: sorted } };
+}
+
 function loadProfile(): Persona {
   ensureBooted();
   const profile = read('profile' as CollectionKey, personaSchema);
-  if (profile) return profile as Persona;
+  if (profile) return withNewestChildFirst(profile as Persona);
   // Fallback: Aktive Persona aus personas-Bucket finden.
   const personas = readOrInit(
     'personas' as CollectionKey,
@@ -264,7 +294,7 @@ function loadProfile(): Persona {
     );
   }
   write('profile' as CollectionKey, persona);
-  return persona;
+  return withNewestChildFirst(persona);
 }
 
 function loadLetters(): Letter[] {

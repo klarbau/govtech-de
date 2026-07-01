@@ -276,6 +276,30 @@
       },
       "kinder": [
         {
+          "id": "mia-schmidt",
+          "vorname": "Mia",
+          "nachname": "Schmidt",
+          "geburtsdatum": "2026-06-18",
+          "staatsangehoerigkeit": "deutsch",
+          "adresse": {
+            "strasse": "Eppendorfer Weg",
+            "hausnummer": "212",
+            "plz": "20251",
+            "ort": "Hamburg",
+            "land": "DE"
+          },
+          "steuer_id": "[MOCK] 28 472 619 304",
+          "familie": {
+            "kinder": []
+          },
+          "kfz_halter": false,
+          "kindergeld_bezug": false,
+          "wehrerfasst": false,
+          "sprachen": [],
+          "familienversichert_ueber": "markus-schmidt",
+          "familienversichert_bis": "2051-06"
+        },
+        {
           "id": "felix-schmidt",
           "vorname": "Felix",
           "nachname": "Schmidt",
@@ -288,6 +312,7 @@
             "ort": "Hamburg",
             "land": "DE"
           },
+          "steuer_id": "[MOCK] 47 118 220 906",
           "familie": {
             "kinder": []
           },
@@ -310,6 +335,12 @@
       "typ": "gkv",
       "traeger": "Techniker Krankenkasse",
       "versichertennummer": "[MOCK] TK-2015-44113008"
+    },
+    "bankverbindung": {
+      "iban": "[MOCK] DE21 2005 0550 0000 0047 11",
+      "bank": "Hamburger Sparkasse",
+      "quelle": "bundid",
+      "verified": true
     },
     "kfz_halter": true,
     "kindergeld_bezug": true,

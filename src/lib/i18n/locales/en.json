@@ -405,7 +405,6 @@
         "gate_auto": "Automatic",
         "gate_consent": "With consent",
         "gate_eid_done": "Confirmed with eID",
-
         "step_done": "completed",
         "dsgvo_micro": "All data transfers are secure, traceable and compliant with the GDPR (DSGVO).",
         "docs_title": "Decisions & evidence",
@@ -1533,7 +1532,29 @@
     "zukunft_schaetzung": "[ZUKUNFT 2027] Non-binding estimate based on your data — not an approval. The actual amount is determined only by the official decision (Bescheid).",
     "dismiss": "Close notice",
     "snooze": "Remind me later",
-    "behoerde": "Responsible: Bezirksamt Mitte von Berlin — Wohngeldstelle (housing benefit office)"
+    "behoerde": "Responsible: Bezirksamt Mitte von Berlin — Wohngeldstelle (housing benefit office)",
+    "headline": "You may be entitled to housing benefit (Wohngeld)",
+    "betrag_label": "Estimated amount",
+    "amount_value": "approx. {min}–{max} €",
+    "amount_per": "/ month",
+    "subline": "Check whether you qualify and prepare your application in just a few steps.",
+    "reasons_title": "Why this applies",
+    "reason_datenabgleich": "Data match: verified against official records",
+    "needed_title": "Still needed",
+    "needed_einkommen": "Gross income",
+    "needed_mietvertrag": "Tenancy agreement",
+    "how_calculated": "How was this calculated?",
+    "rail_aria": "Key figures for the estimate",
+    "rail_betrag_label": "Estimated monthly amount",
+    "rail_betrag_value": "{min} – {max} €",
+    "rail_zeit_label": "Time saved",
+    "rail_zeit_value": "approx. 8 hrs",
+    "rail_behoerde_label": "Responsible authority",
+    "rail_behoerde_value": "Bezirksamt Mitte von Berlin",
+    "rail_sicher_title": "Your data is secure",
+    "rail_sicher_body": "Encrypted transfer and processing",
+    "disclaimer": "This is a non-binding estimate based on the information you provided and data from official sources. The actual amount is determined solely by the responsible authority. By continuing, you consent to the proactive eligibility check.",
+    "learn_more": "Learn more"
   },
   "common": {
     "cta": {
@@ -1897,10 +1918,13 @@
       "done": "Done",
       "failed": "Failed",
       "umzug_started": "Move started — the authorities are now being notified.",
+      "lebenslage_started": "Child benefit set up — the offices involved are now being notified.",
       "cta_kaskade": "View the cascade",
       "label": {
         "starte_umzug": "Start the move",
         "preview_umzug": "Prepare the move",
+        "starte_lebenslage": "Set up child benefit",
+        "preview_lebenslage": "Prepare child benefit",
         "lese_posteingang": "Read inbox",
         "hole_vorgang": "Fetch case",
         "hole_profil": "Fetch master data",
@@ -1924,6 +1948,19 @@
       "cta_cancel": "Cancel",
       "cancelled": "Cancelled.",
       "consent_note": "Block-B recipients are only notified with your consent (Art. 6(1)(a) GDPR / Art. 6 Abs. 1 lit. a DSGVO); revocable at any time."
+    },
+    "lebenslage_confirm": {
+      "title": "Set up child benefit",
+      "subtitle": "Please check the details. The offices are only notified after your confirmation.",
+      "zukunft_chip": "[ZUKUNFT 2027]",
+      "verfahrensstand_chip": "Government bill (Regierungsentwurf) — final vote scheduled for 09.07.2026",
+      "behoerden_label": "Offices involved",
+      "behoerden_leer": "—",
+      "iban_auszahlen": "pay out to this account — we know the IBAN from the child benefit for your older child.",
+      "mock_note": "[MOCK] · Prototype simulation — no real transmission to the family benefits office (Familienkasse). Application-free child benefit is a government bill (Regierungsentwurf); payment starts in stages from 2027.",
+      "cta_start": "Set up child benefit",
+      "cta_cancel": "Cancel",
+      "cancelled": "Cancelled."
     },
     "kontext": {
       "title": "Context",
@@ -4590,6 +4627,7 @@
       "eid_confirming": "Confirming …",
       "eid_confirm_error": "Confirmation failed. Please try again.",
       "eid_gate_hint": "The following two offices require your explicit confirmation with your ID card — these two transmit nothing without your tap.",
+      "eid_iban_auszahlen": "pay out to this account",
       "row_status_sr_prefix": "Status: ",
       "row_status": {
         "in_progress": "Being transmitted",
@@ -4597,6 +4635,11 @@
         "confirmed": "Confirmed",
         "pending": "Waiting",
         "failed": "Failed"
+      },
+      "kindergeld": {
+        "disclaimer": "[MOCK] · Prototype simulation — no real transmission to the family benefits office (Familienkasse).",
+        "legal_note_summary": "Legal note on application-free child benefit",
+        "legal_note_body": "Application-free child benefit is a government bill (Regierungsentwurf, cabinet decision 18.03.2026); the final vote in the Bundestag is scheduled for 09.07.2026 and has not yet been passed. Entry into force is planned for 01.01.2027, with automatic payment rolled out in stages from 2027. What is already law is the underlying data chain: the registry office (Standesamt) records the birth (§ 21 PStG), the registration authority (Meldebehörde) and the BZSt assign the tax ID (§ 139b AO), and the family benefits office (Familienkasse) determines and pays the child benefit (§ 66/§ 70 EStG). The eID confirmation of the payout account is based on § 18 PAuswG. All data is synthetic ([MOCK])."
       }
     }
   },

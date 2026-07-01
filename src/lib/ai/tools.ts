@@ -50,6 +50,14 @@ export const TOOL_NAMES = [
   // `hole_autopilot_katalog` answers "was kannst du noch automatisieren?".
   'hole_ersparnis',
   'hole_autopilot_katalog',
+  // Antragslose-Lebenslage-Kaskade (kindergeld-cascade.md §5.1). Generalisiert
+  // das Umzug-Paar auf jede WHITELIST-Lebenslage (derzeit nur „kindergeld"):
+  // `preview_lebenslage` (read-only Vorschau) + `starte_lebenslage` (schreibend,
+  // confirm-gated wie `starte_umzug`). Andere Slugs sind bewusst ausgeschlossen —
+  // antragsgebundene Leistungen (Wohngeld/KiZ/Grundsicherung) dürfen NIE als
+  // Auto-Kaskade dargestellt werden. Umzug behält sein dediziertes Paar.
+  'preview_lebenslage',
+  'starte_lebenslage',
   // Klartext-Rückkanal (klartext-rueckkanal.md §7). NEW, tightly-fenced
   // restatement tool that fills the `begruendung_kurz` slot of an
   // already-selected Rechtsbehelf-Skelett from the citizen's own words. NOT an
@@ -71,6 +79,28 @@ export type ToolName = (typeof TOOL_NAMES)[number];
  * runtime validator (`tool-schemas.ts`) stay in sync without a circular import.
  */
 export const ERKLAERE_BRIEF_LOCALES = ['de', 'en', 'ru', 'uk', 'ar', 'tr'] as const;
+
+/**
+ * Hand-maintained whitelist of Lebenslage slugs the assistant may fire as an
+ * ANTRAGSLOS auto-cascade via `preview_lebenslage` / `starte_lebenslage`
+ * (kindergeld-cascade.md §5.1 + §5.4). It currently holds exactly
+ * `['kindergeld']` — the only genuinely antragslos Leistung (Regierungsentwurf;
+ * § 21 PStG → § 139b AO → §§ 66/70 EStG, „die IBAN genügt"). Its config carries
+ * the matching `assistant_trigger: 'antragslos-cascade'` marker; this literal is
+ * NOT mechanically derived from that marker — the two are kept in lockstep by
+ * hand. Antragsgebundene Leistungen (Wohngeld WoGG, KiZ § 6a BKGG,
+ * Grundsicherung § 41 SGB XII, BAföG …) are DELIBERATELY absent: the assistant
+ * must never draw them as an automatic multi-Behörden cascade. Umzug keeps its
+ * dedicated `starte_umzug`/`preview_umzug` pair (engine 'umzug-saga') and is NOT
+ * listed here — a `starte_lebenslage(slug:'umzug')` is rejected by the enum.
+ *
+ * Defined here (not in `tool-schemas.ts`) so both the JSONSchema enum below AND
+ * the zod mirror in `tool-schemas.ts` read from one source without a circular
+ * import — same pattern as `ERKLAERE_BRIEF_LOCALES`. code-reviewer enforces
+ * (spec §11 F2) that a slug is added here ONLY when its config is classified
+ * `antragslos-cascade`.
+ */
+export const STARTE_LEBENSLAGE_SLUGS = ['kindergeld'] as const;
 
 export const tools: Anthropic.Tool[] = [
   /* ───────────────────────────── starte_umzug ───────────────────────────── */
@@ -170,6 +200,68 @@ export const tools: Anthropic.Tool[] = [
         },
       },
       required: ['neue_adresse', 'stichtag_iso'],
+    },
+  },
+
+  /* ─────────────────────────── preview_lebenslage ───────────────────────── */
+  {
+    name: 'preview_lebenslage',
+    description: [
+      'Read-only-Vorschau für eine ANTRAGSLOSE Lebenslage (derzeit ausschließlich „kindergeld"): ermittelt die beteiligten Behörden je Block sowie das (maskierte) Auszahlungskonto, OHNE etwas auszulösen. Braucht keine Bestätigung.',
+      '',
+      'Daraus baut die Oberfläche eine Bestätigungskarte. Erst nach dem ausdrücklichen Klick „Kindergeld einrichten" wird "starte_lebenslage" ausgeführt — genau wie beim Umzug (preview → Karte → starte).',
+      '',
+      'WICHTIG (Verfahrensstand): Antragsloses Kindergeld ist ein Regierungsentwurf — Schlussabstimmung im Bundestag terminiert 09.07.2026 (noch NICHT beschlossen), Inkrafttreten geplant 01.01.2027, Auszahlung gestuft ab 2027. Stelle es NIE als „beschlossen" oder „ab 1.1.2027 automatisch" dar. Der Auto-Flow ist [ZUKUNFT 2027].',
+      '',
+      'Nur „kindergeld" ist erlaubt. Antragsgebundene Leistungen (Wohngeld, Kinderzuschlag, Grundsicherung, BAföG) sind KEINE antragslose Kaskade — nenne sie nicht hier; für einen Umzug nutze "preview_umzug".',
+    ].join('\n'),
+    input_schema: {
+      type: 'object',
+      properties: {
+        slug: {
+          type: 'string',
+          enum: [...STARTE_LEBENSLAGE_SLUGS],
+          description:
+            'Slug der antragslosen Lebenslage. Derzeit ist ausschließlich „kindergeld" zulässig; jeder andere Wert (z. B. „wohngeld", „umzug") ist ungültig.',
+        },
+      },
+      required: ['slug'],
+    },
+  },
+
+  /* ─────────────────────────── starte_lebenslage ─────────────────────────── */
+  {
+    name: 'starte_lebenslage',
+    description: [
+      'Startet die ANTRAGSLOSE Autopilot-Kaskade einer Lebenslage (schreibend, irreversibel). Zulässig ausschließlich für die Whitelist-Slugs — derzeit nur „kindergeld".',
+      '',
+      'Verfahrensstand — NIE falsch darstellen: Antragsloses Kindergeld ist ein Regierungsentwurf. Die Schlussabstimmung im Bundestag ist auf den 09.07.2026 terminiert (noch NICHT beschlossen); Inkrafttreten geplant 01.01.2027, Auszahlung gestuft ab 2027. Sage NIE „beschlossen" oder „ab 1.1.2027 automatisch"; kennzeichne den Auto-Flow als [ZUKUNFT 2027].',
+      '',
+      'Antragsloses Kindergeld (Regierungsentwurf, [ZUKUNFT 2027]): Nach der Geburtsbeurkundung durch das Standesamt (§ 21 PStG) melden Meldebehörde/BZSt (§ 139b AO) die Daten an die Familienkasse der Bundesagentur für Arbeit, die das Kindergeld festsetzt und auszahlt (§§ 66/70 EStG). Genau 4 Behörden sind beteiligt: Standesamt, Meldebehörde, BZSt, Familienkasse. „Die IBAN genügt" — es ist kein Antrag nötig.',
+      '',
+      'eID-Bestätigung (§ 18 PAuswG): Die Nutzerin bestätigt mit ihrer eID NUR das bereits bekannte Auszahlungskonto (maskiert, z. B. „DE.. •••• 4711") — eine Bestätigung, KEINE IBAN-Eingabe. Diese Bestätigung läuft NICHT über dieses Tool, sondern über den eID-Tap im UI.',
+      '',
+      '"consents": Liste der Cascade-Schritt-Ids, für die die Nutzerin eine Einwilligung erteilt hat. Kindergeld hat KEINEN Block-B/Einwilligungsschritt → immer leeres Array []. Das Feld existiert für Parität mit künftigen Verticals.',
+      '',
+      'Vorbedingung: Aufrufer MUSS zuvor "preview_lebenslage" aufgerufen haben und die Nutzerin MUSS in der Bestätigungskarte ausdrücklich „Kindergeld einrichten" geklickt haben — niemals ohne diesen expliziten Klick aufrufen. Beträge nur als ca.-Angabe („ca. 259 € / Monat je Kind"), nie aufgerundet. [MOCK]: Der Prototyp simuliert die Übermittlung — keine reale Behörden-Übermittlung.',
+    ].join('\n'),
+    input_schema: {
+      type: 'object',
+      properties: {
+        slug: {
+          type: 'string',
+          enum: [...STARTE_LEBENSLAGE_SLUGS],
+          description:
+            'Slug der antragslosen Lebenslage. Derzeit ist ausschließlich „kindergeld" zulässig. Für einen Umzug nutze "starte_umzug"; antragsgebundene Leistungen (Wohngeld/KiZ/Grundsicherung) sind hier ungültig.',
+        },
+        consents: {
+          type: 'array',
+          items: { type: 'string' },
+          description:
+            'Cascade-Schritt-Ids mit erteilter Einwilligung. Für „kindergeld" immer leeres Array [] (kein Einwilligungsschritt).',
+        },
+      },
+      required: ['slug'],
     },
   },
 
@@ -502,8 +594,11 @@ export function isKnownTool(name: string): name is ToolName {
  *   hole_autopilot_katalog       → api.getAutopilotKatalog()         | no
  *   preview_umzug                → api.previewUmzug({adresse,stichtag})| no  → renders <UmzugConfirmCard>
  *   starte_umzug                 → api.startUmzug({…})               | YES → gated by <UmzugConfirmCard> click
+ *   preview_lebenslage           → api.getLebenslageConfig(slug)     | no  → renders <LebenslageConfirmCard>
+ *   starte_lebenslage            → api.starteLebenslage(slug,{},[])  | YES → gated by <LebenslageConfirmCard> click
  *
- * CRITICAL GATING RULE (§7.3 + §9): `starte_umzug` MUST NOT be dispatched
+ * CRITICAL GATING RULE (§7.3 + §9): `starte_umzug` and `starte_lebenslage` MUST
+ * NOT be dispatched
  * automatically when the model streams the block. The system prompt tells the
  * model to call `preview_umzug` first and wait for confirmation — but the
  * client enforces this STRUCTURALLY, not just by prompt: a `starte_umzug`

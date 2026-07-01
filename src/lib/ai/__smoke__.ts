@@ -21,6 +21,7 @@ import {
 import {
   TOOL_DISPATCH,
   requiresConfirmation,
+  validateLebenslageToolInput,
   validatePosteingangToolInput,
   validateUmzugToolInput,
 } from './tool-schemas';
@@ -49,10 +50,15 @@ check(
   isKnownTool('vorschlage_naechsten_schritt'),
 );
 check(
-  'TOOL_NAMES has 12 entries (5 legacy + 3 posteingang + 1 preview_umzug + 2 convenience + 1 sachverhalt)',
-  TOOL_NAMES.length === 12,
+  'TOOL_NAMES has 14 entries (5 legacy + 3 posteingang + 1 preview_umzug + 2 convenience + 2 lebenslage + 1 sachverhalt)',
+  TOOL_NAMES.length === 14,
   TOOL_NAMES,
 );
+check(
+  'TOOL_NAMES contains preview_lebenslage',
+  isKnownTool('preview_lebenslage'),
+);
+check('TOOL_NAMES contains starte_lebenslage', isKnownTool('starte_lebenslage'));
 check(
   'TOOL_NAMES contains formuliere_sachverhalt',
   isKnownTool('formuliere_sachverhalt'),
@@ -248,8 +254,10 @@ check('hole_ersparnis rejects missing vorgang_id', !ersparnisMissing.ok);
 /* ── Dispatch table + irreversible-action gate (§7.3) ──────────────────── */
 
 check(
-  'TOOL_DISPATCH has an entry per tool name',
-  TOOL_NAMES.every((n) => n in TOOL_DISPATCH),
+  'TOOL_DISPATCH has an entry per DISPATCHABLE tool name (formuliere_sachverhalt is server-side one-shot, intentionally not dispatched)',
+  TOOL_NAMES.filter((n) => n !== 'formuliere_sachverhalt').every(
+    (n) => n in TOOL_DISPATCH,
+  ),
   Object.keys(TOOL_DISPATCH),
 );
 check(
@@ -273,15 +281,100 @@ check(
     TOOL_DISPATCH.hole_autopilot_katalog.requires_confirmation === false,
 );
 check(
-  'requiresConfirmation true ONLY for starte_umzug',
+  'requiresConfirmation true ONLY for the two write tools (starte_umzug, starte_lebenslage)',
   requiresConfirmation('starte_umzug') === true &&
-    TOOL_NAMES.filter((n) => n !== 'starte_umzug').every(
-      (n) => requiresConfirmation(n) === false,
-    ),
+    requiresConfirmation('starte_lebenslage') === true &&
+    TOOL_NAMES.filter(
+      (n) => n !== 'starte_umzug' && n !== 'starte_lebenslage',
+    ).every((n) => requiresConfirmation(n) === false),
 );
 check(
   'requiresConfirmation false for unknown tool name',
   requiresConfirmation('definitely_not_a_tool') === false,
+);
+
+/* ── Lebenslage tools: registration, dispatch, whitelist gate ──────────────── */
+
+const previewLebenslage = toolsByName.get('preview_lebenslage');
+const starteLebenslage = toolsByName.get('starte_lebenslage');
+check('tools[] has preview_lebenslage def', Boolean(previewLebenslage));
+check('tools[] has starte_lebenslage def', Boolean(starteLebenslage));
+check(
+  'preview_lebenslage description states read-only / OHNE etwas auszulösen',
+  Boolean(previewLebenslage?.description?.includes('OHNE etwas auszulösen')),
+);
+check(
+  'starte_lebenslage description flags Regierungsentwurf + 09.07.2026 (no over-promise)',
+  Boolean(
+    starteLebenslage?.description?.includes('Regierungsentwurf') &&
+      starteLebenslage?.description?.includes('09.07.2026'),
+  ),
+);
+check(
+  'starte_lebenslage description honestly frames it as NOT yet enacted (never "gesetzlich beschlossen")',
+  Boolean(starteLebenslage) &&
+    !starteLebenslage!.description!.includes('gesetzlich beschlossen') &&
+    (starteLebenslage!.description!.includes('noch NICHT beschlossen') ||
+      starteLebenslage!.description!.includes('terminiert')),
+);
+check(
+  'preview_lebenslage → getLebenslageConfig, NOT confirm-gated',
+  TOOL_DISPATCH.preview_lebenslage.api_method === 'getLebenslageConfig' &&
+    TOOL_DISPATCH.preview_lebenslage.requires_confirmation === false,
+);
+check(
+  'starte_lebenslage → starteLebenslage, confirm-gated',
+  TOOL_DISPATCH.starte_lebenslage.api_method === 'starteLebenslage' &&
+    TOOL_DISPATCH.starte_lebenslage.requires_confirmation === true,
+);
+
+const okPreviewLl = validateLebenslageToolInput('preview_lebenslage', {
+  slug: 'kindergeld',
+});
+check('preview_lebenslage accepts {slug:"kindergeld"}', okPreviewLl.ok);
+
+const okStarteLl = validateLebenslageToolInput('starte_lebenslage', {
+  slug: 'kindergeld',
+  consents: [],
+});
+check('starte_lebenslage accepts {slug:"kindergeld", consents:[]}', okStarteLl.ok);
+
+const okStarteLlDefault = validateLebenslageToolInput('starte_lebenslage', {
+  slug: 'kindergeld',
+});
+check(
+  'starte_lebenslage defaults consents to [] when omitted',
+  okStarteLlDefault.ok &&
+    Array.isArray(
+      (okStarteLlDefault as { ok: true; data: { consents?: string[] } }).data
+        .consents,
+    ),
+);
+
+// Whitelist gate — antragsgebundene Leistungen + the dedicated-tool slug „umzug"
+// must be rejected (spec §9 edge cases + §11 F2 / review checklist §12).
+const rejectWohngeld = validateLebenslageToolInput('starte_lebenslage', {
+  slug: 'wohngeld',
+  consents: [],
+});
+check(
+  'starte_lebenslage REJECTS slug "wohngeld" (antragsgebunden, never auto-cascade)',
+  !rejectWohngeld.ok,
+);
+const rejectUmzugSlug = validateLebenslageToolInput('starte_lebenslage', {
+  slug: 'umzug',
+});
+check(
+  'starte_lebenslage REJECTS slug "umzug" (served by starte_umzug)',
+  !rejectUmzugSlug.ok,
+);
+const rejectExtraField = validateLebenslageToolInput('preview_lebenslage', {
+  slug: 'kindergeld',
+  neue_adresse: {}, // Umzug field must not leak into the lebenslage path
+});
+check(
+  'preview_lebenslage rejects unknown field (strict)',
+  !rejectExtraField.ok,
 );
 
 /* ── Umzug input validators ────────────────────────────────────────────── */

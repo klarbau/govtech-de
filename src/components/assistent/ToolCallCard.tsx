@@ -30,6 +30,8 @@ interface ToolCallCardProps {
 const TOOL_LABEL_KEYS: Record<string, string> = {
   starte_umzug: 'starte_umzug',
   preview_umzug: 'preview_umzug',
+  starte_lebenslage: 'starte_lebenslage',
+  preview_lebenslage: 'preview_lebenslage',
   lese_posteingang: 'lese_posteingang',
   hole_vorgang: 'hole_vorgang',
   hole_profil: 'hole_profil',
@@ -46,6 +48,17 @@ export function ToolCallCard({ call }: ToolCallCardProps) {
   const labelKey = TOOL_LABEL_KEYS[call.name];
   const label = labelKey ? t(`label.${labelKey}`) : call.name;
   const isUmzugStart = call.name === 'starte_umzug' && call.status === 'done';
+  const isLebenslageStart =
+    call.name === 'starte_lebenslage' && call.status === 'done';
+  /* Both started-cascade tools dock an <InlineCascade> under the card. The
+     Umzug-only chrome (RecoveryBanner, Laufzettel, run-page link) stays gated
+     to the Umzug run below (Spec § 5.6). */
+  const isCascadeStart = isUmzugStart || isLebenslageStart;
+  const startedLabel = isUmzugStart
+    ? t('umzug_started')
+    : isLebenslageStart
+      ? t('lebenslage_started')
+      : label;
 
   const tone =
     call.status === 'error'
@@ -71,7 +84,7 @@ export function ToolCallCard({ call }: ToolCallCardProps) {
           <IconCircle icon={icon} tone={tone} size="sm" />
           <div className="min-w-0 flex-1">
             <p className="text-sm font-medium text-text-primary">
-              {isUmzugStart ? t('umzug_started') : label}
+              {startedLabel}
             </p>
             {call.resultSummary ? (
               <p className="truncate text-xs text-text-muted">
@@ -93,22 +106,34 @@ export function ToolCallCard({ call }: ToolCallCardProps) {
             <StatusBadge variant="bestaetigt">{t('done')}</StatusBadge>
           )}
         </div>
-        {isUmzugStart && call.vorgangId ? (
+        {isCascadeStart && call.vorgangId ? (
           <>
-            <OrchestrationTestBridge />
-            <RecoveryBanner sagaId={call.vorgangId} />
-            <InlineCascade vorgangId={call.vorgangId} variant="live" />
-            {/* Resilient Orchestration Engine (Spec § 6.1): the Laufzettel travels
-                with the in-thread cascade — additive, collapsible, never weakening
-                the hero rows above. sagaId === vorgangId (§ 5.1). */}
-            <LaufzettelPanel sagaId={call.vorgangId} variant="inline" />
-            <Link
-              href={`/vorgaenge/umzug/run?vorgangId=${encodeURIComponent(call.vorgangId)}`}
-              className="inline-flex items-center gap-1 self-start text-sm font-medium text-primary hover:text-primary-hover"
-            >
-              {t('cta_kaskade')}
-              <ArrowRight className="size-4 rtl:-scale-x-100" aria-hidden="true" />
-            </Link>
+            <InlineCascade
+              vorgangId={call.vorgangId}
+              vorgangTyp={call.vorgangTyp}
+              variant="live"
+            />
+            {/* Resilient Orchestration Engine (Spec § 6.1): the Laufzettel + the
+                recovery banner + the run-page link are Umzug-saga machinery and
+                stay Umzug-only (Spec § 5.6). A kindergeld cascade has neither a
+                saga nor a /vorgaenge/umzug/run page. */}
+            {isUmzugStart ? (
+              <>
+                <OrchestrationTestBridge />
+                <RecoveryBanner sagaId={call.vorgangId} />
+                <LaufzettelPanel sagaId={call.vorgangId} variant="inline" />
+                <Link
+                  href={`/vorgaenge/umzug/run?vorgangId=${encodeURIComponent(call.vorgangId)}`}
+                  className="inline-flex items-center gap-1 self-start text-sm font-medium text-primary hover:text-primary-hover"
+                >
+                  {t('cta_kaskade')}
+                  <ArrowRight
+                    className="size-4 rtl:-scale-x-100"
+                    aria-hidden="true"
+                  />
+                </Link>
+              </>
+            ) : null}
           </>
         ) : null}
       </div>

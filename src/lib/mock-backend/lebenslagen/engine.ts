@@ -140,13 +140,39 @@ function fill(
 }
 
 /**
+ * Maskiert eine (`[MOCK]`-präfixierte) IBAN auf `DE.. •••• 4711` — die
+ * Konto-Vorschau für den Stufe-1 eID-Bestätigungs-Schritt (Auszahlungskonto ist
+ * bereits bekannt → Bestätigung, keine Eingabe). Gibt `undefined` zurück, wenn
+ * keine IBAN vorliegt (dann trägt die Zeile nur „Mit eID bestätigen").
+ */
+function maskIban(iban?: string): string | undefined {
+  if (!iban) return undefined;
+  const cleaned = iban.replace(/\[MOCK\]\s*/i, '').replace(/\s+/g, '');
+  if (cleaned.length < 4) return undefined;
+  // Länderpräfix aus der IBAN ableiten (nicht hart „DE"): die ersten zwei
+  // Buchstaben, sonst „DE" als Fallback, falls die IBAN untypisch beginnt.
+  const prefix = /^[A-Za-z]{2}/.test(cleaned)
+    ? cleaned.slice(0, 2).toUpperCase()
+    : 'DE';
+  return `${prefix}.. •••• ${cleaned.slice(-4)}`;
+}
+
+/**
  * Mappt einen Config-Step auf den initialen `AutopilotStep` (status `pending`).
  * `requires_eid`/`requires_consent` leiten sich aus dem Gate ab (Umzug-Parität).
+ * `zukunft` (spekulativer 2027-Hop) und `eid_preview` (maskiertes Auszahlungs-
+ * konto bei `eidInput.kind === 'confirm'` + `fieldKey === 'iban'`, aus
+ * `persona.bankverbindung.iban`) werden — sofern vorhanden — mitgereicht.
  */
 export function toAutopilotStep(
   vorgangId: string,
   stepCfg: CascadeStepConfig,
+  persona?: Persona,
 ): AutopilotStep {
+  const eidPreview =
+    stepCfg.eidInput?.kind === 'confirm' && stepCfg.eidInput.fieldKey === 'iban'
+      ? maskIban(persona?.bankverbindung?.iban) ?? stepCfg.eidInput.maskedPreview
+      : undefined;
   return {
     id: stepIdFor(vorgangId, stepCfg),
     behoerde_id: stepCfg.behoerdeId,
@@ -158,6 +184,8 @@ export function toAutopilotStep(
     requires_eid: stepCfg.gate === 'eid',
     requires_consent: stepCfg.gate === 'consent',
     status: 'pending',
+    ...(stepCfg.zukunft ? { zukunft: true } : {}),
+    ...(eidPreview ? { eid_preview: eidPreview } : {}),
   };
 }
 
@@ -333,7 +361,7 @@ async function drive(vorgangId: string): Promise<void> {
 
   for (const stepCfg of run.steps) {
     if (run.resolved.has(stepCfg.id)) continue;
-    const base = toAutopilotStep(vorgangId, stepCfg);
+    const base = toAutopilotStep(vorgangId, stepCfg, run.persona);
 
     if (stepCfg.gate === 'eid') {
       // PAUSE: pending_eid_confirmation; resume via bestaetigeLebenslageSchritt.
@@ -432,7 +460,7 @@ export async function confirmEidStep(
   if (stepCfg.gate !== 'eid') return false;
   if (run.resolved.has(stepCfg.id)) return true; // Doppel-Confirm: idempotent.
 
-  const base = toAutopilotStep(vorgangId, stepCfg);
+  const base = toAutopilotStep(vorgangId, stepCfg, run.persona);
   run.ports.upsertStep(vorgangId, {
     ...base,
     status: 'in_progress',

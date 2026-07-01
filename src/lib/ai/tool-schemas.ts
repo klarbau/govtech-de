@@ -32,7 +32,11 @@
 
 import { z } from 'zod';
 
-import { ERKLAERE_BRIEF_LOCALES, type ToolName } from './tools';
+import {
+  ERKLAERE_BRIEF_LOCALES,
+  STARTE_LEBENSLAGE_SLUGS,
+  type ToolName,
+} from './tools';
 
 /* ───────────────────────────── erklaere_brief ────────────────────────────── */
 
@@ -216,6 +220,45 @@ export const starteUmzugInput = z
 
 export type StarteUmzugInput = z.infer<typeof starteUmzugInput>;
 
+/* ───────────── Lebenslage tool schemas (kindergeld-cascade.md §5.1) ────────── */
+
+/**
+ * `preview_lebenslage` — read-only. Takes ONLY the Lebenslage `slug` and returns
+ * (via `api.getLebenslageConfig`) the beteiligte Behörden je Block + masked
+ * Auszahlungskonto WITHOUT writing. The model fills this so the client can render
+ * `<LebenslageConfirmCard>` before any irreversible action.
+ *
+ * `slug` is pinned to the derived antragslos-cascade whitelist
+ * (`STARTE_LEBENSLAGE_SLUGS`, currently `['kindergeld']`). A non-whitelist slug
+ * (e.g. „wohngeld", „umzug") is rejected structurally — antragsgebundene
+ * Leistungen must never be drawn as an auto-cascade (spec §5.4/§11 F2).
+ */
+export const previewLebenslageInput = z
+  .object({
+    slug: z.enum(STARTE_LEBENSLAGE_SLUGS),
+  })
+  .strict();
+
+export type PreviewLebenslageInput = z.infer<typeof previewLebenslageInput>;
+
+/**
+ * `starte_lebenslage` — the irreversible antragslos-cascade write. `slug` is the
+ * same whitelisted enum; `consents` lists the cascade-step ids the citizen
+ * consented to (gate:'consent' steps). Kindergeld has NO Block-B/consent step →
+ * always `[]`; the field exists for parity with future verticals and defaults to
+ * `[]` when the model omits it. Validating this before dispatch is
+ * belt-and-braces: the structural confirm-gate (`requiresConfirmation`) is the
+ * primary safety layer, identical to `starte_umzug`.
+ */
+export const starteLebenslageInput = z
+  .object({
+    slug: z.enum(STARTE_LEBENSLAGE_SLUGS),
+    consents: z.array(z.string()).default([]),
+  })
+  .strict();
+
+export type StarteLebenslageInput = z.infer<typeof starteLebenslageInput>;
+
 /* ──────────────────── Tool → api dispatch contract (§7.3) ─────────────────── */
 
 /**
@@ -237,7 +280,11 @@ export interface ToolDispatchEntry {
     | 'tool_call_card'
     | 'tool_call_card_disclaimer'
     | 'umzug_confirm_card'
-    | 'umzug_started_card';
+    | 'umzug_started_card'
+    // Generalised antragslos-cascade confirm card (kindergeld-cascade.md §5.1).
+    // Shared by preview_lebenslage (feeds the card) and starte_lebenslage (the
+    // gated write); the frontend renders <LebenslageConfirmCard>.
+    | 'lebenslage_confirm_card';
 }
 
 /**
@@ -310,14 +357,29 @@ export const TOOL_DISPATCH: Record<DispatchableToolName, ToolDispatchEntry> = {
     requires_confirmation: true,
     ui: 'umzug_started_card',
   },
+  // Antragslos-Kaskade (kindergeld-cascade.md §5.1). preview is read-only and
+  // feeds <LebenslageConfirmCard>; starte is confirm-gated exactly like
+  // starte_umzug — the dispatcher HOLDS the block until the citizen clicks
+  // „Kindergeld einrichten". Whitelist enforcement lives in the zod schema
+  // (STARTE_LEBENSLAGE_SLUGS) + validateLebenslageToolInput.
+  preview_lebenslage: {
+    api_method: 'getLebenslageConfig',
+    requires_confirmation: false,
+    ui: 'lebenslage_confirm_card',
+  },
+  starte_lebenslage: {
+    api_method: 'starteLebenslage',
+    requires_confirmation: true,
+    ui: 'lebenslage_confirm_card',
+  },
 };
 
 /**
  * THE irreversible-action gate. The client dispatcher calls this for every
  * `tool_use` block; a `true` result means "do not execute now — render the
  * confirm card and wait for the explicit user click". This is the structural
- * safety layer (independent of the system prompt). Currently true only for
- * `starte_umzug`.
+ * safety layer (independent of the system prompt). True for the irreversible
+ * write tools `starte_umzug` and `starte_lebenslage`.
  */
 export function requiresConfirmation(name: string): boolean {
   return (
@@ -340,6 +402,35 @@ export function validateUmzugToolInput(
   | { ok: true; data: PreviewUmzugInput | StarteUmzugInput }
   | { ok: false; issues: z.ZodIssue[] } {
   const schema = name === 'preview_umzug' ? previewUmzugInput : starteUmzugInput;
+  const parsed = schema.safeParse(input);
+  if (parsed.success) return { ok: true, data: parsed.data };
+  return { ok: false, issues: parsed.error.issues };
+}
+
+/* ─────────────── Lebenslage input validation (used at dispatch) ───────────── */
+
+/**
+ * Validate a `preview_lebenslage` / `starte_lebenslage` tool_use.input. The
+ * client dispatch layer calls this before mapping the input to
+ * `api.getLebenslageConfig(slug)` / `api.starteLebenslage(slug, {}, consents)`.
+ * The frontend's `buildProposalFromStarteLebenslage` (mirror of
+ * `buildProposalFromStarteUmzug`) wraps this: it validates here first, then
+ * enriches with `api.getLebenslageConfig` (beteiligte Behörden + zukunft) and
+ * `api.getProfile` (masked IBAN) to build the `LebenslageProposal`.
+ *
+ * The `slug` enum is the single structural guard that keeps antragsgebundene
+ * Leistungen (Wohngeld/KiZ/Grundsicherung) and the dedicated-tool slug „umzug"
+ * out of the antragslos-cascade path (spec §9 edge cases + §11 F2). Mirrors the
+ * discriminated-result shape of `validateUmzugToolInput`.
+ */
+export function validateLebenslageToolInput(
+  name: 'preview_lebenslage' | 'starte_lebenslage',
+  input: unknown,
+):
+  | { ok: true; data: PreviewLebenslageInput | StarteLebenslageInput }
+  | { ok: false; issues: z.ZodIssue[] } {
+  const schema =
+    name === 'preview_lebenslage' ? previewLebenslageInput : starteLebenslageInput;
   const parsed = schema.safeParse(input);
   if (parsed.success) return { ok: true, data: parsed.data };
   return { ok: false, issues: parsed.error.issues };

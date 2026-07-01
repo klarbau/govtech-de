@@ -629,6 +629,177 @@ button { font: inherit; cursor: pointer; }
 .wh-ctrl:hover { background: var(--surface-soft); color: var(--ink); }
 .wh-ctrl svg { width: 16px; height: 16px; }
 
+/* Risiko-Variante teilt die alte schmale Karten-Chrome; im Full-Width-Hero-Slot
+   die Zeilenlänge begrenzen, damit der konditionale Novelle-Text lesbar bleibt. */
+.wh-card--risiko { max-width: 760px; }
+
+/* ============ Proaktiver Wohngeld-Anspruch — Hero-Redesign (Entdeckung) ============
+   Full-width „Chance"-Karte über dem Dashboard-Grid (dash-hero). Grüne Akzente =
+   positive, proaktive Erkennung; Serif-Headline; 2-Spalten-Body (Hauptspalte +
+   Kennzahl-Schiene). Dark-aware über die flippenden Tokens
+   (--surface/--ink(-2/-3)/--surface-soft/--border/--green-50/600/700). */
+.wha-card {
+  position: relative;
+  container-type: inline-size;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px 26px;
+  box-shadow: 0 14px 38px -22px rgba(16, 32, 24, 0.20), var(--shadow-1);
+  animation: wh-fade-up .28s ease both;
+}
+
+.wha-head { margin-bottom: 18px; padding-right: 100px; }
+.wha-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--green-50); color: var(--green-700);
+  padding: 7px 13px 7px 10px; border-radius: 10px;
+  font-size: 13.5px; font-weight: 600; letter-spacing: -0.005em;
+}
+.wha-badge-icon { width: 17px; height: 17px; flex: none; }
+
+/* Default = schmale Spalte (linkes Dashboard-Col): einspaltig gestapelt.
+   Breitenabhängige 2-Spalten-Schaltung via @container weiter unten — reagiert
+   auf die KARTENbreite, nicht das Viewport, also korrekt in jeder Spalte. */
+.wha-body { display: grid; grid-template-columns: 1fr; gap: 0; }
+.wha-main { min-width: 0; padding-right: 0; }
+
+.wha-headline {
+  font-family: var(--font-serif), Georgia, 'Times New Roman', serif;
+  font-size: clamp(26px, 2.6vw, 34px); line-height: 1.1; font-weight: 600;
+  letter-spacing: -0.01em; color: var(--ink); margin: 0;
+}
+.wha-rule {
+  width: 48px; height: 4px; border-radius: 3px;
+  background: var(--color-primary); margin: 14px 0 0;
+}
+
+.wha-estimate { margin-top: 18px; }
+.wha-estimate-label {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 14px; color: var(--ink-3);
+}
+.wha-info { width: 14px; height: 14px; color: var(--ink-3); opacity: .7; flex: none; }
+.wha-amount {
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: 0 8px;
+  margin: 6px 0 0; font-variant-numeric: tabular-nums;
+}
+.wha-amount-num {
+  font-size: clamp(28px, 2.8vw, 36px); font-weight: 700;
+  letter-spacing: -0.02em; color: var(--color-primary); line-height: 1.05;
+}
+.wha-amount-per {
+  font-size: clamp(18px, 1.7vw, 22px); font-weight: 500;
+  color: var(--color-primary); opacity: .82;
+}
+.wha-subline {
+  margin: 10px 0 0; font-size: 14px; line-height: 1.5;
+  color: var(--ink-3); max-width: 52ch;
+}
+
+.wha-reasons {
+  margin-top: 18px; border: 1px solid var(--border); background: var(--surface-soft);
+  border-radius: 14px; padding: 16px 18px;
+  display: grid; grid-template-columns: 1fr; gap: 0;
+}
+.wha-reasons-col { padding-right: 0; min-width: 0; }
+.wha-reasons-col--needed {
+  border-top: 1px solid var(--border); margin-top: 12px; padding-top: 12px;
+}
+.wha-reasons-head {
+  display: flex; align-items: center; gap: 9px;
+  font-size: 14px; font-weight: 600; color: var(--ink);
+}
+.wha-rh-icon { width: 18px; height: 18px; flex: none; }
+.wha-rh-icon.green { color: var(--green-600); }
+.wha-rh-icon.muted { color: var(--ink-3); }
+.wha-list { list-style: none; margin: 0; padding: 0; }
+.wha-list li {
+  display: flex; align-items: flex-start; gap: 9px; margin-top: 10px;
+  font-size: 13px; line-height: 1.4; color: var(--ink-2);
+}
+.wha-li-check { width: 15px; height: 15px; color: var(--green-600); flex: none; margin-top: 1px; }
+.wha-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green-600); flex: none; margin-top: 6px; }
+
+.wha-cta { width: 100%; margin-top: 18px; height: 46px; border-radius: 12px; font-size: 15px; }
+.wha-calc-link, .wha-learn {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13.5px; font-weight: 600; color: var(--color-primary); text-decoration: none;
+}
+.wha-calc-link { margin-top: 12px; }
+.wha-calc-link svg, .wha-learn svg { width: 15px; height: 15px; }
+.wha-calc-link:hover, .wha-learn:hover { text-decoration: underline; text-underline-offset: 2px; }
+
+/* Default (gestapelt): Schiene als 2×2-Kennzahlraster unter dem Hauptinhalt. */
+.wha-rail {
+  border-top: 1px solid var(--border); margin-top: 16px; padding-top: 14px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4px 20px;
+}
+.wha-rail-item { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; }
+.wha-rail-icon {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: var(--green-50); color: var(--green-700);
+  display: grid; place-items: center; flex: none;
+}
+.wha-rail-icon svg { width: 17px; height: 17px; }
+.wha-rail-label { font-size: 12.5px; color: var(--ink-3); line-height: 1.35; }
+.wha-rail-value {
+  font-size: 15px; font-weight: 600; color: var(--ink);
+  margin-top: 2px; line-height: 1.3; font-variant-numeric: tabular-nums;
+}
+.wha-rail-value.with-info { display: inline-flex; align-items: center; gap: 6px; }
+.wha-rail-value.sm-title { font-size: 14.5px; margin-top: 0; }
+
+.wha-footer {
+  margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);
+  display: flex; align-items: flex-start; gap: 14px;
+}
+.wha-footer-shield { width: 20px; height: 20px; color: var(--ink-3); flex: none; margin-top: 1px; opacity: .8; }
+.wha-footer-text { flex: 1; min-width: 0; }
+.wha-disclaimer { margin: 0; font-size: 12px; line-height: 1.5; color: var(--ink-3); max-width: 80ch; }
+.wha-fineprint { margin: 6px 0 0; font-size: 11px; line-height: 1.5; color: var(--ink-3); }
+.wha-learn { white-space: nowrap; align-self: center; }
+
+/* Dismiss/Snooze — geteiltes Markup, oben rechts; kompakte 36px-Ziele.
+   row-reverse: Snooze (Uhr) links, Schließen (X) rechts wie im Entwurf. */
+.wha-card .wh-controls { top: 22px; right: 24px; flex-direction: row-reverse; gap: 8px; }
+.wha-card .wh-ctrl { min-width: 38px; min-height: 38px; border-radius: 10px; }
+.wha-card .wh-ctrl svg { width: 16px; height: 16px; }
+
+/* ── Container-Queries: schalten anhand der KARTENbreite, nicht des Viewports ──
+   Ab ~520 px Kartenbreite wird der Begründungs-Block 2-spaltig; ab ~620 px
+   rückt die Kennzahl-Schiene als vertikale Spalte rechts neben den Hauptinhalt
+   (Entwurfs-Look). In der schmalen linken Dashboard-Spalte bleibt es kompakt
+   einspaltig mit 2×2-Schiene. */
+@container (min-width: 520px) {
+  .wha-reasons { grid-template-columns: 1fr 1fr; }
+  .wha-reasons-col { padding-right: 18px; }
+  .wha-reasons-col--needed {
+    border-top: 0; margin-top: 0; padding-top: 0;
+    border-left: 1px solid var(--border); padding-left: 18px;
+  }
+}
+@container (min-width: 620px) {
+  .wha-body { grid-template-columns: minmax(0, 1fr) 240px; }
+  .wha-main { padding-right: 28px; }
+  .wha-rail {
+    border-top: 0; margin-top: 0; padding-top: 0;
+    border-left: 1px solid var(--border); padding-left: 24px;
+    display: block;
+  }
+  .wha-rail-item { padding: 13px 0; }
+  .wha-rail-item:first-child { padding-top: 0; }
+  .wha-rail-item + .wha-rail-item { border-top: 1px solid var(--border); }
+}
+
+@media (max-width: 600px) {
+  .wha-card { padding: 20px; border-radius: 16px; }
+  .wha-head { padding-right: 92px; margin-bottom: 16px; }
+  .wha-rail { grid-template-columns: 1fr; }
+  .wha-footer { flex-wrap: wrap; }
+  .wha-learn { align-self: flex-start; }
+}
+
 
 /* ============ posteingang.html ============ */
 .post-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 24px; align-items: start; }

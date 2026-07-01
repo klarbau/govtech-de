@@ -89,6 +89,22 @@ export interface CascadeStepConfig {
   isPrimarySubmission?: boolean;
   /** Marks a speculative-2027 hop → renders the [ZUKUNFT]/Zukunft chip. */
   zukunft?: boolean;
+  /**
+   * Einzel-Datum-„input"-Schritt (Spec Move A §5.4). Pausiert die Kaskade an
+   * genau EINEM benötigten Datum und läuft nach Freigabe weiter — die Mechanik
+   * ist das bestehende `gate: 'eid'`-Pause/Resume (kein neuer Control-Flow).
+   *
+   * - `kind: 'confirm'` (Stufe-1-Demo, Schmidt/Mia): eID-BESTÄTIGUNG eines
+   *   bereits BEKANNTEN Kontos — die Engine berechnet aus
+   *   `persona.bankverbindung.iban` die maskierte Vorschau (`AutopilotStep.eid_preview`,
+   *   z. B. `DE.. •••• 4711`). NIE „IBAN eingeben".
+   * - `kind: 'input'` (Stufe-2 Erstkind): echte Einzel-Datum-Eingabe. Im Typ
+   *   definiert, als interaktiver Flow OUT OF SCOPE (nur Erklär-Layer).
+   *
+   * `fieldKey` benennt das eine Datum (Stufe 1: `'iban'`). `maskedPreview`
+   * optional als statischer Fallback, wenn kein Register-Wert vorliegt.
+   */
+  eidInput?: { kind: 'confirm' | 'input'; fieldKey: string; maskedPreview?: string };
   /** Latency choreography (ms) so the cascade streams like Umzug. */
   latencyMs: number;
   /** Render only for personas this hop applies to. */
@@ -171,6 +187,15 @@ export interface LebenslageConfig {
   };
   /** For mode='antragslos': the "kein Antrag nötig" explainer key. */
   antragslos_note_key?: string;
+  /**
+   * Wie der Assistant diese Lebenslage anstößt (Tool-Kontrakt Move A §7):
+   * - `'antragslos-cascade'` → `preview_lebenslage` + `starte_lebenslage`
+   *   feuern die in-thread Kaskade (nur Kindergeld ist echt antragslos).
+   * - `'antragsgebunden'` (Default für alle anderen: wohngeld/geburt/bafoeg/
+   *   pflegegrad/reisepass/aufenthalt-verlaengerung) → klassischer Antrag,
+   *   NIE als „auch automatisch" darstellen.
+   */
+  assistant_trigger?: 'antragslos-cascade' | 'antragsgebunden';
   /** i18n key for an estimated total duration string, e.g.
    *  `lebenslagen.{slug}.dauer_geschaetzt` → „30–45 Min". */
   dauer_geschaetzt_key?: string;

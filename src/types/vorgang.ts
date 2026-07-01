@@ -49,6 +49,19 @@ export interface AutopilotStep {
    * Empfänger; speist die Übermittlungs-Log-Quittung (§B4). Pass-1 (§1.1).
    */
   datenkategorien?: string[];
+  /**
+   * Markiert einen spekulativen 2027-Hop (z. B. antragsloses Kindergeld,
+   * Regierungsentwurf BT-Drs. 21/5874) → die UI rendert den [ZUKUNFT 2027]-Chip
+   * an dieser Zeile. Additiv/optional; bricht keine bestehenden Umzug-Konsumenten.
+   */
+  zukunft?: boolean;
+  /**
+   * Maskierte Konto-Vorschau für einen eID-Bestätigungs-Schritt (Stufe-1
+   * Kindergeld: das Auszahlungskonto ist bereits bekannt → der eID-Tap ist eine
+   * BESTÄTIGUNG, keine Eingabe). Format `DE.. •••• 4711`. Nur gesetzt, wenn der
+   * Config-Step `eidInput.kind === 'confirm'` mit `fieldKey === 'iban'` trägt.
+   */
+  eid_preview?: string;
 }
 
 export type VorgangTyp =

@@ -3,7 +3,21 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { ArrowRight, CheckCircle2, Clock3, Home, Plus, X } from 'lucide-react';
+import {
+  ArrowRight,
+  BarChart3,
+  Building2,
+  CheckCircle2,
+  ChevronRight,
+  CircleDashed,
+  Clock3,
+  Home,
+  Info,
+  Plus,
+  Shield,
+  ShieldCheck,
+  X,
+} from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import type { WohngeldAnspruchEstimate } from '@/types';
@@ -61,7 +75,7 @@ export function WohngeldHinweisCard({
   return (
     <section
       aria-labelledby={titleId}
-      className={isRisiko ? 'wh-card wh-card--risiko' : 'wh-card'}
+      className={isRisiko ? 'wh-card wh-card--risiko' : 'wha-card'}
     >
       {isRisiko ? (
         <RisikoVariant
@@ -126,69 +140,172 @@ function EntdeckungVariant({
 
   return (
     <>
-      <div className="wh-head">
-        <span className="icon-circle green wh-icon" aria-hidden="true">
-          <Home />
+      <div className="wha-head">
+        <span className="wha-badge">
+          <CheckCircle2 className="wha-badge-icon" aria-hidden="true" />
+          <span>{t('title')}</span>
         </span>
-        <h2 id={titleId} className="wh-title">
-          {t('title')}
-        </h2>
       </div>
 
-      <p className="wh-trigger">{t('trigger_label')}</p>
+      <div className="wha-body">
+        {/* LEFT — Headline, Schätzung, Begründung, CTA */}
+        <div className="wha-main">
+          <h2 id={titleId} className="wha-headline">
+            {t('headline')}
+          </h2>
+          <div className="wha-rule" aria-hidden="true" />
 
-      <p className="wh-amount">
-        <span className="wh-amount-num">{t('amount_range', { min, max })}</span>
-        <span className="wh-amount-tag">{t('amount_schaetzung')}</span>
-        <span className="sr-only">{t('amount_a11y', { min, max })}</span>
-      </p>
-
-      <p className="wh-nontakeup">{t('non_take_up')}</p>
-
-      <div className="wh-daten">
-        <p className="wh-daten-title">{t('datenblock_title')}</p>
-        <ul className="wh-daten-list">
-          <li>
-            <CheckCircle2 className="wh-check" aria-hidden="true" />
-            <span>{t('daten_haushalt', { n: estimate.haushaltsgroesse })}</span>
-          </li>
-          <li>
-            <CheckCircle2 className="wh-check" aria-hidden="true" />
-            <span>
-              {t('daten_mietstufe', { stufe: ROMAN[estimate.mietstufe], ort })}
+          <div className="wha-estimate">
+            <span className="wha-estimate-label">
+              {t('betrag_label')}
+              <Info className="wha-info" aria-hidden="true" />
             </span>
-          </li>
-          <li>
-            <CheckCircle2 className="wh-check" aria-hidden="true" />
-            <span>{t('daten_wohnverhaeltnis')}</span>
-          </li>
-          <li className="wh-daten-ergaenzen">
-            <Plus className="wh-plus" aria-hidden="true" />
-            <span>{t('daten_ergaenzen')}</span>
-          </li>
-        </ul>
+            <p className="wha-amount">
+              <span className="wha-amount-num">
+                {t('amount_value', { min, max })}
+              </span>
+              <span className="wha-amount-per">{t('amount_per')}</span>
+              <span className="sr-only">{t('amount_a11y', { min, max })}</span>
+            </p>
+            <p className="wha-subline">{t('subline')}</p>
+          </div>
+
+          {/* Begründung — Datenminimierung sichtbar (warum + was fehlt) */}
+          <div className="wha-reasons">
+            <div className="wha-reasons-col">
+              <div className="wha-reasons-head">
+                <CheckCircle2 className="wha-rh-icon green" aria-hidden="true" />
+                <span>{t('reasons_title')}</span>
+              </div>
+              <ul className="wha-list">
+                <li>
+                  <CheckCircle2 className="wha-li-check" aria-hidden="true" />
+                  <span>
+                    {t('daten_haushalt', { n: estimate.haushaltsgroesse })}
+                  </span>
+                </li>
+                <li>
+                  <CheckCircle2 className="wha-li-check" aria-hidden="true" />
+                  <span>
+                    {t('daten_mietstufe', {
+                      stufe: ROMAN[estimate.mietstufe],
+                      ort,
+                    })}
+                  </span>
+                </li>
+                <li>
+                  <CheckCircle2 className="wha-li-check" aria-hidden="true" />
+                  <span>{t('daten_wohnverhaeltnis')}</span>
+                </li>
+                <li>
+                  <CheckCircle2 className="wha-li-check" aria-hidden="true" />
+                  <span>{t('reason_datenabgleich')}</span>
+                </li>
+              </ul>
+            </div>
+            <div className="wha-reasons-col wha-reasons-col--needed">
+              <div className="wha-reasons-head">
+                <CircleDashed className="wha-rh-icon muted" aria-hidden="true" />
+                <span>{t('needed_title')}</span>
+              </div>
+              <ul className="wha-list wha-list--dots">
+                <li>
+                  <span className="wha-dot" aria-hidden="true" />
+                  <span>{t('needed_einkommen')}</span>
+                </li>
+                <li>
+                  <span className="wha-dot" aria-hidden="true" />
+                  <span>{t('needed_mietvertrag')}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <Button
+            className="wha-cta text-primary-foreground!"
+            render={<Link href="/lebenslagen/wohngeld" />}
+          >
+            {t('cta_primary')}
+            <ArrowRight aria-hidden="true" />
+          </Button>
+
+          <Link href="/lebenslagen/wohngeld" className="wha-calc-link">
+            {t('how_calculated')}
+            <ChevronRight aria-hidden="true" />
+          </Link>
+        </div>
+
+        {/* RIGHT — Kennzahl-Schiene */}
+        <aside className="wha-rail" aria-label={t('rail_aria')}>
+          <div className="wha-rail-item">
+            <span className="wha-rail-icon" aria-hidden="true">
+              <BarChart3 />
+            </span>
+            <div className="min-w-0">
+              <div className="wha-rail-label">{t('rail_betrag_label')}</div>
+              <div className="wha-rail-value">
+                {t('rail_betrag_value', { min, max })}
+              </div>
+            </div>
+          </div>
+          <div className="wha-rail-item">
+            <span className="wha-rail-icon" aria-hidden="true">
+              <Clock3 />
+            </span>
+            <div className="min-w-0">
+              <div className="wha-rail-label">{t('rail_zeit_label')}</div>
+              <div className="wha-rail-value with-info">
+                {t('rail_zeit_value')}
+                <Info className="wha-info" aria-hidden="true" />
+              </div>
+            </div>
+          </div>
+          <div className="wha-rail-item">
+            <span className="wha-rail-icon" aria-hidden="true">
+              <Building2 />
+            </span>
+            <div className="min-w-0">
+              <div className="wha-rail-label">{t('rail_behoerde_label')}</div>
+              <div className="wha-rail-value">{t('rail_behoerde_value')}</div>
+            </div>
+          </div>
+          <div className="wha-rail-item">
+            <span className="wha-rail-icon" aria-hidden="true">
+              <ShieldCheck />
+            </span>
+            <div className="min-w-0">
+              <div className="wha-rail-value sm-title">
+                {t('rail_sicher_title')}
+              </div>
+              <div className="wha-rail-label">{t('rail_sicher_body')}</div>
+            </div>
+          </div>
+        </aside>
       </div>
 
-      <Button
-        className="wh-cta text-primary-foreground!"
-        render={<Link href="/lebenslagen/wohngeld" />}
-      >
-        {t('cta_primary')}
-        <ArrowRight aria-hidden="true" />
-      </Button>
-
-      <p className="wh-behoerde">{t('behoerde')}</p>
-
-      <p className="wh-legal">{t('rechtsgrundlage', { normen })}</p>
-
-      <p className="wh-consent">
-        {t('consent_line')}{' '}
-        <button type="button" className="wh-revoke" onClick={onRevokeConsent}>
-          {t('consent_settings')}
-        </button>
-      </p>
-
-      <p className="wh-zukunft">{t('zukunft_schaetzung')}</p>
+      {/* FOOTER — verpflichtende Compliance-Zeile: Disclaimer, [ZUKUNFT 2027],
+          Rechtsgrundlage, Einwilligung (widerrufbar) */}
+      <div className="wha-footer">
+        <Shield className="wha-footer-shield" aria-hidden="true" />
+        <div className="wha-footer-text">
+          <p className="wha-disclaimer">{t('disclaimer')}</p>
+          <p className="wha-fineprint">
+            {t('zukunft_schaetzung')} · {t('rechtsgrundlage', { normen })} ·{' '}
+            {t('consent_line')}{' '}
+            <button
+              type="button"
+              className="wh-revoke"
+              onClick={onRevokeConsent}
+            >
+              {t('consent_settings')}
+            </button>
+          </p>
+        </div>
+        <Link href="/datenschutz" className="wha-learn">
+          {t('learn_more')}
+          <ChevronRight aria-hidden="true" />
+        </Link>
+      </div>
     </>
   );
 }

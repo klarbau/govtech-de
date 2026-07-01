@@ -1532,7 +1532,29 @@
     "zukunft_schaetzung": "[ZUKUNFT 2027] Unverbindliche Schätzung auf Basis Ihrer Daten — keine Bewilligung. Die tatsächliche Höhe ergibt sich erst aus dem Bescheid.",
     "dismiss": "Hinweis schließen",
     "snooze": "Später erinnern",
-    "behoerde": "Zuständig: Bezirksamt Mitte von Berlin — Wohngeldstelle"
+    "behoerde": "Zuständig: Bezirksamt Mitte von Berlin — Wohngeldstelle",
+    "headline": "Sie haben möglicherweise Anspruch auf Wohngeld",
+    "betrag_label": "Geschätzter Betrag",
+    "amount_value": "ca. {min}–{max} €",
+    "amount_per": "/ Monat",
+    "subline": "Prüfen Sie Ihren Anspruch und bereiten Sie Ihren Antrag in wenigen Schritten vor.",
+    "reasons_title": "Warum das zutrifft",
+    "reason_datenabgleich": "Datenabgleich: mit amtlichen Daten verifiziert",
+    "needed_title": "Noch erforderlich",
+    "needed_einkommen": "Bruttoeinkommen",
+    "needed_mietvertrag": "Mietvertrag",
+    "how_calculated": "Wie wurde das berechnet?",
+    "rail_aria": "Eckdaten zur Schätzung",
+    "rail_betrag_label": "Geschätzter Monatsbetrag",
+    "rail_betrag_value": "{min} – {max} €",
+    "rail_zeit_label": "Zeit gespart",
+    "rail_zeit_value": "ca. 8 Std.",
+    "rail_behoerde_label": "Zuständige Behörde",
+    "rail_behoerde_value": "Bezirksamt Mitte von Berlin",
+    "rail_sicher_title": "Ihre Daten sind sicher",
+    "rail_sicher_body": "Verschlüsselte Übertragung und Verarbeitung",
+    "disclaimer": "Dies ist eine unverbindliche Schätzung auf Basis Ihrer Angaben und Daten aus amtlichen Quellen. Die tatsächliche Höhe wird ausschließlich von der zuständigen Behörde festgelegt. Mit dem Fortfahren willigen Sie in die proaktive Anspruchsprüfung ein.",
+    "learn_more": "Mehr erfahren"
   },
   "common": {
     "cta": {
@@ -1899,10 +1921,13 @@
       "done": "Fertig",
       "failed": "Fehlgeschlagen",
       "umzug_started": "Umzug gestartet — die Behörden werden jetzt informiert.",
+      "lebenslage_started": "Kindergeld eingerichtet — die beteiligten Stellen werden jetzt informiert.",
       "cta_kaskade": "Kaskade ansehen",
       "label": {
         "starte_umzug": "Umzug starten",
         "preview_umzug": "Umzug vorbereiten",
+        "starte_lebenslage": "Kindergeld einrichten",
+        "preview_lebenslage": "Kindergeld vorbereiten",
         "lese_posteingang": "Posteingang lesen",
         "hole_vorgang": "Vorgang abrufen",
         "hole_profil": "Stammdaten abrufen",
@@ -1926,6 +1951,19 @@
       "cta_cancel": "Abbrechen",
       "cancelled": "Abgebrochen.",
       "consent_note": "Block-B-Empfänger werden nur mit Ihrer Einwilligung informiert (Art. 6 Abs. 1 lit. a DSGVO); jederzeit widerruflich."
+    },
+    "lebenslage_confirm": {
+      "title": "Kindergeld einrichten",
+      "subtitle": "Bitte prüfen Sie die Angaben. Erst nach Ihrer Bestätigung werden die Stellen informiert.",
+      "zukunft_chip": "[ZUKUNFT 2027]",
+      "verfahrensstand_chip": "Regierungsentwurf — Schlussabstimmung 09.07.2026 terminiert",
+      "behoerden_label": "Beteiligte Stellen",
+      "behoerden_leer": "—",
+      "iban_auszahlen": "an dieses Konto auszahlen — die IBAN kennen wir aus dem Kindergeld für Ihr älteres Kind.",
+      "mock_note": "[MOCK] · Prototyp simuliert — keine reale Übermittlung an die Familienkasse. Antragsloses Kindergeld ist ein Regierungsentwurf; die Auszahlung erfolgt gestuft ab 2027.",
+      "cta_start": "Kindergeld einrichten",
+      "cta_cancel": "Abbrechen",
+      "cancelled": "Abgebrochen."
     },
     "kontext": {
       "title": "Kontext",
@@ -4822,6 +4860,7 @@
       "eid_confirming": "Wird bestätigt …",
       "eid_confirm_error": "Bestätigung fehlgeschlagen. Bitte erneut versuchen.",
       "eid_gate_hint": "Die folgenden zwei Stellen verlangen Ihre ausdrückliche Bestätigung mit dem Ausweis — diese zwei übermitteln nichts ohne Ihren Tipp.",
+      "eid_iban_auszahlen": "an dieses Konto auszahlen",
       "row_status_sr_prefix": "Status: ",
       "row_status": {
         "in_progress": "Wird übermittelt",
@@ -4829,6 +4868,11 @@
         "confirmed": "Bestätigt",
         "pending": "Wartet",
         "failed": "Fehlgeschlagen"
+      },
+      "kindergeld": {
+        "disclaimer": "[MOCK] · Prototyp simuliert — keine reale Übermittlung an die Familienkasse.",
+        "legal_note_summary": "Rechtlicher Hinweis zum antragslosen Kindergeld",
+        "legal_note_body": "Antragsloses Kindergeld ist ein Regierungsentwurf (Kabinettbeschluss 18.03.2026); die Schlussabstimmung im Bundestag ist für den 09.07.2026 terminiert, noch nicht beschlossen. Inkrafttreten ist zum 01.01.2027 geplant, die automatische Auszahlung erfolgt gestuft ab 2027. Real geregelt ist die zugrunde liegende Datenkette: Das Standesamt beurkundet die Geburt (§ 21 PStG), die Meldebehörde und das BZSt vergeben die Steuer-ID (§ 139b AO), und die Familienkasse setzt das Kindergeld fest und zahlt aus (§ 66/§ 70 EStG). Die eID-Bestätigung des Auszahlungskontos stützt sich auf § 18 PAuswG. Alle Daten sind synthetisch ([MOCK])."
       }
     }
   },
