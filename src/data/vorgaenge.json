@@ -331,6 +331,58 @@
     }
   },
   {
+    "id": "vg-schmidt-kindergeld-mia-2026",
+    "typ": "kindergeld",
+    "titel": "Antragsloses Kindergeld · Mia Schmidt",
+    "status": "abgeschlossen",
+    "beteiligte_behoerden_ids": [
+      "standesamt-hamburg-eimsbuettel",
+      "bzst",
+      "familienkasse-nord-hamburg"
+    ],
+    "schritte": [
+      {
+        "id": "step-mia-kg-standesamt",
+        "behoerde_id": "standesamt-hamburg-eimsbuettel",
+        "block": "A",
+        "aktion": "Geburt beurkunden — Ursprung der Datenkette",
+        "rechtsgrundlage": "§ 21 PStG",
+        "agent_label": "Die Geburtsbeurkundung beim Standesamt ist der Ursprung der Datenkette",
+        "datenkategorien": [
+          "identitaet"
+        ],
+        "status": "confirmed",
+        "started_at": "@now-2d",
+        "completed_at": "@now-2d"
+      },
+      {
+        "id": "step-mia-kg-familienkasse",
+        "behoerde_id": "familienkasse-nord-hamburg",
+        "block": "D",
+        "aktion": "Auszahlungskonto bestätigen (Schutz vor Fehlleitung)",
+        "rechtsgrundlage": "§ 18 PAuswG",
+        "agent_label": "Auszahlungskonto mit eID bestätigt",
+        "datenkategorien": [
+          "bankverbindung"
+        ],
+        "status": "confirmed",
+        "started_at": "@now-2d",
+        "completed_at": "@now-2d",
+        "eid_confirmed_at": "@now-2d",
+        "zukunft": true
+      }
+    ],
+    "fristen": [],
+    "angelegt_am": "@now-2d",
+    "abgeschlossen_am": "@now-2d",
+    "persona_id": "markus-schmidt",
+    "context": {
+      "slug": "kindergeld",
+      "mock": true,
+      "note": "[MOCK – Verwaltungsdemo, keine echten Daten] Antragsloses Kindergeld eingerichtet (Regierungsentwurf, Schlussabstimmung 09.07.2026 terminiert, gestuft ab 2027) — Cold-open-Seed für den Anspruch-Lane-Split."
+    }
+  },
+  {
     "id": "vg-mehmet-steuererklaerung-2024",
     "typ": "steuer-jahr",
     "titel": "Steuererklärung 2024",

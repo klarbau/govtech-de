@@ -25,7 +25,8 @@ import {
 
 import { api } from '@/lib/mock-backend';
 import type { LebenslageConfig } from '@/lib/mock-backend/lebenslagen/types';
-import type { Behoerde } from '@/types';
+import type { Behoerde, Persona } from '@/types';
+import { formatDateDe } from '@/lib/utils';
 import { iconForConfig, isGenuineNotFound, loadWithRetry } from './lebenslagen-shared';
 
 interface LeistungDetailViewProps {
@@ -36,7 +37,13 @@ type LoadState =
   | { kind: 'loading' }
   | { kind: 'not-found' }
   | { kind: 'error' }
-  | { kind: 'ready'; config: LebenslageConfig; behoerden: Behoerde[] };
+  | {
+      kind: 'ready';
+      config: LebenslageConfig;
+      behoerden: Behoerde[];
+      /** Nur geladen, wenn `config.frist_rescue` gesetzt ist (Anker-Auflösung). */
+      persona: Persona | null;
+    };
 
 /** config.kategorie → Lebensphasen-Label (Breadcrumb). */
 const PHASE_LABEL_KEY: Record<LebenslageConfig['kategorie'], string> = {
@@ -69,7 +76,17 @@ export function LeistungDetailView({ slug }: LeistungDetailViewProps) {
         } catch {
           behoerden = [];
         }
-        if (!cancelled) setState({ kind: 'ready', config, behoerden });
+        // Persona nur laden, wenn diese Lebenslage einen Fristen-Rescue-Beat
+        // trägt (Anker-Datum stammt aus dem Persona-Seed, nie aus Date.now()).
+        let persona: Persona | null = null;
+        if (config.frist_rescue) {
+          try {
+            persona = await loadWithRetry(() => api.getProfile());
+          } catch {
+            persona = null;
+          }
+        }
+        if (!cancelled) setState({ kind: 'ready', config, behoerden, persona });
       } catch (err) {
         // Nur ein genuiner Not-Found-Fehler darf 404 rendern; ein transienter
         // (5%) Latenzfehler nach erschöpften Retries zeigt einen Retry-Zustand.
@@ -85,7 +102,30 @@ export function LeistungDetailView({ slug }: LeistungDetailViewProps) {
   if (state.kind === 'not-found') return notFound();
   if (state.kind === 'error') return <DetailLoadError onRetry={() => setReloadKey((k) => k + 1)} />;
 
-  return <DetailReady config={state.config} behoerden={state.behoerden} />;
+  return (
+    <DetailReady config={state.config} behoerden={state.behoerden} persona={state.persona} />
+  );
+}
+
+/**
+ * Jüngstes Kind = spätestes (ISO-max) `geburtsdatum` aus `persona.familie.kinder`.
+ * `null`, wenn die Persona keine (datierten) Kinder trägt → der Fristen-Rescue-
+ * Beat rendert dann nicht (kein erfundenes Datum, §5-Guardrail).
+ */
+function resolveJuengstesKindGeburtsdatum(persona: Persona | null): string | null {
+  const daten = (persona?.familie?.kinder ?? [])
+    .map((k) => k.geburtsdatum)
+    .filter((d): d is string => typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d));
+  if (daten.length === 0) return null;
+  return [...daten].sort().at(-1) ?? null;
+}
+
+/** Addiert `months` Kalendermonate auf ein ISO-Datum. `null` bei ungültiger Eingabe. */
+function addMonths(iso: string, months: number): Date | null {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return null;
+  d.setMonth(d.getMonth() + months);
+  return d;
 }
 
 function DetailLoadError({ onRetry }: { onRetry: () => void }) {
@@ -127,10 +167,49 @@ function DetailSkeleton() {
   );
 }
 
-function DetailReady({ config, behoerden }: { config: LebenslageConfig; behoerden: Behoerde[] }) {
+function DetailReady({
+  config,
+  behoerden,
+  persona,
+}: {
+  config: LebenslageConfig;
+  behoerden: Behoerde[];
+  persona: Persona | null;
+}) {
   const t = useTranslations();
   const td = useTranslations('lebenslagen.detail');
   const Icon = iconForConfig(config.icon);
+
+  /**
+   * Fristen-Rescue (wow-#12): Datum deterministisch aus dem Persona-Seed
+   * (jüngstes Kind) + `frist_monate` — nie aus `Date.now()`. Ohne auflösbaren
+   * Anker bleibt der Beat aus.
+   */
+  const rescue = React.useMemo(() => {
+    const fr = config.frist_rescue;
+    if (!fr) return null;
+    const anker =
+      fr.anker === 'juengstes_kind_geburtsdatum'
+        ? resolveJuengstesKindGeburtsdatum(persona)
+        : null;
+    if (!anker) return null;
+    const deadline = addMonths(anker, fr.frist_monate);
+    if (!deadline) return null;
+    // Nur zeigen, solange das Anspruchsfenster offen ist. `new Date()` ist hier
+    // AUSSCHLIESSLICH das Sichtbarkeits-Gate — das angezeigte Datum bleibt
+    // seed-abgeleitet (Anker + frist_monate), nicht aus der Uhr erfunden. Bei
+    // einer Persona mit älterem Kind (Fenster längst zu) bleibt der Beat aus.
+    if (deadline.getTime() <= new Date().getTime()) return null;
+    return {
+      titel: t(fr.titel_key),
+      body: t(fr.body_key, {
+        datum: formatDateDe(deadline),
+        betrag: fr.betrag_geschaetzt_eur,
+        norm: fr.norm,
+      }),
+      status: t(fr.status_key),
+    };
+  }, [config.frist_rescue, persona, t]);
 
   const behoerdenById = React.useMemo(() => {
     const map: Record<string, Behoerde> = {};
@@ -217,6 +296,27 @@ function DetailReady({ config, behoerden }: { config: LebenslageConfig; behoerde
 
       <div className="lk-layout" style={{ marginTop: 20 }}>
         <div className="ll-main">
+          {/* L0 — Fristen-Rescue (wow-#12): ehrlicher „ohne Antrag verfällt
+              Geld"-Beat; Datum aus Persona-Seed, €-Wert „geschätzt ca.". */}
+          {rescue ? (
+            <section className="gt-card" aria-labelledby="ll-fr-title" role="note">
+              <div className="ll-intro-head">
+                <span className="icon-circle lg" aria-hidden="true">
+                  <Clock />
+                </span>
+                <div>
+                  <h2 id="ll-fr-title" className="gt-card-title">
+                    {rescue.titel}
+                  </h2>
+                  <p className="ll-intro-lead">{rescue.body}</p>
+                  <div style={{ marginTop: 10 }}>
+                    <span className="badge amber">{rescue.status}</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+          ) : null}
+
           {/* L1 — Was enthalten ist */}
           <section className="gt-card" aria-labelledby="ll-intro-title">
             <div className="ll-intro-head">

@@ -67,6 +67,8 @@ Reihenfolge = wow × Feasibility × Spine-Fit (Verstärkung des Helden), nach An
 
 ### #3 — Wohngeld-Treffer: der unsichtbare Anspruch nach dem Umzug · [AMPLIFY]
 
+> **SHIPPED 2026-07-02** (branch `feat/wow-backlog-pass3`, Spec `docs/specs/anspruch-arc.md` Beat a): `WohngeldFolgeCard` direkt unter der Umzug-Value-Receipt — inline im Assistenten-Thread (`InlineCascade`) UND auf der Run-Page (`VorgangInBearbeitung`), gegatet auf Umzug + qualifizierte Persona. Alle Flags eingehalten: antragsgebunden („Anspruch prüfen & Antrag vorbereiten"), „geschätzt ca. {min}–{max} €", Wohngeldstelle kommunal, Projektion-vs-Bezug-Framing statt „2 Mio berechtigt". Gates: code-review APPROVE, a11y PASS, spine e2e 3/3, `next build` grün, 6-Locale-Parity.
+
 > Der am natürlichsten Spine-integrierte Entitlement-Beat — kettet direkt an die EXISTIERENDE Umzug-Value-Receipt (Autopilot besitzt den Move-Moment schon und kennt jetzt Miete+Adresse).
 
 - **Bürger-Pitch:** "Direkt nachdem Ihr Umzug-Autopilot Miete und Adresse aktualisiert hat, bemerkt das System, dass Ihr neues Miete/Einkommen-Verhältnis wahrscheinlich Wohngeld auslöst — und bereitet den Antrag vor."
@@ -83,6 +85,8 @@ Reihenfolge = wow × Feasibility × Spine-Fit (Verstärkung des Helden), nach An
 
 ### #4 — Bring-Prinzip Posteingang-Flip: "Ihnen steht zu"-Lane · [AMPLIFY]
 
+> **SHIPPED 2026-07-02** (branch `feat/wow-backlog-pass3`, Spec `docs/specs/anspruch-arc.md`): `AnspruchLane`/`AnspruchLaneRow` auf dem Dashboard mit dem KRITISCHEN Split als `AnspruchStatus`-Union im Typ + Builder + Component erzwungen: **„eingerichtet"** NUR für antragsloses Kindergeld (immer mit `ZukunftChip` + „Regierungsentwurf — Schlussabstimmung 09.07.2026 terminiert, gestuft ab 2027"), **„Anspruch erkannt — wir bereiten den Antrag vor"** für KiZ. Politik-Linie mit Attribution „(politisches Zielbild, BMFSFJ 2023)". Lane ist durch #3+#5 gefüllt (keine leere Hülle). Gates: code-review APPROVE, a11y PASS, `next build` grün.
+
 > Der stärkste STRATEGISCHE Reframe des ganzen Pools — kippt das Produkt von Pflicht zu Anspruch in einem Blick. Verifiziert: `reminders.json` enthält 8 Reminder, **alle Obligationen (Holschuld), null Entitlements** — die emotionale Inversion ist heute genuinely abwesend.
 
 - **Bürger-Pitch:** "Ihr Posteingang hört auf, eine Liste dessen zu sein, was Sie der Behörde schulden, und beginnt einzuschließen, was die Behörde Ihnen schuldet — jeder Anspruch erklärt, belegt, in einem Tipp beantragbar."
@@ -98,6 +102,8 @@ Reihenfolge = wow × Feasibility × Spine-Fit (Verstärkung des Helden), nach An
 ---
 
 ### #5 — Anspruchs-Radar: "Geld, das Ihnen zusteht" (Kinderzuschlag) · [NEW]
+
+> **SHIPPED 2026-07-02** (branch `feat/wow-backlog-pass3`, Spec `docs/specs/anspruch-arc.md`): `KinderzuschlagRadarCard` (Markus, dismiss/consent persistiert) + KiZ-AntragForm unter `/lebenslagen/kinderzuschlag`; Kaskade mündet in **Eingangsbestätigung** (nie Bewilligungsbescheid), zitiert `familienkasse-nord-hamburg`. Flags eingehalten: „Antrag für mich vorbereiten" (nie „läuft schon"), „geschätzt ca." Range mit 297-€/Kind-Cap-Clamp, Inanspruchnahme-Quote korrekt attribuiert („Nur rund jedes dritte berechtigte Kind …, Schätzung des BMFSFJ"), Einkommens-Datenpunkt [MOCK]. Gates: code-review APPROVE, a11y PASS, unit 16/16 (zustaendigkeit) + 804 gesamt.
 
 - **Bürger-Pitch:** "Sie tun nichts; das System prüft laufend die Daten, die der Staat schon über Sie hat, und sagt Ihnen, wenn Ihnen Geld zusteht, das Sie nicht beziehen — dann bereitet es den Antrag für Sie vor."
 - **Wow-Moment:** Eine ruhige grüne Card: "Ihnen stehen geschätzt ca. 297 €/Monat Kinderzuschlag zu, die Sie aktuell nicht beziehen." mit Plain-Language-Warum, Rechtsgrundlage (§6a BKGG), den exakten auslösenden Datenpunkten und einem Button: "Antrag für mich vorbereiten." Counter: "Bundesweit beziehen nur ~35% der berechtigten Kinder diese Leistung."
@@ -143,6 +149,8 @@ Reihenfolge = wow × Feasibility × Spine-Fit (Verstärkung des Helden), nach An
 
 ### #8 — Sichtbare Datenminimierung am Present-Credential-Moment (EUDI) · [AMPLIFY/NEW]
 
+> **SHIPPED 2026-07-02** (branch `feat/wow-backlog-pass3`): `PresentCredentialDialog` in `/dokumente` — exakt 3 datengetriebene Felder (Name, eAT-Nr., Gültigkeit), [ZUKUNFT 2027] + [MOCK] Badges, KEIN Backend-Write (lokales Sharing-Fenster), echter Focus-Trap (`inert`), `role="status" aria-live="polite"` DoneState, prefers-reduced-motion respektiert. Gates: code-review APPROVE, a11y PASS (Dialog consent+done axe-clean, 14-Tab-Sweep).
+
 - **Bürger-Pitch:** "Wenn eine Behörde nach Ihrem Ausweis fragt, sehen Sie die drei exakten Felder, die sie will, bestätigen mit einem Tipp, und nichts sonst verlässt Ihr Wallet."
 - **Wow-Moment:** Eine Consent-Card listet präzise die angefragten Felder ("Die Ausländerbehörde fragt: Name, Aufenthaltstitel-Nr., Gültigkeit. Mehr nicht.") + biometrie-artiger Confirm — Datenminimierung wird gefühlte Aktion statt Kleingedrucktes.
 - **Reale Pain entfernt:** Heute = volle Dokument-Kopie überteilen. Erfüllt direkt das CLAUDE.md-Mandat "Datenminimierung sichtbar", das sonst nur Text ist.
@@ -171,6 +179,8 @@ Reihenfolge = wow × Feasibility × Spine-Fit (Verstärkung des Helden), nach An
 
 ### #10 — Antizipation: Frist bewacht + Antrag vorbereitet (Anna §18g) · [NEW]
 
+> **SHIPPED 2026-07-02 (enge Nudge-Form, keine dritte Vertical)** (branch `feat/wow-backlog-pass3`): `AufenthaltFristNudge` auf Annas Dashboard (Schwellen 120/450 Tage, Seed unangetastet) — „nicht eingereicht"-Framing, Termin-Satz nur konditional, „vorbereitet — Sie ergänzen". Alle drei Flags eingehalten. Followup (nicht blockierend): dismiss/snooze-Persistenz + generisches Persona-Gate → Mehmet-fähig. Gates: code-review APPROVE, a11y PASS (axe anna light+dark 0).
+
 - **Bürger-Pitch:** "90 Tage bevor Ihr Aufenthaltstitel abläuft, hat das System die Verlängerung aus Ihrem Dokumenten-Vault schon ausgefüllt — Sie bestätigen nur."
 - **Wow-Moment:** Unprompted Dashboard-Nudge "Ihr Aufenthaltstitel läuft in 90 Tagen ab — wir haben den Antrag aus Ihren Dokumenten vorbereitet" mit vorausgefüllter Antrags-Vorschau.
 - **Reale Pain entfernt:** Annas dokumentierte #1-Pain — nicht zu wissen, dass man 4 Monate vorher starten muss, opake ABH-Anforderungen, 5-Wochen-Termin-Wartezeiten.
@@ -193,6 +203,8 @@ Reihenfolge = wow × Feasibility × Spine-Fit (Verstärkung des Helden), nach An
 ---
 
 ### #12 — Proaktive Fristen-Rescue (schließendes Anspruchsfenster) · [NEW, in #2/#11 falten]
+
+> **SHIPPED 2026-07-02** (branch `feat/wow-backlog-pass3`): Elterngeld-Frist-Rescue auf `/lebenslagen/geburt` (Markus) — korrekt **§ 7 Abs. 1 S. 2 BEEG**, „je Monat geschätzt ca. {betrag} €", Status „vorbereitet — Sie bestätigen und ergänzen", Frist deterministisch (jüngstes Kind + 3 Monate), `role="note"` Rescue-Card, Amber-Badge 4.56:1 PASS. Gates: code-review APPROVE, a11y PASS.
 
 - **Wow-Moment:** "Mia wurde geboren. Wir haben Ihren Elterngeld-Antrag vorbereitet. Ohne Bestätigung in 47 Tagen verfallen 2 Monate (~1.300€)."
 - **Grounding:** Elterngeld rückwirkend max. 3 Lebensmonate (**§7 Abs.1 S.2 BEEG**); Kindergeld rückwirkend max. 6 Monate (**§70 Abs.1 S.2 EStG — NICHT §66, den research-scout zitierte; §66 regelt Höhe/Zeitraum**). Elterngeldstelle = Land/kommunal.
@@ -220,6 +232,8 @@ Reihenfolge = wow × Feasibility × Spine-Fit (Verstärkung des Helden), nach An
 ---
 
 ### #15 — "Wir haben die zuständige Stelle gefunden" — Zuständigkeits-Pingpong beenden · [AMPLIFY]
+
+> **SHIPPED 2026-07-02** (branch `feat/wow-backlog-pass3`): `ZustaendigkeitCard` im Assistenten + offline `zustaendigkeit.ts`-Katalog (14 Behörden-IDs, § 25 VwVfG). HARD RULE eingehalten: „Zuständig **wäre** diese Stelle; dorthin **würde** Ihre Anfrage geleitet" (Konjunktiv) + expliziter Mock-Hinweis „wurde nicht real weitergeleitet oder übermittelt"; System-Prompt + Tool-Description verbieten „weitergeleitet"-als-Fakt. Followup: Katalog ist Berlin-zentrisch (persona-scoped auflösen). Gates: code-review APPROVE, unit 16/16.
 
 - **Wow-Moment:** Assistenten-Zeile löst eine mehrdeutige Anfrage zu einer benannten zuständigen Behörde auf ("Zuständig ist die Familienkasse, nicht das Finanzamt"). Mappt perfekt auf Markus Schmidts dokumentierte Fehlannahme.
 - **Grounding:** §25 VwVfG (Beratungspflicht) + §16/§3 VwVfG (Weiterleitung/Zuständigkeit — vor Bau verifizieren). Regelbasiert, gut im Assistenten abbildbar.
@@ -305,6 +319,6 @@ _Append-only erweiterung des Pools nach #1–#16. Dieselbe Realismus-Disziplin (
 
 ### Niedrigere Prio (ehrliche neue Beats, advancieren den Autopilot-Helden nicht direkt)
 
-- **E — Leichte-Sprache-Umschalter** · [NEW, credibility]: ganzer aktiver Vorgang in Leichter Sprache + größere Targets. BITV 2.0 §3. Gelebte Barrierefreiheit als Glaubwürdigkeitssignal für die DigitalService/BMDS-Audience. Feas 3 / Effort M. Nur Spine-Surfaces ausliefern, keine leere App-weite Flag.
-- **F — Daten-Korrektur-Radar** · [NEW]: "Das Finanzamt führt noch Ihre alte Adresse — korrigieren?" Berichtigung Art. 16 DSGVO; passt zum Datenschutzcockpit (#13). Kippt "der Staat weiß alles" → "ich habe die Kontrolle". Flag: "Korrektur vorbereitet — Sie bestätigen", nie "geändert". Feas 3 / Effort M.
-- **G — Trauerfall/Nachlass-Lebenslage** · [NEW, NUR Katalog-Teaser]: emotional resonanteste Lebenslage (Estland/Dänemark-Flaggschiff), aber **keine Persona-Verankerung** (kein Sterbefall unter Anna/Schmidt/Mehmet) + ganze ungebaute Vertical → wie Grundsicherung im cut-list: NICHT bauen, nur als glaubwürdige Micro-Preview im Autopilot-Katalog (#16) zeigen.
+- **E — Leichte-Sprache-Umschalter** · [NEW, credibility]: ganzer aktiver Vorgang in Leichter Sprache + größere Targets. BITV 2.0 §3. Gelebte Barrierefreiheit als Glaubwürdigkeitssignal für die DigitalService/BMDS-Audience. Feas 3 / Effort M. Nur Spine-Surfaces ausliefern, keine leere App-weite Flag. **→ WAR SCHON DA (festgestellt 2026-07-02, pass-3):** das Glaubwürdigkeits-/Bedienhilfen-Ziel ist durch das bereits geshippte A11y-Panel abgedeckt (2026-06-14: Schriftgröße via root-`zoom`, Kontrast, Bewegung reduzieren inkl. framer-motion-Gate); Leichte Sprache + DGS sind dort explizit dokumentiert-deferred (`docs/UPDATE-LOG.md` §3.4). Kein Neubau in dieser Welle.
+- **F — Daten-Korrektur-Radar** · [NEW]: "Das Finanzamt führt noch Ihre alte Adresse — korrigieren?" Berichtigung Art. 16 DSGVO; passt zum Datenschutzcockpit (#13). Kippt "der Staat weiß alles" → "ich habe die Kontrolle". Flag: "Korrektur vorbereitet — Sie bestätigen", nie "geändert". Feas 3 / Effort M. **→ SHIPPED 2026-07-02 in enger Form** (branch `feat/wow-backlog-pass3`): Daten-Aktualität-Fold-in als Sektion in `DatenschutzView` — § 6 BMG/§ 6 IDNrG amtswegig, Art. 16 DSGVO nur als Fußnote, ABH eID-gated (§ 18 PAuswG), Erkennung aus der eigenen Ummeldungs-Historie (kein Cross-Register-Live-Read). Gates: code-review APPROVE, a11y PASS.
+- **G — Trauerfall/Nachlass-Lebenslage** · [NEW, NUR Katalog-Teaser]: emotional resonanteste Lebenslage (Estland/Dänemark-Flaggschiff), aber **keine Persona-Verankerung** (kein Sterbefall unter Anna/Schmidt/Mehmet) + ganze ungebaute Vertical → wie Grundsicherung im cut-list: NICHT bauen, nur als glaubwürdige Micro-Preview im Autopilot-Katalog (#16) zeigen. **→ TEASER SHIPPED 2026-07-02** (branch `feat/wow-backlog-pass3`): Trauerfall-Tile + „In Vorbereitung"-Micro-Preview im `AutopilotKatalogTeaser` (inkl. `nachlassgericht-berlin-mitte`, `standesamt-hamburg-eimsbuettel` in behoerden.json); Vertical bleibt bewusst ungebaut. Gates: code-review APPROVE, a11y PASS.

@@ -25,7 +25,8 @@ export interface ValueReceipt {
     | 'reisepass'
     | 'bafoeg'
     | 'pflegegrad'
-    | 'wohngeld';
+    | 'wohngeld'
+    | 'kinderzuschlag';
   /** Distinkte Behörden, die der Lauf berührt hat. [domain: beteiligte-behoerden] */
   behoerden_count: number;
   /** Konservative gesparte Minuten (Status-quo minus Bürgeraufwand). [domain: zeitersparnis] */
@@ -71,7 +72,7 @@ export interface EudiExportPreview {
  * Muster?". Nur Umzug ist `live`; die anderen sind `demnaechst`-Vorschau.
  */
 export interface AutopilotKatalogEntry {
-  id: 'umzug' | 'kindergeburt' | 'steuererklaerung';
+  id: 'umzug' | 'kindergeburt' | 'steuererklaerung' | 'trauerfall';
   status: 'live' | 'demnaechst';
   /** i18n-Key. */
   titel_key: string;

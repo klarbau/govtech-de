@@ -344,6 +344,7 @@
     },
     "kfz_halter": true,
     "kindergeld_bezug": true,
+    "kinderzuschlag_indikation": true,
     "wehrerfasst": false,
     "sprachen": [
       "de",

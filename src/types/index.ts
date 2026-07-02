@@ -116,8 +116,12 @@ export type {
 } from './value-receipt';
 // Proaktiver Wohngeld-Anspruch-Hinweis (Spec proaktiver-wohngeld-anspruch.md § 6).
 export type { WohngeldAnspruchEstimate } from './wohngeld-estimate';
+// Proaktiver Kinderzuschlag-Anspruch-Radar (Spec anspruch-arc.md § 6, Beat c).
+export type { KinderzuschlagAnspruchEstimate } from './kinderzuschlag-estimate';
 // Redesign — Dashboard (read-model + AI-Top-3 candidates).
 export type {
+  AnspruchLaneEntry,
+  AnspruchStatus,
   DashboardSnapshot,
   DashboardSortMode,
   DiffBlock,

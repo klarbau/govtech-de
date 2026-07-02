@@ -6,7 +6,7 @@
  *  1. `estimateWohngeldAnspruch(persona)` — reine Heuristik (Eligibility-Prädikat
  *     + Ableitungen). Die Euro-Range ist eine **deterministische, synthetische
  *     [MOCK]-Schätzung** aus `(haushaltsgroesse, mietstufe)`, hart begrenzt auf
- *     €180–370 (Destatis-Mittel ~€297/Monat). NIE aus Seed-Daten — es gibt
+ *     €180–370 (Destatis-Wohngeld-Ø Ende 2024 ~€287/Monat). NIE aus Seed-Daten — es gibt
  *     nirgends ein numerisches Einkommens-/Miet-Feld in den Stammdaten.
  *  2. den Consent-/Dismiss-/Snooze-Gate (`resolveWohngeldHinweis`), den sowohl
  *     `api.getWohngeldHinweis` als auch der `DashboardSnapshot.wohngeld_hinweis`-
@@ -62,7 +62,7 @@ function clamp(value: number, min: number, max: number): number {
  * Deterministische, synthetische [MOCK]-Monats-Range aus `(haushaltsgroesse,
  * mietstufe)`. Center wird auf ein realistisches Fenster geklemmt, sodass die
  * resultierende Range IMMER innerhalb des verifizierten Realismus-Korridors
- * €180–370 (Mittelpunkt ~€297, Destatis) liegt. KEINE Anspruchsberechnung,
+ * €180–370 (Destatis-Wohngeld-Ø Ende 2024 ~€287) liegt. KEINE Anspruchsberechnung,
  * KEINE Seed-Quelle.
  *
  * Für Anna (HH 3, Mietstufe IV/4): center = 200 + 2·30 + 1·20 = 280

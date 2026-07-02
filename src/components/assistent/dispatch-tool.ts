@@ -4,10 +4,16 @@ import { api } from '@/lib/mock-backend';
 import {
   validatePosteingangToolInput,
   validateUmzugToolInput,
+  type FindeZustaendigeStelleInput,
   type LesePosteingangInput,
   type PreviewUmzugInput,
   type PosteingangToolName,
 } from '@/lib/ai/tool-schemas';
+import {
+  findeZustaendigeStelle,
+  ZUSTAENDIGKEIT_RECHTSGRUNDLAGE,
+  type ZustaendigkeitTreffer,
+} from '@/lib/ai/zustaendigkeit';
 import type { Letter, LetterFilter, UmzugInput } from '@/types';
 
 /**
@@ -37,6 +43,8 @@ export interface ToolDispatchOutcome {
   vorgangId?: string;
   /** Set by `preview_umzug` so the orchestrator can build the confirm card. */
   preview?: PreviewResult;
+  /** Set by `finde_zustaendige_stelle` so the ToolCallCard can dock the Zuständigkeits-Card. */
+  zustaendigkeit?: ZustaendigkeitTreffer;
   ok: boolean;
 }
 
@@ -245,6 +253,57 @@ export async function dispatchReadTool(
           };
         }
         return { ok: true, toolResult: resultBlock(toolUseId, aktion) };
+      }
+      case 'finde_zustaendige_stelle': {
+        const validation = validatePosteingangToolInput(
+          'finde_zustaendige_stelle',
+          input ?? {},
+        );
+        if (!validation.ok) {
+          return errorOutcome(
+            toolUseId,
+            `finde_zustaendige_stelle: ungültige Eingabe — ${formatZodIssues(validation.issues)}`,
+          );
+        }
+        const { thema } = validation.data as FindeZustaendigeStelleInput;
+        const treffer = findeZustaendigeStelle(thema);
+        if (!treffer) {
+          // Ehrlich „nicht im Katalog": KEINE erfundene Zuständigkeit. Das Modell
+          // verweist auf die allgemeine Behördenauskunft, statt zu raten.
+          return {
+            ok: true,
+            toolResult: resultBlock(toolUseId, {
+              gefunden: false,
+              thema,
+              note: 'Für dieses Thema ist im Zuständigkeits-Katalog des Prototyps keine Stelle hinterlegt. Erfinde keine Zuständigkeit; verweise auf die allgemeine Behördenauskunft (z. B. 115) oder das zuständige Amt vor Ort.',
+            }),
+          };
+        }
+        // Gefunden: strukturierte Fakten + verbindliche Formulierungsregel für das
+        // Modell. Die HARD RULE ist im Result mitgeführt (defense in depth zum
+        // System-Prompt): „Zuständig wäre/ist X, nicht Y" — nie „weitergeleitet".
+        return {
+          ok: true,
+          zustaendigkeit: treffer,
+          summary: treffer.name,
+          toolResult: resultBlock(toolUseId, {
+            gefunden: true,
+            thema: treffer.thema,
+            zustaendige_stelle: {
+              name: treffer.name,
+              ebene: treffer.ebene,
+            },
+            nicht_zustaendig: treffer.nichtZustaendig ?? null,
+            rechtsgrundlage: ZUSTAENDIGKEIT_RECHTSGRUNDLAGE,
+            framing_regel:
+              'Formuliere „Zuständig ist ' +
+              treffer.name +
+              (treffer.nichtZustaendig ? `, nicht ${treffer.nichtZustaendig}` : '') +
+              '" bzw. „Zuständig wäre diese Stelle; dorthin würde Ihre Anfrage geleitet." Behaupte NIEMALS, die Anfrage sei bereits oder real weitergeleitet/übermittelt worden.',
+            hinweis:
+              '[MOCK] Prototyp — es findet keine reale Weiterleitung oder Übermittlung statt.',
+          }),
+        };
       }
       case 'preview_umzug': {
         return dispatchPreviewUmzug(input, toolUseId);

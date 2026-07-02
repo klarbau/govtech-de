@@ -123,6 +123,20 @@ export const geburtConfig: LebenslageConfig = {
     { norm: '§ 10 SGB V', bedeutung_key: 'lebenslagen.geburt.rechtsgrundlagen.sgbv.bedeutung' },
   ],
   frist: { tage: 7, beschreibung_key: 'lebenslagen.geburt.frist_beschreibung' },
+  // Fristen-Rescue (wow-#12): Elterngeld rückwirkend nur für die letzten drei
+  // Lebensmonate (§ 7 Abs. 1 S. 2 BEEG — domain-verifiziert, anspruch-arc-
+  // fakten.md §5). Datum = Geburtsdatum des jüngsten Kindes + 3 Monate; €-Wert
+  // ist der Mindestbetrag (§ 10 BEEG, 300 €/Monat) — immer „geschätzt ca.",
+  // Status immer „vorbereitet — Sie bestätigen und ergänzen".
+  frist_rescue: {
+    anker: 'juengstes_kind_geburtsdatum',
+    frist_monate: 3,
+    norm: '§ 7 Abs. 1 S. 2 BEEG',
+    betrag_geschaetzt_eur: 300,
+    titel_key: 'lebenslagen.geburt.frist_rescue.titel',
+    body_key: 'lebenslagen.geburt.frist_rescue.body',
+    status_key: 'lebenslagen.geburt.frist_rescue.status',
+  },
   gebuehr: {
     gibt_es: true,
     betrag_key: 'lebenslagen.geburt.gebuehr_betrag',

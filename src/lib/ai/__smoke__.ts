@@ -50,9 +50,13 @@ check(
   isKnownTool('vorschlage_naechsten_schritt'),
 );
 check(
-  'TOOL_NAMES has 14 entries (5 legacy + 3 posteingang + 1 preview_umzug + 2 convenience + 2 lebenslage + 1 sachverhalt)',
-  TOOL_NAMES.length === 14,
+  'TOOL_NAMES has 15 entries (5 legacy + 3 posteingang + 1 preview_umzug + 2 convenience + 2 lebenslage + 1 zustaendigkeit + 1 sachverhalt)',
+  TOOL_NAMES.length === 15,
   TOOL_NAMES,
+);
+check(
+  'TOOL_NAMES contains finde_zustaendige_stelle',
+  isKnownTool('finde_zustaendige_stelle'),
 );
 check(
   'TOOL_NAMES contains preview_lebenslage',
@@ -375,6 +379,56 @@ const rejectExtraField = validateLebenslageToolInput('preview_lebenslage', {
 check(
   'preview_lebenslage rejects unknown field (strict)',
   !rejectExtraField.ok,
+);
+
+/* ── finde_zustaendige_stelle: registration, framing rule, dispatch, gate ──── */
+
+const findeZust = toolsByName.get('finde_zustaendige_stelle');
+check('tools[] has finde_zustaendige_stelle def', Boolean(findeZust));
+check(
+  'finde_zustaendige_stelle description carries the „Zuständig ist X, nicht Y" framing',
+  Boolean(findeZust?.description?.includes('Zuständig ist X, nicht Y')),
+);
+check(
+  'finde_zustaendige_stelle description forbids implying real forwarding (NIEMALS … weitergeleitet)',
+  Boolean(
+    findeZust?.description?.includes('NIEMALS') &&
+      findeZust?.description?.includes('weitergeleitet'),
+  ),
+);
+check(
+  'finde_zustaendige_stelle description cites § 25 VwVfG (Beratungs-/Auskunftspflicht) and no other norm',
+  Boolean(
+    findeZust?.description?.includes('§ 25 VwVfG') &&
+      !findeZust?.description?.includes('§ 16') &&
+      !findeZust?.description?.includes('§ 3 VwVfG'),
+  ),
+);
+check(
+  'finde_zustaendige_stelle → local lookup, NOT confirm-gated',
+  TOOL_DISPATCH.finde_zustaendige_stelle.requires_confirmation === false &&
+    requiresConfirmation('finde_zustaendige_stelle') === false &&
+    TOOL_DISPATCH.finde_zustaendige_stelle.ui === 'zustaendigkeit_card',
+);
+
+const okFindeZust = validatePosteingangToolInput('finde_zustaendige_stelle', {
+  thema: 'kindergeld',
+});
+check('finde_zustaendige_stelle accepts {thema:"kindergeld"}', okFindeZust.ok);
+
+const findeZustMissing = validatePosteingangToolInput(
+  'finde_zustaendige_stelle',
+  {},
+);
+check('finde_zustaendige_stelle rejects missing thema', !findeZustMissing.ok);
+
+const findeZustExtra = validatePosteingangToolInput('finde_zustaendige_stelle', {
+  thema: 'kindergeld',
+  behoerde: 'familienkasse', // must not smuggle a pre-answered Behörde
+});
+check(
+  'finde_zustaendige_stelle rejects unknown field (strict)',
+  !findeZustExtra.ok,
 );
 
 /* ── Umzug input validators ────────────────────────────────────────────── */

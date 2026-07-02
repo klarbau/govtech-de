@@ -25,6 +25,11 @@ import {
 import { toast } from 'sonner';
 
 import { AutopilotKatalogTeaser } from '@/components/autopilot/AutopilotKatalogTeaser';
+import { AnspruchLane } from '@/components/dashboard/AnspruchLane';
+import {
+  AufenthaltFristNudge,
+  resolveAufenthaltFristNudge,
+} from '@/components/dashboard/AufenthaltFristNudge';
 import { ErledigtFeed } from '@/components/dashboard/ErledigtFeed';
 import { TriumphBanner } from '@/components/dashboard/TriumphBanner';
 import { WohngeldHinweisCard } from '@/components/dashboard/WohngeldHinweisCard';
@@ -112,6 +117,14 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
 
   const wohngeldHinweis = snapshot?.wohngeld_hinweis ?? null;
   const showWohngeld = wohngeldHinweis !== null && !wohngeldHidden;
+
+  const anspruchLane = snapshot?.anspruch_lane ?? [];
+
+  // Antizipations-Nudge (wow-#10): proaktive Fristbewachung für Annas eAT-
+  // Verlängerung — rein aus der Persona abgeleitet, kein Snapshot-Feld.
+  const aufenthaltFrist = persona
+    ? resolveAufenthaltFristNudge(persona, nowIso)
+    : null;
 
   // „Aktivitäten" speist sich aus echten Vorgangs-Bewegungen (letzte
   // Schritt-Timestamps), neueste zuerst, max. 3 — distinkt vom Autopilot-Feed.
@@ -205,6 +218,10 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
             />
           ) : null}
 
+          {aufenthaltFrist ? (
+            <AufenthaltFristNudge view={aufenthaltFrist} />
+          ) : null}
+
           <section aria-labelledby="dashboard-heute-zu-tun" className="heute-card">
             <div className="heute-head">
               <h2 id="dashboard-heute-zu-tun">{t('heute.titel')}</h2>
@@ -296,6 +313,18 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
               nowIso={nowIso}
             />
           </section>
+
+          {/* „Ihnen steht zu"-Lane (anspruch-arc.md § 4.2) — bewusster Gegenpol
+           * zur Holschuld-Liste darüber. Rendert nur, wenn nicht leer. */}
+          {anspruchLane.length > 0 && persona ? (
+            <div className="heute-card">
+              <AnspruchLane
+                entries={anspruchLane}
+                personaId={persona.id}
+                onReload={reload}
+              />
+            </div>
+          ) : null}
 
           {terminTile ? (
             <section aria-labelledby="naechster-termin-title" className="nt-card">

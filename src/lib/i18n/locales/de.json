@@ -553,7 +553,12 @@
       "frist_beschreibung": "Die Geburt ist binnen einer Woche beim Standesamt anzuzeigen (§ 18 PStG).",
       "gebuehr_betrag": "ab 12 € je Urkunde",
       "gebuehr_hinweis": "Gebühren fallen nur für zusätzliche Urkundenausfertigungen an.",
-      "value_receipt_hinweis": "Konservativ geschätzt: ein gebündelter Vorgang statt bis zu fünf einzelner Behördengänge."
+      "value_receipt_hinweis": "Konservativ geschätzt: ein gebündelter Vorgang statt bis zu fünf einzelner Behördengänge.",
+      "frist_rescue": {
+        "titel": "Elterngeld-Antrag vorbereitet — Ihr Anspruchsfenster",
+        "body": "Elterngeld sollte innerhalb der ersten drei Lebensmonate beantragt werden; rückwirkend wird es höchstens für drei Lebensmonate gezahlt ({norm}). Ohne Antrag bis {datum} droht der erste Lebensmonat zu verfallen — je Monat geschätzt ca. {betrag} € (Mindestbetrag; die tatsächliche Höhe hängt von Ihrem Einkommen ab).",
+        "status": "vorbereitet — Sie bestätigen und ergänzen"
+      }
     },
     "aufenthalt-verlaengerung": {
       "title": "Aufenthaltstitel verlängern",
@@ -973,6 +978,61 @@
       "frist_beschreibung": "Keine Ausschlussfrist, aber Zahlung erst ab Antragsmonat; die Bewilligung gilt in der Regel 12 Monate.",
       "gebuehr_hinweis": "Das Wohngeldverfahren ist gebührenfrei.",
       "value_receipt_hinweis": "Die konkrete Höhe ist unverbindlich [MOCK]; gespart werden Stammdaten-Erfassung und der Behördengang zur Wohngeldstelle."
+    },
+    "kinderzuschlag": {
+      "title": "Kinderzuschlag",
+      "lead": "Kinderzuschlag-Antrag aus Ihren Stammdaten vorbereiten und mit eID einreichen. Die Familienkasse prüft Einkommen und Bedarf nach dem Antrag.",
+      "voraussetzungen": {
+        "0": "Kindergeld-Bezug für mindestens ein Kind im Haushalt.",
+        "1": "Erwerbseinkommen über der Mindesteinkommensgrenze (900 €, Alleinerziehende 600 €).",
+        "2": "Kein Bezug von Grundsicherungsgeld (vormals Bürgergeld)."
+      },
+      "dokumente": {
+        "0": "Einkommensnachweis (Gehaltsabrechnungen der letzten Monate)",
+        "1": "Nachweis der Wohnkosten (Mietvertrag)",
+        "2": "Kontoauszüge / Vermögensnachweise"
+      },
+      "fields": {
+        "name": {
+          "label": "Name",
+          "hint": "Familienname"
+        },
+        "geburtsdatum": {
+          "label": "Geburtsdatum",
+          "hint": "Datum"
+        },
+        "anschrift": {
+          "label": "Anschrift",
+          "hint": "Straße, PLZ, Ort"
+        },
+        "iban": {
+          "label": "IBAN für die Auszahlung",
+          "hint": "DE…"
+        },
+        "bruttoeinkommen": {
+          "label": "Monatliches Bruttoeinkommen",
+          "hint": "Betrag in €"
+        },
+        "wohnkosten": {
+          "label": "Bruttokaltmiete",
+          "hint": "laut Mietvertrag, Betrag in €"
+        }
+      },
+      "rechtsgrundlagen": {
+        "bkgg6a": {
+          "bedeutung": "Kinderzuschlag wird nur auf Antrag und einkommensabhängig gewährt (§ 6a Abs. 7 BKGG)."
+        },
+        "ozg2": {
+          "bedeutung": "Digitale Antragstellung über den Online-Zugang."
+        },
+        "pauswg18": {
+          "bedeutung": "eID-Bestätigung Ihrer Identität bei der Einreichung."
+        }
+      },
+      "dauer_geschaetzt": "20–30 Min",
+      "frist_beschreibung": "Keine Ausschlussfrist, aber Zahlung erst ab dem Antragsmonat.",
+      "gebuehr_hinweis": "Der Kinderzuschlag-Antrag ist gebührenfrei.",
+      "value_receipt_hinweis": "Die konkrete Höhe ist unverbindlich [MOCK] und wird erst per Bescheid festgesetzt; gespart werden Stammdaten-Erfassung und der Behördengang zur Familienkasse."
     }
   },
   "a11y": {
@@ -1512,8 +1572,86 @@
       }
     }
   },
+  "wohngeldFolge": {
+    "eyebrow": "Und da wäre noch etwas …",
+    "title": "Ihr neuer Mietvertrag könnte einen Wohngeld-Anspruch auslösen.",
+    "betrag_range": "geschätzt ca. {min} – {max} € / Monat",
+    "plus_context": "Seit der Wohngeld-Plus-Reform 2023 sind rund dreimal so viele Haushalte berechtigt — bezogen wird es von deutlich weniger.",
+    "cta": "Anspruch prüfen & Antrag vorbereiten",
+    "zustaendig": "Zuständig: Bezirksamt Mitte von Berlin — Wohngeldstelle (kommunal).",
+    "zukunft_chip": "ZUKUNFT 2027",
+    "disclaimer": "Unverbindliche Schätzung, keine Bewilligung. § 22 Abs. 1 WoGG."
+  },
+  "anspruchLane": {
+    "title": "Ihnen steht zu",
+    "politik_line": "Aus Ihrer Holschuld wird die Bringschuld des Staates.",
+    "politik_attribution": "(politisches Zielbild, BMFSFJ 2023)",
+    "group_eingerichtet": "Eingerichtet",
+    "group_eingerichtet_sub": "Läuft ohne Antrag.",
+    "group_anspruch_erkannt": "Anspruch erkannt — wir bereiten den Antrag vor",
+    "group_anspruch_erkannt_sub": "Antragsgebunden. Sie reichen mit einem Klick ein.",
+    "foederal": {
+      "bund": "Familienkasse (Bund)",
+      "kommunal": "Wohngeldstelle (kommunal)"
+    },
+    "kindergeld": {
+      "titel": "Antragsloses Kindergeld · {kind}",
+      "status": "Eingerichtet — keine Antragstellung nötig.",
+      "zukunft_chip": "ZUKUNFT 2027",
+      "phasing": "Regierungsentwurf — Schlussabstimmung 09.07.2026 terminiert, gestuft ab 2027."
+    }
+  },
+  "aufenthaltFristNudge": {
+    "eyebrow_bewacht": "Frist wird bewacht · [MOCK]",
+    "eyebrow_bald": "Frist läuft bald · [MOCK]",
+    "title": "Aufenthaltstitel-Verlängerung — vorbereitet",
+    "ablauf": "Ihr Aufenthaltstitel ({norm}) läuft am {datum} ab — {relativ}.",
+    "ablauf_relativ_monate": "in ca. {monate} Monaten",
+    "ablauf_relativ_tage": "in ca. {tage} Tagen",
+    "lead_bewacht": "Wir bewachen diese Frist und haben Ihren Verlängerungsantrag aus Ihren Dokumenten vorbereitet.",
+    "lead_bald": "Wir haben Ihren Verlängerungsantrag aus Ihren Dokumenten vorbereitet — jetzt ergänzen und bestätigen.",
+    "mitwirkung_title": "Was noch von Ihnen kommt:",
+    "mitwirkung_arbeitgeber": "Arbeitgeberbestätigung und aktuelle Gehaltsnachweise ergänzen Sie selbst.",
+    "mitwirkung_upload": "Reisepass-Scan und biometrisches Lichtbild laden Sie hoch.",
+    "mitwirkung_bestaetigen": "Danach bestätigen Sie den Antrag mit Ihrer eID.",
+    "termin_konditional": "Ein Biometrie-Vorsprachetermin würde reserviert, sobald das Terminsystem der Ausländerbehörde angebunden ist.",
+    "nicht_eingereicht": "Der Antrag ist vorbereitet, aber noch nicht gestellt — Sie behalten die Kontrolle.",
+    "cta": "Verlängerung vorbereiten",
+    "zustaendig": "Zuständig: Landesamt für Einwanderung Berlin (LEA).",
+    "rechtsgrundlage": "§ 81 Abs. 4 S. 1 AufenthG (Fortgeltungsfiktion) · Hinweis auf Basis Ihrer Stammdaten.",
+    "zukunft_chip": "ZUKUNFT 2027",
+    "disclaimer": "Proaktive Fristbewachung ist ein Zielbild — synthetische [MOCK]-Demo-Daten, keine Rechtswirkung."
+  },
+  "kinderzuschlagRadar": {
+    "title": "Ihnen steht Kinderzuschlag zu",
+    "lead": "Ihnen stehen {range} Kinderzuschlag zu, die Sie aktuell nicht beziehen.",
+    "betrag_range": "geschätzt ca. {min} – {max} € / Monat",
+    "warum_title": "Warum wir das vermuten:",
+    "datenpunkt": {
+      "kindergeld": "Sie beziehen Kindergeld für {n} Kinder im Haushalt.",
+      "einkommen": "[MOCK] Diese Einschätzung nutzt eine synthetische Einkommens-Indikation, keine echten Einkommensdaten.",
+      "kein_bezug": "Kein laufender Kinderzuschlag-Bezug erkannt."
+    },
+    "cta": "Antrag für mich vorbereiten",
+    "counter": "Nur rund jedes dritte berechtigte Kind bezieht diese Leistung (Schätzung des Bundesfamilienministeriums).",
+    "zustaendig": "Zuständig: Familienkasse (Bundesagentur für Arbeit, Bund).",
+    "rechtsgrundlage": "§ 6a BKGG · Hinweis auf Basis Ihrer Einwilligung.",
+    "consent_off": "Erkennung ausschalten",
+    "consent_revoked_toast": "Kinderzuschlag-Erkennung ausgeschaltet.",
+    "dismiss": "Ausblenden",
+    "zukunft_chip": "ZUKUNFT 2027",
+    "disclaimer": "Unverbindliche Schätzung, keine Bewilligung."
+  },
   "wohngeldHinweis": {
     "title": "Möglicher Anspruch erkannt",
+    "collapsed_title": "Möglicher Wohngeld-Anspruch erkannt",
+    "collapsed_hint": "Tippen zum Prüfen · [MOCK]",
+    "collapse": "Hinweis einklappen",
+    "chip_haushalt": "Haushalt {n}",
+    "chip_mietstufe": "Mietstufe {stufe}",
+    "chip_miete": "zur Miete",
+    "chip_amtlich": "amtlich abgeglichen",
+    "need_inline": "Noch nötig: Bruttoeinkommen · Mietvertrag",
     "trigger_label": "Sie haben vermutlich Anspruch auf Wohngeld.",
     "amount_range": "ca. {min} – {max} € / Monat",
     "amount_schaetzung": "Schätzung",
@@ -1934,7 +2072,37 @@
         "liste_termine": "Termine abrufen",
         "erklaere_brief": "Brief erklären",
         "extrahiere_frist": "Frist extrahieren",
-        "vorschlage_naechsten_schritt": "Nächsten Schritt vorschlagen"
+        "vorschlage_naechsten_schritt": "Nächsten Schritt vorschlagen",
+        "finde_zustaendige_stelle": "Zuständige Stelle finden"
+      }
+    },
+    "zustaendigkeit": {
+      "title": "Zuständige Stelle gefunden",
+      "zustaendig_ist": "Zuständig ist",
+      "rechtsgrundlage_label": "Rechtsgrundlage",
+      "rechtsgrundlage": "§ 25 VwVfG (Beratungs- und Auskunftspflicht)",
+      "hinweis": "Zuständig wäre diese Stelle; dorthin würde Ihre Anfrage geleitet.",
+      "mock": "[MOCK] Prototyp — Ihre Anfrage wurde nicht real weitergeleitet oder übermittelt.",
+      "kategorie": {
+        "bund": "Bundesbehörde",
+        "land": "Landesbehörde",
+        "kommune": "Kommunale Behörde"
+      },
+      "thema": {
+        "kindergeld": "Für Kindergeld ist die Familienkasse der Bundesagentur für Arbeit zuständig — nicht das Finanzamt.",
+        "kinderzuschlag": "Den Kinderzuschlag bearbeitet die Familienkasse — nicht das Jobcenter.",
+        "elterngeld": "Elterngeld beantragen Sie bei der kommunalen Elterngeldstelle — nicht bei der Familienkasse.",
+        "wohngeld": "Wohngeld bearbeitet die kommunale Wohngeldstelle — nicht das Jobcenter.",
+        "bafoeg": "Für BAföG ist das Amt für Ausbildungsförderung Ihres Studierenden- bzw. Studentenwerks zuständig.",
+        "aufenthaltstitel": "Aufenthaltstitel und deren Verlängerung bearbeitet die Ausländerbehörde (in Berlin: Landesamt für Einwanderung) — nicht das Bürgeramt.",
+        "einkommensteuer": "Für Ihre Einkommensteuer ist Ihr örtliches Finanzamt zuständig.",
+        "steuer_id": "Die steuerliche Identifikationsnummer vergibt und verwaltet das Bundeszentralamt für Steuern — nicht das Finanzamt.",
+        "kfz_zulassung": "Fahrzeug an-, ab- oder ummelden erledigt die Kfz-Zulassungsstelle.",
+        "meldewesen": "Ihren Wohnsitz melden Sie beim Bürgeramt (Meldebehörde) an oder um.",
+        "personalausweis": "Personalausweis und Reisepass beantragen Sie beim Bürgeramt.",
+        "geburtsurkunde": "Die Geburt beurkundet und die Geburtsurkunde stellt das Standesamt aus.",
+        "eheschliessung": "Für die Anmeldung der Ehe und die Eheschließung ist das Standesamt zuständig.",
+        "rentenversicherung": "Fragen zur gesetzlichen Rente bearbeitet die Deutsche Rentenversicherung."
       }
     },
     "umzug_confirm": {
@@ -4075,6 +4243,41 @@
       "close": "Schließen",
       "payload_label": "Nachweis-Vorschau (synthetisch)"
     },
+    "present": {
+      "button": "Vorzeigen [MOCK]",
+      "button_aria": "{name} einer Behörde vorzeigen — nur die angefragten Felder [MOCK]",
+      "dialog_title": "Nachweis vorzeigen",
+      "subtitle": "Sie geben nur die angefragten Felder frei. Alles andere bleibt in Ihrem Wallet.",
+      "requester_typ": "Landesbehörde",
+      "asks_title": "Angefragte Angaben",
+      "asks_lead": "{behoerde} fragt genau diese Angaben ab:",
+      "field": {
+        "name": "Name",
+        "eat_nr": "Aufenthaltstitel-Nr.",
+        "gueltigkeit": "Gültig bis"
+      },
+      "mehr_nicht_title": "Mehr nicht.",
+      "mehr_nicht_body": "Alle übrigen Daten bleiben in Ihrem Wallet. Nichts anderes wird übermittelt.",
+      "withheld_title": "Nicht übermittelt",
+      "withheld": {
+        "anschrift": "Anschrift",
+        "geburtsdatum": "Geburtsdatum",
+        "geburtsort": "Geburtsort",
+        "lichtbild": "Lichtbild"
+      },
+      "zukunft_badge": "[ZUKUNFT 2027]",
+      "mock_badge": "[MOCK]",
+      "framing": "[ZUKUNFT 2027] Zielbild des EUDI-Wallet-Rollouts. [MOCK] — es wird nichts real übermittelt und kein Register abgefragt.",
+      "rechtsgrundlage": "Rechtsgrundlage: eIDAS 2 — VO (EU) 2024/1183 (selektive Offenlegung), Art. 5 Abs. 1 lit. c DSGVO (Datenminimierung), § 18 PAuswG.",
+      "confirm": "Mit eID freigeben",
+      "cancel": "Abbrechen",
+      "sharing": "Freigabe läuft …",
+      "done_title": "Freigabe erteilt",
+      "done_summary": "{count} Felder geteilt · 0 Dokumente kopiert",
+      "done_note": "Nur die angefragten Angaben haben Ihr Wallet verlassen. Die Stelle prüft die Signatur — sie holt sich nichts aus einem Register nach.",
+      "done_time": "Freigegeben am {datum}",
+      "close": "Schließen"
+    },
     "detail": {
       "tablist_label": "Dokumentansichten",
       "tab": {
@@ -4622,7 +4825,16 @@
       "einwilligungsbasiert": "Einwilligungsbasiert",
       "aktuell": "aktuell",
       "angezeigt": "{shown} von {total} Datenquellen angezeigt.",
-      "show_all": "Alle Empfänger anzeigen"
+      "show_all": "Alle Empfänger anzeigen",
+      "aktualitaet_note": {
+        "title": "Aktualität Ihrer Datenquellen",
+        "zukunft_chip": "ZUKUNFT 2027",
+        "amtswegig": "Nach einer Ummeldung schreiben angebundene Register — Meldebehörde, Finanzamt, Rundfunkbeitrag — Ihre neue Anschrift von Amts wegen fort. Sie reichen dafür nichts ein.",
+        "detektion": "Ihre letzte Ummeldung war am {datum}. Stellen ohne automatische Rückmeldung könnten noch einen älteren Stand haben — einen Live-Abgleich über alle Register nehmen wir bewusst nicht vor.",
+        "abh": "Die Ausländerbehörde erhält Adressänderungen nur auf Ihre eID-Bestätigung (§ 18 PAuswG). Sensible Stellen aktualisieren wir bewusst nicht per automatischem Push — so behalten Sie die Kontrolle darüber, wer die Änderung erfährt.",
+        "rechtsgrundlage": "Rechtsgrundlage: § 6 BMG · § 6 IDNrG — amtswegige Fortschreibung im Registerverbund. Nicht angebundene Stellen berichtigen Sie bei Bedarf nach Art. 16 DSGVO.",
+        "korrekturweg_link": "Korrekturweg in den Stammdaten ansehen"
+      }
     },
     "kontrolle": {
       "title": "Ihre Datenschutz-Kontrolle",
@@ -4972,6 +5184,7 @@
     "behoerden_count": "ca. {count} Behörden",
     "zeit_gespart": "ca. {min} Min. gespart",
     "behoerden_label": "Beteiligte Stellen",
+    "vorschau_badge": "In Vorbereitung",
     "starten": "Umzug starten",
     "umzug": {
       "titel": "Umzug",
@@ -4984,6 +5197,10 @@
     "steuererklaerung": {
       "titel": "Steuererklärung",
       "beschreibung": "Vorausgefüllte Erklärung aus Ihren bekannten Daten."
+    },
+    "trauerfall": {
+      "titel": "Trauerfall / Nachlass",
+      "beschreibung": "Sterbeurkunde, Nachlass und Rente in einem Vorgang bündeln — statt getrennter Gänge in einer schweren Zeit."
     },
     "status": {
       "live": "verfügbar",

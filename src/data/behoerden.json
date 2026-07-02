@@ -189,6 +189,27 @@
     "bundid_postfach_anbindung": "angebunden"
   },
   {
+    "id": "familienkasse-nord-hamburg",
+    "name_de": "Familienkasse Nord der Bundesagentur für Arbeit",
+    "kategorie": "bund",
+    "zustaendige_themen": [
+      "kinderzuschlag",
+      "kindergeld"
+    ],
+    "adresse": {
+      "strasse": "Nagelsweg",
+      "hausnummer": "9",
+      "plz": "20097",
+      "ort": "Hamburg",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.arbeitsagentur.de/familie-und-kinder/kinderzuschlag",
+      "supports_eudi": false
+    },
+    "bundid_postfach_anbindung": "angebunden"
+  },
+  {
     "id": "abh-berlin-lea",
     "name_de": "Landesamt für Einwanderung Berlin (LEA)",
     "kategorie": "land",
@@ -378,6 +399,28 @@
     },
     "online": {
       "portal_url": "https://service.berlin.de/standesamt-mitte/",
+      "supports_eudi": false
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
+  },
+  {
+    "id": "nachlassgericht-berlin-mitte",
+    "name_de": "Amtsgericht Mitte — Nachlassgericht",
+    "kategorie": "land",
+    "zustaendige_themen": [
+      "nachlass",
+      "erbschein",
+      "testamentseroeffnung"
+    ],
+    "adresse": {
+      "strasse": "Littenstraße",
+      "hausnummer": "12-17",
+      "plz": "10179",
+      "ort": "Berlin",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.berlin.de/gerichte/amtsgericht-mitte/",
       "supports_eudi": false
     },
     "bundid_postfach_anbindung": "nicht_angebunden"

@@ -14,6 +14,7 @@
  * übrige Reads Standard 300–800 ms.
  */
 import type {
+  AnspruchLaneEntry,
   Behoerde,
   DashboardSnapshot,
   DashboardSortMode,
@@ -33,6 +34,8 @@ import type {
 } from '@/types';
 import { computeValueReceipt } from '../value-receipt';
 import { resolveWohngeldHinweis } from '../lebenslagen/wohngeld-estimate';
+import { resolveKinderzuschlagRadar } from '../lebenslagen/kinderzuschlag-estimate';
+import { kindergeldConfig } from '../lebenslagen/configs/kindergeld';
 import { MockBackendError } from '../errors';
 import { withLatency } from '../latency';
 import { readOrInit, write, type CollectionKey } from '../persistence';
@@ -199,6 +202,76 @@ function behoerdeKategorie(
 
 function isActiveVorgang(v: Vorgang): boolean {
   return v.status !== 'abgeschlossen' && v.status !== 'abgelehnt';
+}
+
+/** Vollname des jüngsten Kindes der Persona (max. Geburtsdatum), sonst undefined. */
+function youngestChildName(persona: Persona): string | undefined {
+  const kinder = persona.familie?.kinder ?? [];
+  if (kinder.length === 0) return undefined;
+  const youngest = [...kinder].sort((a, b) =>
+    (b.geburtsdatum ?? '').localeCompare(a.geburtsdatum ?? ''),
+  )[0];
+  return `${youngest.vorname} ${youngest.nachname}`.trim();
+}
+
+/**
+ * „Ihnen steht zu"-Lane (Spec `anspruch-arc.md` § 4.2/§ 6, Beat b). Split-
+ * Invariante (#4-KRITISCH): `status='eingerichtet'` NUR für antragsloses
+ * Kindergeld (IMMER `zukunft:true` → die Row erzwingt Chip + Phasing-Zeile);
+ * alles Antragsgebundene (KiZ) trägt `status='anspruch_erkannt'`. Wohngeld
+ * erscheint bewusst NICHT in der Lane (Doppelung mit `WohngeldHinweisCard`
+ * vermeiden, § 10). Leer → die Lane rendert nicht (keine leere Hülle).
+ */
+function buildAnspruchLane(
+  persona: Persona,
+  vorgaenge: Vorgang[],
+): AnspruchLaneEntry[] {
+  const lane: AnspruchLaneEntry[] = [];
+
+  // Gruppe „eingerichtet": ein abgeschlossener antragsloser-Kindergeld-Vorgang.
+  const kindergeldDone = vorgaenge.find(
+    (v) =>
+      v.persona_id === persona.id &&
+      v.typ === kindergeldConfig.vorgangTyp &&
+      v.status === 'abgeschlossen',
+  );
+  if (kindergeldDone) {
+    lane.push({
+      id: `anspruch-kindergeld-${kindergeldDone.id}`,
+      leistung: 'kindergeld',
+      status: 'eingerichtet',
+      render: 'row',
+      titel_i18n_key: 'anspruchLane.kindergeld.titel',
+      kind_name: youngestChildName(persona),
+      behoerde_id: 'familienkasse-nord-hamburg',
+      foederal_label_i18n_key: 'anspruchLane.foederal.bund',
+      rechtsgrundlage: ['§ 66 EStG', 'BT-Drs. 21/5874'],
+      // HARTE INVARIANTE (§6): „Eingerichtet" für einen Regierungsentwurf ist nur
+      // mit [ZUKUNFT 2027]-Chip + Phasing-Zeile vertretbar → immer zukunft:true.
+      zukunft: true,
+    });
+  }
+
+  // Gruppe „anspruch_erkannt": KiZ-Radar (antragsgebunden, § 6a BKGG).
+  const kiz = resolveKinderzuschlagRadar(persona);
+  if (kiz) {
+    lane.push({
+      id: `anspruch-kinderzuschlag-${persona.id}`,
+      leistung: 'kinderzuschlag',
+      status: 'anspruch_erkannt',
+      render: 'radar',
+      titel_i18n_key: 'kinderzuschlagRadar.title',
+      behoerde_id: 'familienkasse-nord-hamburg',
+      foederal_label_i18n_key: 'anspruchLane.foederal.bund',
+      rechtsgrundlage: kiz.rechtsgrundlage,
+      betrag: { min_eur: kiz.geschaetzt_min_eur, max_eur: kiz.geschaetzt_max_eur },
+      cta_route: kiz.cta_route,
+      zukunft: kiz.zukunft,
+      kinderzuschlag_estimate: kiz,
+    });
+  }
+
+  return lane;
 }
 
 function anrede(persona: Persona): 'frau' | 'herr' | 'neutral' {
@@ -711,6 +784,8 @@ function buildDashboard(
     // (geteilte `resolveWohngeldHinweis`-Quelle) → Snapshot und Direct-Call
     // bleiben konsistent. `null` = nicht qualifiziert ODER unterdrückt.
     wohngeld_hinweis: resolveWohngeldHinweis(persona, now),
+    // „Ihnen steht zu"-Lane (anspruch-arc.md § 4.2/§ 6). Leer → Lane rendert nicht.
+    anspruch_lane: buildAnspruchLane(persona, vorgaenge),
   };
 }
 

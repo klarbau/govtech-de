@@ -553,7 +553,12 @@
       "frist_beschreibung": "Doğum, bir hafta içinde nüfus dairesine (Standesamt) bildirilmelidir (§ 18 PStG).",
       "gebuehr_betrag": "belge başına 12 €'dan itibaren",
       "gebuehr_hinweis": "Harç yalnızca ek belge nüshaları için alınır.",
-      "value_receipt_hinweis": "İhtiyatlı tahminle: beşe kadar ayrı makam ziyareti yerine tek bir birleşik işlem."
+      "value_receipt_hinweis": "İhtiyatlı tahminle: beşe kadar ayrı makam ziyareti yerine tek bir birleşik işlem.",
+      "frist_rescue": {
+        "titel": "Ebeveyn parası (Elterngeld) başvurusu hazırlandı — hak pencereniz",
+        "body": "Ebeveyn parası (Elterngeld) çocuğun ilk üç yaşam ayı içinde talep edilmelidir; geriye dönük olarak en fazla üç yaşam ayı için ödenir ({norm}). {datum} tarihine kadar başvuru yapılmazsa ilk yaşam ayı hakkı yanabilir — ayda tahmini yaklaşık {betrag} € (asgari tutar; gerçek tutar gelirinize bağlıdır).",
+        "status": "hazırlandı — onaylar ve tamamlarsınız"
+      }
     },
     "aufenthalt-verlaengerung": {
       "title": "Oturma iznini uzat (Aufenthaltstitel)",
@@ -973,6 +978,61 @@
       "frist_beschreibung": "Hak düşürücü süre yoktur, ancak ödeme yalnızca başvuru ayından itibaren yapılır; onay genellikle 12 ay geçerlidir.",
       "gebuehr_hinweis": "Konut yardımı (Wohngeld) işlemi harçsızdır.",
       "value_receipt_hinweis": "Kesin tutar bağlayıcı değildir [MOCK]; tasarruf edilen, ana veri girişi ve konut yardımı dairesine (Wohngeldstelle) yapılan ziyarettir."
+    },
+    "kinderzuschlag": {
+      "title": "Çocuk ek yardımı (Kinderzuschlag)",
+      "lead": "Çocuk ek yardımı (Kinderzuschlag) başvurunuzu ana verilerinizden hazırlayıp eID ile gönderiyoruz. Familienkasse (aile yardımları dairesi) başvurudan sonra geliri ve ihtiyacı denetler.",
+      "voraussetzungen": {
+        "0": "Hanede en az bir çocuk için çocuk parası (Kindergeld) alınması.",
+        "1": "Asgari gelir sınırının üzerinde çalışma geliri (900 €, tek ebeveyn için 600 €).",
+        "2": "Temel geçim yardımı (Grundsicherungsgeld, eski adıyla Bürgergeld) alınmaması."
+      },
+      "dokumente": {
+        "0": "Gelir belgesi (son ayların maaş bordroları)",
+        "1": "Konut giderleri belgesi (kira sözleşmesi)",
+        "2": "Hesap dökümleri / varlık belgeleri"
+      },
+      "fields": {
+        "name": {
+          "label": "Ad",
+          "hint": "Soyadı"
+        },
+        "geburtsdatum": {
+          "label": "Doğum tarihi",
+          "hint": "Tarih"
+        },
+        "anschrift": {
+          "label": "Adres",
+          "hint": "Sokak, posta kodu, şehir"
+        },
+        "iban": {
+          "label": "Ödeme için IBAN",
+          "hint": "DE…"
+        },
+        "bruttoeinkommen": {
+          "label": "Aylık brüt gelir",
+          "hint": "€ cinsinden tutar"
+        },
+        "wohnkosten": {
+          "label": "Brüt soğuk kira (Bruttokaltmiete)",
+          "hint": "kira sözleşmesine göre, € cinsinden tutar"
+        }
+      },
+      "rechtsgrundlagen": {
+        "bkgg6a": {
+          "bedeutung": "Çocuk ek yardımı yalnızca başvuru üzerine ve gelire bağlı olarak verilir (§ 6a Abs. 7 BKGG)."
+        },
+        "ozg2": {
+          "bedeutung": "Çevrimiçi erişim (Online-Zugang) üzerinden dijital başvuru."
+        },
+        "pauswg18": {
+          "bedeutung": "Gönderim sırasında kimliğinizin eID ile doğrulanması."
+        }
+      },
+      "dauer_geschaetzt": "20–30 dk",
+      "frist_beschreibung": "Hak düşürücü süre yok, ancak ödeme yalnızca başvuru ayından itibaren yapılır.",
+      "gebuehr_hinweis": "Çocuk ek yardımı (Kinderzuschlag) başvurusu harçsızdır.",
+      "value_receipt_hinweis": "Kesin tutar bağlayıcı değildir [MOCK] ve yalnızca karar (Bescheid) ile belirlenir; tasarruf edilen, ana veri girişi ve Familienkasse'ye (aile yardımları dairesi) yapılan ziyarettir."
     }
   },
   "a11y": {
@@ -1512,8 +1572,86 @@
       }
     }
   },
+  "wohngeldFolge": {
+    "eyebrow": "Bir de şu var …",
+    "title": "Yeni kira sözleşmeniz konut yardımı (Wohngeld) hakkı doğurabilir.",
+    "betrag_range": "tahmini yaklaşık {min} – {max} € / ay",
+    "plus_context": "2023 Wohngeld-Plus reformundan bu yana yaklaşık üç kat daha fazla hane hak sahibi — ancak bunu çok daha azı alıyor.",
+    "cta": "Hakkı kontrol et ve başvuruyu hazırla",
+    "zustaendig": "Yetkili: Bezirksamt Mitte von Berlin — Wohngeldstelle (konut yardımı dairesi, belediye).",
+    "zukunft_chip": "ZUKUNFT 2027",
+    "disclaimer": "Bağlayıcı olmayan tahmin, onay değildir. § 22 Abs. 1 WoGG."
+  },
+  "anspruchLane": {
+    "title": "Hakkınız var",
+    "politik_line": "Gidip alma yükümlülüğünüz, devletin size getirme yükümlülüğüne dönüşür.",
+    "politik_attribution": "(siyasi hedef görünüm, BMFSFJ 2023)",
+    "group_eingerichtet": "Kuruldu",
+    "group_eingerichtet_sub": "Başvurusuz işler.",
+    "group_anspruch_erkannt": "Hak tespit edildi — başvuruyu hazırlıyoruz",
+    "group_anspruch_erkannt_sub": "Başvuruya bağlı. Tek tıkla gönderirsiniz.",
+    "foederal": {
+      "bund": "Familienkasse (federal)",
+      "kommunal": "Wohngeldstelle (belediye)"
+    },
+    "kindergeld": {
+      "titel": "Başvurusuz çocuk parası (Kindergeld) · {kind}",
+      "status": "Kuruldu — başvuru gerekmez.",
+      "zukunft_chip": "ZUKUNFT 2027",
+      "phasing": "Hükümet tasarısı (Regierungsentwurf) — nihai oylama 09.07.2026 için planlandı, 2027'den itibaren kademeli."
+    }
+  },
+  "aufenthaltFristNudge": {
+    "eyebrow_bewacht": "Süre izleniyor · [MOCK]",
+    "eyebrow_bald": "Süre yakında doluyor · [MOCK]",
+    "title": "Oturma izni (Aufenthaltstitel) uzatması — hazırlandı",
+    "ablauf": "Oturma izniniz ({norm}) {datum} tarihinde sona eriyor — {relativ}.",
+    "ablauf_relativ_monate": "yaklaşık {monate} ay içinde",
+    "ablauf_relativ_tage": "yaklaşık {tage} gün içinde",
+    "lead_bewacht": "Bu süreyi izliyoruz ve uzatma başvurunuzu belgelerinizden hazırladık.",
+    "lead_bald": "Uzatma başvurunuzu belgelerinizden hazırladık — şimdi tamamlayıp onaylayın.",
+    "mitwirkung_title": "Sizden gelmesi gerekenler:",
+    "mitwirkung_arbeitgeber": "İşveren onayını ve güncel maaş belgelerini kendiniz eklersiniz.",
+    "mitwirkung_upload": "Pasaport taramasını ve biyometrik fotoğrafı siz yüklersiniz.",
+    "mitwirkung_bestaetigen": "Ardından başvuruyu eID'nizle onaylarsınız.",
+    "termin_konditional": "Yabancılar dairesinin (Ausländerbehörde) randevu sistemi bağlanır bağlanmaz bir biyometri randevusu ayrılırdı.",
+    "nicht_eingereicht": "Başvuru hazırlandı ama henüz gönderilmedi — kontrol sizde kalır.",
+    "cta": "Uzatmayı hazırla",
+    "zustaendig": "Yetkili: Landesamt für Einwanderung Berlin (LEA).",
+    "rechtsgrundlage": "§ 81 Abs. 4 S. 1 AufenthG (Fortgeltungsfiktion — geçerliliğin sürdüğü varsayımı) · ana verilerinize dayalı bildirim.",
+    "zukunft_chip": "ZUKUNFT 2027",
+    "disclaimer": "Proaktif süre izleme bir hedef görünümdür — sentetik [MOCK] demo verileri, hukuki etkisi yoktur."
+  },
+  "kinderzuschlagRadar": {
+    "title": "Çocuk ek yardımı (Kinderzuschlag) hakkınız var",
+    "lead": "Şu anda almadığınız {range} tutarında çocuk ek yardımı (Kinderzuschlag) hakkınız var.",
+    "betrag_range": "tahmini yaklaşık {min} – {max} € / ay",
+    "warum_title": "Bunu neden tahmin ediyoruz:",
+    "datenpunkt": {
+      "kindergeld": "Hanede {n} çocuk için çocuk parası (Kindergeld) alıyorsunuz.",
+      "einkommen": "[MOCK] Bu değerlendirme sentetik bir gelir göstergesi kullanır, gerçek gelir verileri değil.",
+      "kein_bezug": "Devam eden bir çocuk ek yardımı (Kinderzuschlag) ödemesi tespit edilmedi."
+    },
+    "cta": "Başvuruyu benim için hazırla",
+    "counter": "Hak sahibi her üç çocuktan yalnızca yaklaşık biri bu yardımı alıyor (Federal Aile Bakanlığı / Bundesfamilienministerium tahmini).",
+    "zustaendig": "Yetkili: Familienkasse (Bundesagentur für Arbeit, federal).",
+    "rechtsgrundlage": "§ 6a BKGG · onayınıza dayalı bildirim.",
+    "consent_off": "Tespiti kapat",
+    "consent_revoked_toast": "Çocuk ek yardımı (Kinderzuschlag) tespiti kapatıldı.",
+    "dismiss": "Gizle",
+    "zukunft_chip": "ZUKUNFT 2027",
+    "disclaimer": "Bağlayıcı olmayan tahmin, onay değildir."
+  },
   "wohngeldHinweis": {
     "title": "Olası hak tespit edildi",
+    "collapsed_title": "Olası konut yardımı (Wohngeld) hakkı tespit edildi",
+    "collapsed_hint": "Kontrol etmek için dokunun · [MOCK]",
+    "collapse": "Bildirimi daralt",
+    "chip_haushalt": "Hane: {n}",
+    "chip_mietstufe": "Kira kademesi {stufe}",
+    "chip_miete": "kirada",
+    "chip_amtlich": "resmî doğrulandı",
+    "need_inline": "Hâlâ gerekli: brüt gelir · kira sözleşmesi",
     "trigger_label": "Büyük olasılıkla Wohngeld (konut yardımı) hakkınız var.",
     "amount_range": "yaklaşık {min} – {max} € / ay",
     "amount_schaetzung": "Tahmin",
@@ -1931,7 +2069,37 @@
         "liste_termine": "Randevuları getir",
         "erklaere_brief": "Mektubu açıkla",
         "extrahiere_frist": "Süreyi çıkar",
-        "vorschlage_naechsten_schritt": "Sonraki adımı öner"
+        "vorschlage_naechsten_schritt": "Sonraki adımı öner",
+        "finde_zustaendige_stelle": "Yetkili makamı bul"
+      }
+    },
+    "zustaendigkeit": {
+      "title": "Yetkili makam bulundu",
+      "zustaendig_ist": "Yetkili",
+      "rechtsgrundlage_label": "Yasal dayanak",
+      "rechtsgrundlage": "§ 25 VwVfG (danışmanlık ve bilgilendirme yükümlülüğü)",
+      "hinweis": "Yetkili olan bu makam olurdu; talebiniz oraya yönlendirilirdi.",
+      "mock": "[MOCK] Prototip — talebiniz gerçekte yönlendirilmedi veya iletilmedi.",
+      "kategorie": {
+        "bund": "Federal makam",
+        "land": "Eyalet (Land) makamı",
+        "kommune": "Belediye makamı"
+      },
+      "thema": {
+        "kindergeld": "Çocuk parası (Kindergeld) için Bundesagentur für Arbeit'e (Federal İş Ajansı) bağlı Familienkasse yetkilidir — vergi dairesi (Finanzamt) değil.",
+        "kinderzuschlag": "Çocuk ek yardımını (Kinderzuschlag) Familienkasse işler — Jobcenter değil.",
+        "elterngeld": "Ebeveyn parası (Elterngeld) için başvuruyu belediyedeki ebeveyn parası dairesine (Elterngeldstelle) yaparsınız — Familienkasse'ye değil.",
+        "wohngeld": "Konut yardımını (Wohngeld) belediyedeki konut yardımı dairesi (Wohngeldstelle) işler — Jobcenter değil.",
+        "bafoeg": "BAföG (öğrenim desteği) için öğrenci hizmetleri kurumunuzun (Studierenden-/Studentenwerk) öğrenim desteği dairesi (Amt für Ausbildungsförderung) yetkilidir.",
+        "aufenthaltstitel": "Oturma iznini (Aufenthaltstitel) ve uzatmasını yabancılar dairesi (Ausländerbehörde; Berlin'de: Landesamt für Einwanderung) işler — Bürgeramt (vatandaş bürosu) değil.",
+        "einkommensteuer": "Gelir verginiz için yerel vergi daireniz (Finanzamt) yetkilidir.",
+        "steuer_id": "Vergi kimlik numarasını (steuerliche Identifikationsnummer) Bundeszentralamt für Steuern (Federal Merkezi Vergi Dairesi) verir ve yönetir — Finanzamt değil.",
+        "kfz_zulassung": "Araç tescili, tescil iptali veya tescil değişikliğini araç tescil dairesi (Kfz-Zulassungsstelle) yapar.",
+        "meldewesen": "İkametinizi Bürgeramt'ta (kayıt makamı / Meldebehörde) kaydeder veya güncellersiniz.",
+        "personalausweis": "Kimlik kartı (Personalausweis) ve pasaport (Reisepass) başvurusunu Bürgeramt'ta yaparsınız.",
+        "geburtsurkunde": "Doğumu nüfus dairesi (Standesamt) tescil eder ve doğum belgesini düzenler.",
+        "eheschliessung": "Evlilik başvurusu ve nikâh için nüfus dairesi (Standesamt) yetkilidir.",
+        "rentenversicherung": "Yasal emeklilikle ilgili soruları Deutsche Rentenversicherung (Alman yasal emeklilik sigortası) yürütür."
       }
     },
     "umzug_confirm": {
@@ -3841,6 +4009,41 @@
       "close": "Kapat",
       "payload_label": "Belge önizlemesi (sentetik)"
     },
+    "present": {
+      "button": "Göster [MOCK]",
+      "button_aria": "{name} belgesini bir makama gösterin — yalnızca istenen alanlar [MOCK]",
+      "dialog_title": "Belge göster",
+      "subtitle": "Yalnızca istenen alanları paylaşırsınız. Diğer her şey cüzdanınızda kalır.",
+      "requester_typ": "Eyalet (Land) makamı",
+      "asks_title": "İstenen bilgiler",
+      "asks_lead": "{behoerde} tam olarak şu bilgileri istiyor:",
+      "field": {
+        "name": "Ad",
+        "eat_nr": "Oturma izni no. (Aufenthaltstitel-Nr.)",
+        "gueltigkeit": "Geçerlilik tarihi"
+      },
+      "mehr_nicht_title": "Başka bir şey değil.",
+      "mehr_nicht_body": "Kalan tüm veriler cüzdanınızda kalır. Başka hiçbir şey iletilmez.",
+      "withheld_title": "İletilmedi",
+      "withheld": {
+        "anschrift": "Adres",
+        "geburtsdatum": "Doğum tarihi",
+        "geburtsort": "Doğum yeri",
+        "lichtbild": "Fotoğraf"
+      },
+      "zukunft_badge": "[ZUKUNFT 2027]",
+      "mock_badge": "[MOCK]",
+      "framing": "[ZUKUNFT 2027] EUDI Wallet kullanıma sunumunun hedef görünümü. [MOCK] — gerçekte hiçbir şey iletilmez ve hiçbir sicil sorgulanmaz.",
+      "rechtsgrundlage": "Yasal dayanak: eIDAS 2 — Tüzük (AB) 2024/1183 (seçici ifşa), Art. 5 (1) (c) DSGVO (veri asgariliği), § 18 PAuswG.",
+      "confirm": "eID ile paylaş",
+      "cancel": "İptal",
+      "sharing": "Paylaşılıyor …",
+      "done_title": "Paylaşım verildi",
+      "done_summary": "{count} alan paylaşıldı · 0 belge kopyalandı",
+      "done_note": "Cüzdanınızdan yalnızca istenen bilgiler çıktı. Makam imzayı doğrular — bir sicilden hiçbir şey çekmez.",
+      "done_time": "{datum} tarihinde paylaşıldı",
+      "close": "Kapat"
+    },
     "detail": {
       "tablist_label": "Belge görünümleri",
       "tab": {
@@ -4389,7 +4592,16 @@
       "aktuell": "güncel",
       "angezeigt": "{total} veri kaynağından {shown} tanesi gösteriliyor.",
       "show_all": "Tüm alıcıları göster",
-      "col_aktion": "İşlem"
+      "col_aktion": "İşlem",
+      "aktualitaet_note": {
+        "title": "Veri kaynaklarınızın güncelliği",
+        "zukunft_chip": "ZUKUNFT 2027",
+        "amtswegig": "Adres güncellemesinden sonra bağlı siciller — Meldebehörde (kayıt makamı), Finanzamt (vergi dairesi), Rundfunkbeitrag (yayın katkı payı) — yeni adresinizi resen (von Amts wegen) günceller. Bunun için hiçbir şey sunmazsınız.",
+        "detektion": "Son adres güncellemeniz {datum} tarihindeydi. Otomatik geri bildirimi olmayan makamlar hâlâ daha eski bir durumu tutuyor olabilir — tüm siciller üzerinden canlı bir eşleştirmeyi bilinçli olarak yapmıyoruz.",
+        "abh": "Yabancılar dairesi (Ausländerbehörde) adres değişikliklerini yalnızca eID onayınızla alır (§ 18 PAuswG). Hassas makamları bilinçli olarak otomatik bir bildirimle güncellemiyoruz — böylece değişikliği kimin öğreneceği üzerindeki kontrol sizde kalır.",
+        "rechtsgrundlage": "Yasal dayanak: § 6 BMG · § 6 IDNrG — sicil ağı içinde resen güncelleme. Bağlı olmayan makamları gerektiğinde Art. 16 DSGVO uyarınca kendiniz düzeltirsiniz.",
+        "korrekturweg_link": "Ana verilerdeki düzeltme yolunu görüntüle"
+      }
     },
     "kontrolle": {
       "title": "Veri koruma kontrolünüz",
@@ -4735,6 +4947,7 @@
     "titel": "Otomatik pilot kataloğu",
     "untertitel": "Otomatik pilotun sizin için üstlendiği yaşam durumları.",
     "behoerden_label": "İlgili kurumlar",
+    "vorschau_badge": "Hazırlanıyor",
     "starten": "Adres değişikliğini başlat",
     "umzug": {
       "titel": "Adres değişikliği",
@@ -4747,6 +4960,10 @@
     "steuererklaerung": {
       "titel": "Vergi beyannamesi",
       "beschreibung": "Bilinen verilerinizden önceden doldurulmuş beyanname."
+    },
+    "trauerfall": {
+      "titel": "Vefat / miras",
+      "beschreibung": "Ölüm belgesi, miras ve emekli maaşını tek bir işlemde toplayın — zor bir dönemde ayrı ayrı gidip gelmek yerine."
     },
     "status": {
       "live": "kullanılabilir",

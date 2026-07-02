@@ -77,6 +77,11 @@ export type CollectionKey =
   | 'wohngeld-hinweis:dismissed'
   | 'wohngeld-hinweis:snoozed-until'
   | 'wohngeld-hinweis:consent'
+  // Proaktiver Kinderzuschlag-Anspruch-Radar (`anspruch-arc.md` § 6, Beat c).
+  // deviceLocal-State pro Persona. `dismissed` versteckt den Radar; `consent`
+  // (Default `true`, wenn kein Eintrag) widerruft die proaktive Erkennung.
+  | 'kinderzuschlag-radar:dismissed'
+  | 'kinderzuschlag-radar:consent'
   // Resilient Orchestration Engine (`resilient-orchestration-engine.md` § 2.5).
   // Eigener Schema-Version-Marker (`orchestration:schema-version`, start `1`) —
   // bleibt im bestehenden `v1`-Namespace; KEIN globaler v1→v2-Bump (der würde

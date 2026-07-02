@@ -1034,3 +1034,13 @@ html {
 .text-2xl {
   font-family: var(--font-display);
 }
+
+/* WCAG 1.4.3 fix: prototype-v2.css has an UNLAYERED `a { color: inherit }` reset
+   that overrides Tailwind's layered `.text-primary-foreground` utility on any
+   Button-rendered-as-Link (`<Button render={<Link>}>`). That made primary CTAs
+   render dark text on the Waldgrün fill (~1.5:1). This unlayered, higher-
+   specificity rule restores the token so anchor CTAs keep AA contrast,
+   regardless of import order or @layer. */
+a.text-primary-foreground {
+  color: var(--color-primary-foreground);
+}

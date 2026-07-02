@@ -12,6 +12,7 @@ import type { LetterFristTyp } from './letter';
 import type { VorgangStatus } from './vorgang';
 import type { ValueReceipt } from './value-receipt';
 import type { WohngeldAnspruchEstimate } from './wohngeld-estimate';
+import type { KinderzuschlagAnspruchEstimate } from './kinderzuschlag-estimate';
 
 /**
  * Eine Zeile im "Automatisch erledigt für Sie"-Feed (§1.4/§B2). Delegierte
@@ -177,6 +178,46 @@ export interface PrioritizedTopAction {
   reason_token: TopActionReasonToken;
 }
 
+/**
+ * „Ihnen steht zu"-Lane (Spec `anspruch-arc.md` § 4.2/§ 6, Beat b). Der
+ * Pflicht-Split (#4-KRITISCH): `'eingerichtet'` NUR für antragsloses Kindergeld
+ * (ein Regierungsentwurf, immer mit [ZUKUNFT 2027]-Chip + Phasing-Zeile);
+ * alles Antragsgebundene (KiZ/Wohngeld) trägt `'anspruch_erkannt'` — „wir
+ * bereiten den Antrag vor", nie „wird gezahlt".
+ */
+export type AnspruchStatus = 'eingerichtet' | 'anspruch_erkannt';
+
+export interface AnspruchLaneEntry {
+  id: string;
+  leistung: 'kindergeld' | 'kinderzuschlag' | 'wohngeld';
+  status: AnspruchStatus;
+  /** Render-Hinweis: 'radar' → <KinderzuschlagRadarCard>; 'row' → <AnspruchLaneRow>. */
+  render: 'radar' | 'row';
+  titel_i18n_key: string;
+  /** Zuständige Stelle (echte behoerde_id aus behoerden.json) + Föderalismus-Label. */
+  behoerde_id: BehoerdeId;
+  /** 'anspruchLane.foederal.bund' | 'anspruchLane.foederal.kommunal'. */
+  foederal_label_i18n_key: string;
+  rechtsgrundlage: string[];
+  /** Nur bei estimate-getragenen Einträgen. €-Range immer „geschätzt ca.". */
+  betrag?: { min_eur: number; max_eur: number };
+  /** Nur bei status='anspruch_erkannt': CTA-Deep-Link (antragsgebunden). */
+  cta_route?: string;
+  /** true → [ZUKUNFT 2027]-Chip (proaktive Erkennung bzw. antragsloses Kindergeld-Phasing). */
+  zukunft: boolean;
+  /**
+   * Nur bei render:'row' (Kindergeld) — Kindname für die `{kind}`-Interpolation
+   * des `titel_i18n_key` (additiv zur §6-Kern-Shape; kein Bruch).
+   */
+  kind_name?: string;
+  /**
+   * Nur bei render:'radar' (KiZ) — die volle Heuristik-Schätzung, die die
+   * `<KinderzuschlagRadarCard>` rendert. Vom `buildDashboard`-Builder aus
+   * `resolveKinderzuschlagRadar` eingebettet (kein Client-Re-Fetch nötig).
+   */
+  kinderzuschlag_estimate?: KinderzuschlagAnspruchEstimate;
+}
+
 /** Top-Level-Snapshot, den `getDashboard(personaId)` zurückgibt. */
 export interface DashboardSnapshot {
   persona_id: PersonaId;
@@ -284,4 +325,12 @@ export interface DashboardSnapshot {
    * "kein Anspruch"-Aussage).
    */
   wohngeld_hinweis?: WohngeldAnspruchEstimate | null;
+  /**
+   * „Ihnen steht zu"-Lane (Spec `anspruch-arc.md` § 4.2/§ 6, Beat b). Vom
+   * `buildDashboard`-Builder befüllt, persona-scoped. Leer → Lane rendert nicht
+   * (keine leere Hülle). Split-Invariante (#4-KRITISCH): `status='eingerichtet'`
+   * NUR für antragsloses Kindergeld; alles Antragsgebundene (KiZ/Wohngeld) trägt
+   * `status='anspruch_erkannt'`.
+   */
+  anspruch_lane: AnspruchLaneEntry[];
 }

@@ -42,6 +42,7 @@ function lebenslageOf(vorgang: Vorgang): ValueReceipt['lebenslage'] {
     'bafoeg',
     'pflegegrad',
     'wohngeld',
+    'kinderzuschlag',
   ];
   if (ctxSlug && (known as string[]).includes(ctxSlug)) {
     return ctxSlug as ValueReceipt['lebenslage'];

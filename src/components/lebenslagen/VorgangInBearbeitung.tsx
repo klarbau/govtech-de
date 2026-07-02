@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 
 import { ValueReceiptCard } from '@/components/autopilot/ValueReceiptCard';
+import { WohngeldFolgeCard } from '@/components/dashboard/WohngeldFolgeCard';
 import type { CascadeStepConfig } from '@/lib/mock-backend/lebenslagen/types';
 import type { AutopilotStepStatus, ValueReceipt, Vorgang } from '@/types';
 import {
@@ -218,6 +219,13 @@ export function VorgangInBearbeitung({
 
         {/* 3) ValueReceipt (live) */}
         {receipt ? <ValueReceiptCard receipt={receipt} variant="live" /> : null}
+
+        {/* Wohngeld-Folge-Beat (anspruch-arc.md § 4.1, Beat a): direkt unter der
+         * Value-Receipt — nur beim Umzug + qualifizierter Persona. Self-fetching;
+         * rendert `null`, wenn nicht qualifiziert / dismissed / consent widerrufen. */}
+        {receipt && vorgang.typ === 'umzug' && vorgang.persona_id ? (
+          <WohngeldFolgeCard personaId={vorgang.persona_id} />
+        ) : null}
 
         {/* 4) Timeline — alle Schritte */}
         <section className="gt-card vlf-timeline-card" aria-labelledby="vlf-tl-title">

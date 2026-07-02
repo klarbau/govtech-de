@@ -553,7 +553,12 @@
       "frist_beschreibung": "يجب الإبلاغ عن الولادة لدى دائرة الأحوال المدنية (Standesamt) خلال أسبوع واحد (§ 18 PStG).",
       "gebuehr_betrag": "ابتداءً من 12 € لكل شهادة",
       "gebuehr_hinweis": "تُفرَض الرسوم فقط على النسخ الإضافية من الشهادات.",
-      "value_receipt_hinweis": "بتقدير متحفّظ: إجراء واحد مُجمَّع بدلًا من ما يصل إلى خمس مراجعات منفصلة للجهات."
+      "value_receipt_hinweis": "بتقدير متحفّظ: إجراء واحد مُجمَّع بدلًا من ما يصل إلى خمس مراجعات منفصلة للجهات.",
+      "frist_rescue": {
+        "titel": "تم تجهيز طلب بدل الوالدية (Elterngeld) — نافذة استحقاقك",
+        "body": "ينبغي تقديم طلب بدل الوالدية (Elterngeld) خلال الأشهر الثلاثة الأولى من عمر الطفل؛ ويُدفع بأثر رجعي لمدة ثلاثة أشهر من العمر كحدٍّ أقصى ({norm}). بدون تقديم طلب حتى {datum} قد يسقط الشهر الأول من العمر — بتقدير نحو {betrag} € شهرياً (الحد الأدنى؛ المبلغ الفعلي يعتمد على دخلك).",
+        "status": "مُجهَّز — أنت تؤكّد وتُكمِل"
+      }
     },
     "aufenthalt-verlaengerung": {
       "title": "تمديد تصريح الإقامة (Aufenthaltstitel)",
@@ -973,6 +978,61 @@
       "frist_beschreibung": "لا توجد مهلة إسقاط، لكن الدفع يبدأ فقط من شهر التقديم؛ وتسري الموافقة عادةً لمدة 12 شهرًا.",
       "gebuehr_hinweis": "إجراء إعانة السكن (Wohngeld) مجاني.",
       "value_receipt_hinweis": "المقدار الفعلي غير مُلزِم [MOCK]؛ ما يُوفَّر هو إدخال البيانات الأساسية والمراجعة لمكتب إعانة السكن (Wohngeldstelle)."
+    },
+    "kinderzuschlag": {
+      "title": "علاوة الأطفال (Kinderzuschlag)",
+      "lead": "نُجهِّز طلب علاوة الأطفال (Kinderzuschlag) من بياناتك الأساسية ونقدّمه بواسطة eID. تتحقّق Familienkasse (مكتب إعانات الأسرة) من الدخل والحاجة بعد التقديم.",
+      "voraussetzungen": {
+        "0": "الحصول على علاوة الأبناء (Kindergeld) لطفلٍ واحد على الأقل في الأسرة.",
+        "1": "دخل من العمل أعلى من الحد الأدنى للدخل (900 €، وللوالد الوحيد 600 €).",
+        "2": "عدم الحصول على الضمان الأساسي (Grundsicherungsgeld، سابقاً Bürgergeld)."
+      },
+      "dokumente": {
+        "0": "إثبات الدخل (كشوف الرواتب للأشهر الأخيرة)",
+        "1": "إثبات تكاليف السكن (عقد الإيجار)",
+        "2": "كشوف الحساب / إثبات الممتلكات"
+      },
+      "fields": {
+        "name": {
+          "label": "الاسم",
+          "hint": "اسم العائلة"
+        },
+        "geburtsdatum": {
+          "label": "تاريخ الميلاد",
+          "hint": "التاريخ"
+        },
+        "anschrift": {
+          "label": "العنوان",
+          "hint": "الشارع، الرمز البريدي، المدينة"
+        },
+        "iban": {
+          "label": "IBAN للصرف",
+          "hint": "DE…"
+        },
+        "bruttoeinkommen": {
+          "label": "الدخل الإجمالي الشهري",
+          "hint": "المبلغ بالـ €"
+        },
+        "wohnkosten": {
+          "label": "الإيجار الأساسي البارد (Bruttokaltmiete)",
+          "hint": "وفق عقد الإيجار، المبلغ بالـ €"
+        }
+      },
+      "rechtsgrundlagen": {
+        "bkgg6a": {
+          "bedeutung": "تُمنَح علاوة الأطفال بناءً على طلب فقط وحسب الدخل (§ 6a Abs. 7 BKGG)."
+        },
+        "ozg2": {
+          "bedeutung": "التقديم الرقمي عبر البوابة الإلكترونية (Online-Zugang)."
+        },
+        "pauswg18": {
+          "bedeutung": "تأكيد هويتك عبر eID عند التقديم."
+        }
+      },
+      "dauer_geschaetzt": "20–30 دقيقة",
+      "frist_beschreibung": "لا يوجد موعد نهائي مُسقِط، لكن الدفع يبدأ فقط من شهر التقديم.",
+      "gebuehr_hinweis": "طلب علاوة الأطفال (Kinderzuschlag) مجاني.",
+      "value_receipt_hinweis": "المقدار الفعلي غير مُلزِم [MOCK] ويُحدَّد فقط بموجب القرار (Bescheid)؛ ما يُوفَّر هو إدخال البيانات الأساسية والمراجعة لـ Familienkasse (مكتب إعانات الأسرة)."
     }
   },
   "a11y": {
@@ -1512,8 +1572,86 @@
       }
     }
   },
+  "wohngeldFolge": {
+    "eyebrow": "وهناك أمر آخر …",
+    "title": "قد يُنشئ عقد إيجارك الجديد استحقاقاً لإعانة السكن (Wohngeld).",
+    "betrag_range": "بتقدير نحو {min} – {max} € / شهرياً",
+    "plus_context": "منذ إصلاح Wohngeld-Plus لعام 2023 صار عدد الأسر المستحِقّة نحو ثلاثة أضعاف — بينما يتلقّاها عدد أقل بكثير.",
+    "cta": "التحقق من الاستحقاق وتجهيز الطلب",
+    "zustaendig": "الجهة المختصّة: Bezirksamt Mitte von Berlin — Wohngeldstelle (مكتب إعانة السكن، بلدي).",
+    "zukunft_chip": "ZUKUNFT 2027",
+    "disclaimer": "تقدير غير مُلزِم، وليس موافقة. § 22 Abs. 1 WoGG."
+  },
+  "anspruchLane": {
+    "title": "يحقّ لك",
+    "politik_line": "يتحوّل واجبك في الذهاب لطلب الخدمة إلى واجب الدولة في إيصالها إليك.",
+    "politik_attribution": "(رؤية سياسية مستهدفة، BMFSFJ 2023)",
+    "group_eingerichtet": "مُفعَّل",
+    "group_eingerichtet_sub": "يعمل دون طلب.",
+    "group_anspruch_erkannt": "تم التعرّف على الاستحقاق — نُجهِّز الطلب",
+    "group_anspruch_erkannt_sub": "مرتبط بطلب. تُقدِّم بنقرة واحدة.",
+    "foederal": {
+      "bund": "Familienkasse (اتحادي)",
+      "kommunal": "Wohngeldstelle (بلدي)"
+    },
+    "kindergeld": {
+      "titel": "علاوة أبناء دون طلب (Kindergeld) · {kind}",
+      "status": "مُفعَّل — لا حاجة لتقديم طلب.",
+      "zukunft_chip": "ZUKUNFT 2027",
+      "phasing": "مشروع قانون حكومي (Regierungsentwurf) — التصويت النهائي مُحدَّد في 09.07.2026، على مراحل اعتباراً من 2027."
+    }
+  },
+  "aufenthaltFristNudge": {
+    "eyebrow_bewacht": "الموعد النهائي مُراقَب · [MOCK]",
+    "eyebrow_bald": "الموعد النهائي يقترب · [MOCK]",
+    "title": "تمديد تصريح الإقامة (Aufenthaltstitel) — مُجهَّز",
+    "ablauf": "ينتهي تصريح إقامتك ({norm}) في {datum} — {relativ}.",
+    "ablauf_relativ_monate": "خلال نحو {monate} أشهر",
+    "ablauf_relativ_tage": "خلال نحو {tage} يوماً",
+    "lead_bewacht": "نراقب هذا الموعد النهائي وقد جهّزنا طلب التمديد الخاص بك من مستنداتك.",
+    "lead_bald": "جهّزنا طلب التمديد الخاص بك من مستنداتك — والآن أكمِله وأكّده.",
+    "mitwirkung_title": "ما يزال مطلوباً منك:",
+    "mitwirkung_arbeitgeber": "تُضيف بنفسك إفادة صاحب العمل وإثباتات الراتب الحديثة.",
+    "mitwirkung_upload": "ترفع مسح جواز السفر وصورة بيومترية.",
+    "mitwirkung_bestaetigen": "ثم تؤكّد الطلب عبر eID.",
+    "termin_konditional": "سيُحجَز موعد لأخذ البيانات البيومترية بمجرد ربط نظام المواعيد لدى سلطة شؤون الأجانب (Ausländerbehörde).",
+    "nicht_eingereicht": "الطلب مُجهَّز لكن لم يُقدَّم بعد — تبقى أنت المتحكِّم.",
+    "cta": "تجهيز التمديد",
+    "zustaendig": "الجهة المختصّة: Landesamt für Einwanderung Berlin (LEA).",
+    "rechtsgrundlage": "§ 81 Abs. 4 S. 1 AufenthG (Fortgeltungsfiktion — افتراض استمرار السريان) · تنبيه بناءً على بياناتك الأساسية.",
+    "zukunft_chip": "ZUKUNFT 2027",
+    "disclaimer": "المراقبة الاستباقية للمواعيد النهائية صورة مستهدفة — بيانات عرض توضيحي اصطناعية [MOCK]، دون أثر قانوني."
+  },
+  "kinderzuschlagRadar": {
+    "title": "يحقّ لك الحصول على علاوة الأطفال (Kinderzuschlag)",
+    "lead": "يحقّ لك {range} من علاوة الأطفال (Kinderzuschlag) لا تتلقّاها حالياً.",
+    "betrag_range": "بتقدير نحو {min} – {max} € / شهرياً",
+    "warum_title": "لماذا نرجّح ذلك:",
+    "datenpunkt": {
+      "kindergeld": "تتلقّى علاوة الأبناء (Kindergeld) عن {n} من الأطفال في الأسرة.",
+      "einkommen": "[MOCK] يستخدم هذا التقدير مؤشّر دخل اصطناعياً، لا بيانات دخل حقيقية.",
+      "kein_bezug": "لم يُرصَد أي تلقٍّ جارٍ لعلاوة الأطفال (Kinderzuschlag)."
+    },
+    "cta": "تجهيز الطلب نيابةً عني",
+    "counter": "نحو طفل واحد فقط من كل ثلاثة مستحِقّين يتلقّى هذه الإعانة (تقدير الوزارة الاتحادية لشؤون الأسرة / Bundesfamilienministerium).",
+    "zustaendig": "الجهة المختصّة: Familienkasse (Bundesagentur für Arbeit، اتحادي).",
+    "rechtsgrundlage": "§ 6a BKGG · تنبيه بناءً على موافقتك.",
+    "consent_off": "إيقاف الكشف",
+    "consent_revoked_toast": "تم إيقاف كشف علاوة الأطفال (Kinderzuschlag).",
+    "dismiss": "إخفاء",
+    "zukunft_chip": "ZUKUNFT 2027",
+    "disclaimer": "تقدير غير مُلزِم، وليس موافقة."
+  },
   "wohngeldHinweis": {
     "title": "تم اكتشاف استحقاق محتمل",
+    "collapsed_title": "تم اكتشاف استحقاق محتمل لإعانة السكن (Wohngeld)",
+    "collapsed_hint": "اضغط للتحقق · [MOCK]",
+    "collapse": "طيّ الإشعار",
+    "chip_haushalt": "أفراد الأسرة: {n}",
+    "chip_mietstufe": "مستوى الإيجار {stufe}",
+    "chip_miete": "سكن بالإيجار",
+    "chip_amtlich": "تم التحقق رسميًا",
+    "need_inline": "لا يزال مطلوبًا: الدخل الإجمالي · عقد الإيجار",
     "trigger_label": "من المرجّح أن يكون لديك استحقاق في Wohngeld (إعانة السكن).",
     "amount_range": "نحو {min} – {max} € / شهريًا",
     "amount_schaetzung": "تقدير",
@@ -1931,7 +2069,37 @@
         "liste_termine": "جلب المواعيد",
         "erklaere_brief": "شرح الرسالة",
         "extrahiere_frist": "استخراج الموعد النهائي",
-        "vorschlage_naechsten_schritt": "اقتراح الخطوة التالية"
+        "vorschlage_naechsten_schritt": "اقتراح الخطوة التالية",
+        "finde_zustaendige_stelle": "العثور على الجهة المختصّة"
+      }
+    },
+    "zustaendigkeit": {
+      "title": "تم العثور على الجهة المختصّة",
+      "zustaendig_ist": "الجهة المختصّة",
+      "rechtsgrundlage_label": "الأساس القانوني",
+      "rechtsgrundlage": "§ 25 VwVfG (واجب المشورة والإفادة)",
+      "hinweis": "هذه الجهة هي التي ستكون مختصّة؛ وإليها كان سيُوجَّه طلبك.",
+      "mock": "[MOCK] نموذج أوّلي — لم يُوجَّه طلبك أو يُرسَل فعلياً.",
+      "kategorie": {
+        "bund": "جهة اتحادية",
+        "land": "جهة الولاية (Land)",
+        "kommune": "جهة بلدية"
+      },
+      "thema": {
+        "kindergeld": "علاوة الأبناء (Kindergeld) من اختصاص Familienkasse التابعة لـ Bundesagentur für Arbeit (وكالة العمل الاتحادية) — لا مكتب الضرائب (Finanzamt).",
+        "kinderzuschlag": "علاوة الأطفال (Kinderzuschlag) تعالجها Familienkasse — لا Jobcenter.",
+        "elterngeld": "بدل الوالدية (Elterngeld) تقدّم طلبه لدى مكتب بدل الوالدية البلدي (Elterngeldstelle) — لا لدى Familienkasse.",
+        "wohngeld": "إعانة السكن (Wohngeld) يعالجها مكتب إعانة السكن البلدي (Wohngeldstelle) — لا Jobcenter.",
+        "bafoeg": "بخصوص BAföG (دعم التعليم) تختصّ دائرة دعم التدريب (Amt für Ausbildungsförderung) التابعة لهيئة شؤون الطلاب لديك (Studierenden-/Studentenwerk).",
+        "aufenthaltstitel": "تصريح الإقامة (Aufenthaltstitel) وتمديده تعالجه سلطة شؤون الأجانب (Ausländerbehörde؛ في برلين: Landesamt für Einwanderung) — لا Bürgeramt (مكتب المواطنين).",
+        "einkommensteuer": "ضريبة دخلك يختصّ بها مكتب الضرائب المحلي لديك (Finanzamt).",
+        "steuer_id": "رقم التعريف الضريبي (steuerliche Identifikationsnummer) يُصدره ويديره Bundeszentralamt für Steuern (المكتب الاتحادي المركزي للضرائب) — لا Finanzamt.",
+        "kfz_zulassung": "تسجيل المركبة أو إلغاء تسجيلها أو إعادة تسجيلها يتولّاه مكتب تسجيل المركبات (Kfz-Zulassungsstelle).",
+        "meldewesen": "تُسجِّل محل إقامتك أو تُعيد تسجيله لدى Bürgeramt (سلطة التسجيل / Meldebehörde).",
+        "personalausweis": "بطاقة الهوية (Personalausweis) وجواز السفر (Reisepass) تقدّم طلبهما لدى Bürgeramt.",
+        "geburtsurkunde": "الولادة يوثّقها ويصدر شهادة الميلاد مكتب السجل المدني (Standesamt).",
+        "eheschliessung": "بخصوص الإعلان عن الزواج وعقد الزواج يختصّ مكتب السجل المدني (Standesamt).",
+        "rentenversicherung": "الأسئلة حول المعاش القانوني تعالجها Deutsche Rentenversicherung (التأمين القانوني للمعاشات الألماني)."
       }
     },
     "umzug_confirm": {
@@ -3841,6 +4009,41 @@
       "close": "إغلاق",
       "payload_label": "معاينة المستند (اصطناعية)"
     },
+    "present": {
+      "button": "إبراز [MOCK]",
+      "button_aria": "إبراز {name} لجهة رسمية — الحقول المطلوبة فقط [MOCK]",
+      "dialog_title": "إبراز مستند إثبات",
+      "subtitle": "تُتيح الحقول المطلوبة فقط. ويبقى كل ما عداها في محفظتك.",
+      "requester_typ": "جهة الولاية (Land)",
+      "asks_title": "البيانات المطلوبة",
+      "asks_lead": "تطلب {behoerde} هذه البيانات تحديداً:",
+      "field": {
+        "name": "الاسم",
+        "eat_nr": "رقم تصريح الإقامة (Aufenthaltstitel-Nr.)",
+        "gueltigkeit": "صالح حتى"
+      },
+      "mehr_nicht_title": "لا أكثر.",
+      "mehr_nicht_body": "تبقى كل البيانات الأخرى في محفظتك. ولا يُرسَل أي شيء آخر.",
+      "withheld_title": "لم يُرسَل",
+      "withheld": {
+        "anschrift": "العنوان",
+        "geburtsdatum": "تاريخ الميلاد",
+        "geburtsort": "مكان الميلاد",
+        "lichtbild": "الصورة الشخصية"
+      },
+      "zukunft_badge": "[ZUKUNFT 2027]",
+      "mock_badge": "[MOCK]",
+      "framing": "[ZUKUNFT 2027] الصورة المستهدفة لطرح محفظة EUDI. [MOCK] — لا يُرسَل أي شيء فعلياً ولا يُستعلَم عن أي سجل.",
+      "rechtsgrundlage": "الأساس القانوني: eIDAS 2 — اللائحة (الاتحاد الأوروبي) 2024/1183 (الإفصاح الانتقائي)، Art. 5 (1) (c) DSGVO (تقليل البيانات)، § 18 PAuswG.",
+      "confirm": "الإتاحة عبر eID",
+      "cancel": "إلغاء",
+      "sharing": "جارٍ الإتاحة …",
+      "done_title": "تمت الإتاحة",
+      "done_summary": "تمت مشاركة {count} من الحقول · 0 مستند منسوخ",
+      "done_note": "لم يغادر محفظتك سوى البيانات المطلوبة. تتحقّق الجهة من التوقيع — ولا تسحب شيئاً من أي سجل.",
+      "done_time": "أُتيح في {datum}",
+      "close": "إغلاق"
+    },
     "detail": {
       "tablist_label": "طرق عرض المستند",
       "tab": {
@@ -4389,7 +4592,16 @@
       "aktuell": "مُحدَّث",
       "angezeigt": "عرض {shown} من {total} من مصادر البيانات.",
       "show_all": "عرض جميع المستلِمين",
-      "col_aktion": "إجراء"
+      "col_aktion": "إجراء",
+      "aktualitaet_note": {
+        "title": "مدى حداثة مصادر بياناتك",
+        "zukunft_chip": "ZUKUNFT 2027",
+        "amtswegig": "بعد إعادة التسجيل، تُحدِّث السجلات المرتبطة — Meldebehörde (سلطة التسجيل)، Finanzamt (مكتب الضرائب)، Rundfunkbeitrag (رسوم البث) — عنوانك الجديد بحكم الوظيفة (von Amts wegen). ولا تُقدِّم أنت شيئاً لذلك.",
+        "detektion": "كانت آخر إعادة تسجيل لك في {datum}. قد تظل الجهات التي لا تتلقّى ردّاً آلياً على حالة أقدم — ونحن نتعمّد عدم إجراء مطابقة حيّة عبر جميع السجلات.",
+        "abh": "لا تتلقّى سلطة شؤون الأجانب (Ausländerbehörde) تغييرات العنوان إلا بعد تأكيدك عبر eID (§ 18 PAuswG). ونحن نتعمّد عدم تحديث الجهات الحسّاسة عبر دفعٍ آلي — بذلك تحتفظ بالتحكم في مَن يعلم بالتغيير.",
+        "rechtsgrundlage": "الأساس القانوني: § 6 BMG · § 6 IDNrG — التحديث بحكم الوظيفة ضمن شبكة السجلات. أما الجهات غير المرتبطة فتُصحِّحها بنفسك عند الحاجة وفق Art. 16 DSGVO.",
+        "korrekturweg_link": "عرض مسار التصحيح في البيانات الأساسية"
+      }
     },
     "kontrolle": {
       "title": "تحكّمك في حماية البيانات",
@@ -4735,6 +4947,7 @@
     "titel": "كتالوج الطيار الآلي",
     "untertitel": "مواقف حياتية يتولّاها الطيار الآلي نيابةً عنك.",
     "behoerden_label": "الجهات المعنية",
+    "vorschau_badge": "قيد التحضير",
     "starten": "بدء تغيير العنوان",
     "umzug": {
       "titel": "تغيير العنوان",
@@ -4747,6 +4960,10 @@
     "steuererklaerung": {
       "titel": "الإقرار الضريبي",
       "beschreibung": "إقرار مُعبَّأ مسبقاً من بياناتك المعروفة."
+    },
+    "trauerfall": {
+      "titel": "حالة وفاة / تركة",
+      "beschreibung": "شهادة الوفاة والتركة والمعاش في معاملة واحدة — بدلاً من مراجعات منفصلة في وقتٍ صعب."
     },
     "status": {
       "live": "متاح",

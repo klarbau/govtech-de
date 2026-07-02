@@ -180,6 +180,14 @@ export interface Persona {
    */
   kontakt?: PersonaKontakt;
 
+  /**
+   * Grobe, NICHT-numerische „könnte KiZ-berechtigt sein"-Indikation ([MOCK]).
+   * KEIN Einkommensbetrag, KEINE Anspruchsberechnung — nur ein Heuristik-Flag
+   * (analog `wohngeld_indikation`). Steuert ausschließlich, ob der Kinderzuschlag-
+   * Radar erscheint (Spec `anspruch-arc.md` § 6, Beat c).
+   */
+  kinderzuschlag_indikation?: boolean;
+
   /** Eheschließung — Standesamt-Daten (synthetisch, [MOCK]). */
   eheschliessung?: { datum: string; ort: string; az: string };
 

@@ -18,6 +18,7 @@ import { reisepassConfig } from './configs/reisepass';
 import { bafoegConfig } from './configs/bafoeg';
 import { pflegegradConfig } from './configs/pflegegrad';
 import { wohngeldConfig } from './configs/wohngeld';
+import { kinderzuschlagConfig } from './configs/kinderzuschlag';
 
 /**
  * Umzug-Stub (§2.1): minimale Display-Felder + leere Cascade. Routing über
@@ -87,6 +88,7 @@ export const LEBENSLAGE_CONFIGS: Record<string, LebenslageConfig> = {
   bafoeg: bafoegConfig,
   pflegegrad: pflegegradConfig,
   wohngeld: wohngeldConfig,
+  kinderzuschlag: kinderzuschlagConfig,
 };
 
 /** Reiner Lookup: Config für einen Slug, sonst `null`. */

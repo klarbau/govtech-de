@@ -440,6 +440,7 @@ export function AssistentView() {
                           ...c,
                           status: outcome.ok ? 'done' : 'error',
                           resultSummary: outcome.summary,
+                          zustaendigkeit: outcome.zustaendigkeit,
                         }
                       : c,
                   ),

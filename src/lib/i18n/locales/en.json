@@ -553,7 +553,12 @@
       "frist_beschreibung": "The birth must be notified to the registry office (Standesamt) within one week (§ 18 PStG).",
       "gebuehr_betrag": "from €12 per certificate",
       "gebuehr_hinweis": "Fees only apply for additional copies of certificates.",
-      "value_receipt_hinweis": "Conservatively estimated: one bundled procedure instead of up to five separate trips to the authorities."
+      "value_receipt_hinweis": "Conservatively estimated: one bundled procedure instead of up to five separate trips to the authorities.",
+      "frist_rescue": {
+        "titel": "Parental allowance (Elterngeld) application prepared — your eligibility window",
+        "body": "Parental allowance (Elterngeld) should be applied for within the first three months of life; retroactively it is paid for a maximum of three months of life ({norm}). Without an application by {datum}, the first month of life may lapse — an estimated approx. {betrag} € per month (minimum amount; the actual amount depends on your income).",
+        "status": "prepared — you confirm and complete"
+      }
     },
     "aufenthalt-verlaengerung": {
       "title": "Extend residence permit (Aufenthaltstitel)",
@@ -973,6 +978,61 @@
       "frist_beschreibung": "No cut-off deadline, but payment only from the month of application; approval usually applies for 12 months.",
       "gebuehr_hinweis": "The housing benefit (Wohngeld) procedure is free of charge.",
       "value_receipt_hinweis": "The exact amount is non-binding [MOCK]; what is saved is the entry of master data and the trip to the housing benefit office (Wohngeldstelle)."
+    },
+    "kinderzuschlag": {
+      "title": "Child supplement (Kinderzuschlag)",
+      "lead": "Prepare your child supplement (Kinderzuschlag) application from your master data and submit it with your eID. The Familienkasse (family benefits office) checks income and need after you apply.",
+      "voraussetzungen": {
+        "0": "You receive child benefit (Kindergeld) for at least one child in the household.",
+        "1": "Earned income above the minimum income threshold (900 €, single parents 600 €).",
+        "2": "You do not receive basic income support (Grundsicherungsgeld, formerly Bürgergeld)."
+      },
+      "dokumente": {
+        "0": "Proof of income (pay slips from the last few months)",
+        "1": "Proof of housing costs (tenancy agreement)",
+        "2": "Bank statements / proof of assets"
+      },
+      "fields": {
+        "name": {
+          "label": "Name",
+          "hint": "Surname"
+        },
+        "geburtsdatum": {
+          "label": "Date of birth",
+          "hint": "Date"
+        },
+        "anschrift": {
+          "label": "Address",
+          "hint": "Street, postcode, town"
+        },
+        "iban": {
+          "label": "IBAN for the payment",
+          "hint": "DE…"
+        },
+        "bruttoeinkommen": {
+          "label": "Monthly gross income",
+          "hint": "Amount in €"
+        },
+        "wohnkosten": {
+          "label": "Gross cold rent (Bruttokaltmiete)",
+          "hint": "as per tenancy agreement, amount in €"
+        }
+      },
+      "rechtsgrundlagen": {
+        "bkgg6a": {
+          "bedeutung": "Child supplement is granted only on application and depending on income (§ 6a Abs. 7 BKGG)."
+        },
+        "ozg2": {
+          "bedeutung": "Digital application via the online portal (Online-Zugang)."
+        },
+        "pauswg18": {
+          "bedeutung": "eID confirmation of your identity upon submission."
+        }
+      },
+      "dauer_geschaetzt": "20–30 min",
+      "frist_beschreibung": "No cut-off deadline, but payment only from the month of application.",
+      "gebuehr_hinweis": "The child supplement (Kinderzuschlag) application is free of charge.",
+      "value_receipt_hinweis": "The exact amount is non-binding [MOCK] and is only set by the official decision (Bescheid); what is saved is the entry of master data and the trip to the Familienkasse (family benefits office)."
     }
   },
   "a11y": {
@@ -1512,8 +1572,86 @@
       }
     }
   },
+  "wohngeldFolge": {
+    "eyebrow": "And there's one more thing …",
+    "title": "Your new tenancy agreement could trigger an entitlement to housing benefit (Wohngeld).",
+    "betrag_range": "estimated approx. {min} – {max} € / month",
+    "plus_context": "Since the Wohngeld-Plus reform of 2023, around three times as many households are entitled — yet far fewer actually claim it.",
+    "cta": "Check entitlement & prepare application",
+    "zustaendig": "Responsible: Bezirksamt Mitte von Berlin — Wohngeldstelle (housing benefit office, municipal).",
+    "zukunft_chip": "ZUKUNFT 2027",
+    "disclaimer": "Non-binding estimate, not an approval. § 22 Abs. 1 WoGG."
+  },
+  "anspruchLane": {
+    "title": "You are entitled to",
+    "politik_line": "Your obligation to go and fetch becomes the state's obligation to deliver.",
+    "politik_attribution": "(political vision, BMFSFJ 2023)",
+    "group_eingerichtet": "Set up",
+    "group_eingerichtet_sub": "Runs without an application.",
+    "group_anspruch_erkannt": "Entitlement detected — we are preparing the application",
+    "group_anspruch_erkannt_sub": "Application-based. You submit with one click.",
+    "foederal": {
+      "bund": "Familienkasse (federal)",
+      "kommunal": "Wohngeldstelle (municipal)"
+    },
+    "kindergeld": {
+      "titel": "Application-free child benefit (Kindergeld) · {kind}",
+      "status": "Set up — no application needed.",
+      "zukunft_chip": "ZUKUNFT 2027",
+      "phasing": "Government draft bill (Regierungsentwurf) — final vote scheduled for 09.07.2026, phased in from 2027."
+    }
+  },
+  "aufenthaltFristNudge": {
+    "eyebrow_bewacht": "Deadline monitored · [MOCK]",
+    "eyebrow_bald": "Deadline approaching · [MOCK]",
+    "title": "Residence permit (Aufenthaltstitel) renewal — prepared",
+    "ablauf": "Your residence permit ({norm}) expires on {datum} — {relativ}.",
+    "ablauf_relativ_monate": "in approx. {monate} months",
+    "ablauf_relativ_tage": "in approx. {tage} days",
+    "lead_bewacht": "We are monitoring this deadline and have prepared your renewal application from your documents.",
+    "lead_bald": "We have prepared your renewal application from your documents — now complete and confirm it.",
+    "mitwirkung_title": "What still needs to come from you:",
+    "mitwirkung_arbeitgeber": "You add the employer confirmation and current proof of salary yourself.",
+    "mitwirkung_upload": "You upload the passport scan and a biometric photo.",
+    "mitwirkung_bestaetigen": "Then you confirm the application with your eID.",
+    "termin_konditional": "A biometrics appointment would be reserved as soon as the immigration authority's (Ausländerbehörde) appointment system is connected.",
+    "nicht_eingereicht": "The application is prepared but not yet submitted — you stay in control.",
+    "cta": "Prepare renewal",
+    "zustaendig": "Responsible: Landesamt für Einwanderung Berlin (LEA).",
+    "rechtsgrundlage": "§ 81 Abs. 4 S. 1 AufenthG (Fortgeltungsfiktion / continued-validity provision) · notice based on your master data.",
+    "zukunft_chip": "ZUKUNFT 2027",
+    "disclaimer": "Proactive deadline monitoring is a target vision — synthetic [MOCK] demo data, no legal effect."
+  },
+  "kinderzuschlagRadar": {
+    "title": "You are entitled to child supplement (Kinderzuschlag)",
+    "lead": "You are entitled to {range} in child supplement (Kinderzuschlag) that you are not currently receiving.",
+    "betrag_range": "estimated approx. {min} – {max} € / month",
+    "warum_title": "Why we suspect this:",
+    "datenpunkt": {
+      "kindergeld": "You receive child benefit (Kindergeld) for {n} children in the household.",
+      "einkommen": "[MOCK] This assessment uses a synthetic income indication, not real income data.",
+      "kein_bezug": "No ongoing child supplement (Kinderzuschlag) payment detected."
+    },
+    "cta": "Prepare the application for me",
+    "counter": "Only about one in three eligible children receives this benefit (estimate by the Federal Ministry for Family Affairs / Bundesfamilienministerium).",
+    "zustaendig": "Responsible: Familienkasse (Bundesagentur für Arbeit, federal).",
+    "rechtsgrundlage": "§ 6a BKGG · notice based on your consent.",
+    "consent_off": "Turn off detection",
+    "consent_revoked_toast": "Child supplement (Kinderzuschlag) detection turned off.",
+    "dismiss": "Hide",
+    "zukunft_chip": "ZUKUNFT 2027",
+    "disclaimer": "Non-binding estimate, not an approval."
+  },
   "wohngeldHinweis": {
     "title": "Possible entitlement detected",
+    "collapsed_title": "Possible housing-benefit entitlement detected",
+    "collapsed_hint": "Tap to check · [MOCK]",
+    "collapse": "Collapse notice",
+    "chip_haushalt": "Household {n}",
+    "chip_mietstufe": "Rent level {stufe}",
+    "chip_miete": "renting",
+    "chip_amtlich": "officially verified",
+    "need_inline": "Still needed: gross income · rental contract",
     "trigger_label": "You are likely entitled to Wohngeld (housing benefit).",
     "amount_range": "approx. {min} – {max} € / month",
     "amount_schaetzung": "Estimate",
@@ -1931,7 +2069,37 @@
         "liste_termine": "Fetch appointments",
         "erklaere_brief": "Explain letter",
         "extrahiere_frist": "Extract deadline",
-        "vorschlage_naechsten_schritt": "Suggest next step"
+        "vorschlage_naechsten_schritt": "Suggest next step",
+        "finde_zustaendige_stelle": "Find the responsible office"
+      }
+    },
+    "zustaendigkeit": {
+      "title": "Responsible office found",
+      "zustaendig_ist": "Responsible",
+      "rechtsgrundlage_label": "Legal basis",
+      "rechtsgrundlage": "§ 25 VwVfG (duty to advise and provide information)",
+      "hinweis": "This office would be responsible; your request would be routed there.",
+      "mock": "[MOCK] Prototype — your request was not actually forwarded or transmitted.",
+      "kategorie": {
+        "bund": "Federal authority",
+        "land": "State (Land) authority",
+        "kommune": "Municipal authority"
+      },
+      "thema": {
+        "kindergeld": "Child benefit (Kindergeld) is the responsibility of the Familienkasse of the Bundesagentur für Arbeit (Federal Employment Agency) — not the tax office (Finanzamt).",
+        "kinderzuschlag": "Child supplement (Kinderzuschlag) is processed by the Familienkasse (family benefits office) — not the Jobcenter.",
+        "elterngeld": "You apply for parental allowance (Elterngeld) at the municipal parental allowance office (Elterngeldstelle) — not at the Familienkasse.",
+        "wohngeld": "Housing benefit (Wohngeld) is handled by the municipal housing benefit office (Wohngeldstelle) — not the Jobcenter.",
+        "bafoeg": "For BAföG (student financial aid), the training-support office (Amt für Ausbildungsförderung) of your student services organisation (Studierenden-/Studentenwerk) is responsible.",
+        "aufenthaltstitel": "Residence permits (Aufenthaltstitel) and their renewal are handled by the immigration authority (Ausländerbehörde; in Berlin: Landesamt für Einwanderung) — not the Bürgeramt (citizens' office).",
+        "einkommensteuer": "Your local tax office (Finanzamt) is responsible for your income tax.",
+        "steuer_id": "The tax identification number (steuerliche Identifikationsnummer) is issued and managed by the Bundeszentralamt für Steuern (Federal Central Tax Office) — not the Finanzamt.",
+        "kfz_zulassung": "Registering, deregistering or re-registering a vehicle is done by the vehicle registration office (Kfz-Zulassungsstelle).",
+        "meldewesen": "You register or change your residence at the Bürgeramt (registration authority / Meldebehörde).",
+        "personalausweis": "You apply for your identity card (Personalausweis) and passport (Reisepass) at the Bürgeramt.",
+        "geburtsurkunde": "The birth is recorded and the birth certificate issued by the registry office (Standesamt).",
+        "eheschliessung": "The registry office (Standesamt) is responsible for the notice of intended marriage and the marriage ceremony.",
+        "rentenversicherung": "Questions about the statutory pension are handled by the Deutsche Rentenversicherung (German statutory pension insurance)."
       }
     },
     "umzug_confirm": {
@@ -3841,6 +4009,41 @@
       "close": "Close",
       "payload_label": "Credential preview (synthetic)"
     },
+    "present": {
+      "button": "Present [MOCK]",
+      "button_aria": "Present {name} to an authority — only the requested fields [MOCK]",
+      "dialog_title": "Present a credential",
+      "subtitle": "You release only the requested fields. Everything else stays in your wallet.",
+      "requester_typ": "State (Land) authority",
+      "asks_title": "Requested details",
+      "asks_lead": "{behoerde} requests exactly these details:",
+      "field": {
+        "name": "Name",
+        "eat_nr": "Residence permit no. (Aufenthaltstitel-Nr.)",
+        "gueltigkeit": "Valid until"
+      },
+      "mehr_nicht_title": "Nothing more.",
+      "mehr_nicht_body": "All remaining data stays in your wallet. Nothing else is transmitted.",
+      "withheld_title": "Not transmitted",
+      "withheld": {
+        "anschrift": "Address",
+        "geburtsdatum": "Date of birth",
+        "geburtsort": "Place of birth",
+        "lichtbild": "Photo"
+      },
+      "zukunft_badge": "[ZUKUNFT 2027]",
+      "mock_badge": "[MOCK]",
+      "framing": "[ZUKUNFT 2027] Target vision of the EUDI Wallet rollout. [MOCK] — nothing is actually transmitted and no register is queried.",
+      "rechtsgrundlage": "Legal basis: eIDAS 2 — Reg. (EU) 2024/1183 (selective disclosure), Art. 5 (1) (c) GDPR (data minimisation), § 18 PAuswG.",
+      "confirm": "Release with eID",
+      "cancel": "Cancel",
+      "sharing": "Releasing …",
+      "done_title": "Release granted",
+      "done_summary": "{count} fields shared · 0 documents copied",
+      "done_note": "Only the requested details left your wallet. The office verifies the signature — it does not pull anything from a register.",
+      "done_time": "Released on {datum}",
+      "close": "Close"
+    },
     "detail": {
       "tablist_label": "Document views",
       "tab": {
@@ -4389,7 +4592,16 @@
       "aktuell": "up to date",
       "angezeigt": "Showing {shown} of {total} data sources.",
       "show_all": "Show all recipients",
-      "col_aktion": "Action"
+      "col_aktion": "Action",
+      "aktualitaet_note": {
+        "title": "How up to date your data sources are",
+        "zukunft_chip": "ZUKUNFT 2027",
+        "amtswegig": "After a change of registration, connected registers — Meldebehörde (registration authority), Finanzamt (tax office), Rundfunkbeitrag (broadcasting fee) — update your new address ex officio. You submit nothing for this.",
+        "detektion": "Your last change of registration was on {datum}. Offices without automatic feedback may still hold an older status — we deliberately do not run a live reconciliation across all registers.",
+        "abh": "The immigration authority (Ausländerbehörde) receives address changes only upon your eID confirmation (§ 18 PAuswG). We deliberately do not update sensitive offices via automatic push — this keeps you in control of who learns about the change.",
+        "rechtsgrundlage": "Legal basis: § 6 BMG · § 6 IDNrG — ex officio updating within the register network. You correct offices that are not connected yourself, where needed, under Art. 16 GDPR.",
+        "korrekturweg_link": "View the correction path in your master data"
+      }
     },
     "kontrolle": {
       "title": "Your data-protection controls",
@@ -4735,6 +4947,7 @@
     "titel": "Autopilot catalogue",
     "untertitel": "Life situations the autopilot handles for you.",
     "behoerden_label": "Offices involved",
+    "vorschau_badge": "In preparation",
     "starten": "Start change of address",
     "umzug": {
       "titel": "Change of address",
@@ -4747,6 +4960,10 @@
     "steuererklaerung": {
       "titel": "Tax return",
       "beschreibung": "Pre-filled return based on your known data."
+    },
+    "trauerfall": {
+      "titel": "Bereavement / estate",
+      "beschreibung": "Bundle the death certificate, estate and pension into a single case — instead of separate errands at a difficult time."
     },
     "status": {
       "live": "available",

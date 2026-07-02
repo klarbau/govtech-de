@@ -23,6 +23,7 @@ import {
   Landmark,
   Loader2,
   Mail,
+  ScanLine,
   Search,
   ShieldCheck,
   SlidersHorizontal,
@@ -37,6 +38,7 @@ import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 
 import { EudiExportDialog } from '@/components/dokumente/EudiExportDialog';
+import { PresentCredentialDialog } from '@/components/dokumente/PresentCredentialDialog';
 import {
   MockQr,
   OfficialStamp,
@@ -140,6 +142,7 @@ const PAGE_SIZE_OPTIONS = [10, 25, 50] as const;
 export function DokumenteView({ nowIso }: { nowIso: string }) {
   const t = useTranslations('dokumente');
   const tEudi = useTranslations('dokumente.eudi');
+  const tPresent = useTranslations('dokumente.present');
   const tShared = useTranslations('shared');
   const [docs, setDocs] = React.useState<Document[]>([]);
   const [behoerdenById, setBehoerdenById] = React.useState<
@@ -156,6 +159,7 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
     () => new Set(),
   );
   const [eudiDoc, setEudiDoc] = React.useState<Document | null>(null);
+  const [presentDoc, setPresentDoc] = React.useState<Document | null>(null);
   const [previewDoc, setPreviewDoc] = React.useState<Document | null>(null);
   const [profile, setProfile] = React.useState<Persona | null>(null);
   const [newDocIds, setNewDocIds] = React.useState<Set<string>>(() => new Set());
@@ -609,6 +613,19 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
                             >
                               <Download />
                             </button>
+                            {doc.eudi_compatible &&
+                            doc.typ === 'aufenthaltstitel' ? (
+                              <button
+                                type="button"
+                                aria-label={tPresent('button_aria', {
+                                  name: doc.titel,
+                                })}
+                                title={tPresent('button')}
+                                onClick={() => setPresentDoc(doc)}
+                              >
+                                <ScanLine />
+                              </button>
+                            ) : null}
                             {doc.eudi_compatible ? (
                               <button
                                 type="button"
@@ -812,6 +829,23 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
         doc={eudiDoc}
         onOpenChange={(next) => {
           if (!next) setEudiDoc(null);
+        }}
+      />
+
+      <PresentCredentialDialog
+        open={!!presentDoc}
+        doc={presentDoc}
+        holderName={
+          profile ? `${profile.vorname} ${profile.nachname}`.trim() : ''
+        }
+        behoerdeName={
+          presentDoc
+            ? (behoerdenById[presentDoc.ausstellende_behoerde_id]?.name_de ??
+              presentDoc.ausstellende_behoerde_id)
+            : ''
+        }
+        onOpenChange={(next) => {
+          if (!next) setPresentDoc(null);
         }}
       />
 

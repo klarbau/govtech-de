@@ -58,6 +58,12 @@ export const TOOL_NAMES = [
   // Auto-Kaskade dargestellt werden. Umzug behält sein dediziertes Paar.
   'preview_lebenslage',
   'starte_lebenslage',
+  // Zuständigkeits-Lookup (wow-backlog #15). Read-only, deterministisch, kein
+  // Confirm-Gate: löst ein Thema/Stichwort mechanisch zu genau einer benannten
+  // zuständigen Stelle auf (Anker: Kindergeld → Familienkasse, NICHT Finanzamt).
+  // Beantwortet NUR Themen aus dem festen Katalog; sonst ehrlich „nicht im
+  // Katalog". Framing IMMER „Zuständig wäre/ist X" — nie „weitergeleitet".
+  'finde_zustaendige_stelle',
   // Klartext-Rückkanal (klartext-rueckkanal.md §7). NEW, tightly-fenced
   // restatement tool that fills the `begruendung_kurz` slot of an
   // already-selected Rechtsbehelf-Skelett from the citizen's own words. NOT an
@@ -262,6 +268,31 @@ export const tools: Anthropic.Tool[] = [
         },
       },
       required: ['slug'],
+    },
+  },
+
+  /* ───────────────────────── finde_zustaendige_stelle ───────────────────── */
+  {
+    name: 'finde_zustaendige_stelle',
+    description: [
+      'Löst eine mehrdeutige Bürger-Anfrage read-only zu genau EINER benannten zuständigen Stelle auf (z. B. Kindergeld → Familienkasse, nicht das Finanzamt). Deterministisch aus einem festen Katalog gegen behoerden.json; keine Bestätigung nötig, es wird nichts ausgelöst.',
+      '',
+      'Nutze das Werkzeug, wenn die Nutzerin die falsche oder keine Behörde nennt („Muss ich mit dem Kindergeld zum Finanzamt?", „Wer macht eigentlich Wohngeld?", „An wen wende ich mich wegen …?"). Übergib in "thema" das Sach-Stichwort (die Leistung/Lebenslage: „kindergeld", „wohngeld", „elterngeld", „aufenthaltstitel", „einkommensteuer" …) — NICHT den Namen einer Behörde.',
+      '',
+      'HARTE FORMULIERUNGSREGEL: Rahme die Antwort immer als „Zuständig ist X, nicht Y" bzw. „Zuständig wäre X; dorthin würde Ihre Anfrage geleitet." Behaupte NIEMALS, die Anfrage sei bereits oder real weitergeleitet, übermittelt oder gebucht worden — der Prototyp leitet nichts real weiter ([MOCK]). Rechtsgrundlage ist § 25 VwVfG (Beratungs- und Auskunftspflicht); zitiere keine weitere Norm.',
+      '',
+      'Wenn das Werkzeug „gefunden: false" liefert (Thema nicht im Katalog), erfinde KEINE Zuständigkeit: sage ehrlich, dass du die zuständige Stelle für dieses Thema in dieser Demo nicht sicher benennen kannst, und verweise auf die allgemeine Behördenauskunft (z. B. 115) oder das zuständige Amt vor Ort. Nenne nur die Stelle, die das Werkzeug zurückgibt.',
+    ].join('\n'),
+    input_schema: {
+      type: 'object',
+      properties: {
+        thema: {
+          type: 'string',
+          description:
+            'Das Sach-Stichwort der Anfrage (Leistung/Lebenslage), z. B. „kindergeld", „wohngeld", „elterngeld", „aufenthaltstitel", „einkommensteuer", „kfz ummelden". Kein Behörden-Name.',
+        },
+      },
+      required: ['thema'],
     },
   },
 

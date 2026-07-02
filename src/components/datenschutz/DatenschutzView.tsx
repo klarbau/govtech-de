@@ -14,6 +14,7 @@ import {
   Landmark,
   Lock,
   MapPin,
+  RefreshCw,
   ScrollText,
   Settings,
   Shield,
@@ -22,6 +23,7 @@ import {
   Users,
 } from 'lucide-react';
 
+import Link from 'next/link';
 import {
   Dialog,
   DialogContent,
@@ -30,7 +32,9 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Skeleton } from '@/components/shared/Skeleton';
+import { ZukunftChip } from '@/components/shared/ZukunftChip';
 import { api } from '@/lib/mock-backend';
+import { formatDateDe } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
 import type {
   Behoerde,
@@ -102,6 +106,10 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
   const [behoerdenById, setBehoerdenById] = React.useState<Record<string, Behoerde>>({});
   const [einwilligungen, setEinwilligungen] = React.useState<DatenschutzEinwilligung[]>([]);
   const [quellen, setQuellen] = React.useState<DatenquellenEintrag[]>([]);
+  // [ZUKUNFT 2027] Aktualitäts-Hinweis: nur für Personas mit abgeschlossenem
+  // Umzug (aus eigener Vorgangs-Historie ableitbar — kein Live-Registerabgleich).
+  const [letzteUmmeldung, setLetzteUmmeldung] = React.useState<string | null>(null);
+  const [hatAufenthaltstitel, setHatAufenthaltstitel] = React.useState(false);
 
   const [logDialogOpen, setLogDialogOpen] = React.useState(false);
   const [histDialogOpen, setHistDialogOpen] = React.useState(false);
@@ -119,11 +127,12 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
     void (async () => {
       try {
         const profile = await api.getProfile();
-        const [log, behoerden, einw, qs] = await Promise.all([
+        const [log, behoerden, einw, qs, umzugFinished] = await Promise.all([
           api.getUebermittlungsLog(profile.id, { limit: 8 }),
           api.getBehoerden(),
           api.getDatenschutzEinwilligungen(profile.id),
           api.getDatenquellen(profile.id),
+          api.getUmzugVorgaengeFinished(profile.id),
         ]);
         if (cancelled) return;
         setPersonaId(profile.id);
@@ -131,6 +140,13 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
         setBehoerdenById(Object.fromEntries(behoerden.map((b) => [b.id, b])));
         setEinwilligungen(einw);
         setQuellen(qs);
+        const letzterUmzug = umzugFinished
+          .map((u) => u.abgeschlossen_am)
+          .filter((d): d is string => Boolean(d))
+          .sort()
+          .at(-1);
+        setLetzteUmmeldung(letzterUmzug ?? null);
+        setHatAufenthaltstitel(Boolean(profile.aufenthaltstitel));
       } catch {
         if (!cancelled) setActivities([]);
       } finally {
@@ -468,6 +484,60 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
               </button>
             </div>
           </section>
+
+          {/* [ZUKUNFT 2027] Aktualität der Datenquellen — Fold-in. Rendert nur,
+              wenn aus der eigenen Vorgangs-Historie ein abgeschlossener Umzug
+              ableitbar ist (kein Live-Registerabgleich, keine fremde „alte
+              Adresse"). Amtswegige Selbstkorrektur (§ 6 BMG / § 6 IDNrG); die
+              eID-gegatete Ausländerbehörde (§ 18 PAuswG) ist der ehrliche
+              Anker — sie wird bewusst NICHT auto-gepusht. */}
+          {letzteUmmeldung && (
+            <section
+              className="gt-card"
+              aria-labelledby="ds-aktualitaet-heading"
+            >
+              <div className="flex flex-col gap-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <RefreshCw
+                    className="size-4 shrink-0 text-muted-foreground"
+                    aria-hidden="true"
+                  />
+                  <h2
+                    id="ds-aktualitaet-heading"
+                    className="text-sm font-semibold tracking-tight text-foreground"
+                  >
+                    {t('datenschutz.quellen.aktualitaet_note.title')}
+                  </h2>
+                  <ZukunftChip
+                    label={t('datenschutz.quellen.aktualitaet_note.zukunft_chip')}
+                  />
+                </div>
+                <p className="text-[13px] leading-relaxed text-muted-foreground">
+                  {t('datenschutz.quellen.aktualitaet_note.amtswegig')}
+                </p>
+                <p className="text-[13px] leading-relaxed text-muted-foreground">
+                  {t('datenschutz.quellen.aktualitaet_note.detektion', {
+                    datum: formatDateDe(letzteUmmeldung),
+                  })}
+                </p>
+                {hatAufenthaltstitel && (
+                  <p className="text-[13px] leading-relaxed text-muted-foreground">
+                    {t('datenschutz.quellen.aktualitaet_note.abh')}
+                  </p>
+                )}
+                <p className="border-t border-dashed border-border pt-2 text-[11px] leading-relaxed text-muted-foreground">
+                  {t('datenschutz.quellen.aktualitaet_note.rechtsgrundlage')}
+                </p>
+                <Link
+                  href="/stammdaten"
+                  className="inline-flex w-fit items-center gap-1 text-[13px] font-medium text-primary underline-offset-2 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                >
+                  {t('datenschutz.quellen.aktualitaet_note.korrekturweg_link')}
+                  <ChevronRight className="size-4" aria-hidden="true" />
+                </Link>
+              </div>
+            </section>
+          )}
 
           {/* Compact recent-activity timeline. The heading + <ul> must share
               their nearest div/section/article container (a11y spec asserts the

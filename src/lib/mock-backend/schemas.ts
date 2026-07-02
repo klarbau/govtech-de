@@ -1351,6 +1351,12 @@ export const wohngeldHinweisSnoozedBucketSchema = z.record(z.string());
 /** Bucket `govtech-de:v1:wohngeld-hinweis:consent` — Record<PersonaId, boolean>. */
 export const wohngeldHinweisConsentBucketSchema = z.record(z.boolean());
 
+/** Bucket `govtech-de:v1:kinderzuschlag-radar:dismissed` — Record<PersonaId, ISO-Timestamp>. */
+export const kinderzuschlagRadarDismissedBucketSchema = z.record(z.string());
+
+/** Bucket `govtech-de:v1:kinderzuschlag-radar:consent` — Record<PersonaId, boolean>. */
+export const kinderzuschlagRadarConsentBucketSchema = z.record(z.boolean());
+
 // Compile-time guard: zod-Enum und TS-Union (`DashboardSortMode`) identisch.
 import type { DashboardSortMode as _DashboardSortModeTs } from '@/types/dashboard';
 type _SchemaDashboardSortMode = z.infer<typeof dashboardSortModeSchema>;

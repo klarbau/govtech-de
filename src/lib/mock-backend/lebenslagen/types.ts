@@ -151,6 +151,37 @@ export interface LebenslageConfig {
   formFields: FormFieldConfig[];
   rechtsgrundlagen: { norm: string; bedeutung_key: string }[];
   frist?: { tage: number | null; beschreibung_key: string };
+  /**
+   * Optionaler Fristen-Rescue-Beat (wow-#12) — eine ehrliche „ohne Antrag
+   * verfällt Geld"-Warnung auf der Detail-Seite. Steht jeder Lebenslage offen.
+   *
+   * Das Fristdatum wird DETERMINISTISCH aus einem Persona-Seed-Datum abgeleitet
+   * (`anker` + `frist_monate`), NIE aus `Date.now()`. Fehlt der Anker (z. B.
+   * Persona ohne Kind), wird der Beat NICHT gerendert — kein erfundenes Datum.
+   *
+   * Guardrails (docs/domain/anspruch-arc-fakten.md §5): der €-Verlust ist IMMER
+   * „geschätzt ca." (die Bemessung braucht Einkommens-Input) und der Status ist
+   * IMMER „vorbereitet — Sie bestätigen und ergänzen", NIE „bewilligt"/„läuft".
+   */
+  frist_rescue?: {
+    /**
+     * Semantischer Anker für das Fristdatum. `'juengstes_kind_geburtsdatum'` →
+     * Geburtsdatum des jüngsten Kindes der Persona + `frist_monate`.
+     */
+    anker: 'juengstes_kind_geburtsdatum';
+    /** Monate ab Ankerdatum bis zur Frist. */
+    frist_monate: number;
+    /** Verweis-Norm, verbatim gerendert (z. B. „§ 7 Abs. 1 S. 2 BEEG"). */
+    norm: string;
+    /** Konservativer €-Verlust je verpasstem Zeitraum. UI rendert IMMER „geschätzt ca.". */
+    betrag_geschaetzt_eur: number;
+    /** i18n-Key — Titel des Beats. */
+    titel_key: string;
+    /** i18n-Key — Fließtext; erhält `{datum}`, `{betrag}`, `{norm}`. */
+    body_key: string;
+    /** i18n-Key — Status-Pille („vorbereitet — Sie bestätigen und ergänzen"). */
+    status_key: string;
+  };
   gebuehr: { gibt_es: boolean; betrag_key?: string; hinweis_key?: string };
   cascade: CascadeStepConfig[];
   value_receipt: {

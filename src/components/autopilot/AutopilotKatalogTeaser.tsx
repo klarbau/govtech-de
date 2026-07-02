@@ -9,6 +9,7 @@ import {
   ChevronRight,
   Clock,
   Euro,
+  Flower2,
   Home,
 } from 'lucide-react';
 
@@ -22,6 +23,8 @@ const ICON_BY_ID: Record<
   umzug: { icon: <Home aria-hidden="true" />, tone: '' },
   kindergeburt: { icon: <Baby aria-hidden="true" />, tone: 'green' },
   steuererklaerung: { icon: <Euro aria-hidden="true" />, tone: 'violet' },
+  // Trauerfall/Nachlass — sober, respektvoll: neutrale Tonalität, kein Farbakzent.
+  trauerfall: { icon: <Flower2 aria-hidden="true" />, tone: '' },
 };
 
 /**
@@ -87,6 +90,11 @@ export function AutopilotKatalogTeaser() {
               <div className="kc-head">
                 <span className={`icon-circle lg ${meta.tone}`}>{meta.icon}</span>
                 <div className="kc-text">
+                  {!isLive ? (
+                    <span className="badge outline" style={{ marginBottom: 6 }}>
+                      {t('vorschau_badge')}
+                    </span>
+                  ) : null}
                   <div className="kc-title">{title}</div>
                   <p className="kc-desc">{safe(t, `${entry.id}.beschreibung`)}</p>
                 </div>

@@ -123,6 +123,25 @@ export const holeErsparnisInput = z
 
 export type HoleErsparnisInput = z.infer<typeof holeErsparnisInput>;
 
+/* ─────────────────────── finde_zustaendige_stelle ────────────────────────── */
+
+/**
+ * Input for the read-only `finde_zustaendige_stelle` tool (wow-backlog #15).
+ * `thema` is the free-text subject keyword the model passes (e.g. "kindergeld");
+ * the deterministic catalog in `zustaendigkeit.ts` maps it to exactly one
+ * Behörde or returns "nicht im Katalog". `.strict()` so no Umzug/letter field
+ * leaks into this path.
+ */
+export const findeZustaendigeStelleInput = z
+  .object({
+    thema: z.string().min(1, 'thema darf nicht leer sein'),
+  })
+  .strict();
+
+export type FindeZustaendigeStelleInput = z.infer<
+  typeof findeZustaendigeStelleInput
+>;
+
 /* ─────────────────────────── unified dispatcher ──────────────────────────── */
 
 /**
@@ -147,6 +166,10 @@ export const POSTEINGANG_TOOL_VALIDATORS = {
   // the model's `{absender, status, max}` shape into a real `LetterFilter`
   // (the two shapes deliberately differ — see lesePosteingangInput doc).
   lese_posteingang: lesePosteingangInput,
+  // Zuständigkeits-Lookup (wow-backlog #15): read-only, required `thema`. The
+  // deterministic catalog maps it to one Behörde; a malformed input surfaces a
+  // clean error before the lookup runs.
+  finde_zustaendige_stelle: findeZustaendigeStelleInput,
 } as const;
 
 export type PosteingangToolName = keyof typeof POSTEINGANG_TOOL_VALIDATORS;
@@ -284,7 +307,10 @@ export interface ToolDispatchEntry {
     // Generalised antragslos-cascade confirm card (kindergeld-cascade.md §5.1).
     // Shared by preview_lebenslage (feeds the card) and starte_lebenslage (the
     // gated write); the frontend renders <LebenslageConfirmCard>.
-    | 'lebenslage_confirm_card';
+    | 'lebenslage_confirm_card'
+    // Read-only Zuständigkeits-Card (wow-backlog #15): docks the resolved
+    // Behörde (BehoerdenBadge + § 25-VwVfG micro-line) under the ToolCallCard.
+    | 'zustaendigkeit_card';
 }
 
 /**
@@ -343,6 +369,14 @@ export const TOOL_DISPATCH: Record<DispatchableToolName, ToolDispatchEntry> = {
     api_method: 'getAutopilotKatalog',
     requires_confirmation: false,
     ui: 'tool_call_card',
+  },
+  // Zuständigkeits-Lookup (wow-backlog #15). NOT a mock-backend call: a pure,
+  // deterministic, offline-safe catalog lookup in `lib/ai/zustaendigkeit.ts`
+  // (`findeZustaendigeStelle`) against behoerden.json. Read-only, no confirm gate.
+  finde_zustaendige_stelle: {
+    api_method: 'findeZustaendigeStelle (lokal, lib/ai/zustaendigkeit)',
+    requires_confirmation: false,
+    ui: 'zustaendigkeit_card',
   },
   preview_umzug: {
     api_method: 'previewUmzug',

@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 
 import { ValueReceiptCard } from '@/components/autopilot/ValueReceiptCard';
+import { WohngeldFolgeCard } from '@/components/dashboard/WohngeldFolgeCard';
 import { FitConnectReceiptPanel } from '@/components/autopilot/FitConnectReceiptPanel';
 import {
   TerminVorschlagRow,
@@ -987,6 +988,15 @@ export function InlineCascade({
         <div ref={receiptCardRef} data-testid="inline-cascade-receipt">
           <ValueReceiptCard receipt={receipt} variant={variant} />
         </div>
+      ) : null}
+
+      {/* Wohngeld-Folge-Beat (anspruch-arc.md § 4.1, Beat a): erscheint ruhig
+       * DIREKT unter der Value-Receipt — nur bei Umzug + qualifizierter Persona.
+       * Self-fetching (`getWohngeldHinweis`); rendert `null`, wenn nicht
+       * qualifiziert / dismissed / consent widerrufen → kein Layout-Shift, kein
+       * Auto-Scroll-Klau vom Receipt-Climax (sitzt passiv darunter). */}
+      {isUmzugRun && receipt && vorgang?.persona_id ? (
+        <WohngeldFolgeCard personaId={vorgang.persona_id} />
       ) : null}
 
       {/* Verifiable Once-Only coda (Beat 1): once the Umzug run is abgeschlossen,

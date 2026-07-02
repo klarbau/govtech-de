@@ -22,6 +22,7 @@ import { StatusBadge } from '@/components/shared/StatusBadge';
 import { cn } from '@/lib/utils';
 
 import type { ChatToolCall } from './types';
+import { ZustaendigkeitCard } from './ZustaendigkeitCard';
 
 interface ToolCallCardProps {
   call: ChatToolCall;
@@ -39,6 +40,7 @@ const TOOL_LABEL_KEYS: Record<string, string> = {
   erklaere_brief: 'erklaere_brief',
   extrahiere_frist: 'extrahiere_frist',
   vorschlage_naechsten_schritt: 'vorschlage_naechsten_schritt',
+  finde_zustaendige_stelle: 'finde_zustaendige_stelle',
 };
 
 export function ToolCallCard({ call }: ToolCallCardProps) {
@@ -135,6 +137,9 @@ export function ToolCallCard({ call }: ToolCallCardProps) {
               </>
             ) : null}
           </>
+        ) : null}
+        {call.zustaendigkeit && call.status === 'done' ? (
+          <ZustaendigkeitCard treffer={call.zustaendigkeit} />
         ) : null}
       </div>
     </div>

@@ -97,6 +97,7 @@ import type {
   WalletAttestation,
   WalletAttestationPreview,
   WohngeldAnspruchEstimate,
+  KinderzuschlagAnspruchEstimate,
   YellowLetterBridgeResult,
 } from '@/types';
 import { LETTER_ATTACHMENT_LIMITS } from '@/types';
@@ -152,6 +153,11 @@ import {
   persistWohngeldSnooze,
   resolveWohngeldHinweisById,
 } from './lebenslagen/wohngeld-estimate';
+import {
+  persistKinderzuschlagConsent,
+  persistKinderzuschlagDismiss,
+  resolveKinderzuschlagRadarById,
+} from './lebenslagen/kinderzuschlag-estimate';
 import { datenschutzApi } from './datenschutz/api';
 import { familieApi } from './familie/api';
 import { remindersApi } from './reminders/api';
@@ -1536,6 +1542,25 @@ export interface MockBackendApi {
   snoozeWohngeldHinweis(personaId: PersonaId, tage: number): Promise<void>;
   /** Consent-Toggle für die proaktive Erkennung. `false` → Karte verschwindet dauerhaft. */
   setWohngeldHinweisConsent(
+    personaId: PersonaId,
+    consent: boolean,
+  ): Promise<void>;
+
+  // ---------------------- Proaktiver Kinderzuschlag-Anspruch-Radar ------------------
+  // Spec: docs/specs/anspruch-arc.md § 6, Beat c.
+  /**
+   * Proaktiver Kinderzuschlag-Anspruch-Radar der Persona oder `null`. `null`,
+   * wenn (a) nicht qualifiziert, (b) Consent widerrufen, oder (c) dismissed.
+   * Euro-Range ist eine synthetische [MOCK]-Haushalts-Schätzung (≤ 297 €/Kind),
+   * niemals aus Seed-Daten; KiZ ist antragsgebunden (§ 6a Abs. 7 BKGG).
+   */
+  getKinderzuschlagRadar(
+    personaId: PersonaId,
+  ): Promise<KinderzuschlagAnspruchEstimate | null>;
+  /** Persistiert „nicht mehr anzeigen" (Radar kommt nach Reload nicht zurück). */
+  dismissKinderzuschlagRadar(personaId: PersonaId): Promise<void>;
+  /** Consent-Toggle für die proaktive Erkennung. `false` → Radar verschwindet dauerhaft. */
+  setKinderzuschlagRadarConsent(
     personaId: PersonaId,
     consent: boolean,
   ): Promise<void>;
@@ -3315,6 +3340,25 @@ export const api: MockBackendApi & {
       persistWohngeldConsent(personaId, consent);
     }),
 
+  // ---------- Proaktiver Kinderzuschlag-Anspruch-Radar (anspruch-arc.md § 6) ----------
+  // Estimate + Consent-/Dismiss-Gate leben in
+  // `lebenslagen/kinderzuschlag-estimate.ts` (geteilt mit dem anspruch_lane-Pfad).
+  getKinderzuschlagRadar: (personaId) =>
+    withLatency<KinderzuschlagAnspruchEstimate | null>(() => {
+      ensureBooted();
+      return resolveKinderzuschlagRadarById(personaId);
+    }),
+  dismissKinderzuschlagRadar: (personaId) =>
+    withLatency<void>(() => {
+      ensureBooted();
+      persistKinderzuschlagDismiss(personaId);
+    }),
+  setKinderzuschlagRadarConsent: (personaId, consent) =>
+    withLatency<void>(() => {
+      ensureBooted();
+      persistKinderzuschlagConsent(personaId, consent);
+    }),
+
   // ---------- Redesign — Termine ----------
   getReminders: () => {
     ensureBooted();
@@ -3411,6 +3455,22 @@ export const api: MockBackendApi & {
         behoerden_preview: ['finanzamt-berlin-mitte-tiergarten'],
         behoerden_count: 1,
         geschaetzte_zeitersparnis_min: 90,
+      },
+      {
+        // Reiner Katalog-Teaser (wow-#G) — KEINE Vertical, KEIN Flow, kein
+        // Persona-Bezug (kein Sterbefall in den Seeds). Nur echte beteiligte
+        // Stellen; Werte sind konservative „ca."-Vorschau-Schätzungen.
+        id: 'trauerfall',
+        status: 'demnaechst',
+        titel_key: 'katalog.trauerfall.titel',
+        beschreibung_key: 'katalog.trauerfall.beschreibung',
+        behoerden_preview: [
+          'standesamt-berlin-mitte',
+          'nachlassgericht-berlin-mitte',
+          'drv-bund',
+        ],
+        behoerden_count: 5,
+        geschaetzte_zeitersparnis_min: 120,
       },
     ]),
 

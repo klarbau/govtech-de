@@ -1,3 +1,4 @@
+import type { ZustaendigkeitTreffer } from '@/lib/ai/zustaendigkeit';
 import type { UmzugInput, UmzugPreview, VorgangTyp } from '@/types';
 
 /** Status of a single tool call rendered inside an assistant turn. */
@@ -19,6 +20,11 @@ export interface ChatToolCall {
    * minimal fallback vorgang correctly before the live record arrives.
    */
   vorgangTyp?: VorgangTyp;
+  /**
+   * Set on a successful `finde_zustaendige_stelle` (wow-backlog #15) so the card
+   * can dock the read-only Zuständigkeits-Card (resolved Behörde + § 25 VwVfG).
+   */
+  zustaendigkeit?: ZustaendigkeitTreffer;
 }
 
 /**
