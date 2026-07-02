@@ -5118,5 +5118,59 @@
       "short": "ملاحظة: هذا النموذج الأولي يحاكي عملية الإصدار. شهادة التسجيل الرسمية (Meldebestätigung) تستند فعليًّا إلى § 24 Abs. 2 BMG (إلكترونيًّا: § 10 BMeldDigiV). وهي تُصدَر هنا من جهة إصدار تجريبية، لا من جهة ألمانية — الصيغة حقيقية والصلاحية تجريبية ([reference-ecosystem]). أمّا الإصدار إلى المحفظة من قبل الجهات فهو ميزة مستقبلية ([ZUKUNFT]، EUDI-Wallet اعتبارًا من 2. Jan 2027). ومبدأ Once-Only هنا قائم على المحفظة، لا على تبادل السجلات (NOOTS).",
       "long": "ملاحظة: شهادة التسجيل الرسمية (Meldebestätigung) هي الوثيقة التي تحصل عليها بعد التسجيل (Anmeldung) (§ 24 Abs. 2 BMG، إلكترونيًّا بالاقتران مع § 10 BMeldDigiV / § 23a BMG). في هذا النموذج الأولي تُصدَر كبيانات اعتماد قابلة للتحقق (verifiable credential) من جهة إصدار تجريبية لها مرساة ثقة خاصة بها — لا من جهة تسجيل سكان ألمانية (Meldebehörde) ولا من الدولة؛ الصيغة وفحص التوقيع حقيقيان ([reference-ecosystem])، والصلاحية تجريبية. أمّا أن تُصدر جهة تسجيل سكان ألمانية شهادة تسجيل كإثبات في المحفظة (PuB-EAA) فهو ميزة مستقبلية ([ZUKUNFT])؛ وتنطلق المحفظة الألمانية EUDI-Wallet بموجب eIDAS 2.0 (اللائحة (الاتحاد الأوروبي) 2024/1183) في 2. Januar 2027. وتُظهر هذه التجربة مبدأ Once-Only عبر المسار القائم على المحفظة (أنت من يقدّم الإثبات بنفسه) — لا عبر تبادل «سجل إلى سجل» (NOOTS/Registermodernisierung)."
     }
+  },
+  "protokoll": {
+    "fit_connect": {
+      "inspector_title": "مفتّش البروتوكول (FIT-Connect)",
+      "inspector_sub": "عرض عملية الإرسال الحقيقية — بيئة اختبار TEST، [MOCK destination].",
+      "banner_sandbox": "بيئة اختبار FITKO — ليست تشغيلًا فعليًّا. نقطة التسليم (Zustellpunkt) تحاكي جانب الجهة.",
+      "trigger_cta": "بدء الإرسال الحقيقي إلى [MOCK destination]",
+      "trigger_running": "جارٍ الإرسال …",
+      "submission_id_label": "معرّف الإيداع",
+      "case_id_label": "معرّف الحالة",
+      "timeline_heading": "مسار FIT-Connect (أسماء الأحداث الحقيقية)",
+      "event": {
+        "create": "أُنشئ الإيداع (create-submission)",
+        "submit": "أُرسل الإيداع (submit-submission)",
+        "notify": "أُبلغت نقطة التسليم (notify-submission)",
+        "accept": "أُقرّ القبول (accept-submission)"
+      },
+      "set_heading": "رموز الأحداث الموقَّعة (SET)",
+      "set_alg_label": "alg",
+      "set_kid_label": "kid",
+      "set_typ_label": "typ",
+      "set_iat_label": "صدر في (iat)",
+      "set_events_label": "events",
+      "set_verified": "تم التحقق من التوقيع",
+      "set_not_verified": "لم يُتحقَّق من التوقيع",
+      "jwe_headers_heading": "ترويسات JWE المُرسَلة",
+      "state_error": "لم تستجب بيئة الاختبار TEST — لم تتأثر أي جهة حقيقية.",
+      "refresh_events_cta": "تحديث سجل الأحداث"
+    },
+    "eudi_vp": {
+      "tab_label": "التقديم بمحفظة حقيقية (OpenID4VP)",
+      "title": "إبراز الإثبات عبر محفظة EUDI-Wallet",
+      "banner_sandbox": "مرساة ثقة لبيئة الاختبار (Vertrauensanker) — ليست للإنتاج. منظومة مرجعية للاتحاد الأوروبي، وليست جهة ثقة eIDAS.",
+      "qr_hint": "امسح رمز QR بمحفظة EUDI مرجعية.",
+      "qr_uri_label": "أو افتح الرابط:",
+      "state_pending": "في انتظار المحفظة …",
+      "state_scanned": "تم الاتصال بالمحفظة — يجري التحقق من الإثبات …",
+      "state_verified": "تم التحقق من الإثبات",
+      "state_expired": "انتهت الجلسة.",
+      "state_error": "تعذّر التحقق من الإثبات.",
+      "regenerate_cta": "إنشاء رمز QR جديد",
+      "claims_heading": "البيانات المُتحقَّق منها",
+      "claim": {
+        "given_name": "الاسم الأول",
+        "family_name": "اسم العائلة",
+        "birthdate": "تاريخ الميلاد"
+      },
+      "verified_via": "تم التحقق عبر OpenID4VP 1.0 + DCQL — توقيع SD-JWT VC وربط المفتاح.",
+      "no_tunnel_hint": "الإبراز الحي متاح فقط عند توفر عنوان URL عام للنفق (EUDI_VP_EXTERNAL_URL).",
+      "request_mode": {
+        "unsigned": "طلب غير موقَّع",
+        "x5c": "طلب موقَّع بـ x5c (شهادة تجريبية)"
+      }
+    }
   }
 }

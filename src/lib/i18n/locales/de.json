@@ -5352,5 +5352,59 @@
       "short": "Hinweis: Dieser Prototyp simuliert die Ausstellung. Die amtliche Meldebestätigung beruht real auf § 24 Abs. 2 BMG (elektronisch: § 10 BMeldDigiV). Hier ausgestellt von einem Demo-Issuer, nicht von einer deutschen Behörde — Format echt, Autorität Demo ([reference-ecosystem]). Wallet-Ausstellung durch Behörden = Zukunft ([ZUKUNFT], EUDI-Wallet ab 2. Jan 2027). Once-Only hier wallet-basiert, nicht Register-Austausch (NOOTS).",
       "long": "Hinweis: Die amtliche Meldebestätigung ist das Dokument, das Sie nach einer Anmeldung erhalten (§ 24 Abs. 2 BMG, elektronisch i. V. m. § 10 BMeldDigiV / § 23a BMG). In diesem Prototyp wird sie von einem Demo-Issuer mit eigenem Trust-Anchor als verifiable credential ausgestellt — nicht von einer deutschen Meldebehörde und nicht vom Staat; das Format und die Signaturprüfung sind echt ([reference-ecosystem]), die Autorität ist Demo. Dass eine deutsche Meldebehörde eine Meldebestätigung als Wallet-Nachweis (PuB-EAA) ausstellt, ist eine Zukunftsfunktion ([ZUKUNFT]); die deutsche EUDI-Wallet startet gemäss eIDAS 2.0 (VO (EU) 2024/1183) am 2. Januar 2027. Once-Only zeigt diese Demo über den wallet-basierten Weg (Sie präsentieren den Nachweis selbst) — nicht über register-zu-register-Austausch (NOOTS/Registermodernisierung)."
     }
+  },
+  "protokoll": {
+    "fit_connect": {
+      "inspector_title": "Protokoll-Inspektor (FIT-Connect)",
+      "inspector_sub": "Die echte Übertragung ansehen — TEST-Sandbox, [MOCK destination].",
+      "banner_sandbox": "FITKO-Testumgebung — kein Echtbetrieb. Der Zustellpunkt simuliert die Behördenseite.",
+      "trigger_cta": "Live-Übermittlung an [MOCK destination] auslösen",
+      "trigger_running": "Übermittlung läuft …",
+      "submission_id_label": "Submission-ID",
+      "case_id_label": "Fall-ID",
+      "timeline_heading": "FIT-Connect-Ablauf (echte Event-Namen)",
+      "event": {
+        "create": "Einreichung angelegt (create-submission)",
+        "submit": "Einreichung gesendet (submit-submission)",
+        "notify": "Zustellpunkt benachrichtigt (notify-submission)",
+        "accept": "Annahme quittiert (accept-submission)"
+      },
+      "set_heading": "Signierte Event-Tokens (SET)",
+      "set_alg_label": "alg",
+      "set_kid_label": "kid",
+      "set_typ_label": "typ",
+      "set_iat_label": "ausgestellt (iat)",
+      "set_events_label": "events",
+      "set_verified": "Signatur geprüft",
+      "set_not_verified": "Signatur nicht geprüft",
+      "jwe_headers_heading": "Gesendete JWE-Header",
+      "state_error": "Die TEST-Sandbox hat nicht geantwortet — keine reale Behörde betroffen.",
+      "refresh_events_cta": "Event-Log aktualisieren"
+    },
+    "eudi_vp": {
+      "tab_label": "Mit echtem Wallet vorzeigen (OpenID4VP)",
+      "title": "Nachweis per EUDI-Wallet vorzeigen",
+      "banner_sandbox": "Sandbox-Vertrauensanker — nicht produktiv. EU-Referenz-Ökosystem, keine eIDAS-Vertrauensstelle.",
+      "qr_hint": "QR-Code mit einem EUDI-Referenz-Wallet scannen.",
+      "qr_uri_label": "Oder Link öffnen:",
+      "state_pending": "Warte auf Wallet …",
+      "state_scanned": "Wallet verbunden — Nachweis wird geprüft …",
+      "state_verified": "Nachweis geprüft",
+      "state_expired": "Sitzung abgelaufen.",
+      "state_error": "Nachweis konnte nicht geprüft werden.",
+      "regenerate_cta": "Neuen QR-Code erzeugen",
+      "claims_heading": "Geprüfte Angaben",
+      "claim": {
+        "given_name": "Vorname",
+        "family_name": "Nachname",
+        "birthdate": "Geburtsdatum"
+      },
+      "verified_via": "Geprüft über OpenID4VP 1.0 + DCQL — SD-JWT-VC-Signatur und Key-Binding.",
+      "no_tunnel_hint": "Live-Vorzeigen ist nur mit öffentlicher Tunnel-URL verfügbar (EUDI_VP_EXTERNAL_URL).",
+      "request_mode": {
+        "unsigned": "Ungezeichnete Anfrage",
+        "x5c": "x5c-signierte Anfrage (Demo-Zertifikat)"
+      }
+    }
   }
 }

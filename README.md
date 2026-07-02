@@ -153,6 +153,35 @@ Diese Eigenschaften sind im Prototyp erstklassig behandelt, nicht aufgeklebt:
 - **Privacy by Design** — jeder Screen mit personenbezogenen Daten zeigt, *was* verarbeitet wird, *durch wen* und *auf welcher Rechtsgrundlage*. Datenminimierung ist sichtbar: der Block-B-Versand beim Umzug läuft nur mit Einwilligung (Art. 6 Abs. 1 lit. a DSGVO) und ist jederzeit widerruflich.
 - **Realismus** — echte Behörden-Bezeichnungen, reale PLZ, korrekte Aktenzeichen- und Norm-Zitat-Formate. Wo hilfreich mit `[MOCK]` gekennzeichnet.
 
+## Protokoll-Modus — der Prototyp spricht die echten Protokolle
+
+Der zweite Beweis, diesmal für die Tech-Community: Die Oberfläche ist nicht nur ein schönes Mockup, sie spricht die realen Protokolle des Deutschland-Stacks — nachprüfbar auf der eigenen Maschine. Standardmäßig **aus** (der Demo-Modus mit `localStorage`-Backend ist das Einzige, was auf Vercel läuft); per Env-Flag routen genau **zwei** Flows über echte Protokoll-Clients, ausschließlich server-seitig.
+
+- **FIT-Connect (FITKO-Testumgebung).** Eine echte Einreichung über die föderale Submission-API v2: OAuth2-Client, JWE-verschlüsselte Nutzdaten, JWS-signierte Status-Events (SET, RFC 8417) aus dem Event-Log gepollt und signaturgeprüft. Empfänger ist **unser eigener TEST-Zustellpunkt** (`[MOCK destination]`) — nie eine reale Behörde. Der **Protokoll-Inspektor** auf der Umzug-Seite zeigt die reale `submissionId`, die dekodierten SETs und die gesendeten JWE-Header. Der Draht ist der Wow.
+- **EUDI-Wallet (OpenID4VP 1.0 + DCQL).** Ein eigener Verifier rendert einen echten `openid4vp://`-QR; ein EUDI-Referenz-Wallet (Handy) **oder** der beiliegende Headless-Treiber (`scripts/eudi-present-pid.mjs`, kein Handy nötig) präsentiert einen echten PID-SD-JWT-VC, der offline gegen die Issuer-Signatur **und** das Key-Binding (KB-JWT) geprüft wird.
+
+### Was echt ist und was simuliert (Claims-Matrix)
+
+| Schicht | Real | Simuliert | UI-Label |
+|---|---|---|---|
+| FIT-Connect-Transport (TEST) | OAuth2, JWE-Verschlüsselung, Einreichung, JWS-signierte SET-Events | — | „FITKO-Testumgebung — kein Echtbetrieb" |
+| Empfangende Behörde | unser eigener TEST-Zustellpunkt | die Behörde *dahinter* | „Zustellpunkt simuliert die Behördenseite" |
+| Fachdaten-Modell | JSON, an FIM XDatenfelder 3.x angelehnt | kein zertifiziertes FIM-Schema | „an FIM XDatenfelder angelehnt" |
+| EUDI-Präsentation | OpenID4VP 1.0 + DCQL, EU-Referenz-Wallet, Test-PID | Vertrauensanker demo-grade | „Sandbox-Vertrauensanker — nicht produktiv" |
+| eID (§ 18 PAuswG) | — | bleibt vollständig simuliert | bestehende Mock-Labels |
+| Register-Abrufe / Autopilot (Bringschuld) | — | **dauerhaft simuliert** — hoheitliche Funktion (NOOTS) | „so liefe es über NOOTS" |
+
+**Harte Produktionsgrenzen (nie weichgezeichnet):** FIT-Connect PROD = AVV + Verwaltungs-PKI + betreibende öffentliche Stelle. EUDI-Produktiv-RP = eIDAS-2.0-Registrierung (Pflichten ab 24.12.2026, WRPAC über QTSP). Deutschland-Wallet als öffentliche App: Ende 2026 / Anfang 2027. Der Prototyp ist protokoll-echt **in TEST**, gibt aber nie vor, Produktivverkehr mit einer realen Behörde zu führen.
+
+### Selbst nachvollziehen (bring your own test client)
+
+Beide Flows brauchen **eigene, kostenlose TEST-Zugänge** — es liegt bewusst kein Zugang im Repo. `cp .env.example .env.local` und dort die `FIT_CONNECT_*` / `EUDI_VP_*`-Platzhalter füllen:
+
+- **FIT-Connect:** TEST-Client selbst registrieren unter `portal.auth-testing.fit-connect.fitko.dev` (Login via GitHub / GitLab / openCode) → OAuth2 `client_id`/`client_secret`. Eigenen Zustellpunkt + lokale Schlüssel anlegen mit `node scripts/fc-provision-destination.mjs`. Dann `FIT_CONNECT_LIVE=1`, Umzug-Run-Seite öffnen, „Live-Übermittlung auslösen".
+- **EUDI-Verifier:** öffentliche URL bereitstellen (Dev-Tunnel genügt) → in `EUDI_VP_EXTERNAL_URL`, `EUDI_VP_LIVE=1`. QR im Vorzeige-Dialog scannen — oder `node scripts/eudi-present-pid.mjs --persona anna-petrov` als Wallet.
+
+Private Schlüssel bleiben außerhalb des Repos (`.secrets/`, gitignored) und erreichen nie den Client-Bundle. Volle Architektur- und Ehrlichkeits-Notizen: [`docs/architecture.md`](docs/architecture.md) (ADR „Protokoll-Modus") · [`docs/specs/protokoll-modus.md`](docs/specs/protokoll-modus.md) · [`docs/specs/protocol-real-integration-plan.md`](docs/specs/protocol-real-integration-plan.md).
+
 ## Tech-Stack
 
 | Schicht | Wahl |
@@ -221,7 +250,9 @@ This is a **speculative-design prototype** for ~2027, built on Germany's planned
 
 **Credibility as a first-class concern:** WCAG 2.1 AA + BITV 2.0 (axe 0 critical, Lighthouse a11y > 95), six languages incl. **Arabic with RTL audit**, privacy-by-design (every personal-data screen shows what is processed, by whom, on what legal basis), and realistic German authority data throughout.
 
-**Stack:** Next.js 15 (App Router) · TypeScript strict · Tailwind v4 + shadcn/ui · framer-motion · next-intl · `@anthropic-ai/sdk` + Claude Haiku 4.5 (prompt caching + tool use) · Playwright + axe.
+**Protokoll-Modus (the second, tech-community proof):** off by default, but two flows can route over the **real Deutschland-Stack protocols**, server-side only. A real **FIT-Connect** submission into the FITKO TEST sandbox (OAuth2 + JWE payloads + JWS-signed SET status events, polled and signature-verified) against **our own `[MOCK destination]`** — a Protokoll-Inspector shows the real `submissionId`, decoded SETs and sent JWE headers. And a real **EUDI OpenID4VP 1.0 + DCQL** verifier that renders a scannable `openid4vp://` QR; a reference wallet (phone) or the bundled headless driver presents a real PID SD-JWT VC, verified offline against issuer signature **and** KB-JWT key-binding. Everything is TEST-grade — never a live authority, never a production trust anchor (full claims matrix in the German section + `docs/architecture.md`). Bring your own free TEST client; nothing is committed.
+
+**Stack:** Next.js 15 (App Router) · TypeScript strict · Tailwind v4 + shadcn/ui · framer-motion · next-intl · `@anthropic-ai/sdk` + Claude Haiku 4.5 (prompt caching + tool use) · Playwright + axe · Protokoll-Modus: `@openid4vc/openid4vp` (OpenWallet Foundation) + `jose`.
 
 **Run it:** `pnpm install && pnpm dev`, open http://localhost:3000. `ANTHROPIC_API_KEY` is optional — the assistant degrades gracefully without it (a normal AI turn shows a friendly „assistant currently unavailable" message instead of crashing); append `?reliable=1` to disable simulated errors for screencasts. Reproduce the quality gates with `pnpm typecheck`, `pnpm test:unit`, `pnpm test:e2e`, and `pnpm test:a11y`.
 

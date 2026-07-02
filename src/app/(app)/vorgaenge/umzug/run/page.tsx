@@ -5,6 +5,7 @@ import { Suspense, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
+import { ProtokollInspector } from '@/components/autopilot/ProtokollInspector';
 import { VorgangAbgeschlossen } from '@/components/lebenslagen/VorgangAbgeschlossen';
 import { VorgangInBearbeitung } from '@/components/lebenslagen/VorgangInBearbeitung';
 import {
@@ -256,6 +257,16 @@ function UmzugRunInner() {
             sagaId={vorgangId}
             variant="inspector"
             behoerdenById={behoerdenById}
+          />
+        </div>
+      ) : null}
+
+      {/* Protokoll-Modus (FIT-Connect) — capability-gated; renders nothing in
+          Demo-Modus (flag off), so the dossier above stays byte-identical. */}
+      {vorgangId ? (
+        <div style={{ marginTop: 20 }}>
+          <ProtokollInspector
+            behoerdeName={behoerdenById['kfz-berlin-labo']?.name_de ?? ''}
           />
         </div>
       ) : null}

@@ -22,6 +22,8 @@ import {
 } from '@/components/ui/dialog';
 import type { Document } from '@/types';
 
+import { PresentCredentialProtokollPanel } from './PresentCredentialProtokollPanel';
+
 interface PresentCredentialDialogProps {
   open: boolean;
   onOpenChange: (next: boolean) => void;
@@ -119,10 +121,32 @@ function PresentCredentialContent({
   onClose: () => void;
 }) {
   const t = useTranslations('dokumente.present');
+  const tp = useTranslations('protokoll.eudi_vp');
   const reducedMotion = useReducedMotion();
   const [phase, setPhase] = React.useState<Phase>('consent');
   const [sharedAt, setSharedAt] = React.useState<Date | null>(null);
   const timerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Discovery-gated Protokoll path (§4.1, §6.5): probe capability on open. When
+  // unavailable (flag off / Demo-Modus) the dialog stays byte-identical to the
+  // mock flow — no tab, no extra affordance.
+  const [protokollAvailable, setProtokollAvailable] = React.useState(false);
+  const [showProtokoll, setShowProtokoll] = React.useState(false);
+
+  React.useEffect(() => {
+    let active = true;
+    fetch('/api/eudi/vp/capability')
+      .then((r) => r.json())
+      .then((c: { available?: boolean }) => {
+        if (active) setProtokollAvailable(Boolean(c.available));
+      })
+      .catch(() => {
+        if (active) setProtokollAvailable(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   React.useEffect(() => {
     return () => {
@@ -163,6 +187,17 @@ function PresentCredentialContent({
         <DialogDescription>{t('subtitle')}</DialogDescription>
       </DialogHeader>
 
+      {showProtokoll ? (
+        <>
+          <PresentCredentialProtokollPanel />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowProtokoll(false)}>
+              {t('cancel')}
+            </Button>
+          </DialogFooter>
+        </>
+      ) : (
+        <>
       {phase === 'done' ? (
         <DoneState
           count={REQUESTED_FIELD_KEYS.length}
@@ -254,6 +289,19 @@ function PresentCredentialContent({
         </div>
       )}
 
+      {protokollAvailable && phase === 'consent' ? (
+        <div className="border-t border-border pt-3">
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => setShowProtokoll(true)}
+          >
+            <Fingerprint aria-hidden="true" />
+            <span>{tp('tab_label')}</span>
+          </Button>
+        </div>
+      ) : null}
+
       {phase === 'consent' ? (
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
@@ -269,6 +317,8 @@ function PresentCredentialContent({
           <Button onClick={onClose}>{t('close')}</Button>
         </DialogFooter>
       ) : null}
+        </>
+      )}
     </DialogContent>
   );
 }

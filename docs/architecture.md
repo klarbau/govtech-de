@@ -339,6 +339,32 @@ setWohngeldHinweisConsent(personaId, consent): Promise<void>;
 
 New persistence keys under `govtech-de:v1:`: `wohngeld-hinweis:dismissed` (`Record<PersonaId, ISO>`), `wohngeld-hinweis:snoozed-until` (`Record<PersonaId, ISO>`), `wohngeld-hinweis:consent` (`Record<PersonaId, boolean>`, default `true` when absent). Seed: `anna-petrov` only carries `wohnverhaeltnis: 'miete'` + `wohngeld_indikation: true` (Schmidt/Mehmet are the negative path — no card).
 
+## Protokoll-Modus — real Deutschland-Stack protocols behind a flag (ADR, 2026-07-02)
+
+Spec: `docs/specs/protokoll-modus.md`. Program plan + claims matrix: `docs/specs/protocol-real-integration-plan.md`. Live evidence: `docs/research/protokoll-modus-live-evidence-2026-07-02.md`.
+
+**Decision — ports & adapters, two adapters wrapped, one default.** The runtime keeps a single default path (components → `lib/mock-backend/api.ts` → localStorage, **Demo-Modus**, the only thing deployed to Vercel). Two flows gain a second, env-flagged adapter that speaks a real protocol server-side:
+
+```
+SubmissionPort      → FitConnectAdapter (FITKO TEST)   | localStorage/mock (default)
+WalletVerifierPort  → Oid4vpAdapter (our own verifier)  | mock present-dialog (default)
+RegisterPort        → mock only, permanently            | (sovereign — NOOTS, never a private app)
+```
+
+**Boundary (non-negotiable).** Real protocol clients run **only** in Next.js route handlers (`runtime='nodejs'`, `dynamic='force-dynamic'`); secrets and private JWKs never enter the client bundle. Heavy protocol deps (`@openid4vc/openid4vp`, the FIT-Connect REST core) are **dynamic-imported inside the flag-on branch** — mirroring the shipped `import('./rest-tier2')` — so the flag-off/deployed bundle stays lean and `next build` is green both ways. The client never sees a flag: it discovers availability via a **capability GET** (`{available}`), and every action route returns HTTP 404 when its flag is off.
+
+**Flag model (server-only env, not `NEXT_PUBLIC`):**
+- `FIT_CONNECT_LIVE=1` (+ sender/subscriber creds + `FIT_CONNECT_DESTINATION_ID` + `FIT_CONNECT_LEIKA_KEY` + local JWK paths) → Workstream A. Env contract: `docs/specs/fit-connect-tier2-live-roundtrip.md` §4.
+- `EUDI_VP_LIVE=1` (+ `EUDI_VP_EXTERNAL_URL`, optional `EUDI_VP_SIGNING_JWK_PATH`) → Workstream B. `EUDI_VP_EXTERNAL_URL` is the public tunnel base and **rotates on tunnel restart → read at request time, never cached**.
+
+**Workstream A — FIT-Connect (`src/app/api/protocol/fit-connect/*`, `src/lib/fit-connect/set-decode.ts`, `ProtokollInspector`).** Reuses the shipped Tier-2 round-trip (`rest-tier2.ts`): a click on the Umzug run page submits one i-Kfz leg to the FITKO TEST sandbox against **our own `[MOCK destination]` Zustellpunkt**, and the inspector renders the real `submissionId`/`caseId`, JWS-signed SETs decoded with per-SET signature verdict, and the sent JWE protected headers. The run-page dossier / `buildCascadeRows` is **not** rewired — Demo-Modus stays byte-identical; the inspector is the separate real-event view.
+
+**Workstream B — EUDI OpenID4VP verifier (`src/app/api/eudi/vp/*`, `src/lib/eudi/vp/*`, `PresentCredentialProtokollPanel`).** Our own OpenID4VP 1.0 + DCQL verifier: create-session → `openid4vp://` QR (request-by-reference `request_uri`) → wallet fetches request (unsigned or x5c-signed demo cert) → `direct_post` response → verify SD-JWT VC with the shipped `verifyPidSdJwtVc` **plus** new KB-JWT key-binding verification (`vp/kb-jwt.ts` — the gap `verify.ts` defers). Claims requested = the same 3 the mock dialog shows (given_name/family_name/birthdate). A physical EU-reference wallet APK can scan it; `scripts/eudi-present-pid.mjs` is the phone-free proof (persona PID fixture + holder key from `.secrets/eudi/`).
+
+**Session state.** VP sessions live in an in-memory `Map` with a 5-min TTL (`vp/session-store.ts`) — correct here because the feature is local-only (flag off on Vercel). A Map does not survive Vercel cold starts / multiple lambdas; the documented serverless swap is **Vercel KV behind the same interface** (not built — same "excluded from deployed build" stance as Tier-2).
+
+**Honesty (structural, enforced in review vs. plan §2).** `mockDestination: true` (FIT-Connect) and `sandbox: true` (VP) are emitted markers — the code cannot produce a "real Behörde"/"production trust anchor" path. TEST ≠ prod everywhere; failures are framed as the TEST sandbox / our own destination, never a real authority; no eIDAS/production-RP claim. Register reads / Bringschuld stay simulated permanently (sovereign).
+
 ## Update protocol
 
 When any of the following change, this file must be updated by the responsible agent in the same review pass:

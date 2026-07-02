@@ -5118,5 +5118,59 @@
       "short": "Not: Bu prototip düzenleme işlemini simüle eder. Resmî yerleşim belgesi (Meldebestätigung) gerçekte § 24 Abs. 2 BMG (elektronik: § 10 BMeldDigiV) hükmüne dayanır. Burada bir demo düzenleyici tarafından düzenlenmiştir, bir Alman makamı tarafından değil — biçim gerçek, yetki demo ([reference-ecosystem]). Makamlarca cüzdana düzenleme gelecekte gelecek bir işlevdir ([ZUKUNFT], EUDI-Wallet 2. Jan 2027 itibarıyla). Once-Only burada cüzdan tabanlıdır, kayıt değişimi (NOOTS) değil.",
       "long": "Not: Resmî yerleşim belgesi (Meldebestätigung), bir kayıttan (Anmeldung) sonra aldığınız belgedir (§ 24 Abs. 2 BMG, elektronik olarak § 10 BMeldDigiV / § 23a BMG ile bağlantılı). Bu prototipte, kendi güven çıpası olan bir demo düzenleyici tarafından doğrulanabilir kimlik bilgisi (verifiable credential) olarak düzenlenir — bir Alman nüfus dairesi (Meldebehörde) tarafından değil ve devlet tarafından değil; biçim ve imza denetimi gerçektir ([reference-ecosystem]), yetki demodur. Bir Alman nüfus dairesinin yerleşim belgesini cüzdan kanıtı (PuB-EAA) olarak düzenlemesi gelecekte gelecek bir işlevdir ([ZUKUNFT]); Alman EUDI-Wallet, eIDAS 2.0 (Tüzük (AB) 2024/1183) uyarınca 2. Januar 2027 tarihinde başlar. Bu demo, Once-Only ilkesini cüzdan tabanlı yol üzerinden gösterir (kanıtı kendiniz sunarsınız) — kayıttan-kayıta değişim (NOOTS/Registermodernisierung) üzerinden değil."
     }
+  },
+  "protokoll": {
+    "fit_connect": {
+      "inspector_title": "Protokol denetleyicisi (FIT-Connect)",
+      "inspector_sub": "Gerçek iletimi görüntüleyin — TEST sandbox ortamı, [MOCK destination].",
+      "banner_sandbox": "FITKO test ortamı — gerçek işletim değil. Teslim noktası (Zustellpunkt) makam tarafını simüle eder.",
+      "trigger_cta": "[MOCK destination] adresine gerçek iletimi başlat",
+      "trigger_running": "İletim sürüyor …",
+      "submission_id_label": "Gönderim kimliği",
+      "case_id_label": "Vaka kimliği",
+      "timeline_heading": "FIT-Connect akışı (gerçek olay adları)",
+      "event": {
+        "create": "Gönderim oluşturuldu (create-submission)",
+        "submit": "Gönderim iletildi (submit-submission)",
+        "notify": "Teslim noktası bilgilendirildi (notify-submission)",
+        "accept": "Kabul onaylandı (accept-submission)"
+      },
+      "set_heading": "İmzalı olay belirteçleri (SET)",
+      "set_alg_label": "alg",
+      "set_kid_label": "kid",
+      "set_typ_label": "typ",
+      "set_iat_label": "düzenlendi (iat)",
+      "set_events_label": "events",
+      "set_verified": "İmza doğrulandı",
+      "set_not_verified": "İmza doğrulanmadı",
+      "jwe_headers_heading": "Gönderilen JWE başlıkları",
+      "state_error": "TEST sandbox yanıt vermedi — gerçek hiçbir makam etkilenmedi.",
+      "refresh_events_cta": "Olay günlüğünü yenile"
+    },
+    "eudi_vp": {
+      "tab_label": "Gerçek cüzdanla sun (OpenID4VP)",
+      "title": "EUDI-Wallet ile kanıt sun",
+      "banner_sandbox": "Sandbox güven çıpası (Vertrauensanker) — üretim için değil. AB referans ekosistemi, eIDAS güven hizmeti değil.",
+      "qr_hint": "QR kodunu bir EUDI referans cüzdanıyla tarayın.",
+      "qr_uri_label": "Veya bağlantıyı açın:",
+      "state_pending": "Cüzdan bekleniyor …",
+      "state_scanned": "Cüzdan bağlandı — kanıt doğrulanıyor …",
+      "state_verified": "Kanıt doğrulandı",
+      "state_expired": "Oturum sona erdi.",
+      "state_error": "Kanıt doğrulanamadı.",
+      "regenerate_cta": "Yeni QR kodu oluştur",
+      "claims_heading": "Doğrulanan bilgiler",
+      "claim": {
+        "given_name": "Ad",
+        "family_name": "Soyadı",
+        "birthdate": "Doğum tarihi"
+      },
+      "verified_via": "OpenID4VP 1.0 + DCQL üzerinden doğrulandı — SD-JWT VC imzası ve anahtar bağlama.",
+      "no_tunnel_hint": "Canlı sunum yalnızca herkese açık bir tünel URL'si ile kullanılabilir (EUDI_VP_EXTERNAL_URL).",
+      "request_mode": {
+        "unsigned": "İmzasız istek",
+        "x5c": "x5c ile imzalı istek (demo sertifikası)"
+      }
+    }
   }
 }

@@ -200,7 +200,10 @@ async function issuePid(attrs) {
   const credJson = JSON.parse(credText);
   let sdjwt = credJson.credential || (credJson.credentials && (credJson.credentials[0].credential || credJson.credentials[0]));
   if (typeof sdjwt !== 'string') sdjwt = JSON.stringify(sdjwt);
-  return sdjwt;
+  // persist the holder key alongside: OpenID4VP presentations need the KB-JWT
+  // signed with the cnf key — without it a fixture PID can never be presented.
+  const holderPrivateJwk = await jose.exportJWK(privateKey);
+  return { sdjwt, holderPrivateJwk };
 }
 
 /** Offline-verify with jose only: x5c gate + signature + chain to demo CA + decode disclosures. */
@@ -277,13 +280,15 @@ async function offlineVerify(sdjwt, expectAttrs) {
     if (!attrs) { console.log('UNKNOWN persona id:', id, '- valid:', Object.keys(PERSONAS).join(', ')); continue; }
     console.log('\n========== ISSUE PID for', id, '==========');
     console.log('  attrs:', JSON.stringify(attrs));
-    const sdjwt = await issuePid(attrs);
+    const { sdjwt, holderPrivateJwk } = await issuePid(attrs);
     console.log('  GOT SD-JWT VC (len', sdjwt.length, ')');
     const v = await offlineVerify(sdjwt, attrs);
 
     // freeze per-persona fixture
     writeFileSync(`${dir}/pid-${id}.txt`, sdjwt);
     writeFileSync(`${dir}/issuer-jwt-header-${id}.json`, JSON.stringify(v.header, null, 2));
+    mkdirSync('.secrets/eudi', { recursive: true });
+    writeFileSync(`.secrets/eudi/holder-key-${id}.jwk.json`, JSON.stringify(holderPrivateJwk, null, 2));
     console.log('  [FIXTURE] frozen', `${dir}/pid-${id}.txt`, '| leaf notAfter=', v.leafNotAfter, '| verified=', v.verified);
   }
   console.log('\nDONE.');

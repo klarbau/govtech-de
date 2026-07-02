@@ -5118,5 +5118,59 @@
       "short": "Note: this prototype simulates the issuance. The official registration certificate (Meldebestätigung) is really based on § 24 Abs. 2 BMG (electronic: § 10 BMeldDigiV). Here it is issued by a demo issuer, not by a German authority — format real, authority demo ([reference-ecosystem]). Issuance into the wallet by authorities is a future feature ([ZUKUNFT], EUDI Wallet from 2. Jan 2027). Once-Only here is wallet-based, not register exchange (NOOTS).",
       "long": "Note: the official registration certificate (Meldebestätigung) is the document you receive after a registration (Anmeldung) (§ 24 Abs. 2 BMG, electronic in conjunction with § 10 BMeldDigiV / § 23a BMG). In this prototype it is issued as a verifiable credential by a demo issuer with its own trust anchor — not by a German registration authority (Meldebehörde) and not by the state; the format and the signature check are real ([reference-ecosystem]), the authority is demo. That a German registration authority issues a registration certificate as a wallet credential (PuB-EAA) is a future feature ([ZUKUNFT]); the German EUDI Wallet launches under eIDAS 2.0 (Regulation (EU) 2024/1183) on 2. Januar 2027. This demo shows Once-Only via the wallet-based path (you present the proof yourself) — not via register-to-register exchange (NOOTS/Registermodernisierung)."
     }
+  },
+  "protokoll": {
+    "fit_connect": {
+      "inspector_title": "Protocol inspector (FIT-Connect)",
+      "inspector_sub": "View the real transmission — TEST sandbox, [MOCK destination].",
+      "banner_sandbox": "FITKO test environment — not live operation. The delivery point (Zustellpunkt) simulates the authority side.",
+      "trigger_cta": "Trigger live transmission to [MOCK destination]",
+      "trigger_running": "Transmission in progress …",
+      "submission_id_label": "Submission ID",
+      "case_id_label": "Case ID",
+      "timeline_heading": "FIT-Connect flow (real event names)",
+      "event": {
+        "create": "Submission created (create-submission)",
+        "submit": "Submission sent (submit-submission)",
+        "notify": "Delivery point notified (notify-submission)",
+        "accept": "Acceptance acknowledged (accept-submission)"
+      },
+      "set_heading": "Signed event tokens (SET)",
+      "set_alg_label": "alg",
+      "set_kid_label": "kid",
+      "set_typ_label": "typ",
+      "set_iat_label": "issued (iat)",
+      "set_events_label": "events",
+      "set_verified": "Signature verified",
+      "set_not_verified": "Signature not verified",
+      "jwe_headers_heading": "Sent JWE headers",
+      "state_error": "The TEST sandbox did not respond — no real authority affected.",
+      "refresh_events_cta": "Refresh event log"
+    },
+    "eudi_vp": {
+      "tab_label": "Present with a real wallet (OpenID4VP)",
+      "title": "Present a proof via the EUDI Wallet",
+      "banner_sandbox": "Sandbox trust anchor (Vertrauensanker) — not for production. EU reference ecosystem, not an eIDAS trust service.",
+      "qr_hint": "Scan the QR code with an EUDI reference wallet.",
+      "qr_uri_label": "Or open the link:",
+      "state_pending": "Waiting for wallet …",
+      "state_scanned": "Wallet connected — verifying proof …",
+      "state_verified": "Proof verified",
+      "state_expired": "Session expired.",
+      "state_error": "The proof could not be verified.",
+      "regenerate_cta": "Generate a new QR code",
+      "claims_heading": "Verified details",
+      "claim": {
+        "given_name": "First name",
+        "family_name": "Last name",
+        "birthdate": "Date of birth"
+      },
+      "verified_via": "Verified via OpenID4VP 1.0 + DCQL — SD-JWT VC signature and key binding.",
+      "no_tunnel_hint": "Live presentation is only available with a public tunnel URL (EUDI_VP_EXTERNAL_URL).",
+      "request_mode": {
+        "unsigned": "Unsigned request",
+        "x5c": "x5c-signed request (demo certificate)"
+      }
+    }
   }
 }

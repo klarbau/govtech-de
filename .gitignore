@@ -54,3 +54,6 @@ demo-recording/
 # One-off local probe/screenshot scripts + their image output
 tmp-*
 .dark-shots/
+
+# FIT-Connect / EUDI local private keys (Protokoll-Modus) — never commit
+.secrets/

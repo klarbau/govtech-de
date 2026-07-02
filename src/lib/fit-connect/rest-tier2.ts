@@ -275,7 +275,7 @@ export async function runLiveSubmission(
   //      AFTER the acknowledge POST so our accept-submission SET is in the log.
   //      Multi-key verify: delivery-service via well-known JWKS, subscriber
   //      (accept-submission) via the destination's per-kid signature key.
-  const live = await readEventLogEvidence(caseId, destinationId, senderToken);
+  const live = await readEventLogEvidence(caseId, env);
   if (recv) {
     if (recv.decryptRoundTripOk !== undefined) live.decryptRoundTripOk = recv.decryptRoundTripOk;
     if (recv.acknowledgeSetPosted !== undefined) live.acknowledgeSetPosted = recv.acknowledgeSetPosted;
@@ -294,7 +294,7 @@ export async function runLiveSubmission(
     caseId,
     routing: { ...base.routing, destinationId },
     metadataPreview: { ...base.metadataPreview },
-    jwePreview: { ...base.jwePreview, compactExcerpt: metadataJwe.excerpt },
+    jwePreview: { ...base.jwePreview, compactExcerpt: metadataJwe.excerpt, kid: encryptionKid },
     schemaValid,
     live,
   };
@@ -306,8 +306,21 @@ const ACCEPT_EVENT_URI =
   'https://schema.fitko.de/fit-connect/events/accept-submission';
 
 /**
- * Read `GET /v2/cases/{caseId}/events` and verify every SET's PS512 signature
- * against the CORRECT key by issuer (Tier-2 NIT #1 fix):
+ * A single event-log SET, raw + its server-side signature verdict. This is the
+ * shared, no-secrets shape both `runLiveSubmission` (aggregated into the receipt
+ * `live` evidence) and the `events` route (decoded via `decodeSet`) consume.
+ */
+export interface RawSet {
+  /** Raw compact JWS SET string as read from the event log. */
+  compact: string;
+  /** PS512 signature verified against the correct key by issuer (see `pollCaseEvents`). */
+  signatureVerified: boolean;
+}
+
+/**
+ * Poll `GET /v2/cases/{caseId}/events` and verify every SET's PS512 signature
+ * against the CORRECT key by issuer (Tier-2 NIT #1 fix), returning the raw
+ * compact SET strings + per-SET verdict:
  *  - delivery-service SETs (`create/submit/notify-submission`, `iss` = the FITKO
  *    host) → the well-known JWKS;
  *  - subscriber SETs (`accept-submission`, `iss` = destinationId) → the
@@ -315,53 +328,89 @@ const ACCEPT_EVENT_URI =
  *    `GET /v2/destinations/{id}/keys/{kid}` (a `…-verify`, `key_ops:["verify"]`
  *    PS512 key — NOT the RSA-OAEP-256 enc key; there is no `…/keys` list endpoint,
  *    it 404s, so we resolve per-kid from the SET header).
+ *
+ * Fetches its own sender token from `env` (so the standalone `events` route can
+ * use it too). No secret ever appears in the return shape. On a transport/token
+ * failure or an empty log returns `[]`; a per-SET decode/verify failure marks
+ * that one SET `signatureVerified: false` (never throws for a single bad SET).
  */
-async function readEventLogEvidence(
-  caseId: string,
-  destinationId: string,
-  token: string,
-): Promise<NonNullable<FitConnectReceipt['live']>> {
+export async function pollCaseEvents(caseId: string, env: Tier2Env): Promise<RawSet[]> {
+  const token = await getToken(env.clientId!, env.clientSecret!);
+  const destinationId = env.destinationId!;
+
   const ev = await api('GET', `${SUB}/v2/cases/${caseId}/events`, token);
-  if (!ev.ok) return { note: `Event-Log nicht abrufbar (TEST sandbox, HTTP ${ev.status}).` };
+  if (!ev.ok) return [];
   const log = (ev.json as { eventLog?: string[] })?.eventLog ?? [];
 
   const deliveryJwks = createRemoteJWKSet(new URL(`${SUB}/.well-known/jwks.json`));
   const destKeyCache = new Map<string, CryptoKey | Uint8Array>();
-  const eventTypes: string[] = [];
-  let allVerified = log.length > 0;
-  let subscriberSetVerified: boolean | undefined;
 
+  const out: RawSet[] = [];
   for (const set of log) {
-    let isSubscriberEvent = false;
+    let signatureVerified = false;
     try {
       const hdr = decodeProtectedHeader(set);
-      const claims = decodeJwt(set) as { iss?: string; events?: Record<string, unknown> };
-      const eventUris = Object.keys(claims.events ?? {});
-      for (const t of eventUris) eventTypes.push(t);
-      isSubscriberEvent = claims.iss === destinationId;
+      const claims = decodeJwt(set) as { iss?: string };
+      const isSubscriberEvent = claims.iss === destinationId;
 
       // Defensive: only PS512 secevent+jwt are valid SETs here.
-      if (hdr.alg !== SET_SIGNING.alg) {
-        allVerified = false;
-        if (isSubscriberEvent) subscriberSetVerified = false;
-        continue;
+      if (hdr.alg === SET_SIGNING.alg) {
+        if (isSubscriberEvent) {
+          const sigKey = await getDestinationSignatureKey(destinationId, hdr.kid!, token, destKeyCache);
+          await jwtVerify(set, sigKey, { algorithms: [SET_SIGNING.alg] });
+        } else {
+          await jwtVerify(set, deliveryJwks, { algorithms: [SET_SIGNING.alg] });
+        }
+        signatureVerified = true;
       }
+    } catch {
+      signatureVerified = false;
+    }
+    out.push({ compact: set, signatureVerified });
+  }
+  return out;
+}
 
-      if (isSubscriberEvent) {
-        const sigKey = await getDestinationSignatureKey(destinationId, hdr.kid!, token, destKeyCache);
-        await jwtVerify(set, sigKey, { algorithms: [SET_SIGNING.alg] });
-        subscriberSetVerified = true;
-      } else {
-        await jwtVerify(set, deliveryJwks, { algorithms: [SET_SIGNING.alg] });
+/**
+ * Aggregate the polled SETs into the receipt's `live` evidence shape — count,
+ * whole-log verified verdict, event-type URIs and the subscriber-SET verdict.
+ * Built on `pollCaseEvents` so the receipt and the `events` route share one
+ * poll+verify implementation.
+ */
+async function readEventLogEvidence(
+  caseId: string,
+  env: Tier2Env,
+): Promise<NonNullable<FitConnectReceipt['live']>> {
+  let raw: RawSet[];
+  try {
+    raw = await pollCaseEvents(caseId, env);
+  } catch {
+    return { note: 'Event-Log nicht abrufbar (TEST sandbox).' };
+  }
+  if (raw.length === 0) {
+    return { eventLogCount: 0, setVerified: false, eventTypes: [] };
+  }
+
+  const destinationId = env.destinationId!;
+  const eventTypes: string[] = [];
+  let allVerified = true;
+  let subscriberSetVerified: boolean | undefined;
+
+  for (const { compact, signatureVerified } of raw) {
+    if (!signatureVerified) allVerified = false;
+    try {
+      const claims = decodeJwt(compact) as { iss?: string; events?: Record<string, unknown> };
+      for (const uri of Object.keys(claims.events ?? {})) eventTypes.push(uri);
+      if (claims.iss === destinationId) {
+        subscriberSetVerified = (subscriberSetVerified ?? true) && signatureVerified;
       }
     } catch {
       allVerified = false;
-      if (isSubscriberEvent) subscriberSetVerified = false;
     }
   }
 
   return {
-    eventLogCount: log.length,
+    eventLogCount: raw.length,
     setVerified: allVerified,
     eventTypes,
     ...(subscriberSetVerified !== undefined ? { subscriberSetVerified } : {}),

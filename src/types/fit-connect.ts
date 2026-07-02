@@ -76,6 +76,13 @@ export interface FitConnectReceipt {
     enc: 'A256GCM';
     /** First/last N chars of the JWE Compact Serialization. */
     compactExcerpt: string;
+    /**
+     * The destination's `encryptionKid` — the JWE protected header `kid`
+     * (Protokoll-Modus Spec § 5.3, the inspector's JWE-header trio). Present
+     * ONLY on a Tier-2 live run (`runLiveSubmission`); absent for Tier-1. Not a
+     * secret — it is the public key id, never key material.
+     */
+    kid?: string;
   };
   /** Ajv result against the vendored 2.1.0 schema (Tier-1). */
   schemaValid: boolean;
