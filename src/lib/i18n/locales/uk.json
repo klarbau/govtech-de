@@ -1304,7 +1304,8 @@
         "rechtsgrundlage_value": "eIDAS 2 / OZG",
         "rechtsgrundlage_sub": "DSGVO Art. 6 Abs. 1 lit. a",
         "secure_line": "Передавання захищене та зашифроване.",
-        "trusted_service": "Надійний сервіс"
+        "trusted_service": "Надійний сервіс",
+        "eudi_context_note": "Примітка: ці відомості беруться з базового набору персональних даних (Personenbasisdatensatz, PID) EUDI-Wallet. За принципом вибіркового розкриття Ви передаєте лише поля, потрібні для входу; інші підтвердження поки не входять до PID."
       },
       "required_group": "Обов'язкові дані",
       "required_badge": "Обов'язково",
@@ -1971,6 +1972,8 @@
       "estg_67_68": "§§ 67–68 EStG: заява на дитячу допомогу та обовʼязок повідомляти про зміни.",
       "rbstv_11_4": "§ 11 ч. 4 RBStV: регулярна передача реєстраційних даних до служби стягнення мовного збору (Beitragsservice).",
       "sgb_iv_28a": "§ 28a SGB IV: повідомлення роботодавця за DEÜV до органів соціального страхування.",
+      "regmog_art22s3": "Art. 22 Satz 3 RegMoG (Registermodernisierungsgesetz — Закон про модернізацію реєстрів): правова основа для обміну даними між відомствами за принципом однократного введення (Once-Only) — наявні відомості передаються далі, а не запитуються у Вас повторно.",
+      "noots_staatsvertrag": "NOOTS-Staatsvertrag (державний договір): регулює Національну технічну систему однократного введення (Nationales Once-Only-Technical-System, NOOTS) — майбутню інфраструктуру для міжвідомчого обміну даними між реєстрами. NOOTS проходить випробування з 2025 року і ще не введений у промислову експлуатацію.",
       "detail_title": "Правова підстава",
       "open_cta": "Показати правову підставу"
     }
@@ -3381,6 +3384,7 @@
         "adressuebermittlung_buergeramt_beitragsservice": "Передача адреси до служби справляння теле- та радіомовного збору (Beitragsservice)",
         "adressuebermittlung_buergeramt_gkv": "Передача адреси до лікарняної каси (DEÜV)",
         "adressuebermittlung_buergeramt_bapersbw": "Повідомлення про адресу для військового обліку",
+        "behoerde_zu_buerger_brief_eingang": "Офіційний лист надійшов до поштової скриньки",
         "app_religion_angezeigt": "Релігійну належність відображено в застосунку",
         "app_kontakt_geaendert": "Контактні дані змінено в застосунку",
         "app_sprache_geaendert": "Мовне налаштування змінено в застосунку",

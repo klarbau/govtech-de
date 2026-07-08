@@ -1304,7 +1304,8 @@
         "rechtsgrundlage_value": "eIDAS 2 / OZG",
         "rechtsgrundlage_sub": "DSGVO Art. 6 Abs. 1 lit. a",
         "secure_line": "Transmission is secure and encrypted.",
-        "trusted_service": "Trusted service"
+        "trusted_service": "Trusted service",
+        "eudi_context_note": "Note: these details come from the person identification data (Personenbasisdatensatz, PID) in the EUDI Wallet. Following the principle of selective disclosure, you share only the fields required for signing in; further credentials are not yet part of the PID."
       },
       "required_group": "Required details",
       "required_badge": "Required",
@@ -1971,6 +1972,8 @@
       "estg_67_68": "§§ 67–68 EStG: child benefit application and the duty to report changes.",
       "rbstv_11_4": "§ 11 (4) RBStV: regular transfer of registration data to the broadcasting fee service (Beitragsservice).",
       "sgb_iv_28a": "§ 28a SGB IV: DEÜV reports from the employer to the social insurance bodies.",
+      "regmog_art22s3": "Art. 22 Satz 3 RegMoG (Registermodernisierungsgesetz — Register Modernisation Act): the legal basis for once-only data exchange between authorities — existing information is passed on instead of being collected from you again.",
+      "noots_staatsvertrag": "NOOTS-Staatsvertrag (state treaty): governs the National Once-Only Technical System (Nationales Once-Only-Technical-System, NOOTS) — the future infrastructure for cross-register data exchange between authorities. NOOTS has been in trial operation since 2025 and is not yet in production.",
       "detail_title": "Legal basis",
       "open_cta": "Show legal basis"
     }
@@ -3381,6 +3384,7 @@
         "adressuebermittlung_buergeramt_beitragsservice": "Address transmission to the broadcasting fee service (Beitragsservice)",
         "adressuebermittlung_buergeramt_gkv": "Address flow to the health insurer (DEÜV)",
         "adressuebermittlung_buergeramt_bapersbw": "Address notification for military registration",
+        "behoerde_zu_buerger_brief_eingang": "Official letter received in your inbox",
         "app_religion_angezeigt": "Religious affiliation shown in the app",
         "app_kontakt_geaendert": "Contact details changed in the app",
         "app_sprache_geaendert": "Language preference changed in the app",

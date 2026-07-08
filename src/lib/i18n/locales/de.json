@@ -1304,7 +1304,8 @@
         "rechtsgrundlage_value": "eIDAS 2 / OZG",
         "rechtsgrundlage_sub": "DSGVO Art. 6 Abs. 1 lit. a",
         "secure_line": "Übertragung sicher und verschlüsselt.",
-        "trusted_service": "Vertrauenswürdiger Dienst"
+        "trusted_service": "Vertrauenswürdiger Dienst",
+        "eudi_context_note": "Hinweis: Diese Angaben stammen aus dem Personenbasisdatensatz (PID) der EUDI-Wallet. Nach dem Prinzip der selektiven Offenlegung übertragen Sie nur die Felder, die für die Anmeldung erforderlich sind; weitere Nachweise sind derzeit noch nicht Teil des PID."
       },
       "required_group": "Pflichtangaben",
       "required_badge": "Erforderlich",
@@ -1974,6 +1975,8 @@
       "estg_67_68": "§§ 67–68 EStG: Kindergeldantrag und Mitwirkungspflicht bei Veränderungen.",
       "rbstv_11_4": "§ 11 Abs. 4 RBStV: regelmäßige Meldedaten-Übermittlung an den Beitragsservice.",
       "sgb_iv_28a": "§ 28a SGB IV: DEÜV-Meldungen des Arbeitgebers an die Sozialversicherungsträger.",
+      "regmog_art22s3": "Art. 22 Satz 3 RegMoG: Das Registermodernisierungsgesetz schafft die Grundlage für den Once-Only-Datenaustausch zwischen Behörden — vorhandene Angaben werden weitergereicht, statt erneut von Ihnen erhoben zu werden.",
+      "noots_staatsvertrag": "NOOTS-Staatsvertrag: regelt das Nationale Once-Only-Technical-System (NOOTS) — die künftige Infrastruktur für den registerübergreifenden Datenaustausch zwischen Behörden. NOOTS ist seit 2025 in Erprobung und noch nicht im Produktivbetrieb.",
       "detail_title": "Rechtsgrundlage",
       "open_cta": "Rechtsgrundlage anzeigen"
     }
@@ -3410,6 +3413,7 @@
         "adressuebermittlung_buergeramt_beitragsservice": "Adressübermittlung an Rundfunkbeitragsservice",
         "adressuebermittlung_buergeramt_gkv": "Adressfluss zur Krankenkasse (DEÜV)",
         "adressuebermittlung_buergeramt_bapersbw": "Wehrerfassungs-Adressmitteilung",
+        "behoerde_zu_buerger_brief_eingang": "Behördlicher Brief im Posteingang eingegangen",
         "app_religion_angezeigt": "Religionsmerkmal in der App angezeigt",
         "app_kontakt_geaendert": "Kontaktdaten in der App geändert",
         "app_sprache_geaendert": "Sprachpräferenz in der App geändert",

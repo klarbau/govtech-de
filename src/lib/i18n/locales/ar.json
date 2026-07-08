@@ -1304,7 +1304,8 @@
         "rechtsgrundlage_value": "eIDAS 2 / OZG",
         "rechtsgrundlage_sub": "DSGVO Art. 6 Abs. 1 lit. a",
         "secure_line": "النقل آمن ومشفّر.",
-        "trusted_service": "خدمة موثوقة"
+        "trusted_service": "خدمة موثوقة",
+        "eudi_context_note": "ملاحظة: تأتي هذه البيانات من مجموعة البيانات الشخصية الأساسية (Personenbasisdatensatz — PID) في محفظة EUDI. ووفق مبدأ الإفصاح الانتقائي، لا تشارك سوى الحقول اللازمة لتسجيل الدخول؛ ولا تزال الإثباتات الأخرى غير مُدرجة ضمن الـ PID حتى الآن."
       },
       "required_group": "البيانات الإلزامية",
       "required_badge": "مطلوب",
@@ -1971,6 +1972,8 @@
       "estg_67_68": "§§ 67–68 EStG: طلب علاوة الأبناء وواجب الإبلاغ عن التغييرات.",
       "rbstv_11_4": "§ 11 الفقرة 4 RBStV: نقل بيانات التسجيل بشكل دوري إلى دائرة رسوم البث (Beitragsservice).",
       "sgb_iv_28a": "§ 28a SGB IV: إخطارات صاحب العمل وفق DEÜV إلى هيئات التأمين الاجتماعي.",
+      "regmog_art22s3": "Art. 22 Satz 3 RegMoG (Registermodernisierungsgesetz — قانون تحديث السجلات): الأساس القانوني لتبادل البيانات بين الجهات وفق مبدأ الإدخال لمرة واحدة (Once-Only) — تُمرَّر المعلومات الموجودة مسبقًا بدلاً من جمعها منك مرة أخرى.",
+      "noots_staatsvertrag": "NOOTS-Staatsvertrag (المعاهدة الحكومية): تنظّم النظام الوطني للإدخال لمرة واحدة (Nationales Once-Only-Technical-System — NOOTS) — البنية التحتية المستقبلية لتبادل البيانات بين السجلات عبر الجهات. ولا يزال NOOTS في مرحلة التجربة منذ 2025 ولم يدخل بعد مرحلة التشغيل الفعلي.",
       "detail_title": "الأساس القانوني",
       "open_cta": "إظهار الأساس القانوني"
     }
@@ -3381,6 +3384,7 @@
         "adressuebermittlung_buergeramt_beitragsservice": "إرسال العنوان إلى خدمة رسوم البث (Beitragsservice)",
         "adressuebermittlung_buergeramt_gkv": "نقل العنوان إلى شركة التأمين الصحي (DEÜV)",
         "adressuebermittlung_buergeramt_bapersbw": "إخطار العنوان للتسجيل العسكري",
+        "behoerde_zu_buerger_brief_eingang": "وصل خطاب رسمي إلى صندوق البريد الوارد",
         "app_religion_angezeigt": "عُرِض الانتماء الديني في التطبيق",
         "app_kontakt_geaendert": "عُدِّلت بيانات الاتصال في التطبيق",
         "app_sprache_geaendert": "عُدِّل تفضيل اللغة في التطبيق",

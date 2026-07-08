@@ -1304,7 +1304,8 @@
         "rechtsgrundlage_value": "eIDAS 2 / OZG",
         "rechtsgrundlage_sub": "DSGVO Art. 6 Abs. 1 lit. a",
         "secure_line": "Aktarım güvenli ve şifrelidir.",
-        "trusted_service": "Güvenilir hizmet"
+        "trusted_service": "Güvenilir hizmet",
+        "eudi_context_note": "Not: Bu bilgiler EUDI cüzdanındaki temel kişisel veri kümesinden (Personenbasisdatensatz — PID) gelir. Seçici açıklama ilkesi uyarınca yalnızca oturum açmak için gerekli alanları paylaşırsınız; diğer belgeler henüz PID'nin parçası değildir."
       },
       "required_group": "Zorunlu bilgiler",
       "required_badge": "Gerekli",
@@ -1971,6 +1972,8 @@
       "estg_67_68": "§§ 67–68 EStG: çocuk parası başvurusu ve değişiklikleri bildirme yükümlülüğü.",
       "rbstv_11_4": "§ 11 fıkra 4 RBStV: yayın katkı payı servisine (Beitragsservice) düzenli kayıt verisi aktarımı.",
       "sgb_iv_28a": "§ 28a SGB IV: işverenin sosyal güvenlik kurumlarına yönelik DEÜV bildirimleri.",
+      "regmog_art22s3": "Art. 22 Satz 3 RegMoG (Registermodernisierungsgesetz — Sicil Modernizasyon Yasası): kurumlar arasında tek seferlik (Once-Only) veri paylaşımının yasal dayanağı — mevcut bilgiler sizden yeniden istenmek yerine iletilir.",
+      "noots_staatsvertrag": "NOOTS-Staatsvertrag (devlet anlaşması): Ulusal Tek Seferlik Teknik Sistemi (Nationales Once-Only-Technical-System, NOOTS) düzenler — kurumlar arası, sicil sistemleri arası veri paylaşımı için gelecekteki altyapı. NOOTS 2025'ten beri deneme aşamasındadır ve henüz üretim ortamında değildir.",
       "detail_title": "Yasal dayanak",
       "open_cta": "Yasal dayanağı göster"
     }
@@ -3381,6 +3384,7 @@
         "adressuebermittlung_buergeramt_beitragsservice": "Yayın katkı payı servisine (Beitragsservice) adres aktarımı",
         "adressuebermittlung_buergeramt_gkv": "Sağlık sigortasına adres akışı (DEÜV)",
         "adressuebermittlung_buergeramt_bapersbw": "Askerlik kaydı için adres bildirimi",
+        "behoerde_zu_buerger_brief_eingang": "Resmî mektup gelen kutusuna ulaştı",
         "app_religion_angezeigt": "Dini aidiyet uygulamada gösterildi",
         "app_kontakt_geaendert": "İletişim bilgileri uygulamada değiştirildi",
         "app_sprache_geaendert": "Dil tercihi uygulamada değiştirildi",
