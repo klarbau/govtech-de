@@ -134,7 +134,7 @@ export function UmzugConfirmCard({
           </p>
         ) : (
           <div className="flex flex-col gap-2 sm:flex-row">
-            <Button onClick={onConfirm} disabled={busy}>
+            <Button className="lg-iridescent" onClick={onConfirm} disabled={busy}>
               {t('cta_start')}
             </Button>
             <Button variant="outline" onClick={onCancel} disabled={busy}>

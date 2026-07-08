@@ -6,4 +6,178 @@
    wherever they render. Every rule is gated under `html[data-lg]` and targets
    assistant/autopilot class names, so the sheet is inert elsewhere. Surfaces
    only — never text colours.
+
+   Scoping note: the chat-frame classes (.chat-card · .ctx-card · .ctx-row ·
+   .ctx-foot · .quick-chips · .msg · .bubble · .composer) render ONLY on
+   /assistent (grep-verified), so they need no screen gate. The shared autopilot
+   cards use generic Tailwind utilities, so each carries a dedicated hook class
+   added in its own component (lg-tool-card · lg-cascade-row · lg-value-receipt ·
+   lg-wohngeld-folge) — this keeps identical-utility markup on other screens
+   (e.g. the /termine .vr-card, the Dashboard WohngeldFolgeCard) untouched.
+
+   backdrop-filter budget (core § "Generic primitives"): the shell zone already
+   spends its two blur layers on TopNav + SideNav, so NOTHING in this content
+   zone frosts. The cascade rows are also framer-motion-animated — a blur on an
+   animated element repaints per frame and drops the demo FPS — so they carry a
+   near-opaque glass gradient + border + shadow instead. Modal dialogs (the eID
+   gate lives inline as buttons here, not a dialog) frost via the core
+   [data-slot='dialog-content'] rule; nothing screen-specific is needed.
    ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Chat panel + Kontext-Rail — floating glass surfaces (no blur) ─────────── */
+html[data-lg] .chat-card,
+html[data-lg] .ctx-card {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg].dark .chat-card,
+html[data-lg].dark .ctx-card {
+  border-color: var(--lg-hairline);
+}
+
+/* ── Quick-action chips — soft glass pills ────────────────────────────────── */
+html[data-lg] .quick-chips .chip {
+  background: var(--lg-glass-soft);
+  border: 1px solid var(--lg-hairline);
+  box-shadow: inset 0 1px 0 var(--lg-edge), var(--lg-shadow-card);
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+html[data-lg] .quick-chips .chip:hover {
+  background: var(--lg-glass-raised);
+  box-shadow: inset 0 1px 0 var(--lg-edge-strong), var(--lg-shadow-lift);
+}
+html[data-lg].dark .quick-chips .chip {
+  border-color: var(--lg-hairline);
+}
+
+/* ── Message bubbles — user = raised glass pill, assistant = soft glass ───── */
+html[data-lg] .msg .bubble {
+  border-radius: 16px;
+  background: var(--lg-glass-soft);
+  border: 1px solid var(--lg-hairline);
+  box-shadow: inset 0 1px 0 var(--lg-edge), var(--lg-shadow-card);
+}
+html[data-lg] .msg.user .bubble {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: inset 0 1px 0 var(--lg-edge-strong), var(--lg-shadow-lift);
+}
+html[data-lg].dark .msg .bubble,
+html[data-lg].dark .msg.user .bubble {
+  border-color: var(--lg-hairline);
+}
+/* Round avatar: soft inner highlight + lift. The assistant avatar gets the
+   Waldgrün monogram gradient (the user avatar keeps its inline-styled fill). */
+html[data-lg] .msg .av {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 4px 10px -5px rgba(15, 61, 46, 0.45);
+}
+html[data-lg] .msg:not(.user) .av {
+  background: linear-gradient(160deg, #14503c, #0f3d2e);
+}
+
+/* ── Composer — inset frosted pill (mirrors the core input recipe) ─────────── */
+html[data-lg] .composer {
+  border: 1px solid transparent;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(15, 61, 46, 0.05), rgba(15, 61, 46, 0.03));
+  box-shadow: inset 0 1.5px 3px rgba(15, 61, 46, 0.08),
+    inset 0 0 0 1px rgba(15, 61, 46, 0.05), 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+html[data-lg].dark .composer {
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+/* The .composer IS the pill, so neutralise the core `textarea` inset-pill on the
+   inner field — otherwise it reads as a pill-inside-a-pill. */
+html[data-lg] .composer textarea {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+/* Send button keeps its Waldgrün fill; it just gains the soft raise. */
+html[data-lg] .composer .send {
+  box-shadow: 0 6px 16px -8px rgba(15, 61, 46, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* ── Kontext-Rail rows + footer ───────────────────────────────────────────── */
+html[data-lg] .ctx-row {
+  background: var(--lg-glass-soft);
+  border: 1px solid var(--lg-hairline);
+  box-shadow: inset 0 1px 0 var(--lg-edge);
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+html[data-lg] .ctx-row:hover {
+  background: var(--lg-glass-raised);
+  box-shadow: inset 0 1px 0 var(--lg-edge-strong), var(--lg-shadow-lift);
+}
+html[data-lg] .ctx-foot {
+  background: var(--lg-mint);
+  border: 1px solid var(--lg-mint-border);
+  box-shadow: inset 0 1px 0 var(--lg-edge);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Shared assistant-thread cards — frosted sub-cards on the glass panel.
+   Class hooks added in-component (assistant/autopilot only); each renders in
+   the assistant thread AND on the Umzug run-page (intended). No backdrop-filter
+   (content zone + animated rows). Never a text colour.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── ToolCallCard — floating glass card in the thread ─────────────────────── */
+html[data-lg] .lg-tool-card {
+  border-radius: 14px;
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg].dark .lg-tool-card {
+  border-color: var(--lg-hairline);
+}
+
+/* ── InlineCascade rows — soft frosted sub-cards (NO blur: framer-motion) ──── */
+html[data-lg] .lg-cascade-row {
+  border-radius: 12px;
+  background: var(--lg-glass-soft);
+  border: 1px solid var(--lg-hairline);
+  box-shadow: inset 0 1px 0 var(--lg-edge), var(--lg-shadow-card);
+}
+html[data-lg].dark .lg-cascade-row {
+  border-color: var(--lg-hairline);
+}
+
+/* ── Value-Receipt — the payoff card, mint glass ──────────────────────────── */
+html[data-lg] .lg-value-receipt {
+  background: var(--lg-mint);
+  border: 1px solid var(--lg-mint-border);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge);
+}
+
+/* ── Wohngeld-Folge accent card (hooked via InlineCascade's className prop) ── */
+html[data-lg] .lg-wohngeld-folge {
+  background: var(--lg-mint);
+  border-color: var(--lg-mint-border);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   The ONE iridescent CTA of this screen — the confirm-gate button on the
+   Umzug-/Lebenslage-ConfirmCard (added as `.lg-iridescent` in-component). The
+   full recipe lives in the core; this override only re-asserts the iridescent
+   shadow/border at the button-slot specificity, because the button also carries
+   `bg-primary` whose core shadow rule (higher specificity) would otherwise win.
+   ═══════════════════════════════════════════════════════════════════════════ */
+html[data-lg] [data-slot='button'].lg-iridescent {
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 16px 36px -14px rgba(20, 130, 115, 0.55),
+    0 6px 18px -8px rgba(90, 100, 190, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+html[data-lg] [data-slot='button'].lg-iridescent:hover {
+  box-shadow: 0 20px 44px -14px rgba(20, 130, 115, 0.65),
+    0 8px 22px -8px rgba(90, 100, 190, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}

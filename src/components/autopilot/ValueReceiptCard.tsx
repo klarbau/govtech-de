@@ -35,7 +35,7 @@ export function ValueReceiptCard({
 
   return (
     <section
-      className={cn('vr-card', className)}
+      className={cn('vr-card lg-value-receipt', className)}
       aria-label={t('title')}
       {...(variant === 'live' ? { 'aria-live': 'polite' as const } : {})}
     >

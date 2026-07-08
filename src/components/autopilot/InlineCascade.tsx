@@ -789,7 +789,7 @@ export function InlineCascade({
                       {t('eid_gate_hint')}
                     </li>
                   ) : null}
-                  <li className="flex items-start gap-3 rounded-lg border border-border bg-surface px-3 py-2">
+                  <li className="lg-cascade-row flex items-start gap-3 rounded-lg border border-border bg-surface px-3 py-2">
                     <span
                       className={cn('mt-0.5 flex size-5 items-center justify-center', viz.tone)}
                       aria-hidden="true"
@@ -1012,7 +1012,7 @@ export function InlineCascade({
        * qualifiziert / dismissed / consent widerrufen → kein Layout-Shift, kein
        * Auto-Scroll-Klau vom Receipt-Climax (sitzt passiv darunter). */}
       {isUmzugRun && receipt && vorgang?.persona_id ? (
-        <WohngeldFolgeCard personaId={vorgang.persona_id} />
+        <WohngeldFolgeCard personaId={vorgang.persona_id} className="lg-wohngeld-folge" />
       ) : null}
 
       {/* Verifiable Once-Only coda (Beat 1): once the Umzug run is abgeschlossen,

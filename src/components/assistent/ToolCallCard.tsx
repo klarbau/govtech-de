@@ -81,7 +81,7 @@ export function ToolCallCard({ call }: ToolCallCardProps) {
   return (
     <div className="flex gap-3" role="status">
       <span className="size-7 shrink-0" aria-hidden="true" />
-      <div className="flex max-w-[85%] flex-1 flex-col gap-2 rounded-lg border border-border bg-surface px-4 py-3">
+      <div className="lg-tool-card flex max-w-[85%] flex-1 flex-col gap-2 rounded-lg border border-border bg-surface px-4 py-3">
         <div className="flex items-center gap-3">
           <IconCircle icon={icon} tone={tone} size="sm" />
           <div className="min-w-0 flex-1">
