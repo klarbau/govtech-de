@@ -26,6 +26,7 @@ import './familie-liquid-glass.css';
 import './steuer-liquid-glass.css';
 import './datenschutz-liquid-glass.css';
 import './lebenslagen-liquid-glass.css';
+import './onboarding-landing-liquid-glass.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 const interTight = Inter_Tight({ subsets: ['latin'], variable: '--font-display' });

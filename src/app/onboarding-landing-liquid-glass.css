@@ -1,0 +1,9 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Onboarding + Landing — Liquid Glass harmonisation (Welle 3)
+   ---------------------------------------------------------------------------
+   These surfaces keep their OWN identity (plan §3: „eigene Identität behalten,
+   nur Tokens/Ambient angleichen"). This sheet only aligns tokens/surfaces with
+   the app-wide Liquid-Glass layer. Every rule is gated (html[data-lg] on the
+   landing / a dedicated scope on (auth) routes) so it is inert elsewhere.
+   Surfaces only — never text colours.
+   ═══════════════════════════════════════════════════════════════════════════ */
