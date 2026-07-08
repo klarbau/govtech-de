@@ -6,4 +6,180 @@
    vorgaenge-only class names, so the sheet is inert elsewhere. Surfaces only —
    never text colours. Shared assistant-thread cards (InlineCascade & Co.) are
    styled in assistent-liquid-glass.css, NOT here.
+
+   Scope: gated one level deeper under `html[data-lg][data-lg-screen='vorgaenge']`
+   (set by <LiquidGlassScreen name="vorgaenge"> on the list, detail + preview
+   pages — Posteingang precedent). Needed because several class names here are
+   SHARED with other routes rendered by parallel agents (`stat-tile` →
+   /dashboard, `rail-card` → the lebenslagen dossier + /datenschutz), so a bare
+   `html[data-lg]` gate would leak. The screen gate confines every rule to the
+   Vorgänge family.
+
+   Budget: the shell already spends its 2 blur layers (TopNav + SideNav).
+   Content cards therefore carry glass via gradient + border + shadow with NO
+   backdrop-filter. Exactly ONE static hero panel per screen may frost: the
+   detail's `.vd-hero`. The Umzug /run screen (Demo-Pacer) gets NO rules here —
+   its cards inherit the blur-free core glass, keeping the reveal animation
+   cheap. The generic primitives (`.gt-card`, buttons, inputs, dialogs) are
+   already glassed app-wide by liquid-glass-core.css.
    ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── List /vorgaenge — stat tiles, featured card, small cards, rail ─────────── */
+
+/* Stat tiles (shared class with /dashboard — screen-gated). */
+html[data-lg][data-lg-screen='vorgaenge'] .vg-stats .stat-tile {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+  transition: box-shadow 0.25s ease, transform 0.18s ease;
+}
+html[data-lg][data-lg-screen='vorgaenge'].dark .vg-stats .stat-tile {
+  border-color: var(--lg-hairline);
+}
+html[data-lg][data-lg-screen='vorgaenge'] .vg-stats .stat-tile:hover {
+  background: var(--lg-glass-raised);
+  box-shadow: var(--lg-shadow-lift), inset 0 1px 0 var(--lg-edge);
+}
+
+/* Featured Umzug card + the small Vorgang cards. */
+html[data-lg][data-lg-screen='vorgaenge'] .vg-big,
+html[data-lg][data-lg-screen='vorgaenge'] .vg-cards .vg-card {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+  transition: box-shadow 0.25s ease, transform 0.18s ease;
+}
+html[data-lg][data-lg-screen='vorgaenge'].dark .vg-big,
+html[data-lg][data-lg-screen='vorgaenge'].dark .vg-cards .vg-card {
+  border-color: var(--lg-hairline);
+}
+html[data-lg][data-lg-screen='vorgaenge'] .vg-cards .vg-card:hover {
+  box-shadow: var(--lg-shadow-lift), inset 0 1px 0 var(--lg-edge);
+}
+
+/* Nested sub-surfaces read as softer frosted insets on the raised cards. */
+html[data-lg][data-lg-screen='vorgaenge'] .vg-big .fortschritt-card,
+html[data-lg][data-lg-screen='vorgaenge'] .vg-cards .vg-card .vg-naction {
+  background: var(--lg-glass-soft);
+  border: 1px solid var(--lg-hairline);
+  box-shadow: inset 0 1px 0 var(--lg-edge);
+}
+
+/* Right rail cards (shared `rail-card` — scoped via `.vg-layout` so the /run
+   dossier, which uses vlf-*/vab-*, is never touched). */
+html[data-lg][data-lg-screen='vorgaenge'] .vg-layout .rail-card {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg][data-lg-screen='vorgaenge'].dark .vg-layout .rail-card {
+  border-color: var(--lg-hairline);
+}
+
+/* Schnellzugriff tiles — subtle frosted insets with a gentle hover raise. */
+html[data-lg][data-lg-screen='vorgaenge'] .vg-quick-tile {
+  background: var(--lg-glass-soft);
+  border: 1px solid var(--lg-hairline);
+  box-shadow: inset 0 1px 0 var(--lg-edge);
+}
+html[data-lg][data-lg-screen='vorgaenge'] .vg-quick-tile:hover {
+  background: var(--lg-glass-raised);
+  border-color: var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+}
+
+/* In-list search — inset frosted pill, matching the core input recipe. The
+   base focus outline (brand ring) is left intact for a11y. */
+html[data-lg][data-lg-screen='vorgaenge'] .vg-search-input {
+  border: 1px solid transparent;
+  background: linear-gradient(180deg, rgba(15, 61, 46, 0.05), rgba(15, 61, 46, 0.03));
+  box-shadow: inset 0 1.5px 3px rgba(15, 61, 46, 0.08), inset 0 0 0 1px rgba(15, 61, 46, 0.05);
+}
+html[data-lg][data-lg-screen='vorgaenge'].dark .vg-search-input {
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+/* ── Detail /vorgaenge/[id] — hero, progress, timeline, rail ────────────────── */
+
+/* The single frosted hero panel of the screen (blur allowed here). */
+html[data-lg][data-lg-screen='vorgaenge'] .vd-hero {
+  background: var(--lg-glass);
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-panel), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg][data-lg-screen='vorgaenge'].dark .vd-hero {
+  border-color: var(--lg-hairline);
+}
+
+/* Gesamtfortschritt card + its "Voraussichtlich fertig" inset. */
+html[data-lg][data-lg-screen='vorgaenge'] .vd-progress-main {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg][data-lg-screen='vorgaenge'].dark .vd-progress-main {
+  border-color: var(--lg-hairline);
+}
+html[data-lg][data-lg-screen='vorgaenge'] .vd-fertig {
+  background: var(--lg-glass-soft);
+  border: 1px solid var(--lg-hairline);
+  box-shadow: inset 0 1px 0 var(--lg-edge);
+}
+
+/* Timeline rows → glass: the Behörde icon tile as a frosted mint tile, the
+   expanded details panel as a soft frosted inset. Status nodes/dots keep their
+   semantic colours (done = green, pending = neutral) untouched. */
+html[data-lg][data-lg-screen='vorgaenge'] .vd-step-tile {
+  background: var(--lg-mint);
+  border: 1px solid var(--lg-mint-border);
+  box-shadow: inset 0 1px 0 var(--lg-edge);
+}
+html[data-lg][data-lg-screen='vorgaenge'] .vd-step-details {
+  background: var(--lg-glass-soft);
+  border: 1px solid var(--lg-hairline);
+  box-shadow: inset 0 1px 0 var(--lg-edge);
+}
+
+/* Right-rail cards on the detail (Zusammenfassung, Berechtigungen, Datenschutz)
+   are covered by the `.vg-layout .rail-card` rule above; the Berechtigungen icon
+   tile gets the same frosted mint treatment as the timeline tiles. */
+html[data-lg][data-lg-screen='vorgaenge'] .vd-berechtigungen-icon {
+  background: var(--lg-mint);
+  border: 1px solid var(--lg-mint-border);
+  box-shadow: inset 0 1px 0 var(--lg-edge);
+}
+
+/* ── Preview /vorgaenge/umzug/preview — Block-A hero + iridescent commit CTA ─── */
+
+/* The visually-dominant Block A ("Erledigen wir automatisch") is a raw <section>
+   with a solid Tailwind fill; lift it onto the same glass card as the rest. Its
+   only stable hook is the `aria-labelledby` pointing at its own heading id. The
+   emerald left-accent border (the "läuft automatisch" cue) is preserved — only
+   the other three edges + fill + shadow are glassed. */
+html[data-lg][data-lg-screen='vorgaenge'] [aria-labelledby='block-a-title'] {
+  background: var(--lg-glass-raised);
+  border-top: 1px solid var(--lg-edge);
+  border-right: 1px solid var(--lg-edge);
+  border-bottom: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg][data-lg-screen='vorgaenge'].dark [aria-labelledby='block-a-title'] {
+  border-top-color: var(--lg-hairline);
+  border-right-color: var(--lg-hairline);
+  border-bottom-color: var(--lg-hairline);
+}
+
+/* Iridescent primary CTA (the Umzug "Autopilot starten" commit — the one
+   iridescent element on this screen; opt-in via the .lg-iridescent class in
+   the JSX). Reinforce the shift/glow shadow + edge so they out-specify the core
+   `.bg-primary` raise. The gradient, veil + glare all come from the core class. */
+html[data-lg][data-lg-screen='vorgaenge'] [data-slot='button'].lg-iridescent {
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 16px 36px -14px rgba(20, 130, 115, 0.55), 0 6px 18px -8px rgba(90, 100, 190, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+html[data-lg][data-lg-screen='vorgaenge'] [data-slot='button'].lg-iridescent:hover {
+  box-shadow: 0 20px 44px -14px rgba(20, 130, 115, 0.65), 0 8px 22px -8px rgba(90, 100, 190, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}

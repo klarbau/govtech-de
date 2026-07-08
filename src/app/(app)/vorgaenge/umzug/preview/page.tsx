@@ -8,6 +8,7 @@ import { de } from 'date-fns/locale';
 import { useTranslations } from 'next-intl';
 import { ArrowLeft } from 'lucide-react';
 
+import { LiquidGlassScreen } from '@/components/layout/LiquidGlassScreen';
 import { PrototypeDisclaimer } from '@/components/shared/PrototypeDisclaimer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -92,6 +93,7 @@ export default function UmzugPreviewPage() {
 
   return (
     <div className="flex flex-col gap-8">
+      <LiquidGlassScreen name="vorgaenge" />
       <div className="flex flex-col gap-4">
         <Link
           href="/vorgaenge/umzug/start"

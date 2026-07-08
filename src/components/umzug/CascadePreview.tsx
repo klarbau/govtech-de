@@ -226,6 +226,7 @@ export function CascadePreview({
           type="button"
           variant="default"
           size="lg"
+          className="lg-iridescent"
           onClick={handleStart}
           disabled={isStarting}
         >
