@@ -33,6 +33,8 @@ import {
 import { ParthenonCrest } from '@/components/layout/ParthenonCrest';
 import { ThemeToggle } from '@/components/layout/ThemeToggle';
 
+import { LiquidGlassAux } from './(auth)/LiquidGlassAux';
+
 // Rendered at request time: see (app)/layout.tsx — the next-intl@3 + Next 15.5
 // client IntlProvider is not statically prerenderable in this setup.
 export const dynamic = 'force-dynamic';
@@ -93,6 +95,8 @@ const TRUST_BADGES = [
 export default function HomePage() {
   return (
     <>
+      <LiquidGlassAux />
+
       {/* Landing-only header: NOT the gt-header; sticky white marketing nav. */}
       <header className="landing-header">
         <Link href="/" className="gt-brand">

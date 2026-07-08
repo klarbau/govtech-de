@@ -3,7 +3,141 @@
    ---------------------------------------------------------------------------
    These surfaces keep their OWN identity (plan §3: „eigene Identität behalten,
    nur Tokens/Ambient angleichen"). This sheet only aligns tokens/surfaces with
-   the app-wide Liquid-Glass layer. Every rule is gated (html[data-lg] on the
-   landing / a dedicated scope on (auth) routes) so it is inert elsewhere.
-   Surfaces only — never text colours.
+   the app-wide Liquid-Glass layer. Every rule is gated under `html[data-lg-aux]`
+   (set by `LiquidGlassAux` on the landing `/` and the (auth) onboarding flow) so
+   it is inert everywhere else. Surfaces only — never text colours.
+
+   Why `data-lg-aux`, NOT the app's `data-lg`: mounting `LiquidGlassChrome` here
+   would match every generic primitive in liquid-glass-core.css (all cards,
+   inputs, buttons, dialogs) AND swap the identity background for `--lg-canvas` —
+   an over-reskin that erases these screens' own look, while still NOT touching
+   the landing's custom `.flow-card`/`.hero-stats` (they aren't generic cards).
+   So we run a lighter, self-contained ambient + a hand-picked surface pass here.
+
+   Token subset transcribed from liquid-glass-core.css (kept local because the
+   `--lg-*` tokens there are declared under `html[data-lg]`, which does not match
+   this scope). The `@keyframes lg-blob-*` referenced below live in the core
+   sheet (global, un-gated) and are reused as-is.
    ═══════════════════════════════════════════════════════════════════════════ */
+
+html[data-lg-aux] {
+  --lg-glass-raised: linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(255, 255, 255, 0.85));
+  --lg-hairline: rgba(11, 18, 32, 0.08);
+  --lg-edge: rgba(255, 255, 255, 0.8);
+  --lg-edge-strong: rgba(255, 255, 255, 0.95);
+  --lg-shadow-lift: 0 10px 26px -16px rgba(15, 61, 46, 0.22);
+  --lg-shadow-card: 0 4px 16px -12px rgba(15, 61, 46, 0.16);
+  --lg-shadow-panel: 0 34px 80px -34px rgba(15, 61, 46, 0.3), 0 8px 24px -14px rgba(15, 61, 46, 0.12);
+  --lg-canvas: linear-gradient(180deg, #f7f9f9 0%, #eef2f2 100%);
+}
+
+html[data-lg-aux].dark {
+  --lg-glass-raised: linear-gradient(180deg, rgba(46, 56, 70, 0.9), rgba(34, 42, 54, 0.78));
+  --lg-hairline: rgba(255, 255, 255, 0.1);
+  --lg-edge: rgba(255, 255, 255, 0.12);
+  --lg-edge-strong: rgba(255, 255, 255, 0.16);
+  --lg-shadow-lift: 0 12px 30px -18px rgba(0, 0, 0, 0.6);
+  --lg-shadow-card: 0 4px 16px -12px rgba(0, 0, 0, 0.5);
+  --lg-shadow-panel: 0 34px 80px -34px rgba(0, 0, 0, 0.66), 0 8px 24px -14px rgba(0, 0, 0, 0.5);
+  --lg-canvas: linear-gradient(180deg, #0d1117 0%, #0b0f15 100%);
+}
+
+/* ── Canvas + ambient ────────────────────────────────────────────────────────
+   Put the app shell's own `--lg-canvas` gradient (soft near-white → cool grey)
+   on <html>, then make body + the (auth) wrapper transparent so the fixed,
+   negative-z ambient shows through and the glass surfaces have a field to sit
+   over. Sharing the app canvas is the strongest harmonisation lever and stays
+   squarely „Ambient/Token angleichen" — the brand identity is the layout,
+   typography, Waldgrün accents and the illustrations, not the page canvas. */
+html[data-lg-aux] {
+  background: var(--lg-canvas);
+}
+html[data-lg-aux] body {
+  background: transparent;
+}
+html[data-lg-aux] .lg-aux-canvas {
+  background: transparent;
+}
+
+html[data-lg-aux] .lg-ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+html[data-lg-aux].dark .lg-ambient {
+  opacity: 0.5;
+}
+html[data-lg-aux] .lg-blob {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  will-change: transform;
+}
+html[data-lg-aux] .lg-blob--a {
+  left: -160px; top: -220px; width: 720px; height: 720px;
+  background: radial-gradient(closest-side, rgba(141, 199, 189, 0.42), rgba(255, 255, 255, 0) 72%);
+  animation: lg-blob-a 26s ease-in-out infinite alternate;
+}
+html[data-lg-aux] .lg-blob--b {
+  right: -180px; top: -140px; width: 680px; height: 680px;
+  background: radial-gradient(closest-side, rgba(151, 190, 224, 0.4), rgba(255, 255, 255, 0) 72%);
+  animation: lg-blob-b 30s ease-in-out infinite alternate;
+}
+html[data-lg-aux] .lg-blob--c {
+  right: 40px; bottom: -280px; width: 700px; height: 700px;
+  background: radial-gradient(closest-side, rgba(192, 186, 230, 0.32), rgba(255, 255, 255, 0) 74%);
+  animation: lg-blob-c 34s ease-in-out infinite alternate;
+}
+html[data-lg-aux] .lg-blob--d {
+  left: 120px; bottom: -240px; width: 620px; height: 620px;
+  background: radial-gradient(closest-side, rgba(146, 198, 194, 0.36), rgba(255, 255, 255, 0) 72%);
+  animation: lg-blob-b 38s ease-in-out infinite alternate-reverse;
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-lg-aux] .lg-blob {
+    animation: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Surface harmonisation — raised glass, no frost (content stays contrast-safe,
+   matching the core philosophy that content cards get no backdrop-filter). The
+   identity (layout, typography, Waldgrün accents, illustrations, the diagram's
+   own inner nodes/chips) is untouched; only the outer panels' background /
+   border / shadow are lifted to the LG surface language.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Landing — signature process-flow diagram (the central hero panel). */
+html[data-lg-aux] .flow-card {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-lift), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg-aux].dark .flow-card {
+  border-color: var(--lg-hairline);
+}
+
+/* Landing — hero stats column (right). */
+html[data-lg-aux] .hero-stats {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg-aux].dark .hero-stats {
+  border-color: var(--lg-hairline);
+}
+
+/* Onboarding — the single central step panel (shadcn Card). Only the outer
+   step card carries `data-slot='card'` here (method rows, persona cards,
+   watermark banner and the transparency sub-panels are plain buttons/divs), so
+   this stays one raised glass sheet per screen. */
+html[data-lg-aux] [data-slot='card'] {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-panel), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg-aux].dark [data-slot='card'] {
+  border-color: var(--lg-hairline);
+}

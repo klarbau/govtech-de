@@ -6,6 +6,8 @@ import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 import { ParthenonCrest } from '@/components/layout/ParthenonCrest';
 import { ThemeToggle } from '@/components/layout/ThemeToggle';
 
+import { LiquidGlassAux } from './LiquidGlassAux';
+
 // The onboarding flow hydrates and reseeds from localStorage at request time,
 // so static prerendering yields nothing and trips the next-intl@3 + Next 15.5
 // IntlProvider prerender bug. Render dynamically — matching (app)/layout.tsx.
@@ -22,7 +24,8 @@ export default async function AuthLayout({
   const tOnboarding = await getTranslations('onboarding');
 
   return (
-    <div className="flex min-h-screen flex-col bg-surface-page">
+    <div className="lg-aux-canvas flex min-h-screen flex-col bg-surface-page">
+      <LiquidGlassAux />
       <a
         href="#main-content"
         className="sr-only focus-visible:not-sr-only focus-visible:absolute focus-visible:left-4 focus-visible:top-4 focus-visible:z-50 focus-visible:rounded-md focus-visible:bg-foreground focus-visible:px-3 focus-visible:py-2 focus-visible:text-sm focus-visible:text-background"
