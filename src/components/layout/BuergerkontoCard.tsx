@@ -21,6 +21,7 @@ export function BuergerkontoCard() {
   const [ort, setOrt] = React.useState<string | null>(null);
 
   React.useEffect(() => {
+    if (!lgEnabled) return;
     let cancelled = false;
     void api
       .getProfile()

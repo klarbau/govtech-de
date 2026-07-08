@@ -163,21 +163,6 @@ html[data-lg] .lg-wohngeld-folge {
   box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge);
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   The ONE iridescent CTA of this screen — the confirm-gate button on the
-   Umzug-/Lebenslage-ConfirmCard (added as `.lg-iridescent` in-component). The
-   full recipe lives in the core; this override only re-asserts the iridescent
-   shadow/border at the button-slot specificity, because the button also carries
-   `bg-primary` whose core shadow rule (higher specificity) would otherwise win.
-   ═══════════════════════════════════════════════════════════════════════════ */
-html[data-lg] [data-slot='button'].lg-iridescent {
-  border-color: rgba(255, 255, 255, 0.4);
-  box-shadow: 0 16px 36px -14px rgba(20, 130, 115, 0.55),
-    0 6px 18px -8px rgba(90, 100, 190, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5);
-}
-html[data-lg] [data-slot='button'].lg-iridescent:hover {
-  box-shadow: 0 20px 44px -14px rgba(20, 130, 115, 0.65),
-    0 8px 22px -8px rgba(90, 100, 190, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.55);
-}
+/* The ONE iridescent CTA of this screen sits on the ConfirmCards' confirm-gate
+   button (`.lg-iridescent` in-component). Recipe + the button-slot specificity
+   override both live in liquid-glass-core.css — nothing screen-specific here. */

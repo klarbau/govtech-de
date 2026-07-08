@@ -172,14 +172,6 @@ html[data-lg][data-lg-screen='vorgaenge'].dark [aria-labelledby='block-a-title']
   border-bottom-color: var(--lg-hairline);
 }
 
-/* Iridescent primary CTA (the Umzug "Autopilot starten" commit — the one
-   iridescent element on this screen; opt-in via the .lg-iridescent class in
-   the JSX). Reinforce the shift/glow shadow + edge so they out-specify the core
-   `.bg-primary` raise. The gradient, veil + glare all come from the core class. */
-html[data-lg][data-lg-screen='vorgaenge'] [data-slot='button'].lg-iridescent {
-  border-color: rgba(255, 255, 255, 0.4);
-  box-shadow: 0 16px 36px -14px rgba(20, 130, 115, 0.55), 0 6px 18px -8px rgba(90, 100, 190, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.5);
-}
-html[data-lg][data-lg-screen='vorgaenge'] [data-slot='button'].lg-iridescent:hover {
-  box-shadow: 0 20px 44px -14px rgba(20, 130, 115, 0.65), 0 8px 22px -8px rgba(90, 100, 190, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.55);
-}
+/* Iridescent primary CTA (the Umzug "Autopilot starten" commit) is opt-in via
+   `.lg-iridescent` in the JSX; recipe + button-slot specificity override live
+   in liquid-glass-core.css — nothing screen-specific here. */

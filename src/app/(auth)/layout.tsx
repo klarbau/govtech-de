@@ -6,7 +6,7 @@ import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 import { ParthenonCrest } from '@/components/layout/ParthenonCrest';
 import { ThemeToggle } from '@/components/layout/ThemeToggle';
 
-import { LiquidGlassAux } from './LiquidGlassAux';
+import { LiquidGlassAux } from '@/components/layout/LiquidGlassAux';
 
 // The onboarding flow hydrates and reseeds from localStorage at request time,
 // so static prerendering yields nothing and trips the next-intl@3 + Next 15.5

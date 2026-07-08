@@ -5,7 +5,9 @@
    which `LiquidGlassChrome` sets on <html> for the whole authenticated app
    (rendered once in `(app)/layout.tsx`). It restyles SURFACES only (background ·
    border · shadow · backdrop-filter · radius), plus avatars and the primary CTA.
-   It never sets a text colour, so the existing Waldgrün tokens keep their
+   Text colours stay token-driven (var(--ink) / var(--color-text-muted)) or
+   intrinsic to dark fills (#fff on the crest tile and the iridescent CTA) —
+   never hardcoded against the theme, so the Waldgrün tokens keep their
    light/dark contrast.
 
    Scope split: this sheet holds the tokens (`--lg-*`), the ambient refraction
@@ -392,6 +394,17 @@ html[data-lg] .lg-iridescent:hover {
   box-shadow: 0 20px 44px -14px rgba(20, 130, 115, 0.65), 0 8px 22px -8px rgba(90, 100, 190, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 html[data-lg] .lg-iridescent:active { transform: translateY(1px) scale(0.995); }
+/* shadcn buttons also carry `bg-primary`, whose raise shadow above would
+   out-specify the base `.lg-iridescent` rule (0,3,1 vs 0,2,1) — re-assert the
+   iridescent edge + glow at button-slot specificity (later in file = wins the
+   tie against the bg-primary block) so the opt-in works on any button. */
+html[data-lg] [data-slot='button'].lg-iridescent {
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 16px 36px -14px rgba(20, 130, 115, 0.55), 0 6px 18px -8px rgba(90, 100, 190, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+html[data-lg] [data-slot='button'].lg-iridescent:hover {
+  box-shadow: 0 20px 44px -14px rgba(20, 130, 115, 0.65), 0 8px 22px -8px rgba(90, 100, 190, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
 @media (prefers-reduced-motion: reduce) {
   html[data-lg] .lg-iridescent { transition: none; }
   html[data-lg] .lg-iridescent::after { animation: none !important; }
