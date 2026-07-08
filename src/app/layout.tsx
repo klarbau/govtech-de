@@ -19,6 +19,13 @@ import './posteingang-liquid-glass.css';
 import './dashboard-liquid-glass.css';
 import './assistent-liquid-glass.css';
 import './vorgaenge-liquid-glass.css';
+import './dokumente-liquid-glass.css';
+import './termine-liquid-glass.css';
+import './stammdaten-liquid-glass.css';
+import './familie-liquid-glass.css';
+import './steuer-liquid-glass.css';
+import './datenschutz-liquid-glass.css';
+import './lebenslagen-liquid-glass.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 const interTight = Inter_Tight({ subsets: ['latin'], variable: '--font-display' });

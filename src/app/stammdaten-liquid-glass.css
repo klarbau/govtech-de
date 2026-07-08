@@ -1,0 +1,8 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Stammdaten — Liquid Glass (Welle 2/3)
+   ---------------------------------------------------------------------------
+   Screen-scoped rules on top of liquid-glass-core.css. Every rule is gated
+   under `html[data-lg]` and targets screen-only class names, so the sheet is
+   inert elsewhere. Surfaces only (background · border · shadow ·
+   backdrop-filter · radius) — never text colours.
+   ═══════════════════════════════════════════════════════════════════════════ */
