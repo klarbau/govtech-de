@@ -1423,7 +1423,11 @@
     "fristen": [],
     "was_kann_ich_tun_options": [],
     "status": "ungelesen",
-    "empfangen_am": "@now-1d"
+    "empfangen_am": "@now-1d",
+    "anhaenge": [
+      { "name": "Anmeldebestätigung.pdf", "size_kb": 245 },
+      { "name": "Merkblatt Anmeldung.pdf", "size_kb": 129 }
+    ]
   },
   {
     "id": "letter-umzug2026-finanzamt-bestaetigung",

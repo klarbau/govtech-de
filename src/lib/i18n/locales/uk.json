@@ -1100,6 +1100,7 @@
   },
   "shell": {
     "sidebar": {
+      "buergerkonto": "Громадянський акаунт",
       "authority": "Федеративна Республіка Німеччина",
       "help": "Допомога та контакти",
       "logout": "Вийти",
@@ -2209,7 +2210,8 @@
       "placeholder": "Пошук за номером справи (Aktenzeichen) або відомством …",
       "aria_label": "Пошук за номером справи (Aktenzeichen) або відомством",
       "view_aria": "Вигляд",
-      "hits_count_template": "{count, plural, =0 {Збігів немає} =1 {1 збіг} few {# збіги} many {# збігів} other {# збігу}}"
+      "hits_count_template": "{count, plural, =0 {Збігів немає} =1 {1 збіг} few {# збіги} many {# збігів} other {# збігу}}",
+      "top_placeholder": "Пошук"
     },
     "filter": {
       "title": "Фільтри",
@@ -2472,7 +2474,7 @@
         "herunterladen": "Завантажити",
         "drucken": "Друк",
         "tabs_aria": "Перегляд листа",
-        "tab_original": "Оригінал",
+        "tab_original": "Повідомлення",
         "tab_anhaenge": "Вкладення",
         "tab_verlauf": "Історія",
         "meta_eingegangen": "Отримано",
@@ -2491,7 +2493,26 @@
           "sozialversicherung": "Соціальне страхування",
           "privat": "Приватноправова установа",
           "unbekannt": "Офіційний лист"
-        }
+        },
+        "zurueck": "Назад",
+        "antworten": "Відповісти",
+        "mehr": "Більше",
+        "schliessen": "Закрити",
+        "verifiziert": "Обліковий запис відомства підтверджено (Behördenkonto)",
+        "meta_status": "Статус",
+        "status_ungelesen": "Непрочитано",
+        "status_gelesen": "Прочитано",
+        "status_erledigt": "Виконано",
+        "frist_relativ_template": "{tage, plural, =0 {(сьогодні)} one {(через # день)} few {(через # дні)} other {(через # днів)}}",
+        "erledigt_markieren": "Позначити як виконане",
+        "erledigt_toast": "Лист позначено як виконаний — ви знайдете його в архіві.",
+        "erledigt_fehler": "Не вдалося позначити. Спробуйте ще раз.",
+        "in_vorgang": "Перетворити на справу (Vorgang)",
+        "weiterleiten": "Переслати",
+        "merken": "Зберегти",
+        "nicht_verfuegbar": "Недоступно в цьому прототипі",
+        "dokumente_title": "Важливі документи",
+        "anhang_meta_template": "{typ} · {kb} КБ"
       },
       "erklaerer": {
         "title": "Простими словами",

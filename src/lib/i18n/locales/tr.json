@@ -1100,6 +1100,7 @@
   },
   "shell": {
     "sidebar": {
+      "buergerkonto": "Vatandaş hesabı",
       "authority": "Almanya Federal Cumhuriyeti",
       "help": "Yardım ve iletişim",
       "logout": "Çıkış yap",
@@ -2209,7 +2210,8 @@
       "placeholder": "Dosya numarası (Aktenzeichen) veya kurum ara …",
       "aria_label": "Dosya numarası (Aktenzeichen) veya kurum arama",
       "view_aria": "Görünüm",
-      "hits_count_template": "{count, plural, =0 {Sonuç yok} =1 {1 sonuç} other {# sonuç}}"
+      "hits_count_template": "{count, plural, =0 {Sonuç yok} =1 {1 sonuç} other {# sonuç}}",
+      "top_placeholder": "Ara"
     },
     "filter": {
       "title": "Filtreler",
@@ -2472,7 +2474,7 @@
         "herunterladen": "İndir",
         "drucken": "Yazdır",
         "tabs_aria": "Mektup görünümü",
-        "tab_original": "Özgün metin",
+        "tab_original": "Mesaj",
         "tab_anhaenge": "Ekler",
         "tab_verlauf": "Geçmiş",
         "meta_eingegangen": "Alınma tarihi",
@@ -2491,7 +2493,26 @@
           "sozialversicherung": "Sosyal sigorta",
           "privat": "Özel hukuk kuruluşu",
           "unbekannt": "Resmî mektup"
-        }
+        },
+        "zurueck": "Geri",
+        "antworten": "Yanıtla",
+        "mehr": "Daha fazla",
+        "schliessen": "Kapat",
+        "verifiziert": "Kurum hesabı doğrulandı (Behördenkonto)",
+        "meta_status": "Durum",
+        "status_ungelesen": "Okunmadı",
+        "status_gelesen": "Okundu",
+        "status_erledigt": "Tamamlandı",
+        "frist_relativ_template": "{tage, plural, =0 {(bugün)} one {(# gün içinde)} other {(# gün içinde)}}",
+        "erledigt_markieren": "Tamamlandı olarak işaretle",
+        "erledigt_toast": "Mektup tamamlandı olarak işaretlendi — arşivde bulabilirsiniz.",
+        "erledigt_fehler": "İşaretleme başarısız. Lütfen tekrar deneyin.",
+        "in_vorgang": "Vorgang'a (işleme) dönüştür",
+        "weiterleiten": "İlet",
+        "merken": "Kaydet",
+        "nicht_verfuegbar": "Bu prototipte mevcut değil",
+        "dokumente_title": "Önemli belgeler",
+        "anhang_meta_template": "{typ} · {kb} KB"
       },
       "erklaerer": {
         "title": "Sade dille",

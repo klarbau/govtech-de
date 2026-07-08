@@ -1100,6 +1100,8 @@ export interface MockBackendApi {
   markiereLetterGelesen(id: string): Promise<void>;
   /** Englisch-Alias für `markiereLetterGelesen`. */
   markLetterAsRead(letterId: string): Promise<void>;
+  /** Setzt `status: 'erledigt'` (→ Mailbox „Archiv") und loggt `archived`. */
+  markiereLetterErledigt(id: string): Promise<void>;
   bestaetigeAutopilotSchritt(
     vorgangId: string,
     schrittId: string,
@@ -2580,6 +2582,31 @@ export const api: MockBackendApi & {
   markLetterAsRead(letterId: string) {
     return this.markiereLetterGelesen(letterId);
   },
+
+  markiereLetterErledigt: (id: string) =>
+    withLatency(() => {
+      const letters = loadLetters();
+      const idx = letters.findIndex((l) => l.id === id);
+      if (idx === -1) {
+        throw new MockBackendError(`Brief "${id}" nicht gefunden.`, {
+          code: 'LETTER_NOT_FOUND',
+          retryable: false,
+        });
+      }
+      if (letters[idx].status === 'erledigt') return;
+      letters[idx] = { ...letters[idx], status: 'erledigt' };
+      saveLetters(letters);
+      emit({ type: 'letter_status_changed', letterId: id, status: 'erledigt' });
+      // Activity-Log: App-interne Ablage — keine Rechtswirkung gegenüber der Behörde.
+      appendActivityLogInternal(id, {
+        letter_id: id,
+        event: 'archived',
+        at: new Date().toISOString(),
+        by: 'app_internal',
+        rechtsgrundlage: 'DSGVO Art. 6 lit. b — Vertrag App-Nutzung',
+        note: 'Als erledigt markiert — rein App-interner Ablage-Status.',
+      });
+    }),
 
   bestaetigeAutopilotSchritt: (vorgangId: string, schrittId: string) =>
     withLatency(() => bestaetigeImpl(vorgangId, schrittId)),

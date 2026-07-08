@@ -41,6 +41,7 @@ export type {
   LetterAiSummary,
   LetterAiSummaryPostOpen,
   LetterAiSummaryPreOpen,
+  LetterAnhang,
   LetterArchetype,
   LetterArchetypeAction,
   LetterAttachment,

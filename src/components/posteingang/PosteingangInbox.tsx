@@ -6,6 +6,8 @@ import { useLocale, useTranslations } from 'next-intl';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
 import {
   Archive,
+  ArrowLeft,
+  Bookmark,
   Briefcase,
   Check,
   ChevronDown,
@@ -18,6 +20,7 @@ import {
   Filter,
   Folder,
   FolderInput,
+  Forward,
   Info,
   Inbox,
   Landmark,
@@ -25,24 +28,37 @@ import {
   Link2,
   ListChecks,
   Mail,
+  Menu,
   MessageCircleQuestion,
   MoreHorizontal,
   PenSquare,
   Printer,
+  Reply,
   Search,
   ShieldCheck,
+  SlidersHorizontal,
   Sparkles,
   ThumbsUp,
+  X,
 } from 'lucide-react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { toast } from 'sonner';
 
 import { api } from '@/lib/mock-backend';
+import { usePosteingangSearch } from '@/components/posteingang/posteingang-search-store';
 import { useMockEvents } from '@/components/providers/LiveBackendProvider';
 import { bridgeTargetForArchetype } from '@/lib/mock-backend/brief-bridge';
 import { useMediaQuery } from '@/lib/hooks/use-media-query';
 import { Skeleton } from '@/components/shared/Skeleton';
 import { isLocale, type Locale } from '@/i18n/routing';
-import type { Behoerde, BehoerdeKategorie, Letter, LetterFrist, Vorgang } from '@/types';
+import type {
+  Behoerde,
+  BehoerdeKategorie,
+  Letter,
+  LetterAnhang,
+  LetterFrist,
+  Vorgang,
+} from '@/types';
 
 import { ErkannteAufgabePanel } from './ErkannteAufgabePanel';
 import { ErklaererBulletList } from './ErklaererBulletList';
@@ -143,19 +159,38 @@ export function PosteingangInbox({
   const t = useTranslations('posteingang');
   const t3 = useTranslations('posteingang.mockup3');
   const tCommon = useTranslations('common');
+  const tNav = useTranslations('nav');
   const [letters, setLetters] = React.useState<Letter[]>(initial.letters);
   const [behoerdenById, setBehoerdenById] = React.useState(initial.behoerdenById);
   const [hasLoaded, setHasLoaded] = React.useState(initial.letters.length > 0);
   // Distinguishes „erster Refresh noch unterwegs" von „Posteingang ist leer":
   // flippt erst, wenn der initiale Refresh abgeschlossen ist (Erfolg ODER Fehler).
   const [loaded, setLoaded] = React.useState(initial.letters.length > 0);
-  const [searchQuery, setSearchQuery] = React.useState('');
+  // Search query is shared with the top-bar „Suchen"-pill (`PosteingangTopSearch`
+  // in the global TopNav) via a module-level store — the two inputs live in
+  // separate React trees across the app-shell boundary. The in-list field below
+  // stays as the < 1024px fallback; both write the same query.
+  const searchQuery = usePosteingangSearch((s) => s.query);
+  const setSearchQuery = usePosteingangSearch((s) => s.setQuery);
   const [statusTab, setStatusTab] = React.useState<StatusTab>('alle');
   const [mailbox, setMailbox] = React.useState<Mailbox>('posteingang');
   const [view, setView] = React.useState<'chronologisch' | 'vorgang'>('chronologisch');
   const [selectedLetterId, setSelectedLetterId] = React.useState<string | null>(
     initialSelectedLetterId ?? null,
   );
+  // Reader-Sichtbarkeit: „Zurück"/✕ klappt den Brief ZU (Liste breitet sich
+  // über die volle Breite aus); der nächste Karten-Klick öffnet ihn wieder.
+  // Zwei Zustände für die Choreografie: `readerOpen` steuert den Mount (und
+  // damit die framer-Exit-Animation), `listExpanded` flippt die Breiten-Klasse
+  // erst NACH abgeschlossenem Exit (AnimatePresence onExitComplete) — sonst
+  // würde die wachsende Liste den noch ausfahrenden Reader zerquetschen.
+  const [readerOpen, setReaderOpen] = React.useState(true);
+  const [listExpanded, setListExpanded] = React.useState(false);
+  const openLetter = React.useCallback((id: string) => {
+    setSelectedLetterId(id);
+    setReaderOpen(true);
+    setListExpanded(false);
+  }, []);
   const [filterOpen, setFilterOpen] = React.useState(false);
   const [filterSelected, setFilterSelected] = React.useState<FilterKategorie[]>([]);
 
@@ -424,61 +459,51 @@ export function PosteingangInbox({
     <>
       <div className={replyGutterOpen ? 'post-content post-content--reply-open' : 'post-content'}>
       <div className="post-shell">
-        <PostRail
-          mailbox={mailbox}
-          onMailboxChange={(next) => {
-            setMailbox(next);
-            setStatusTab('alle');
-          }}
-          mailboxCounts={mailboxCounts}
-          folders={folders}
-          activeFolders={filterSelected}
-          onToggleFolder={(k) =>
-            setFilterSelected((prev) =>
-              prev.includes(k) ? prev.filter((x) => x !== k) : [...prev, k],
-            )
-          }
-          onlyUnread={statusTab === 'ungelesen'}
-          onOnlyUnreadChange={(next) =>
-            setStatusTab(next ? 'ungelesen' : 'alle')
-          }
-          onOpenFilter={() => setFilterOpen(true)}
-          activeFilterCount={filterSelected.length}
-        />
-
         <div className="post-main">
-      <div className="post-toolbar">
-        <div className="input-icon">
-          <Search />
-          <input
-            className="input"
-            placeholder={t('search.placeholder')}
-            aria-label={t('search.aria_label')}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+      <div className={listExpanded || !selectedLetter ? 'post-layout post-layout--list-only' : 'post-layout'}>
+      {/* Archive-faithful list COLUMN: header (menu · title + unread count ·
+          filter), tabs and the scrolling card stream live inside the fixed
+          396px column, so the reader panel rises to full height beside it.
+          Mailbox/folder controls stay in the FilterSheet (filter button). */}
+      <div className="lg-list-col">
+      <div className="lg-list-head">
+        <button
+          type="button"
+          className="lg-round-btn"
+          aria-label={t('search.view_aria')}
+          onClick={() => setView((v) => (v === 'chronologisch' ? 'vorgang' : 'chronologisch'))}
+          aria-pressed={view === 'vorgang'}
+        >
+          <Menu aria-hidden="true" />
+        </button>
+        <div className="lg-list-title">
+          <h1>{tNav('posteingang')}</h1>
+          <p className="lg-list-sub">
+            <span className="tabular-nums">{tabCounts.ungelesen}</span> {t3('tabs.ungelesen').toLowerCase()}
+          </p>
         </div>
-        <div style={{ flex: 1 }} />
-        <div className="view-toggle" role="tablist" aria-label={t('search.view_aria')}>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={view === 'chronologisch'}
-            className={view === 'chronologisch' ? 'active' : ''}
-            onClick={() => setView('chronologisch')}
-          >
-            Chronologisch
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={view === 'vorgang'}
-            className={view === 'vorgang' ? 'active' : ''}
-            onClick={() => setView('vorgang')}
-          >
-            Nach Vorgang
-          </button>
-        </div>
+        <button
+          type="button"
+          className="lg-square-btn"
+          aria-label={t('filter.aria_label')}
+          onClick={() => setFilterOpen(true)}
+        >
+          <SlidersHorizontal aria-hidden="true" />
+          {filterSelected.length > 0 && (
+            <span className="lg-filter-dot" aria-hidden="true" />
+          )}
+        </button>
+      </div>
+
+      <div className="lg-list-search input-icon">
+        <Search aria-hidden="true" />
+        <input
+          className="input"
+          placeholder={t('search.placeholder')}
+          aria-label={t('search.aria_label')}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
       </div>
 
       {view === 'chronologisch' && (
@@ -514,7 +539,7 @@ export function PosteingangInbox({
         </div>
       )}
 
-      <div className="post-layout">
+      <div className="lg-list-scroll">
         {view === 'chronologisch' ? (
           <div>
             <PostSection
@@ -531,7 +556,7 @@ export function PosteingangInbox({
                   nowIso={nowIso}
                   section="neu"
                   fresh={freshIds.has(l.id)}
-                  onSelect={() => setSelectedLetterId(l.id)}
+                  onSelect={() => openLetter(l.id)}
                 />
               ))}
             </PostSection>
@@ -550,7 +575,7 @@ export function PosteingangInbox({
                   nowIso={nowIso}
                   section="frist7"
                   fresh={freshIds.has(l.id)}
-                  onSelect={() => setSelectedLetterId(l.id)}
+                  onSelect={() => openLetter(l.id)}
                 />
               ))}
             </PostSection>
@@ -569,7 +594,7 @@ export function PosteingangInbox({
                   nowIso={nowIso}
                   section="erledigt"
                   fresh={freshIds.has(l.id)}
-                  onSelect={() => setSelectedLetterId(l.id)}
+                  onSelect={() => openLetter(l.id)}
                 />
               ))}
             </PostSection>
@@ -601,18 +626,29 @@ export function PosteingangInbox({
             )}
           </div>
         )}
+      </div>
+      </div>
 
-        {selectedLetter && (
-          <PostDetail
-            letter={selectedLetter}
-            absender={selectedAbsender}
-            replyLabel={t('sticky_action.cta_reply')}
-            onAntwortVorbereiten={(e) => openReply(selectedLetter, e)}
-            onVorgangErstellen={() => setVorgangModalLetter(selectedLetter)}
-            onOriginaltextToggle={() => setOriginalTextOpen((v) => !v)}
-            originaltextOpen={originalTextOpen}
-          />
-        )}
+        {/* Schließen in zwei Takten: erst gleitet der Reader raus (Exit, bleibt
+            dabei im Flex-Fluss → Liste bleibt ruhig), dann flippt
+            onExitComplete die Breiten-Klasse und die Liste wächst per CSS-
+            Transition in den freien Raum. Öffnen läuft parallel (Liste
+            schrumpft, Reader faded ein). */}
+        <AnimatePresence initial={false} onExitComplete={() => setListExpanded(true)}>
+          {readerOpen && selectedLetter && (
+            <PostDetail
+              key="reader"
+              letter={selectedLetter}
+              absender={selectedAbsender}
+              nowIso={nowIso}
+              onAntwortVorbereiten={(e) => openReply(selectedLetter, e)}
+              onVorgangErstellen={() => setVorgangModalLetter(selectedLetter)}
+              onOriginaltextToggle={() => setOriginalTextOpen((v) => !v)}
+              originaltextOpen={originalTextOpen}
+              onClose={() => setReaderOpen(false)}
+            />
+          )}
+        </AnimatePresence>
 
       </div>
         </div>
@@ -917,14 +953,18 @@ function PostItemRow({
 }) {
   const tBadge = useTranslations('posteingang');
   const tCard = useTranslations('posteingang.card');
+  const t3 = useTranslations('posteingang.mockup3');
   const variant = avatarVariant(letter.absender_behoerde_id);
-  const archetypeLabel = archetypeText(letter);
   const earliestFrist = (letter.fristen ?? [])
     .map((f) => f.datum)
     .sort()[0];
-  const fristLabel = earliestFrist ? formatFristLabel(earliestFrist) : null;
+  const hasFrist = Boolean(earliestFrist);
   const eingangLabel = formatEingangLabel(letter.empfangen_am, nowIso);
-  const behoerdeName = behoerde?.name_de ?? '';
+  const behoerdeName = behoerde?.name_de ?? letter.betreff;
+  const kategorieLabel = t3(
+    `detail.kategorie.${behoerde?.kategorie ?? 'unbekannt'}` as 'detail.kategorie.bund',
+  );
+  const isUnread = letter.status === 'ungelesen';
 
   // Mehrsprachiger Brief-Erklärer (Spec §4.1) — dezenter Affordance-Hinweis:
   // nur wenn UI-Locale ≠ de UND dieser Brief für genau diese Locale geseedet ist.
@@ -937,6 +977,7 @@ function PostItemRow({
   return (
     <Link
       href={`/posteingang/${letter.id}`}
+      data-section={section}
       className={`post-item${active ? ' active' : ''}${fresh ? ' lw-fresh' : ''}`}
       onClick={(e) => {
         // Inline preview on ≥ lg: prevent navigation on a modifier-less POINTER
@@ -958,56 +999,42 @@ function PostItemRow({
       }}
     >
       <AvatarSquare variant={variant} />
-      <div className="body">
-        <div className="t">
-          {behoerdeName ? `${behoerdeName} — ` : ''}
-          {letter.betreff}
+      <div className="lg-card-body">
+        <div className="lg-card-top">
+          <span className="lg-card-name">{behoerdeName}</span>
+          <span className="lg-card-time tabular-nums">{eingangLabel}</span>
         </div>
-        <div className="s">
-          {archetypeLabel}
+        <div className="lg-card-subject">
+          <span className="lg-card-subject-text">{betreffOhneAz(letter)}</span>
+          {isUnread && (
+            <span
+              className="lg-unread-dot"
+              role="img"
+              aria-label={t3('tabs.ungelesen')}
+            />
+          )}
+        </div>
+        <div className="lg-card-chips">
+          {hasFrist && (
+            <span className="lg-chip lg-chip--frist">{t3('tabs.mit_frist')}</span>
+          )}
+          {behoerde && <span className="lg-chip">{kategorieLabel}</span>}
           {letter.vorgang_id && (
             <span
               data-testid="post-item-linked-badge"
-              className="ml-1.5 inline-flex items-center gap-1 rounded-full border border-border bg-muted px-1.5 py-0.5 align-middle text-[11px] font-medium text-muted-foreground"
+              className="lg-chip lg-chip--linked"
             >
-              <Link2 className="size-3" aria-hidden="true" />
+              <Link2 aria-hidden="true" />
               {tBadge('linkedBadge')}
             </span>
           )}
           {showSpracheHint && (
-            <span
-              data-testid="post-item-sprache-hint"
-              className="ml-1.5 inline-flex items-center align-middle"
-            >
-              <Languages
-                className="size-3.5 text-primary"
-                aria-hidden="true"
-              />
+            <span data-testid="post-item-sprache-hint" className="lg-chip">
+              <Languages aria-hidden="true" />
               <span className="sr-only">{tCard('in_ihrer_sprache_hint')}</span>
             </span>
           )}
-          <br />
-          Aktenzeichen: {letter.aktenzeichen}
         </div>
-      </div>
-      <div className="meta">
-        {section === 'erledigt' ? (
-          <>
-            Erledigt
-            <br />
-            {formatDDMMYYYY(parseISO(letter.empfangen_am))}
-          </>
-        ) : section === 'frist7' ? (
-          <>
-            {fristLabel && <div className="frist">Frist: {fristLabel}</div>}
-            <span className="un red" />
-          </>
-        ) : (
-          <>
-            {eingangLabel}
-            {letter.status === 'ungelesen' && <span className="un" />}
-          </>
-        )}
       </div>
     </Link>
   );
@@ -1018,24 +1045,28 @@ function PostItemRow({
 function PostDetail({
   letter,
   absender,
-  replyLabel,
+  nowIso,
   onAntwortVorbereiten,
   onVorgangErstellen,
   onOriginaltextToggle,
   originaltextOpen,
+  onClose,
 }: {
   letter: Letter;
   absender: Behoerde | null;
-  replyLabel: string;
+  nowIso: string;
   onAntwortVorbereiten: (e: React.SyntheticEvent) => void;
   onVorgangErstellen: () => void;
   onOriginaltextToggle: () => void;
   originaltextOpen: boolean;
+  onClose: () => void;
 }) {
   const t3 = useTranslations('posteingang.mockup3');
   const tWas = useTranslations('posteingang.was_kann_ich_tun');
   const tPost = useTranslations('posteingang');
   const tErkl = useTranslations('posteingang.erklaerer');
+  // prefers-reduced-motion: Slide-Offsets kollabieren auf reine Opacity-Fades.
+  const reduceMotion = useReducedMotion();
   const [docTab, setDocTab] = React.useState<'original' | 'anhaenge' | 'verlauf'>(
     'original',
   );
@@ -1088,6 +1119,22 @@ function PostDetail({
     [letter, tPost],
   );
 
+  // Footer-CTA „Als erledigt markieren" — Status-Flip via Mock-Backend; die
+  // Liste aktualisiert sich über das `letter_status_changed`-Event (Subscription
+  // im Inbox-Root). Rein App-interner Ablage-Status, keine Behörden-Wirkung.
+  const [erledigtBusy, setErledigtBusy] = React.useState(false);
+  const handleErledigt = React.useCallback(async () => {
+    setErledigtBusy(true);
+    try {
+      await api.markiereLetterErledigt(letter.id);
+      toast.success(t3('detail.erledigt_toast'));
+    } catch {
+      toast.error(t3('detail.erledigt_fehler'));
+    } finally {
+      setErledigtBusy(false);
+    }
+  }, [letter.id, t3]);
+
   // Mehrsprachiger Brief-Erklärer (Spec §4.2): locale-bewusste Bullet-Auswahl.
   // Die brief-lokale Sprachwahl folgt initial der UI-Locale (sofern geseedet),
   // ändert sie aber NICHT. `activeSummary` = übersetzte `post_open` ODER DE-Fallback.
@@ -1109,10 +1156,27 @@ function PostDetail({
     .map((f) => f.datum)
     .sort()[0];
   const fristLabel = earliestFrist ? formatFristLabel(earliestFrist) : null;
+  // „(in N Tagen)"-Zusatz wie im Mockup — nur für zukünftige Fristen.
+  const fristTage = earliestFrist
+    ? differenceInCalendarDays(parseISO(earliestFrist), parseISO(nowIso))
+    : null;
+  const fristRelativ =
+    fristTage !== null && fristTage >= 0
+      ? t3('detail.frist_relativ_template', { tage: fristTage })
+      : null;
   const fristTyp = letter.fristen?.[0]?.typ ?? 'Aktion';
-  const bodyExcerpt = letter.body_de
-    ? letter.body_de.split('\n').filter(Boolean).slice(2, 5).join(' ').slice(0, 280)
-    : '';
+  // Mockup-Auszug: ab der Grußzeile drei Absätze als normaler Brieftext
+  // (statt Letterhead-Schnipsel in Anführungszeichen).
+  const bodyLines = letter.body_de
+    .split('\n')
+    .map((l) => l.trim())
+    .filter(Boolean);
+  const greetIdx = bodyLines.findIndex((l) =>
+    /^(sehr geehrte|guten tag|hallo)/i.test(l),
+  );
+  const excerptStart = greetIdx >= 0 ? greetIdx : Math.min(2, bodyLines.length - 1);
+  const excerptAbsaetze = bodyLines.slice(excerptStart, excerptStart + 3);
+  const anhaenge = letter.anhaenge ?? [];
 
   // HONESTY-GUARDRAIL: Betrag/Frist sind deutsch-abgeleitete €/Datums-Werte und
   // werden NIE lokalisiert/neu gerendert — nur der deskriptive Bullet-Text wechselt
@@ -1145,21 +1209,117 @@ function PostDetail({
     .filter((text) => text.trim().length > 0);
   const hasNachzahlung = letter.betrag_richtung === 'nachzahlung';
 
-  const empfangenLabel = formatDDMMYYYY(parseISO(letter.empfangen_am));
+  const empfangenDate = parseISO(letter.empfangen_am);
+  const empfangenLabel = formatDDMMYYYY(empfangenDate);
+  // Mockup: Eingegangen-Zelle trägt auch die Uhrzeit („04.07.2026, 10:24").
+  const empfangenMitZeit = `${empfangenLabel}, ${String(empfangenDate.getHours()).padStart(2, '0')}:${String(empfangenDate.getMinutes()).padStart(2, '0')}`;
   const kategorieLabel = absender
     ? t3(`detail.kategorie.${absender.kategorie}` as 'detail.kategorie.bund')
     : t3('detail.kategorie.unbekannt');
 
   return (
-    <div className="post-detail">
+    <motion.div
+      className="post-detail"
+      initial={{ opacity: 0, x: reduceMotion ? 0 : 32 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: reduceMotion ? 0 : 32 }}
+      transition={{ duration: reduceMotion ? 0.01 : 0.26, ease: [0.22, 1, 0.36, 1] }}
+    >
+      {/* Archive reader toolbar: Zurück · Antworten · Herunterladen · Drucken ·
+          Mehr … runder Schließen-Button. Icon-über-Label wie im Mockup; nur
+          real verdrahtete Aktionen (kein totes „Weiterleiten"). */}
+      <div className="lg-reader-toolbar">
+        <button type="button" className="lg-tool" onClick={onClose}>
+          <ArrowLeft aria-hidden="true" />
+          <span>{t3('detail.zurueck')}</span>
+        </button>
+        <span className="lg-tool-divider" aria-hidden="true" />
+        {/* Mockup: die Werkzeug-Gruppe spannt sich bis max. 560px auf
+            (space-between); Weiterleiten/Mehr sind im Prototyp nicht
+            hinterlegt → sichtbar deaktiviert statt tot verdrahtet. */}
+        <div className="lg-tool-group">
+          <button
+            type="button"
+            className="lg-tool"
+            onClick={(e) => onAntwortVorbereiten(e)}
+          >
+            <Reply aria-hidden="true" />
+            <span>{t3('detail.antworten')}</span>
+          </button>
+          <button
+            type="button"
+            className="lg-tool"
+            disabled
+            aria-disabled="true"
+            title={t3('detail.nicht_verfuegbar')}
+          >
+            <Forward aria-hidden="true" />
+            <span>{t3('detail.weiterleiten')}</span>
+          </button>
+          <button
+            type="button"
+            className="lg-tool"
+            onClick={() => downloadLetterAsText(letter)}
+          >
+            <Download aria-hidden="true" />
+            <span>{t3('detail.herunterladen')}</span>
+          </button>
+          <button
+            type="button"
+            className="lg-tool"
+            onClick={() => {
+              if (typeof window !== 'undefined') window.print();
+            }}
+          >
+            <Printer aria-hidden="true" />
+            <span>{t3('detail.drucken')}</span>
+          </button>
+          <button
+            type="button"
+            className="lg-tool"
+            disabled
+            aria-disabled="true"
+            title={t3('detail.nicht_verfuegbar')}
+          >
+            <MoreHorizontal aria-hidden="true" />
+            <span>{t3('detail.mehr')}</span>
+          </button>
+        </div>
+        <span style={{ flex: 1 }} />
+        <button
+          type="button"
+          className="lg-reader-close"
+          aria-label={t3('detail.schliessen')}
+          onClick={onClose}
+        >
+          <X aria-hidden="true" />
+        </button>
+      </div>
+
+      {/* Brief-Wechsel: Remount (key=letter.id) mit sanftem Fade — setzt
+          zugleich die Scroll-Position des Readers auf oben zurück. */}
+      <motion.div
+        key={letter.id}
+        className="lg-reader-scroll"
+        initial={{ opacity: 0, y: reduceMotion ? 0 : 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: reduceMotion ? 0.01 : 0.2, ease: 'easeOut' }}
+      >
       <div className="post-detail-head">
         <span className="av">
           <Landmark />
         </span>
         <div className="grow">
           <div className="who">{absender?.name_de ?? 'Behörde'}</div>
-          <div className="what">
-            Behördenbrief · {archetypeText(letter)}
+          {absender && (
+            <div className="lg-reader-adresse">
+              {absender.adresse.strasse} {absender.adresse.hausnummer},{' '}
+              {absender.adresse.plz} {absender.adresse.ort}
+            </div>
+          )}
+          <div className="verify lg-reader-verify">
+            <ShieldCheck aria-hidden="true" />
+            {t3('detail.verifiziert')}
             {letter.vorgang_id && (
               <span
                 data-testid="post-detail-linked-badge"
@@ -1171,70 +1331,32 @@ function PostDetail({
             )}
           </div>
         </div>
-        <div style={{ textAlign: 'right' }}>
-          <div className="verify">
-            <ShieldCheck />Authentisch geprüft
-          </div>
-          <div className="muted text-xs">
-            Verifiziert am {empfangenLabel}
-          </div>
-        </div>
       </div>
 
-      <div className="post-detail-tools">
-        <button
-          type="button"
-          className="btn btn-secondary btn-sm"
-          onClick={() => downloadLetterAsText(letter)}
-        >
-          <Download />
-          {t3('detail.herunterladen')}
-        </button>
-        <button
-          type="button"
-          className="btn btn-secondary btn-sm"
-          onClick={() => {
-            if (typeof window !== 'undefined') window.print();
-          }}
-        >
-          <Printer />
-          {t3('detail.drucken')}
-        </button>
-        <span style={{ flex: 1 }} />
-        <button
-          type="button"
-          className="btn btn-secondary btn-sm"
-          style={{ width: '32px', padding: 0 }}
-          aria-label="Weitere Optionen"
-          disabled
-          aria-disabled="true"
-        >
-          <MoreHorizontal />
-        </button>
-      </div>
-
-      <h2>{letter.betreff}</h2>
+      <h2>{betreffOhneAz(letter)}</h2>
+      <div className="lg-reader-az tabular-nums">{letter.aktenzeichen}</div>
       <dl className="post-meta-grid">
         <div className="post-meta-cell">
           <dt>{t3('detail.meta_eingegangen')}</dt>
-          <dd>{empfangenLabel}</dd>
-        </div>
-        <div className="post-meta-cell">
-          <dt>{t3('detail.meta_behoerde')}</dt>
-          <dd>{absender?.name_de ?? '—'}</dd>
+          <dd className="tabular-nums">{empfangenMitZeit}</dd>
         </div>
         <div className="post-meta-cell">
           <dt>{t3('detail.meta_kategorie')}</dt>
           <dd>{kategorieLabel}</dd>
         </div>
         <div className="post-meta-cell">
-          <dt>{t3('detail.meta_aktenzeichen')}</dt>
-          <dd>{letter.aktenzeichen}</dd>
-        </div>
-        <div className="post-meta-cell">
           <dt>{t3('detail.meta_frist')}</dt>
           <dd className={fristLabel ? 'has-frist' : undefined}>
             {fristLabel ?? t3('detail.meta_frist_keine')}
+            {fristRelativ && (
+              <span className="lg-frist-relativ"> {fristRelativ}</span>
+            )}
+          </dd>
+        </div>
+        <div className="post-meta-cell">
+          <dt>{t3('detail.meta_status')}</dt>
+          <dd className={letter.status === 'ungelesen' ? 'lg-status-neu' : undefined}>
+            {t3(`detail.status_${letter.status}` as 'detail.status_ungelesen')}
           </dd>
         </div>
       </dl>
@@ -1257,6 +1379,9 @@ function PostDetail({
           onClick={() => setDocTab('anhaenge')}
         >
           {t3('detail.tab_anhaenge')}
+          {anhaenge.length > 0 && (
+            <span className="count tabular-nums">{anhaenge.length}</span>
+          )}
         </button>
         <button
           type="button"
@@ -1271,6 +1396,52 @@ function PostDetail({
 
       {docTab === 'original' && (
         <>
+          {/* Archive-Reihenfolge: der Brief öffnet sich zuerst als BRIEF —
+              Textauszug-Card mit „Mehr anzeigen" unten rechts; die KI- und
+              Aufgaben-Schichten folgen darunter. */}
+          {!originaltextOpen ? (
+            <div className="auszug">
+              {excerptAbsaetze.map((absatz, i) => (
+                <p key={i} className="lg-auszug-p">
+                  {absatz}
+                </p>
+              ))}
+              <div className="lg-auszug-foot">
+                <button
+                  type="button"
+                  className="more"
+                  onClick={onOriginaltextToggle}
+                  style={{ background: 'transparent', border: 0, padding: 0, cursor: 'pointer' }}
+                >
+                  Mehr anzeigen <ChevronDown style={{ width: '12px', height: '12px' }} />
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div style={{ marginTop: '18px' }}>
+              <OriginaltextBlock ref={originalRef} body={letter.body_de} />
+            </div>
+          )}
+
+          {anhaenge.length > 0 && (
+            <div className="lg-docs-card">
+              <div className="lg-docs-title">{t3('detail.dokumente_title')}</div>
+              <div className="lg-docs-rows">
+                {anhaenge.map((anhang) => (
+                  <AnhangRow
+                    key={anhang.name}
+                    anhang={anhang}
+                    downloadLabel={t3('detail.herunterladen')}
+                    metaLabel={t3('detail.anhang_meta_template', {
+                      typ: anhangTyp(anhang),
+                      kb: anhang.size_kb,
+                    })}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="ai-card">
             <span className="icon-circle">
               <Sparkles />
@@ -1476,25 +1647,6 @@ function PostDetail({
             </div>
           </section>
 
-          {!originaltextOpen ? (
-            <div className="auszug">
-              <button
-                type="button"
-                className="more"
-                onClick={onOriginaltextToggle}
-                style={{ background: 'transparent', border: 0, padding: 0, cursor: 'pointer' }}
-              >
-                Mehr anzeigen <ChevronDown style={{ width: '12px', height: '12px' }} />
-              </button>
-              <div className="h">Auszug aus dem Originaltext</div>
-              <div className="quote">„{bodyExcerpt || letter.body_de.slice(0, 220)}"</div>
-            </div>
-          ) : (
-            <div style={{ marginTop: '18px' }}>
-              <OriginaltextBlock ref={originalRef} body={letter.body_de} />
-            </div>
-          )}
-
           <Link href="/assistent" className="post-fragen" style={{ textDecoration: 'none' }}>
             <span className="icon-circle">
               <MessageCircleQuestion aria-hidden="true" />
@@ -1511,12 +1663,27 @@ function PostDetail({
         </>
       )}
 
-      {docTab === 'anhaenge' && (
-        <div className="post-doc-empty">
-          <FileIcon aria-hidden="true" />
-          <p>{t3('detail.anhaenge_empty')}</p>
-        </div>
-      )}
+      {docTab === 'anhaenge' &&
+        (anhaenge.length > 0 ? (
+          <div className="lg-docs-rows lg-docs-rows--tab">
+            {anhaenge.map((anhang) => (
+              <AnhangRow
+                key={anhang.name}
+                anhang={anhang}
+                downloadLabel={t3('detail.herunterladen')}
+                metaLabel={t3('detail.anhang_meta_template', {
+                  typ: anhangTyp(anhang),
+                  kb: anhang.size_kb,
+                })}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="post-doc-empty">
+            <FileIcon aria-hidden="true" />
+            <p>{t3('detail.anhaenge_empty')}</p>
+          </div>
+        ))}
 
       {docTab === 'verlauf' && (
         <ol className="post-verlauf">
@@ -1530,6 +1697,106 @@ function PostDetail({
           </li>
         </ol>
       )}
+      </motion.div>
+
+      {/* Archive footer CTAs — unten am Glas-Panel gepinnt: irisierendes
+          „Als erledigt markieren" + Glas-„In Vorgang überführen". */}
+      <div className="lg-reader-cta">
+        <button
+          type="button"
+          className="btn btn-primary lg-cta-main"
+          onClick={handleErledigt}
+          disabled={letter.status === 'erledigt' || erledigtBusy}
+          aria-disabled={letter.status === 'erledigt' || erledigtBusy}
+        >
+          <Check aria-hidden="true" />
+          {letter.status === 'erledigt'
+            ? t3('detail.status_erledigt')
+            : t3('detail.erledigt_markieren')}
+        </button>
+        <button
+          type="button"
+          className="btn btn-secondary lg-cta-secondary"
+          onClick={onVorgangErstellen}
+        >
+          {t3('detail.in_vorgang')}
+        </button>
+        <button
+          type="button"
+          className="lg-cta-bookmark"
+          aria-label={t3('detail.merken')}
+          title={t3('detail.nicht_verfuegbar')}
+          disabled
+          aria-disabled="true"
+        >
+          <Bookmark aria-hidden="true" />
+        </button>
+      </div>
+    </motion.div>
+  );
+}
+
+/**
+ * Betreff ohne redundantes Aktenzeichen-Suffix — das Mockup zeigt das AZ als
+ * eigene Zeile unter dem Titel, viele Seed-Betreffs führen es aber am Ende.
+ */
+function betreffOhneAz(letter: Letter): string {
+  const azRaw = letter.aktenzeichen.replace(/^\[MOCK\]\s*/, '');
+  if (azRaw && letter.betreff.endsWith(azRaw)) {
+    return letter.betreff.slice(0, -azRaw.length).trimEnd();
+  }
+  return letter.betreff;
+}
+
+/** Datei-Typ-Label aus dem Anhang-Namen („PDF" aus „….pdf"). */
+function anhangTyp(anhang: LetterAnhang): string {
+  return anhang.name.split('.').pop()?.toUpperCase() ?? 'DATEI';
+}
+
+/** [MOCK]-Anhang: lädt einen Text-Stub statt einer echten PDF herunter. */
+function downloadAnhangStub(anhang: LetterAnhang): void {
+  if (typeof window === 'undefined') return;
+  const blob = new Blob(
+    [`[MOCK] Demo-Anhang — kein echter Inhalt.\n${anhang.name} (${anhang.size_kb} KB)\n`],
+    { type: 'text/plain;charset=utf-8' },
+  );
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${anhang.name}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+/** Dokument-Zeile der „Wichtige Dokumente"-Card / des Anhänge-Tabs. */
+function AnhangRow({
+  anhang,
+  downloadLabel,
+  metaLabel,
+}: {
+  anhang: LetterAnhang;
+  downloadLabel: string;
+  metaLabel: string;
+}) {
+  return (
+    <div className="lg-doc-row">
+      <span className="lg-doc-icon" aria-hidden="true">
+        <FileIcon />
+      </span>
+      <div className="lg-doc-body">
+        <div className="lg-doc-name">{anhang.name}</div>
+        <div className="lg-doc-meta tabular-nums">{metaLabel}</div>
+      </div>
+      <button
+        type="button"
+        className="lg-doc-action"
+        aria-label={`${downloadLabel}: ${anhang.name}`}
+        onClick={() => downloadAnhangStub(anhang)}
+      >
+        <Download aria-hidden="true" />
+      </button>
     </div>
   );
 }

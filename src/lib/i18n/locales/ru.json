@@ -1100,6 +1100,7 @@
   },
   "shell": {
     "sidebar": {
+      "buergerkonto": "Гражданский аккаунт",
       "authority": "Федеративная Республика Германия",
       "help": "Помощь и контакты",
       "logout": "Выйти",
@@ -2209,7 +2210,8 @@
       "placeholder": "Поиск по номеру дела (Aktenzeichen) или ведомству …",
       "aria_label": "Поиск по номеру дела (Aktenzeichen) или ведомству",
       "view_aria": "Вид",
-      "hits_count_template": "{count, plural, =0 {Совпадений нет} =1 {1 совпадение} few {# совпадения} many {# совпадений} other {# совпадения}}"
+      "hits_count_template": "{count, plural, =0 {Совпадений нет} =1 {1 совпадение} few {# совпадения} many {# совпадений} other {# совпадения}}",
+      "top_placeholder": "Поиск"
     },
     "filter": {
       "title": "Фильтры",
@@ -2472,7 +2474,7 @@
         "herunterladen": "Скачать",
         "drucken": "Печать",
         "tabs_aria": "Просмотр письма",
-        "tab_original": "Оригинал",
+        "tab_original": "Сообщение",
         "tab_anhaenge": "Вложения",
         "tab_verlauf": "История",
         "meta_eingegangen": "Получено",
@@ -2491,7 +2493,26 @@
           "sozialversicherung": "Социальное страхование",
           "privat": "Частноправовая организация",
           "unbekannt": "Официальное письмо"
-        }
+        },
+        "zurueck": "Назад",
+        "antworten": "Ответить",
+        "mehr": "Ещё",
+        "schliessen": "Закрыть",
+        "verifiziert": "Аккаунт ведомства подтверждён (Behördenkonto)",
+        "meta_status": "Статус",
+        "status_ungelesen": "Непрочитано",
+        "status_gelesen": "Прочитано",
+        "status_erledigt": "Выполнено",
+        "frist_relativ_template": "{tage, plural, =0 {(сегодня)} one {(через # день)} few {(через # дня)} other {(через # дней)}}",
+        "erledigt_markieren": "Отметить как выполненное",
+        "erledigt_toast": "Письмо отмечено как выполненное — вы найдёте его в архиве.",
+        "erledigt_fehler": "Не удалось отметить. Попробуйте ещё раз.",
+        "in_vorgang": "Преобразовать в дело (Vorgang)",
+        "weiterleiten": "Переслать",
+        "merken": "Сохранить",
+        "nicht_verfuegbar": "Недоступно в этом прототипе",
+        "dokumente_title": "Важные документы",
+        "anhang_meta_template": "{typ} · {kb} КБ"
       },
       "erklaerer": {
         "title": "Простыми словами",

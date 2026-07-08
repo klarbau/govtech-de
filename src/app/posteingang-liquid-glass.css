@@ -1,0 +1,1143 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Posteingang — Liquid Glass
+   ---------------------------------------------------------------------------
+   A route-scoped visual layer. EVERY rule is gated under `html[data-lg]`, which
+   `LiquidGlassChrome` sets only while /posteingang is mounted — so this sheet is
+   inert on every other screen and trivially reversible (delete the import + the
+   component). It restyles SURFACES only (background · border · shadow ·
+   backdrop-filter · radius), plus avatars and the primary CTA. It never sets a
+   text colour, so the existing Waldgrün tokens keep their light/dark contrast.
+
+   Import order: after globals.css + prototype-v2.css (see app/layout.tsx). The
+   `html[data-lg]` prefix also out-specifies the base `.app-*`/`.post-*` rules,
+   so it wins on both order and specificity, layered or not.
+
+   The design system is the app's own: Waldgrün #0F3D2E, warm off-white canvas,
+   Tintenblau ink. Values transcribed from the Magic-Patterns export.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+html[data-lg] {
+  /* Frosted-glass recipe, shared by every surface. */
+  --lg-blur: 30px;
+  --lg-sat: 1.6;
+  --lg-glass: linear-gradient(180deg, rgba(255, 255, 255, 0.66), rgba(255, 255, 255, 0.48));
+  --lg-glass-soft: linear-gradient(180deg, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0.26));
+  --lg-glass-raised: linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(255, 255, 255, 0.85));
+  --lg-mint: linear-gradient(180deg, rgba(221, 238, 228, 0.62), rgba(212, 232, 221, 0.46));
+  --lg-hairline: rgba(11, 18, 32, 0.08);
+  --lg-edge: rgba(255, 255, 255, 0.8);
+  --lg-edge-strong: rgba(255, 255, 255, 0.95);
+  --lg-mint-border: rgba(19, 112, 52, 0.16);
+  --lg-shadow-lift: 0 10px 26px -16px rgba(15, 61, 46, 0.22);
+  --lg-shadow-card: 0 4px 16px -12px rgba(15, 61, 46, 0.16);
+  --lg-shadow-panel: 0 34px 80px -34px rgba(15, 61, 46, 0.3), 0 8px 24px -14px rgba(15, 61, 46, 0.12);
+  --lg-avatar-navy: linear-gradient(160deg, rgba(32, 44, 76, 0.97), rgba(13, 20, 36, 0.95));
+  --lg-canvas: linear-gradient(180deg, #f7f9f9 0%, #eef2f2 100%);
+}
+
+html[data-lg].dark {
+  --lg-glass: linear-gradient(180deg, rgba(32, 40, 52, 0.62), rgba(22, 28, 38, 0.5));
+  --lg-glass-soft: linear-gradient(180deg, rgba(34, 42, 54, 0.5), rgba(24, 30, 40, 0.36));
+  --lg-glass-raised: linear-gradient(180deg, rgba(46, 56, 70, 0.9), rgba(34, 42, 54, 0.78));
+  --lg-mint: linear-gradient(180deg, rgba(24, 58, 44, 0.66), rgba(18, 46, 35, 0.5));
+  --lg-hairline: rgba(255, 255, 255, 0.1);
+  --lg-edge: rgba(255, 255, 255, 0.12);
+  --lg-edge-strong: rgba(255, 255, 255, 0.16);
+  --lg-mint-border: rgba(95, 184, 154, 0.3);
+  --lg-shadow-lift: 0 12px 30px -18px rgba(0, 0, 0, 0.6);
+  --lg-shadow-card: 0 4px 16px -12px rgba(0, 0, 0, 0.5);
+  --lg-shadow-panel: 0 34px 80px -34px rgba(0, 0, 0, 0.66), 0 8px 24px -14px rgba(0, 0, 0, 0.5);
+  --lg-canvas: linear-gradient(180deg, #0d1117 0%, #0b0f15 100%);
+}
+
+/* ── Canvas + ambient refraction field ──────────────────────────────────────
+   The gradient lives on <html> (the root stacking context) ONLY; `body` is made
+   transparent so the fixed `.lg-ambient` layer (z-index:-1, painted right after
+   the root background but before body content) shows through. Setting the
+   gradient on body too would repaint it OVER the negative-z blobs and hide them.
+   The glass surfaces then blur this field. */
+html[data-lg] {
+  background: var(--lg-canvas);
+}
+html[data-lg] body {
+  background: transparent;
+}
+
+html[data-lg] .lg-ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+html[data-lg] .lg-blob {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  will-change: transform;
+}
+html[data-lg].dark .lg-ambient {
+  opacity: 0.5;
+}
+html[data-lg] .lg-blob--a {
+  left: -140px; top: -200px; width: 760px; height: 760px;
+  background: radial-gradient(closest-side, rgba(141, 199, 189, 0.42), rgba(255, 255, 255, 0) 72%);
+  animation: lg-blob-a 26s ease-in-out infinite alternate;
+}
+html[data-lg] .lg-blob--b {
+  right: -160px; top: -120px; width: 700px; height: 700px;
+  background: radial-gradient(closest-side, rgba(151, 190, 224, 0.4), rgba(255, 255, 255, 0) 72%);
+  animation: lg-blob-b 30s ease-in-out infinite alternate;
+}
+html[data-lg] .lg-blob--c {
+  right: 60px; bottom: -260px; width: 720px; height: 720px;
+  background: radial-gradient(closest-side, rgba(192, 186, 230, 0.32), rgba(255, 255, 255, 0) 74%);
+  animation: lg-blob-c 34s ease-in-out infinite alternate;
+}
+html[data-lg] .lg-blob--d {
+  left: 140px; bottom: -220px; width: 640px; height: 640px;
+  background: radial-gradient(closest-side, rgba(146, 198, 194, 0.36), rgba(255, 255, 255, 0) 72%);
+  animation: lg-blob-b 38s ease-in-out infinite alternate-reverse;
+}
+html[data-lg] .lg-blob--e {
+  left: 560px; top: 220px; width: 520px; height: 520px;
+  background: radial-gradient(closest-side, rgba(120, 170, 214, 0.3), rgba(255, 255, 255, 0) 72%);
+  animation: lg-blob-c 40s ease-in-out infinite alternate-reverse;
+}
+html[data-lg] .lg-blob--f {
+  right: 340px; top: 140px; width: 460px; height: 460px;
+  background: radial-gradient(closest-side, rgba(133, 196, 180, 0.3), rgba(255, 255, 255, 0) 72%);
+  animation: lg-blob-a 36s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes lg-blob-a { from { transform: translate3d(0, 0, 0) scale(1); } to { transform: translate3d(70px, 46px, 0) scale(1.08); } }
+@keyframes lg-blob-b { from { transform: translate3d(0, 0, 0) scale(1); } to { transform: translate3d(-80px, 34px, 0) scale(1.06); } }
+@keyframes lg-blob-c { from { transform: translate3d(0, 0, 0) scale(1.04); } to { transform: translate3d(48px, -56px, 0) scale(1); } }
+@keyframes lg-glare { 0%, 55% { transform: translateX(-210%) skewX(-16deg); } 80%, 100% { transform: translateX(260%) skewX(-16deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-lg] .lg-blob,
+  html[data-lg] .lg-cta-glare { animation: none !important; }
+}
+
+/* ── Top header — floating glass ─────────────────────────────────────────── */
+html[data-lg] .app-topnav {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.5));
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  border-bottom: 1px solid var(--lg-hairline);
+  box-shadow: 0 10px 30px -20px rgba(15, 61, 46, 0.16);
+}
+html[data-lg].dark .app-topnav {
+  background: linear-gradient(180deg, rgba(28, 35, 47, 0.74), rgba(20, 26, 36, 0.56));
+}
+
+/* Top-bar global search — the „Suchen ⌘K" pill from the mockup, centred between
+   the meta-nav and the account cluster. Rendered by `PosteingangTopSearch` (only
+   on /posteingang) and flanked by two flex spacers so it holds the middle. */
+html[data-lg] .lg-top-search {
+  flex: 0 1 400px;
+  min-width: 200px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 8px 0 14px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(15, 61, 46, 0.055), rgba(15, 61, 46, 0.035));
+  box-shadow: inset 0 1.5px 3px rgba(15, 61, 46, 0.08), inset 0 0 0 1px rgba(15, 61, 46, 0.05), 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+html[data-lg].dark .lg-top-search {
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+html[data-lg] .lg-top-search > svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-muted);
+}
+html[data-lg] .lg-top-search-input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  outline: none;
+  font-size: 14px;
+  color: var(--ink);
+}
+html[data-lg] .lg-top-search-kbd {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 1px 2px rgba(15, 61, 46, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  font: 600 11.5px / 1 var(--font-sans, inherit);
+  letter-spacing: 0.02em;
+  color: var(--color-text-muted);
+}
+html[data-lg].dark .lg-top-search-kbd {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+}
+html[data-lg] .lg-top-search-spacer { flex: 1 1 auto; }
+
+/* Below 1024px the header is too dense for a search pill — hide it (and its
+   centring spacer) and let the in-list search take over (revealed by the
+   matching min-width rule further down). */
+@media (max-width: 1023px) {
+  html[data-lg] .lg-top-search,
+  html[data-lg] .lg-top-search-spacer { display: none; }
+}
+
+/* ── Left global sidebar — frosted column, floating pills ────────────────── */
+html[data-lg] .app-sidenav {
+  background: var(--lg-glass-soft);
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  border-right: 1px solid var(--lg-hairline);
+}
+html[data-lg] .app-sidenav .gt-nav a {
+  height: 46px;
+  border-radius: 14px;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+html[data-lg] .app-sidenav .gt-nav a:hover {
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: inset 0 1px 0 var(--lg-edge-strong), 0 3px 10px -6px rgba(15, 61, 46, 0.18);
+}
+html[data-lg].dark .app-sidenav .gt-nav a:hover {
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: none;
+}
+html[data-lg] .app-sidenav .gt-nav a.active {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge-strong);
+  box-shadow: 0 6px 18px -10px rgba(15, 61, 46, 0.2), inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+html[data-lg].dark .app-sidenav .gt-nav a.active {
+  border-color: var(--lg-hairline);
+  box-shadow: 0 6px 18px -10px rgba(0, 0, 0, 0.5);
+}
+html[data-lg] .app-sidenav .gt-nav-divider {
+  background: linear-gradient(90deg, rgba(11, 18, 32, 0), var(--lg-hairline), rgba(11, 18, 32, 0));
+}
+
+/* Bürgerkonto card pinned to the bottom of the sidebar (archive footer). */
+html[data-lg] .app-sidenav {
+  display: flex;
+  flex-direction: column;
+}
+html[data-lg] .app-sidenav .gt-nav { flex: 0 0 auto; }
+html[data-lg] .lg-account-card {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 12px;
+  border-radius: 18px;
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: 0 10px 24px -16px rgba(15, 61, 46, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: box-shadow 0.25s ease, transform 0.15s ease;
+}
+html[data-lg].dark .lg-account-card {
+  border-color: var(--lg-hairline);
+  box-shadow: 0 10px 24px -16px rgba(0, 0, 0, 0.55);
+}
+html[data-lg] .lg-account-card:hover {
+  box-shadow: 0 14px 30px -16px rgba(15, 61, 46, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+html[data-lg] .lg-account-card:active { transform: translateY(1px); }
+html[data-lg] .lg-account-icon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: linear-gradient(160deg, #14503c, #0f3d2e);
+  color: #fff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 4px 10px -4px rgba(15, 61, 46, 0.5);
+}
+html[data-lg] .lg-account-icon svg { width: 17px; height: 17px; }
+html[data-lg] .lg-account-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+html[data-lg] .lg-account-place {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+html[data-lg] .lg-account-sub {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-top: 1px;
+}
+html[data-lg] .lg-account-chevron {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-muted);
+}
+
+/* Content column sits over the ambient field — no opaque fill. */
+html[data-lg] .app-content { background: transparent; }
+
+/* ── Inbox rail — slim frosted card ──────────────────────────────────────── */
+html[data-lg] .post-rail {
+  padding: 16px 12px;
+  border-radius: 20px;
+  background: var(--lg-glass);
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  border: 1px solid var(--lg-hairline);
+  box-shadow: var(--lg-shadow-lift), inset 0 1px 0 var(--lg-edge);
+}
+html[data-lg] .post-rail-head .ico {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg] .post-rail-link { border-radius: 12px; height: 40px; }
+html[data-lg] .post-rail-link:hover {
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: inset 0 1px 0 var(--lg-edge);
+}
+html[data-lg].dark .post-rail-link:hover { background: rgba(255, 255, 255, 0.06); box-shadow: none; }
+html[data-lg] .post-rail-link.active {
+  background: var(--lg-glass-raised);
+  box-shadow: 0 4px 12px -8px rgba(15, 61, 46, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+html[data-lg].dark .post-rail-link.active { box-shadow: 0 4px 12px -8px rgba(0, 0, 0, 0.5); }
+
+/* ── Toolbar — glass search + view toggle ────────────────────────────────── */
+html[data-lg] .post-toolbar .input-icon .input {
+  height: 44px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  background: linear-gradient(180deg, rgba(15, 61, 46, 0.05), rgba(15, 61, 46, 0.03));
+  box-shadow: inset 0 1.5px 3px rgba(15, 61, 46, 0.08), inset 0 0 0 1px rgba(15, 61, 46, 0.05);
+}
+html[data-lg].dark .post-toolbar .input-icon .input {
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+html[data-lg] .post-toolbar .view-toggle {
+  border-radius: 12px;
+  background: var(--lg-glass);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  backdrop-filter: blur(16px) saturate(1.4);
+  border: 1px solid var(--lg-hairline);
+  box-shadow: inset 0 1px 0 var(--lg-edge);
+}
+
+/* ── 2-column content (folder-rail dropped, archive layout) ──────────────── */
+html[data-lg] .post-shell { display: block; }
+html[data-lg] .post-main { min-width: 0; }
+
+/* Mockup layout: a FIXED 396px message-list column pinned left + the reader
+   filling the rest — NOT the base `minmax(0,1fr) minmax(0,1.15fr)` grid, which
+   stretched the list to ~half a centred 1520px box and made the cards read as a
+   wide floating block in the middle. Flex with a rigid first column fixes it. */
+html[data-lg] .post-layout {
+  position: relative; /* containing block for the popLayout-exiting reader */
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  /* Centring is animated via padding-left (margin:auto wouldn't transition). */
+  transition: padding-left 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+html[data-lg] .post-layout > .lg-list-col {
+  flex: 0 0 396px;
+  width: 396px;
+  min-width: 0;
+  transition: flex-basis 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+html[data-lg] .post-layout > .post-detail {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+/* Reader collapsed („Zurück"/✕): the list column unfolds across the freed
+   space — comfortably capped + centred so the cards don't stretch endlessly.
+   flex-basis (396→860) and the centring padding animate in step while the
+   popLayout-exit slides the reader out on top. */
+html[data-lg] .post-layout--list-only {
+  padding-left: max(0px, calc((100% - 860px) / 2));
+}
+html[data-lg] .post-layout--list-only > .lg-list-col {
+  flex: 0 1 860px;
+  width: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-lg] .post-layout,
+  html[data-lg] .post-layout > .lg-list-col { transition: none; }
+}
+
+/* Archive viewport model (≥ 1024px): the PAGE never scrolls — the app shell is
+   pinned to the viewport, the list column and the reader panel scroll
+   independently inside it (mockup: 100vh grid, overflow hidden). */
+@media (min-width: 1024px) {
+  html[data-lg],
+  html[data-lg] body {
+    height: 100%;
+    overflow: hidden;
+  }
+  /* Height chain down to the two scroll containers. --lg-topnav-h mirrors the
+     rendered .app-topnav height (see probe: main starts at y=68). */
+  html[data-lg] .app-shell {
+    height: calc(100dvh - 68px);
+    min-height: 0;
+    overflow: hidden;
+  }
+  html[data-lg] .app-content,
+  html[data-lg] .post-content,
+  html[data-lg] .post-shell,
+  html[data-lg] .post-main,
+  html[data-lg] .post-layout {
+    height: 100%;
+    min-height: 0;
+  }
+  html[data-lg] .post-layout { align-items: stretch; }
+  html[data-lg] .post-layout > .lg-list-col {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  html[data-lg] .lg-list-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: none;
+    /* Breathing room so card hover-shadows aren't clipped by the scroller. */
+    padding: 4px 3px 12px;
+    margin: 0 -3px;
+  }
+  html[data-lg] .lg-list-scroll::-webkit-scrollbar { width: 0; height: 0; }
+  /* The reader becomes a full-height flex column: pinned toolbar on top,
+     internal scroll area, pinned CTA footer. */
+  html[data-lg] .post-layout > .post-detail {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+  html[data-lg] .lg-reader-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  html[data-lg] .lg-reader-scroll::-webkit-scrollbar { width: 0; height: 0; }
+}
+
+/* Stack on narrow screens (list over detail); the card-click nav to
+   /posteingang/[id] is the primary path below 1024px anyway. */
+@media (max-width: 1023px) {
+  html[data-lg] .post-layout { flex-direction: column; }
+  html[data-lg] .post-layout > .lg-list-col {
+    flex: none;
+    width: 100%;
+  }
+}
+
+/* Archive list header: menu · title + unread count · filter. */
+html[data-lg] .lg-list-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 2px;
+  margin-bottom: 14px;
+}
+html[data-lg] .lg-list-title { flex: 1; min-width: 0; }
+html[data-lg] .lg-list-title h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+  color: var(--ink);
+}
+html[data-lg] .lg-list-sub {
+  margin: 2px 0 0;
+  font-size: 13.5px;
+  color: var(--color-text-muted);
+}
+html[data-lg] .lg-round-btn,
+html[data-lg] .lg-square-btn {
+  position: relative;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: var(--ink-2);
+  background: transparent;
+  transition: background 0.2s ease;
+}
+html[data-lg] .lg-round-btn { border-radius: 999px; background: rgba(11, 18, 32, 0.05); }
+html[data-lg] .lg-square-btn { border-radius: 12px; }
+html[data-lg] .lg-round-btn:hover { background: rgba(11, 18, 32, 0.09); }
+html[data-lg] .lg-square-btn:hover { background: rgba(11, 18, 32, 0.06); }
+html[data-lg].dark .lg-round-btn { background: rgba(255, 255, 255, 0.06); }
+html[data-lg].dark .lg-round-btn:hover,
+html[data-lg].dark .lg-square-btn:hover { background: rgba(255, 255, 255, 0.1); }
+html[data-lg] .lg-round-btn svg,
+html[data-lg] .lg-square-btn svg { width: 17px; height: 17px; }
+html[data-lg] .lg-filter-dot {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green-500);
+}
+
+/* In-list search — the < 1024px fallback for the top-bar pill (both bind to the
+   same store). On desktop the header pill owns search, so hide this one there to
+   match the mockup (which has a single, top-bar search). */
+@media (min-width: 1024px) {
+  html[data-lg] .lg-list-search { display: none; }
+}
+html[data-lg] .lg-list-search {
+  margin-bottom: 12px;
+}
+html[data-lg] .lg-list-search .input {
+  height: 40px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  background: linear-gradient(180deg, rgba(15, 61, 46, 0.05), rgba(15, 61, 46, 0.03));
+  box-shadow: inset 0 1.5px 3px rgba(15, 61, 46, 0.08), inset 0 0 0 1px rgba(15, 61, 46, 0.05);
+}
+html[data-lg].dark .lg-list-search .input {
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+/* Archive message card interior: avatar · (name/time · subject+dot · chips). */
+html[data-lg] .post-item {
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 13px;
+  align-items: start;
+}
+html[data-lg] .lg-card-body { min-width: 0; }
+html[data-lg] .lg-card-top {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+html[data-lg] .lg-card-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+html[data-lg] .lg-card-time {
+  flex: none;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+html[data-lg] .lg-card-subject {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 3px;
+}
+html[data-lg] .lg-card-subject-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+html[data-lg] .lg-unread-dot {
+  flex: none;
+  margin-top: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green-500);
+}
+html[data-lg] .lg-card-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 11px;
+}
+html[data-lg] .lg-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 25px;
+  padding: 0 11px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: inset 0 0 0 1px rgba(11, 18, 32, 0.15);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+html[data-lg] .lg-chip svg { width: 12px; height: 12px; }
+html[data-lg] .lg-chip--frist {
+  font-weight: 600;
+  color: #3f63b8;
+  box-shadow: inset 0 0 0 1px rgba(72, 110, 200, 0.45);
+}
+html[data-lg].dark .lg-chip {
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+html[data-lg].dark .lg-chip--frist {
+  color: #9db4f0;
+  box-shadow: inset 0 0 0 1px rgba(140, 165, 235, 0.5);
+}
+
+/* ── List — floating message cards ───────────────────────────────────────── */
+html[data-lg] .post-section {
+  background: transparent;
+  border: 0;
+}
+/* Flat archive list — drop the "Neu"/"Frist offen ≤7" section dividers so the
+   cards read as one continuous stream (grouping logic still orders them). */
+html[data-lg] .post-section-head { display: none; }
+html[data-lg] .post-section + .post-section { margin-top: 8px; }
+html[data-lg] .post-section .items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 2px 0;
+}
+html[data-lg] .post-item {
+  border-top: 0;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--lg-glass-soft);
+  -webkit-backdrop-filter: blur(22px) saturate(1.35);
+  backdrop-filter: blur(22px) saturate(1.35);
+  border: 1px solid var(--lg-hairline);
+  box-shadow: var(--lg-shadow-card);
+  transition: transform 0.18s ease, box-shadow 0.25s ease, background 0.2s ease;
+}
+html[data-lg] .post-item:hover {
+  transform: translateY(-1px);
+  background: var(--lg-glass);
+  box-shadow: 0 10px 22px -14px rgba(15, 61, 46, 0.24), inset 0 1px 0 var(--lg-edge);
+}
+html[data-lg] .post-item.active {
+  background: var(--lg-mint);
+  border: 1px solid var(--lg-mint-border);
+  box-shadow: var(--lg-shadow-lift), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* Round gradient avatars with a soft inner highlight. Keep the per-Behörde
+   hue the base sheet assigns; add depth + a glass rim. */
+html[data-lg] .post-item .av,
+html[data-lg] .post-detail-head .av {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 6px 14px -6px rgba(11, 18, 32, 0.5);
+}
+html[data-lg] .post-item .av:not(.eagle):not(.aok):not(.ard):not(.lea):not(.jc),
+html[data-lg] .post-detail-head .av {
+  background: var(--lg-avatar-navy);
+  color: #fff;
+}
+html[data-lg] .post-item .meta .un { background: var(--green-500); }
+
+/* ── Status tabs — underline, green accent ───────────────────────────────── */
+/* Archive: one row spread across the 396px list column (space-between, 13px,
+   compact counts) — the base 0-12px padding wraps „Wichtig" onto a 2nd line.
+   Single-row only ≥1024 (in the fixed column); below that the base wrap stays
+   so 320px reflow (WCAG 1.4.10) keeps working. */
+html[data-lg] .post-tabs {
+  border-bottom: 1px solid var(--lg-hairline);
+  gap: 4px;
+  margin: 2px 6px 10px;
+}
+html[data-lg] .post-tab {
+  padding: 0 2px;
+  gap: 6px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+@media (min-width: 1024px) {
+  html[data-lg] .post-tabs {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+  }
+}
+html[data-lg] .post-tab .count {
+  background: rgba(11, 18, 32, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(11, 18, 32, 0.04);
+}
+html[data-lg].dark .post-tab .count { background: rgba(255, 255, 255, 0.08); box-shadow: none; }
+
+/* ── Detail reader — the hero glass panel ────────────────────────────────── */
+html[data-lg] .post-detail {
+  position: relative;
+  border-radius: 26px;
+  background: var(--lg-glass);
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(1.75);
+  backdrop-filter: blur(var(--lg-blur)) saturate(1.75);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-panel), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg].dark .post-detail { border-color: var(--lg-hairline); }
+/* Top edge specular highlight. */
+html[data-lg] .post-detail::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 32px;
+  right: 32px;
+  height: 1.5px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.95) 24%, rgba(255, 255, 255, 0.4) 64%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+}
+html[data-lg].dark .post-detail::before { opacity: 0.25; }
+
+/* Inner cards on the glass panel read as soft frosted sub-surfaces. */
+html[data-lg] .post-panel,
+html[data-lg] .auszug,
+html[data-lg] .frist-row {
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid var(--lg-hairline);
+  box-shadow: 0 1px 2px rgba(15, 61, 46, 0.04);
+}
+html[data-lg].dark .post-panel,
+html[data-lg].dark .auszug,
+html[data-lg].dark .frist-row {
+  background: rgba(255, 255, 255, 0.05);
+}
+html[data-lg] .post-panel { border-radius: 16px; }
+html[data-lg] .auszug { border-radius: 16px; }
+
+/* Meta strip — archive style: borderless hairline grid (Eingegangen ·
+   Kategorie · Frist · Status), vertical separators, top/bottom rules. */
+html[data-lg] .post-meta-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1.05fr 1.25fr 0.85fr;
+  gap: 0;
+  margin: 20px 0 0;
+  padding: 14px 0;
+  border: 0;
+  border-top: 1px solid var(--lg-hairline);
+  border-bottom: 1px solid var(--lg-hairline);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+html[data-lg] .post-meta-cell { padding: 0 16px; min-width: 0; }
+html[data-lg] .post-meta-cell:first-child { padding-left: 0; }
+html[data-lg] .post-meta-cell + .post-meta-cell {
+  border-left: 1px solid var(--lg-hairline);
+}
+html[data-lg] .post-meta-cell dt { font-size: 12.5px; margin-bottom: 4px; }
+html[data-lg] .post-meta-cell dd { font-size: 14px; font-weight: 600; }
+html[data-lg] .lg-frist-relativ { font-weight: 500; font-size: 12px; opacity: 0.85; }
+html[data-lg] .post-meta-cell dd.lg-status-neu { color: var(--green-700); }
+html[data-lg].dark .post-meta-cell dd.lg-status-neu { color: var(--color-success); }
+@media (max-width: 760px) {
+  html[data-lg] .post-meta-grid { grid-template-columns: 1fr 1fr; row-gap: 12px; }
+  html[data-lg] .post-meta-cell:nth-child(odd) { padding-left: 0; border-left: 0; }
+}
+
+/* KI-Erklärer keeps its Waldgrün tint but gains the frosted rim. */
+html[data-lg] .ai-card {
+  background: linear-gradient(180deg, rgba(236, 241, 238, 0.86), rgba(228, 238, 232, 0.7));
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  backdrop-filter: blur(14px) saturate(1.3);
+  border: 1px solid rgba(19, 112, 52, 0.12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+html[data-lg].dark .ai-card {
+  background: linear-gradient(180deg, rgba(21, 41, 31, 0.7), rgba(18, 34, 26, 0.6));
+  border-color: rgba(95, 184, 154, 0.24);
+  box-shadow: none;
+}
+
+/* ── Iridescent primary CTA (reader footer only) ─────────────────────────── */
+html[data-lg] .post-detail .btn-primary {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #fff;
+  background-image: linear-gradient(115deg, rgba(13, 101, 77, 0.95) 0%, rgba(17, 122, 92, 0.94) 26%, rgba(26, 113, 145, 0.93) 54%, rgba(76, 88, 172, 0.93) 80%, rgba(112, 79, 164, 0.92) 100%);
+  background-size: 240% 100%;
+  background-position: 8% 50%;
+  box-shadow: 0 16px 36px -14px rgba(20, 130, 115, 0.55), 0 6px 18px -8px rgba(90, 100, 190, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  transition: background-position 0.6s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease, transform 0.15s ease;
+}
+html[data-lg] .post-detail .btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0.1) 38%, rgba(255, 255, 255, 0) 60%);
+  pointer-events: none;
+}
+html[data-lg] .post-detail .btn-primary:hover {
+  background-position: 88% 50%;
+  box-shadow: 0 20px 44px -14px rgba(20, 130, 115, 0.65), 0 8px 22px -8px rgba(90, 100, 190, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+html[data-lg] .post-detail .btn-primary:active { transform: translateY(1px) scale(0.995); }
+/* The glare sweep rides on a pseudo-element pinned to the button. */
+html[data-lg] .post-detail .btn-primary::after {
+  content: '';
+  position: absolute;
+  top: -30%;
+  bottom: -30%;
+  left: 0;
+  width: 34%;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  animation: lg-glare 7s ease-in-out infinite;
+}
+
+/* ── Reader chrome — archive toolbar, sender block, footer CTAs ──────────── */
+
+/* Padding moves off the panel onto its three slots so toolbar + CTA bar can
+   pin edge-to-edge while only the middle scrolls (≥1024; stacked mode keeps
+   the base panel padding via the fallback below). */
+@media (min-width: 1024px) {
+  html[data-lg] .post-detail { padding: 0; }
+  html[data-lg] .lg-reader-scroll { padding: 10px 28px 20px; }
+}
+@media (max-width: 1023px) {
+  html[data-lg] .lg-reader-toolbar { margin: -6px -6px 10px; }
+}
+
+/* Toolbar: icon-over-label buttons (Zurück · Antworten · … ) + round close. */
+html[data-lg] .lg-reader-toolbar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 18px 2px 22px;
+}
+html[data-lg] .lg-tool {
+  flex: none;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+html[data-lg] .lg-tool:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.65);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 4px 12px -6px rgba(15, 61, 46, 0.22);
+}
+html[data-lg].dark .lg-tool:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+}
+html[data-lg] .lg-tool:active:not(:disabled) { transform: translateY(1px); }
+html[data-lg] .lg-tool:disabled { opacity: 0.45; cursor: not-allowed; }
+html[data-lg] .lg-tool svg { width: 17px; height: 17px; }
+html[data-lg] .lg-tool span { font-size: 12px; font-weight: 500; color: var(--color-text-muted); }
+html[data-lg] .lg-tool-divider {
+  flex: none;
+  width: 1px;
+  height: 34px;
+  margin: 0 6px;
+  background: linear-gradient(180deg, rgba(11, 18, 32, 0), rgba(11, 18, 32, 0.12), rgba(11, 18, 32, 0));
+}
+html[data-lg].dark .lg-tool-divider {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0));
+}
+html[data-lg] .lg-reader-close {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.55));
+  box-shadow: 0 5px 14px -7px rgba(15, 61, 46, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.15s ease;
+}
+html[data-lg] .lg-reader-close:hover {
+  box-shadow: 0 9px 20px -8px rgba(15, 61, 46, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+html[data-lg] .lg-reader-close:active { transform: translateY(1px); }
+html[data-lg] .lg-reader-close svg { width: 16px; height: 16px; }
+html[data-lg].dark .lg-reader-close {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+}
+
+/* Sender block: bigger round avatar, address line, green verified line. */
+html[data-lg] .post-detail-head { margin-top: 8px; }
+html[data-lg] .post-detail-head .av { width: 54px; height: 54px; }
+html[data-lg] .post-detail-head .av svg { width: 23px; height: 23px; }
+html[data-lg] .lg-reader-adresse {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+html[data-lg] .lg-reader-verify { margin-top: 8px; }
+
+/* Betreff + Aktenzeichen under it (archive: mono-ish sub-line). */
+html[data-lg] .post-detail h2 { margin: 20px 0 4px; font-size: 25px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.25; }
+html[data-lg] .lg-reader-az {
+  font-size: 13.5px;
+  color: var(--color-text-muted);
+}
+
+/* Footer CTA bar — pinned under the scroll area, soft veil over the glass. */
+html[data-lg] .lg-reader-cta {
+  flex: none;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 12px 24px 18px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.5));
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  backdrop-filter: blur(20px) saturate(1.4);
+}
+html[data-lg].dark .lg-reader-cta {
+  background: linear-gradient(180deg, rgba(20, 26, 36, 0.1), rgba(20, 26, 36, 0.55));
+}
+html[data-lg] .lg-cta-main {
+  flex: 1.2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  height: 48px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 600;
+}
+html[data-lg] .lg-cta-main svg { width: 17px; height: 17px; }
+html[data-lg] .lg-cta-main:disabled { opacity: 0.55; cursor: not-allowed; }
+html[data-lg] .lg-cta-secondary {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  background:
+    linear-gradient(115deg, rgba(20, 122, 96, 0.09) 0%, rgba(46, 150, 172, 0.08) 52%, rgba(122, 110, 196, 0.08) 100%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.55));
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  backdrop-filter: blur(18px) saturate(1.4);
+  box-shadow: 0 10px 26px -14px rgba(15, 61, 46, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 -1px 0 rgba(15, 61, 46, 0.05);
+  transition: box-shadow 0.3s ease, transform 0.15s ease;
+}
+html[data-lg] .lg-cta-secondary:hover {
+  box-shadow: 0 16px 34px -14px rgba(15, 61, 46, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 -1px 0 rgba(15, 61, 46, 0.05);
+}
+html[data-lg] .lg-cta-secondary:active { transform: translateY(1px); }
+html[data-lg].dark .lg-cta-secondary {
+  color: var(--ink);
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: none;
+}
+
+/* Auszug card: "Mehr anzeigen" sits bottom-right like the archive body card. */
+html[data-lg] .auszug { margin-top: 14px; padding: 20px 22px 12px; }
+html[data-lg] .lg-auszug-foot {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+html[data-lg] .lg-auszug-foot .more { float: none; }
+
+/* ── Narrow-reader fallback (inline reply gutter open) ───────────────────────
+   With the reply drawer docked right, the reader shrinks to ~300px: the 4-col
+   meta strip and the twin CTA row don't fit — wrap them instead of clipping. */
+html[data-lg] .post-content--reply-open .post-meta-grid {
+  grid-template-columns: 1fr 1fr;
+  row-gap: 12px;
+}
+html[data-lg] .post-content--reply-open .post-meta-cell:nth-child(odd) {
+  padding-left: 0;
+  border-left: 0;
+}
+html[data-lg] .post-content--reply-open .lg-reader-cta { flex-direction: column; }
+html[data-lg] .post-content--reply-open .lg-cta-main,
+html[data-lg] .post-content--reply-open .lg-cta-secondary {
+  flex: none;
+  width: 100%;
+}
+/* Verified line + Vorgang chip may wrap on narrow readers instead of clipping. */
+html[data-lg] .lg-reader-verify { flex-wrap: wrap; row-gap: 4px; }
+
+/* ── Mockup parity: toolbar spread, body paragraphs, documents card ──────── */
+
+/* The tool group stretches between Zurück and the ✕ (archive: flex-1 up to
+   560px, evenly spread). */
+html[data-lg] .lg-tool-group {
+  flex: 1 1 auto;
+  max-width: 560px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Body excerpt as plain letter paragraphs (mockup), not a quoted snippet. */
+html[data-lg] .lg-auszug-p {
+  margin: 0 0 12px;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+html[data-lg] .lg-auszug-p:last-of-type { margin-bottom: 0; }
+
+/* „Wichtige Dokumente" card + rows (also reused inside the Anhänge tab). */
+html[data-lg] .lg-docs-card {
+  margin-top: 14px;
+  padding: 16px 16px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid var(--lg-hairline);
+  box-shadow: 0 1px 2px rgba(15, 61, 46, 0.04);
+}
+html[data-lg].dark .lg-docs-card { background: rgba(255, 255, 255, 0.05); }
+html[data-lg] .lg-docs-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+html[data-lg] .lg-docs-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+html[data-lg] .lg-docs-rows--tab { margin-top: 14px; }
+html[data-lg] .lg-doc-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--lg-hairline);
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+html[data-lg] .lg-doc-row:hover { background: #ffffff; }
+html[data-lg].dark .lg-doc-row { background: rgba(255, 255, 255, 0.06); }
+html[data-lg].dark .lg-doc-row:hover { background: rgba(255, 255, 255, 0.1); }
+html[data-lg] .lg-doc-icon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  color: #c0392f;
+}
+html[data-lg].dark .lg-doc-icon { color: #e57368; }
+html[data-lg] .lg-doc-icon svg { width: 17px; height: 17px; }
+html[data-lg] .lg-doc-body { flex: 1; min-width: 0; }
+html[data-lg] .lg-doc-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+html[data-lg] .lg-doc-meta {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-top: 1px;
+}
+html[data-lg] .lg-doc-action {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 0;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+html[data-lg] .lg-doc-action:hover { background: rgba(11, 18, 32, 0.05); }
+html[data-lg].dark .lg-doc-action:hover { background: rgba(255, 255, 255, 0.1); }
+html[data-lg] .lg-doc-action svg { width: 16px; height: 16px; }
+
+/* Count pill on the Anhänge doc-tab (mirrors the list tabs). */
+html[data-lg] .post-doc-tab .count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 19px;
+  margin-left: 7px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: rgba(11, 18, 32, 0.06);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+html[data-lg].dark .post-doc-tab .count { background: rgba(255, 255, 255, 0.08); }
+
+/* Bookmark square in the CTA footer (mockup „Merken" — im Prototyp inaktiv). */
+html[data-lg] .lg-cta-bookmark {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  color: var(--ink-2);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.55));
+  box-shadow: 0 10px 26px -14px rgba(15, 61, 46, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+html[data-lg] .lg-cta-bookmark:disabled { opacity: 0.55; cursor: not-allowed; }
+html[data-lg] .lg-cta-bookmark svg { width: 18px; height: 18px; }
+html[data-lg].dark .lg-cta-bookmark {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: none;
+}

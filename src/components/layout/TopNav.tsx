@@ -6,6 +6,7 @@ import { AutopilotPulse } from './AutopilotPulse';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { MobileNav } from './MobileNav';
 import { ParthenonCrest } from './ParthenonCrest';
+import { PosteingangTopSearch } from '@/components/posteingang/PosteingangTopSearch';
 import { ThemeToggle } from './ThemeToggle';
 import { TopNavLink } from './TopNavLink';
 import { TopNavResourcesMenu } from './TopNavResourcesMenu';
@@ -43,6 +44,10 @@ export async function TopNav() {
       </nav>
 
       <div className="app-topnav-spacer" />
+
+      {/* Route-scoped: renders the Liquid-Glass „Suchen ⌘K" pill only on
+          /posteingang (null elsewhere), plus its trailing centring spacer. */}
+      <PosteingangTopSearch />
 
       <div className="landing-header-actions app-topnav-actions">
         <AutopilotPulse />

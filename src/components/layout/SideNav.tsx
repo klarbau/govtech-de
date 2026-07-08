@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 import { Compass } from 'lucide-react';
 
 import { navItems } from './nav-items';
+import { BuergerkontoCard } from './BuergerkontoCard';
 import { PosteingangUnreadBadge } from './PosteingangUnreadBadge';
 
 function isActive(pathname: string | null, href: string): boolean {
@@ -53,6 +54,9 @@ export function SideNav() {
           <span>{tNav('lebenslagen')}</span>
         </Link>
       </nav>
+      {/* Archive „Bürgerkonto" card — bottom of the sidebar, Liquid-Glass
+          Posteingang only (styling gates under html[data-lg]). */}
+      {isActive(pathname, '/posteingang') && <BuergerkontoCard />}
     </div>
   );
 }

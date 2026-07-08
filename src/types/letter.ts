@@ -151,6 +151,15 @@ export type LetterArchetypeAction = string;
  * inkl. Briefkopf, Anrede und Schlussformel — und immer eine
  * `[MOCK – Verwaltungsdemo, keine echten Daten]`-Zeile als Watermark.
  */
+/**
+ * [MOCK]-Brief-Anhang — reine Metadaten (Name + Größe), kein echter Inhalt.
+ * Nicht zu verwechseln mit `LetterAttachment` (Anhänge von Bürger:innen-Replies).
+ */
+export interface LetterAnhang {
+  name: string;
+  size_kb: number;
+}
+
 export interface Letter {
   id: string;
   absender_behoerde_id: BehoerdeId;
@@ -177,6 +186,8 @@ export interface Letter {
   empfangen_am: string;
   /** Optionaler Bezug zu einem laufenden Vorgang. */
   vorgang_id?: string;
+  /** [MOCK]-Anhänge der Behörde (Metadaten; Reader „Wichtige Dokumente"). */
+  anhaenge?: LetterAnhang[];
   /**
    * V1.5.1 — Erlassdatum des Bescheids (aus dem Briefkopf-Stempel der erlassenden
    * Behörde). Optional; nur bei Letter-Archetypes mit Bescheid-Charakter

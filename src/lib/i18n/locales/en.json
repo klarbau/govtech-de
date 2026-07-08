@@ -1100,6 +1100,7 @@
   },
   "shell": {
     "sidebar": {
+      "buergerkonto": "Citizen account",
       "authority": "Federal Republic of Germany",
       "help": "Help & contact",
       "logout": "Sign out",
@@ -2209,7 +2210,8 @@
       "placeholder": "Search file reference (Aktenzeichen) or authority …",
       "aria_label": "Search file reference (Aktenzeichen) or authority",
       "view_aria": "View",
-      "hits_count_template": "{count, plural, =0 {No matches} =1 {1 match} other {# matches}}"
+      "hits_count_template": "{count, plural, =0 {No matches} =1 {1 match} other {# matches}}",
+      "top_placeholder": "Search"
     },
     "filter": {
       "title": "Filters",
@@ -2472,7 +2474,7 @@
         "herunterladen": "Download",
         "drucken": "Print",
         "tabs_aria": "Letter view",
-        "tab_original": "Original",
+        "tab_original": "Message",
         "tab_anhaenge": "Attachments",
         "tab_verlauf": "History",
         "meta_eingegangen": "Received",
@@ -2491,7 +2493,26 @@
           "sozialversicherung": "Social insurance",
           "privat": "Private-law body",
           "unbekannt": "Official letter"
-        }
+        },
+        "zurueck": "Back",
+        "antworten": "Reply",
+        "mehr": "More",
+        "schliessen": "Close",
+        "verifiziert": "Authority account verified (Behördenkonto)",
+        "meta_status": "Status",
+        "status_ungelesen": "Unread",
+        "status_gelesen": "Read",
+        "status_erledigt": "Done",
+        "frist_relativ_template": "{tage, plural, =0 {(today)} one {(in # day)} other {(in # days)}}",
+        "erledigt_markieren": "Mark as done",
+        "erledigt_toast": "Letter marked as done — you will find it in the archive.",
+        "erledigt_fehler": "Marking failed. Please try again.",
+        "in_vorgang": "Convert to case (Vorgang)",
+        "weiterleiten": "Forward",
+        "merken": "Save",
+        "nicht_verfuegbar": "Not available in this prototype",
+        "dokumente_title": "Important documents",
+        "anhang_meta_template": "{typ} · {kb} KB"
       },
       "erklaerer": {
         "title": "In plain language",

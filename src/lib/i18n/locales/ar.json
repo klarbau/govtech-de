@@ -1100,6 +1100,7 @@
   },
   "shell": {
     "sidebar": {
+      "buergerkonto": "حساب المواطن",
       "authority": "جمهورية ألمانيا الاتحادية",
       "help": "المساعدة والتواصل",
       "logout": "تسجيل الخروج",
@@ -2209,7 +2210,8 @@
       "placeholder": "ابحث برقم الملف (Aktenzeichen) أو الجهة …",
       "aria_label": "البحث برقم الملف (Aktenzeichen) أو الجهة",
       "view_aria": "العرض",
-      "hits_count_template": "{count, plural, =0 {لا توجد نتائج} =1 {نتيجة واحدة} =2 {نتيجتان} few {# نتائج} many {# نتيجة} other {# نتيجة}}"
+      "hits_count_template": "{count, plural, =0 {لا توجد نتائج} =1 {نتيجة واحدة} =2 {نتيجتان} few {# نتائج} many {# نتيجة} other {# نتيجة}}",
+      "top_placeholder": "بحث"
     },
     "filter": {
       "title": "المرشّحات",
@@ -2472,7 +2474,7 @@
         "herunterladen": "تنزيل",
         "drucken": "طباعة",
         "tabs_aria": "عرض الرسالة",
-        "tab_original": "الأصل",
+        "tab_original": "الرسالة",
         "tab_anhaenge": "المرفقات",
         "tab_verlauf": "السجل",
         "meta_eingegangen": "تاريخ الاستلام",
@@ -2491,7 +2493,26 @@
           "sozialversicherung": "التأمين الاجتماعي",
           "privat": "جهة خاضعة للقانون الخاص",
           "unbekannt": "خطاب رسمي"
-        }
+        },
+        "zurueck": "رجوع",
+        "antworten": "رد",
+        "mehr": "المزيد",
+        "schliessen": "إغلاق",
+        "verifiziert": "حساب الجهة الرسمية موثّق (Behördenkonto)",
+        "meta_status": "الحالة",
+        "status_ungelesen": "غير مقروء",
+        "status_gelesen": "مقروء",
+        "status_erledigt": "منجز",
+        "frist_relativ_template": "{tage, plural, =0 {(اليوم)} one {(خلال يوم واحد)} two {(خلال يومين)} few {(خلال # أيام)} other {(خلال # يومًا)}}",
+        "erledigt_markieren": "وضع علامة „منجز“",
+        "erledigt_toast": "تم وضع علامة „منجز“ على الرسالة — ستجدها في الأرشيف.",
+        "erledigt_fehler": "تعذّر وضع العلامة. يرجى المحاولة مرة أخرى.",
+        "in_vorgang": "تحويل إلى معاملة (Vorgang)",
+        "weiterleiten": "إعادة توجيه",
+        "merken": "حفظ",
+        "nicht_verfuegbar": "غير متاح في هذا النموذج الأولي",
+        "dokumente_title": "مستندات مهمة",
+        "anhang_meta_template": "{typ} · {kb} ك.ب"
       },
       "erklaerer": {
         "title": "بكلمات مبسّطة",

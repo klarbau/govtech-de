@@ -10,6 +10,9 @@ import { cn } from '@/lib/utils';
 
 import './globals.css';
 import './prototype-v2.css';
+// Route-scoped Liquid-Glass layer (inert unless <html data-lg> — see
+// LiquidGlassChrome). Imported last so it wins on order as well as specificity.
+import './posteingang-liquid-glass.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 const interTight = Inter_Tight({ subsets: ['latin'], variable: '--font-display' });
