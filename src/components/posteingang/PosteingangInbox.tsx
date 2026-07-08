@@ -37,6 +37,7 @@ import {
 import { toast } from 'sonner';
 
 import { api } from '@/lib/mock-backend';
+import { useMockEvents } from '@/components/providers/LiveBackendProvider';
 import { bridgeTargetForArchetype } from '@/lib/mock-backend/brief-bridge';
 import { useMediaQuery } from '@/lib/hooks/use-media-query';
 import { Skeleton } from '@/components/shared/Skeleton';
@@ -232,6 +233,64 @@ export function PosteingangInbox({
   }, [hasLoaded]);
 
   const nowIso = initial.nowIso;
+
+  // Beat 2 — Briefe kommen sichtbar live an. Nur NACH Mount per Event
+  // eingetroffene Briefe tragen ~3 s die sanfte Frisch-Tönung (via `freshIds`);
+  // der initiale Bestand bleibt ruhig.
+  const [freshIds, setFreshIds] = React.useState<Set<string>>(() => new Set());
+  const freshTimersRef = React.useRef<Map<string, ReturnType<typeof setTimeout>>>(
+    new Map(),
+  );
+
+  const markFresh = React.useCallback((id: string) => {
+    setFreshIds((prev) => {
+      const next = new Set(prev);
+      next.add(id);
+      return next;
+    });
+    const existing = freshTimersRef.current.get(id);
+    if (existing) clearTimeout(existing);
+    const timer = setTimeout(() => {
+      setFreshIds((prev) => {
+        if (!prev.has(id)) return prev;
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+      freshTimersRef.current.delete(id);
+    }, 3000);
+    freshTimersRef.current.set(id, timer);
+  }, []);
+
+  React.useEffect(() => {
+    const timers = freshTimersRef.current;
+    return () => {
+      for (const timer of timers.values()) clearTimeout(timer);
+      timers.clear();
+    };
+  }, []);
+
+  useMockEvents((event) => {
+    if (event.type === 'letter_received') {
+      setLetters((prev) => {
+        const idx = prev.findIndex((l) => l.id === event.letter.id);
+        if (idx === -1) {
+          markFresh(event.letter.id);
+          return [event.letter, ...prev];
+        }
+        const next = [...prev];
+        next[idx] = event.letter;
+        return next;
+      });
+    }
+    if (event.type === 'letter_status_changed') {
+      setLetters((prev) =>
+        prev.map((l) =>
+          l.id === event.letterId ? { ...l, status: event.status } : l,
+        ),
+      );
+    }
+  });
 
   // Mailbox-Scope: Posteingang = alle nicht-erledigten Briefe, Archiv =
   // ausschließlich Briefe mit status === 'erledigt' (es gibt kein Folder-Modell;
@@ -471,6 +530,7 @@ export function PosteingangInbox({
                   active={selectedLetter?.id === l.id}
                   nowIso={nowIso}
                   section="neu"
+                  fresh={freshIds.has(l.id)}
                   onSelect={() => setSelectedLetterId(l.id)}
                 />
               ))}
@@ -489,6 +549,7 @@ export function PosteingangInbox({
                   active={selectedLetter?.id === l.id}
                   nowIso={nowIso}
                   section="frist7"
+                  fresh={freshIds.has(l.id)}
                   onSelect={() => setSelectedLetterId(l.id)}
                 />
               ))}
@@ -507,6 +568,7 @@ export function PosteingangInbox({
                   active={selectedLetter?.id === l.id}
                   nowIso={nowIso}
                   section="erledigt"
+                  fresh={freshIds.has(l.id)}
                   onSelect={() => setSelectedLetterId(l.id)}
                 />
               ))}
@@ -841,6 +903,7 @@ function PostItemRow({
   active,
   nowIso,
   section,
+  fresh = false,
   onSelect,
 }: {
   letter: Letter;
@@ -848,6 +911,8 @@ function PostItemRow({
   active: boolean;
   nowIso: string;
   section: SectionKey;
+  /** Beat 2: nach Mount live eingetroffen → ~3 s sanfte Frisch-Tönung + Einschub. */
+  fresh?: boolean;
   onSelect: () => void;
 }) {
   const tBadge = useTranslations('posteingang');
@@ -872,7 +937,7 @@ function PostItemRow({
   return (
     <Link
       href={`/posteingang/${letter.id}`}
-      className={`post-item${active ? ' active' : ''}`}
+      className={`post-item${active ? ' active' : ''}${fresh ? ' lw-fresh' : ''}`}
       onClick={(e) => {
         // Inline preview on ≥ lg: prevent navigation on a modifier-less POINTER
         // click, so the right-pane detail updates without a full route change.

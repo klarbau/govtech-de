@@ -1,7 +1,9 @@
 import { getTranslations } from 'next-intl/server';
 
 import { SelectionVorlesen } from '@/components/a11y/SelectionVorlesen';
+import { SideNav } from '@/components/layout/SideNav';
 import { TopNav } from '@/components/layout/TopNav';
+import { LiveBackendProvider } from '@/components/providers/LiveBackendProvider';
 
 // The app is a client-side mock-backend demo: every screen hydrates from
 // localStorage at runtime, so static prerendering yields nothing and trips a
@@ -24,10 +26,15 @@ export default async function AppLayout({
       >
         {tApp('skip_to_content')}
       </a>
-      <TopNav />
-      <main id="main-content" tabIndex={-1} className="app-content">
-        {children}
-      </main>
+      <LiveBackendProvider>
+        <TopNav />
+        <div className="app-shell">
+          <SideNav />
+          <main id="main-content" tabIndex={-1} className="app-content">
+            {children}
+          </main>
+        </div>
+      </LiveBackendProvider>
       <SelectionVorlesen />
     </>
   );

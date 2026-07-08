@@ -46,7 +46,7 @@ export function ProfilCard({
       className="rounded-[var(--radius-card)] border border-border bg-surface p-5 shadow-[var(--shadow-1)]"
       data-testid="v2-profil-card"
     >
-      <header className="mb-3 flex items-center justify-between">
+      <header className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <IconCircle icon={<User />} tone="neutral" size="sm" />
           <h2

@@ -417,5 +417,388 @@
       "mock": true,
       "note": "[MOCK – Verwaltungsdemo, keine echten Daten] Steuererklärung-Vorgang mid-flight."
     }
+  },
+  {
+    "id": "vg-anna-bewohnerparkausweis-2026",
+    "typ": "bewohnerparkausweis",
+    "titel": "Bewohnerparkausweis (Mitte)",
+    "status": "in_pruefung",
+    "beteiligte_behoerden_ids": ["buergeramt-berlin-mitte"],
+    "schritte": [
+      {
+        "id": "step-anna-parkausweis-antrag",
+        "behoerde_id": "buergeramt-berlin-mitte",
+        "block": "A",
+        "aktion": "Antrag Bewohnerparkausweis aufgenommen, Parkzone und Halterschaft (B-AP 4711) geprüft",
+        "rechtsgrundlage": "§ 45 Abs. 1b StVO",
+        "status": "confirmed",
+        "started_at": "@now-4d",
+        "completed_at": "@now-3d"
+      },
+      {
+        "id": "step-anna-parkausweis-ausstellung",
+        "behoerde_id": "buergeramt-berlin-mitte",
+        "block": "A",
+        "aktion": "Ausstellung und Versand des Bewohnerparkausweises",
+        "rechtsgrundlage": "§ 6a StVG i.V.m. GebOSt",
+        "status": "in_progress",
+        "started_at": "@now-2d"
+      }
+    ],
+    "fristen": [{ "typ": "ausstellung", "datum": "@now+9d" }],
+    "angelegt_am": "@now-4d",
+    "persona_id": "anna-petrov",
+    "context": {
+      "mock": true,
+      "note": "[MOCK – Verwaltungsdemo, keine echten Daten] Laufender Vorgang: Bewohnerparkausweis in Ausstellung."
+    }
+  },
+  {
+    "id": "vg-anna-lohnsteuerermaessigung-2026",
+    "typ": "steuer-lohnsteuerermaessigung",
+    "titel": "Lohnsteuer-Ermäßigung 2026 (Freibetrag)",
+    "status": "in_pruefung",
+    "beteiligte_behoerden_ids": ["finanzamt-berlin-mitte-tiergarten"],
+    "schritte": [
+      {
+        "id": "step-anna-lstermaessigung-antrag",
+        "behoerde_id": "finanzamt-berlin-mitte-tiergarten",
+        "block": "A",
+        "aktion": "Antrag auf Lohnsteuer-Ermäßigung 2026 eingegangen (Werbungskosten, Entfernungspauschale)",
+        "rechtsgrundlage": "§ 39a EStG",
+        "status": "confirmed",
+        "started_at": "@now-6d",
+        "completed_at": "@now-5d"
+      },
+      {
+        "id": "step-anna-lstermaessigung-elstam",
+        "behoerde_id": "finanzamt-berlin-mitte-tiergarten",
+        "block": "A",
+        "aktion": "Prüfung und Eintragung des Freibetrags in die ELStAM",
+        "rechtsgrundlage": "§ 39 Abs. 1 EStG",
+        "status": "in_progress",
+        "started_at": "@now-3d"
+      }
+    ],
+    "fristen": [{ "typ": "bescheid", "datum": "@now+12d" }],
+    "angelegt_am": "@now-6d",
+    "persona_id": "anna-petrov",
+    "context": {
+      "mock": true,
+      "note": "[MOCK – Verwaltungsdemo, keine echten Daten] Laufender Vorgang: Freibetrag wird in die ELStAM eingetragen."
+    }
+  },
+  {
+    "id": "vg-schmidt-steuer-2024",
+    "typ": "steuer-jahr",
+    "titel": "Einkommensteuererklärung 2024 (Zusammenveranlagung)",
+    "status": "abgeschlossen",
+    "beteiligte_behoerden_ids": ["finanzamt-hamburg-eimsbuettel"],
+    "schritte": [
+      {
+        "id": "step-schmidt-steuer24-abgabe",
+        "behoerde_id": "finanzamt-hamburg-eimsbuettel",
+        "block": "A",
+        "aktion": "Einkommensteuererklärung 2024 über Mein ELSTER übermittelt",
+        "rechtsgrundlage": "§ 25 EStG i.V.m. § 26b EStG",
+        "status": "confirmed",
+        "started_at": "2025-04-14T09:00:00.000Z",
+        "completed_at": "2025-04-14T09:20:00.000Z"
+      },
+      {
+        "id": "step-schmidt-steuer24-bescheid",
+        "behoerde_id": "finanzamt-hamburg-eimsbuettel",
+        "block": "A",
+        "aktion": "Einkommensteuerbescheid 2024 bekanntgegeben (Erstattung)",
+        "rechtsgrundlage": "§ 122a AO",
+        "status": "confirmed",
+        "started_at": "2025-06-02T09:00:00.000Z",
+        "completed_at": "2025-06-27T11:00:00.000Z"
+      }
+    ],
+    "fristen": [],
+    "angelegt_am": "2025-04-14T09:00:00.000Z",
+    "abgeschlossen_am": "2025-06-27T11:00:00.000Z",
+    "persona_id": "markus-schmidt",
+    "context": {
+      "mock": true,
+      "note": "[MOCK – Verwaltungsdemo, keine echten Daten] Abgeschlossen: Einkommensteuerbescheid 2024 lag im Juni 2025 vor."
+    }
+  },
+  {
+    "id": "vg-schmidt-kita-gutschein-felix-2026",
+    "typ": "kita-gutschein",
+    "titel": "Kita-Gutschein Felix (Elementarbereich)",
+    "status": "in_pruefung",
+    "beteiligte_behoerden_ids": ["bezirksamt-hamburg-eimsbuettel"],
+    "schritte": [
+      {
+        "id": "step-schmidt-kita-antrag",
+        "behoerde_id": "bezirksamt-hamburg-eimsbuettel",
+        "block": "A",
+        "aktion": "Antrag auf Kita-Gutschein für Felix eingegangen und Betreuungsumfang geprüft",
+        "rechtsgrundlage": "§ 6 KibeG",
+        "status": "confirmed",
+        "started_at": "@now-5d",
+        "completed_at": "@now-4d"
+      },
+      {
+        "id": "step-schmidt-kita-bescheid",
+        "behoerde_id": "bezirksamt-hamburg-eimsbuettel",
+        "block": "A",
+        "aktion": "Bewilligung und Ausstellung des Kita-Gutscheins",
+        "rechtsgrundlage": "§ 6 KibeG",
+        "status": "in_progress",
+        "started_at": "@now-2d"
+      }
+    ],
+    "fristen": [{ "typ": "bescheid", "datum": "@now+8d" }],
+    "angelegt_am": "@now-5d",
+    "persona_id": "markus-schmidt",
+    "context": {
+      "mock": true,
+      "note": "[MOCK – Verwaltungsdemo, keine echten Daten] Laufender Vorgang: Kita-Gutschein wird bewilligt."
+    }
+  },
+  {
+    "id": "vg-schmidt-reisepass-felix-2026",
+    "typ": "reisepass",
+    "titel": "Reisepass für Felix",
+    "status": "in_pruefung",
+    "beteiligte_behoerden_ids": ["bezirksamt-hamburg-eimsbuettel", "bundesdruckerei"],
+    "schritte": [
+      {
+        "id": "step-schmidt-reisepass-antrag",
+        "behoerde_id": "bezirksamt-hamburg-eimsbuettel",
+        "block": "A",
+        "aktion": "Reisepass-Antrag im Kundenzentrum aufgenommen (Zustimmung beider Sorgeberechtigten, Lichtbild)",
+        "rechtsgrundlage": "§ 6 PassG",
+        "status": "confirmed",
+        "started_at": "@now-6d",
+        "completed_at": "@now-6d"
+      },
+      {
+        "id": "step-schmidt-reisepass-produktion",
+        "behoerde_id": "bundesdruckerei",
+        "block": "A",
+        "aktion": "Produktion des Reisepasses",
+        "rechtsgrundlage": "§ 6 Abs. 2 PassG",
+        "status": "in_progress",
+        "started_at": "@now-5d"
+      }
+    ],
+    "fristen": [{ "typ": "abholung", "datum": "@now+13d" }],
+    "angelegt_am": "@now-6d",
+    "persona_id": "markus-schmidt",
+    "context": {
+      "mock": true,
+      "note": "[MOCK – Verwaltungsdemo, keine echten Daten] Laufender Vorgang: Reisepass wird produziert."
+    }
+  },
+  {
+    "id": "vg-schmidt-fuehrerschein-umtausch-2026",
+    "typ": "fuehrerschein-umtausch",
+    "titel": "Führerschein-Pflichtumtausch (EU-Kartenführerschein)",
+    "status": "angelegt",
+    "beteiligte_behoerden_ids": ["fe-hamburg-lbv"],
+    "schritte": [
+      {
+        "id": "step-schmidt-fs-umtausch-unterlagen",
+        "behoerde_id": "fe-hamburg-lbv",
+        "block": "C",
+        "aktion": "Antrag stellen und alten Führerschein, aktuelles Lichtbild sowie Personalausweis einreichen",
+        "rechtsgrundlage": "§ 24a FeV i.V.m. EU-RL 2006/126/EG",
+        "status": "self_assigned",
+        "started_at": "@now-10d"
+      }
+    ],
+    "fristen": [{ "typ": "pflichtumtausch", "datum": "2027-01-19" }],
+    "angelegt_am": "@now-10d",
+    "persona_id": "markus-schmidt",
+    "context": {
+      "unterlagen_fehlen": true,
+      "mock": true,
+      "note": "[MOCK – Verwaltungsdemo, keine echten Daten] Warten auf Sie: Kartenführerschein Ausstellung 2002 → Umtauschfrist 19.01.2027."
+    }
+  },
+  {
+    "id": "vg-mehmet-steuerliche-erfassung-2018",
+    "typ": "steuerliche-erfassung",
+    "titel": "Fragebogen zur steuerlichen Erfassung (Aufnahme freiberuflicher Tätigkeit)",
+    "status": "abgeschlossen",
+    "beteiligte_behoerden_ids": ["finanzamt-koeln-mitte"],
+    "schritte": [
+      {
+        "id": "step-mehmet-erfassung-fragebogen",
+        "behoerde_id": "finanzamt-koeln-mitte",
+        "block": "A",
+        "aktion": "Fragebogen zur steuerlichen Erfassung über ELSTER übermittelt",
+        "rechtsgrundlage": "§ 138 Abs. 1b AO",
+        "status": "confirmed",
+        "started_at": "2018-04-09T09:00:00.000Z",
+        "completed_at": "2018-04-09T09:30:00.000Z"
+      },
+      {
+        "id": "step-mehmet-erfassung-steuernummer",
+        "behoerde_id": "finanzamt-koeln-mitte",
+        "block": "A",
+        "aktion": "Steuernummer für freiberufliche Tätigkeit vergeben",
+        "rechtsgrundlage": "§ 19 AO",
+        "status": "confirmed",
+        "started_at": "2018-04-10T09:00:00.000Z",
+        "completed_at": "2018-04-25T11:00:00.000Z"
+      }
+    ],
+    "fristen": [],
+    "angelegt_am": "2018-04-09T09:00:00.000Z",
+    "abgeschlossen_am": "2018-04-25T11:00:00.000Z",
+    "persona_id": "mehmet-yildiz",
+    "context": {
+      "mock": true,
+      "note": "[MOCK – Verwaltungsdemo, keine echten Daten] Abgeschlossen: steuerliche Ersterfassung 2018 zum Start der freiberuflichen Beratung."
+    }
+  },
+  {
+    "id": "vg-mehmet-kfz-zulassung-sprinter-2019",
+    "typ": "kfz-zulassung",
+    "titel": "KFZ-Zulassung Mercedes Sprinter (K-MY 4711)",
+    "status": "abgeschlossen",
+    "beteiligte_behoerden_ids": ["kfz-koeln-stadt"],
+    "schritte": [
+      {
+        "id": "step-mehmet-kfz-sprinter-zulassung",
+        "behoerde_id": "kfz-koeln-stadt",
+        "block": "A",
+        "aktion": "Erstzulassung des Fahrzeugs, Zuteilung Kennzeichen K-MY 4711",
+        "rechtsgrundlage": "§ 6 FZV",
+        "status": "confirmed",
+        "started_at": "2019-03-18T09:00:00.000Z",
+        "completed_at": "2019-03-18T10:30:00.000Z"
+      },
+      {
+        "id": "step-mehmet-kfz-sprinter-kraftst",
+        "behoerde_id": "kfz-koeln-stadt",
+        "block": "A",
+        "aktion": "SEPA-Lastschriftmandat für die Kfz-Steuer an das Hauptzollamt weitergeleitet",
+        "rechtsgrundlage": "§ 13 KraftStG",
+        "status": "confirmed",
+        "started_at": "2019-03-18T10:30:00.000Z",
+        "completed_at": "2019-03-20T09:00:00.000Z"
+      }
+    ],
+    "fristen": [],
+    "angelegt_am": "2019-03-18T09:00:00.000Z",
+    "abgeschlossen_am": "2019-03-20T09:00:00.000Z",
+    "persona_id": "mehmet-yildiz",
+    "context": {
+      "mock": true,
+      "note": "[MOCK – Verwaltungsdemo, keine echten Daten] Abgeschlossen: gewerbliche Erstzulassung des Transporters 2019."
+    }
+  },
+  {
+    "id": "vg-mehmet-ust-jahreserklaerung-2025",
+    "typ": "steuer-umsatzsteuer",
+    "titel": "Umsatzsteuer-Jahreserklärung 2025",
+    "status": "in_pruefung",
+    "beteiligte_behoerden_ids": ["finanzamt-koeln-mitte"],
+    "schritte": [
+      {
+        "id": "step-mehmet-ust25-abgabe",
+        "behoerde_id": "finanzamt-koeln-mitte",
+        "block": "A",
+        "aktion": "Umsatzsteuer-Jahreserklärung 2025 über ELSTER übermittelt",
+        "rechtsgrundlage": "§ 18 Abs. 3 UStG",
+        "status": "confirmed",
+        "started_at": "@now-7d",
+        "completed_at": "@now-7d"
+      },
+      {
+        "id": "step-mehmet-ust25-pruefung",
+        "behoerde_id": "finanzamt-koeln-mitte",
+        "block": "A",
+        "aktion": "Prüfung der Jahreserklärung und Abgleich mit den Voranmeldungen",
+        "rechtsgrundlage": "§ 168 AO",
+        "status": "in_progress",
+        "started_at": "@now-3d"
+      }
+    ],
+    "fristen": [{ "typ": "zahlung", "datum": "@now+13d" }],
+    "angelegt_am": "@now-7d",
+    "persona_id": "mehmet-yildiz",
+    "context": {
+      "mock": true,
+      "note": "[MOCK – Verwaltungsdemo, keine echten Daten] Laufender Vorgang: Umsatzsteuer-Jahreserklärung in Prüfung."
+    }
+  },
+  {
+    "id": "vg-mehmet-barmer-beitrag-2026",
+    "typ": "kv-beitragsfestsetzung",
+    "titel": "Beitragseinstufung freiwillige Krankenversicherung 2026",
+    "status": "in_pruefung",
+    "beteiligte_behoerden_ids": ["barmer-koeln"],
+    "schritte": [
+      {
+        "id": "step-mehmet-barmer-nachweis",
+        "behoerde_id": "barmer-koeln",
+        "block": "A",
+        "aktion": "Einkommensnachweis (Einkommensteuerbescheid 2024) zur Beitragsbemessung übermittelt",
+        "rechtsgrundlage": "§ 240 SGB V",
+        "status": "confirmed",
+        "started_at": "@now-6d",
+        "completed_at": "@now-6d"
+      },
+      {
+        "id": "step-mehmet-barmer-festsetzung",
+        "behoerde_id": "barmer-koeln",
+        "block": "A",
+        "aktion": "Neufestsetzung der Beiträge für freiwillig Versicherte",
+        "rechtsgrundlage": "§ 240 SGB V",
+        "status": "in_progress",
+        "started_at": "@now-2d"
+      }
+    ],
+    "fristen": [{ "typ": "bescheid", "datum": "@now+10d" }],
+    "angelegt_am": "@now-6d",
+    "persona_id": "mehmet-yildiz",
+    "context": {
+      "mock": true,
+      "note": "[MOCK – Verwaltungsdemo, keine echten Daten] Laufender Vorgang: Beitragsneufestsetzung bei der freiwilligen GKV."
+    }
+  },
+  {
+    "id": "vg-mehmet-vorauszahlung-anpassung-2026",
+    "typ": "steuer-vorauszahlung",
+    "titel": "Anpassung der Einkommensteuer-Vorauszahlungen 2026",
+    "status": "in_pruefung",
+    "beteiligte_behoerden_ids": ["finanzamt-koeln-mitte"],
+    "schritte": [
+      {
+        "id": "step-mehmet-vorauszahlung-antrag",
+        "behoerde_id": "finanzamt-koeln-mitte",
+        "block": "A",
+        "aktion": "Antrag auf Herabsetzung der Vorauszahlungen eingegangen",
+        "rechtsgrundlage": "§ 37 Abs. 3 EStG",
+        "status": "confirmed",
+        "started_at": "@now-5d",
+        "completed_at": "@now-5d"
+      },
+      {
+        "id": "step-mehmet-vorauszahlung-unterlagen",
+        "behoerde_id": "finanzamt-koeln-mitte",
+        "block": "C",
+        "aktion": "Aktuelle betriebswirtschaftliche Auswertung (BWA) und Gewinnprognose einreichen",
+        "rechtsgrundlage": "§ 90 AO",
+        "status": "self_assigned",
+        "started_at": "@now-3d"
+      }
+    ],
+    "fristen": [{ "typ": "unterlagen", "datum": "@now+6d" }],
+    "angelegt_am": "@now-5d",
+    "persona_id": "mehmet-yildiz",
+    "context": {
+      "unterlagen_fehlen": true,
+      "mock": true,
+      "note": "[MOCK – Verwaltungsdemo, keine echten Daten] Warten auf Sie: BWA und Gewinnprognose stehen noch aus."
+    }
   }
 ]

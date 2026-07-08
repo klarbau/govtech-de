@@ -25,13 +25,15 @@
   },
   "topnav": {
     "nav_label": "Ana gezinme",
+    "meta_nav_label": "Servis gezinmesi",
     "solutions": "Çözümler (Lösungen)",
     "lebenslagen": "Yaşam durumları (Lebenslagen)",
     "security_privacy": "Güvenlik ve veri koruma",
     "resources": "Kaynaklar",
     "about_us": "Hakkımızda",
     "help": "Yardım ve iletişim",
-    "about_project": "Proje hakkında"
+    "about_project": "Proje hakkında",
+    "brand_label": "GovTech-DE, genel bakışa"
   },
   "lebenslagen": {
     "breadcrumb_catalog": "Hizmet kataloğu",
@@ -392,6 +394,7 @@
         "stat_zeit": "Kazanılan süre",
         "stat_phase": "Mevcut aşama",
         "phase_keine": "İşlem tamamlandı",
+        "phase_done": "Tamamlandı",
         "result_title": "Genel sonuç",
         "result_status": "Tamamlandı",
         "result_lead": "Başvurunuz koordineli şekilde işleme alındı ve yetkili makamlara iletildi.",
@@ -1898,6 +1901,15 @@
       "subtitle_template": "{adresse} · taşınma {stichtag}",
       "headline": "Otomatik pilotla taşınma",
       "headline_sub": "Bir kez onaylarsınız — sonraki adımları sistem koordine eder.",
+      "demo": {
+        "title": "Otomatik pilotu canlı deneyimleyin",
+        "mock_badge": "[MOCK]",
+        "body": "Örnek bir taşınma başlatın. Sistem, simüle edilmiş bir adres değişikliğini tetikler ve bunu ilgili tüm kurumlar arasında koordine eder — kendiniz onayladığınız eID doğrulamaları dâhil. Gerçek hiçbir veri aktarılmaz.",
+        "address_label": "Örnek adres",
+        "cta_start": "Örnek taşınmayı başlat",
+        "starting": "Örnek taşınma başlatılıyor …",
+        "error": "Örnek taşınma başlatılamadı. Lütfen tekrar deneyin."
+      },
       "vorgang_label": "İşlem #{id}",
       "status": {
         "pending": "bekliyor",
@@ -5147,6 +5159,22 @@
       "state_error": "TEST sandbox yanıt vermedi — gerçek hiçbir makam etkilenmedi.",
       "refresh_events_cta": "Olay günlüğünü yenile"
     },
+    "haube": {
+      "badge_live": "FIT-Connect testi etkin — yalnızca eID adımları",
+      "badge_live_desc": "Gerçek protokol katmanı yalnızca başvuruya dayalı, eID ile onaylanan adımlar için — kendi kaydettiğimiz teslim noktasına (Zustellpunkt) sahip bir FITKO test ortamına karşı. Diğer makamlar simüle edilmeye devam eder.",
+      "strip_summary": "Kaputun altında",
+      "strip_live_dot_sr": "Canlı protokol — olaylar geliyor",
+      "origin_sim": "Simülasyon",
+      "origin_real": "gerçek · test ortamı",
+      "empty": "Henüz olay yok.",
+      "pointer_inspector": "Tam protokol aşağıdaki denetleyicide.",
+      "beat_encrypted": "şifrelendi (JWE)",
+      "beat_submitted": "iletildi · <ltr>{id}</ltr>…",
+      "beat_confirmed": "onaylandı (SET doğrulandı)",
+      "beat_pending_ack": "sandbox onayı bekleniyor",
+      "line_ids": "Submission <ltr>{sid}</ltr>… · Vaka <ltr>{cid}</ltr>…",
+      "count": "{count, plural, other {# olay}}"
+    },
     "eudi_vp": {
       "tab_label": "Gerçek cüzdanla sun (OpenID4VP)",
       "title": "EUDI-Wallet ile kanıt sun",
@@ -5172,5 +5200,10 @@
         "x5c": "x5c ile imzalı istek (demo sertifikası)"
       }
     }
+  },
+  "liveness": {
+    "autopilot_active": "Otomatik pilot etkin",
+    "autopilot_active_aria": "Otomatik pilot etkin — asistanı aç",
+    "unread_badge_aria": "{count, plural, other {Gelen kutunuzda # okunmamış mesaj}}"
   }
 }

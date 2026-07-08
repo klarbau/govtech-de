@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GovTech-DE — Dashboard · Design-Vorschlag V3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;650;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════════════════
+   GovTech-DE · Design-Vorschlag V3 — ein Token-Set, eine Typo-Skala.
+
+   Was sich gegenüber dem Live-Stand ändert (Tier 0+1 aus dem Audit):
+   · Basis 16px, rem-Skala 13/14/16/18/22/28/36 — kein 12.5px-Rauschen
+   · EINE Radius-Skala: 6 / 10 / 14 / pill
+   · App-Navigation first-level (nicht im „Lösungen“-Dropdown versteckt)
+   · Status-Zeile statt 4-KPI-Kartenband
+   · Agent-Akzent: Autopilot hat als einziges Element eine eigene Signal-
+     farbe + Puls — „das System arbeitet für Sie“ ist sofort erkennbar
+   · Interaktive Karten heben sich auf Hover (Elevation nur mit Bedeutung)
+   · Behörden-Klarnamen statt Slugs, Aktenzeichen nur in der Meta-Zeile
+   · Serif-Akzent (Source Serif 4) für Brief-Zitate
+   · Header passt auf 375px, Burger immer erreichbar
+   ═══════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Fläche & Linie */
+  --bg: #FAFAF8;
+  --surface: #FFFFFF;
+  --surface-2: #F2F5F1;
+  --border: #E3E8E2;
+  --border-strong: #C6CDC6;
+
+  /* Text */
+  --ink: #0D1713;
+  --ink-2: #3D4A43;
+  --ink-3: #5F6B64;
+
+  /* Marke — Waldgrün bleibt */
+  --primary: #0F3D2E;
+  --primary-hover: #0C3325;
+  --on-primary: #FFFFFF;
+  --tint-primary: #ECF1EE;
+
+  /* Agent-Signal — NUR für Autopilot/KI-Momente */
+  --agent: #0E7A55;
+  --agent-tint: #E3F4EB;
+  --agent-pulse: #17A56F;
+
+  /* Semantik */
+  --success: #137034;      --success-tint: #E7F6EC;
+  --warning: #955200;      --warning-tint: #FDF1DC;
+  --danger:  #B91C1C;      --danger-tint:  #FCE8E8;
+
+  /* Typo-Skala (rem, Basis 16px) */
+  --t-micro: 0.8125rem;    /* 13 — Meta, Badges */
+  --t-small: 0.875rem;     /* 14 — Sekundärtext */
+  --t-body:  1rem;         /* 16 — Fließtext */
+  --t-lead:  1.125rem;     /* 18 — Card-Titel */
+  --t-h2:    1.375rem;     /* 22 */
+  --t-display: clamp(1.75rem, 1.35rem + 1.6vw, 2.25rem); /* 28→36 */
+
+  /* Radius — eine Skala */
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-pill: 999px;
+
+  /* Elevation — ruhend: Linie; gehoben: Schatten mit Bedeutung */
+  --shadow-hover: 0 2px 8px -2px rgba(12, 24, 18, .08), 0 10px 28px -14px rgba(12, 24, 18, .14);
+  --shadow-pop: 0 16px 40px -16px rgba(12, 24, 18, .22);
+
+  /* Motion */
+  --ease: cubic-bezier(0.25, 1, 0.5, 1);
+  --fast: 150ms;
+}
+
+.dark {
+  --bg: #0D1210;
+  --surface: #151C18;
+  --surface-2: #1C2520;
+  --border: #2B352F;
+  --border-strong: #3C4740;
+
+  --ink: #EAF0EC;
+  --ink-2: #B7C2BB;
+  --ink-3: #919E96;
+
+  --primary: #7FCFB0;          /* Text/Icon-Rolle auf dunkler Fläche */
+  --primary-hover: #96DCC1;
+  --on-primary: #0D1210;
+  --tint-primary: #16291F;
+
+  --agent: #4CC38A;
+  --agent-tint: #14301F;
+  --agent-pulse: #4CC38A;
+
+  --success: #5CC98A;      --success-tint: #13351F;
+  --warning: #E3B341;      --warning-tint: #3A2C0E;
+  --danger:  #F2837C;      --danger-tint:  #3A1714;
+
+  --shadow-hover: 0 2px 8px -2px rgba(0, 0, 0, .5), 0 10px 28px -14px rgba(0, 0, 0, .6);
+  --shadow-pop: 0 16px 40px -16px rgba(0, 0, 0, .7);
+}
+/* Flächen mit weißer Schrift (Buttons) brauchen im Dark einen satten Fill,
+   nicht die helle Text-Rolle von --primary. */
+.dark { --primary-fill: #2E7D5B; --primary-fill-hover: #35906A; --on-fill: #FFFFFF; }
+:root { --primary-fill: var(--primary); --primary-fill-hover: var(--primary-hover); --on-fill: var(--on-primary); }
+
+* { box-sizing: border-box; }
+html { color-scheme: light dark; }
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: var(--t-body);
+  line-height: 1.55;
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+button { font: inherit; cursor: pointer; color: inherit; }
+svg { width: 18px; height: 18px; flex: none; }
+.tnum { font-variant-numeric: tabular-nums; }
+
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: var(--r-sm); }
+
+.skip {
+  position: absolute; left: -9999px; top: 8px; z-index: 200;
+  background: var(--surface); border: 1px solid var(--border-strong);
+  padding: 8px 14px; border-radius: var(--r-md);
+}
+.skip:focus { left: 8px; }
+
+/* ── Header: App-Navigation ist erste Ebene ─────────────────────────── */
+header {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; gap: 6px;
+  height: 60px; padding: 0 16px;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  min-width: 0;
+}
+.brand {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-family: 'Inter Tight', sans-serif;
+  font-weight: 700; font-size: 1.0625rem; letter-spacing: -0.01em;
+  white-space: nowrap; margin-right: 10px;
+}
+.brand .crest {
+  width: 30px; height: 30px; border-radius: 8px;
+  background: var(--primary-fill); color: var(--on-fill);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: 'Inter Tight', sans-serif; font-size: 15px; font-weight: 700;
+}
+nav.primary { display: flex; align-items: center; gap: 2px; min-width: 0; }
+nav.primary a {
+  display: inline-flex; align-items: center; gap: 7px;
+  height: 38px; padding: 0 13px;
+  border-radius: var(--r-md);
+  font-size: var(--t-small); font-weight: 500; color: var(--ink-2);
+  white-space: nowrap;
+  transition: background var(--fast) var(--ease), color var(--fast) var(--ease);
+}
+nav.primary a:hover { background: var(--surface-2); color: var(--ink); }
+nav.primary a[aria-current="page"] { background: var(--tint-primary); color: var(--primary); font-weight: 600; }
+nav.primary .count {
+  min-width: 19px; height: 19px; padding: 0 6px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--primary-fill); color: var(--on-fill);
+  border-radius: var(--r-pill); font-size: 11.5px; font-weight: 600;
+}
+.spacer { flex: 1; }
+.iconbtn {
+  width: 38px; height: 38px; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: 0; border-radius: var(--r-md); color: var(--ink-2);
+  transition: background var(--fast) var(--ease);
+}
+.iconbtn:hover { background: var(--surface-2); color: var(--ink); }
+.userpill {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 38px; padding: 3px 10px 3px 4px; margin-left: 2px;
+  border: 1px solid var(--border); border-radius: var(--r-pill);
+  background: var(--surface); font-size: var(--t-small); font-weight: 500;
+  white-space: nowrap;
+}
+.userpill .av {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--tint-primary); color: var(--primary);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600;
+}
+.burger { display: none; }
+
+@media (max-width: 919px) {
+  nav.primary { display: none; }
+  .burger { display: inline-flex; }
+}
+@media (max-width: 479px) {
+  .userpill .name { display: none; }
+  .userpill { padding-right: 4px; border-color: transparent; background: transparent; }
+  header { padding: 0 10px; }
+}
+
+/* Mobile-Drawer */
+.drawer[hidden] { display: none; }
+.drawer {
+  position: fixed; inset: 0; z-index: 100;
+}
+.drawer .scrim { position: absolute; inset: 0; background: rgba(8, 14, 11, .5); border: 0; width: 100%; height: 100%; }
+.drawer .panel {
+  position: absolute; top: 0; left: 0; bottom: 0; width: min(300px, 84vw);
+  background: var(--surface); border-right: 1px solid var(--border);
+  box-shadow: var(--shadow-pop);
+  padding: 16px 12px; display: flex; flex-direction: column; gap: 2px;
+  animation: slide-in 200ms var(--ease);
+}
+@keyframes slide-in { from { transform: translateX(-24px); opacity: 0; } }
+.drawer .panel a {
+  display: flex; align-items: center; gap: 12px;
+  height: 44px; padding: 0 12px; border-radius: var(--r-md);
+  font-weight: 500; color: var(--ink-2);
+}
+.drawer .panel a[aria-current="page"] { background: var(--tint-primary); color: var(--primary); font-weight: 600; }
+.drawer .panel a svg { color: var(--ink-3); }
+.drawer .panel a[aria-current="page"] svg { color: var(--primary); }
+
+/* ── Seite ──────────────────────────────────────────────────────────── */
+main {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 28px clamp(16px, 4vw, 40px) 64px;
+}
+
+/* Hinweis-Banner (proaktiver Anspruch) */
+.hint {
+  display: flex; align-items: center; gap: 13px;
+  padding: 13px 18px; margin-bottom: 26px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-left: 3px solid var(--agent);
+  border-radius: var(--r-md);
+}
+.hint svg { color: var(--agent); }
+.hint b { font-weight: 600; }
+.hint .sub { color: var(--ink-3); font-size: var(--t-small); }
+.hint .more { margin-left: auto; color: var(--primary); font-weight: 600; font-size: var(--t-small); white-space: nowrap; }
+
+/* Kopf: Begrüßung + Status-Zeile (ersetzt das 4-KPI-Kartenband) */
+.pagehead { margin-bottom: 28px; }
+.pagehead .date { font-size: var(--t-micro); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); margin: 0 0 10px; }
+.pagehead h1 {
+  margin: 0 0 10px;
+  font-family: 'Inter Tight', sans-serif;
+  font-size: var(--t-display); font-weight: 650; letter-spacing: -0.02em; line-height: 1.1;
+}
+.statusline { color: var(--ink-2); font-size: var(--t-body); margin: 0; }
+.statusline a { color: var(--primary); font-weight: 600; border-bottom: 1px solid color-mix(in srgb, var(--primary) 35%, transparent); }
+.statusline a:hover { border-bottom-color: var(--primary); }
+.statusline .sep { color: var(--border-strong); margin: 0 10px; }
+
+/* Grid */
+.grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+@media (max-width: 919px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+.col { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+
+/* Karten */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 22px;
+}
+a.card, .card.link {
+  display: block;
+  transition: transform var(--fast) var(--ease), box-shadow var(--fast) var(--ease), border-color var(--fast) var(--ease);
+}
+a.card:hover, .card.link:hover { transform: translateY(-1px); box-shadow: var(--shadow-hover); border-color: var(--border-strong); }
+a.card:active, .card.link:active { transform: translateY(0) scale(.99); box-shadow: none; }
+.card h2 {
+  margin: 0; font-size: var(--t-lead); font-weight: 600; letter-spacing: -0.01em;
+  display: flex; align-items: center; gap: 10px;
+}
+.card .head { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 4px; }
+.headlink { font-size: var(--t-small); font-weight: 600; color: var(--primary); display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.headlink svg { width: 15px; height: 15px; }
+
+/* ── Autopilot — einziges Element mit Agent-Signal ──────────────────── */
+.autopilot { border-color: color-mix(in srgb, var(--agent) 28%, var(--border)); }
+.agent-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 4px 12px 4px 9px;
+  background: var(--agent-tint); color: var(--agent);
+  border-radius: var(--r-pill); font-size: var(--t-micro); font-weight: 600;
+}
+.agent-chip .pulse {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--agent-pulse);
+  animation: pulse 2.2s var(--ease) infinite;
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--agent-pulse) 45%, transparent); }
+  50% { box-shadow: 0 0 0 5px transparent; }
+}
+.autopilot .sub { color: var(--ink-3); font-size: var(--t-small); margin: 2px 0 0; }
+
+/* Segment-Fortschritt statt Donut */
+.segbar { display: flex; gap: 5px; margin: 18px 0 8px; }
+.segbar span { height: 6px; flex: 1; border-radius: var(--r-pill); background: var(--agent); }
+.segbar span.pending { background: transparent; border: 1px dashed var(--border-strong); }
+.segmeta { display: flex; justify-content: space-between; font-size: var(--t-micro); color: var(--ink-3); }
+.segmeta b { color: var(--ink-2); font-weight: 600; }
+
+.ap-rows { margin-top: 16px; border-top: 1px solid var(--border); }
+.ap-row {
+  display: flex; align-items: center; gap: 13px;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+}
+.ap-row:last-child { border-bottom: 0; }
+.ap-row .tick {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--success-tint); color: var(--success);
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.ap-row .tick svg { width: 14px; height: 14px; }
+.ap-row .tick.wait { background: var(--warning-tint); color: var(--warning); }
+.ap-row .t { min-width: 0; flex: 1; }
+.ap-row .t .name { font-weight: 600; font-size: var(--t-small); }
+.ap-row .t .what { color: var(--ink-3); font-size: var(--t-micro); }
+.ap-row time { color: var(--ink-3); font-size: var(--t-micro); }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 40px; padding: 0 16px;
+  border-radius: var(--r-md); border: 1px solid transparent;
+  font-size: var(--t-small); font-weight: 600; white-space: nowrap;
+  transition: background var(--fast) var(--ease), transform var(--fast) var(--ease);
+}
+.btn:active { transform: scale(.98); }
+.btn-primary { background: var(--primary-fill); color: var(--on-fill); }
+.btn-primary:hover { background: var(--primary-fill-hover); }
+.btn-quiet { border-color: var(--border-strong); background: var(--surface); color: var(--ink); }
+.btn-quiet:hover { background: var(--surface-2); }
+.btn-sm { height: 34px; padding: 0 12px; font-size: var(--t-micro); }
+
+/* Wert-Beleg — eine ruhige Zeile, keine Konfetti-Karte */
+.receipt {
+  display: flex; flex-wrap: wrap; gap: 6px 26px;
+  margin-top: 16px; padding: 13px 16px;
+  background: var(--surface-2); border-radius: var(--r-md);
+  font-size: var(--t-small); color: var(--ink-2);
+}
+.receipt b { color: var(--ink); font-weight: 650; }
+
+/* ── Aufgaben-Liste — EIN ListRow-Primitiv ──────────────────────────── */
+.rows { display: flex; flex-direction: column; }
+.row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 10px; margin: 0 -10px;
+  border-radius: var(--r-md);
+  border-bottom: 1px solid var(--border);
+  transition: background var(--fast) var(--ease);
+}
+.rows .row:last-of-type { border-bottom: 0; }
+a.row:hover { background: var(--surface-2); }
+.chip {
+  width: 40px; height: 40px; border-radius: var(--r-md);
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.chip.warn { background: var(--warning-tint); color: var(--warning); }
+.chip.doc  { background: var(--tint-primary); color: var(--primary); }
+.chip.fam  { background: var(--success-tint); color: var(--success); }
+.row .t { flex: 1; min-width: 0; }
+.row .title { font-weight: 600; font-size: var(--t-body); line-height: 1.35; }
+.row .meta {
+  color: var(--ink-3); font-size: var(--t-micro); margin-top: 2px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.row .meta .az { font-variant-numeric: tabular-nums; }
+.due {
+  font-size: var(--t-micro); font-weight: 600; white-space: nowrap;
+  padding: 4px 10px; border-radius: var(--r-pill);
+  background: var(--surface-2); color: var(--ink-2);
+}
+.due.soon { background: var(--warning-tint); color: var(--warning); }
+.row > svg { color: var(--ink-3); width: 16px; height: 16px; }
+
+/* Erledigt-Liste */
+.done .name { font-weight: 600; font-size: var(--t-small); }
+.done .what { color: var(--ink-3); font-size: var(--t-micro); }
+
+/* ── Rail ───────────────────────────────────────────────────────────── */
+.rail-num { font-family: 'Inter Tight', sans-serif; font-size: 1.75rem; font-weight: 650; letter-spacing: -0.01em; }
+.letter {
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+}
+.letter:last-of-type { border-bottom: 0; }
+.letter .from { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: var(--t-micro); color: var(--ink-3); }
+.letter .from b { color: var(--ink-2); font-weight: 600; }
+.letter .quote {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 1.0625rem; font-style: italic; line-height: 1.45;
+  color: var(--ink); margin: 5px 0 0;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.termin-when { display: flex; align-items: baseline; gap: 10px; margin: 14px 0 4px; }
+.termin-when .day { font-family: 'Inter Tight', sans-serif; font-size: 1.375rem; font-weight: 650; }
+.termin-when .time { color: var(--ink-2); font-size: var(--t-small); }
+.prep { margin-top: 12px; font-size: var(--t-micro); color: var(--ink-3); display: flex; align-items: center; gap: 8px; }
+.prep .bar { flex: 1; height: 4px; border-radius: var(--r-pill); background: var(--surface-2); overflow: hidden; }
+.prep .bar i { display: block; height: 100%; width: 66%; background: var(--primary-fill); border-radius: var(--r-pill); }
+
+.privacy {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 15px 18px; background: var(--tint-primary);
+  border-radius: var(--r-lg); font-size: var(--t-small); color: var(--ink-2);
+}
+.privacy svg { color: var(--primary); margin-top: 2px; }
+.privacy b { color: var(--ink); display: block; margin-bottom: 2px; }
+
+footer {
+  max-width: 1240px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px) 40px;
+  color: var(--ink-3); font-size: var(--t-micro);
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.mock-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1px dashed var(--border-strong); border-radius: var(--r-pill);
+  padding: 3px 10px; font-weight: 600; letter-spacing: .04em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Zum Inhalt springen</a>
+
+<header>
+  <button class="iconbtn burger" id="burgerBtn" aria-label="Navigation öffnen" aria-expanded="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+  <a class="brand" href="#"><span class="crest" aria-hidden="true">G</span><span>GovTech-DE</span></a>
+
+  <nav class="primary" aria-label="Hauptnavigation">
+    <a href="#" aria-current="page">Übersicht</a>
+    <a href="#">Posteingang <span class="count">11</span></a>
+    <a href="#">Vorgänge</a>
+    <a href="#">Dokumente</a>
+    <a href="#">Termine</a>
+    <a href="#">Mehr&thinsp;▾</a>
+  </nav>
+
+  <span class="spacer"></span>
+
+  <button class="iconbtn" aria-label="Barrierefreiheit">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><path d="M5 9.5 12 11l7-1.5M12 11v4l-2.5 6M12 15l2.5 6"/></svg>
+  </button>
+  <button class="iconbtn" id="themeBtn" aria-label="Dunkles Design umschalten">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+  </button>
+  <a class="userpill" href="#" aria-label="Benutzermenü — Anna Petrov">
+    <span class="av" aria-hidden="true">AP</span><span class="name">Anna Petrov</span>
+  </a>
+</header>
+
+<div class="drawer" id="drawer" hidden>
+  <button class="scrim" id="drawerScrim" aria-label="Navigation schließen"></button>
+  <nav class="panel" aria-label="Hauptnavigation mobil">
+    <a href="#" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>Übersicht</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>Posteingang</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>Vorgänge</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Dokumente</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Termine</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Stammdaten</a>
+  </nav>
+</div>
+
+<main id="main">
+
+  <!-- Proaktiver Hinweis: Agent-Signal am linken Rand, eine Zeile, kein Kartenblock -->
+  <div class="hint">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3Z"/></svg>
+    <div>
+      <b>Möglicher Wohngeld-Anspruch erkannt</b>
+      <div class="sub">ca. 220–340&nbsp;€ / Monat · unverbindliche Schätzung aus Ihren Stammdaten</div>
+    </div>
+    <a class="more" href="#">Prüfen&nbsp;→</a>
+  </div>
+
+  <div class="pagehead">
+    <p class="date">Mittwoch, 1. Juli 2026</p>
+    <h1>Guten Morgen, Anna</h1>
+    <p class="statusline">
+      <a href="#">11 neue Nachrichten</a><span class="sep">·</span>
+      <a href="#">3 Aufgaben</a>, keine überfällig<span class="sep">·</span>
+      Nächster Termin <a href="#" class="tnum">Fr, 3. Juli, 09:30</a>
+    </p>
+  </div>
+
+  <div class="grid">
+    <div class="col">
+
+      <!-- Autopilot: der Held bekommt das einzige Signal-Element der Seite -->
+      <section class="card autopilot" aria-labelledby="ap-h">
+        <div class="head">
+          <h2 id="ap-h">Ihr Umzug</h2>
+          <span class="agent-chip"><span class="pulse" aria-hidden="true"></span>Autopilot aktiv</span>
+        </div>
+        <p class="sub">GovTech-DE informiert Ihre Behörden — Sie bestätigen nur, was sensibel ist.</p>
+
+        <div class="segbar" role="img" aria-label="6 von 7 Stellen informiert">
+          <span></span><span></span><span></span><span></span><span></span><span></span><span class="pending"></span>
+        </div>
+        <div class="segmeta"><span><b>6 von 7</b> Stellen informiert</span><span class="tnum">Stichtag 01.07.2026</span></div>
+
+        <div class="ap-rows">
+          <div class="ap-row">
+            <span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+            <div class="t"><div class="name">Bürgeramt Berlin-Mitte</div><div class="what">Anmeldung neuer Wohnort · §&nbsp;17 BMG</div></div>
+            <time class="tnum">09:00</time>
+          </div>
+          <div class="ap-row">
+            <span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+            <div class="t"><div class="name">Finanzamt Berlin Mitte/Tiergarten</div><div class="what">Anschriftenänderung · §&nbsp;19 AO</div></div>
+            <time class="tnum">09:00</time>
+          </div>
+          <div class="ap-row">
+            <span class="tick wait"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+            <div class="t"><div class="name">Landesamt für Einwanderung (LEA)</div><div class="what">Wartet auf Ihre Freigabe · §&nbsp;18 PAuswG</div></div>
+            <button class="btn btn-primary btn-sm">Mit eID bestätigen</button>
+          </div>
+        </div>
+
+        <div class="receipt">
+          <span><b>7</b> Behördengänge gespart</span>
+          <span>ca. <b class="tnum">8&nbsp;Std.</b> Zeitersparnis</span>
+          <span>Adresse <b>1×</b> erfasst, <b>7×</b> zugestellt (Once-Only)</span>
+        </div>
+      </section>
+
+      <!-- Heute wichtig: ListRow-Primitiv — Betreff kurz, Aktenzeichen in der Meta -->
+      <section class="card" aria-labelledby="hw-h">
+        <div class="head">
+          <h2 id="hw-h">Heute wichtig</h2>
+          <a class="headlink" href="#">Alle anzeigen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a>
+        </div>
+        <div class="rows">
+          <a class="row" href="#">
+            <span class="chip warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+            <div class="t">
+              <div class="title">Rundfunkbeitrag: Festsetzungsbescheid prüfen</div>
+              <div class="meta">ARD ZDF Beitragsservice · <span class="az">Beitragsnr. 731 042 088</span></div>
+            </div>
+            <span class="due soon tnum">bis 15. Jan</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          </a>
+          <a class="row" href="#">
+            <span class="chip doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8M16 17H8"/></svg></span>
+            <div class="t">
+              <div class="title">Einkommensteuerbescheid 2024: Einspruch möglich</div>
+              <div class="meta">Finanzamt für Körperschaften I Berlin · <span class="az">St.-Nr. 11/123/45678</span></div>
+            </div>
+            <span class="due tnum">bis 12. Apr</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          </a>
+          <a class="row" href="#">
+            <span class="chip fam"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+            <div class="t">
+              <div class="title">Kindergeld aktualisieren</div>
+              <div class="meta">Familienkasse Berlin-Brandenburg · Unterlagen ergänzen</div>
+            </div>
+            <span class="due tnum">bis 6. Jul</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          </a>
+        </div>
+      </section>
+
+      <!-- Automatisch erledigt: Klarnamen statt Slugs -->
+      <section class="card" aria-labelledby="ae-h">
+        <div class="head">
+          <h2 id="ae-h">Automatisch erledigt</h2>
+          <a class="headlink" href="#">Alle 8 Schritte <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a>
+        </div>
+        <div class="rows done">
+          <div class="row">
+            <span class="chip fam" style="width:34px;height:34px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="M20 6 9 17l-5-5"/></svg></span>
+            <div class="t"><div class="name">KFZ-Zulassungsstelle Berlin</div><div class="what">Halteranschrift aktualisiert · §&nbsp;15 FZV</div></div>
+            <time class="tnum" style="color:var(--ink-3);font-size:var(--t-micro)">30.06., 09:01</time>
+          </div>
+          <div class="row">
+            <span class="chip fam" style="width:34px;height:34px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="M20 6 9 17l-5-5"/></svg></span>
+            <div class="t"><div class="name">AOK Nordost — Die Gesundheitskasse</div><div class="what">Adressänderung Versichertenkonto</div></div>
+            <time class="tnum" style="color:var(--ink-3);font-size:var(--t-micro)">30.06., 09:01</time>
+          </div>
+          <div class="row">
+            <span class="chip fam" style="width:34px;height:34px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="M20 6 9 17l-5-5"/></svg></span>
+            <div class="t"><div class="name">ARD ZDF Beitragsservice</div><div class="what">Anschriftenänderung Beitragskonto · §&nbsp;11 RBStV</div></div>
+            <time class="tnum" style="color:var(--ink-3);font-size:var(--t-micro)">30.06., 09:02</time>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <div class="col">
+
+      <!-- Posteingang: Inhalt statt einsamer Riesenzahl; Serif-Zitat als Brief-Anker -->
+      <a class="card" href="#" aria-labelledby="pi-h">
+        <div class="head">
+          <h2 id="pi-h">Posteingang</h2>
+          <span class="rail-num tnum" aria-label="11 ungelesen">11</span>
+        </div>
+        <div class="letter">
+          <div class="from"><b>Bezirksamt Mitte von Berlin</b><time>gestern</time></div>
+          <p class="quote">„Ihre Anmeldung nach §&nbsp;17 BMG wurde erfolgreich verarbeitet. Eine amtliche Meldebestätigung liegt bei.“</p>
+        </div>
+        <div class="letter">
+          <div class="from"><b>Finanzamt Berlin Mitte/Tiergarten</b><time>gestern</time></div>
+          <p class="quote">„Für Ihre Einkommensteuer ist künftig das Finanzamt Mitte/Tiergarten örtlich zuständig.“</p>
+        </div>
+        <p style="margin:12px 0 0" class="headlink">Zum Posteingang <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></p>
+      </a>
+
+      <!-- Nächster Termin: realistische Zeit, Vorbereitung als Fortschritt -->
+      <a class="card" href="#" aria-labelledby="tm-h">
+        <div class="head">
+          <h2 id="tm-h">Nächster Termin</h2>
+          <span class="due tnum">in 2 Tagen</span>
+        </div>
+        <div class="termin-when">
+          <span class="day">Fr, 3. Juli</span>
+          <span class="time tnum">09:30 – 10:15 Uhr</span>
+        </div>
+        <div style="color:var(--ink-2); font-size:var(--t-small)">AOK Nordost · Beratung Vorsorge-Untersuchungen<br><span style="color:var(--ink-3); font-size:var(--t-micro)">Video-Sprechstunde — Link kommt 24&nbsp;h vorher per E-Mail</span></div>
+        <div class="prep"><span>Vorbereitung</span><span class="bar"><i></i></span><span class="tnum">2/3</span></div>
+      </a>
+
+      <!-- Offene Vorgänge: Zahl + Kontext in einer Zeile -->
+      <a class="card" href="#" aria-labelledby="vg-h">
+        <div class="head">
+          <h2 id="vg-h">Offene Vorgänge</h2>
+          <span class="rail-num tnum" aria-label="2 offen">2</span>
+        </div>
+        <p style="margin:6px 0 0; color:var(--ink-2); font-size:var(--t-small)">
+          Umzug <span style="color:var(--ink-3)">(wartet auf Ihre eID-Freigabe)</span> und Aufenthaltstitel-Verlängerung <span style="color:var(--ink-3)">(Unterlagen bis 10. Juli)</span>.
+        </p>
+      </a>
+
+      <div class="privacy">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1 1 0 0 1 1.52 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
+        <div><b>Ihre Daten sind geschützt</b>Jede Übermittlung sehen Sie im Änderungsprotokoll — was, an wen, auf welcher Rechtsgrundlage.</div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span class="mock-badge">MOCK</span>
+  <span>Konzept-Demo — alle Daten synthetisch.</span>
+  <span style="margin-left:auto">Design-Vorschlag V3 · Tier&nbsp;0+1 aus dem Design-Audit</span>
+</footer>
+
+<script>
+  // Theme: OS-Präferenz initial, Toggle manuell
+  const root = document.documentElement;
+  if (matchMedia('(prefers-color-scheme: dark)').matches) root.classList.add('dark');
+  document.getElementById('themeBtn').addEventListener('click', () => root.classList.toggle('dark'));
+
+  // Mobile-Drawer
+  const drawer = document.getElementById('drawer');
+  const burger = document.getElementById('burgerBtn');
+  const setOpen = (open) => { drawer.hidden = !open; burger.setAttribute('aria-expanded', String(open)); };
+  burger.addEventListener('click', () => setOpen(drawer.hidden));
+  document.getElementById('drawerScrim').addEventListener('click', () => setOpen(false));
+  addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
+</script>
+</body>
+</html>

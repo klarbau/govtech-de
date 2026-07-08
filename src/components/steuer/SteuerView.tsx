@@ -284,6 +284,7 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
 
           <div className="st-card uberblick" id="steuerbereiche">
             <h3>{t('steuer.bereiche.title')}</h3>
+            <div className="st-table-scroll">
             <table>
               <thead>
                 <tr>
@@ -348,6 +349,7 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
                 })}
               </tbody>
             </table>
+            </div>
             <a
               className="right-link"
               href="#steuerbereiche"

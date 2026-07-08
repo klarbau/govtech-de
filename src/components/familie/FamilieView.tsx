@@ -265,8 +265,10 @@ export function FamilieView() {
             style={{
               marginTop: 18,
               display: 'flex',
+              flexWrap: 'wrap',
               alignItems: 'center',
               justifyContent: 'space-between',
+              gap: 14,
               padding: '18px 26px',
             }}
           >

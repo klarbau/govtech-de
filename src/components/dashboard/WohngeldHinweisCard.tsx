@@ -5,17 +5,14 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import {
   ArrowRight,
-  BarChart3,
-  Building2,
   CheckCircle2,
+  ChevronDown,
   ChevronRight,
-  CircleDashed,
+  ChevronUp,
   Clock3,
   Home,
-  Info,
   Plus,
   Shield,
-  ShieldCheck,
   X,
 } from 'lucide-react';
 
@@ -70,68 +67,136 @@ export function WohngeldHinweisCard({
 }: WohngeldHinweisCardProps) {
   const t = useTranslations('wohngeldHinweis');
   const titleId = React.useId();
+  const panelId = React.useId();
   const isRisiko = estimate.variant === 'risiko';
 
-  return (
-    <section
-      aria-labelledby={titleId}
-      className={isRisiko ? 'wh-card wh-card--risiko' : 'wha-card'}
-    >
-      {isRisiko ? (
+  // Entdeckung startet EINGEKLAPPT: ruhige Disclosure-Zeile statt Hero-Karte.
+  // Klick auf den Kopf klappt die volle Karte an Ort und Stelle auf. Die Risiko-
+  // Variante (eigene Compliance-Rahmung) bleibt unverändert immer entfaltet.
+  const [collapsed, setCollapsed] = React.useState(!isRisiko);
+
+  if (isRisiko) {
+    return (
+      <section aria-labelledby={titleId} className="wh-card wh-card--risiko">
         <RisikoVariant
           t={t}
           titleId={titleId}
           estimate={estimate}
           onRevokeConsent={onRevokeConsent}
         />
-      ) : (
-        <EntdeckungVariant
-          t={t}
-          titleId={titleId}
-          estimate={estimate}
-          ort={ort}
-          onRevokeConsent={onRevokeConsent}
-        />
-      )}
+        <WohngeldControls t={t} onDismiss={onDismiss} onSnooze={onSnooze} />
+      </section>
+    );
+  }
 
-      {/* Dismiss/Snooze — im DOM zuletzt (Fokus-Reihenfolge), visuell oben rechts.
-          Für beide Varianten identisch (geteiltes Suppression-Gate). */}
-      <div className="wh-controls">
+  const min = estimate.geschaetzt_min_eur;
+  const max = estimate.geschaetzt_max_eur;
+
+  return (
+    <section
+      aria-labelledby={titleId}
+      className={collapsed ? 'whx is-collapsed' : 'whx'}
+    >
+      {collapsed ? (
+        // Eingeklappt: eine ruhige, vollflächig klickbare Zeile — Icon, Titel,
+        // €-Hook als Sub, Chevron. Keine große Farbfläche, kein Schatten.
         <button
           type="button"
-          className="wh-ctrl"
-          aria-label={t('dismiss')}
-          title={t('dismiss')}
-          onClick={onDismiss}
+          className="whx-collapsed"
+          aria-expanded={false}
+          onClick={() => setCollapsed(false)}
         >
-          <X aria-hidden="true" />
+          <span className="whx-ico" aria-hidden="true">
+            <Home />
+          </span>
+          <span className="whx-collapsed-text">
+            <span className="whx-collapsed-title" id={titleId}>
+              {t('collapsed_title')}
+            </span>
+            <span className="whx-collapsed-sub">
+              {t('amount_value', { min, max })} {t('amount_per')} ·{' '}
+              {t('amount_schaetzung')}
+            </span>
+          </span>
+          <ChevronDown className="whx-chev" aria-hidden="true" />
         </button>
-        <button
-          type="button"
-          className="wh-ctrl"
-          aria-label={t('snooze')}
-          title={t('snooze')}
-          onClick={onSnooze}
-        >
-          <Clock3 aria-hidden="true" />
-        </button>
-      </div>
+      ) : (
+        <div id={panelId} className="whx-panel">
+          <EntdeckungVariant
+            t={t}
+            titleId={titleId}
+            estimate={estimate}
+            ort={ort}
+            onCollapse={() => setCollapsed(true)}
+            onDismiss={onDismiss}
+            onSnooze={onSnooze}
+            onRevokeConsent={onRevokeConsent}
+          />
+        </div>
+      )}
     </section>
   );
 }
 
-/** Discovery-Variante — unveränderte Markup/Copy (Spec proaktiver-wohngeld §4.1). */
+/** Dismiss/Snooze — geteiltes Suppression-Gate, visuell oben rechts. Im DOM
+    zuletzt, damit der Karteninhalt/CTA das erste interaktive Ziel bleibt. */
+function WohngeldControls({
+  t,
+  onDismiss,
+  onSnooze,
+}: {
+  t: T;
+  onDismiss: () => void;
+  onSnooze: () => void;
+}) {
+  return (
+    <div className="wh-controls">
+      <button
+        type="button"
+        className="wh-ctrl"
+        aria-label={t('dismiss')}
+        title={t('dismiss')}
+        onClick={onDismiss}
+      >
+        <X aria-hidden="true" />
+      </button>
+      <button
+        type="button"
+        className="wh-ctrl"
+        aria-label={t('snooze')}
+        title={t('snooze')}
+        onClick={onSnooze}
+      >
+        <Clock3 aria-hidden="true" />
+      </button>
+    </div>
+  );
+}
+
+/**
+ * Discovery-Variante — ruhige, einspaltige Karte (Redesign): kein Serif-Hero,
+ * keine Kennzahl-Schiene, kein 2-spaltiger Begründungs-Bock. Ein Icon-Kopf mit
+ * Eyebrow + Titel + Steuertasten (einklappen/schließen/snooze), eine €-Zeile,
+ * die Begründung als Chips (Datenminimierung sichtbar), CTA und ein
+ * gedämpfter, aber sichtbarer Compliance-Fuß (Rechtsgrundlage, Einwilligung).
+ */
 function EntdeckungVariant({
   t,
   titleId,
   estimate,
   ort,
+  onCollapse,
+  onDismiss,
+  onSnooze,
   onRevokeConsent,
 }: {
   t: T;
   titleId: string;
   estimate: WohngeldAnspruchEstimate;
   ort: string;
+  onCollapse: () => void;
+  onDismiss: () => void;
+  onSnooze: () => void;
   onRevokeConsent: () => void;
 }) {
   const min = estimate.geschaetzt_min_eur;
@@ -140,172 +205,111 @@ function EntdeckungVariant({
 
   return (
     <>
-      <div className="wha-head">
-        <span className="wha-badge">
-          <CheckCircle2 className="wha-badge-icon" aria-hidden="true" />
-          <span>{t('title')}</span>
+      <header className="whx-head">
+        <span className="whx-ico" aria-hidden="true">
+          <Home />
         </span>
-      </div>
-
-      <div className="wha-body">
-        {/* LEFT — Headline, Schätzung, Begründung, CTA */}
-        <div className="wha-main">
-          <h2 id={titleId} className="wha-headline">
+        <div className="whx-head-text">
+          <span className="whx-eyebrow">{t('title')} · [MOCK]</span>
+          <h2 id={titleId} className="whx-title">
             {t('headline')}
           </h2>
-          <div className="wha-rule" aria-hidden="true" />
-
-          <div className="wha-estimate">
-            <span className="wha-estimate-label">
-              {t('betrag_label')}
-              <Info className="wha-info" aria-hidden="true" />
-            </span>
-            <p className="wha-amount">
-              <span className="wha-amount-num">
-                {t('amount_value', { min, max })}
-              </span>
-              <span className="wha-amount-per">{t('amount_per')}</span>
-              <span className="sr-only">{t('amount_a11y', { min, max })}</span>
-            </p>
-            <p className="wha-subline">{t('subline')}</p>
-          </div>
-
-          {/* Begründung — Datenminimierung sichtbar (warum + was fehlt) */}
-          <div className="wha-reasons">
-            <div className="wha-reasons-col">
-              <div className="wha-reasons-head">
-                <CheckCircle2 className="wha-rh-icon green" aria-hidden="true" />
-                <span>{t('reasons_title')}</span>
-              </div>
-              <ul className="wha-list">
-                <li>
-                  <CheckCircle2 className="wha-li-check" aria-hidden="true" />
-                  <span>
-                    {t('daten_haushalt', { n: estimate.haushaltsgroesse })}
-                  </span>
-                </li>
-                <li>
-                  <CheckCircle2 className="wha-li-check" aria-hidden="true" />
-                  <span>
-                    {t('daten_mietstufe', {
-                      stufe: ROMAN[estimate.mietstufe],
-                      ort,
-                    })}
-                  </span>
-                </li>
-                <li>
-                  <CheckCircle2 className="wha-li-check" aria-hidden="true" />
-                  <span>{t('daten_wohnverhaeltnis')}</span>
-                </li>
-                <li>
-                  <CheckCircle2 className="wha-li-check" aria-hidden="true" />
-                  <span>{t('reason_datenabgleich')}</span>
-                </li>
-              </ul>
-            </div>
-            <div className="wha-reasons-col wha-reasons-col--needed">
-              <div className="wha-reasons-head">
-                <CircleDashed className="wha-rh-icon muted" aria-hidden="true" />
-                <span>{t('needed_title')}</span>
-              </div>
-              <ul className="wha-list wha-list--dots">
-                <li>
-                  <span className="wha-dot" aria-hidden="true" />
-                  <span>{t('needed_einkommen')}</span>
-                </li>
-                <li>
-                  <span className="wha-dot" aria-hidden="true" />
-                  <span>{t('needed_mietvertrag')}</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <Button
-            className="wha-cta text-primary-foreground!"
-            render={<Link href="/lebenslagen/wohngeld" />}
-          >
-            {t('cta_primary')}
-            <ArrowRight aria-hidden="true" />
-          </Button>
-
-          <Link href="/lebenslagen/wohngeld" className="wha-calc-link">
-            {t('how_calculated')}
-            <ChevronRight aria-hidden="true" />
-          </Link>
         </div>
+        <div className="whx-head-ctrl">
+          <button
+            type="button"
+            className="whx-icon-btn"
+            aria-label={t('collapse')}
+            title={t('collapse')}
+            aria-expanded={true}
+            onClick={onCollapse}
+          >
+            <ChevronUp aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            className="whx-icon-btn"
+            aria-label={t('snooze')}
+            title={t('snooze')}
+            onClick={onSnooze}
+          >
+            <Clock3 aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            className="whx-icon-btn"
+            aria-label={t('dismiss')}
+            title={t('dismiss')}
+            onClick={onDismiss}
+          >
+            <X aria-hidden="true" />
+          </button>
+        </div>
+      </header>
 
-        {/* RIGHT — Kennzahl-Schiene */}
-        <aside className="wha-rail" aria-label={t('rail_aria')}>
-          <div className="wha-rail-item">
-            <span className="wha-rail-icon" aria-hidden="true">
-              <BarChart3 />
-            </span>
-            <div className="min-w-0">
-              <div className="wha-rail-label">{t('rail_betrag_label')}</div>
-              <div className="wha-rail-value">
-                {t('rail_betrag_value', { min, max })}
-              </div>
-            </div>
-          </div>
-          <div className="wha-rail-item">
-            <span className="wha-rail-icon" aria-hidden="true">
-              <Clock3 />
-            </span>
-            <div className="min-w-0">
-              <div className="wha-rail-label">{t('rail_zeit_label')}</div>
-              <div className="wha-rail-value with-info">
-                {t('rail_zeit_value')}
-                <Info className="wha-info" aria-hidden="true" />
-              </div>
-            </div>
-          </div>
-          <div className="wha-rail-item">
-            <span className="wha-rail-icon" aria-hidden="true">
-              <Building2 />
-            </span>
-            <div className="min-w-0">
-              <div className="wha-rail-label">{t('rail_behoerde_label')}</div>
-              <div className="wha-rail-value">{t('rail_behoerde_value')}</div>
-            </div>
-          </div>
-          <div className="wha-rail-item">
-            <span className="wha-rail-icon" aria-hidden="true">
-              <ShieldCheck />
-            </span>
-            <div className="min-w-0">
-              <div className="wha-rail-value sm-title">
-                {t('rail_sicher_title')}
-              </div>
-              <div className="wha-rail-label">{t('rail_sicher_body')}</div>
-            </div>
-          </div>
-        </aside>
+      <p className="whx-amount">
+        <span className="whx-amount-num">{t('amount_value', { min, max })}</span>
+        <span className="whx-amount-per">{t('amount_per')}</span>
+        <span className="whx-amount-tag">{t('amount_schaetzung')}</span>
+        <span className="sr-only">{t('amount_a11y', { min, max })}</span>
+      </p>
+      <p className="whx-sub">{t('subline')}</p>
+
+      {/* Begründung — Datenminimierung sichtbar (was genutzt / was fehlt). */}
+      <div className="whx-why">
+        <span className="whx-why-label">{t('reasons_title')}</span>
+        <ul className="whx-chips">
+          <li>
+            <CheckCircle2 aria-hidden="true" />
+            {t('chip_haushalt', { n: estimate.haushaltsgroesse })}
+          </li>
+          <li>
+            <CheckCircle2 aria-hidden="true" />
+            {t('chip_mietstufe', { stufe: ROMAN[estimate.mietstufe], ort })}
+          </li>
+          <li>
+            <CheckCircle2 aria-hidden="true" />
+            {t('chip_miete')}
+          </li>
+          <li>
+            <CheckCircle2 aria-hidden="true" />
+            {t('chip_amtlich')}
+          </li>
+        </ul>
+        <p className="whx-need">{t('need_inline')}</p>
       </div>
 
-      {/* FOOTER — verpflichtende Compliance-Zeile: Disclaimer, [ZUKUNFT 2027],
-          Rechtsgrundlage, Einwilligung (widerrufbar) */}
-      <div className="wha-footer">
-        <Shield className="wha-footer-shield" aria-hidden="true" />
-        <div className="wha-footer-text">
-          <p className="wha-disclaimer">{t('disclaimer')}</p>
-          <p className="wha-fineprint">
-            {t('zukunft_schaetzung')} · {t('rechtsgrundlage', { normen })} ·{' '}
-            {t('consent_line')}{' '}
-            <button
-              type="button"
-              className="wh-revoke"
-              onClick={onRevokeConsent}
-            >
-              {t('consent_settings')}
-            </button>
-          </p>
-        </div>
-        <Link href="/datenschutz" className="wha-learn">
-          {t('learn_more')}
+      <div className="whx-actions">
+        <Button
+          className="whx-cta text-primary-foreground!"
+          render={<Link href="/lebenslagen/wohngeld" />}
+        >
+          {t('cta_primary')}
+          <ArrowRight aria-hidden="true" />
+        </Button>
+        <Link href="/lebenslagen/wohngeld" className="whx-link">
+          {t('how_calculated')}
           <ChevronRight aria-hidden="true" />
         </Link>
       </div>
+
+      {/* Compliance — gedämpft, aber sichtbar: [ZUKUNFT 2027], Rechtsgrundlage,
+          Einwilligung (widerrufbar), zuständige Behörde. */}
+      <footer className="whx-foot">
+        <Shield className="whx-foot-ico" aria-hidden="true" />
+        <p className="whx-fine">
+          {t('zukunft_schaetzung')} · {t('rechtsgrundlage', { normen })} ·{' '}
+          {t('consent_line')}{' '}
+          <button type="button" className="whx-revoke" onClick={onRevokeConsent}>
+            {t('consent_settings')}
+          </button>
+        </p>
+        <Link href="/datenschutz" className="whx-link whx-foot-link">
+          {t('learn_more')}
+          <ChevronRight aria-hidden="true" />
+        </Link>
+      </footer>
+      <p className="whx-meta">{t('behoerde')}</p>
     </>
   );
 }

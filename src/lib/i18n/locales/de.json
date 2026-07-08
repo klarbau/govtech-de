@@ -25,13 +25,15 @@
   },
   "topnav": {
     "nav_label": "Hauptnavigation",
+    "meta_nav_label": "Servicenavigation",
     "solutions": "Lösungen",
     "lebenslagen": "Lebenslagen",
     "security_privacy": "Sicherheit & Datenschutz",
     "resources": "Ressourcen",
     "about_us": "Über uns",
     "help": "Hilfe & Kontakt",
-    "about_project": "Über das Projekt"
+    "about_project": "Über das Projekt",
+    "brand_label": "GovTech-DE, zur Übersicht"
   },
   "lebenslagen": {
     "breadcrumb_catalog": "Leistungskatalog",
@@ -392,6 +394,7 @@
         "stat_zeit": "Zeit gespart",
         "stat_phase": "Aktuelle Phase",
         "phase_keine": "Bearbeitung abgeschlossen",
+        "phase_done": "Abgeschlossen",
         "result_title": "Gesamtergebnis",
         "result_status": "Abgeschlossen",
         "result_lead": "Ihr Antrag wurde koordiniert bearbeitet und an die zuständigen Stellen übermittelt.",
@@ -1901,6 +1904,15 @@
       "subtitle_template": "{adresse} · Stichtag {stichtag}",
       "headline": "Umzug auf Autopilot",
       "headline_sub": "Sie bestätigen einmal – das System koordiniert die nächsten Schritte.",
+      "demo": {
+        "title": "Autopilot live erleben",
+        "mock_badge": "[MOCK]",
+        "body": "Starten Sie einen Beispiel-Umzug. Das System löst eine simulierte Adressänderung aus und koordiniert sie durch alle beteiligten Behörden – einschließlich der eID-Bestätigungen, die Sie selbst freigeben. Es werden keine echten Daten übermittelt.",
+        "address_label": "Beispiel-Adresse",
+        "cta_start": "Beispiel-Umzug starten",
+        "starting": "Beispiel-Umzug wird gestartet …",
+        "error": "Der Beispiel-Umzug konnte nicht gestartet werden. Bitte versuchen Sie es erneut."
+      },
       "vorgang_label": "Vorgang #{id}",
       "status": {
         "pending": "wartet",
@@ -5381,6 +5393,22 @@
       "state_error": "Die TEST-Sandbox hat nicht geantwortet — keine reale Behörde betroffen.",
       "refresh_events_cta": "Event-Log aktualisieren"
     },
+    "haube": {
+      "badge_live": "FIT-Connect-Test aktiv — nur die eID-Schritte",
+      "badge_live_desc": "Echte Protokoll-Schicht nur für die antragsförmigen, eID-bestätigten Schritte — gegen eine FITKO-Testumgebung mit selbst registriertem Zustellpunkt. Die übrigen Stellen bleiben simuliert.",
+      "strip_summary": "Unter der Haube",
+      "strip_live_dot_sr": "Live-Protokoll — Ereignisse laufen ein",
+      "origin_sim": "Simulation",
+      "origin_real": "echt · Testumgebung",
+      "empty": "Noch keine Ereignisse.",
+      "pointer_inspector": "Vollständiges Protokoll im Inspektor unten.",
+      "beat_encrypted": "verschlüsselt (JWE)",
+      "beat_submitted": "eingereicht · <ltr>{id}</ltr>…",
+      "beat_confirmed": "bestätigt (SET verifiziert)",
+      "beat_pending_ack": "Sandbox-Quittung ausstehend",
+      "line_ids": "Submission <ltr>{sid}</ltr>… · Fall <ltr>{cid}</ltr>…",
+      "count": "{count, plural, one {# Ereignis} other {# Ereignisse}}"
+    },
     "eudi_vp": {
       "tab_label": "Mit echtem Wallet vorzeigen (OpenID4VP)",
       "title": "Nachweis per EUDI-Wallet vorzeigen",
@@ -5406,5 +5434,10 @@
         "x5c": "x5c-signierte Anfrage (Demo-Zertifikat)"
       }
     }
+  },
+  "liveness": {
+    "autopilot_active": "Autopilot aktiv",
+    "autopilot_active_aria": "Autopilot aktiv — Assistenten öffnen",
+    "unread_badge_aria": "{count, plural, one {# ungelesene Nachricht im Posteingang} other {# ungelesene Nachrichten im Posteingang}}"
   }
 }

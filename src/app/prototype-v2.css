@@ -658,6 +658,135 @@ button { font: inherit; cursor: pointer; }
 }
 .wha-badge-icon { width: 17px; height: 17px; flex: none; }
 
+/* ══ Wohngeld-Hinweis · Redesign (ruhig, einspaltig) ═══════════════════════
+   Ersetzt die Hero-Karte. Container = weiche Fläche mit Rahmen, ohne schweren
+   Schatten. Eingeklappt eine klickbare Zeile, aufgeklappt eine ruhige
+   Einspalter-Karte. ────────────────────────────────────────────────────── */
+.whx {
+  container-type: inline-size;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+.whx.is-collapsed { border-radius: 14px; }
+.whx-panel { padding: 20px 22px; animation: wh-fade-up .24s ease both; }
+
+/* Icon-Chip (Kopf + eingeklappte Zeile) */
+.whx-ico {
+  width: 40px; height: 40px; border-radius: 11px; flex: none;
+  display: grid; place-items: center;
+  background: var(--green-50); color: var(--green-700);
+}
+.whx-ico svg { width: 20px; height: 20px; }
+
+/* ── Eingeklappt: eine ruhige, vollflächig klickbare Zeile ── */
+.whx-collapsed {
+  display: flex; align-items: center; gap: 13px; width: 100%;
+  background: transparent; border: 0; margin: 0; padding: 12px 15px;
+  border-radius: inherit; font: inherit; color: inherit;
+  text-align: start; cursor: pointer;
+}
+.whx-collapsed:hover { background: var(--green-50); }
+.whx-collapsed .whx-ico { width: 36px; height: 36px; border-radius: 10px; }
+.whx-collapsed .whx-ico svg { width: 18px; height: 18px; }
+.whx-collapsed-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.whx-collapsed-title {
+  font-size: 14.5px; font-weight: 600; color: var(--ink); letter-spacing: -0.005em;
+}
+.whx-collapsed-sub {
+  font-size: 12.5px; color: var(--ink-3); font-variant-numeric: tabular-nums;
+}
+.whx-chev {
+  width: 20px; height: 20px; flex: none; margin-inline-start: auto;
+  color: var(--ink-3); transition: color .18s ease;
+}
+.whx-collapsed:hover .whx-chev { color: var(--green-700); }
+.whx-collapsed:focus-visible,
+.whx-icon-btn:focus-visible,
+.whx-cta:focus-visible,
+.whx-revoke:focus-visible {
+  outline: 2px solid var(--color-primary); outline-offset: 2px; border-radius: 8px;
+}
+
+/* ── Aufgeklappt ── */
+.whx-head { display: flex; align-items: flex-start; gap: 13px; }
+.whx-head-text { min-width: 0; flex: 1; }
+.whx-eyebrow {
+  display: block; font-size: 11.5px; font-weight: 600; letter-spacing: .03em;
+  text-transform: uppercase; color: var(--color-primary);
+}
+.whx-title {
+  margin: 3px 0 0; font-size: 18px; line-height: 1.3; font-weight: 600;
+  letter-spacing: -0.01em; color: var(--ink); max-width: 40ch;
+}
+.whx-head-ctrl { display: flex; gap: 4px; flex: none; }
+.whx-icon-btn {
+  width: 34px; height: 34px; border-radius: 9px; flex: none;
+  display: grid; place-items: center; cursor: pointer;
+  background: transparent; border: 1px solid transparent; color: var(--ink-3);
+}
+.whx-icon-btn:hover { background: var(--surface-soft); color: var(--ink); }
+.whx-icon-btn svg { width: 17px; height: 17px; }
+
+.whx-amount {
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: 0 8px;
+  margin: 16px 0 0; font-variant-numeric: tabular-nums;
+}
+.whx-amount-num {
+  font-size: 26px; font-weight: 700; letter-spacing: -0.02em;
+  color: var(--color-primary); line-height: 1.05;
+}
+.whx-amount-per { font-size: 16px; font-weight: 500; color: var(--color-primary); opacity: .8; }
+.whx-amount-tag {
+  margin-inline-start: 2px; font-size: 11px; font-weight: 600;
+  color: var(--ink-3); background: var(--surface-soft);
+  border: 1px solid var(--border); border-radius: 999px; padding: 2px 9px;
+}
+.whx-sub { margin: 8px 0 0; font-size: 13.5px; line-height: 1.5; color: var(--ink-3); max-width: 56ch; }
+
+.whx-why { margin-top: 16px; }
+.whx-why-label { font-size: 12.5px; font-weight: 600; color: var(--ink-2); }
+.whx-chips { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 7px; }
+.whx-chips li {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12.5px; color: var(--ink-2);
+  background: var(--surface-soft); border: 1px solid var(--border);
+  border-radius: 999px; padding: 5px 11px 5px 9px;
+}
+.whx-chips svg { width: 13px; height: 13px; color: var(--green-600); flex: none; }
+.whx-need { margin: 10px 0 0; font-size: 12.5px; color: var(--ink-3); }
+
+.whx-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 16px; margin-top: 18px; }
+.whx-cta { height: 44px; border-radius: 11px; font-size: 14.5px; padding-inline: 18px; }
+.whx-link {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 13px; font-weight: 600; color: var(--color-primary); text-decoration: none;
+}
+.whx-link svg { width: 15px; height: 15px; }
+.whx-link:hover { text-decoration: underline; text-underline-offset: 2px; }
+
+.whx-foot {
+  margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border);
+  display: flex; align-items: flex-start; gap: 10px; flex-wrap: wrap;
+}
+.whx-foot-ico { width: 15px; height: 15px; color: var(--ink-3); flex: none; margin-top: 2px; opacity: .8; }
+.whx-fine { flex: 1; min-width: 12rem; margin: 0; font-size: 11px; line-height: 1.55; color: var(--ink-3); }
+.whx-revoke {
+  color: var(--color-primary); font: inherit; background: none; border: 0;
+  padding: 0; cursor: pointer; text-decoration: underline;
+}
+.whx-foot-link { white-space: nowrap; align-self: center; }
+.whx-meta { margin: 10px 0 0; font-size: 11px; color: var(--ink-3); }
+
+@container (min-width: 440px) {
+  .whx-title { font-size: 20px; }
+  .whx-amount-num { font-size: 28px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .whx-panel { animation: none; }
+  .whx-chev, .whx-icon-btn { transition: none; }
+}
+
 /* Default = schmale Spalte (linkes Dashboard-Col): einspaltig gestapelt.
    Breitenabhängige 2-Spalten-Schaltung via @container weiter unten — reagiert
    auf die KARTENbreite, nicht das Viewport, also korrekt in jeder Spalte. */
@@ -902,10 +1031,14 @@ button { font: inherit; cursor: pointer; }
 .post-section-head svg { color: var(--ink-3); width: 16px; height: 16px; }
 .post-section .items { padding: 0 0 8px; }
 .post-item {
-  display: grid; grid-template-columns: 44px 1fr auto; gap: 14px; align-items: center;
+  display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 14px; align-items: center;
   padding: 14px 18px; cursor: pointer;
   border-top: 1px solid var(--border);
 }
+/* The middle (sender/subject) cell must be allowed to shrink below its content
+   width so a long subject wraps instead of pushing the row — and the page —
+   past 320px (WCAG 1.4.10). */
+.post-item .body { min-width: 0; overflow-wrap: anywhere; }
 .post-item:hover { background: var(--surface-soft); }
 .post-item.active { background: var(--brand-50); }
 .post-item .av {
@@ -1168,8 +1301,11 @@ button { font: inherit; cursor: pointer; }
 .ai-foot {
   display: flex; align-items: flex-start; justify-content: space-between; gap: 14px;
   margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--brand-100);
+  /* Narrow reader panes (e.g. next to the ≥1024px SideNav) can't hold the
+     disclaimer + feedback button on one line — let the button wrap below. */
+  flex-wrap: wrap;
 }
-.ai-foot .ai-disclaimer { margin: 0; padding-top: 0; border-top: 0; flex: 1; }
+.ai-foot .ai-disclaimer { margin: 0; padding-top: 0; border-top: 0; flex: 1 1 240px; min-width: 0; }
 .ai-foot .ai-feedback {
   flex: none; display: inline-flex; align-items: center; gap: 6px;
   height: 30px; padding: 0 12px; border-radius: var(--r-pill);
@@ -1796,7 +1932,7 @@ button { font: inherit; cursor: pointer; }
 .dk-actions button svg { width: 18px; height: 18px; }
 .dk-actions button:hover { background: var(--surface-2); color: var(--ink); }
 
-.pagination { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; }
+.pagination { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 20px; }
 .pagination .pgs { display: inline-flex; gap: 6px; }
 .pagination .pg {
   min-width: 44px; min-height: 44px; padding: 0 6px; border-radius: 8px;
@@ -1825,8 +1961,8 @@ button { font: inherit; cursor: pointer; }
 .rail .rec-row .av.eagle { background: #0E1A36; color: #fff; }
 .rail .rec-row .av.home { background: var(--brand-50); color: var(--brand-600); }
 .rail .rec-row .av.id { background: var(--violet-50); color: var(--violet-500); }
-.rail .rec-row .t { font-size: 13px; font-weight: 500; flex: 1; }
-.rail .rec-row .d { color: var(--ink-3); font-size: 12px; }
+.rail .rec-row .t { font-size: 13px; font-weight: 500; flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.rail .rec-row .d { color: var(--ink-3); font-size: 12px; flex: none; }
 
 
 /* ============ termine.html ============ */
@@ -1936,8 +2072,11 @@ button { font: inherit; cursor: pointer; }
 
 /* Responsive: collapse the 3-column Termine layout below the desktop breakpoint.
    Two columns on tablet (calendar+filter span full width), single column on
-   phone — no horizontal overflow. Desktop look (>=1024px) unchanged. */
-@media (max-width: 1023px) {
+   phone — no horizontal overflow. Threshold is 1200px (not 1023px): with the
+   persistent ≥1024px SideNav eating ~252px, the content area at 1024–1100px is
+   too narrow for the fixed 280px column + the non-shrinkable 7-day calendar
+   column, so the 3-col layout must hold off until there is real room. */
+@media (max-width: 1200px) {
   .tm-layout {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
@@ -2091,8 +2230,11 @@ button { font: inherit; cursor: pointer; }
 .tm-detail-foot { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); color: var(--ink-3); font-size: 12.5px; }
 
 /* Responsive: KPI 4 → 2 → 1; the detail panel drops below the lists < 1023px
-   (handled by the shared .tm-layout media rules above). */
-@media (max-width: 900px) {
+   (handled by the shared .tm-layout media rules above). 2×2 already at 1200
+   (not 900): next to the ≥1024px SideNav the 4-up tiles get ~160px each and
+   „Samstag" breaks mid-word via the .k-val overflow-wrap fallback — same
+   threshold at which the 3-col .tm-layout collapses. */
+@media (max-width: 1200px) {
   .tm-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 1023px) {
@@ -2111,6 +2253,11 @@ button { font: inherit; cursor: pointer; }
   .st-layout { grid-template-columns: minmax(0, 1fr); }
 }
 .st-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 22px 26px; box-shadow: var(--shadow-1); }
+/* „Übersicht der Steuerbereiche" is a data table wider than 320px — give it a
+   horizontal scroll region so the page itself never scrolls (WCAG 1.4.10 allows
+   2-D scroll for data tables). The ancestors carry min-width:0 (st-layout grid
+   tracks), so the wrapper stays constrained and clips instead of the page. */
+.st-table-scroll { overflow-x: auto; }
 .st-year-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; align-items: start; }
 @media (max-width: 640px) {
   .st-year-row { grid-template-columns: minmax(0, 1fr); gap: 18px; }
@@ -2225,6 +2372,9 @@ button { font: inherit; cursor: pointer; }
 .hh-head .ttl { font-size: 17px; font-weight: 600; }
 .hh-head .sub { color: var(--ink-3); font-size: 13px; }
 .hh-people { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+@media (max-width: 560px) {
+  .hh-people { grid-template-columns: minmax(0, 1fr); }
+}
 .person { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--r-md); }
 .person .avatar.lg { width: 48px; height: 48px; font-size: 14px; }
 .person .name { font-weight: 700; font-size: 15px; }
@@ -2487,9 +2637,13 @@ button { font: inherit; cursor: pointer; }
 .ds2-recent-heading svg { width: 18px; height: 18px; color: var(--ink-3); }
 .ds2-recent .act-list { list-style: none; margin: 0; padding: 0; }
 .ds2-recent .item {
-  display: grid; grid-template-columns: 40px 1fr auto; gap: 14px;
+  display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 14px;
   padding: 14px 0; border-top: 1px solid var(--border); align-items: center;
 }
+/* Let the middle text cell shrink/wrap so the timestamp meta cannot push the
+   page past 320px (WCAG 1.4.10). */
+.ds2-recent .item > * { min-width: 0; }
+.ds2-recent .item .t, .ds2-recent .item .s { overflow-wrap: anywhere; }
 .ds2-recent .item:first-of-type { border-top: 0; }
 .ds2-recent .item .t { font-weight: 600; font-size: 14px; }
 .ds2-recent .item .s { color: var(--ink-3); font-size: 12.5px; }
@@ -2580,7 +2734,7 @@ button { font: inherit; cursor: pointer; }
 @media (max-width: 880px) {
   .as-layout { grid-template-columns: minmax(0, 1fr); }
 }
-.quick-chips { display: flex; gap: 10px; margin-bottom: 16px; }
+.quick-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
 .quick-chips .chip {
   display: inline-flex; align-items: center; gap: 8px;
   min-height: 40px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border);
@@ -3092,7 +3246,9 @@ button { font: inherit; cursor: pointer; }
   border-bottom: 1px solid var(--border);
 }
 .app-topnav .gt-brand { align-items: center; }
-.app-topnav .gt-brand-logo { font-size: 18px; }
+/* Wordmark never wraps to a 2nd line (≥560px it always fits; below that it is
+   hidden — see the ≤560 block). */
+.app-topnav .gt-brand-logo { font-size: 18px; white-space: nowrap; }
 .app-topnav .gt-brand-logo svg { width: 28px; height: 28px; }
 
 /* Center nav: shares the landing-nav link style (set above). */
@@ -3147,6 +3303,22 @@ button { font: inherit; cursor: pointer; }
 @media (max-width: 768px) {
   .app-topnav { padding: 0 20px; gap: 16px; }
   .app-content { padding: 24px 20px 48px; }
+}
+/* Phone shell (WCAG 1.4.10 reflow @320): the right-hand action cluster
+   (Bedienhilfen · Sprache · Theme · Nutzer · Menü) plus the wordmark do not fit
+   320–390px and pushed the whole page into horizontal scroll. Drop the wordmark
+   text (the crest + the link's aria-label keep the accessible name), collapse
+   the language pill to its globe icon (the „DE" value + chevron are hidden; the
+   trigger keeps its aria-label), and tighten the row gaps so the bar reflows
+   within 320px. */
+@media (max-width: 560px) {
+  .app-topnav { gap: 10px; }
+  .app-topnav-actions { gap: 6px; }
+  .app-topnav .gt-brand-logo > span { display: none; }
+  .app-topnav-actions [data-slot="select-trigger"] > [data-slot="select-value"],
+  .app-topnav-actions [data-slot="select-trigger"] > svg:last-of-type {
+    display: none;
+  }
 }
 @media (max-width: 380px) {
   .app-topnav { padding: 0 14px; }
@@ -3443,7 +3615,7 @@ button { font: inherit; cursor: pointer; }
   margin-top: 24px;
 }
 
-.lk-rail { display: flex; flex-direction: column; gap: 16px; }
+.lk-rail { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
 .lk-rail-head {
   display: flex;
   align-items: center;
@@ -3527,7 +3699,7 @@ button { font: inherit; cursor: pointer; }
 @media (max-width: 560px) {
   .lk-grid { grid-template-columns: 1fr; }
   .lk-search-input { height: 56px; font-size: 16px; }
-  .lk-rail { flex-direction: column; }
+  .lk-rail { flex-direction: column; flex-wrap: nowrap; }
 }
 
 
@@ -3757,7 +3929,10 @@ button { font: inherit; cursor: pointer; }
 .llh-trust-sub { font-size: 12.5px; color: var(--ink-3); line-height: 1.45; }
 
 @media (max-width: 1080px) {
-  .llh-layout { grid-template-columns: 1fr; }
+  /* minmax(0,1fr) (not 1fr) so the single track ignores the rail's content
+     min-content and can shrink to the viewport — otherwise the page scrolls
+     horizontally at 320px (WCAG 1.4.10). */
+  .llh-layout { grid-template-columns: minmax(0, 1fr); }
   .lk-rail { flex-direction: row; flex-wrap: wrap; }
 }
 @media (max-width: 960px) {
@@ -3768,7 +3943,10 @@ button { font: inherit; cursor: pointer; }
 @media (max-width: 760px) {
   .llh-beliebte-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .llh-trust { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .lk-rail { flex-direction: column; }
+  /* Reset flex-wrap back to nowrap: a column-direction flex that still carries
+     `wrap` (leaked from the ≥760px row rule) wraps cards into a 2nd column and
+     sizes each to max-content — blowing the rail past 320px (WCAG 1.4.10). */
+  .lk-rail { flex-direction: column; flex-wrap: nowrap; }
 }
 @media (max-width: 520px) {
   .llh-beliebte-grid { grid-template-columns: 1fr; }

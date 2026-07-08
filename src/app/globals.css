@@ -169,6 +169,17 @@
   --border: var(--color-border);
   --border-strong: var(--color-border-strong);
 
+  /* Legacy prototype-v2.css tokens the design-stream renamed away but still
+     referenced at 5 FROZEN call sites (`.vr-stat`, `.btn-danger`, `.heute-*`).
+     Undefined, `background:var(--surface-1)` fell to transparent and
+     `border:1px solid var(--line)` became invalid-at-computed-value → the
+     WHOLE border dropped (the Value-Receipt stat tiles lost box + outline).
+     Aliasing here heals all 5 at once; the var() indirection flows through the
+     light/dark/high-contrast flips of --surface/--border automatically, so the
+     `.dark .vr-stat` colour override still layers on top. */
+  --surface-1: var(--surface);
+  --line: var(--border);
+
   --ink: var(--color-text-primary);
   --ink-2: #28332C;                    /* secondary green-ink (nav labels/header btns) — ~12:1 vs surface */
   --ink-3: var(--color-text-secondary);
@@ -1043,4 +1054,179 @@ html {
    regardless of import order or @layer. */
 a.text-primary-foreground {
   color: var(--color-primary-foreground);
+}
+
+/* The completed-dossier "Aktuelle Phase" cell can hold a long Behörden-Aktion
+   (e.g. „Adressaktualisierung Aufenthaltstitel — Antrag vor Ablauf wahren").
+   The FROZEN prototype-v2.css `.vab-stat-num-sm` sets no wrap behaviour, so a
+   long German compound broke raggedly. Match the repo's long-text idiom
+   (`overflow-wrap` + `hyphens: auto`, `lang="de"` is set app-wide) so it wraps
+   at syllable/word boundaries instead of mid-word. Adds only wrap properties
+   the frozen rule doesn't set — no conflict, any specificity wins. */
+.vab-stat-num.vab-stat-num-sm {
+  overflow-wrap: break-word;
+  hyphens: auto;
+  /* Cap the phase KPI at 3 lines so a long phase string (e.g. mid-replay the
+     active Behörden-Aktion of another Lebenslage) can't inflate the overview
+     card with empty space. Purely visual — the full text still lives in the
+     timeline below, and the DOM node keeps its complete text (a11y-safe). */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+}
+
+/* In the side-by-side `.vab-tophead` (≥1024px) the overview card is rail-
+   narrowed, so its third KPI column (~110px) was too tight for „Abgeschlossen"
+   (13 chars @15px) and hyphenated. Re-weight for the actual content: the phase
+   text needs the most room, the „ca. N Min" number a medium amount, the „100 %"
+   progress the least — plus a tighter gap. This lands the phase on ONE line and
+   „ca. 465 Min" on two, keeping the card compact (≈220px). Scoped to
+   `.vab-tophead` (the full-width `.vab-stats` elsewhere keeps its equal thirds)
+   and gated `min-width: 481px` so the FROZEN
+   `@media (max-width:480px){ .vab-stats { grid-template-columns:1fr } }` mobile
+   collapse still wins (this more-specific rule simply doesn't exist there). */
+@media (min-width: 481px) {
+  .vab-tophead .vab-stats {
+    grid-template-columns: 0.8fr 1.2fr 1.7fr;
+    gap: 12px;
+  }
+}
+
+/* ── Persistent desktop left sidebar (≥1024px) ───────────────────────────────
+   The 10 app routes moved out of the top-bar „Lösungen ▾" dropdown into a
+   standing left rail so they are one click away at all times. `.app-shell`
+   lays the rail beside the (already max-width-capped, centred) `.app-content`.
+   The rail sits under the 68px sticky `.app-topnav` (matches its literal height
+   in the FROZEN prototype-v2.css — kept in sync by hand) and is sticky itself,
+   so it stays put while the page scrolls. Below 1024px it is hidden and the
+   MobileNav drawer carries navigation. Link visuals reuse `.gt-nav` (shared
+   with the mobile drawer), so all Waldgrün active/hover tokens flip in dark
+   mode for free. Rules live here (not the frozen prototype-v2.css) and are
+   unlayered so they reliably win over the later-imported prototype-v2.css. */
+.app-shell {
+  display: flex;
+  align-items: flex-start;
+}
+.app-shell > .app-content {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.app-sidenav {
+  flex: 0 0 var(--sidebar-w);
+  width: var(--sidebar-w);
+  position: sticky;
+  top: 68px;
+  height: calc(100vh - 68px);
+  overflow-y: auto;
+  padding: 24px 16px 20px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+}
+@media (max-width: 1023px) {
+  .app-sidenav {
+    display: none;
+  }
+}
+
+/* ── Umzug-Run cascade motion ────────────────────────────────────────────────
+   Makes the (already-real) autopilot cascade feel like an unfolding sequence:
+   each station's check draws itself in, the node pops, and the connector fills
+   top-down as the step confirms. The client-side reveal-pacer (page.tsx) spaces
+   the events out so these mount-time animations land one after another. Every
+   rule only animates transform / opacity / background-size and is gated behind
+   `prefers-reduced-motion: no-preference`. Colors reuse the exact tokens the
+   FROZEN prototype-v2.css already uses on the done state (`--green-500`), so the
+   END state is pixel-identical to today in both light and dark. Connector rules
+   are scoped under `.vlf-timeline` to out-specify prototype-v2.css's later-
+   imported `.vlf-tl-connector.is-done { background: … }` shorthand (which would
+   otherwise reset our fill gradient). */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes vlf-check-draw {
+    from { stroke-dasharray: 24; stroke-dashoffset: 24; }
+    to   { stroke-dasharray: 24; stroke-dashoffset: 0; }
+  }
+  @keyframes vlf-node-pop {
+    from { transform: scale(0.9); opacity: 0.6; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+  @keyframes vlf-fade-up {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  /* 1) The check strokes itself in, just after the node pop. */
+  .vlf-tl-check-svg path {
+    animation: vlf-check-draw 350ms cubic-bezier(0.23, 1, 0.32, 1) 80ms both;
+  }
+
+  /* 2) Node pops on confirm (never from scale(0)). Fires when `.is-done` is
+     added to the persisting node span, or on first mount if already done. */
+  .vlf-tl-node.is-done {
+    animation: vlf-node-pop 250ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  /* 3) Connector fills top-down instead of a hard color switch. The track keeps
+     prototype-v2.css's `--border-strong`; a green gradient grows 0% → 100%. */
+  .vlf-timeline .vlf-tl-connector {
+    background-image: linear-gradient(var(--green-500), var(--green-500));
+    background-repeat: no-repeat;
+    background-position: top;
+    background-size: 100% 0%;
+    transition: background-size 400ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .vlf-timeline .vlf-tl-connector.is-done {
+    background-image: linear-gradient(var(--green-500), var(--green-500));
+    background-color: var(--border-strong);
+    background-size: 100% 100%;
+  }
+
+  /* 4) Timeline items stagger in on mount (step.id-keyed → fires once per item,
+     not on status flips). Capped at 8 children. */
+  .vlf-tl-item {
+    animation: vlf-fade-up 300ms cubic-bezier(0.23, 1, 0.32, 1) both;
+  }
+  .vlf-tl-item:nth-child(1) { animation-delay: 0ms; }
+  .vlf-tl-item:nth-child(2) { animation-delay: 45ms; }
+  .vlf-tl-item:nth-child(3) { animation-delay: 90ms; }
+  .vlf-tl-item:nth-child(4) { animation-delay: 135ms; }
+  .vlf-tl-item:nth-child(5) { animation-delay: 180ms; }
+  .vlf-tl-item:nth-child(6) { animation-delay: 225ms; }
+  .vlf-tl-item:nth-child(7) { animation-delay: 270ms; }
+  .vlf-tl-item:nth-child(n+8) { animation-delay: 315ms; }
+
+  /* 5) Live-activity rows enter one at a time as steps become active. */
+  .vlf-log-item {
+    animation: vlf-fade-up 250ms cubic-bezier(0.23, 1, 0.32, 1) both;
+  }
+
+  /* 6) The "current" ring fades in softly instead of snapping. */
+  .vlf-tl-body {
+    transition: border-color 200ms ease, box-shadow 200ms ease;
+  }
+}
+
+/* „Unter der Haube" (unter-der-haube.md § 5) — der ruhige Aktivitäts-Dot der
+   Protokoll-Leiste tickt bei jeder einlaufenden Zeile, und der Mikro-Beat-Dot
+   pulst leise, solange die gestuften Fakten enthüllt werden. Beide NUR unter
+   `prefers-reduced-motion: no-preference` — Reduced-Motion sieht die Dots statisch
+   (sichtbar, ruhig). */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes haube-dot-pulse {
+    0%, 100% { opacity: 0.4; transform: scale(0.85); }
+    50%      { opacity: 1;   transform: scale(1); }
+  }
+  .haube-dot-pulse {
+    animation: haube-dot-pulse 1.4s ease-in-out infinite;
+  }
+
+  @keyframes haube-dot-tick {
+    0%   { transform: scale(1);   opacity: 0.6; }
+    35%  { transform: scale(1.6); opacity: 1; }
+    100% { transform: scale(1);   opacity: 0.6; }
+  }
+  .haube-dot-tick {
+    animation: haube-dot-tick 480ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
 }

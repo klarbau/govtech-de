@@ -17,6 +17,7 @@ import {
 
 import { navItems } from './nav-items';
 import { ParthenonCrest } from './ParthenonCrest';
+import { PosteingangUnreadBadge } from './PosteingangUnreadBadge';
 
 function isActive(pathname: string | null, href: string): boolean {
   if (!pathname) return false;
@@ -92,6 +93,9 @@ export function MobileNav() {
                 >
                   <Icon aria-hidden="true" />
                   <span>{t(i18nKey)}</span>
+                  {i18nKey === 'posteingang' ? (
+                    <PosteingangUnreadBadge />
+                  ) : null}
                 </Link>
               );
             })}

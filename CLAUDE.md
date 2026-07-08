@@ -191,6 +191,17 @@ govtech/
 - Mock-backend access: components MUST go through `lib/mock-backend/api.ts`. Never touch `localStorage` directly from components.
 - Personally identifiable data in mocks: must look real but be obviously synthetic. Use `[MOCK]` watermark on document previews.
 
+## Coding discipline — Karpathy guidelines (mandatory)
+
+The repo vendors the **`karpathy-guidelines`** skill at `.claude/skills/karpathy-guidelines/SKILL.md` (from [multica-ai/andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills), MIT). **Every agent that writes, reviews, or refactors code MUST apply it** — invoke the skill (or, for subagents without the Skill tool, read the SKILL.md) before non-trivial code work. Its four principles in one line each:
+
+1. **Think Before Coding** — surface assumptions, name confusion, present tradeoffs; don't pick an interpretation silently.
+2. **Simplicity First** — minimum code that solves the problem; no speculative abstractions, flexibility, or impossible-scenario error handling.
+3. **Surgical Changes** — touch only what the task requires; clean up orphans your change created, leave pre-existing dead code alone.
+4. **Goal-Driven Execution** — turn tasks into verifiable success criteria (test first, then make it pass) and loop until verified.
+
+Tradeoff note from the skill itself: it biases caution over speed — for trivial one-liners, use judgment.
+
 ## Data model — quick reference
 
 - `Persona` — user profile (Stammdaten, family, employment, residency status)

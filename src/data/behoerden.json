@@ -1069,5 +1069,28 @@
     "adresse": { "strasse": "Regensburger Straße", "hausnummer": "104", "plz": "90478", "ort": "Nürnberg", "land": "DE" },
     "online": { "supports_eudi": false },
     "bundid_postfach_anbindung": "angebunden"
+  },
+  {
+    "id": "bezirksamt-hamburg-eimsbuettel",
+    "name_de": "Bezirksamt Hamburg-Eimsbüttel",
+    "kategorie": "kommune",
+    "zustaendige_themen": [
+      "meldewesen",
+      "reisepass",
+      "personalausweis",
+      "kita_gutschein"
+    ],
+    "adresse": {
+      "strasse": "Grindelberg",
+      "hausnummer": "62-66",
+      "plz": "20144",
+      "ort": "Hamburg",
+      "land": "DE"
+    },
+    "online": {
+      "portal_url": "https://www.hamburg.de/eimsbuettel/",
+      "supports_eudi": false
+    },
+    "bundid_postfach_anbindung": "nicht_angebunden"
   }
 ]

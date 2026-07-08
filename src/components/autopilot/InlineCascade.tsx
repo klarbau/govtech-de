@@ -17,6 +17,9 @@ import {
 import { ValueReceiptCard } from '@/components/autopilot/ValueReceiptCard';
 import { WohngeldFolgeCard } from '@/components/dashboard/WohngeldFolgeCard';
 import { FitConnectReceiptPanel } from '@/components/autopilot/FitConnectReceiptPanel';
+import { HerkunftBadge } from '@/components/autopilot/HerkunftBadge';
+import { ProtokollMicroBeat } from '@/components/autopilot/ProtokollMicroBeat';
+import { UnterDerHaubeLeiste } from '@/components/autopilot/UnterDerHaubeLeiste';
 import {
   TerminVorschlagRow,
   type TerminConfirmState,
@@ -751,6 +754,10 @@ export function InlineCascade({
       data-testid="inline-cascade"
       className={cn('flex flex-col gap-3', className)}
     >
+      {/* „Unter der Haube" (unter-der-haube.md § 5.C): the quiet origin chip at the
+       * cascade header — renders nothing unless the live FIT-Connect capability is
+       * present. Umzug-only: the real Block-D legs never fire on a lebenslage cascade. */}
+      {isUmzugRun ? <HerkunftBadge /> : null}
       {/* C7: the ONE polite region — rows + counters, NOT the receipt card. */}
       <div
         data-testid="inline-cascade-live"
@@ -925,6 +932,15 @@ export function InlineCascade({
                           ) : null}
                         </div>
                       ) : null}
+                      {/* „Unter der Haube" (unter-der-haube.md § 5.A): the staged
+                       * micro-line under this Block-D row, fed from the existing
+                       * receipt state. Renders nothing unless a Tier-2 receipt is
+                       * present (Demo-Modus / Tier-1 stays byte-identical). */}
+                      {node.block === 'D' && fitConnectReceipts[node.behoerdeId] ? (
+                        <ProtokollMicroBeat
+                          receipt={fitConnectReceipts[node.behoerdeId]}
+                        />
+                      ) : null}
                     </div>
                     <span
                       ref={(el) => {
@@ -1011,6 +1027,14 @@ export function InlineCascade({
           vorgangId={vorgang.id}
         />
       ) : null}
+
+      {/* „Unter der Haube" (unter-der-haube.md § 5.B): the leise, collapsed-by-
+       * default Protokoll-Leiste. Fed from the shared event hub (sim lines) + the
+       * existing receipt state (the „echt"-overlay). Idle → renders null. */}
+      <UnterDerHaubeLeiste
+        vorgangId={vorgangId}
+        fitConnectReceipts={fitConnectReceipts}
+      />
 
       {/* Foot disclaimer. Umzug: FIT-Connect present → the long legal-realism
        * text (Spec § 5.3/§ 10.3), else the short [MOCK] line. Lebenslage cascade

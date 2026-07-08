@@ -25,13 +25,15 @@
   },
   "topnav": {
     "nav_label": "Main navigation",
+    "meta_nav_label": "Service navigation",
     "solutions": "Solutions (Lösungen)",
     "lebenslagen": "Life events (Lebenslagen)",
     "security_privacy": "Security & privacy",
     "resources": "Resources",
     "about_us": "About us",
     "help": "Help & contact",
-    "about_project": "About the project"
+    "about_project": "About the project",
+    "brand_label": "GovTech-DE, to the overview"
   },
   "lebenslagen": {
     "breadcrumb_catalog": "Service catalogue",
@@ -392,6 +394,7 @@
         "stat_zeit": "Time saved",
         "stat_phase": "Current phase",
         "phase_keine": "Processing completed",
+        "phase_done": "Completed",
         "result_title": "Overall result",
         "result_status": "Completed",
         "result_lead": "Your application has been processed in a coordinated way and submitted to the responsible authorities.",
@@ -1898,6 +1901,15 @@
       "subtitle_template": "{adresse} · move-in {stichtag}",
       "headline": "Change of address on autopilot",
       "headline_sub": "You confirm once — the system coordinates the next steps.",
+      "demo": {
+        "title": "Experience the autopilot live",
+        "mock_badge": "[MOCK]",
+        "body": "Start a sample move. The system triggers a simulated change of address and coordinates it across all authorities involved — including the eID confirmations that you release yourself. No real data is transmitted.",
+        "address_label": "Sample address",
+        "cta_start": "Start sample move",
+        "starting": "Starting sample move …",
+        "error": "The sample move could not be started. Please try again."
+      },
       "vorgang_label": "Case #{id}",
       "status": {
         "pending": "waiting",
@@ -5147,6 +5159,22 @@
       "state_error": "The TEST sandbox did not respond — no real authority affected.",
       "refresh_events_cta": "Refresh event log"
     },
+    "haube": {
+      "badge_live": "FIT-Connect test active — only the eID steps",
+      "badge_live_desc": "Real protocol layer only for the application-based, eID-confirmed steps — against a FITKO test environment with a self-registered delivery point (Zustellpunkt). The remaining offices stay simulated.",
+      "strip_summary": "Under the hood",
+      "strip_live_dot_sr": "Live protocol — events are coming in",
+      "origin_sim": "Simulation",
+      "origin_real": "real · test environment",
+      "empty": "No events yet.",
+      "pointer_inspector": "Full protocol in the inspector below.",
+      "beat_encrypted": "encrypted (JWE)",
+      "beat_submitted": "submitted · <ltr>{id}</ltr>…",
+      "beat_confirmed": "confirmed (SET verified)",
+      "beat_pending_ack": "sandbox acknowledgement pending",
+      "line_ids": "Submission <ltr>{sid}</ltr>… · Case <ltr>{cid}</ltr>…",
+      "count": "{count, plural, one {# event} other {# events}}"
+    },
     "eudi_vp": {
       "tab_label": "Present with a real wallet (OpenID4VP)",
       "title": "Present a proof via the EUDI Wallet",
@@ -5172,5 +5200,10 @@
         "x5c": "x5c-signed request (demo certificate)"
       }
     }
+  },
+  "liveness": {
+    "autopilot_active": "Autopilot active",
+    "autopilot_active_aria": "Autopilot active — open the assistant",
+    "unread_badge_aria": "{count, plural, one {# unread message in your inbox} other {# unread messages in your inbox}}"
   }
 }

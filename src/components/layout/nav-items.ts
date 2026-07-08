@@ -29,8 +29,8 @@ export interface NavItem {
 }
 
 // The 10 authenticated app routes. Single source of truth consumed by the
-// top-nav „Lösungen" dropdown and the mobile drawer, so navigation stays
-// reachable without a sidebar. Order/icons match the former NAV_MAIN.
+// persistent left `SideNav` (≥1024px) and the mobile drawer, so every route
+// stays one click away. Order/icons match the former NAV_MAIN.
 export const navItems: NavItem[] = [
   { href: '/dashboard', i18nKey: 'dashboard', icon: Home },
   { href: '/posteingang', i18nKey: 'posteingang', icon: Mail },

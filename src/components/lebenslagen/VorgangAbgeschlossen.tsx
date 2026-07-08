@@ -150,10 +150,6 @@ export function VorgangAbgeschlossen({
   const activeIdx = eidIdx >= 0 ? eidIdx : workingIdx;
   const activeRow = activeIdx >= 0 ? orderedRows[activeIdx] : null;
 
-  const confirmedRows = React.useMemo(
-    () => orderedRows.filter((r) => isDoneStep(r.step.status)),
-    [orderedRows],
-  );
   const confirmedDisplayRows = orderedRows.filter((_, idx) =>
     isDoneStep(effectiveStatuses[idx]),
   );
@@ -175,15 +171,13 @@ export function VorgangAbgeschlossen({
     [rows],
   );
 
-  const currentPhaseLabel = React.useMemo(() => {
-    const last = confirmedRows[confirmedRows.length - 1];
-    if (!last) return tr('phase_keine');
-    return last.cfg?.kurzlabel ?? last.step.aktion;
-  }, [confirmedRows, tr]);
-
+  // Ein abgeschlossener Vorgang hat keine „aktuelle Phase" — kurzes
+  // „Abgeschlossen" statt des (langen) letzten Step-Namens, der die Überblick-
+  // Card sonst vertikal aufbläht. Im Replay (inDemo && !allResolved) bleibt der
+  // aktive Step-Name die richtige Info.
   const phaseLabel =
     !inDemo || allResolved
-      ? currentPhaseLabel
+      ? tr('phase_done')
       : activeRow
         ? labelOf(activeRow)
         : tc('preparing');
@@ -225,7 +219,16 @@ export function VorgangAbgeschlossen({
 
   const docCount = related.letters.length + related.documents.length;
   const zeitMin = receipt?.geschaetzte_zeitersparnis_min ?? 0;
+  // Ehrlicher Fallback: fehlt der Receipt (der einmalige Fetch auf der Run-Page
+  // ist an der 5%-Mock-Fehlerrate gescheitert), keinen falschen „0"-Zahlenclaim
+  // rendern, sondern „—" — für jede Lebenslage gleich sinnvoll (kein Receipt →
+  // keine Zahl). Kein Retry, nur die Anzeige.
+  const zeitDisplay = receipt ? tr('zeit_value', { min: zeitMin }) : '—';
   const ergebnis = config.ergebnis;
+  // Prozess-Kennzahlen wie „Abgeschlossen" sind Wörter, keine Zahlen — dann die
+  // Text-Behandlung der übrigen Zellen (16px, Umbruch erlaubt) statt der 30px
+  // nowrap-Zahlenkachel, die sonst in die Nachbarzelle überläuft.
+  const kennzahlIsText = ergebnis ? !/^\d/.test(ergebnis.kennzahl.wert) : false;
   const displayId = formatVorgangsId(vorgang.id, primaryAz);
 
   async function handleCopy() {
@@ -408,7 +411,7 @@ export function VorgangAbgeschlossen({
               <Clock />
             </span>
             <div className="vab-stat-textblock">
-              <div className="vab-stat-num">{tr('zeit_value', { min: zeitMin })}</div>
+              <div className="vab-stat-num">{zeitDisplay}</div>
               <div className="vab-stat-lbl">{tr('stat_zeit_ca')}</div>
             </div>
           </div>
@@ -480,7 +483,9 @@ export function VorgangAbgeschlossen({
                     <ShieldCheck />
                   </span>
                   <div className="vab-result-lbl">{t(ergebnis.kennzahl.label_key)}</div>
-                  <div className="vab-result-num">
+                  <div
+                    className={`vab-result-num${kennzahlIsText ? ' vab-result-num-txt' : ''}`}
+                  >
                     {ergebnis.kennzahl.wert}
                     {ergebnis.kennzahl.mock ? (
                       <span className="vab-result-mock">{tr('mock_tag')}</span>
@@ -537,7 +542,7 @@ export function VorgangAbgeschlossen({
                   </span>
                   <div className="vab-result-lbl">{tr('stat_zeit_ca')}</div>
                   <div className="vab-result-num vab-result-num-sm">
-                    {tr('zeit_value', { min: zeitMin })}
+                    {zeitDisplay}
                   </div>
                   <div className="vab-result-sub">
                     {tr('result_cell_zeit_sub')}

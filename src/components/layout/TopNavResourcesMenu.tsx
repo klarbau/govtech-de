@@ -11,7 +11,7 @@ import { useStripBaseUiFocusGuardAriaHidden } from '@/components/ui/use-strip-ba
 /**
  * Center-nav „Ressourcen ▾" dropdown: Hilfe & Kontakt (→ /assistent) and
  * „Über das Projekt" (→ /, the landing). Same base-ui Menu keyboard pattern
- * as UserMenu / TopNavSolutionsMenu.
+ * as UserMenu.
  */
 export function TopNavResourcesMenu() {
   const t = useTranslations('topnav');
