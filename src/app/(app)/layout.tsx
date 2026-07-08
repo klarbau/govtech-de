@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 
 import { SelectionVorlesen } from '@/components/a11y/SelectionVorlesen';
+import { LiquidGlassChrome } from '@/components/layout/LiquidGlassChrome';
 import { SideNav } from '@/components/layout/SideNav';
 import { TopNav } from '@/components/layout/TopNav';
 import { LiveBackendProvider } from '@/components/providers/LiveBackendProvider';
@@ -26,6 +27,9 @@ export default async function AppLayout({
       >
         {tApp('skip_to_content')}
       </a>
+      {/* App-wide Liquid-Glass: sets `data-lg` on <html> + paints the ambient
+          refraction field behind all content (inert when NEXT_PUBLIC_LG=0). */}
+      <LiquidGlassChrome />
       <LiveBackendProvider>
         <TopNav />
         <div className="app-shell">

@@ -1,0 +1,9 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Vorgänge — Liquid Glass (Welle 1)
+   ---------------------------------------------------------------------------
+   Screen-scoped rules for /vorgaenge (Liste, [id], Umzug start/preview/run/
+   identitaet). Every rule is gated under `html[data-lg]` and targets
+   vorgaenge-only class names, so the sheet is inert elsewhere. Surfaces only —
+   never text colours. Shared assistant-thread cards (InlineCascade & Co.) are
+   styled in assistent-liquid-glass.css, NOT here.
+   ═══════════════════════════════════════════════════════════════════════════ */

@@ -6,13 +6,15 @@ import { useTranslations } from 'next-intl';
 import { ChevronRight, Landmark } from 'lucide-react';
 
 import { api } from '@/lib/mock-backend/api';
+import { lgEnabled } from '@/lib/liquid-glass';
 
 /**
- * Archive-faithful „Bürgerkonto" card pinned to the bottom of the sidebar
- * (Liquid-Glass Posteingang only — SideNav renders it just on that route). A
- * green crest tile + the active persona's Meldeort + „Bürgerkonto", linking to
- * the profile. Location comes from the live persona (api.getProfile), not a
- * hardcoded city; renders once loaded to avoid showing a wrong place.
+ * Archive-faithful „Bürgerkonto" card pinned to the bottom of the sidebar —
+ * part of the app-wide Liquid-Glass shell (SideNav renders it on every route; it
+ * is styled under `html[data-lg] .lg-account-card`). A green crest tile + the
+ * active persona's Meldeort + „Bürgerkonto", linking to the profile. Location
+ * comes from the live persona (api.getProfile), not a hardcoded city; renders
+ * once loaded to avoid showing a wrong place. Renders null when LG is off.
  */
 export function BuergerkontoCard() {
   const t = useTranslations('shell.sidebar');
@@ -32,6 +34,8 @@ export function BuergerkontoCard() {
       cancelled = true;
     };
   }, []);
+
+  if (!lgEnabled) return null;
 
   return (
     <Link href="/stammdaten" className="lg-account-card">

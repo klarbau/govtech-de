@@ -2,33 +2,40 @@
 
 import * as React from 'react';
 
+import { lgEnabled } from '@/lib/liquid-glass';
+
 /**
- * Liquid-Glass chrome for the Posteingang route.
+ * App-wide Liquid-Glass chrome. Rendered once in `(app)/layout.tsx`, so it
+ * covers every authenticated route.
  *
  * Two jobs, both purely presentational and fully reversible:
  *
- *  1. Route gate — sets `data-lg` on <html> while this component is mounted
- *     (i.e. only on /posteingang) and removes it on unmount. Every rule in
- *     `posteingang-liquid-glass.css` is scoped under `html[data-lg] …`, so the
- *     glass treatment applies to this screen ONLY; navigating away restores the
- *     stock shell with no residue. The stylesheet touches surfaces
+ *  1. App-wide gate — sets `data-lg` on <html> while mounted (i.e. on the whole
+ *     app shell) and removes it on unmount. Every rule in `liquid-glass-core.css`
+ *     (and the deeper, screen-scoped `posteingang-liquid-glass.css`) is gated
+ *     under `html[data-lg] …`, so the glass treatment covers the app shell +
+ *     generic primitives everywhere. The stylesheets touch surfaces
  *     (background / border / shadow / backdrop-filter) — never text colour — so
- *     the existing token-driven text keeps its light/dark contrast for free.
+ *     token-driven text keeps its light/dark contrast for free.
  *
  *  2. Ambient background — the animated refracted colour field the glass
  *     surfaces blur against. Fixed, aria-hidden, pointer-events:none, painted
  *     behind all content. Respects `prefers-reduced-motion` (blobs hold still).
  *
- * No data, no interactivity — the fully-wired PosteingangInbox renders on top.
+ * With the kill-switch off (`NEXT_PUBLIC_LG=0`) it renders null and sets no
+ * attribute — the whole layer is inert.
  */
 export function LiquidGlassChrome() {
   React.useEffect(() => {
+    if (!lgEnabled) return;
     const root = document.documentElement;
     root.setAttribute('data-lg', '');
     return () => {
       root.removeAttribute('data-lg');
     };
   }, []);
+
+  if (!lgEnabled) return null;
 
   return (
     <div className="lg-ambient" aria-hidden="true">

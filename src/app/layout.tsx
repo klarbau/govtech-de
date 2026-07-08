@@ -10,9 +10,15 @@ import { cn } from '@/lib/utils';
 
 import './globals.css';
 import './prototype-v2.css';
-// Route-scoped Liquid-Glass layer (inert unless <html data-lg> — see
-// LiquidGlassChrome). Imported last so it wins on order as well as specificity.
+// App-wide Liquid-Glass layer (inert unless <html data-lg> — see
+// LiquidGlassChrome). Core shell + generic primitives first, then the
+// screen-scoped Posteingang specifics. Imported last so they win on order as
+// well as specificity.
+import './liquid-glass-core.css';
 import './posteingang-liquid-glass.css';
+import './dashboard-liquid-glass.css';
+import './assistent-liquid-glass.css';
+import './vorgaenge-liquid-glass.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 const interTight = Inter_Tight({ subsets: ['latin'], variable: '--font-display' });

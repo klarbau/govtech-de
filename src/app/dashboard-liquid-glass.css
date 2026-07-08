@@ -1,0 +1,8 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Dashboard — Liquid Glass (Welle 1)
+   ---------------------------------------------------------------------------
+   Screen-scoped rules for /dashboard on top of liquid-glass-core.css. Every
+   rule is gated under `html[data-lg]` and targets dashboard-only class names,
+   so the sheet is inert elsewhere. Surfaces only (background · border · shadow
+   · backdrop-filter · radius) — never text colours.
+   ═══════════════════════════════════════════════════════════════════════════ */

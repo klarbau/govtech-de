@@ -54,9 +54,9 @@ export function SideNav() {
           <span>{tNav('lebenslagen')}</span>
         </Link>
       </nav>
-      {/* Archive „Bürgerkonto" card — bottom of the sidebar, Liquid-Glass
-          Posteingang only (styling gates under html[data-lg]). */}
-      {isActive(pathname, '/posteingang') && <BuergerkontoCard />}
+      {/* Archive „Bürgerkonto" card pinned to the bottom of the sidebar — part
+          of the app-wide Liquid-Glass shell (renders null when LG is off). */}
+      <BuergerkontoCard />
     </div>
   );
 }

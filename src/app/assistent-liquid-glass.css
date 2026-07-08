@@ -1,0 +1,9 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Assistent — Liquid Glass (Welle 1)
+   ---------------------------------------------------------------------------
+   Screen-scoped rules for /assistent AND the shared assistant-thread cards
+   (InlineCascade, LebenslageConfirmCard, Value-Receipt, WohngeldFolgeCard …)
+   wherever they render. Every rule is gated under `html[data-lg]` and targets
+   assistant/autopilot class names, so the sheet is inert elsewhere. Surfaces
+   only — never text colours.
+   ═══════════════════════════════════════════════════════════════════════════ */

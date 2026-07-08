@@ -1,4 +1,4 @@
-import { LiquidGlassChrome } from '@/components/posteingang/LiquidGlassChrome';
+import { LiquidGlassScreen } from '@/components/layout/LiquidGlassScreen';
 import { PosteingangInbox } from '@/components/posteingang/PosteingangInbox';
 
 export const dynamic = 'force-dynamic';
@@ -8,13 +8,14 @@ export const dynamic = 'force-dynamic';
  * Mock-Backend lebt im `localStorage` und wird nach Hydration befüllt
  * (PosteingangInbox triggert auf Mount einen Refresh).
  *
- * `LiquidGlassChrome` applies the route-scoped Liquid-Glass skin (ambient
- * background + `data-lg` gate); the fully-wired inbox renders on top unchanged.
+ * The app-wide Liquid-Glass shell is set in `(app)/layout.tsx`;
+ * `LiquidGlassScreen` marks this route (`data-lg-screen='posteingang'`) so the
+ * inbox/reader-specific 100vh archive model applies here only.
  */
 export default function PosteingangPage() {
   return (
     <>
-      <LiquidGlassChrome />
+      <LiquidGlassScreen name="posteingang" />
       <PosteingangInbox
         initial={{
           letters: [],

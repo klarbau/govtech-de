@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 import { Search } from 'lucide-react';
 
 import { usePosteingangSearch } from '@/components/posteingang/posteingang-search-store';
+import { lgEnabled } from '@/lib/liquid-glass';
 
 /**
  * Liquid-Glass top-bar search — the „Suchen ⌘K" pill from the Posteingang
@@ -34,7 +35,7 @@ export function PosteingangTopSearch() {
 
   // ⌘K / Ctrl-K focuses the search.
   React.useEffect(() => {
-    if (!isPosteingang) return;
+    if (!lgEnabled || !isPosteingang) return;
     function onKey(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
         e.preventDefault();
@@ -45,7 +46,7 @@ export function PosteingangTopSearch() {
     return () => window.removeEventListener('keydown', onKey);
   }, [isPosteingang]);
 
-  if (!isPosteingang) return null;
+  if (!lgEnabled || !isPosteingang) return null;
 
   return (
     <>
