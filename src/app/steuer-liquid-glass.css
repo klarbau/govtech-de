@@ -5,4 +5,83 @@
    under `html[data-lg]` and targets screen-only class names, so the sheet is
    inert elsewhere. Surfaces only (background · border · shadow ·
    backdrop-filter · radius) — never text colours.
+
+   Scope: gated one level deeper under `html[data-lg][data-lg-screen='steuer']`
+   (set by <LiquidGlassScreen name="steuer"> on the page — vorgaenge precedent).
+   Needed because `.nachweise` is SHARED with the live /familie view (a parallel
+   agent's screen), so a bare `html[data-lg]` gate would leak. The screen gate
+   confines every rule to the Steuer route.
+
+   Budget: the shell already spends its 2 blur layers (TopNav + SideNav).
+   Content cards therefore carry glass via gradient + border + shadow with NO
+   backdrop-filter. Exactly ONE static hero panel per screen may frost: the top
+   `.st-card` (the Steuerjahr / „Voraussichtliche Erstattung"-Zahlenpanel).
+   No iridescent CTA — the screen has no committed „Erklärung abgeben" button to
+   elevate (the abgeben-step is descriptive text; the table actions are links).
    ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Cards — floating raised glass (no backdrop-filter) ────────────────────── */
+html[data-lg][data-lg-screen='steuer'] .app-content .st-card {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+  transition: box-shadow 0.25s ease, transform 0.18s ease;
+}
+html[data-lg][data-lg-screen='steuer'].dark .app-content .st-card {
+  border-color: var(--lg-hairline);
+}
+
+/* ── Hero — the ONE frosted surface: the Steuerjahr / Erstattung numbers panel.
+   Uniquely the bare `.st-card` (the four other cards carry a modifier class). ── */
+html[data-lg][data-lg-screen='steuer'] .app-content
+  .st-card:not(.uberblick):not(.frist-card):not(.nachweise):not(.st-privacy) {
+  position: relative;
+  background: var(--lg-glass);
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-panel), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg][data-lg-screen='steuer'].dark .app-content
+  .st-card:not(.uberblick):not(.frist-card):not(.nachweise):not(.st-privacy) {
+  border-color: var(--lg-hairline);
+}
+/* Top-edge specular highlight (static — matches the Posteingang/Dashboard hero). */
+html[data-lg][data-lg-screen='steuer'] .app-content
+  .st-card:not(.uberblick):not(.frist-card):not(.nachweise):not(.st-privacy)::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 28px;
+  right: 28px;
+  height: 1.5px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.95) 24%, rgba(255, 255, 255, 0.4) 64%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+}
+html[data-lg][data-lg-screen='steuer'].dark .app-content
+  .st-card:not(.uberblick):not(.frist-card):not(.nachweise):not(.st-privacy)::before {
+  opacity: 0.25;
+}
+
+/* ── Datenquellen (SSoT-Herkunft) + Fortschritt — soft frosted insets on the hero
+   („aus Lohnsteuerbescheinigung" reads as hairline-meta, Posteingang optics). ── */
+html[data-lg][data-lg-screen='steuer'] .app-content .qcard,
+html[data-lg][data-lg-screen='steuer'] .app-content .progress-row {
+  background: var(--lg-glass-soft);
+  border: 1px solid var(--lg-hairline);
+  box-shadow: inset 0 1px 0 var(--lg-edge);
+}
+
+/* ── Steuerbereiche table — recolour the cell hairlines to the glass vocabulary
+   (the core `table tr` rule can't reach these — the borders sit on th/td). ──── */
+html[data-lg][data-lg-screen='steuer'] .app-content .uberblick th,
+html[data-lg][data-lg-screen='steuer'] .app-content .uberblick td {
+  border-bottom-color: var(--lg-hairline);
+}
+
+/* ── Rail list-item dividers (Fristen · Nachweise) → glass hairline-meta. ────── */
+html[data-lg][data-lg-screen='steuer'] .app-content .frist-card .item,
+html[data-lg][data-lg-screen='steuer'] .app-content .nachweise .item {
+  border-top-color: var(--lg-hairline);
+}
