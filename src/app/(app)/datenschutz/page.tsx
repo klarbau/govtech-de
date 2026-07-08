@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 
 import { DatenschutzView } from '@/components/datenschutz/DatenschutzView';
+import { LiquidGlassScreen } from '@/components/layout/LiquidGlassScreen';
 import { Breadcrumb } from '@/components/shared/Breadcrumb';
 
 export const dynamic = 'force-dynamic';
@@ -17,6 +18,7 @@ export default async function DatenschutzPage() {
 
   return (
     <>
+      <LiquidGlassScreen name="datenschutz" />
       <Breadcrumb
         items={[
           { label: tShell('home'), href: '/dashboard' },

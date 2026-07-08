@@ -1,8 +1,78 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   Datenschutz — Liquid Glass (Welle 2/3)
+   Datenschutz — Liquid Glass (Welle 3)
    ---------------------------------------------------------------------------
    Screen-scoped rules on top of liquid-glass-core.css. Every rule is gated
-   under `html[data-lg]` and targets screen-only class names, so the sheet is
-   inert elsewhere. Surfaces only (background · border · shadow ·
-   backdrop-filter · radius) — never text colours.
+   under `html[data-lg][data-lg-screen='datenschutz']` (the screen attribute set
+   by <LiquidGlassScreen name="datenschutz"> on /datenschutz) and additionally
+   scoped to `.app-content`, so the sheet is inert on every other route.
+   Surfaces only (background · border · shadow · backdrop-filter · radius) —
+   never text colours, so the Waldgrün tokens keep their light/dark contrast.
+
+   Why the deeper screen gate (Posteingang/Vorgänge/Termine precedent): the
+   shared `.rail-card` also renders on this route and is styled by the parallel
+   Vorgänge/Lebenslagen agents under THEIR own gates — a bare `html[data-lg]`
+   rule would leak across routes. Everything here therefore stays on the
+   Datenschutz screen and targets `ds2-`-prefixed, screen-only class names (plus
+   the pass-3 fold-in's `aria-labelledby` hook), all confined to `.app-content`.
+
+   Register: a consent cockpit — the screen should read as calm and
+   trustworthy, not sales-y. So:
+   • backdrop-filter budget: ZERO blur layers in the content zone. The shell
+     already spends its two on .app-topnav + .app-sidenav; the section cards
+     (`.gt-card`) are already carried by the core's blur-free raised glass. No
+     content hero frosts here — a calmer, cheaper screen than Termine/Vorgänge.
+   • `.lg-iridescent`: NONE. There is no single dominant commit-CTA (the primary
+     actions are per-row consent toggles + secondary buttons); an iridescent
+     "sales moment" would fight the register. Justified absence.
+
+   The generic primitives (`.gt-card`, buttons, inputs, the two consent/audit
+   tables' hairlines + row hover, the frosted log/history dialogs) are already
+   glassed app-wide by liquid-glass-core.css. Recipes below are transcribed from
+   the established `--lg-*` vocabulary, not invented.
    ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Übersichts-Kacheln (Stat row) — raised glass, no backdrop-filter ──────────
+   The three top stat tiles are the only content surface that is NOT a `.gt-card`
+   (base fills them with `--surface`). Lift them onto the same blur-free raised
+   glass as the section cards so the overview reads as one glass family. Static
+   (the tiles are non-interactive), so no hover-lift. */
+html[data-lg][data-lg-screen='datenschutz'] .app-content .ds2-stat {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg][data-lg-screen='datenschutz'].dark .app-content .ds2-stat {
+  border-color: var(--lg-hairline);
+}
+
+/* ── Daten-Aktualität-Fold-in (pass-3) — Hairline-Meta, nicht raised ──────────
+   The [ZUKUNFT 2027] „Aktualität der Datenquellen" section is a `.gt-card`, so
+   the core would raise it like a focal card. But it is a quiet, amtswegige meta
+   note — de-emphasise it to a soft, hairline-bordered, flat sub-surface so it
+   reads as context, not a headline. Hook: its own `aria-labelledby`. Out-
+   specifies the core `.gt-card` rule (screen gate + .app-content + attribute).
+   Only renders for a persona with a detected finished Umzug — harmless when
+   absent. Tokens flip for dark, so no separate dark rule is needed. */
+html[data-lg][data-lg-screen='datenschutz']
+  .app-content
+  [aria-labelledby='ds-aktualitaet-heading'] {
+  background: var(--lg-glass-soft);
+  border: 1px solid var(--lg-hairline);
+  box-shadow: inset 0 1px 0 var(--lg-edge);
+}
+
+/* ── Trust-Footer — Mint-Glas ─────────────────────────────────────────────────
+   „Ihre Daten. Sicher geschützt." + Siegel + Rechtsgrundlagen. This is the one
+   clearly trust-building surface of the screen, so it gets the calm mint glass
+   (the safe-green anchor) instead of neutral raised glass. The security-badge
+   icons keep their semantic green — only the panel surface is tinted. No blur.
+   Dark drops the inset-edge highlight (too bright over dark mint), matching the
+   Termine `.vr-card` mint recipe. */
+html[data-lg][data-lg-screen='datenschutz'] .app-content .ds2-footer {
+  background: var(--lg-mint);
+  border: 1px solid var(--lg-mint-border);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg][data-lg-screen='datenschutz'].dark .app-content .ds2-footer {
+  box-shadow: var(--lg-shadow-card);
+}
