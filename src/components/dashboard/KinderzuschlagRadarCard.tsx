@@ -45,7 +45,7 @@ export function KinderzuschlagRadarCard({
   return (
     <section
       aria-labelledby={titleId}
-      className="relative flex flex-col gap-3 rounded-xl border border-primary/30 bg-accent-soft/40 p-4"
+      className="lg-glass-surface-accent relative flex flex-col gap-3 rounded-xl border border-primary/30 bg-accent-soft/40 p-4"
     >
       <button
         type="button"

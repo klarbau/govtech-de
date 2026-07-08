@@ -25,7 +25,7 @@ export function AnspruchLaneRow({ entry }: AnspruchLaneRowProps) {
   const kind = entry.kind_name ?? '';
 
   return (
-    <div className="flex items-start gap-2.5 rounded-xl border border-border bg-surface p-3">
+    <div className="lg-glass-surface flex items-start gap-2.5 rounded-xl border border-border bg-surface p-3">
       <IconCircle icon={<CheckCircle2 />} tone="success" size="sm" />
       <div className="flex flex-col gap-1">
         <div className="flex flex-wrap items-center gap-2">

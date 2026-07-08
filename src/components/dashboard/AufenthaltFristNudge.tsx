@@ -102,7 +102,7 @@ export function AufenthaltFristNudge({ view }: AufenthaltFristNudgeProps) {
   return (
     <section
       aria-labelledby={titleId}
-      className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 shadow-sm"
+      className="lg-glass-surface flex flex-col gap-3 rounded-xl border border-border bg-card p-4 shadow-sm"
     >
       <div className="flex items-start gap-3">
         <IconCircle icon={<CalendarClock />} tone="primary" size="md" />

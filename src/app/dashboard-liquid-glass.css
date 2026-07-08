@@ -2,7 +2,140 @@
    Dashboard — Liquid Glass (Welle 1)
    ---------------------------------------------------------------------------
    Screen-scoped rules for /dashboard on top of liquid-glass-core.css. Every
-   rule is gated under `html[data-lg]` and targets dashboard-only class names,
-   so the sheet is inert elsewhere. Surfaces only (background · border · shadow
-   · backdrop-filter · radius) — never text colours.
+   rule is gated under `html[data-lg][data-lg-screen='dashboard']` (the screen
+   attribute set by <LiquidGlassScreen name="dashboard">) and further scoped to
+   `.app-content`, so nothing leaks onto the shell or other routes — several of
+   the dashboard's class names are shared (`.stat-tile` also on /vorgaenge,
+   `.icon-circle`/`.badge` app-wide). Surfaces only (background · border · shadow
+   · backdrop-filter · radius) — never text colours, so the Waldgrün tokens keep
+   their light/dark contrast.
+
+   Recipes are transcribed from the established Liquid-Glass vocabulary (the
+   core `--lg-*` tokens + the Posteingang glass-card / frosted-sub-surface
+   values), not invented.
+
+   backdrop-filter budget: the shell zone already spends its two blur layers on
+   .app-topnav + .app-sidenav. Content cards therefore get NO backdrop-filter —
+   a near-opaque glass gradient + edge + shadow carries them. The ONE exception
+   is the `.umz-hero` „Ihr Umzug im Überblick" panel — the screen's hero surface,
+   which frosts once (one hero/panel per screen, per plan §1).
    ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Top-level content cards — floating glass, no backdrop-filter ──────────── */
+html[data-lg][data-lg-screen='dashboard'] .app-content .heute-card,
+html[data-lg][data-lg-screen='dashboard'] .app-content .nt-card,
+html[data-lg][data-lg-screen='dashboard'] .app-content .kontrolle-card,
+html[data-lg][data-lg-screen='dashboard'] .app-content .stat-tile,
+html[data-lg][data-lg-screen='dashboard'] .app-content .whx,
+html[data-lg][data-lg-screen='dashboard'] .app-content .wh-card {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+  transition: box-shadow 0.25s ease, transform 0.18s ease;
+}
+html[data-lg][data-lg-screen='dashboard'].dark .app-content .heute-card,
+html[data-lg][data-lg-screen='dashboard'].dark .app-content .nt-card,
+html[data-lg][data-lg-screen='dashboard'].dark .app-content .kontrolle-card,
+html[data-lg][data-lg-screen='dashboard'].dark .app-content .stat-tile,
+html[data-lg][data-lg-screen='dashboard'].dark .app-content .whx,
+html[data-lg][data-lg-screen='dashboard'].dark .app-content .wh-card {
+  border-color: var(--lg-hairline);
+}
+/* Risiko-Wohngeld keeps its green left accent on top of the glass rim. */
+html[data-lg][data-lg-screen='dashboard'] .app-content .wh-card {
+  border-left: 3px solid var(--green-600);
+}
+
+/* Clickable stat tiles lift on hover instead of swapping to a flat soft fill. */
+html[data-lg][data-lg-screen='dashboard'] .app-content .stat-tile:hover {
+  background: var(--lg-glass-raised);
+  box-shadow: var(--lg-shadow-lift), inset 0 1px 0 var(--lg-edge);
+}
+
+/* ── Hero panel — the ONE frosted content surface (Umzug-Überblick) ────────── */
+html[data-lg][data-lg-screen='dashboard'] .app-content .umz-hero {
+  position: relative;
+  background: var(--lg-glass);
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-panel), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg][data-lg-screen='dashboard'].dark .app-content .umz-hero {
+  border-color: var(--lg-hairline);
+}
+/* Top-edge specular highlight (static — matches the Posteingang reader panel). */
+html[data-lg][data-lg-screen='dashboard'] .app-content .umz-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 28px;
+  right: 28px;
+  height: 1.5px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.95) 24%, rgba(255, 255, 255, 0.4) 64%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+}
+html[data-lg][data-lg-screen='dashboard'].dark .app-content .umz-hero::before {
+  opacity: 0.25;
+}
+/* Divider inside the hero reads as a hairline over the frosted field. */
+html[data-lg][data-lg-screen='dashboard'] .app-content .umz-hero .umz-hero-divider {
+  background: var(--lg-hairline);
+}
+
+/* ── Autopilot-catalogue cards — glass sub-surfaces (keep their 14px radius) ── */
+html[data-lg][data-lg-screen='dashboard'] .app-content .katalog-card {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+  transition: box-shadow 0.25s ease, transform 0.18s ease;
+}
+html[data-lg][data-lg-screen='dashboard'].dark .app-content .katalog-card {
+  border-color: var(--lg-hairline);
+}
+html[data-lg][data-lg-screen='dashboard'] .app-content .katalog-card:hover {
+  background: var(--lg-glass-raised);
+  box-shadow: var(--lg-shadow-lift), inset 0 1px 0 var(--lg-edge);
+}
+
+/* ── Nested tiles inside the glass cards — soft frosted sub-surfaces ────────── */
+/* „Heute wichtig" todo tiles sit ON the near-opaque .heute-card, so they read
+   as lighter frosted panels (recipe from the Posteingang inner sub-cards). */
+html[data-lg][data-lg-screen='dashboard'] .app-content .heute-tile {
+  background: rgba(255, 255, 255, 0.66);
+  border: 1px solid var(--lg-hairline);
+  box-shadow: 0 1px 2px rgba(15, 61, 46, 0.04);
+}
+html[data-lg][data-lg-screen='dashboard'].dark .app-content .heute-tile {
+  background: rgba(255, 255, 255, 0.05);
+}
+html[data-lg][data-lg-screen='dashboard'] .app-content .heute-tile:hover {
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: var(--lg-shadow-card);
+}
+html[data-lg][data-lg-screen='dashboard'].dark .app-content .heute-tile:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ── Utility-class dashboard cards — glass via a shared hook (no bespoke class)
+   AufenthaltFristNudge + AnspruchLaneRow carry `.lg-glass-surface`; the
+   accent-tinted KinderzuschlagRadarCard carries `.lg-glass-surface-accent`
+   (green mint glass from the core `--lg-mint*` tokens). Both are dashboard-only
+   components (verified via codegraph) and additionally screen-gated here. ──── */
+html[data-lg][data-lg-screen='dashboard'] .app-content .lg-glass-surface {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg][data-lg-screen='dashboard'].dark .app-content .lg-glass-surface {
+  border-color: var(--lg-hairline);
+}
+html[data-lg][data-lg-screen='dashboard'] .app-content .lg-glass-surface-accent {
+  background: var(--lg-mint);
+  border: 1px solid var(--lg-mint-border);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg][data-lg-screen='dashboard'].dark .app-content .lg-glass-surface-accent {
+  box-shadow: var(--lg-shadow-card);
+}

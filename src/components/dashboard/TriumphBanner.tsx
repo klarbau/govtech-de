@@ -82,7 +82,7 @@ export function TriumphBanner({ highlight, variant = 'static', fristDatum }: Tri
 
       <Link
         href={`/vorgaenge/umzug/${highlight.vorgang_id}`}
-        className="btn btn-primary umz-hero-cta"
+        className="btn btn-primary umz-hero-cta lg-iridescent"
       >
         {t('zum_umzug')}
         <ArrowRight aria-hidden="true" />
