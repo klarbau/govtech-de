@@ -123,7 +123,7 @@ export function FamilieView() {
 
       <div className="fm-layout">
         <div>
-          <div className="fm-card">
+          <div className="fm-card fm-hero">
             <div className="hh-head">
               <div>
                 <div className="ttl">{t('haushalt.title')}</div>

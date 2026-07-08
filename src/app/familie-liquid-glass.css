@@ -1,8 +1,140 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   Familie — Liquid Glass (Welle 2/3)
+   Familie — Liquid Glass (Welle 2)
    ---------------------------------------------------------------------------
-   Screen-scoped rules on top of liquid-glass-core.css. Every rule is gated
-   under `html[data-lg]` and targets screen-only class names, so the sheet is
-   inert elsewhere. Surfaces only (background · border · shadow ·
-   backdrop-filter · radius) — never text colours.
+   Screen-scoped rules for /familie on top of liquid-glass-core.css. Every rule
+   is gated under `html[data-lg][data-lg-screen='familie']` (set by
+   <LiquidGlassScreen name="familie"> in the page) and further scoped to
+   `.app-content`, so nothing leaks onto the shell or other routes — the live
+   FamilieView reuses generic class names (`.person`, `.item`, `.rail`, `.kv`,
+   `.avatar`) that are also rendered on /dashboard, /stammdaten, /vorgaenge etc.
+   (verified via grep). The screen gate confines every rule to the Familie
+   family, exactly like the Vorgänge sheet. Surfaces only (background · border ·
+   shadow · backdrop-filter · radius) — never a text colour, so the Waldgrün
+   tokens keep their light/dark contrast.
+
+   Recipes are transcribed from the established `--lg-*` vocabulary (the core
+   tokens + the dashboard/vorgaenge glass-card / frosted-sub-surface values),
+   not invented.
+
+   Scope note: only the LIVE FamilieView is reskinned. The orphaned v2 redesign
+   components (stammdaten/v2/FamilieCard monogram rows, the "Was betrifft wen"
+   aside, Vertretung role=note) are NOT wired into this view and are left
+   untouched (plan §3 debt item).
+
+   backdrop-filter budget: the shell already spends its two blur layers on
+   .app-topnav + .app-sidenav. Content surfaces therefore carry glass via
+   gradient + border + shadow with NO backdrop-filter. Exactly ONE static hero
+   panel frosts: the „Mein Haushalt" card (`.fm-hero`, one hero per screen).
+
+   Iridescent CTA: NONE. Familie is a read/overview screen — its actions are all
+   secondary (Haushalt verwalten, Alle anzeigen, Mehr erfahren); there is no
+   single primary write/commit CTA, so the `.lg-iridescent` treatment (max 1 per
+   screen, only for a clear main CTA) is deliberately not used here.
    ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Container cards — floating raised glass, no backdrop-filter ───────────── */
+html[data-lg][data-lg-screen='familie'] .app-content .fm-card {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg][data-lg-screen='familie'].dark .app-content .fm-card {
+  border-color: var(--lg-hairline);
+}
+
+/* ── Household hero — the ONE frosted content surface („Mein Haushalt") ─────── */
+html[data-lg][data-lg-screen='familie'] .app-content .fm-hero {
+  position: relative;
+  background: var(--lg-glass);
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-panel), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg][data-lg-screen='familie'].dark .app-content .fm-hero {
+  border-color: var(--lg-hairline);
+}
+/* Top-edge specular highlight (static — matches the dashboard/vorgaenge heroes). */
+html[data-lg][data-lg-screen='familie'] .app-content .fm-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 28px;
+  right: 28px;
+  height: 1.5px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.95) 24%, rgba(255, 255, 255, 0.4) 64%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+}
+html[data-lg][data-lg-screen='familie'].dark .app-content .fm-hero::before {
+  opacity: 0.25;
+}
+
+/* ── Member cards — raised glass tiles with a gentle hover-lift ─────────────── */
+html[data-lg][data-lg-screen='familie'] .app-content .person {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+  transition: box-shadow 0.25s ease;
+}
+html[data-lg][data-lg-screen='familie'].dark .app-content .person {
+  border-color: var(--lg-hairline);
+}
+html[data-lg][data-lg-screen='familie'] .app-content .person:hover {
+  box-shadow: var(--lg-shadow-lift), inset 0 1px 0 var(--lg-edge);
+}
+
+/* ── Vertretung banner — mint frosted sub-surface (keeps the green cue) ─────── */
+html[data-lg][data-lg-screen='familie'] .app-content .hh-banner {
+  background: var(--lg-mint);
+  border: 1px solid var(--lg-mint-border);
+  box-shadow: inset 0 1px 0 var(--lg-edge);
+}
+
+/* ── Vorgang / Nachweis rows — soft frosted boxed sub-surfaces ─────────────── */
+html[data-lg][data-lg-screen='familie'] .app-content .fm-list .item,
+html[data-lg][data-lg-screen='familie'] .app-content .nb-list .item {
+  border-top: 0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-top: 8px;
+  background: var(--lg-glass-soft);
+  border: 1px solid var(--lg-hairline);
+  box-shadow: inset 0 1px 0 var(--lg-edge);
+  transition: box-shadow 0.2s ease, background 0.2s ease;
+}
+html[data-lg][data-lg-screen='familie'] .app-content .fm-list .item:first-of-type,
+html[data-lg][data-lg-screen='familie'] .app-content .nb-list .item:first-of-type {
+  margin-top: 0;
+}
+html[data-lg][data-lg-screen='familie'] .app-content .fm-list .item:hover,
+html[data-lg][data-lg-screen='familie'] .app-content .nb-list .item:hover {
+  background: var(--lg-glass-raised);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+}
+
+/* ── Rail footer — soft frosted sub-surface ─────────────────────────────────── */
+html[data-lg][data-lg-screen='familie'] .app-content .rail-foot {
+  background: var(--lg-glass-soft);
+  border: 1px solid var(--lg-hairline);
+  box-shadow: inset 0 1px 0 var(--lg-edge);
+}
+
+/* ── Rail stat rows — hairline separators over the glass card ───────────────── */
+html[data-lg][data-lg-screen='familie'] .app-content .rail .kvs .kv {
+  border-top-color: var(--lg-hairline);
+}
+
+/* ── Monogram avatars — round glass depth (SURFACE only; text unchanged, so the
+   base brand/green tint + its dark text keep their contrast) ─────────────────
+   `background-image` layers a specular sheen OVER the base `background-color`
+   (var(--brand-50)/var(--green-50)) — it never replaces the fill, so contrast
+   of the initials is untouched. Depth from the inner highlight + soft drop. */
+html[data-lg][data-lg-screen='familie'] .app-content .avatar {
+  background-image: linear-gradient(160deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 62%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 5px 12px -6px rgba(15, 61, 46, 0.32);
+}
+html[data-lg][data-lg-screen='familie'].dark .app-content .avatar {
+  background-image: linear-gradient(160deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0) 62%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 5px 12px -6px rgba(0, 0, 0, 0.5);
+}
