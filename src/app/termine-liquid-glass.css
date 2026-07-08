@@ -2,7 +2,129 @@
    Termine — Liquid Glass (Welle 2/3)
    ---------------------------------------------------------------------------
    Screen-scoped rules on top of liquid-glass-core.css. Every rule is gated
-   under `html[data-lg]` and targets screen-only class names, so the sheet is
-   inert elsewhere. Surfaces only (background · border · shadow ·
-   backdrop-filter · radius) — never text colours.
+   under `html[data-lg][data-lg-screen='termine']` (the screen attribute set by
+   <LiquidGlassScreen name="termine"> on /termine) and targets termine class
+   names, so the sheet is inert elsewhere. Surfaces only (background · border ·
+   shadow · backdrop-filter · radius) — never text colours, so the Waldgrün
+   tokens keep their light/dark contrast.
+
+   Why the deeper screen gate (Posteingang/Vorgänge precedent): several class
+   names here are SHARED with routes rendered by parallel agents —
+   `.vr-card` (the assistant Value-Receipt via `.lg-value-receipt` + the Dashboard
+   WohngeldFolgeCard), `.vg-search-input` (/vorgaenge), `.tab-chips`/`.chip`
+   (app-wide filter tabs). A bare `html[data-lg]` gate would leak onto them, so
+   every rule is confined to the Termine screen. Recipes are transcribed from the
+   established `--lg-*` vocabulary, not invented.
+
+   backdrop-filter budget: the shell zone already spends its two blur layers on
+   .app-topnav + .app-sidenav. Content cards therefore get NO backdrop-filter —
+   a near-opaque glass gradient + edge + shadow carries them. The ONE exception
+   is the sticky right-rail „Termindetails" panel (.tm-detail), the screen's
+   focal surface, which frosts once (one hero/panel per screen, per plan §1).
    ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── KPI tiles — floating glass, no backdrop-filter ────────────────────────── */
+html[data-lg][data-lg-screen='termine'] .tm-kpi {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg][data-lg-screen='termine'].dark .tm-kpi {
+  border-color: var(--lg-hairline);
+}
+
+/* ── Rail cards — the calendar (left) + Termindetails (right) glass surfaces ── */
+html[data-lg][data-lg-screen='termine'] .tm-card {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg][data-lg-screen='termine'].dark .tm-card {
+  border-color: var(--lg-hairline);
+}
+
+/* Right-rail „Termindetails" — the ONE frosted panel of the screen (blur
+   allowed: overlay-adjacent focal surface, one at a time). Overrides the raised
+   .tm-card fill above. */
+html[data-lg][data-lg-screen='termine'] .tm-detail {
+  background: var(--lg-glass);
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-panel), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg][data-lg-screen='termine'].dark .tm-detail {
+  border-color: var(--lg-hairline);
+}
+
+/* Hairline dividers inside the frosted/raised cards read over the glass field. */
+html[data-lg][data-lg-screen='termine'] .cal-legend,
+html[data-lg][data-lg-screen='termine'] .tm-detail-foot {
+  border-top-color: var(--lg-hairline);
+}
+
+/* ── Appointment + Frist rows — raised glass cards, gentle hover-lift ───────── */
+html[data-lg][data-lg-screen='termine'] .tm-list-item {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+  transition: box-shadow 0.25s ease, transform 0.18s ease, background 0.2s ease;
+}
+html[data-lg][data-lg-screen='termine'].dark .tm-list-item {
+  border-color: var(--lg-hairline);
+}
+html[data-lg][data-lg-screen='termine'] .tm-list-item.is-interactive:hover {
+  background: var(--lg-glass-raised);
+  border-color: var(--lg-edge);
+  box-shadow: var(--lg-shadow-lift), inset 0 1px 0 var(--lg-edge);
+}
+html[data-lg][data-lg-screen='termine'].dark .tm-list-item.is-interactive:hover {
+  border-color: var(--lg-hairline);
+}
+
+/* The focused / next upcoming appointment (auto-selected §17 hero or nächster
+   Termin) — mint-tinted glass keeps its selection ring; the mint replaces the
+   base green-fill highlight. */
+html[data-lg][data-lg-screen='termine'] .tm-list-item.is-selected,
+html[data-lg][data-lg-screen='termine'] .tm-list-item.is-selected:hover {
+  background: var(--lg-mint);
+  border-color: var(--lg-mint-border);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong),
+    0 0 0 2px var(--lg-mint-border);
+}
+html[data-lg][data-lg-screen='termine'].dark .tm-list-item.is-selected,
+html[data-lg][data-lg-screen='termine'].dark .tm-list-item.is-selected:hover {
+  box-shadow: var(--lg-shadow-card), 0 0 0 2px var(--lg-mint-border);
+}
+
+/* ── Sub-surfaces on the raised/frosted cards — softer frosted insets ──────── */
+/* Vorbereitung checklist card inside the detail panel. */
+html[data-lg][data-lg-screen='termine'] .prep-card {
+  background: var(--lg-glass-soft);
+  border: 1px solid var(--lg-hairline);
+  box-shadow: inset 0 1px 0 var(--lg-edge);
+}
+
+/* Datenminimierungs-Quittung after the §17 confirm — a success (mint) sub-
+   surface. Screen-gated, so the assistant/Dashboard `.vr-card.lg-value-receipt`
+   (styled in assistent-liquid-glass.css) stays untouched. */
+html[data-lg][data-lg-screen='termine'] .vr-card {
+  background: var(--lg-mint);
+  border: 1px solid var(--lg-mint-border);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg][data-lg-screen='termine'].dark .vr-card {
+  box-shadow: var(--lg-shadow-card);
+}
+
+/* ── In-toolbar search — inset frosted pill (shared `.vg-search-input`, matches
+   the core input recipe + the /vorgaenge treatment; focus ring left intact) ── */
+html[data-lg][data-lg-screen='termine'] .vg-search-input {
+  border: 1px solid transparent;
+  background: linear-gradient(180deg, rgba(15, 61, 46, 0.05), rgba(15, 61, 46, 0.03));
+  box-shadow: inset 0 1.5px 3px rgba(15, 61, 46, 0.08), inset 0 0 0 1px rgba(15, 61, 46, 0.05);
+}
+html[data-lg][data-lg-screen='termine'].dark .vg-search-input {
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
