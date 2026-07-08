@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 
 import { LebenslagenView } from '@/components/lebenslagen/LebenslagenView';
 import { Breadcrumb } from '@/components/shared/Breadcrumb';
+import { LiquidGlassScreen } from '@/components/layout/LiquidGlassScreen';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,6 +18,7 @@ export default async function LebenslagenPage() {
 
   return (
     <>
+      <LiquidGlassScreen name="lebenslagen" />
       <Breadcrumb
         items={[
           { label: tShell('home'), href: '/dashboard' },

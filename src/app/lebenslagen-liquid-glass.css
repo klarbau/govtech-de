@@ -1,8 +1,153 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   Lebenslagen — Liquid Glass (Welle 2/3)
+   Lebenslagen — Liquid Glass (Welle 3)
    ---------------------------------------------------------------------------
-   Screen-scoped rules on top of liquid-glass-core.css. Every rule is gated
-   under `html[data-lg]` and targets screen-only class names, so the sheet is
-   inert elsewhere. Surfaces only (background · border · shadow ·
-   backdrop-filter · radius) — never text colours.
+   Screen-scoped rules on top of liquid-glass-core.css for the Lebenslagen
+   family: /lebenslagen (Katalog), /lebenslagen/[slug] (Dossier),
+   /lebenslagen/[slug]/antrag (AntragForm) und /lebenslagen/[slug]/cascade
+   (Submission-Kaskade). Every rule is gated under
+   `html[data-lg][data-lg-screen='lebenslagen']` (set by
+   <LiquidGlassScreen name="lebenslagen"> auf allen vier Seiten) und meist
+   zusätzlich auf `.app-content` verengt. Surfaces only (background · border ·
+   shadow · backdrop-filter · radius) — nie Textfarben, damit die Waldgrün-Tokens
+   ihren Licht/Dunkel-Kontrast behalten.
+
+   Warum das Screen-Gate zwingend ist: mehrere Klassen dieser Familie sind mit
+   anderen, parallel bearbeiteten Routen geteilt:
+   • `.katalog-card` rendert AUCH auf /dashboard (dort eigen gegated) — der
+     Katalog hier nutzt allerdings `.llh-beliebte-card`, nicht `.katalog-card`;
+   • `.vlf-*`/`.vab-*` (die Kaskaden-Renderer VorgangInBearbeitung /
+     VorgangAbgeschlossen) rendern AUCH auf /vorgaenge/umzug/run — dort ohne
+     Screen-Attribut, also trifft keine dieser Regeln die Umzug-Run-Seite
+     (sie behält ihre blur-freie Core-Glass-Optik + den Demo-Pacer-Reveal).
+   Das Gate isoliert jede Regel auf die Lebenslagen-Routen.
+
+   Budget: die Shell verbraucht ihre 2 Blur-Ebenen bereits (TopNav + SideNav).
+   Inhalts-Karten tragen Glas daher via Gradient + Border + Shadow OHNE
+   backdrop-filter. Genau EINE statische Hero-Fläche der ganzen Familie frostet:
+   der Dossier-Kopf (die „Was enthalten ist"-Intro-Karte). Die Kaskaden-Route
+   bekommt KEIN backdrop-filter — ihre Reveal-/Replay-Animationen sollen billig
+   bleiben (Umzug-Run-Präzedenz).
+
+   Irisierend (`.lg-iridescent`): genau 1× auf der ganzen Familie — die
+   Antrag-Absenden-CTA („Mit eID bestätigen & absenden"). Echter Commit-Moment:
+   startet die eID-gegatete Mehr-Behörden-Antragskaskade (analog zur Umzug-
+   „Autopilot starten"-CTA). Nur auf der Antrag-Route sichtbar.
    ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Katalog /lebenslagen ─────────────────────────────────────────────────── */
+
+/* Beliebte-Lebenslagen-Karten — die eine bespoke (nicht-`.gt-card`) Karten-
+   fläche des Katalogs. Im IST-Zustand randlos/flach; als schwebende Glas-
+   Kacheln mit Hover-Lift heben sie sich von der Sektions-Glaskarte ab. */
+html[data-lg][data-lg-screen='lebenslagen'] .app-content .llh-beliebte-card {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  border-radius: 16px;
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+  transition: box-shadow 0.25s ease, transform 0.18s ease;
+}
+html[data-lg][data-lg-screen='lebenslagen'].dark .app-content .llh-beliebte-card {
+  border-color: var(--lg-hairline);
+}
+html[data-lg][data-lg-screen='lebenslagen'] .app-content .llh-beliebte-card:hover {
+  box-shadow: var(--lg-shadow-lift), inset 0 1px 0 var(--lg-edge);
+  transform: translateY(-2px);
+}
+
+/* In-Katalog-Suche — inset frostiges Pill, an das Core-Input-Rezept angelehnt.
+   Der Fokus-Ring (Brand) bleibt für a11y unberührt. */
+html[data-lg][data-lg-screen='lebenslagen'] .app-content .llh-search {
+  border: 1px solid transparent;
+  background: linear-gradient(180deg, rgba(15, 61, 46, 0.05), rgba(15, 61, 46, 0.03));
+  box-shadow: inset 0 1.5px 3px rgba(15, 61, 46, 0.08), inset 0 0 0 1px rgba(15, 61, 46, 0.05);
+}
+html[data-lg][data-lg-screen='lebenslagen'].dark .app-content .llh-search {
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+/* Trust-Leiste (Fuß des Katalogs) — im IST-Zustand nackt auf dem Ambient-Feld;
+   als flache Glasfläche eingebunden, damit sie nicht frei schwebt. */
+html[data-lg][data-lg-screen='lebenslagen'] .app-content .llh-trust {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg][data-lg-screen='lebenslagen'].dark .app-content .llh-trust {
+  border-color: var(--lg-hairline);
+}
+
+/* ── Dossier /lebenslagen/[slug] ──────────────────────────────────────────── */
+
+/* Stepper-Band am Kopf — bespoke Bar; als flaches Glas-Band (kein Blur). */
+html[data-lg][data-lg-screen='lebenslagen'] .app-content .ll-stepper {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg][data-lg-screen='lebenslagen'].dark .app-content .ll-stepper {
+  border-color: var(--lg-hairline);
+}
+
+/* Frosted-Hero — die EINE frostende Fläche der Familie: die „Was in diesem
+   Vorgang enthalten ist"-Intro-Karte (Dossier-Kopf). Blur hier erlaubt (eine
+   statische Fläche, keine Animation), out-spezifiziert die Core-`.gt-card`. */
+html[data-lg][data-lg-screen='lebenslagen'] .app-content [aria-labelledby='ll-intro-title'] {
+  background: var(--lg-glass);
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-panel), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg][data-lg-screen='lebenslagen'].dark .app-content [aria-labelledby='ll-intro-title'] {
+  border-color: var(--lg-hairline);
+}
+
+/* ── Dossier + Antrag geteilt ─────────────────────────────────────────────── */
+
+/* Nachweis-/Upload-Dropzone — inset frostiges Feld (gestrichelter Rahmen der
+   Basis bleibt; nur Fläche + innerer Schatten kommen dazu). */
+html[data-lg][data-lg-screen='lebenslagen'] .app-content .ll-dropzone {
+  background: linear-gradient(180deg, rgba(15, 61, 46, 0.045), rgba(15, 61, 46, 0.025));
+  box-shadow: inset 0 1.5px 3px rgba(15, 61, 46, 0.07);
+}
+html[data-lg][data-lg-screen='lebenslagen'].dark .app-content .ll-dropzone {
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+/* ── Antrag /lebenslagen/[slug]/antrag ────────────────────────────────────── */
+
+/* Herkunfts-Chip (Once-Only-Quelle bzw. „Ihre Eingabe") — als Hairline-Meta-
+   Pill, damit die Datenherkunft als ruhige Meta-Zeile liest. */
+html[data-lg][data-lg-screen='lebenslagen'] .app-content .ll-prefill-chip {
+  border: 1px solid var(--lg-hairline);
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: inset 0 1px 0 var(--lg-edge);
+}
+html[data-lg][data-lg-screen='lebenslagen'].dark .app-content .ll-prefill-chip {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Datenminimierung — Empfänger-Teilkarten als weiche frostige Insets auf der
+   Panel-Glaskarte. Der `.is-muted`-Zustand (Consent aus) bleibt gedämpft. */
+html[data-lg][data-lg-screen='lebenslagen'] .app-content .ll-dm-recipient {
+  background: var(--lg-glass-soft);
+  border: 1px solid var(--lg-hairline);
+  box-shadow: inset 0 1px 0 var(--lg-edge);
+}
+html[data-lg][data-lg-screen='lebenslagen'].dark .app-content .ll-dm-recipient {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* Irisierende Commit-CTA — „Mit eID bestätigen & absenden" (Fingerprint). Die
+   einzige `.lg-iridescent`-Fläche der Familie. Gradient/Veil/Glare kommen aus
+   der Core-Klasse; die Basis-`.btn-primary`/`:hover` nutzen aber `background`
+   (Shorthand → setzt background-image:none, v. a. beim Hover), was den Verlauf
+   sonst abschösse. Darum den Verlauf hier auf Screen-Spezifität in beiden
+   Zuständen re-behaupten. Die Positions-Verschiebung beim Hover bleibt Core. */
+html[data-lg][data-lg-screen='lebenslagen'] .app-content .ll-cta-row .btn.lg-iridescent,
+html[data-lg][data-lg-screen='lebenslagen'] .app-content .ll-cta-row .btn.lg-iridescent:hover {
+  background-image: linear-gradient(115deg, rgba(13, 101, 77, 0.95) 0%, rgba(17, 122, 92, 0.94) 26%, rgba(26, 113, 145, 0.93) 54%, rgba(76, 88, 172, 0.93) 80%, rgba(112, 79, 164, 0.92) 100%);
+  border-color: rgba(255, 255, 255, 0.4);
+}

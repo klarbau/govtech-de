@@ -1,4 +1,5 @@
 import { AntragForm } from '@/components/lebenslagen/AntragForm';
+import { LiquidGlassScreen } from '@/components/layout/LiquidGlassScreen';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,5 +10,10 @@ export const dynamic = 'force-dynamic';
  */
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  return <AntragForm slug={slug} />;
+  return (
+    <>
+      <LiquidGlassScreen name="lebenslagen" />
+      <AntragForm slug={slug} />
+    </>
+  );
 }

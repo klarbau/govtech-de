@@ -1,4 +1,5 @@
 import { LeistungDetailView } from '@/components/lebenslagen/LeistungDetailView';
+import { LiquidGlassScreen } from '@/components/layout/LiquidGlassScreen';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,5 +10,10 @@ export const dynamic = 'force-dynamic';
  */
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  return <LeistungDetailView slug={slug} />;
+  return (
+    <>
+      <LiquidGlassScreen name="lebenslagen" />
+      <LeistungDetailView slug={slug} />
+    </>
+  );
 }

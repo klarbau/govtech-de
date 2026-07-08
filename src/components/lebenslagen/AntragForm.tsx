@@ -354,7 +354,7 @@ function AntragFormReady({
           ) : null}
 
           <div className="ll-cta-row">
-            <button type="submit" className="btn btn-primary btn-lg">
+            <button type="submit" className="btn btn-primary btn-lg lg-iridescent">
               <Fingerprint aria-hidden="true" />
               {td('cta_eid_submit')}
             </button>
