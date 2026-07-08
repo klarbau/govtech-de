@@ -1,4 +1,5 @@
 import { DokumenteView } from '@/components/dokumente/DokumenteView';
+import { LiquidGlassScreen } from '@/components/layout/LiquidGlassScreen';
 
 export const dynamic = 'force-dynamic';
 
@@ -8,5 +9,10 @@ export const dynamic = 'force-dynamic';
  * `DokumenteView` lädt auf Mount via `api.getDocuments()` / `api.getBehoerden()`.
  */
 export default function DokumentePage() {
-  return <DokumenteView nowIso={new Date().toISOString()} />;
+  return (
+    <>
+      <LiquidGlassScreen name="dokumente" />
+      <DokumenteView nowIso={new Date().toISOString()} />
+    </>
+  );
 }

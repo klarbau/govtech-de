@@ -1,8 +1,99 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    Dokumente — Liquid Glass (Welle 2/3)
    ---------------------------------------------------------------------------
-   Screen-scoped rules on top of liquid-glass-core.css. Every rule is gated
-   under `html[data-lg]` and targets screen-only class names, so the sheet is
-   inert elsewhere. Surfaces only (background · border · shadow ·
-   backdrop-filter · radius) — never text colours.
+   Screen-scoped rules for /dokumente on top of liquid-glass-core.css. Every
+   rule is gated under `html[data-lg][data-lg-screen='dokumente']` (the screen
+   attribute set by <LiquidGlassScreen name="dokumente"> on the page) and
+   further scoped to `.app-content`, so nothing leaks onto the shell or other
+   routes — several class names here are SHARED with parallel-agent screens
+   (`.rail` also on /familie, `.card`/`.chip`/`.badge`/`.av` app-wide). A bare
+   `html[data-lg]` gate would leak; the screen gate confines every rule to the
+   Dokumente vault. Surfaces only (background · border · shadow ·
+   backdrop-filter · radius) — never text colours, so the Waldgrün tokens keep
+   their light/dark contrast.
+
+   Recipes are transcribed from the established Liquid-Glass vocabulary (the
+   core `--lg-*` tokens + the Posteingang glass-card / frosted-panel values),
+   not invented.
+
+   backdrop-filter budget: the shell zone already spends its two blur layers on
+   .app-topnav + .app-sidenav. Content surfaces therefore carry glass via a
+   near-opaque gradient + edge + shadow with NO backdrop-filter — the dense,
+   text-heavy vault table stays crisp. The ONE frosted content surface (per
+   plan §1) is the `.dk-search` command bar: low text density, sits at the top
+   over the ambient field, so it reads as a floating glass toolbar.
+
+   Iridescent CTA: NONE. The vault has no single dominant commit action — the
+   „Dokument verwenden" rail button is a low-stakes demo/toast action and the
+   EUDI-/present buttons are per-row icon actions. Per plan, 0 iridescent → the
+   primary buttons keep Waldgrün (core `.btn-primary` raise applies).
+
+   The eye-icon document-detail panel (`.dd-panel` = shadcn DialogContent) frosts
+   via the core `[data-slot='dialog-content']` rule (overlay zone); its faux
+   „Urkunde" render + the `[MOCK]` watermark are left untouched.
    ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Search + filter command bar — the ONE frosted content panel ───────────── */
+html[data-lg][data-lg-screen='dokumente'] .app-content .dk-search {
+  position: relative;
+  background: var(--lg-glass);
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-panel), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg][data-lg-screen='dokumente'].dark .app-content .dk-search {
+  border-color: var(--lg-hairline);
+}
+/* Top-edge specular highlight (static — matches the Posteingang reader panel). */
+html[data-lg][data-lg-screen='dokumente'] .app-content .dk-search::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 24px;
+  right: 24px;
+  height: 1.5px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.95) 24%, rgba(255, 255, 255, 0.4) 64%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+}
+html[data-lg][data-lg-screen='dokumente'].dark .app-content .dk-search::before {
+  opacity: 0.25;
+}
+
+/* Floating filter popover — raised glass, panel shadow for float separation. */
+html[data-lg][data-lg-screen='dokumente'] .app-content .dk-filter-panel {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-panel), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg][data-lg-screen='dokumente'].dark .app-content .dk-filter-panel {
+  border-color: var(--lg-hairline);
+}
+
+/* ── Vault table — raised glass card (no backdrop-filter, dense text stays crisp) */
+html[data-lg][data-lg-screen='dokumente'] .app-content .dk-table {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg][data-lg-screen='dokumente'].dark .app-content .dk-table {
+  border-color: var(--lg-hairline);
+}
+/* Header/row dividers read as glass hairlines (row hover comes from the core
+   `.app-content table tbody tr:hover` rule). */
+html[data-lg][data-lg-screen='dokumente'] .app-content .dk-table th,
+html[data-lg][data-lg-screen='dokumente'] .app-content .dk-table td {
+  border-bottom-color: var(--lg-hairline);
+}
+
+/* ── Right-rail cards (Schnellzugriff · Zuletzt · Teilen) — static raised glass
+   (containers, not clickable — no hover-lift, matching the Vorgänge rail). ──── */
+html[data-lg][data-lg-screen='dokumente'] .app-content .rail .card {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg][data-lg-screen='dokumente'].dark .app-content .rail .card {
+  border-color: var(--lg-hairline);
+}
