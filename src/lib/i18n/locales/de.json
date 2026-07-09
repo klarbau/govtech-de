@@ -1213,6 +1213,7 @@
     }
   },
   "onboarding": {
+    "wizard_step": "Schritt {current} von {total}",
     "topbar": {
       "login_label": "Anmelden"
     },
@@ -2030,7 +2031,8 @@
       "label": "Vorschläge",
       "erklaere_brief": "Erkläre meinen Brief",
       "naechster_schritt": "Was ist als Nächstes zu tun?",
-      "fehlende_unterlagen": "Welche Unterlagen fehlen?"
+      "fehlende_unterlagen": "Welche Unterlagen fehlen?",
+      "umzug_einleiten": "Umzug einleiten"
     },
     "log_label": "Unterhaltung mit dem Assistenten",
     "unavailable": "Der Assistent ist gerade nicht erreichbar. Bitte versuchen Sie es erneut.",
@@ -2054,7 +2056,10 @@
       "typing": "Assistent schreibt …"
     },
     "error": {
-      "stream": "Die Antwort konnte nicht geladen werden. Bitte erneut versuchen."
+      "stream": "Die Antwort konnte nicht geladen werden. Bitte erneut versuchen.",
+      "retry": "Erneut versuchen",
+      "alt_umzug": "Sie können Ihren Umzug auch direkt starten",
+      "actions_label": "Weitere Optionen, wenn der Assistent nicht erreichbar ist"
     },
     "greeting": {
       "intro": "Hallo, hier ist ein Überblick über Ihre aktuelle Situation:",
@@ -3412,6 +3417,8 @@
         "adressuebermittlung_buergeramt_finanzamt": "Adressübermittlung an Finanzverwaltung",
         "adressuebermittlung_buergeramt_beitragsservice": "Adressübermittlung an Rundfunkbeitragsservice",
         "adressuebermittlung_buergeramt_gkv": "Adressfluss zur Krankenkasse (DEÜV)",
+        "adressuebermittlung_buergeramt_standesamt": "Adressübermittlung an das Standesamt",
+        "adressuebermittlung_buergeramt_bundesdruckerei": "Adressaktualisierung Personalausweis (Bundesdruckerei)",
         "adressuebermittlung_buergeramt_bapersbw": "Wehrerfassungs-Adressmitteilung",
         "behoerde_zu_buerger_brief_eingang": "Behördlicher Brief im Posteingang eingegangen",
         "app_religion_angezeigt": "Religionsmerkmal in der App angezeigt",
@@ -4699,7 +4706,9 @@
       "abgabe": "Abgabefrist Steuererklärung {jahr}",
       "einspruch": "Einspruchsfrist letzter Bescheid",
       "in_tagen": "In {count, plural, =0 {heute} =1 {1 Tag} other {# Tagen}}",
-      "ueberfaellig": "Überfällig"
+      "ueberfaellig": "Überfällig",
+      "ueberfaellig_cta": "Nächste Schritte ansehen",
+      "ueberfaellig_cta_aria": "Nächste Schritte ansehen: {label}"
     },
     "nachweise": {
       "title": "Verwendete Nachweise",
@@ -4974,6 +4983,7 @@
       "verknuepfungen": "Verknüpfungen",
       "show_all": "Alle Nachweise & Berechtigungen anzeigen",
       "empty": "Keine Nachweise hinterlegt.",
+      "speculative_hint": "Zielbild 2027 — in dieser Demo simuliert",
       "status": {
         "vorhanden": "Hinterlegt",
         "verifiziert": "Verifiziert",

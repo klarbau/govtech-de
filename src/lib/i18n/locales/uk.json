@@ -1213,6 +1213,7 @@
     }
   },
   "onboarding": {
+    "wizard_step": "Крок {current} з {total}",
     "topbar": {
       "login_label": "Увійти"
     },
@@ -2027,7 +2028,8 @@
       "label": "Підказки",
       "erklaere_brief": "Поясніть мій лист",
       "naechster_schritt": "Що робити далі?",
-      "fehlende_unterlagen": "Яких документів бракує?"
+      "fehlende_unterlagen": "Яких документів бракує?",
+      "umzug_einleiten": "Розпочати переїзд (Umzug)"
     },
     "log_label": "Розмова з асистентом",
     "unavailable": "Асистент зараз недоступний. Будь ласка, спробуйте ще раз.",
@@ -2051,7 +2053,10 @@
       "typing": "Асистент друкує …"
     },
     "error": {
-      "stream": "Не вдалося завантажити відповідь. Спробуйте ще раз."
+      "stream": "Не вдалося завантажити відповідь. Спробуйте ще раз.",
+      "retry": "Повторити",
+      "alt_umzug": "Ви також можете одразу розпочати свій переїзд (Umzug)",
+      "actions_label": "Інші варіанти, якщо асистент недоступний"
     },
     "greeting": {
       "intro": "Вітаємо, ось огляд Вашої поточної ситуації:",
@@ -3383,6 +3388,8 @@
         "adressuebermittlung_buergeramt_finanzamt": "Передача адреси до податкової адміністрації",
         "adressuebermittlung_buergeramt_beitragsservice": "Передача адреси до служби справляння теле- та радіомовного збору (Beitragsservice)",
         "adressuebermittlung_buergeramt_gkv": "Передача адреси до лікарняної каси (DEÜV)",
+        "adressuebermittlung_buergeramt_standesamt": "Передача адреси до РАЦС (Standesamt)",
+        "adressuebermittlung_buergeramt_bundesdruckerei": "Оновлення адреси в посвідченні особи (Personalausweis) (Bundesdruckerei)",
         "adressuebermittlung_buergeramt_bapersbw": "Повідомлення про адресу для військового обліку",
         "behoerde_zu_buerger_brief_eingang": "Офіційний лист надійшов до поштової скриньки",
         "app_religion_angezeigt": "Релігійну належність відображено в застосунку",
@@ -4468,7 +4475,9 @@
       "abgabe": "Термін подання декларації за {jahr}",
       "einspruch": "Термін оскарження останнього повідомлення",
       "in_tagen": "Через {count, plural, =0 {сьогодні} one {# день} few {# дні} many {# днів} other {# дня}}",
-      "ueberfaellig": "Прострочено"
+      "ueberfaellig": "Прострочено",
+      "ueberfaellig_cta": "Переглянути наступні кроки",
+      "ueberfaellig_cta_aria": "Переглянути наступні кроки: {label}"
     },
     "nachweise": {
       "title": "Використані документи",
@@ -4741,6 +4750,7 @@
       "verknuepfungen": "Зв’язки",
       "show_all": "Показати всі підтвердження та повноваження",
       "empty": "Підтвердження не додано.",
+      "speculative_hint": "Бачення 2027 — змодельовано в цій демоверсії",
       "status": {
         "vorhanden": "Додано",
         "verifiziert": "Перевірено",

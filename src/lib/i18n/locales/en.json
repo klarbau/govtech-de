@@ -1213,6 +1213,7 @@
     }
   },
   "onboarding": {
+    "wizard_step": "Step {current} of {total}",
     "topbar": {
       "login_label": "Sign in"
     },
@@ -2027,7 +2028,8 @@
       "label": "Suggestions",
       "erklaere_brief": "Explain my letter",
       "naechster_schritt": "What should I do next?",
-      "fehlende_unterlagen": "Which documents are missing?"
+      "fehlende_unterlagen": "Which documents are missing?",
+      "umzug_einleiten": "Start a move (Umzug)"
     },
     "log_label": "Conversation with the assistant",
     "unavailable": "The assistant is currently unavailable. Please try again.",
@@ -2051,7 +2053,10 @@
       "typing": "Assistant is typing …"
     },
     "error": {
-      "stream": "The reply could not be loaded. Please try again."
+      "stream": "The reply could not be loaded. Please try again.",
+      "retry": "Try again",
+      "alt_umzug": "You can also start your move (Umzug) directly",
+      "actions_label": "More options when the assistant is unavailable"
     },
     "greeting": {
       "intro": "Hello, here is an overview of your current situation:",
@@ -3383,6 +3388,8 @@
         "adressuebermittlung_buergeramt_finanzamt": "Address transmission to the tax administration",
         "adressuebermittlung_buergeramt_beitragsservice": "Address transmission to the broadcasting fee service (Beitragsservice)",
         "adressuebermittlung_buergeramt_gkv": "Address flow to the health insurer (DEÜV)",
+        "adressuebermittlung_buergeramt_standesamt": "Address transmission to the registry office (Standesamt)",
+        "adressuebermittlung_buergeramt_bundesdruckerei": "Identity card (Personalausweis) address update (Bundesdruckerei)",
         "adressuebermittlung_buergeramt_bapersbw": "Address notification for military registration",
         "behoerde_zu_buerger_brief_eingang": "Official letter received in your inbox",
         "app_religion_angezeigt": "Religious affiliation shown in the app",
@@ -4468,7 +4475,9 @@
       "abgabe": "Filing deadline for tax return {jahr}",
       "einspruch": "Objection deadline for last assessment",
       "in_tagen": "In {count, plural, =0 {today} =1 {1 day} other {# days}}",
-      "ueberfaellig": "Overdue"
+      "ueberfaellig": "Overdue",
+      "ueberfaellig_cta": "View next steps",
+      "ueberfaellig_cta_aria": "View next steps: {label}"
     },
     "nachweise": {
       "title": "Supporting documents used",
@@ -4741,6 +4750,7 @@
       "verknuepfungen": "Links",
       "show_all": "Show all proofs & authorisations",
       "empty": "No proofs on file.",
+      "speculative_hint": "2027 vision — simulated in this demo",
       "status": {
         "vorhanden": "On file",
         "verifiziert": "Verified",

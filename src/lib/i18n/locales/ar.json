@@ -1213,6 +1213,7 @@
     }
   },
   "onboarding": {
+    "wizard_step": "الخطوة {current} من {total}",
     "topbar": {
       "login_label": "تسجيل الدخول"
     },
@@ -2027,7 +2028,8 @@
       "label": "اقتراحات",
       "erklaere_brief": "اشرح لي رسالتي",
       "naechster_schritt": "ماذا أفعل بعد ذلك؟",
-      "fehlende_unterlagen": "ما المستندات الناقصة؟"
+      "fehlende_unterlagen": "ما المستندات الناقصة؟",
+      "umzug_einleiten": "بدء الانتقال (Umzug)"
     },
     "log_label": "محادثة مع المساعد",
     "unavailable": "المساعد غير متاح حاليًا. يُرجى المحاولة مرة أخرى.",
@@ -2051,7 +2053,10 @@
       "typing": "المساعد يكتب …"
     },
     "error": {
-      "stream": "تعذّر تحميل الرد. يُرجى المحاولة مرة أخرى."
+      "stream": "تعذّر تحميل الرد. يُرجى المحاولة مرة أخرى.",
+      "retry": "إعادة المحاولة",
+      "alt_umzug": "يمكنك أيضاً بدء انتقالك (Umzug) مباشرةً",
+      "actions_label": "خيارات أخرى عند تعذّر الوصول إلى المساعد"
     },
     "greeting": {
       "intro": "مرحباً، إليك نظرة عامة على وضعك الحالي:",
@@ -3383,6 +3388,8 @@
         "adressuebermittlung_buergeramt_finanzamt": "إرسال العنوان إلى الإدارة الضريبية",
         "adressuebermittlung_buergeramt_beitragsservice": "إرسال العنوان إلى خدمة رسوم البث (Beitragsservice)",
         "adressuebermittlung_buergeramt_gkv": "نقل العنوان إلى شركة التأمين الصحي (DEÜV)",
+        "adressuebermittlung_buergeramt_standesamt": "إرسال العنوان إلى دائرة الأحوال المدنية (Standesamt)",
+        "adressuebermittlung_buergeramt_bundesdruckerei": "تحديث عنوان بطاقة الهوية (Personalausweis) (Bundesdruckerei)",
         "adressuebermittlung_buergeramt_bapersbw": "إخطار العنوان للتسجيل العسكري",
         "behoerde_zu_buerger_brief_eingang": "وصل خطاب رسمي إلى صندوق البريد الوارد",
         "app_religion_angezeigt": "عُرِض الانتماء الديني في التطبيق",
@@ -4468,7 +4475,9 @@
       "abgabe": "الموعد النهائي لتقديم إقرار {jahr}",
       "einspruch": "الموعد النهائي للاعتراض على آخر إشعار",
       "in_tagen": "خلال {count, plural, =0 {اليوم} one {يوم واحد} two {يومين} few {# أيام} many {# يومًا} other {# يوم}}",
-      "ueberfaellig": "متأخّر"
+      "ueberfaellig": "متأخّر",
+      "ueberfaellig_cta": "عرض الخطوات التالية",
+      "ueberfaellig_cta_aria": "عرض الخطوات التالية: {label}"
     },
     "nachweise": {
       "title": "المستندات المستخدَمة",
@@ -4741,6 +4750,7 @@
       "verknuepfungen": "الروابط",
       "show_all": "عرض جميع الإثباتات والصلاحيات",
       "empty": "لا توجد إثباتات مسجّلة.",
+      "speculative_hint": "رؤية 2027 — محاكاة في هذا العرض التوضيحي",
       "status": {
         "vorhanden": "مسجَّل",
         "verifiziert": "مُحقَّق",

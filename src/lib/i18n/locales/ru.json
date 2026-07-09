@@ -1213,6 +1213,7 @@
     }
   },
   "onboarding": {
+    "wizard_step": "Шаг {current} из {total}",
     "topbar": {
       "login_label": "Войти"
     },
@@ -2027,7 +2028,8 @@
       "label": "Подсказки",
       "erklaere_brief": "Объясните моё письмо",
       "naechster_schritt": "Что делать дальше?",
-      "fehlende_unterlagen": "Каких документов не хватает?"
+      "fehlende_unterlagen": "Каких документов не хватает?",
+      "umzug_einleiten": "Начать переезд (Umzug)"
     },
     "log_label": "Разговор с ассистентом",
     "unavailable": "Ассистент сейчас недоступен. Пожалуйста, попробуйте ещё раз.",
@@ -2051,7 +2053,10 @@
       "typing": "Ассистент печатает …"
     },
     "error": {
-      "stream": "Не удалось загрузить ответ. Попробуйте ещё раз."
+      "stream": "Не удалось загрузить ответ. Попробуйте ещё раз.",
+      "retry": "Повторить",
+      "alt_umzug": "Вы также можете сразу начать свой переезд (Umzug)",
+      "actions_label": "Другие варианты, если ассистент недоступен"
     },
     "greeting": {
       "intro": "Здравствуйте, вот обзор Вашей текущей ситуации:",
@@ -3383,6 +3388,8 @@
         "adressuebermittlung_buergeramt_finanzamt": "Передача адреса в налоговую администрацию",
         "adressuebermittlung_buergeramt_beitragsservice": "Передача адреса в службу взимания телерадиовещательного взноса (Beitragsservice)",
         "adressuebermittlung_buergeramt_gkv": "Передача адреса в больничную кассу (DEÜV)",
+        "adressuebermittlung_buergeramt_standesamt": "Передача адреса в ЗАГС (Standesamt)",
+        "adressuebermittlung_buergeramt_bundesdruckerei": "Обновление адреса в удостоверении личности (Personalausweis) (Bundesdruckerei)",
         "adressuebermittlung_buergeramt_bapersbw": "Уведомление об адресе для воинского учёта",
         "behoerde_zu_buerger_brief_eingang": "Официальное письмо поступило в почтовый ящик",
         "app_religion_angezeigt": "Религиозная принадлежность отображена в приложении",
@@ -4468,7 +4475,9 @@
       "abgabe": "Срок подачи декларации за {jahr}",
       "einspruch": "Срок возражения по последнему уведомлению",
       "in_tagen": "Через {count, plural, =0 {сегодня} one {# день} few {# дня} many {# дней} other {# дня}}",
-      "ueberfaellig": "Просрочено"
+      "ueberfaellig": "Просрочено",
+      "ueberfaellig_cta": "Посмотреть следующие шаги",
+      "ueberfaellig_cta_aria": "Посмотреть следующие шаги: {label}"
     },
     "nachweise": {
       "title": "Использованные документы",
@@ -4741,6 +4750,7 @@
       "verknuepfungen": "Связи",
       "show_all": "Показать все подтверждения и полномочия",
       "empty": "Подтверждения не добавлены.",
+      "speculative_hint": "Видение 2027 — смоделировано в этой демоверсии",
       "status": {
         "vorhanden": "Добавлено",
         "verifiziert": "Проверено",

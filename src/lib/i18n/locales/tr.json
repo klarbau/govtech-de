@@ -1213,6 +1213,7 @@
     }
   },
   "onboarding": {
+    "wizard_step": "Adım {current} / {total}",
     "topbar": {
       "login_label": "Giriş yap"
     },
@@ -2027,7 +2028,8 @@
       "label": "Öneriler",
       "erklaere_brief": "Mektubumu açıklayın",
       "naechster_schritt": "Sırada ne yapmalıyım?",
-      "fehlende_unterlagen": "Hangi belgeler eksik?"
+      "fehlende_unterlagen": "Hangi belgeler eksik?",
+      "umzug_einleiten": "Taşınma (Umzug) başlat"
     },
     "log_label": "Asistanla görüşme",
     "unavailable": "Asistan şu anda erişilemiyor. Lütfen tekrar deneyin.",
@@ -2051,7 +2053,10 @@
       "typing": "Asistan yazıyor …"
     },
     "error": {
-      "stream": "Yanıt yüklenemedi. Lütfen tekrar deneyin."
+      "stream": "Yanıt yüklenemedi. Lütfen tekrar deneyin.",
+      "retry": "Tekrar dene",
+      "alt_umzug": "Taşınmanızı (Umzug) doğrudan da başlatabilirsiniz",
+      "actions_label": "Asistan erişilemez olduğunda diğer seçenekler"
     },
     "greeting": {
       "intro": "Merhaba, mevcut durumunuza genel bir bakış:",
@@ -3383,6 +3388,8 @@
         "adressuebermittlung_buergeramt_finanzamt": "Vergi idaresine adres aktarımı",
         "adressuebermittlung_buergeramt_beitragsservice": "Yayın katkı payı servisine (Beitragsservice) adres aktarımı",
         "adressuebermittlung_buergeramt_gkv": "Sağlık sigortasına adres akışı (DEÜV)",
+        "adressuebermittlung_buergeramt_standesamt": "Nüfus dairesine (Standesamt) adres aktarımı",
+        "adressuebermittlung_buergeramt_bundesdruckerei": "Kimlik kartı (Personalausweis) adres güncellemesi (Bundesdruckerei)",
         "adressuebermittlung_buergeramt_bapersbw": "Askerlik kaydı için adres bildirimi",
         "behoerde_zu_buerger_brief_eingang": "Resmî mektup gelen kutusuna ulaştı",
         "app_religion_angezeigt": "Dini aidiyet uygulamada gösterildi",
@@ -4468,7 +4475,9 @@
       "abgabe": "{jahr} beyannamesi teslim süresi",
       "einspruch": "Son tebligata itiraz süresi",
       "in_tagen": "{count, plural, =0 {bugün} =1 {1 gün} other {# gün}} içinde",
-      "ueberfaellig": "Gecikmiş"
+      "ueberfaellig": "Gecikmiş",
+      "ueberfaellig_cta": "Sonraki adımları görüntüle",
+      "ueberfaellig_cta_aria": "Sonraki adımları görüntüle: {label}"
     },
     "nachweise": {
       "title": "Kullanılan belgeler",
@@ -4741,6 +4750,7 @@
       "verknuepfungen": "Bağlantılar",
       "show_all": "Tüm belge ve yetkileri göster",
       "empty": "Kayıtlı belge yok.",
+      "speculative_hint": "2027 vizyonu — bu demoda simüle edilmiştir",
       "status": {
         "vorhanden": "Kayıtlı",
         "verifiziert": "Doğrulandı",
