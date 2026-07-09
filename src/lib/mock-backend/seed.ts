@@ -71,20 +71,33 @@ import {
 
 const DEFAULT_PERSONA_ID = 'anna-petrov';
 
+// §A5 — Seed-Content-Version. Bei jeder Änderung der Fixture-Daten, die einen
+// erzwungenen Re-Seed bestehender localStorage-Buckets braucht (z. B. neue
+// relative Frist-/Termin-Daten, korrigierte Log-Titel), hochzählen. Beim Boot
+// vergleicht `seedIfEmpty()` `meta.seed_content_version` mit diesem Wert; ist er
+// älter/fehlt, werden die Persona-Buckets gegen einen frischen Anker neu geseedet
+// (statt den alten Stand zu zeigen). Kein globaler `v1→v2`-Namespace-Bump — der
+// würde ALLE Buckets (inkl. Orchestrierungs-State) purgen.
+const SEED_CONTENT_VERSION = 2;
+
 // ---------------------------------------------------------------------------
 // §A1 — Relative-Zeit-Anker / Sentinel-Resolver
 // ---------------------------------------------------------------------------
 //
 // Fixture-Datumsfelder dürfen Sentinels statt harter ISO-Daten tragen:
-//   "@now"        → der Seed-Anker (jetzt)
-//   "@now-<N>d"   → N Tage vor dem Anker
-//   "@now+<N>d"   → N Tage nach dem Anker
+//   "@now"            → der Seed-Anker (jetzt)
+//   "@now-<N>d"       → N Tage vor dem Anker
+//   "@now+<N>d"       → N Tage nach dem Anker
+//   "@now+<N>d@HH:MM" → N Tage nach dem Anker, um HH:MM UTC (Uhrzeit-Suffix)
 // Felder, deren Schlüssel reine Datumsangaben sind (DATE_ONLY_KEYS), lösen auf
 // `YYYY-MM-DD` auf; alle anderen (Timestamps) auf vollen ISO um 09:00 UTC
-// (deterministisch). Sentinels leben NUR in Fixtures, nie in nutzergeschriebenem
-// State. Resolution passiert EINMALIG beim Seed (gegen `seeded_at`).
+// (deterministisch). Das Uhrzeit-Suffix `@HH:MM` erzwingt immer einen vollen
+// Timestamp mit der angegebenen Geschäftszeit (auch für DATE_ONLY_KEYS) — so
+// tragen Termine eine echte Uhrzeit statt Mitternacht. Sentinels leben NUR in
+// Fixtures, nie in nutzergeschriebenem State. Resolution passiert EINMALIG beim
+// Seed (gegen `seeded_at`).
 
-const SENTINEL_RE = /^@now([+-]\d+)d$/;
+const SENTINEL_RE = /^@now(?:([+-]\d+)d)?(?:@(\d{2}):(\d{2}))?$/;
 
 const DATE_ONLY_KEYS = new Set([
   'datum', // VorgangFrist / LetterFrist / Reminder-Datum (YYYY-MM-DD)
@@ -96,17 +109,21 @@ const DATE_ONLY_KEYS = new Set([
 ]);
 
 function isSentinel(value: unknown): value is string {
-  return typeof value === 'string' && (value === '@now' || SENTINEL_RE.test(value));
+  return typeof value === 'string' && value.startsWith('@now') && SENTINEL_RE.test(value);
 }
 
 function resolveSentinel(sentinel: string, anchor: Date, dateOnly: boolean): string {
-  let offsetDays = 0;
-  if (sentinel !== '@now') {
-    const m = sentinel.match(SENTINEL_RE);
-    if (m) offsetDays = parseInt(m[1], 10);
-  }
+  const m = sentinel.match(SENTINEL_RE);
+  const offsetDays = m?.[1] ? parseInt(m[1], 10) : 0;
+  const hasTime = Boolean(m && m[2] != null && m[3] != null);
   const d = new Date(anchor);
   d.setUTCDate(d.getUTCDate() + offsetDays);
+  // Uhrzeit-Suffix (`@HH:MM`) → voller Timestamp mit Geschäftszeit, auch bei
+  // DATE_ONLY_KEYS (Termine tragen so eine echte Uhrzeit statt Mitternacht).
+  if (hasTime) {
+    d.setUTCHours(parseInt(m![2], 10), parseInt(m![3], 10), 0, 0);
+    return d.toISOString();
+  }
   if (dateOnly) return d.toISOString().slice(0, 10);
   d.setUTCHours(9, 0, 0, 0);
   return d.toISOString();
@@ -160,6 +177,7 @@ function resolvedFixtures(anchor: Date): {
   documents: Document[];
   termine: Termin[];
   reminders: Reminder[];
+  steuer: Record<string, Record<string, SteuerUebersicht>>;
 } {
   return {
     letters: resolveSentinels(fixtures.letters, anchor),
@@ -167,6 +185,7 @@ function resolvedFixtures(anchor: Date): {
     documents: resolveSentinels(fixtures.documents, anchor),
     termine: resolveSentinels(fixtures.termine, anchor),
     reminders: resolveSentinels(fixtures.reminders, anchor),
+    steuer: resolveSentinels(fixtures.steuer, anchor),
   };
 }
 
@@ -203,8 +222,24 @@ export function seedIfEmpty(): void {
       version: 1,
       active_persona_id: activePersonaId,
       seeded_at: new Date().toISOString(),
+      seed_content_version: SEED_CONTENT_VERSION,
     });
     seedForPersona(activePersonaId);
+    return;
+  }
+
+  // §A5 — Bestehender Seed mit älterer/fehlender Content-Version → gegen einen
+  // frischen Anker neu seeden (relative Fristen/Termine + korrigierte Log-Titel),
+  // Identität (active_persona_id) und reliable_mode bleiben erhalten. So werden
+  // veraltete localStorage-Stände (Live-Tunnel-Demo) beim nächsten Boot ersetzt.
+  if (meta.seed_content_version !== SEED_CONTENT_VERSION) {
+    write('meta' as CollectionKey, {
+      ...meta,
+      version: 1,
+      seeded_at: new Date().toISOString(),
+      seed_content_version: SEED_CONTENT_VERSION,
+    });
+    seedForPersona(meta.active_persona_id);
     return;
   }
 
@@ -283,7 +318,7 @@ export function seedIfEmpty(): void {
     steuerBucketSchema as unknown as import('zod').ZodType<
       Record<string, Record<string, SteuerUebersicht>>
     >,
-    fixtures.steuer,
+    rf.steuer,
   );
   // Redesign-Datenschutz — Einwilligungen lazy-init (api leitet Defaults ab);
   // hier nur Empty-State-Init + Banner-Dismiss-Bucket.
@@ -360,7 +395,7 @@ function seedForPersona(personaId: string): void {
   write('documents' as CollectionKey, filterDocumentsByPersona(rf.documents, personaId));
   write('termine' as CollectionKey, filterTermineByPersona(rf.termine, personaId));
   write('reminders' as CollectionKey, filterRemindersByPersona(rf.reminders, personaId));
-  write('steuer' as CollectionKey, fixtures.steuer);
+  write('steuer' as CollectionKey, rf.steuer);
   write('consent' as CollectionKey, {});
   write('letter-activity-log' as CollectionKey, {});
   // Redesign-Datenschutz — Einwilligungen + Banner-Dismiss bei Persona-Switch
@@ -415,6 +450,7 @@ export function reseedForActivePersona(personaId: string): void {
     version: 1,
     active_persona_id: personaId,
     seeded_at: new Date().toISOString(),
+    seed_content_version: SEED_CONTENT_VERSION,
   });
   seedForPersona(personaId);
 }

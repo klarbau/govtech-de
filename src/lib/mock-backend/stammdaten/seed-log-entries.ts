@@ -127,7 +127,7 @@ const ANNA_ENTRIES: SeedEntryDraft[] = [
     absender_behoerde_id: 'buergeramt-berlin-friedrichshain-kreuzberg',
     empfaenger_id: 'standesamt-berlin-mitte',
     zweck_i18n_key:
-      'stammdaten.aktivitaet.zweck.adressuebermittlung_buergeramt_finanzamt',
+      'stammdaten.aktivitaet.zweck.adressuebermittlung_buergeramt_standesamt',
     rechtsgrundlage: '§ 36 BMG',
     note: 'persona_id:anna-petrov; field_id:anschrift_aktuell; quelle:umzug_cascade; mock:true',
   },
@@ -139,7 +139,7 @@ const ANNA_ENTRIES: SeedEntryDraft[] = [
     absender_behoerde_id: 'buergeramt-berlin-friedrichshain-kreuzberg',
     empfaenger_id: 'bundesdruckerei',
     zweck_i18n_key:
-      'stammdaten.aktivitaet.zweck.adressuebermittlung_buergeramt_finanzamt',
+      'stammdaten.aktivitaet.zweck.adressuebermittlung_buergeramt_bundesdruckerei',
     rechtsgrundlage: '§ 28 PAuswG',
     note: 'persona_id:anna-petrov; field_id:anschrift_aktuell; quelle:umzug_cascade; mock:true',
   },

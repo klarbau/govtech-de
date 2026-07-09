@@ -244,6 +244,12 @@ export interface DashboardSnapshot {
     frist_typ: LetterFristTyp;
     original_zitat: string;
   }>;
+  /**
+   * §A2 — Anzahl offener Fristen (Letters + aktive Vorgänge) in den nächsten
+   * 14 Tagen. Speist die Dashboard-„Fristen"-Kachel; über die volle
+   * `collectFristen`-Menge gezählt (nicht das auf 3 getruncte `frist_tile`).
+   */
+  frist_count_14d: number;
   /** Posteingang-Tile-Inhalt. */
   posteingang_tile: {
     ungelesen: number;

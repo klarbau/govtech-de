@@ -15,7 +15,7 @@
     "fristen": [
       {
         "typ": "einspruch",
-        "datum": "2026-04-12",
+        "datum": "@now+18d",
         "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Einspruch eingelegt werden.",
         "citation_match": false,
         "rechtsgrundlage": "§ 355 AO"
@@ -66,15 +66,15 @@
     "fristen": [
       {
         "typ": "zahlung",
-        "datum": "2026-01-15",
+        "datum": "@now+22d",
         "original_zitat": "Fälligkeit: vierteljährlich zum 15.",
-        "citation_match": true,
+        "citation_match": false,
         "rechtsgrundlage": "§ 7 Abs. 3 RBStV",
         "cta_label": "Rundfunkbeitrag zahlen"
       },
       {
         "typ": "widerspruch",
-        "datum": "2026-02-08",
+        "datum": "@now+30d",
         "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch eingelegt werden.",
         "citation_match": false,
         "rechtsgrundlage": "§ 70 VwGO"
@@ -85,8 +85,8 @@
       "beitragsservice-mahnung.befreiung_pruefen"
     ],
     "status": "gelesen",
-    "empfangen_am": "2026-01-08T07:30:00.000Z",
-    "bescheid_dated_at": "2026-01-04"
+    "empfangen_am": "@now-8d",
+    "bescheid_dated_at": "@now-11d"
   },
   {
     "id": "letter-abh-erinnerung-verlaengerung",

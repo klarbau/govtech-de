@@ -70,11 +70,11 @@
       "fristen": [
         {
           "label_i18n_key": "steuer.frist.abgabe",
-          "datum": "2025-07-31"
+          "datum": "@now+38d"
         },
         {
           "label_i18n_key": "steuer.frist.einspruch",
-          "datum": "2026-04-15"
+          "datum": "@now+18d"
         }
       ],
       "verwendete_nachweise_document_ids": [

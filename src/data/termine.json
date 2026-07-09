@@ -4,7 +4,7 @@
     "owner_persona_id": "anna-petrov",
     "behoerde_id": "abh-berlin-lea",
     "vorgang_id": "vorgang-anna-aufenthaltstitel-2027-stub",
-    "datum": "@now+7d",
+    "datum": "@now+7d@09:30",
     "ort": {
       "typ": "praesenz",
       "details": "Landesamt für Einwanderung — Friedrich-Krause-Ufer 24, 13353 Berlin, Wartebereich C"
@@ -25,7 +25,7 @@
     "owner_persona_id": "anna-petrov",
     "behoerde_id": "abh-berlin-lea",
     "vorgang_id": "vg-anna-umzug-2026-completed",
-    "datum": "@now+9d",
+    "datum": "@now+9d@11:00",
     "ort": {
       "typ": "praesenz",
       "details": "Landesamt für Einwanderung — Friedrich-Krause-Ufer 24, 13353 Berlin, Wartebereich C"
@@ -43,7 +43,7 @@
     "id": "termin-anna-aok-beratung",
     "owner_persona_id": "anna-petrov",
     "behoerde_id": "aok-nordost",
-    "datum": "@now+2d",
+    "datum": "@now+2d@14:15",
     "ort": {
       "typ": "video",
       "details": "AOK Nordost Video-Sprechstunde — Link wird 24 h vorher per E-Mail zugestellt"
@@ -60,7 +60,7 @@
     "id": "termin-anna-kinderarzt-u7",
     "owner_persona_id": "anna-petrov",
     "behoerde_id": "kinderarzt-prenzlauer-berg",
-    "datum": "@now+11d",
+    "datum": "@now+11d@10:00",
     "ort": {
       "typ": "praesenz",
       "details": "Kinderarztpraxis am Park, Winsstraße 12, 10405 Berlin"
@@ -75,7 +75,7 @@
     "owner_persona_id": "markus-schmidt",
     "behoerde_id": "standesamt-hamburg-eimsbuettel",
     "vorgang_id": "vg-schmidt-kindergeburt-mia-2026",
-    "datum": "@now+6d",
+    "datum": "@now+6d@09:15",
     "ort": {
       "typ": "praesenz",
       "details": "Standesamt Hamburg-Eimsbüttel, Grindelberg 66, 20144 Hamburg, Zimmer 4"
@@ -92,7 +92,7 @@
     "id": "termin-schmidt-kinderarzt-u3",
     "owner_persona_id": "markus-schmidt",
     "behoerde_id": "kinderarzt-prenzlauer-berg",
-    "datum": "@now+13d",
+    "datum": "@now+13d@15:30",
     "ort": {
       "typ": "praesenz",
       "details": "Kinderarztpraxis Eppendorf, Hamburg"
@@ -106,7 +106,7 @@
     "owner_persona_id": "mehmet-yildiz",
     "behoerde_id": "finanzamt-koeln-mitte",
     "vorgang_id": "vg-mehmet-steuererklaerung-2024",
-    "datum": "@now+8d",
+    "datum": "@now+8d@13:00",
     "ort": {
       "typ": "telefon",
       "details": "Finanzamt Köln-Mitte — telefonische Rückfrage, Durchwahl per E-Mail"
@@ -119,7 +119,7 @@
     "id": "termin-mehmet-ihk-gruendung",
     "owner_persona_id": "mehmet-yildiz",
     "behoerde_id": "ihk-koeln",
-    "datum": "@now+20d",
+    "datum": "@now+20d@16:00",
     "ort": {
       "typ": "video",
       "details": "IHK Köln — Online-Beratung Selbstständige"

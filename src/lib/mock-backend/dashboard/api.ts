@@ -611,6 +611,16 @@ function buildDashboard(
   const ranking = deterministicRank(candidates);
   const top_actions = hydrateTopActions(candidates, ranking);
 
+  // §A2 — „Fristen in den nächsten 14 Tagen"-Zähler. Zählt über die VOLLE
+  // `collectFristen`-Menge (Letters + aktive Vorgänge), NICHT über das auf 3
+  // getruncte `frist_tile`. Vorher zählte die Kachel aus `frist_tile.slice(0,3)`
+  // → 0, sobald die drei nächsten (evtl. vergangenen) Fristen außerhalb des
+  // 14-Tage-Fensters lagen. Hinweis: /vorgaenge zählt bewusst enger (nur
+  // Vorgänge, ohne Letter-Fristen) — die Zahlen dürfen sich unterscheiden.
+  const frist_count_14d = collectFristen(letters, vorgaenge, now).filter(
+    (f) => tageBis(f.frist_datum, now) >= 0 && tageBis(f.frist_datum, now) <= 14,
+  ).length;
+
   // Frist-Tile (Top-3 offene Fristen).
   const frist_tile = collectFristen(letters, vorgaenge, now)
     .filter((f) => tageBis(f.frist_datum, now) >= -365)
@@ -767,6 +777,7 @@ function buildDashboard(
     },
     top_actions,
     frist_tile,
+    frist_count_14d,
     posteingang_tile,
     vorgangs_stand_tile,
     termin_tile,

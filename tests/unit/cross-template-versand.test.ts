@@ -344,7 +344,7 @@ describe('letters.json — JSON.parse validity', () => {
     expect(withBescheid).toHaveLength(11);
   });
 
-  test('all bescheid_dated_at values are ISO-8601 YYYY-MM-DD', async () => {
+  test('all bescheid_dated_at values are ISO-8601 YYYY-MM-DD or a relative-date sentinel', async () => {
     const fs = await import('node:fs');
     const path = await import('node:path');
     const file = path.resolve(
@@ -353,9 +353,14 @@ describe('letters.json — JSON.parse validity', () => {
     );
     const raw = fs.readFileSync(file, 'utf8');
     const letters = JSON.parse(raw) as Array<{ bescheid_dated_at?: string }>;
+    // §A1 — Fristen/Bescheid-Daten dürfen als `@now±Nd`-Sentinel vorliegen; die
+    // Seed-Schicht (`seed.ts`) löst sie beim Seed gegen den Anker in
+    // `YYYY-MM-DD` auf. Beide Formen sind hier gültig (kein Garbage).
     for (const letter of letters) {
       if (letter.bescheid_dated_at !== undefined) {
-        expect(letter.bescheid_dated_at).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+        expect(letter.bescheid_dated_at).toMatch(
+          /^(\d{4}-\d{2}-\d{2}|@now([+-]\d+d)?)$/,
+        );
       }
     }
   });

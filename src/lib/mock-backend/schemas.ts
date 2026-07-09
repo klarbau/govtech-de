@@ -642,6 +642,10 @@ export const metaSchema = z.object({
   active_persona_id: z.string(),
   seeded_at: z.string(),
   reliable_mode: z.boolean().optional(),
+  // §A5 — Seed-Content-Version-Marker. Fehlt (alte Buckets) oder älter als
+  // `SEED_CONTENT_VERSION` → erzwingt einen Persona-Re-Seed beim Boot
+  // (`seed.ts:seedIfEmpty`). Additiv/optional — bricht das V1-`meta`-Format nicht.
+  seed_content_version: z.number().optional(),
 });
 
 export const consentSchema = z.record(z.array(z.string()));
