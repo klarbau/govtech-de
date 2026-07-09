@@ -43,7 +43,7 @@ export function OnboardingMethodCard({
         'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
         isAccent
           ? 'border-transparent bg-accent-soft hover:bg-accent-soft/80'
-          : 'border-border bg-surface hover:border-border-strong hover:bg-surface-muted',
+          : 'lg-aux-tile border-border bg-surface hover:border-border-strong hover:bg-surface-muted',
         isRow ? 'min-h-[44px] p-4' : 'min-h-[44px] flex-col items-start gap-3 p-5 sm:items-stretch',
       )}
     >

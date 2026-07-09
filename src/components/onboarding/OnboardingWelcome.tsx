@@ -115,7 +115,7 @@ export function OnboardingWelcome({ onSelectMethod }: OnboardingWelcomeProps) {
       </div>
 
       {/* RIGHT — steps + why */}
-      <aside className="flex flex-col gap-6 rounded-lg bg-surface-page p-5">
+      <aside className="lg-aux-panel flex flex-col gap-6 rounded-lg bg-surface-page p-5">
         <section className="flex flex-col gap-4">
           <h2 className="text-base font-semibold text-text-primary">
             {t('how.title')}

@@ -132,7 +132,7 @@ export function OnboardingTransparency({
       </div>
 
       {/* 4) Recipient / purpose / legal-basis panel */}
-      <div className="mt-6 flex flex-col gap-4 rounded-lg border border-border bg-surface-muted/40 p-4 sm:p-5">
+      <div className="lg-aux-panel mt-6 flex flex-col gap-4 rounded-lg border border-border bg-surface-muted/40 p-4 sm:p-5">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <PanelFact
             icon={Landmark}
@@ -270,7 +270,7 @@ export function OnboardingTransparency({
       </section>
 
       {/* 7) Counter panel */}
-      <div className="mt-7 flex items-center justify-between gap-4 rounded-lg border border-border bg-surface-muted/40 p-4">
+      <div className="lg-aux-panel mt-7 flex items-center justify-between gap-4 rounded-lg border border-border bg-surface-muted/40 p-4">
         <div className="flex items-center gap-3">
           <span
             aria-hidden="true"
@@ -295,7 +295,7 @@ export function OnboardingTransparency({
       </div>
 
       {/* 8) Trust strip */}
-      <div className="mt-6 grid grid-cols-1 gap-4 rounded-lg border border-border p-4 sm:grid-cols-3 sm:p-5">
+      <div className="lg-aux-panel mt-6 grid grid-cols-1 gap-4 rounded-lg border border-border p-4 sm:grid-cols-3 sm:p-5">
         <TrustItem
           icon={ShieldCheck}
           title={t('trust.consent_title')}
@@ -318,7 +318,12 @@ export function OnboardingTransparency({
         <Button variant="ghost" onClick={onBack} disabled={committing}>
           {t('back')}
         </Button>
-        <Button onClick={handleConfirm} disabled={committing} aria-busy={committing}>
+        <Button
+          onClick={handleConfirm}
+          disabled={committing}
+          aria-busy={committing}
+          className="lg-iridescent"
+        >
           {committing ? (
             <>
               <Loader2 className="size-4 animate-spin motion-reduce:animate-none" aria-hidden="true" />
