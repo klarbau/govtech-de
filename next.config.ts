@@ -28,6 +28,10 @@ function resolveAjv2020(): string | null {
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // Hide the floating Next dev-indicator („N" badge): it overlaps content in
+  // the mobile tunnel demo. Requires a `govtech-dev.service` restart — the
+  // config is not picked up by HMR.
+  devIndicators: false,
   // Allow the Cloudflare Tunnel host to make cross-origin dev requests
   // (HMR WebSocket + /_next assets) so live-reload works over the public
   // preview URL. Quick tunnels are *.trycloudflare.com; add a named tunnel

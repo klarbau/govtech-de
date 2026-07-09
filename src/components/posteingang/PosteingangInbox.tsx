@@ -471,6 +471,7 @@ export function PosteingangInbox({
           type="button"
           className="lg-round-btn"
           aria-label={t('search.view_aria')}
+          title={t('search.view_aria')}
           onClick={() => setView((v) => (v === 'chronologisch' ? 'vorgang' : 'chronologisch'))}
           aria-pressed={view === 'vorgang'}
         >
@@ -486,6 +487,7 @@ export function PosteingangInbox({
           type="button"
           className="lg-square-btn"
           aria-label={t('filter.aria_label')}
+          title={t('filter.aria_label')}
           onClick={() => setFilterOpen(true)}
         >
           <SlidersHorizontal aria-hidden="true" />
@@ -1861,8 +1863,12 @@ function AvatarSquare({ variant }: { variant: AvatarVariant }) {
     case 'aok':
       return <span className="av aok">AOK</span>;
     case 'ard':
+      // Legible short monogram instead of the full name crammed into the
+      // circle; inline style overrides the `.av.ard` cramming (9px/padding).
       return (
-        <span className="av ard">ARD ZDF deutschland radio beitragsservice</span>
+        <span className="av ard" style={{ fontSize: '12px', padding: 0, lineHeight: 1 }}>
+          ARD
+        </span>
       );
     case 'lea':
       return <span className="av lea">LEA BERLIN</span>;

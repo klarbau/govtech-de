@@ -30,6 +30,7 @@ import type {
   Behoerde,
   FamilieNachweis,
   GemeinsamerVorgang,
+  HaushaltRolle,
   HaushaltView,
 } from '@/types';
 
@@ -38,6 +39,14 @@ const NACHWEIS_ICON: Record<string, React.ComponentType> = {
   sorge_vollmacht: FileText,
   vertretungsrechte: User,
   verknuepfungen: LinkIcon,
+};
+
+const ROLLE_BADGE_CLASS: Record<HaushaltRolle, string> = {
+  mutter: 'violet',
+  vater: 'violet',
+  hauptperson: 'violet',
+  partner: 'violet',
+  kind: 'green',
 };
 
 function initialsOf(vorname: string, nachname: string): string {
@@ -98,17 +107,8 @@ export function FamilieView() {
     [memberNameById],
   );
 
-  const hauptperson = view?.mitglieder.find((m) => m.ist_hauptperson);
   const kind = view?.mitglieder.find((m) => m.rolle === 'kind');
-
-  const hauptInitials = hauptperson
-    ? initialsOf(hauptperson.vorname, hauptperson.nachname)
-    : '';
-  const kindInitials = kind ? initialsOf(kind.vorname, kind.nachname) : '';
   const kindName = kind ? `${kind.vorname} ${kind.nachname}`.trim() : '';
-  const hauptName = hauptperson
-    ? `${hauptperson.vorname} ${hauptperson.nachname}`.trim()
-    : '';
 
   if (view === null) {
     return <FamilieSkeleton />;
@@ -141,30 +141,31 @@ export function FamilieView() {
               </button>
             </div>
             <div className="hh-people">
-              <div className="person">
-                <span className="avatar lg">{hauptInitials}</span>
-                <div className="grow">
-                  <div className="name">{t('person.sie_name', { name: hauptName })}</div>
-                  <div className="dob">
-                    {t('person.geb', {
-                      datum: hauptperson ? formatDe(hauptperson.geburtsdatum) : '—',
-                    })}
+              {view.mitglieder.map((m) => {
+                const name = `${m.vorname} ${m.nachname}`.trim();
+                return (
+                  <div className="person" key={m.persona_ref_id}>
+                    <span
+                      className={`avatar lg${m.rolle === 'kind' ? ' green' : ''}`}
+                    >
+                      {initialsOf(m.vorname, m.nachname)}
+                    </span>
+                    <div className="grow">
+                      <div className="name">
+                        {m.ist_hauptperson
+                          ? t('person.sie_name', { name })
+                          : name}
+                      </div>
+                      <div className="dob">
+                        {t('person.geb', { datum: formatDe(m.geburtsdatum) })}
+                      </div>
+                      <span className={`badge ${ROLLE_BADGE_CLASS[m.rolle]}`}>
+                        {t(`rolle.${m.rolle}`)}
+                      </span>
+                    </div>
                   </div>
-                  <span className="badge violet">{t('rolle.mutter')}</span>
-                </div>
-              </div>
-              <div className="person">
-                <span className="avatar lg green">{kindInitials}</span>
-                <div className="grow">
-                  <div className="name">{kindName}</div>
-                  <div className="dob">
-                    {t('person.geb', {
-                      datum: kind ? formatDe(kind.geburtsdatum) : '—',
-                    })}
-                  </div>
-                  <span className="badge green">{t('rolle.kind')}</span>
-                </div>
-              </div>
+                );
+              })}
             </div>
             <div className="hh-banner gt-banner">
               <Info />
@@ -248,6 +249,11 @@ export function FamilieView() {
                         <div className="s">
                           {t(`nachweise.status.${n.status}`)}
                         </div>
+                        {n.status === 'speculative' ? (
+                          <div className="muted text-xs">
+                            {t('nachweise.speculative_hint')}
+                          </div>
+                        ) : null}
                       </div>
                     </div>
                   );
@@ -291,72 +297,63 @@ export function FamilieView() {
           <h3>{t('was_betrifft_wen.title')}</h3>
           <div className="sub">{t('was_betrifft_wen.subtitle')}</div>
 
-          <div className="person-head">
-            <span className="avatar lg">{hauptInitials}</span>
-            <div>
-              <div className="name">{hauptName}</div>
-              <span className="badge brand">{t('rolle.sie')}</span>
-            </div>
-          </div>
-          <div className="kvs">
-            <div className="kv">
-              <FolderClosed />
-              {t('was_betrifft_wen.vorgaenge')}
-              <span className="n">{hauptperson?.counts.vorgaenge ?? 0}</span>
-            </div>
-            <div className="kv">
-              <FileText />
-              {t('was_betrifft_wen.dokumente')}
-              <span className="n">{hauptperson?.counts.dokumente ?? 0}</span>
-            </div>
-            <div className="kv">
-              <Calendar />
-              {t('was_betrifft_wen.nachweise')}
-              <span className="n">{hauptperson?.counts.nachweise ?? 0}</span>
-            </div>
-            <div className="kv">
-              <Users />
-              {t('was_betrifft_wen.vertretungen')}
-              <span className="n">{hauptperson?.counts.vertretungen ?? 0}</span>
-            </div>
-          </div>
-
-          <div
-            className="person-head"
-            style={{
-              marginTop: 16,
-              borderTop: '1px solid var(--border)',
-              paddingTop: 14,
-            }}
-          >
-            <span className="avatar lg green">{kindInitials}</span>
-            <div>
-              <div className="name">{kindName}</div>
-              <span className="badge green">{t('rolle.kind')}</span>
-            </div>
-          </div>
-          <div className="kvs">
-            <div className="kv">
-              <FolderClosed />
-              {t('was_betrifft_wen.vorgaenge')}
-              <span className="n">{kind?.counts.vorgaenge ?? 0}</span>
-            </div>
-            <div className="kv">
-              <FileText />
-              {t('was_betrifft_wen.dokumente')}
-              <span className="n">{kind?.counts.dokumente ?? 0}</span>
-            </div>
-            <div className="kv">
-              <Calendar />
-              {t('was_betrifft_wen.nachweise')}
-              <span className="n">{kind?.counts.nachweise ?? 0}</span>
-            </div>
-            <div className="kv">
-              <Users />
-              {t('was_betrifft_wen.vertretungen')}
-              <span className="n">{kind?.counts.vertretungen ?? 0}</span>
-            </div>
-          </div>
+          {view.mitglieder.map((m, i) => {
+            const name = `${m.vorname} ${m.nachname}`.trim();
+            const badgeClass = m.ist_hauptperson
+              ? 'brand'
+              : ROLLE_BADGE_CLASS[m.rolle];
+            const rolleLabel = m.ist_hauptperson
+              ? t('rolle.sie')
+              : t(`rolle.${m.rolle}`);
+            return (
+              <React.Fragment key={m.persona_ref_id}>
+                <div
+                  className="person-head"
+                  style={
+                    i > 0
+                      ? {
+                          marginTop: 16,
+                          borderTop: '1px solid var(--border)',
+                          paddingTop: 14,
+                        }
+                      : undefined
+                  }
+                >
+                  <span
+                    className={`avatar lg${m.rolle === 'kind' ? ' green' : ''}`}
+                  >
+                    {initialsOf(m.vorname, m.nachname)}
+                  </span>
+                  <div>
+                    <div className="name">{name}</div>
+                    <span className={`badge ${badgeClass}`}>{rolleLabel}</span>
+                  </div>
+                </div>
+                <div className="kvs">
+                  <div className="kv">
+                    <FolderClosed />
+                    {t('was_betrifft_wen.vorgaenge')}
+                    <span className="n">{m.counts.vorgaenge}</span>
+                  </div>
+                  <div className="kv">
+                    <FileText />
+                    {t('was_betrifft_wen.dokumente')}
+                    <span className="n">{m.counts.dokumente}</span>
+                  </div>
+                  <div className="kv">
+                    <Calendar />
+                    {t('was_betrifft_wen.nachweise')}
+                    <span className="n">{m.counts.nachweise}</span>
+                  </div>
+                  <div className="kv">
+                    <Users />
+                    {t('was_betrifft_wen.vertretungen')}
+                    <span className="n">{m.counts.vertretungen}</span>
+                  </div>
+                </div>
+              </React.Fragment>
+            );
+          })}
 
           <div className="rail-foot">
             <span className="icon-circle">

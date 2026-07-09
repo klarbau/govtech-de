@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import type Anthropic from '@anthropic-ai/sdk';
 import {
+  ArrowRight,
   Calendar,
   ChevronRight,
   ExternalLink,
@@ -12,7 +13,9 @@ import {
   FolderOpen,
   ListChecks,
   Mail,
+  RotateCcw,
   Shield,
+  Truck,
   User,
 } from 'lucide-react';
 
@@ -269,7 +272,14 @@ export function AssistentView() {
           input: (tu.input ?? {}) as Record<string, unknown>,
         });
       }
-      if (assistantContent.length > 0) {
+      // Only commit the assistant turn to the wire history on a clean stream.
+      // On `streamError` — an immediate fail OR a partial stream that errored
+      // mid-frame (error frame or catch after some text_delta/tool_use) — the
+      // turn is abandoned and returns below before any tool_result is produced.
+      // Appending its partial content would leave an assistant turn (possibly
+      // with an unanswered tool_use) as the tail, breaking the retry invariant
+      // and later producing back-to-back assistant messages → Anthropic 400.
+      if (!streamError && assistantContent.length > 0) {
         apiMessagesRef.current = [
           ...apiMessagesRef.current,
           { role: 'assistant', content: assistantContent },
@@ -298,6 +308,10 @@ export function AssistentView() {
               : m,
           ),
         );
+        // Announce the fallback the same way a streamed reply is announced, so
+        // screen readers hear that the turn failed (the bubble text alone is not
+        // in a live region).
+        setLiveAnnouncement(t('unavailable'));
         return;
       }
 
@@ -537,6 +551,20 @@ export function AssistentView() {
     [streaming, confirmBusyId, runTurn],
   );
 
+  const retryLastTurn = React.useCallback(
+    async (erroredMessageId: string) => {
+      if (streaming || confirmBusyId) return;
+      // A failed turn never commits to `apiMessagesRef` — the append in runTurn
+      // is gated on `!streamError`, which holds universally (immediate fail AND
+      // partial-then-errored streams) — so the tail is still the last user
+      // message. Drop the error bubble and re-run the turn to re-send it. No
+      // wire change; just another attempt at the same context.
+      setMessages((prev) => prev.filter((m) => m.id !== erroredMessageId));
+      await runTurn(0);
+    },
+    [streaming, confirmBusyId, runTurn],
+  );
+
   const onConfirmUmzug = React.useCallback(
     async (messageId: string) => {
       const message = messages.find((m) => m.id === messageId);
@@ -705,6 +733,11 @@ export function AssistentView() {
 
   const threadEndRef = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
+    // Skip the initial greeting-only render: auto-scrolling the window to the
+    // thread end on mount pushed the page title, subtitle and first quick-chip
+    // under the sticky header on phones. Only follow the thread once a real
+    // exchange has started (a user message brings the count above 1).
+    if (messages.length <= 1) return;
     threadEndRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' });
   }, [messages, streaming]);
 
@@ -747,6 +780,18 @@ export function AssistentView() {
           <FolderOpen aria-hidden="true" />
           {t('quick.fehlende_unterlagen')}
         </button>
+        {/* Surfaces the hero autopilot: sends the canonical prompt so the
+            existing confirm-gated preview_umzug flow fires (the confirm-gate is
+            never bypassed — the model still proposes, the user still confirms). */}
+        <button
+          type="button"
+          className="chip"
+          disabled={interactionDisabled}
+          onClick={() => void sendUserMessage('leite meinen Umzug ein')}
+        >
+          <Truck aria-hidden="true" />
+          {t('quick.umzug_einleiten')}
+        </button>
       </div>
 
       <div className="as-layout">
@@ -755,6 +800,27 @@ export function AssistentView() {
             {messages.map((message) => (
               <li key={message.id} style={{ display: 'contents' }}>
                 <MessageBubble message={message} />
+                {message.error ? (
+                  <div
+                    className="msg-error-actions"
+                    role="group"
+                    aria-label={t('error.actions_label')}
+                  >
+                    <button
+                      type="button"
+                      className="chip"
+                      disabled={interactionDisabled}
+                      onClick={() => void retryLastTurn(message.id)}
+                    >
+                      <RotateCcw aria-hidden="true" />
+                      {t('error.retry')}
+                    </button>
+                    <Link className="msg-error-link" href="/vorgaenge/umzug/start">
+                      {t('error.alt_umzug')}
+                      <ArrowRight aria-hidden="true" />
+                    </Link>
+                  </div>
+                ) : null}
                 {message.toolCalls?.map((call) => (
                   <ToolCallCard key={call.id} call={call} />
                 ))}

@@ -2347,6 +2347,13 @@ button { font: inherit; cursor: pointer; }
 .frist-card .item .icon { color: var(--ink-3); margin-top: 2px; }
 .frist-card .item .t { font-weight: 600; font-size: 13.5px; }
 .frist-card .item .d { color: var(--ink-3); font-size: 12.5px; }
+/* Per-entry action for an overdue („Überfällig") Frist — turns the dead-end row
+   into an actionable link (§B4). Sits under the date in the middle grid column. */
+.frist-card .item .st-frist-cta {
+  margin-top: 6px; display: inline-flex; align-items: center; gap: 4px;
+  color: var(--brand-600); font-weight: 500; font-size: 12.5px;
+}
+.frist-card .item .st-frist-cta svg { width: 13px; height: 13px; }
 
 .nachweise .item { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto auto; gap: 12px; padding: 12px 0; border-top: 1px solid var(--border); align-items: center; }
 .nachweise .item:first-of-type { border-top: 0; }
@@ -4593,21 +4600,36 @@ button { font: inherit; cursor: pointer; }
   margin-top: 18px;
 }
 .vg-card { display: flex; flex-direction: column; }
-.vg-card .vg-card-head { align-items: flex-start; }
+/* Head darf umbrechen: bei knapper Kartenbreite (3-Spalten @1440) rutscht der
+   Status-Chip in eine eigene Zeile, statt den Titel zu überlagern/abzuschneiden
+   (§B1). Der Textblock behält Vorrang (flex-basis 60 %). */
+.vg-card .vg-card-head { align-items: flex-start; flex-wrap: wrap; row-gap: 8px; }
+.vg-card .vg-card-head .grow { flex: 1 1 60%; }
 .vg-card .vg-card-head .badge { flex: none; }
+/* Titel sauber auf 2 Zeilen kürzen (voller Text steht im title-Attribut) — nie
+   Wort-für-Wort umgebrochen und nie vom Chip überdeckt. */
+.vg-card .vg-card-head .title {
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden; overflow-wrap: anywhere;
+}
 .vg-card .vg-card-actions { margin-top: auto; padding-top: 14px; }
 .vg-kebab { height: 32px; width: 32px; padding: 0; flex: none; }
 
 /* "Nächste Aktion" block — soft neutral surface (dark-safe). */
 .vg-naction {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  flex-wrap: wrap; row-gap: 6px;
   background: var(--surface-soft); border: 1px solid var(--border);
   border-radius: var(--r-md); padding: 12px 14px;
 }
-.vg-naction-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.vg-naction-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1 1 55%; }
 .vg-naction-main .lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-3); }
-.vg-naction-main .act { font-weight: 600; font-size: 14px; color: var(--ink); }
-.vg-naction-frist { text-align: right; flex: none; display: flex; flex-direction: column; gap: 2px; }
+/* Lange Aktions-Labels („Bestätigung abwarten") umbrechen im eigenen Kasten,
+   statt in die rechte Fällig-Spalte zu laufen (§B1). */
+.vg-naction-main .act { font-weight: 600; font-size: 14px; color: var(--ink); overflow-wrap: anywhere; }
+/* Bei knapper Breite rutscht die Fällig-Angabe rechtsbündig in die nächste
+   Zeile, statt das Aktions-Label zu überlagern. */
+.vg-naction-frist { text-align: right; flex: none; margin-left: auto; display: flex; flex-direction: column; gap: 2px; }
 .vg-naction-frist .d { font-weight: 600; font-size: 13px; color: var(--amber-700); }
 /* Dark: --amber-600/700 fall to ~3.8:1 on the dark soft surface (AA fail for
    13px/600 non-large text). --color-warning flips to #E3B341 in .dark → ≥4.5:1. */

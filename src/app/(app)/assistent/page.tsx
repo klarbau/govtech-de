@@ -1,5 +1,7 @@
 import { AssistentView } from '@/components/assistent/AssistentView';
 
+import './assistent.css';
+
 export const dynamic = 'force-dynamic';
 
 /**

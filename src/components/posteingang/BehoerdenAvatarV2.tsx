@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 type AvatarVariant =
   | 'eagle' // Federal / Finanzamt — black-blue eagle
   | 'aok' // AOK green "AOK"
-  | 'ard' // ARD ZDF Beitragsservice — brand-deep blue, tiny multi-line text
+  | 'ard' // ARD ZDF Beitragsservice — brand-deep blue, "ARD" monogram
   | 'lea' // LEA Berlin — ink black, multi-line text
   | 'jobcenter' // Jobcenter — red briefcase
   | 'neutral'; // Fallback — initials on muted
@@ -71,13 +71,7 @@ function variantContent(variant: AvatarVariant, name: string): ReactNode {
       return <span className="text-[10px] font-semibold tracking-wide">AOK</span>;
     case 'ard':
       return (
-        <span className="px-1 text-center text-[7.5px] font-semibold leading-[1.05]">
-          ARD ZDF
-          <br />
-          deutschland
-          <br />
-          radio
-        </span>
+        <span className="text-[10px] font-semibold tracking-wide">ARD</span>
       );
     case 'lea':
       return (

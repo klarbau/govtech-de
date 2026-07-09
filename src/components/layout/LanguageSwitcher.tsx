@@ -45,6 +45,7 @@ export function LanguageSwitcher() {
     <Select value={locale} onValueChange={handleChange}>
       <SelectTrigger
         aria-label={t('language_label')}
+        title={t('language_label')}
         // Override the shadcn defaults: wear `.gt-header-btn` only.
         className="gt-header-btn !min-h-0 !border-0 !bg-transparent !p-0 !text-[13px]"
       >

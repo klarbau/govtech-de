@@ -346,8 +346,10 @@ export function VorgaengeView() {
     return { offen, fristen14, warten: counts.warten };
   }, [vorgaenge, nowIso, counts.warten]);
 
-  /* Rail — Priorisierte Aufgaben: nicht abgeschlossene Vorgänge mit Handlungsbedarf
-     (Warten ODER Frist ≤ 14 Tage), nach nächster Frist sortiert, Cap 3. */
+  /* Rail — Priorisierte Aufgaben: nur Vorgänge, die eine Handlung VON IHNEN
+     erfordern (Warten auf Sie). Klar abgegrenzt gegen „Termine & Fristen"
+     darunter, das reine Fälligkeits-Termine listet — so erscheint nicht dieselbe
+     Zeile doppelt (§B5). Nach nächster Frist sortiert, Cap 3. */
   const prioRows: PrioRow[] = React.useMemo(() => {
     return vorgaenge
       .filter((v) => !isAbgeschlossen(v))
@@ -355,7 +357,7 @@ export function VorgaengeView() {
         const frist = naechsteFrist(v, nowIso);
         return { vorgang: v, frist };
       })
-      .filter(({ vorgang, frist }) => isWarten(vorgang) || (frist !== null && frist.days <= 14))
+      .filter(({ vorgang }) => isWarten(vorgang))
       .sort((a, b) => (a.frist?.days ?? 9999) - (b.frist?.days ?? 9999))
       .slice(0, 3)
       .map<PrioRow>(({ vorgang, frist }) => ({
@@ -628,7 +630,7 @@ export function VorgaengeView() {
                         <Icon aria-hidden="true" />
                       </span>
                       <div className="grow">
-                        <div className="title">{u.titel}</div>
+                        <div className="title" title={u.titel}>{u.titel}</div>
                         <div className="sub">{u.primaryBehoerde}</div>
                       </div>
                       {u.state === 'abgeschlossen' ? (

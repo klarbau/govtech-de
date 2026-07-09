@@ -132,7 +132,10 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
     .sort((a, b) => b.letzte_bewegung_iso.localeCompare(a.letzte_bewegung_iso))
     .slice(0, 3);
 
-  const fristenWithin14 = countFristenWithin14(snapshot, nowIso);
+  // §A2 — Zähler kommt aus dem Backend-Snapshot (volle collectFristen-Menge,
+  // gleiche Quelle/gleicher 14-Tage-Horizont wie /vorgaenge), statt aus dem auf
+  // 3 getruncten frist_tile — sonst zeigte die Kachel 0 trotz offener Fristen.
+  const fristenWithin14 = snapshot?.frist_count_14d ?? 0;
   async function handleDone(reminderId: string) {
     setDismissed((prev) => new Set(prev).add(reminderId));
     try {
@@ -246,13 +249,21 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
               <ol className="heute-grid">
                 {visibleTodos.map((item, idx) => {
                   const view = mapToHeuteItem(item, idx);
+                  const sub = reasonSubline(view.reasonToken, t);
+                  // Die generische „Frist rückt näher"-Begründung ist redundant,
+                  // sobald die Fällig-Datum-Zeile ohnehin sichtbar ist — dann
+                  // wird sie über alle Karten hinweg zu Rauschen (§B3). Nur
+                  // informative Sublines (Termin/Folgevorgang/manuell) bleiben.
+                  const showSub =
+                    sub.length > 0 &&
+                    !(view.reasonToken === 'frist_naehe' && Boolean(view.fristDatum));
                   return (
                     <li key={view.id} className="heute-tile">
                       <Link href={view.href} className="heute-tile-link">
                         <span className={`icon-circle ${view.iconCircleTone}`}>{view.icon}</span>
                         <div className="ht-body">
                           <div className="ht-titel">{view.titel}</div>
-                          <div className="ht-sub">{reasonSubline(view.reasonToken, t)}</div>
+                          {showSub ? <div className="ht-sub">{sub}</div> : null}
                         </div>
                         {view.fristDatum ? (
                           <div className="ht-frist">
@@ -392,7 +403,10 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
           ) : null}
         </div>
 
-        <div className="dash-col">
+        {/* Rail. On the stacked mobile layout (< lg) this column floats above
+            the action feed so the „Ihr Umzug im Überblick"-Fortschritt (the
+            headline demo moment) sits near the top instead of below the fold. */}
+        <div className="dash-col max-[1024px]:order-first">
           {highlight ? (
             <TriumphBanner
               highlight={highlight}
@@ -524,21 +538,6 @@ function greetingAnrede(
     return `${persona.vorname} ${persona.nachname}`;
   }
   return '';
-}
-
-/**
- * Zählt offene Fristen, deren Frist-Datum innerhalb von 14 Tagen ab `nowIso`
- * liegt (vergangene Fristen zählen nicht). Speist die „Fristen"-Kachel.
- */
-function countFristenWithin14(snapshot: DashboardSnapshot | null, nowIso: string): number {
-  const fristen = snapshot?.frist_tile ?? [];
-  const now = new Date(nowIso).getTime();
-  if (Number.isNaN(now)) return 0;
-  const horizon = now + 14 * 24 * 60 * 60 * 1000;
-  return fristen.filter((f) => {
-    const ts = new Date(f.frist_datum).getTime();
-    return !Number.isNaN(ts) && ts >= now && ts <= horizon;
-  }).length;
 }
 
 function formatDDMMYYYY(d: Date): string {

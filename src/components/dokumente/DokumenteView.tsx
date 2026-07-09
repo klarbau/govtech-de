@@ -535,9 +535,14 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
                               </div>
                               <div className="s" style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                                 {doc.dokument_nr ? <span>{doc.dokument_nr}</span> : null}
-                                <span className="badge" style={{ fontFamily: 'var(--mono, monospace)' }}>
-                                  {doc.watermark}
-                                </span>
+                                {/* Only mark the row once: the Aktenzeichen already
+                                    carries the [MOCK] prefix in the seed, so the
+                                    separate watermark chip is redundant there. */}
+                                {doc.dokument_nr?.includes(doc.watermark) ? null : (
+                                  <span className="badge" style={{ fontFamily: 'var(--mono, monospace)' }}>
+                                    {doc.watermark}
+                                  </span>
+                                )}
                                 {doc.vorgang_id ? (
                                   <Link
                                     href={`/vorgaenge/umzug/${doc.vorgang_id}`}

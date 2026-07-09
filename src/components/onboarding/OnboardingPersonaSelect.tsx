@@ -27,10 +27,14 @@ export function OnboardingPersonaSelect({
   selectedId,
 }: OnboardingPersonaSelectProps) {
   const t = useTranslations('onboarding.persona');
+  const tFlow = useTranslations('onboarding');
 
   return (
     <Card className="mx-auto w-full max-w-xl gap-5 p-6 sm:p-8">
       <div className="flex flex-col gap-1">
+        <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">
+          {tFlow('wizard_step', { current: 2, total: 3 })}
+        </p>
         <h1 className="text-2xl font-bold text-text-primary md:text-3xl">
           {t('title')}
         </h1>

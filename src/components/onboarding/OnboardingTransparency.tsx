@@ -82,6 +82,7 @@ export function OnboardingTransparency({
   onConfirm,
 }: OnboardingTransparencyProps) {
   const t = useTranslations('onboarding.transparency');
+  const tFlow = useTranslations('onboarding');
   const [shareMarital, setShareMarital] = useState(false);
   const [shareTaxId, setShareTaxId] = useState(false);
   const [committing, setCommitting] = useState(false);
@@ -114,6 +115,9 @@ export function OnboardingTransparency({
 
       {/* 2) Heading */}
       <div className="mt-6 flex flex-col gap-1.5">
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-text-muted">
+          {tFlow('wizard_step', { current: 3, total: 3 })}
+        </p>
         <h1 className="text-2xl font-bold text-text-primary md:text-3xl">
           {t('title')}
         </h1>

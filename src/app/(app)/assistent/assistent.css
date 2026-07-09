@@ -1,0 +1,86 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Assistent — screen-scoped layout fixes
+   ---------------------------------------------------------------------------
+   Imported by /assistent (page.tsx), so it only ships with that route. Every
+   selector below targets assistant-only class names (.composer renders solely
+   on /assistent; .msg-error-actions is emitted only by <AssistentView>), so the
+   sheet is inert on every other screen. No global-shell or token overrides —
+   this is purely the assistant screen's own sizing model.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Phone composer (D3): the German placeholder „Schreiben Sie eine Nachricht …"
+   wraps to two lines in the narrow phone composer, and the rows=1 textarea
+   clipped the second line (bottom half cut off, shot 33). Give the field enough
+   height for the wrapped placeholder so it is never cut off — desktop keeps the
+   compact single line. ──────────────────────────────────────────────────────── */
+@media (max-width: 560px) {
+  .composer textarea {
+    padding-block: 8px;
+    min-height: 3.75rem;
+  }
+}
+
+/* ── Offline / stream-error actions (D1) — retry + honest alternative route.
+   Rendered under the fallback bubble; aligned past the 36px avatar + 14px gap. ── */
+.msg-error-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: -4px;
+  padding-left: 50px;
+}
+.msg-error-actions .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  color: var(--ink-2);
+  font-size: 13.5px;
+  font-weight: 500;
+}
+.msg-error-actions .chip:hover:not(:disabled) {
+  background: var(--surface-soft);
+}
+.msg-error-actions .chip:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.msg-error-actions .chip svg {
+  width: 16px;
+  height: 16px;
+  color: var(--ink-3);
+}
+.msg-error-actions .msg-error-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--brand-700);
+}
+.msg-error-actions .msg-error-link:hover {
+  text-decoration: underline;
+}
+.msg-error-actions .msg-error-link svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* Liquid-Glass parity: mirror the quick-chip glass recipe so the retry chip
+   reads as a soft glass pill on the frosted panel (surfaces only, no text
+   colour). Uses the same core tokens as html[data-lg] .quick-chips .chip. */
+html[data-lg] .msg-error-actions .chip {
+  background: var(--lg-glass-soft);
+  border: 1px solid var(--lg-hairline);
+  box-shadow: inset 0 1px 0 var(--lg-edge), var(--lg-shadow-card);
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+html[data-lg] .msg-error-actions .chip:hover:not(:disabled) {
+  background: var(--lg-glass-raised);
+  box-shadow: inset 0 1px 0 var(--lg-edge-strong), var(--lg-shadow-lift);
+}

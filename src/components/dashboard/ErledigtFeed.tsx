@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { ArrowRight, CheckCircle2, Circle } from 'lucide-react';
 
+import { resolveBehoerdeName } from '@/lib/behoerde-name';
 import type { ErledigtFeedItem } from '@/types';
 
 interface ErledigtFeedPending {
@@ -45,7 +46,8 @@ export function ErledigtFeed({ items, behoerdenNames, pending }: ErledigtFeedPro
         const href = item.letter_id
           ? `/posteingang/${item.letter_id}`
           : `/vorgaenge/umzug/${item.vorgang_id}`;
-        const behoerde = behoerdenNames[item.behoerde_id] ?? item.behoerde_id;
+        const behoerde =
+          behoerdenNames[item.behoerde_id] ?? resolveBehoerdeName(item.behoerde_id);
         return (
           <li key={item.id} className="erledigt-row">
             <Link href={href} className="erledigt-item">

@@ -20,6 +20,7 @@ import {
 import Link from 'next/link';
 
 import { api } from '@/lib/mock-backend';
+import { resolveBehoerdeName } from '@/lib/behoerde-name';
 import { Skeleton } from '@/components/shared/Skeleton';
 import type { Document, SteuerBereich, SteuerUebersicht } from '@/types';
 
@@ -183,7 +184,7 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
                       </span>
                       <div>
                         <div className="t">{t(q.label_i18n_key)}</div>
-                        <div className="s">{q.herkunft}</div>
+                        <div className="s">{resolveBehoerdeName(q.herkunft)}</div>
                       </div>
                     </div>
                   );
@@ -374,6 +375,16 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
                   <div>
                     <div className="t">{label}</div>
                     <div className="d">{formatStand(f.datum)}</div>
+                    {days < 0 ? (
+                      <Link
+                        href="/termine"
+                        className="link st-frist-cta"
+                        aria-label={t('steuer.frist.ueberfaellig_cta_aria', { label })}
+                      >
+                        {t('steuer.frist.ueberfaellig_cta')}
+                        <ChevronRight aria-hidden="true" />
+                      </Link>
+                    ) : null}
                   </div>
                   <span className="badge brand">
                     {days >= 0
