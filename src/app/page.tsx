@@ -141,7 +141,7 @@ export default function HomePage() {
               zuständige Stellen und erklärt jeden nächsten Schritt verständlich.
             </p>
             <div className="hero-cta">
-              <Link href="/onboarding" className="btn btn-primary btn-lg">
+              <Link href="/onboarding" className="btn btn-primary btn-lg lg-iridescent">
                 Demo erleben <ArrowRight aria-hidden="true" />
               </Link>
               <a href="#leistungen" className="btn btn-secondary btn-lg">

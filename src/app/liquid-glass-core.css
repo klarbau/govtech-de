@@ -358,8 +358,12 @@ html[data-lg] [data-slot='button'].bg-primary:hover {
 /* ── Iridescent CTA — OPT-IN only (add `lg-iridescent`; never auto-assigned) ──
    Ported verbatim from the Posteingang reader's primary CTA: a shifting five-
    stop Waldgrün→Tintenblau→violet gradient with a specular veil and a slow
-   glare sweep. One per screen, max. White text is intrinsic to the gradient. */
-html[data-lg] .lg-iridescent {
+   glare sweep. One per screen, max. White text is intrinsic to the gradient.
+   Selectors are widened to match `html[data-lg-aux]` too, so the same opt-in CTA
+   recipe carries the landing + onboarding hero CTAs (shared, no rule-body copy).
+   The `@keyframes lg-glare` is global (un-gated) and reused there as-is. */
+html[data-lg] .lg-iridescent,
+html[data-lg-aux] .lg-iridescent {
   position: relative;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.4);
@@ -370,14 +374,16 @@ html[data-lg] .lg-iridescent {
   box-shadow: 0 16px 36px -14px rgba(20, 130, 115, 0.55), 0 6px 18px -8px rgba(90, 100, 190, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.5);
   transition: background-position 0.6s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease, transform 0.15s ease;
 }
-html[data-lg] .lg-iridescent::before {
+html[data-lg] .lg-iridescent::before,
+html[data-lg-aux] .lg-iridescent::before {
   content: '';
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0.1) 38%, rgba(255, 255, 255, 0) 60%);
   pointer-events: none;
 }
-html[data-lg] .lg-iridescent::after {
+html[data-lg] .lg-iridescent::after,
+html[data-lg-aux] .lg-iridescent::after {
   content: '';
   position: absolute;
   top: -30%;
@@ -389,25 +395,31 @@ html[data-lg] .lg-iridescent::after {
   pointer-events: none;
   animation: lg-glare 7s ease-in-out infinite;
 }
-html[data-lg] .lg-iridescent:hover {
+html[data-lg] .lg-iridescent:hover,
+html[data-lg-aux] .lg-iridescent:hover {
   background-position: 88% 50%;
   box-shadow: 0 20px 44px -14px rgba(20, 130, 115, 0.65), 0 8px 22px -8px rgba(90, 100, 190, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.55);
 }
-html[data-lg] .lg-iridescent:active { transform: translateY(1px) scale(0.995); }
+html[data-lg] .lg-iridescent:active,
+html[data-lg-aux] .lg-iridescent:active { transform: translateY(1px) scale(0.995); }
 /* shadcn buttons also carry `bg-primary`, whose raise shadow above would
    out-specify the base `.lg-iridescent` rule (0,3,1 vs 0,2,1) — re-assert the
    iridescent edge + glow at button-slot specificity (later in file = wins the
    tie against the bg-primary block) so the opt-in works on any button. */
-html[data-lg] [data-slot='button'].lg-iridescent {
+html[data-lg] [data-slot='button'].lg-iridescent,
+html[data-lg-aux] [data-slot='button'].lg-iridescent {
   border-color: rgba(255, 255, 255, 0.4);
   box-shadow: 0 16px 36px -14px rgba(20, 130, 115, 0.55), 0 6px 18px -8px rgba(90, 100, 190, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
-html[data-lg] [data-slot='button'].lg-iridescent:hover {
+html[data-lg] [data-slot='button'].lg-iridescent:hover,
+html[data-lg-aux] [data-slot='button'].lg-iridescent:hover {
   box-shadow: 0 20px 44px -14px rgba(20, 130, 115, 0.65), 0 8px 22px -8px rgba(90, 100, 190, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 @media (prefers-reduced-motion: reduce) {
-  html[data-lg] .lg-iridescent { transition: none; }
-  html[data-lg] .lg-iridescent::after { animation: none !important; }
+  html[data-lg] .lg-iridescent,
+  html[data-lg-aux] .lg-iridescent { transition: none; }
+  html[data-lg] .lg-iridescent::after,
+  html[data-lg-aux] .lg-iridescent::after { animation: none !important; }
 }
 
 /* ── Inputs / selects / textareas — inset frosted pill ─────────────────────── */

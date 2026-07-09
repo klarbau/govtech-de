@@ -1,30 +1,44 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   Onboarding + Landing — Liquid Glass harmonisation (Welle 3)
+   Onboarding + Landing — Liquid Glass (full surface pass)
    ---------------------------------------------------------------------------
-   These surfaces keep their OWN identity (plan §3: „eigene Identität behalten,
-   nur Tokens/Ambient angleichen"). This sheet only aligns tokens/surfaces with
-   the app-wide Liquid-Glass layer. Every rule is gated under `html[data-lg-aux]`
-   (set by `LiquidGlassAux` on the landing `/` and the (auth) onboarding flow) so
-   it is inert everywhere else. Surfaces only — never text colours.
+   User decision 2026-07-09: the landing (`/`) and the (auth) onboarding flow now
+   wear the FULL app-wide Liquid-Glass look, not just a token/ambient nudge. The
+   mechanic stays the AUX gate — `LiquidGlassAux` sets `data-lg-aux` on <html>
+   (NOT `data-lg`), so the app-shell rules in liquid-glass-core.css (the TopNav
+   model, the Bürgerkonto card, every generic `[data-slot]` primitive + the
+   `--lg-canvas` swap) do NOT leak here. Instead this sheet carries a self-
+   contained ambient field plus a hand-picked, full-coverage surface pass over
+   the landing's own classes (`.landing-header`, `.flow-card`, `.lebenslage-card`
+   …) and the onboarding tiles. Surfaces only — background · border · box-shadow ·
+   backdrop-filter · radius; never a text colour, so the Waldgrün tokens keep
+   their light/dark contrast.
 
-   Why `data-lg-aux`, NOT the app's `data-lg`: mounting `LiquidGlassChrome` here
-   would match every generic primitive in liquid-glass-core.css (all cards,
-   inputs, buttons, dialogs) AND swap the identity background for `--lg-canvas` —
-   an over-reskin that erases these screens' own look, while still NOT touching
-   the landing's custom `.flow-card`/`.hero-stats` (they aren't generic cards).
-   So we run a lighter, self-contained ambient + a hand-picked surface pass here.
+   Blur budget: there is no app shell here, so the only frosted (backdrop-filter)
+   surface is the sticky `.landing-header` — shared by landing + onboarding = 1
+   layer. Every content surface below it is raised glass WITHOUT blur (near-opaque
+   gradient + edge highlight + shadow), exactly like the app content cards.
 
-   Token subset transcribed from liquid-glass-core.css (kept local because the
-   `--lg-*` tokens there are declared under `html[data-lg]`, which does not match
-   this scope). The `@keyframes lg-blob-*` referenced below live in the core
-   sheet (global, un-gated) and are reused as-is.
+   The `@keyframes lg-blob-*` / `lg-glare` live in liquid-glass-core.css (global,
+   un-gated) and are reused as-is. The `.lg-iridescent` opt-in CTA recipe is also
+   shared from core, whose selectors were widened to match `html[data-lg-aux]`
+   too — one iris CTA per screen: „Demo erleben" on the landing, „Anmeldung
+   bestätigen" in onboarding. The `--lg-*` tokens are re-declared locally because
+   the core ones sit under `html[data-lg]`, which does not match this scope.
+
+   Kill-switch `NEXT_PUBLIC_LG=0`: `LiquidGlassAux` renders null + sets no
+   attribute, so nothing here matches — the cheapest full revert.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 html[data-lg-aux] {
+  --lg-blur: 30px;
+  --lg-sat: 1.6;
+  --lg-glass-soft: linear-gradient(180deg, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0.26));
   --lg-glass-raised: linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(255, 255, 255, 0.85));
+  --lg-mint: linear-gradient(180deg, rgba(221, 238, 228, 0.62), rgba(212, 232, 221, 0.46));
   --lg-hairline: rgba(11, 18, 32, 0.08);
   --lg-edge: rgba(255, 255, 255, 0.8);
   --lg-edge-strong: rgba(255, 255, 255, 0.95);
+  --lg-mint-border: rgba(19, 112, 52, 0.16);
   --lg-shadow-lift: 0 10px 26px -16px rgba(15, 61, 46, 0.22);
   --lg-shadow-card: 0 4px 16px -12px rgba(15, 61, 46, 0.16);
   --lg-shadow-panel: 0 34px 80px -34px rgba(15, 61, 46, 0.3), 0 8px 24px -14px rgba(15, 61, 46, 0.12);
@@ -32,23 +46,20 @@ html[data-lg-aux] {
 }
 
 html[data-lg-aux].dark {
+  --lg-glass-soft: linear-gradient(180deg, rgba(34, 42, 54, 0.5), rgba(24, 30, 40, 0.36));
   --lg-glass-raised: linear-gradient(180deg, rgba(46, 56, 70, 0.9), rgba(34, 42, 54, 0.78));
+  --lg-mint: linear-gradient(180deg, rgba(24, 58, 44, 0.66), rgba(18, 46, 35, 0.5));
   --lg-hairline: rgba(255, 255, 255, 0.1);
   --lg-edge: rgba(255, 255, 255, 0.12);
   --lg-edge-strong: rgba(255, 255, 255, 0.16);
+  --lg-mint-border: rgba(95, 184, 154, 0.3);
   --lg-shadow-lift: 0 12px 30px -18px rgba(0, 0, 0, 0.6);
   --lg-shadow-card: 0 4px 16px -12px rgba(0, 0, 0, 0.5);
   --lg-shadow-panel: 0 34px 80px -34px rgba(0, 0, 0, 0.66), 0 8px 24px -14px rgba(0, 0, 0, 0.5);
   --lg-canvas: linear-gradient(180deg, #0d1117 0%, #0b0f15 100%);
 }
 
-/* ── Canvas + ambient ────────────────────────────────────────────────────────
-   Put the app shell's own `--lg-canvas` gradient (soft near-white → cool grey)
-   on <html>, then make body + the (auth) wrapper transparent so the fixed,
-   negative-z ambient shows through and the glass surfaces have a field to sit
-   over. Sharing the app canvas is the strongest harmonisation lever and stays
-   squarely „Ambient/Token angleichen" — the brand identity is the layout,
-   typography, Waldgrün accents and the illustrations, not the page canvas. */
+/* ── Canvas + ambient refraction field ─────────────────────────────────────── */
 html[data-lg-aux] {
   background: var(--lg-canvas);
 }
@@ -76,23 +87,23 @@ html[data-lg-aux] .lg-blob {
   will-change: transform;
 }
 html[data-lg-aux] .lg-blob--a {
-  left: -160px; top: -220px; width: 720px; height: 720px;
-  background: radial-gradient(closest-side, rgba(141, 199, 189, 0.42), rgba(255, 255, 255, 0) 72%);
+  left: -160px; top: -220px; width: 760px; height: 760px;
+  background: radial-gradient(closest-side, rgba(141, 199, 189, 0.55), rgba(255, 255, 255, 0) 74%);
   animation: lg-blob-a 26s ease-in-out infinite alternate;
 }
 html[data-lg-aux] .lg-blob--b {
-  right: -180px; top: -140px; width: 680px; height: 680px;
-  background: radial-gradient(closest-side, rgba(151, 190, 224, 0.4), rgba(255, 255, 255, 0) 72%);
+  right: -180px; top: -140px; width: 720px; height: 720px;
+  background: radial-gradient(closest-side, rgba(151, 190, 224, 0.52), rgba(255, 255, 255, 0) 74%);
   animation: lg-blob-b 30s ease-in-out infinite alternate;
 }
 html[data-lg-aux] .lg-blob--c {
-  right: 40px; bottom: -280px; width: 700px; height: 700px;
-  background: radial-gradient(closest-side, rgba(192, 186, 230, 0.32), rgba(255, 255, 255, 0) 74%);
+  right: 40px; bottom: -280px; width: 740px; height: 740px;
+  background: radial-gradient(closest-side, rgba(192, 186, 230, 0.44), rgba(255, 255, 255, 0) 76%);
   animation: lg-blob-c 34s ease-in-out infinite alternate;
 }
 html[data-lg-aux] .lg-blob--d {
-  left: 120px; bottom: -240px; width: 620px; height: 620px;
-  background: radial-gradient(closest-side, rgba(146, 198, 194, 0.36), rgba(255, 255, 255, 0) 72%);
+  left: 120px; bottom: -240px; width: 660px; height: 660px;
+  background: radial-gradient(closest-side, rgba(146, 198, 194, 0.48), rgba(255, 255, 255, 0) 74%);
   animation: lg-blob-b 38s ease-in-out infinite alternate-reverse;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -102,42 +113,179 @@ html[data-lg-aux] .lg-blob--d {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   Surface harmonisation — raised glass, no frost (content stays contrast-safe,
-   matching the core philosophy that content cards get no backdrop-filter). The
-   identity (layout, typography, Waldgrün accents, illustrations, the diagram's
-   own inner nodes/chips) is untouched; only the outer panels' background /
-   border / shadow are lifted to the LG surface language.
+   Landing — full surface pass
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* Landing — signature process-flow diagram (the central hero panel). */
+/* Sticky top bar — frosted glass (the ONE blur layer; shared with onboarding). */
+html[data-lg-aux] .landing-header {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.5));
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  border-bottom: 1px solid var(--lg-hairline);
+  box-shadow: 0 10px 30px -20px rgba(15, 61, 46, 0.16);
+}
+html[data-lg-aux].dark .landing-header {
+  background: linear-gradient(180deg, rgba(28, 35, 47, 0.74), rgba(20, 26, 36, 0.56));
+}
+
+/* Hero eyebrow pill — raised glass. */
+html[data-lg-aux] .hero-pill {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg-aux].dark .hero-pill {
+  border-color: var(--lg-hairline);
+}
+
+/* Primary CTAs keep Waldgrün, gain the app's soft raise (Anmelden + Demo erleben;
+   the latter also carries `.lg-iridescent`, which out-specifies this raise). */
+html[data-lg-aux] .btn-primary {
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 6px 16px -8px rgba(15, 61, 46, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+html[data-lg-aux] .btn-primary:hover {
+  box-shadow: 0 10px 22px -8px rgba(15, 61, 46, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Secondary CTA („Ablauf ansehen") — glass button. */
+html[data-lg-aux] .btn-secondary {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg-aux] .btn-secondary:hover {
+  background: var(--lg-glass-raised);
+  box-shadow: var(--lg-shadow-lift), inset 0 1px 0 var(--lg-edge);
+}
+html[data-lg-aux].dark .btn-secondary {
+  border-color: var(--lg-hairline);
+}
+
+/* Signature process-flow diagram — the hero panel, deepest raise. */
 html[data-lg-aux] .flow-card {
   background: var(--lg-glass-raised);
   border: 1px solid var(--lg-edge);
-  box-shadow: var(--lg-shadow-lift), inset 0 1px 0 var(--lg-edge-strong);
+  box-shadow: var(--lg-shadow-panel), inset 0 1px 0 var(--lg-edge-strong);
 }
 html[data-lg-aux].dark .flow-card {
   border-color: var(--lg-hairline);
 }
 
-/* Landing — hero stats column (right). */
+/* Hero stats column. */
 html[data-lg-aux] .hero-stats {
   background: var(--lg-glass-raised);
   border: 1px solid var(--lg-edge);
-  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+  box-shadow: var(--lg-shadow-lift), inset 0 1px 0 var(--lg-edge-strong);
 }
 html[data-lg-aux].dark .hero-stats {
   border-color: var(--lg-hairline);
 }
 
-/* Onboarding — the single central step panel (shadcn Card). Only the outer
-   step card carries `data-slot='card'` here (method rows, persona cards,
-   watermark banner and the transparency sub-panels are plain buttons/divs), so
-   this stays one raised glass sheet per screen. */
+/* Lebenslagen cards — floating glass with a motion-safe hover lift. */
+html[data-lg-aux] .lebenslage-card {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg-aux].dark .lebenslage-card {
+  border-color: var(--lg-hairline);
+}
+html[data-lg-aux] .lebenslage-card:hover {
+  border-color: var(--lg-edge);
+  transform: translateY(-2px);
+  box-shadow: var(--lg-shadow-lift), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg-aux].dark .lebenslage-card:hover {
+  border-color: var(--lg-hairline);
+}
+
+/* Evidence facts — raised glass. */
+html[data-lg-aux] .evidence-fact {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg-aux].dark .evidence-fact {
+  border-color: var(--lg-hairline);
+}
+
+/* Trust-principles band — lifted to a floating glass panel. */
+html[data-lg-aux] .principles {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-lift), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg-aux].dark .principles {
+  border-color: var(--lg-hairline);
+}
+
+/* Footer bar + trust badges — glass surfaces. */
+html[data-lg-aux] .landing-footer {
+  background: var(--lg-glass-raised);
+  border-top: 1px solid var(--lg-hairline);
+}
+html[data-lg-aux] .landing-badge {
+  padding: 6px 12px;
+  border-radius: var(--r-pill);
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg-aux].dark .landing-badge {
+  border-color: var(--lg-hairline);
+}
+
+/* Green-tinted icon tiles — the app's mint-glass treatment (surfaces only; the
+   Waldgrün icon glyph colour is left intact). */
+html[data-lg-aux] .lebenslage-icon,
+html[data-lg-aux] .hero-stat-icon,
+html[data-lg-aux] .principle-icon {
+  background: var(--lg-mint);
+  border: 1px solid var(--lg-mint-border);
+  box-shadow: inset 0 1px 0 var(--lg-edge-strong);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Onboarding — full surface pass (the shared frosted header is handled above)
+   ---------------------------------------------------------------------------
+   The single central step is a shadcn Card (`data-slot='card'`) — one per screen
+   (the method rows, persona cards and sub-panels are plain buttons/divs) — so
+   this stays one frosted-look raised sheet. Inner surfaces get a light glass via
+   the `lg-aux-tile` / `lg-aux-panel` hooks added in the components.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 html[data-lg-aux] [data-slot='card'] {
   background: var(--lg-glass-raised);
   border: 1px solid var(--lg-edge);
   box-shadow: var(--lg-shadow-panel), inset 0 1px 0 var(--lg-edge-strong);
 }
 html[data-lg-aux].dark [data-slot='card'] {
+  border-color: var(--lg-hairline);
+}
+
+/* Selectable tiles (method cards) — raised glass with a motion-safe hover lift. */
+html[data-lg-aux] .lg-aux-tile {
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+  transition: box-shadow 0.25s ease, transform 0.18s ease;
+}
+html[data-lg-aux].dark .lg-aux-tile {
+  border-color: var(--lg-hairline);
+}
+html[data-lg-aux] .lg-aux-tile:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--lg-shadow-lift), inset 0 1px 0 var(--lg-edge);
+}
+
+/* Recessed sub-panels (the „So einfach geht's" rail + transparency info panels)
+   — soft glass so the card behind reads through, matching the app's layering. */
+html[data-lg-aux] .lg-aux-panel {
+  background: var(--lg-glass-soft);
+  border: 1px solid var(--lg-edge);
+  box-shadow: inset 0 1px 0 var(--lg-edge-strong);
+}
+html[data-lg-aux].dark .lg-aux-panel {
   border-color: var(--lg-hairline);
 }
