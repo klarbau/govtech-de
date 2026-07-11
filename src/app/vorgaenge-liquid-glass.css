@@ -66,7 +66,7 @@ html[data-lg][data-lg-screen='vorgaenge'] .vg-cards .vg-card .vg-naction {
 }
 
 /* Right rail cards (shared `rail-card` — scoped via `.vg-layout` so the /run
-   dossier, which uses vlf-*/vab-*, is never touched). */
+   dossier, which uses vlf-/vab-prefixed classes, is never touched). */
 html[data-lg][data-lg-screen='vorgaenge'] .vg-layout .rail-card {
   background: var(--lg-glass-raised);
   border: 1px solid var(--lg-edge);
@@ -112,6 +112,15 @@ html[data-lg][data-lg-screen='vorgaenge'] .vd-hero {
 }
 html[data-lg][data-lg-screen='vorgaenge'].dark .vd-hero {
   border-color: var(--lg-hairline);
+}
+
+/* Aktionsband „Ihr nächster Schritt" — frosted-mint Fläche (blur-frei), damit
+   die System-CTA (hell-lifted primary im Dark) auf beiden Themes absetzt. Der
+   Done-Zustand behält seine token-basierten Grün-Flächen aus prototype-v2. */
+html[data-lg][data-lg-screen='vorgaenge'] .vd-next:not(.is-done) {
+  background: var(--lg-mint);
+  border: 1px solid var(--lg-mint-border);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge);
 }
 
 /* Gesamtfortschritt card + its "Voraussichtlich fertig" inset. */

@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { format, parseISO } from 'date-fns';
 import { de } from 'date-fns/locale';
@@ -16,7 +17,6 @@ import {
   Check,
   CheckCircle2,
   ChevronDown,
-  ChevronRight,
   Clock,
   Copy,
   Euro,
@@ -37,12 +37,13 @@ import { UebermittlungsReceipt } from '@/components/autopilot/UebermittlungsRece
 import { ValueReceiptCard } from '@/components/autopilot/ValueReceiptCard';
 import { LetterCard } from '@/components/posteingang/LetterCard';
 import { BehoerdenBadge } from '@/components/shared/BehoerdenBadge';
+import { Button } from '@/components/ui/button';
 import { DatenschutzCockpitLink } from '@/components/shared/DatenschutzCockpitLink';
 import { FristDetailModal } from '@/components/shared/FristDetailModal';
 import { PrototypeDisclaimer } from '@/components/shared/PrototypeDisclaimer';
 import { Skeleton } from '@/components/shared/Skeleton';
 import { TerminCard } from '@/components/shared/TerminCard';
-import { api } from '@/lib/mock-backend';
+import { api, MockBackendError } from '@/lib/mock-backend';
 import { cn } from '@/lib/utils';
 import type {
   Adresse,
@@ -111,7 +112,36 @@ function formatAdresse(a: Adresse): string {
   return `${line1}, ${line2}`;
 }
 
+/**
+ * Kanonische Akten-Route eines Vorgangs mit eigenem Dossier — /vorgaenge/[id]
+ * dispatcht dorthin statt eine zweite, abweichende Ansicht derselben Akte zu
+ * rendern (Lifecycle-Modell „Akte statt Video": EINE Seite pro Vorgang).
+ * Umzug-Saga → Run-/Dossier-Seite; engine-gelaufene Lebenslagen (Cascade-
+ * Step-IDs tragen das `<vorgangId>:`-Präfix, siehe engine.stepIdFor) → ihr
+ * Kaskaden-Dossier. Seeded-/Stub-Vorgänge mit Bürger-Schritten (z. B.
+ * Aufenthaltstitel-Stub, Kindergeld-Aktualisierung) haben kein Dossier und
+ * bleiben auf dieser Detailseite. Fehlt der Katalog transient, rendert die
+ * Detailseite als Fallback weiter.
+ */
+async function canonicalDossierHref(vorgang: Vorgang): Promise<string | null> {
+  if (vorgang.typ === 'umzug') {
+    return `/vorgaenge/umzug/run?vorgangId=${encodeURIComponent(vorgang.id)}`;
+  }
+  const engineRun = vorgang.schritte.some((s) => s.id.startsWith(`${vorgang.id}:`));
+  if (!engineRun) return null;
+  try {
+    const catalog = await api.getLebenslagen();
+    const slug = catalog.find((e) => e.vorgangTyp === vorgang.typ)?.slug;
+    return slug
+      ? `/lebenslagen/${encodeURIComponent(slug)}/cascade?vorgangId=${encodeURIComponent(vorgang.id)}`
+      : null;
+  } catch {
+    return null;
+  }
+}
+
 export function VorgangDetailLoader({ id }: VorgangDetailLoaderProps) {
+  const router = useRouter();
   const [state, setState] = React.useState<
     | { kind: 'loading' }
     | { kind: 'ready'; data: LoadedState }
@@ -120,28 +150,44 @@ export function VorgangDetailLoader({ id }: VorgangDetailLoaderProps) {
 
   const load = React.useCallback(async () => {
     setState({ kind: 'loading' });
-    let vorgang: Vorgang;
-    let letters: Letter[];
-    let termine: Termin[];
-    try {
-      const [v, l, te] = await Promise.all([
-        api.getVorgang(id),
-        api.getLetters({ vorgang_id: id }),
-        api.getTermine().catch(() => [] as Termin[]),
-      ]);
-      vorgang = v;
-      letters = l;
-      termine = te.filter((tx) => tx.vorgang_id === id);
-    } catch {
+    let vorgang: Vorgang | undefined;
+    let letters: Letter[] = [];
+    let termine: Termin[] = [];
+    // The mock backend simulates a ~5% transient error rate — only a real
+    // VORGANG_NOT_FOUND may render the not-found screen; transient failures
+    // get retried instead of masquerading as a deleted Vorgang.
+    for (let attempt = 0; attempt < 3 && !vorgang; attempt++) {
+      try {
+        const [v, l, te] = await Promise.all([
+          api.getVorgang(id),
+          api.getLetters({ vorgang_id: id }).catch(() => [] as Letter[]),
+          api.getTermine().catch(() => [] as Termin[]),
+        ]);
+        vorgang = v;
+        letters = l;
+        termine = te.filter((tx) => tx.vorgang_id === id);
+      } catch (e) {
+        if (e instanceof MockBackendError && e.code === 'VORGANG_NOT_FOUND') break;
+      }
+    }
+    if (!vorgang) {
       setState({ kind: 'not-found' });
       return;
     }
 
+    const dossierHref = await canonicalDossierHref(vorgang);
+    if (dossierHref) {
+      router.replace(dossierHref);
+      return; // Skeleton bleibt stehen, bis die kanonische Seite übernimmt.
+    }
+
+    // One retry: a transient mock error here degrades every Behörden-Name on
+    // the screen to its slug (timeline, action band).
     let behoerden: Behoerde[] = [];
     try {
       behoerden = await api.getBehoerden();
     } catch {
-      behoerden = [];
+      behoerden = await api.getBehoerden().catch(() => [] as Behoerde[]);
     }
 
     // A4 / B1: completed Umzug shows its value receipt; C5 guard keeps the
@@ -167,7 +213,7 @@ export function VorgangDetailLoader({ id }: VorgangDetailLoaderProps) {
       kind: 'ready',
       data: { vorgang, letters, termine, behoerden, relatedDocuments, receipt },
     });
-  }, [id]);
+  }, [id, router]);
 
   React.useEffect(() => {
     void load();
@@ -297,7 +343,6 @@ function VorgangDetail({
 
   const nextStep = pickNextStep(vorgang.schritte);
   const nextBehoerde = nextStep ? behoerdenById[nextStep.behoerde_id] : undefined;
-  const naechsteFristIso = vorgang.fristen?.[0]?.datum;
 
   const doneCount = vorgang.schritte.filter((s) => s.status === 'confirmed').length;
   const totalCount = vorgang.schritte.length;
@@ -306,21 +351,66 @@ function VorgangDetail({
     vorgang.schritte.find((s) => s.rechtsgrundlage)?.rechtsgrundlage ??
     (vorgang.typ === 'umzug' ? '§ 17 BMG' : undefined);
 
+  // State-aware Kopfdaten: eine Frist gilt nur, solange noch etwas aussteht —
+  // nach dem letzten Schritt (oder Abschluss) wäre „Nächste Frist" ein
+  // stehengebliebenes Schild. Gleiches für die Fertigstellungs-Plitte: sie
+  // sagt, WESSEN Zug es ist, statt statisch „2–3 Tage" zu versprechen.
+  const citizenTurn = nextStep ? CITIZEN_ACTION_STATUS.has(nextStep.status) : false;
+  const allConfirmed = totalCount > 0 && doneCount === totalCount;
+  const closed = vorgang.status === 'abgeschlossen' || vorgang.status === 'genehmigt';
+  const naechsteFristIso =
+    closed || allConfirmed ? undefined : vorgang.fristen?.[0]?.datum;
+
+  let fertigLabel = tv('fertigstellung_label');
+  let fertigValue = tv('fertigstellung_value');
+  let fertigDone = false;
+  if (closed && vorgang.abgeschlossen_am) {
+    fertigLabel = tv('fertigstellung_label_done');
+    fertigValue = format(parseISO(vorgang.abgeschlossen_am), 'd. MMMM yyyy', { locale: de });
+    fertigDone = true;
+  } else if (allConfirmed) {
+    fertigLabel = tv('fertigstellung_label_in_review');
+  } else if (citizenTurn) {
+    fertigLabel = tv('fertigstellung_label_after_action');
+  }
+
   return (
     <>
       <VorgangDetailBreadcrumb title={vorgang.titel ?? t('title')} />
 
       <VorgangHeaderClient
         title={vorgang.titel ?? t('title')}
+        typ={vorgang.typ}
         vorgangNummer={vorgang.id}
         status={vorgang.status}
       />
+
+      {/* The one thing the citizen must do sits full-width right under the
+        * hero — never buried in the rail below the fold. */}
+      {nextStep ? (
+        <NextStepBanner
+          vorgangId={vorgang.id}
+          stepId={nextStep.id}
+          behoerdeName={nextBehoerde?.name_de ?? nextStep.behoerde_id}
+          kategorie={nextBehoerde?.kategorie}
+          aktion={nextStep.aktion}
+          rechtsgrundlage={nextStep.rechtsgrundlage}
+          letterId={nextStep.letter_id}
+          fristIso={naechsteFristIso}
+          reload={reload}
+        />
+      ) : vorgang.schritte.length > 0 && !receipt ? (
+        <NoNextStepBanner />
+      ) : null}
 
       {totalCount > 0 ? (
         <GesamtfortschrittCard
           done={doneCount}
           total={totalCount}
           activeIndex={activeStepIndex}
+          fertigLabel={fertigLabel}
+          fertigValue={fertigValue}
+          fertigDone={fertigDone}
         />
       ) : null}
 
@@ -386,8 +476,6 @@ function VorgangDetail({
 
         <aside aria-label={tv('summary_title')} className="flex flex-col gap-4">
           <VorgangSummaryRail
-            status={vorgang.status}
-            vorgangNummer={vorgang.id}
             angelegtIso={vorgang.angelegt_am}
             stichtagIso={stichtag}
             behoerdenCount={vorgang.schritte.length}
@@ -400,21 +488,6 @@ function VorgangDetail({
               behoerdenCount={vorgang.schritte.length}
               vorgangId={id}
             />
-          ) : null}
-
-          {nextStep ? (
-            <NextStepCard
-              vorgangId={vorgang.id}
-              stepId={nextStep.id}
-              behoerdeName={nextBehoerde?.name_de ?? nextStep.behoerde_id}
-              kategorie={nextBehoerde?.kategorie}
-              aktion={nextStep.aktion}
-              rechtsgrundlage={nextStep.rechtsgrundlage}
-              letterId={nextStep.letter_id}
-              reload={reload}
-            />
-          ) : vorgang.schritte.length > 0 && !receipt ? (
-            <NoNextStepCard />
           ) : null}
 
           <div className="rail-card flex flex-col gap-3">
@@ -433,7 +506,10 @@ function VorgangDetail({
   );
 }
 
-function NextStepCard({
+/* Full-width action band under the hero — the screen's single primary action.
+ * Surface + CTA are token-driven (no inline --brand-50/--green-50, which don't
+ * flip in dark and drowned the CTA green-on-green). */
+function NextStepBanner({
   vorgangId,
   stepId,
   behoerdeName,
@@ -441,6 +517,7 @@ function NextStepCard({
   aktion,
   rechtsgrundlage,
   letterId,
+  fristIso,
   reload,
 }: {
   vorgangId: string;
@@ -450,10 +527,15 @@ function NextStepCard({
   aktion: string;
   rechtsgrundlage?: string;
   letterId?: string;
+  fristIso?: string;
   reload: () => Promise<void>;
 }) {
   const tv = useTranslations('vorgang.detail');
   const [busy, setBusy] = React.useState(false);
+
+  const fristLabel = fristIso
+    ? format(parseISO(fristIso), 'd. MMMM yyyy', { locale: de })
+    : null;
 
   const handleErledigen = async () => {
     if (busy) return;
@@ -463,7 +545,7 @@ function NextStepCard({
       toast.success(tv('step_done_toast'));
       await reload();
       // On success the step becomes `confirmed`, pickNextStep returns nothing,
-      // and this card unmounts in favour of NoNextStepCard — which takes focus.
+      // and this banner unmounts in favour of NoNextStepBanner — which takes focus.
     } catch {
       toast.error(tv('step_done_error'));
       setBusy(false);
@@ -471,62 +553,52 @@ function NextStepCard({
   };
 
   return (
-    <section
-      aria-labelledby="next-step-title"
-      className="gt-card"
-      style={{ borderColor: 'var(--brand-200)', background: 'var(--brand-50)' }}
-    >
-      <div className="flex items-start gap-4">
-        <span className="icon-square" aria-hidden="true">
-          <ListChecks />
-        </span>
-        <div className="grow">
-          <h2 id="next-step-title" className="gt-card-title">
-            {tv('next_step_title')}
-          </h2>
-          <div className="mt-1">
-            <BehoerdenBadge name={behoerdeName} kategorie={kategorie} />
-          </div>
-          <p className="mt-2 text-sm font-medium text-foreground">{aktion}</p>
+    <section aria-labelledby="next-step-title" className="vd-next">
+      <div className="vd-next-body">
+        <h2 id="next-step-title" className="vd-next-kicker">
+          {tv('next_step_title')}
+        </h2>
+        <p className="vd-next-aktion">{aktion}</p>
+        {/* div, nicht p — BehoerdenBadge rendert ein div (invalides p-Nesting). */}
+        <div className="vd-next-meta">
+          <BehoerdenBadge name={behoerdeName} kategorie={kategorie} />
           {rechtsgrundlage ? (
-            <p className="mt-1 text-xs text-muted-foreground">
-              <span className="font-medium">{tv('next_step_basis_label')}:</span>{' '}
-              {rechtsgrundlage}
-            </p>
+            <span>
+              {tv('next_step_basis_label')}: {rechtsgrundlage}
+            </span>
           ) : null}
-
-          <div className="mt-4 flex flex-wrap items-center gap-3">
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={handleErledigen}
-              disabled={busy}
-              aria-busy={busy}
-            >
-              {busy ? (
-                <Loader2 className="animate-spin" aria-hidden="true" />
-              ) : (
-                <CheckCircle2 aria-hidden="true" />
-              )}
-              {busy ? tv('step_done_busy') : tv('next_step_cta')}
-            </button>
-            {letterId ? (
-              <Link
-                href={`/posteingang/${encodeURIComponent(letterId)}`}
-                className="btn btn-secondary"
-              >
-                <FileText aria-hidden="true" />
-                {tv('next_step_brief_cta')}
-              </Link>
-            ) : null}
-          </div>
         </div>
+      </div>
+      <div className="vd-next-actions">
+        {fristLabel ? (
+          <span className="badge amber">
+            <Calendar aria-hidden="true" />
+            {tv('next_step_frist', { datum: fristLabel })}
+          </span>
+        ) : null}
+        {letterId ? (
+          <Link
+            href={`/posteingang/${encodeURIComponent(letterId)}`}
+            className="btn btn-secondary"
+          >
+            <FileText aria-hidden="true" />
+            {tv('next_step_brief_cta')}
+          </Link>
+        ) : null}
+        <Button size="lg" onClick={handleErledigen} disabled={busy} aria-busy={busy}>
+          {busy ? (
+            <Loader2 className="animate-spin" aria-hidden="true" />
+          ) : (
+            <CheckCircle2 aria-hidden="true" />
+          )}
+          {busy ? tv('step_done_busy') : tv('next_step_cta')}
+        </Button>
       </div>
     </section>
   );
 }
 
-function NoNextStepCard() {
+function NoNextStepBanner() {
   const tv = useTranslations('vorgang.detail');
   const ref = React.useRef<HTMLElement>(null);
 
@@ -539,34 +611,27 @@ function NoNextStepCard() {
       ref={ref}
       tabIndex={-1}
       aria-labelledby="no-next-step-title"
-      className="gt-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-      style={{ borderColor: 'var(--green-100)', background: 'var(--green-50)' }}
+      className="vd-next is-done focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
     >
-      <div className="flex items-start gap-4">
-        <span className="mt-0.5 flex size-9 items-center justify-center text-emerald-600" aria-hidden="true">
-          <CheckCircle2 className="size-6" />
-        </span>
-        <div className="grow">
-          <h2 id="no-next-step-title" className="gt-card-title">
-            {tv('next_step_title')}
-          </h2>
-          <p className="mt-2 text-sm text-foreground">{tv('no_next_step')}</p>
-        </div>
+      <div className="vd-next-body">
+        <h2 id="no-next-step-title" className="vd-next-kicker">
+          {tv('next_step_title')}
+        </h2>
+        <p className="vd-next-aktion">{tv('no_next_step')}</p>
       </div>
+      <CheckCircle2 className="vd-next-check" aria-hidden="true" />
     </section>
   );
 }
 
+/* Slimmed to the facts the hero doesn't already carry — status chip and
+ * Vorgangsnummer live up there now, listing them twice was noise. */
 function VorgangSummaryRail({
-  status,
-  vorgangNummer,
   angelegtIso,
   stichtagIso,
   behoerdenCount,
   naechsteFristIso,
 }: {
-  status: VorgangStatus;
-  vorgangNummer: string;
   angelegtIso: string;
   stichtagIso?: string;
   behoerdenCount: number;
@@ -585,12 +650,6 @@ function VorgangSummaryRail({
     <div className="rail-card">
       <h3>{tv('summary_title')}</h3>
       <dl className="flex flex-col">
-        <SummaryRow label={tv('summary_status_label')}>
-          <VorgangStatusBadge status={status} />
-        </SummaryRow>
-        <SummaryRow label={tv('vorgangsnummer_label')}>
-          <VorgangsnummerValue value={vorgangNummer} />
-        </SummaryRow>
         <SummaryRow label={tv('summary_angelegt_label')}>{angelegtLabel}</SummaryRow>
         {stichtagLabel ? (
           <SummaryRow label={tv('summary_stichtag_label')}>{stichtagLabel}</SummaryRow>
@@ -707,27 +766,41 @@ function VorgangDetailBreadcrumb({ title }: { title: string }) {
   );
 }
 
+/* Hero glyph by Vorgang-Typ — the old hard-coded Home read every Vorgang as an
+ * Umzug. Money-benefit verticals get Euro, the rest a neutral file. */
+const HERO_ICON: Record<string, typeof Home> = {
+  umzug: Home,
+  familienkasse: Euro,
+  'steuer-jahr': Euro,
+  'aufenthaltstitel-verlaengerung': Fingerprint,
+};
+
 function VorgangHeaderClient({
   title,
+  typ,
   vorgangNummer,
   status,
 }: {
   title: string;
+  typ: Vorgang['typ'];
   vorgangNummer: string;
   status: VorgangStatus;
 }) {
   const tv = useTranslations('vorgang.detail');
+  const HeroIcon = HERO_ICON[typ] ?? FileText;
   return (
     <div className="vd-hero">
       <span className="icon-circle lg" aria-hidden="true">
-        <Home />
+        <HeroIcon />
       </span>
       <div className="vd-hero-body">
         <h1 className="vd-hero-title">{title}</h1>
-        <p className="vd-hero-sub">{tv('hero_sub')}</p>
+        <p className="vd-hero-sub">
+          {typ === 'umzug' ? tv('hero_sub') : tv('hero_sub_generic')}
+        </p>
         <p className="vd-hero-nr">
           <span className="vd-hero-nr-lbl">{tv('vorgangsnummer_label')}:</span>{' '}
-          <span className="vd-hero-nr-val">{vorgangNummer}</span>
+          <VorgangsnummerValue value={vorgangNummer} />
         </p>
       </div>
       <div className="vd-hero-status">
@@ -741,10 +814,16 @@ function GesamtfortschrittCard({
   done,
   total,
   activeIndex,
+  fertigLabel,
+  fertigValue,
+  fertigDone,
 }: {
   done: number;
   total: number;
   activeIndex: number;
+  fertigLabel: string;
+  fertigValue: string;
+  fertigDone: boolean;
 }) {
   const tv = useTranslations('vorgang.detail');
   const segments = Array.from({ length: total }, (_, i) => i < done);
@@ -780,11 +859,11 @@ function GesamtfortschrittCard({
       </div>
       <div className="vd-fertig">
         <span className="icon-circle" aria-hidden="true">
-          <Clock />
+          {fertigDone ? <CheckCircle2 /> : <Clock />}
         </span>
         <div>
-          <div className="vd-fertig-lbl">{tv('fertigstellung_label')}</div>
-          <div className="vd-fertig-val">{tv('fertigstellung_value')}</div>
+          <div className="vd-fertig-lbl">{fertigLabel}</div>
+          <div className="vd-fertig-val">{fertigValue}</div>
         </div>
       </div>
     </div>
@@ -835,6 +914,9 @@ function BerechtigungenRail({
   );
 }
 
+/* dt + dd are DIRECT children of the dl > div wrapper (WCAG 1.3.1 — the old
+ * extra .vd-berechtigungen-stack nesting was invalid dl content). The chevron
+ * is gone: these rows are not links, the arrow was a fake affordance. */
 function BerechtigungenRow({
   icon: Icon,
   label,
@@ -846,14 +928,13 @@ function BerechtigungenRow({
 }) {
   return (
     <div className="vd-berechtigungen-row">
-      <span className="vd-berechtigungen-icon" aria-hidden="true">
-        <Icon />
-      </span>
-      <div className="vd-berechtigungen-stack">
-        <dt>{label}</dt>
-        <dd>{value}</dd>
-      </div>
-      <ChevronRight className="vd-berechtigungen-chevron" aria-hidden="true" />
+      <dt>
+        <span className="vd-berechtigungen-icon" aria-hidden="true">
+          <Icon />
+        </span>
+        {label}
+      </dt>
+      <dd>{value}</dd>
     </div>
   );
 }
