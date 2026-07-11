@@ -28,6 +28,10 @@ function resolveAjv2020(): string | null {
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // Isolierbares Build-Verzeichnis: erlaubt eine zweite Dev-Instanz (z. B.
+  // Turbopack-Probelauf auf :3001), ohne das `.next` des laufenden Servers zu
+  // korrumpieren. Unset → Standard `.next`.
+  distDir: process.env.NEXT_DIST_DIR || '.next',
   // Hide the floating Next dev-indicator („N" badge): it overlaps content in
   // the mobile tunnel demo. Requires a `govtech-dev.service` restart — the
   // config is not picked up by HMR.
