@@ -3,33 +3,16 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
-import {
-  differenceInCalendarDays,
-  format,
-  parseISO,
-  type Locale,
-} from 'date-fns';
+import { differenceInCalendarDays, format, parseISO } from 'date-fns';
 import { toast } from 'sonner';
 import {
   Bell,
   Calendar,
   CalendarDays,
-  CheckCircle2,
   ChevronRight,
-  Circle,
-  Clock,
-  Euro,
-  FileText,
-  Filter,
   Info,
-  Landmark,
-  MapPin,
-  ReceiptText,
   RefreshCw,
   Search,
-  Stethoscope,
-  Users,
-  X,
 } from 'lucide-react';
 
 import { api } from '@/lib/mock-backend';
@@ -41,17 +24,31 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/shared/Skeleton';
 
 import { MonthCalendar, type DayEventBreakdown } from './MonthCalendar';
+import { TerminDetailContent } from './TerminDetailContent';
 import { TerminRescheduleDialog } from './TerminRescheduleDialog';
 import { TerminAbsagenDialog } from './TerminAbsagenDialog';
-import { dayKey, formatDateLong, formatTimeRange } from './termin-format';
+import {
+  dayKey,
+  formatDateLong,
+  formatDateShort,
+  formatTimeRange,
+} from './termin-format';
 import { displayStatus, istBuergeramtVorgemerkt } from './termin-status';
+import {
+  viewBadge,
+  viewBadgeTone,
+  viewBadgeLabelKey,
+  type ViewBadge,
+} from './termin-badge';
 
-/* termine-green-relayout.md: green command-center relayout of /termine. The data
-   layer (load/retry/subscribe, optimistic revert-on-error mutations, ICS export,
-   §17 „Vorgemerkt" semantics) is PRESERVED — only the derivations + JSX/CSS are
-   rebuilt around the 3-column command center. All operations stay honest: the §17
-   confirm shows only the „Gelesen: nichts aus Ihrem Kalender."-Quittung, never a
-   Posteingang claim; the ABH/LEA termin is never the §17 hero. */
+/* termine-rework.md: agenda-first rework of /termine. The data layer
+   (load/retry/subscribe, optimistic revert-on-error mutations, ICS export, §17
+   „Vorgemerkt" semantics) is PRESERVED — only the derivations + JSX/CSS change:
+   one chronological Agenda merging Termine + Fristen + Erinnerungen, a „Wartet
+   auf Sie"-Band hosting the §17 hero + overdue Fristen, details on demand
+   (inline accordion) instead of the former persistent right panel. All ops stay
+   honest: the §17 confirm shows only the „Gelesen: nichts aus Ihrem Kalender."-
+   Quittung, never a Posteingang claim; the ABH/LEA termin is never the §17 hero. */
 
 interface TermineViewProps {
   nowIso: string;
@@ -62,52 +59,19 @@ const THIRTY_DAYS_MS = 30 * 24 * 3600 * 1000;
 
 type TabId = 'alle' | 'termine' | 'fristen' | 'erinnerungen' | 'vergangen';
 
-/** View-level badge state: the Bürgeramt-vs-not split happens HERE so the shared
- *  displayStatus() (and the spine) keep their 4-state union untouched. */
-type ViewBadge =
-  | 'bestaetigt'
-  | 'vorgemerkt'
-  | 'wartet'
-  | 'abgesagt'
-  | 'erledigt';
+type AgendaKind = 'termin' | 'frist' | 'erinnerung';
 
-function viewBadge(term: Termin, nowIso: string): ViewBadge {
-  const ds = displayStatus(term, nowIso);
-  if (ds === 'vorgemerkt') {
-    return istBuergeramtVorgemerkt(term, nowIso) ? 'vorgemerkt' : 'wartet';
-  }
-  return ds;
-}
+type AgendaItem =
+  | { kind: 'termin'; datum: string; id: string; term: Termin }
+  | { kind: 'frist'; datum: string; id: string; rem: Reminder }
+  | { kind: 'erinnerung'; datum: string; id: string; rem: Reminder };
 
-function viewBadgeTone(badge: ViewBadge): string {
-  switch (badge) {
-    case 'bestaetigt':
-      return 'green';
-    case 'vorgemerkt':
-      return 'amber';
-    case 'wartet':
-      return 'violet';
-    case 'abgesagt':
-      return 'red';
-    case 'erledigt':
-      return 'outline';
-  }
-}
-
-function viewBadgeLabelKey(badge: ViewBadge): string {
-  switch (badge) {
-    case 'vorgemerkt':
-      return 'vorgeschlagen'; // Enum-Key bleibt; Label = „Vorgemerkt"
-    case 'wartet':
-      return 'wartet';
-    case 'bestaetigt':
-      return 'bestaetigt';
-    case 'abgesagt':
-      return 'abgesagt';
-    case 'erledigt':
-      return 'erledigt';
-  }
-}
+/** Stable secondary sort at equal timestamp: termin < frist < erinnerung. */
+const KIND_ORDER: Record<AgendaKind, number> = {
+  termin: 0,
+  frist: 1,
+  erinnerung: 2,
+};
 
 export function TermineView({ nowIso }: TermineViewProps) {
   const t = useTranslations();
@@ -134,13 +98,16 @@ export function TermineView({ nowIso }: TermineViewProps) {
   const [activeTab, setActiveTab] = React.useState<TabId>('alle');
   const [query, setQuery] = React.useState('');
   const [selectedIso, setSelectedIso] = React.useState<string | null>(null);
-  const [selectedId, setSelectedId] = React.useState<string | null>(null);
-  // The §17 confirm flips the badge green; keep that termin selected as a receipt.
+  // Accordion: exactly one expanded agenda termin at a time (null = none open).
+  const [expandedId, setExpandedId] = React.useState<string | null>(null);
+  // The §17 confirm flips the badge green; keep that hero in the band as a receipt.
   const [recentlyConfirmedId, setRecentlyConfirmedId] = React.useState<
     string | null
   >(null);
-  // Auto-selection is applied exactly once after the first successful load.
-  const autoSelectedRef = React.useRef(false);
+  // Auto-expand is applied exactly once after the first successful load.
+  const autoExpandedRef = React.useRef(false);
+  // Sub-1024 the rail collapses into a <details>; ≥1024 it is a sticky column.
+  const [isNarrow, setIsNarrow] = React.useState(false);
 
   const [rescheduleTermin, setRescheduleTermin] = React.useState<Termin | null>(
     null,
@@ -183,6 +150,14 @@ export function TermineView({ nowIso }: TermineViewProps) {
       cancelled = true;
     };
   }, [load]);
+
+  React.useEffect(() => {
+    const mq = window.matchMedia('(max-width: 1023px)');
+    const update = () => setIsNarrow(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
 
   /* React live when the autopilot mints/updates a Termin. The SSE connection is
      deferred past the first settle so the page can reach an idle network for
@@ -245,7 +220,6 @@ export function TermineView({ nowIso }: TermineViewProps) {
       const prev = termin;
       setBusy(termin.id);
       setRecentlyConfirmedId(termin.id);
-      setSelectedId(termin.id);
       applyTermin({ ...termin, status: 'bestaetigt' });
       try {
         await api.bestaetigeTerminVorschlag(termin.id);
@@ -395,85 +369,149 @@ export function TermineView({ nowIso }: TermineViewProps) {
     [reminders, isUpcoming],
   );
 
-  /* Auto-select once after first load: a Bürgeramt §17 `vorgemerkt` termin wins
-     (its confirm CTA + §17 reasoning = the wow); else the nächster Termin. */
-  React.useEffect(() => {
-    if (phase !== 'ready' || autoSelectedRef.current) return;
-    if (upcomingTermine.length === 0) return;
-    autoSelectedRef.current = true;
-    const hero = upcomingTermine.find((term) =>
+  // --------------------------------------------------------------------------
+  // „Wartet auf Sie"-Band qualification (§4). Only items that wait on the CITIZEN:
+  // the §17 Bürgeramt hero + overdue Fristen. Everything else stays in the agenda.
+  // --------------------------------------------------------------------------
+  const heroTermin = React.useMemo(() => {
+    const vorgemerkt = upcomingTermine.find((term) =>
       istBuergeramtVorgemerkt(term, nowIso),
     );
-    setSelectedId(hero?.id ?? upcomingTermine[0]?.id ?? null);
-  }, [phase, upcomingTermine, nowIso]);
-
-  /** Tab + day + search filtered appointment rows for the center list. */
-  const visibleTermine = React.useMemo(() => {
-    const base = activeTab === 'vergangen' ? pastTermine : upcomingTermine;
-    return base
-      .filter((term) => matchesSelectedDay(term.datum))
-      .filter((term) =>
-        matchesQuery(`${behoerdeName(term.behoerde_id)} ${term.betreff}`),
+    if (vorgemerkt) return vorgemerkt;
+    // Keep the just-confirmed hero in the band as a green receipt for the session.
+    if (recentlyConfirmedId) {
+      return (
+        upcomingTermine.find((term) => term.id === recentlyConfirmedId) ?? null
       );
+    }
+    return null;
+  }, [upcomingTermine, nowIso, recentlyConfirmedId]);
+
+  const overdueFristen = React.useMemo(
+    () =>
+      upcomingReminders
+        .filter(
+          (r) =>
+            r.kategorie === 'frist' &&
+            differenceInCalendarDays(parseISO(r.datum), now) < 0,
+        )
+        .sort((a, b) => a.datum.localeCompare(b.datum)),
+    [upcomingReminders, now],
+  );
+
+  const tabIncludesKind = React.useCallback(
+    (kind: AgendaKind) => {
+      switch (activeTab) {
+        case 'vergangen':
+          return false;
+        case 'termine':
+          return kind === 'termin';
+        case 'fristen':
+          return kind === 'frist';
+        case 'erinnerungen':
+          return kind === 'erinnerung';
+        default:
+          return true;
+      }
+    },
+    [activeTab],
+  );
+
+  const showHeroInBand = heroTermin !== null && tabIncludesKind('termin');
+  const showOverdueInBand = overdueFristen.length > 0 && tabIncludesKind('frist');
+  const bandVisible = showHeroInBand || showOverdueInBand;
+
+  /** One chronological agenda merging Termine + Fristen + Erinnerungen (§3).
+   *  Band-promoted items are removed here so nothing renders twice. */
+  const agendaItems = React.useMemo<AgendaItem[]>(() => {
+    const isPast = activeTab === 'vergangen';
+    const baseTermine = isPast ? pastTermine : upcomingTermine;
+    const baseReminders = isPast ? pastReminders : upcomingReminders;
+
+    const promoted = new Set<string>();
+    if (heroTermin) promoted.add(heroTermin.id);
+    for (const r of overdueFristen) promoted.add(r.id);
+
+    const items: AgendaItem[] = [];
+    for (const term of baseTermine) {
+      if (promoted.has(term.id)) continue;
+      items.push({ kind: 'termin', datum: term.datum, id: term.id, term });
+    }
+    for (const r of baseReminders) {
+      if (promoted.has(r.id)) continue;
+      const kind: AgendaKind = r.kategorie === 'frist' ? 'frist' : 'erinnerung';
+      items.push({ kind, datum: r.datum, id: r.id, rem: r });
+    }
+
+    const filtered = items
+      .filter((it) => {
+        if (activeTab === 'termine') return it.kind === 'termin';
+        if (activeTab === 'fristen') return it.kind === 'frist';
+        if (activeTab === 'erinnerungen') return it.kind === 'erinnerung';
+        return true; // 'alle' | 'vergangen'
+      })
+      .filter((it) => matchesSelectedDay(it.datum))
+      .filter((it) =>
+        it.kind === 'termin'
+          ? matchesQuery(
+              `${behoerdeName(it.term.behoerde_id)} ${it.term.betreff}`,
+            )
+          : matchesQuery(`${it.rem.titel} ${behoerdeName(it.rem.behoerde_id)}`),
+      );
+
+    filtered.sort((a, b) => {
+      const cmp = a.datum.localeCompare(b.datum);
+      if (cmp !== 0) return isPast ? -cmp : cmp;
+      return KIND_ORDER[a.kind] - KIND_ORDER[b.kind];
+    });
+    return filtered;
   }, [
     activeTab,
     pastTermine,
     upcomingTermine,
-    matchesSelectedDay,
-    matchesQuery,
-    behoerdeName,
-  ]);
-
-  /** Tab + day + search filtered Frist/Erinnerung rows for the center list. */
-  const visibleReminders = React.useMemo(() => {
-    const base = activeTab === 'vergangen' ? pastReminders : upcomingReminders;
-    return base
-      .filter((r) => {
-        if (activeTab === 'fristen') return r.kategorie === 'frist';
-        if (activeTab === 'erinnerungen') return r.kategorie === 'erinnerung';
-        return true;
-      })
-      .filter((r) => matchesSelectedDay(r.datum))
-      .filter((r) => matchesQuery(`${r.titel} ${behoerdeName(r.behoerde_id)}`));
-  }, [
-    activeTab,
     pastReminders,
     upcomingReminders,
+    heroTermin,
+    overdueFristen,
     matchesSelectedDay,
     matchesQuery,
     behoerdeName,
   ]);
 
-  const showTermineSection = activeTab === 'alle' || activeTab === 'termine' || activeTab === 'vergangen';
-  const showFristenSection = activeTab === 'alle' || activeTab === 'fristen' || activeTab === 'erinnerungen' || activeTab === 'vergangen';
+  /** Agenda items grouped by day, in sort order. */
+  const agendaGroups = React.useMemo(() => {
+    const groups: Array<{ key: string; datum: string; items: AgendaItem[] }> =
+      [];
+    for (const it of agendaItems) {
+      const key = dayKey(it.datum);
+      const last = groups[groups.length - 1];
+      if (last && last.key === key) last.items.push(it);
+      else groups.push({ key, datum: it.datum, items: [it] });
+    }
+    return groups;
+  }, [agendaItems]);
 
-  const fristenHeading =
-    activeTab === 'erinnerungen'
-      ? tTermine('liste.erinnerungen_titel')
-      : tTermine('spur.fristen_titel');
+  /* Auto-expand once after first load so a `.tm-detail` is present on load
+     (Demo-Tour pans onto it). A §17 hero lives in the band (always expanded) —
+     then no agenda auto-expand is needed; otherwise expand the nächster Termin. */
+  React.useEffect(() => {
+    if (phase !== 'ready' || autoExpandedRef.current) return;
+    if (heroTermin) {
+      autoExpandedRef.current = true;
+      return;
+    }
+    if (upcomingTermine.length === 0) return; // wait for data to settle
+    autoExpandedRef.current = true;
+    setExpandedId(upcomingTermine[0]!.id);
+  }, [phase, heroTermin, upcomingTermine]);
 
-  const visibleCount =
-    (showTermineSection ? visibleTermine.length : 0) +
-    (showFristenSection ? visibleReminders.length : 0);
-
-  const detailTermin = React.useMemo(
-    () => ownTermine.find((term) => term.id === selectedId) ?? null,
-    [ownTermine, selectedId],
-  );
-
-  /** Calendar dots — per-day category breakdown across termine + reminders. */
+  /** Calendar dots — per-day category breakdown across termine + reminders.
+   *  The breakdown feeds the cell aria-label (text); the dot itself is neutral. */
   const calendarEvents = React.useMemo(() => {
     const events: Record<string, DayEventBreakdown> = {};
-    const bump = (
-      iso: string,
-      cat: keyof DayEventBreakdown,
-    ) => {
+    const bump = (iso: string, cat: keyof DayEventBreakdown) => {
       const key = dayKey(iso);
-      const cur = events[key] ?? {
-        termine: 0,
-        fristen: 0,
-        erinnerungen: 0,
-      };
+      const cur = events[key] ?? { termine: 0, fristen: 0, erinnerungen: 0 };
       cur[cat] += 1;
       events[key] = cur;
     };
@@ -509,15 +547,11 @@ export function TermineView({ nowIso }: TermineViewProps) {
     return { naechster, offeneFristen, bestaetigte, warten };
   }, [upcomingTermine, upcomingReminders, now, nowIso]);
 
-  function fristTage(iso: string): number {
-    return differenceInCalendarDays(parseISO(iso), now);
-  }
-
   function fristBadge(iso: string): {
     label: string;
     variant: 'neutral' | 'warning' | 'danger';
   } {
-    const days = fristTage(iso);
+    const days = differenceInCalendarDays(parseISO(iso), now);
     if (days < 0) {
       return { label: t('termine.fristen.ueberfaellig'), variant: 'danger' };
     }
@@ -534,33 +568,6 @@ export function TermineView({ nowIso }: TermineViewProps) {
 
   function statusLabel(badge: ViewBadge): string {
     return tStatus(viewBadgeLabelKey(badge));
-  }
-
-  function termineIconTone(term: Termin): {
-    tone: string;
-    Icon: React.ComponentType<{ className?: string }>;
-  } {
-    const lower = (
-      behoerdeName(term.behoerde_id) ||
-      term.betreff ||
-      ''
-    ).toLowerCase();
-    if (lower.includes('kinderarzt') || lower.includes('arzt'))
-      return { tone: 'violet', Icon: Stethoscope };
-    if (lower.includes('finanz') || lower.includes('steuer'))
-      return { tone: 'green', Icon: ReceiptText };
-    if (lower.includes('beitragsservice') || lower.includes('rundfunk'))
-      return { tone: 'green', Icon: Euro };
-    return { tone: '', Icon: Landmark };
-  }
-
-  function reminderIcon(
-    r: Reminder,
-  ): React.ComponentType<{ className?: string }> {
-    const lower = (r.titel || '').toLowerCase();
-    if (lower.includes('steuer')) return ReceiptText;
-    if (lower.includes('rundfunk') || lower.includes('beitrag')) return Euro;
-    return Bell;
   }
 
   /* Mock-ICS-Export aller aktiven (persona-scoped) Termine. */
@@ -615,10 +622,270 @@ export function TermineView({ nowIso }: TermineViewProps) {
   }, [futureTermine, now, behoerdeName]);
 
   const selectedDateLabel = selectedIso
-    ? format(parseISO(selectedIso), 'EEEE, dd. MMMM yyyy', {
-        locale: dateLocale,
-      })
+    ? format(parseISO(selectedIso), 'PPPP', { locale: dateLocale })
     : '';
+
+  const hasFilter =
+    query.trim().length > 0 || selectedIso !== null || activeTab !== 'alle';
+
+  /** Relative day-group header: heute / morgen else localized short date. */
+  function groupLabel(datum: string): {
+    primary: string;
+    secondary: string | null;
+    isToday: boolean;
+  } {
+    const delta = differenceInCalendarDays(parseISO(datum), now);
+    if (delta === 0) {
+      return {
+        primary: tTermine('agenda.heute'),
+        secondary: formatDateShort(datum, dateLocale),
+        isToday: true,
+      };
+    }
+    if (delta === 1) {
+      return {
+        primary: tTermine('agenda.morgen'),
+        secondary: formatDateShort(datum, dateLocale),
+        isToday: false,
+      };
+    }
+    return {
+      primary: formatDateShort(datum, dateLocale),
+      secondary: null,
+      isToday: false,
+    };
+  }
+
+  const onAbsagenClick = (termin: Termin) => {
+    absagenOpenerRef.current = document.activeElement as HTMLElement | null;
+    setAbsagenTermin(termin);
+  };
+
+  // --------------------------------------------------------------------------
+  // Agenda row renderers (inline — not reused elsewhere, per Karpathy simplicity).
+  // --------------------------------------------------------------------------
+
+  function renderTerminRow(term: Termin) {
+    const badge = viewBadge(term, nowIso);
+    const isOpen = expandedId === term.id;
+    const ortLabel =
+      term.ort.typ === 'video'
+        ? tTermine('ort.video')
+        : term.ort.typ === 'telefon'
+          ? tTermine('ort.telefon')
+          : tTermine('ort.praesenz');
+    const title = `${behoerdeName(term.behoerde_id)} — ${term.betreff}`;
+    return (
+      <React.Fragment key={term.id}>
+        <button
+          type="button"
+          className={`tm-agenda-row flex w-full flex-col gap-1.5 rounded-lg py-3.5 text-start transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary min-[541px]:flex-row min-[541px]:items-center min-[541px]:gap-3 ${
+            isOpen ? 'is-open' : 'hover:bg-surface-muted/60'
+          }`}
+          aria-expanded={isOpen}
+          aria-controls={`tm-detail-${term.id}`}
+          aria-label={`${title}, ${statusLabel(badge)}`}
+          onClick={() => setExpandedId((cur) => (cur === term.id ? null : term.id))}
+        >
+          <span className="flex w-full min-w-0 items-start gap-3 min-[541px]:w-auto min-[541px]:flex-1">
+            {/* Bare HH:mm in the compact row (list idiom; „Uhr" lives in the KPI
+                strip + detail card) — semibold „09:30 Uhr" wrapped inside w-16. */}
+            <span className="w-16 shrink-0 pt-0.5 text-sm font-semibold tabular-nums text-text-primary">
+              {format(parseISO(term.datum), 'HH:mm')}
+            </span>
+            <span className="min-w-0 flex-1">
+              <span
+                className="line-clamp-3 font-semibold text-text-primary min-[541px]:line-clamp-2"
+                title={title}
+              >
+                {title}
+              </span>
+              <span className="mt-0.5 line-clamp-2 text-sm text-text-secondary">
+                {ortLabel} · {term.ort.details}
+              </span>
+            </span>
+          </span>
+          <span className="flex w-full items-center justify-between gap-2 ps-16 min-[541px]:w-auto min-[541px]:justify-start min-[541px]:ps-0 min-[541px]:shrink-0">
+            <span className={`badge ${viewBadgeTone(badge)}`}>
+              {statusLabel(badge)}
+            </span>
+            <ChevronRight
+              aria-hidden="true"
+              className={`size-4 shrink-0 text-text-muted transition-transform motion-reduce:transition-none rtl:-scale-x-100 ${
+                isOpen ? 'rotate-90' : ''
+              }`}
+            />
+          </span>
+        </button>
+        {isOpen ? (
+          <div
+            id={`tm-detail-${term.id}`}
+            role="region"
+            aria-label={title}
+            /* Raised card, not a wash — the expanded surface must separate from
+               the list (figure-ground). @starting-style entrance, ease-out. */
+            className="tm-detail mb-4 mt-1 rounded-xl border border-border bg-surface p-4 shadow-sm transition-[opacity,translate] duration-200 ease-out starting:-translate-y-1 starting:opacity-0 motion-reduce:transition-none sm:p-5"
+          >
+            <TerminDetailContent
+              termin={term}
+              nowIso={nowIso}
+              dateLocale={dateLocale}
+              busy={busy === term.id}
+              behoerdeName={behoerdeName}
+              statusLabel={statusLabel}
+              recentlyConfirmed={
+                term.id === recentlyConfirmedId &&
+                displayStatus(term, nowIso) === 'bestaetigt'
+              }
+              context="accordion"
+              onBestaetigen={() => void handleBestaetigen(term)}
+              onReschedule={() => setRescheduleTermin(term)}
+              onAbsagen={() => onAbsagenClick(term)}
+            />
+          </div>
+        ) : null}
+      </React.Fragment>
+    );
+  }
+
+  // ≤540: stack the right cluster (badge/CTA) below the title so the title wins
+  // the width fight; ≥541: title flex-1, cluster inline right.
+  const AGENDA_ROW_STACK =
+    'tm-agenda-row flex flex-col gap-1.5 rounded-lg py-3.5 min-[541px]:flex-row min-[541px]:items-center min-[541px]:gap-3';
+  const AGENDA_LINK_STACK = `${AGENDA_ROW_STACK} transition-colors hover:bg-surface-muted/60 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary`;
+
+  function renderFristRow(r: Reminder) {
+    const badge = fristBadge(r.datum);
+    const secondary = r.behoerde_id ? behoerdeName(r.behoerde_id) : null;
+    const leftGroup = (
+      <span className="flex w-full min-w-0 items-start gap-3 min-[541px]:w-auto min-[541px]:flex-1">
+        <span
+          className="flex w-16 shrink-0 justify-center pt-0.5 text-text-muted"
+          aria-hidden="true"
+        >
+          <Calendar className="size-4" />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span
+            className="line-clamp-3 font-semibold text-text-primary min-[541px]:line-clamp-2"
+            title={r.titel}
+          >
+            {r.titel}
+          </span>
+          {secondary ? (
+            <span className="mt-0.5 line-clamp-2 text-sm text-text-secondary">
+              {secondary}
+            </span>
+          ) : null}
+        </span>
+      </span>
+    );
+    const rightGroup = (
+      <span className="flex w-full items-center justify-between gap-3 ps-16 min-[541px]:w-auto min-[541px]:justify-start min-[541px]:ps-0 min-[541px]:shrink-0">
+        <Badge variant={badge.variant} className="shrink-0">
+          {badge.label}
+        </Badge>
+        {r.vorgang_id ? (
+          <span className="tm-row-cta" aria-hidden="true">
+            {tTermine('row.zum_vorgang_cta')}
+            <ChevronRight />
+          </span>
+        ) : null}
+      </span>
+    );
+    return r.vorgang_id ? (
+      <Link
+        key={r.id}
+        href={`/vorgaenge/${r.vorgang_id}`}
+        className={AGENDA_LINK_STACK}
+        // Fold the due-badge into the accessible name — a bare aria-label would
+        // override the child text and drop the urgency („In 12 Tagen"/„überfällig")
+        // for screen readers (a11y-audit moderate finding).
+        aria-label={`${r.titel}, ${badge.label} — ${tTermine('row.zum_vorgang_cta')}`}
+      >
+        {leftGroup}
+        {rightGroup}
+      </Link>
+    ) : (
+      <div key={r.id} className={AGENDA_ROW_STACK}>
+        {leftGroup}
+        {rightGroup}
+      </div>
+    );
+  }
+
+  function renderErinnerungRow(r: Reminder) {
+    const secondary = r.behoerde_id ? behoerdeName(r.behoerde_id) : null;
+    // The day-group header already carries the full date; the right side only
+    // adds a neutral month label for far-out reminders (>30d), nothing sooner.
+    const monthLabel =
+      differenceInCalendarDays(parseISO(r.datum), now) > 30
+        ? format(parseISO(r.datum), 'MMM yyyy', { locale: dateLocale })
+        : null;
+    const leftGroup = (
+      <span className="flex w-full min-w-0 items-start gap-3 min-[541px]:w-auto min-[541px]:flex-1">
+        <span
+          className="flex w-16 shrink-0 justify-center pt-0.5 text-text-muted"
+          aria-hidden="true"
+        >
+          <Bell className="size-4" />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="flex items-start gap-2">
+            <span
+              className="line-clamp-2 min-w-0 font-semibold text-text-primary"
+              title={r.titel}
+            >
+              {r.titel}
+            </span>
+            <span className="mt-0.5 shrink-0 rounded-full bg-surface-muted px-2 py-0.5 text-xs text-text-secondary">
+              {tTermine('marker.erinnerung')}
+            </span>
+          </span>
+          {secondary ? (
+            <span className="mt-0.5 line-clamp-2 text-sm text-text-secondary">
+              {secondary}
+            </span>
+          ) : null}
+        </span>
+      </span>
+    );
+    const rightGroup = monthLabel ? (
+      <span className="flex w-full items-center justify-between ps-16 min-[541px]:w-auto min-[541px]:justify-start min-[541px]:ps-0 min-[541px]:shrink-0">
+        <Badge variant="neutral" className="shrink-0 tabular-nums">
+          {monthLabel}
+        </Badge>
+      </span>
+    ) : null;
+    return r.vorgang_id ? (
+      <Link
+        key={r.id}
+        href={`/vorgaenge/${r.vorgang_id}`}
+        className={AGENDA_LINK_STACK}
+        // Fold the right-side label (month, if any) into the accessible name so
+        // the bare aria-label doesn't drop it (a11y-audit moderate finding).
+        aria-label={
+          monthLabel
+            ? `${r.titel}, ${monthLabel} — ${tTermine('row.zum_vorgang_cta')}`
+            : `${r.titel} — ${tTermine('row.zum_vorgang_cta')}`
+        }
+      >
+        {leftGroup}
+        {rightGroup}
+      </Link>
+    ) : (
+      <div key={r.id} className={AGENDA_ROW_STACK}>
+        {leftGroup}
+        {rightGroup}
+      </div>
+    );
+  }
+
+  function renderRow(it: AgendaItem) {
+    if (it.kind === 'termin') return renderTerminRow(it.term);
+    if (it.kind === 'frist') return renderFristRow(it.rem);
+    return renderErinnerungRow(it.rem);
+  }
 
   // --------------------------------------------------------------------------
   // Render.
@@ -653,16 +920,34 @@ export function TermineView({ nowIso }: TermineViewProps) {
           <Skeleton shape="text" className="h-8 w-48" />
           <Skeleton shape="text" className="mt-2 w-72" />
         </div>
-        <div className="tm-kpis">
-          <Skeleton className="h-24 rounded-2xl" />
-          <Skeleton className="h-24 rounded-2xl" />
-          <Skeleton className="h-24 rounded-2xl" />
-          <Skeleton className="h-24 rounded-2xl" />
+        <div className="mb-[18px] flex flex-col divide-y divide-border border-y border-border sm:flex-row sm:divide-x sm:divide-y-0">
+          <div className="flex flex-col justify-center gap-1.5 py-3.5 sm:flex-1 sm:pr-6">
+            <Skeleton shape="text" className="h-3 w-24" />
+            <Skeleton shape="text" className="h-5 w-40" />
+            <Skeleton shape="text" className="h-3 w-20" />
+          </div>
+          <div className="flex flex-col justify-center py-3 sm:flex-1 sm:px-6">
+            <div className="flex items-baseline gap-2">
+              <Skeleton shape="text" className="h-6 w-8" />
+              <Skeleton shape="text" className="h-3 w-24" />
+            </div>
+          </div>
+          <div className="flex flex-col justify-center py-3 sm:flex-1 sm:px-6">
+            <div className="flex items-baseline gap-2">
+              <Skeleton shape="text" className="h-6 w-8" />
+              <Skeleton shape="text" className="h-3 w-24" />
+            </div>
+          </div>
+          <div className="flex flex-col justify-center py-3 sm:flex-1 sm:px-6">
+            <div className="flex items-baseline gap-2">
+              <Skeleton shape="text" className="h-6 w-8" />
+              <Skeleton shape="text" className="h-3 w-24" />
+            </div>
+          </div>
         </div>
-        <div className="tm-layout">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_300px] xl:grid-cols-[minmax(0,1fr)_340px]">
           <Skeleton className="h-80 rounded-2xl" />
-          <Skeleton className="h-80 rounded-2xl" />
-          <Skeleton className="h-80 rounded-2xl" />
+          <Skeleton className="h-72 rounded-2xl" />
         </div>
       </div>
     );
@@ -680,8 +965,29 @@ export function TermineView({ nowIso }: TermineViewProps) {
     ? formatDateLong(kpis.naechster.datum, dateLocale)
     : t('termine.kpi.kein_termin');
   const naechsterZeit = kpis.naechster
-    ? formatTimeRange(kpis.naechster.datum)
+    ? tTermine('zeit_range', { range: formatTimeRange(kpis.naechster.datum) })
     : '—';
+
+  const railInner = (
+    <>
+      <div className="tm-rail-card rounded-2xl border border-border bg-surface p-4">
+        <MonthCalendar
+          selectedIso={selectedIso}
+          todayIso={todayIso}
+          events={calendarEvents}
+          onSelect={setSelectedIso}
+        />
+      </div>
+      <button
+        type="button"
+        className="mt-3 inline-flex items-center gap-1 rounded-md text-sm font-medium text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        onClick={() => setActiveTab('vergangen')}
+      >
+        {tTermine('rail.vergangen_link')}
+        <ChevronRight aria-hidden="true" className="size-4 rtl:-scale-x-100" />
+      </button>
+    </>
+  );
 
   return (
     <div>
@@ -690,51 +996,59 @@ export function TermineView({ nowIso }: TermineViewProps) {
         <div className="sub">{t('termine.subtitle')}</div>
       </div>
 
-      {/* Row 1 — KPI tiles. */}
-      <div className="tm-kpis">
-        <div className="tm-kpi">
-          <span className="icon-circle lg green">
-            <Calendar aria-hidden="true" />
+      {/* Editorial summary strip: „Nächster Termin" leads (date + time), the three
+          counts follow as Zahl + Label on one line. No boxes, no icon circles. */}
+      <div
+        data-testid="termine-kennzahl-strip"
+        className="mb-[18px] flex flex-col divide-y divide-border border-y border-border sm:flex-row sm:divide-x sm:divide-y-0"
+        role="group"
+        aria-label={t('termine.kpi.strip_label')}
+        tabIndex={0}
+      >
+        <div className="flex flex-col justify-center gap-0.5 py-3.5 sm:flex-1 sm:pr-6">
+          <span className="text-xs font-semibold text-text-secondary">
+            {t('termine.kpi.naechster_termin')}
           </span>
-          <div className="tm-kpi-body">
-            <span className="k-label">{t('termine.kpi.naechster_termin')}</span>
-            <span className="k-val tabular-nums">{naechsterDatum}</span>
-            <span className="k-sub tabular-nums">{naechsterZeit}</span>
-          </div>
+          <span className="text-xl font-semibold tracking-tight tabular-nums text-text-primary">
+            {naechsterDatum}
+          </span>
+          <span className="text-sm tabular-nums text-text-secondary">
+            {naechsterZeit}
+          </span>
         </div>
-        <div className="tm-kpi">
-          <span className="icon-circle lg amber">
-            <Clock aria-hidden="true" />
-          </span>
-          <div className="tm-kpi-body">
-            <span className="k-label">{t('termine.kpi.offene_fristen')}</span>
-            <span className="k-val tabular-nums">{kpis.offeneFristen}</span>
-            <span className="k-sub">{t('termine.kpi.offene_fristen_sub')}</span>
-          </div>
+        <div className="flex flex-col justify-center py-3 sm:flex-1 sm:px-6">
+          <p className="flex items-baseline gap-2">
+            <span className="text-2xl font-bold leading-none tabular-nums text-text-primary">
+              {kpis.offeneFristen}
+            </span>
+            <span className="text-sm text-text-secondary">
+              {t('termine.kpi.offene_fristen')}
+            </span>
+          </p>
         </div>
-        <div className="tm-kpi">
-          <span className="icon-circle lg green">
-            <CheckCircle2 aria-hidden="true" />
-          </span>
-          <div className="tm-kpi-body">
-            <span className="k-label">{t('termine.kpi.bestaetigte')}</span>
-            <span className="k-val tabular-nums">{kpis.bestaetigte}</span>
-            <span className="k-sub">{t('termine.kpi.bestaetigte_sub')}</span>
-          </div>
+        <div className="flex flex-col justify-center py-3 sm:flex-1 sm:px-6">
+          <p className="flex items-baseline gap-2">
+            <span className="text-2xl font-bold leading-none tabular-nums text-text-primary">
+              {kpis.bestaetigte}
+            </span>
+            <span className="text-sm text-text-secondary">
+              {t('termine.kpi.bestaetigte')}
+            </span>
+          </p>
         </div>
-        <div className="tm-kpi">
-          <span className="icon-circle lg">
-            <Users aria-hidden="true" />
-          </span>
-          <div className="tm-kpi-body">
-            <span className="k-label">{t('termine.kpi.warten')}</span>
-            <span className="k-val tabular-nums">{kpis.warten}</span>
-            <span className="k-sub">{t('termine.kpi.warten_sub')}</span>
-          </div>
+        <div className="flex flex-col justify-center py-3 sm:flex-1 sm:px-6">
+          <p className="flex items-baseline gap-2">
+            <span className="text-2xl font-bold leading-none tabular-nums text-text-primary">
+              {kpis.warten}
+            </span>
+            <span className="text-sm text-text-secondary">
+              {t('termine.kpi.warten')}
+            </span>
+          </p>
         </div>
       </div>
 
-      {/* Toolbar — tabs + search + Filter + Export. */}
+      {/* Toolbar — tabs + search + Export (dead Filter button removed). */}
       <div className="tm-toolbar">
         <div className="tab-chips">
           {TABS.map((tab) => (
@@ -768,15 +1082,6 @@ export function TermineView({ nowIso }: TermineViewProps) {
           <button
             type="button"
             className="btn btn-secondary"
-            disabled
-            aria-disabled="true"
-          >
-            <Filter aria-hidden="true" />
-            {t('termine.toolbar.filter')}
-          </button>
-          <button
-            type="button"
-            className="btn btn-secondary"
             onClick={handleIcsExport}
             aria-label={t('termine.card.ics_aria_all')}
           >
@@ -787,269 +1092,182 @@ export function TermineView({ nowIso }: TermineViewProps) {
       </div>
 
       <p className="sr-only" aria-live="polite">
-        {t('termine.liste.anstehende_titel')}: {visibleTermine.length} ·{' '}
-        {t('termine.fristen_offen', { count: visibleReminders.length })}
+        {tTermine('agenda.titel')}: {agendaItems.length}
       </p>
 
-      <div className="tm-layout">
-        {/* LEFT rail — calendar + legend. */}
-        <div className="tm-card">
-          <MonthCalendar
-            selectedIso={selectedIso}
-            todayIso={todayIso}
-            events={calendarEvents}
-            onSelect={setSelectedIso}
-          />
-          <div
-            className="cal-legend"
-            role="group"
-            aria-label={t('termine.cal.legend.titel')}
-          >
-            <div className="cal-legend-row">
-              <span className="cal-legend-dot cal-dot-termin" aria-hidden="true" />
-              {t('termine.cal.legend.termine')}
-            </div>
-            <div className="cal-legend-row">
-              <span className="cal-legend-dot cal-dot-frist" aria-hidden="true" />
-              {t('termine.cal.legend.fristen')}
-            </div>
-            <div className="cal-legend-row">
-              <span
-                className="cal-legend-dot cal-dot-erinnerung"
-                aria-hidden="true"
-              />
-              {t('termine.cal.legend.erinnerungen')}
-            </div>
-            <div className="cal-legend-row">
-              <span
-                className="cal-legend-dot cal-dot-mehrere"
-                aria-hidden="true"
-              />
-              {t('termine.cal.legend.mehrere')}
-            </div>
+      {/* „Wartet auf Sie"-Band — §17 hero + overdue Fristen; hidden when empty. */}
+      {bandVisible ? (
+        <section aria-labelledby="tm-wartet-h" className="tm-wartet mb-8">
+          <div className="mb-3">
+            <h2
+              id="tm-wartet-h"
+              className="text-lg font-semibold tracking-tight text-text-primary"
+            >
+              {tTermine('wartet.titel')}
+            </h2>
+            <p className="mt-0.5 text-sm text-text-secondary">
+              {tTermine('wartet.hint')}
+            </p>
           </div>
-        </div>
 
-        {/* CENTER — appointment + Frist sections. */}
-        <div>
-          {selectedIso ? (
-            <div className="tm-selected-row">
-              <span className="badge brand">
-                <span className="tabular-nums">
-                  {t('termine.auswahl.label', { datum: selectedDateLabel })}
-                </span>
-              </span>
-              <button
-                type="button"
-                className="btn btn-secondary btn-sm"
-                onClick={() => setSelectedIso(null)}
-              >
-                {t('termine.auswahl.aufheben')}
-              </button>
+          {showHeroInBand && heroTermin ? (
+            <div
+              role="region"
+              aria-label={`${behoerdeName(heroTermin.behoerde_id)} — ${heroTermin.betreff}`}
+              className="tm-detail rounded-2xl border border-border bg-surface p-5 shadow-sm sm:p-6"
+            >
+              <TerminDetailContent
+                termin={heroTermin}
+                nowIso={nowIso}
+                dateLocale={dateLocale}
+                busy={busy === heroTermin.id}
+                behoerdeName={behoerdeName}
+                statusLabel={statusLabel}
+                recentlyConfirmed={
+                  heroTermin.id === recentlyConfirmedId &&
+                  displayStatus(heroTermin, nowIso) === 'bestaetigt'
+                }
+                context="band"
+                onBestaetigen={() => void handleBestaetigen(heroTermin)}
+                onReschedule={() => setRescheduleTermin(heroTermin)}
+                onAbsagen={() => onAbsagenClick(heroTermin)}
+              />
             </div>
           ) : null}
 
-          {showTermineSection ? (
-            <section className="tm-section" aria-labelledby="tm-anstehende">
-              <div className="tm-section-head">
-                <h2 id="tm-anstehende">{t('termine.liste.anstehende_titel')}</h2>
-              </div>
-
-              {visibleTermine.length > 0 ? (
-                visibleTermine.map((term) => {
-                  const { tone, Icon } = termineIconTone(term);
-                  const badge = viewBadge(term, nowIso);
-                  const isSelected = term.id === selectedId;
-                  return (
-                    <button
-                      key={term.id}
-                      type="button"
-                      className={`tm-list-item is-interactive${isSelected ? ' is-selected' : ''}`}
-                      style={{ width: '100%', textAlign: 'left' }}
-                      aria-pressed={isSelected}
-                      aria-label={t('termine.row.details_aria', {
-                        betreff: `${behoerdeName(term.behoerde_id)} — ${term.betreff}, ${statusLabel(badge)}`,
-                      })}
-                      onClick={() => setSelectedId(term.id)}
-                    >
-                      <span className={`icon-circle${tone ? ` ${tone}` : ''}`}>
-                        <Icon />
-                      </span>
-                      <div>
-                        <div className="t">
-                          {behoerdeName(term.behoerde_id)} — {term.betreff}
-                        </div>
-                        <div className="meta tabular-nums">
-                          <span>
-                            <Calendar style={{ width: 14, height: 14 }} />
-                            {formatDateLong(term.datum, dateLocale)}
-                          </span>{' '}
-                          <span>
-                            <Clock style={{ width: 14, height: 14 }} />
-                            {t('termine.uhr_dauer', {
-                              zeit: formatTimeRange(term.datum),
-                              dauer: 45,
-                            })}
-                          </span>
-                        </div>
-                        <div className="meta">
-                          <span>
-                            <MapPin style={{ width: 14, height: 14 }} />
-                            {term.ort.details}
-                          </span>
-                        </div>
-                      </div>
-                      <span className={`badge ${viewBadgeTone(badge)}`}>
-                        {statusLabel(badge)}
-                      </span>
-                      <span className="tm-row-cta" aria-hidden="true">
-                        {t('termine.row.details_cta')}
-                        <ChevronRight />
-                      </span>
-                    </button>
-                  );
-                })
-              ) : (
-                <EmptyState
-                  icon={<Calendar aria-hidden="true" />}
-                  title={t('termine.spur.termine_leer')}
-                />
-              )}
-
-              {visibleTermine.length > 0 && activeTab === 'alle' ? (
-                <div className="tm-section-foot">
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={() => setActiveTab('termine')}
-                  >
-                    {t('termine.liste.alle_termine')}
-                    <ChevronRight aria-hidden="true" />
-                  </button>
-                </div>
-              ) : null}
-            </section>
+          {showOverdueInBand ? (
+            <div
+              className={`divide-y divide-border border-t border-border ${
+                showHeroInBand ? 'mt-4' : ''
+              }`}
+            >
+              {overdueFristen.map((r) => renderFristRow(r))}
+            </div>
           ) : null}
+        </section>
+      ) : null}
 
-          {showFristenSection ? (
-            <section className="tm-section" aria-labelledby="tm-fristen">
-              <div className="tm-section-head">
-                <h2 id="tm-fristen">{fristenHeading}</h2>
+      {/* Body — Agenda (primary) + Rail (secondary). */}
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-6 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-8">
+        <section aria-labelledby="tm-agenda-h" className="tm-agenda min-w-0">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+            <h2
+              id="tm-agenda-h"
+              className="text-lg font-semibold tracking-tight text-text-primary"
+            >
+              {tTermine('agenda.titel')}
+              {/* Visual count only — aria-hidden keeps the region's accessible
+                  name „Anstehend" (the sr-only live line already announces N). */}
+              <span
+                aria-hidden="true"
+                className="ms-2 text-sm font-normal tabular-nums text-text-muted"
+              >
+                · {agendaItems.length}
+              </span>
+            </h2>
+            {selectedIso ? (
+              <div className="flex items-center gap-2">
+                <span className="badge brand">
+                  <span className="tabular-nums">
+                    {tTermine('auswahl.label', { datum: selectedDateLabel })}
+                  </span>
+                </span>
+                <button
+                  type="button"
+                  className="btn btn-secondary btn-sm"
+                  onClick={() => setSelectedIso(null)}
+                >
+                  {tTermine('auswahl.aufheben')}
+                </button>
               </div>
+            ) : null}
+          </div>
 
-              {visibleReminders.length > 0 ? (
-                visibleReminders.map((r) => {
-                  const Icon = reminderIcon(r);
-                  const isFrist = r.kategorie === 'frist';
-                  const badge = fristBadge(r.datum);
-                  const content = (
-                    <>
-                      <span className="icon-circle green">
-                        <Icon />
+          {agendaGroups.length > 0 ? (
+            /* Timeline spine: a continuous hairline down the agenda gutter; each
+               day header hangs a dot on it. The FIRST group (the nearest thing
+               coming up) gets the filled Waldgrün dot + halo — the page's "you
+               are here" anchor. Logical props → RTL-safe; tokens → dark-safe. */
+            <div className="relative flex flex-col gap-7 ps-5">
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute bottom-3 start-[3px] top-2 w-px bg-border"
+              />
+              {agendaGroups.map((group, groupIdx) => {
+                const label = groupLabel(group.datum);
+                return (
+                  <div key={group.key}>
+                    <h3 className="relative mb-1.5 flex items-baseline gap-2 text-sm font-semibold text-text-primary">
+                      <span
+                        aria-hidden="true"
+                        className={`absolute -start-5 top-1/2 size-[7px] -translate-y-1/2 rounded-full ${
+                          groupIdx === 0
+                            ? 'bg-primary ring-4 ring-primary/15'
+                            : 'border-2 border-border bg-surface'
+                        }`}
+                      />
+                      <span className={label.isToday ? 'text-primary' : undefined}>
+                        {label.primary}
                       </span>
-                      <div>
-                        <div className="t">{r.titel}</div>
-                        <div className="meta tabular-nums">
-                          <span>
-                            <Calendar style={{ width: 14, height: 14 }} />
-                            {isFrist
-                              ? t('termine.frist_praefix', {
-                                  datum: formatDateLong(r.datum, dateLocale),
-                                })
-                              : t('termine.faellig_praefix', {
-                                  datum: formatDateLong(r.datum, dateLocale),
-                                })}
-                          </span>
-                        </div>
-                        {r.behoerde_id ? (
-                          <div className="meta">
-                            {behoerdeName(r.behoerde_id)}
-                          </div>
-                        ) : null}
-                      </div>
-                      <Badge variant={badge.variant}>{badge.label}</Badge>
-                    </>
-                  );
-                  return r.vorgang_id ? (
-                    <Link
-                      key={r.id}
-                      href={`/vorgaenge/${r.vorgang_id}`}
-                      className="tm-list-item is-interactive"
-                      aria-label={t('termine.row.zum_vorgang_aria', {
-                        titel: r.titel,
-                      })}
-                    >
-                      {content}
-                      <span className="tm-row-cta" aria-hidden="true">
-                        {t('termine.row.zum_vorgang_cta')}
-                        <ChevronRight />
-                      </span>
-                    </Link>
-                  ) : (
-                    <div key={r.id} className="tm-list-item">
-                      {content}
+                      {label.secondary ? (
+                        <span className="text-xs font-normal tabular-nums text-text-muted">
+                          {label.secondary}
+                        </span>
+                      ) : null}
+                    </h3>
+                    <div className="divide-y divide-border border-t border-border">
+                      {group.items.map((it) => renderRow(it))}
                     </div>
-                  );
-                })
-              ) : (
-                <EmptyState
-                  icon={<Bell aria-hidden="true" />}
-                  title={t('termine.spur.fristen_leer')}
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="py-6 text-sm text-text-secondary">
+              {hasFilter
+                ? t('termine.empty.filter_title')
+                : tTermine('agenda.leer')}
+            </p>
+          )}
+        </section>
+
+        {isNarrow ? (
+          <section
+            aria-labelledby="tm-rail-h"
+            className="tm-rail-details rounded-2xl border border-border"
+          >
+            <details className="group">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-2 rounded-2xl p-4 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary [&::-webkit-details-marker]:hidden">
+                <h2
+                  id="tm-rail-h"
+                  className="text-lg font-semibold tracking-tight text-text-primary"
+                >
+                  {tTermine('rail.titel')}
+                </h2>
+                <ChevronRight
+                  aria-hidden="true"
+                  className="size-5 text-text-muted transition-transform group-open:rotate-90 motion-reduce:transition-none rtl:-scale-x-100"
                 />
-              )}
-
-              {visibleReminders.length > 0 && activeTab === 'alle' ? (
-                <div className="tm-section-foot">
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={() => setActiveTab('fristen')}
-                  >
-                    {t('termine.liste.alle_fristen')}
-                    <ChevronRight aria-hidden="true" />
-                  </button>
-                </div>
-              ) : null}
-            </section>
-          ) : null}
-
-          {visibleCount === 0 ? (
-            <EmptyState
-              icon={<Calendar aria-hidden="true" />}
-              title={t('termine.empty.filter_title')}
-            />
-          ) : null}
-        </div>
-
-        {/* RIGHT rail — Termindetails panel. */}
-        <div className="tm-card tm-detail">
-          <TerminDetailPanel
-            termin={detailTermin}
-            nowIso={nowIso}
-            dateLocale={dateLocale}
-            busy={detailTermin ? busy === detailTermin.id : false}
-            behoerdeName={behoerdeName}
-            statusLabel={statusLabel}
-            recentlyConfirmed={
-              detailTermin !== null &&
-              detailTermin.id === recentlyConfirmedId &&
-              displayStatus(detailTermin, nowIso) === 'bestaetigt'
-            }
-            onClose={() => setSelectedId(null)}
-            onBestaetigen={() => {
-              if (detailTermin) void handleBestaetigen(detailTermin);
-            }}
-            onReschedule={() => {
-              if (detailTermin) setRescheduleTermin(detailTermin);
-            }}
-            onAbsagen={() => {
-              if (!detailTermin) return;
-              absagenOpenerRef.current =
-                document.activeElement as HTMLElement | null;
-              setAbsagenTermin(detailTermin);
-            }}
-          />
-        </div>
+              </summary>
+              <div className="px-4 pb-4">{railInner}</div>
+            </details>
+          </section>
+        ) : (
+          <section
+            aria-labelledby="tm-rail-h"
+            className="self-start lg:sticky lg:top-[calc(var(--header-h)+14px)]"
+          >
+            <div>
+              <h2
+                id="tm-rail-h"
+                className="mb-3 text-lg font-semibold tracking-tight text-text-primary"
+              >
+                {tTermine('rail.titel')}
+              </h2>
+            </div>
+            {railInner}
+          </section>
+        )}
       </div>
 
       <TerminRescheduleDialog
@@ -1079,252 +1297,5 @@ export function TermineView({ nowIso }: TermineViewProps) {
         finalFocusRef={absagenOpenerRef}
       />
     </div>
-  );
-}
-
-interface TerminDetailPanelProps {
-  termin: Termin | null;
-  nowIso: string;
-  dateLocale: Locale;
-  busy: boolean;
-  behoerdeName: (id?: string) => string;
-  statusLabel: (badge: ViewBadge) => string;
-  recentlyConfirmed: boolean;
-  onClose: () => void;
-  onBestaetigen: () => void;
-  onReschedule: () => void;
-  onAbsagen: () => void;
-}
-
-/**
- * „Termindetails" right panel — replaces the old detail Dialog. Persistent
- * `.tm-detail` card bound to the selected termin. For a Bürgeramt §17 termin it
- * surfaces the live „noch N Tage"-§17-reasoning + the primary „Termin bestätigen"
- * CTA; after confirm it flips green and renders the honest Datenminimierungs-
- * Quittung („Gelesen: nichts aus Ihrem Kalender.") — never a Posteingang claim.
- */
-function TerminDetailPanel({
-  termin,
-  nowIso,
-  dateLocale,
-  busy,
-  behoerdeName,
-  statusLabel,
-  recentlyConfirmed,
-  onClose,
-  onBestaetigen,
-  onReschedule,
-  onAbsagen,
-}: TerminDetailPanelProps) {
-  const t = useTranslations('termine');
-  const tRoot = useTranslations();
-  const [done, setDone] = React.useState<Record<number, boolean>>({});
-
-  // Reset the local checklist toggles when the selected termin changes.
-  React.useEffect(() => {
-    setDone({});
-  }, [termin?.id]);
-
-  const reasoningLine = React.useMemo(() => {
-    if (!termin || termin.reasoning_typ !== 'bmg_17' || !termin.frist_iso) {
-      return t('hero.reasoning_bmg17_statisch');
-    }
-    const frist = parseISO(termin.frist_iso);
-    if (Number.isNaN(frist.getTime())) {
-      return t('hero.reasoning_bmg17_statisch');
-    }
-    const tage = differenceInCalendarDays(frist, parseISO(nowIso));
-    if (tage < 0) return t('hero.reasoning_bmg17_statisch');
-    return t('hero.reasoning_bmg17', { tage });
-  }, [termin, nowIso, t]);
-
-  if (!termin) {
-    return (
-      <>
-        <div className="tm-detail-head">
-          <h2>{t('detail.titel')}</h2>
-        </div>
-        <p className="tm-detail-empty">{t('empty.naechster_schritt')}</p>
-      </>
-    );
-  }
-
-  const badge = viewBadge(termin, nowIso);
-  const istVorgemerktHero = istBuergeramtVorgemerkt(termin, nowIso);
-  const isVideo = termin.ort.typ === 'video';
-  const ortLabel =
-    termin.ort.typ === 'video'
-      ? t('ort.video')
-      : termin.ort.typ === 'telefon'
-        ? t('ort.telefon')
-        : t('ort.praesenz');
-
-  return (
-    <>
-      <div className="tm-detail-head">
-        <h2>{t('detail.titel')}</h2>
-        <button
-          type="button"
-          className="tm-detail-close"
-          aria-label={t('detail.schliessen')}
-          onClick={onClose}
-        >
-          <X aria-hidden="true" />
-        </button>
-      </div>
-
-      <div className="tm-detail-title">
-        <span className="t">
-          {behoerdeName(termin.behoerde_id)} — {termin.betreff}
-        </span>
-        <span className={`badge ${viewBadgeTone(badge)}`}>
-          {statusLabel(badge)}
-        </span>
-      </div>
-
-      <div className="ns-info">
-        <div className="row tabular-nums">
-          <Calendar aria-hidden="true" />
-          {formatDateLong(termin.datum, dateLocale)}
-        </div>
-        <div className="row tabular-nums">
-          <Clock aria-hidden="true" />
-          {t('uhr_dauer', { zeit: formatTimeRange(termin.datum), dauer: 45 })}
-        </div>
-        <div className="row">
-          <Landmark aria-hidden="true" />
-          <div>
-            <span className="link">{behoerdeName(termin.behoerde_id)}</span>
-            <br />
-            {ortLabel} · {termin.ort.details}
-          </div>
-        </div>
-        {termin.buchungsreferenz ? (
-          <div className="row">
-            <FileText aria-hidden="true" />
-            <span className="mono tabular-nums">{termin.buchungsreferenz}</span>
-          </div>
-        ) : null}
-      </div>
-
-      {termin.vorbereitung && termin.vorbereitung.length > 0 ? (
-        <div className="prep-card">
-          <h3>{t('detail.vorbereitung_titel')}</h3>
-          {termin.vorbereitung.map((item, idx) => {
-            const checked = done[idx] ?? item.done ?? false;
-            return (
-              <button
-                key={item.label_i18n_key}
-                type="button"
-                className="prep-toggle"
-                aria-pressed={checked}
-                onClick={() =>
-                  setDone((prev) => ({ ...prev, [idx]: !checked }))
-                }
-              >
-                <span className="pt-icon" aria-hidden="true">
-                  {checked ? <CheckCircle2 /> : <Circle />}
-                </span>
-                <span className="pt-label">
-                  {tRoot(item.label_i18n_key as never)}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      ) : null}
-
-      {termin.vorgang_id ? (
-        <div className="ns-info" style={{ marginBottom: 8 }}>
-          <div className="row">
-            <FileText aria-hidden="true" />
-            <Link href={`/vorgaenge/${termin.vorgang_id}`} className="link">
-              {t('detail.zugehoeriger_vorgang')}
-            </Link>
-          </div>
-        </div>
-      ) : null}
-
-      {istVorgemerktHero ? (
-        <div className="tm-detail-reason">
-          <Info aria-hidden="true" />
-          <div>
-            <span className="tabular-nums">{reasoningLine}</span>
-            <br />
-            <span className="open">{t('hero.nicht_abgeschlossen')}</span>
-          </div>
-        </div>
-      ) : null}
-
-      {recentlyConfirmed ? (
-        <section
-          className="vr-card"
-          aria-live="polite"
-          aria-label={t('quittung.titel')}
-          style={{ marginBottom: 12 }}
-        >
-          <div className="vr-head">
-            <span className="vr-icon" aria-hidden="true">
-              <CheckCircle2 />
-            </span>
-            <h3 className="vr-title">{t('quittung.titel')}</h3>
-          </div>
-          <p style={{ fontSize: 13.5, lineHeight: 1.6, margin: 0 }}>
-            {t('quittung.gelesen')}
-          </p>
-        </section>
-      ) : null}
-
-      <div className="tm-detail-actions">
-        {istVorgemerktHero ? (
-          <button
-            type="button"
-            className="btn btn-primary"
-            disabled={busy}
-            aria-label={t('hero.aria_bestaetigen', {
-              behoerde: behoerdeName(termin.behoerde_id),
-              datum: formatDateLong(termin.datum, dateLocale),
-            })}
-            onClick={onBestaetigen}
-          >
-            <CheckCircle2 aria-hidden="true" />
-            {t('hero.cta_bestaetigen')}
-          </button>
-        ) : null}
-
-        {termin.vorgang_id ? (
-          <Link
-            href={`/vorgaenge/${termin.vorgang_id}`}
-            className="btn btn-primary"
-          >
-            {t('detail.zum_vorgang')}
-          </Link>
-        ) : null}
-
-        <button
-          type="button"
-          className="btn btn-secondary"
-          disabled={busy}
-          onClick={onReschedule}
-        >
-          <Calendar aria-hidden="true" />
-          {t('detail.verschieben')}
-        </button>
-
-        <button
-          type="button"
-          className="btn btn-danger"
-          disabled={busy}
-          onClick={onAbsagen}
-        >
-          <X aria-hidden="true" />
-          {t('action.absagen')}
-        </button>
-      </div>
-
-      {isVideo ? (
-        <div className="tm-detail-foot">{t('detail.link_hinweis')}</div>
-      ) : null}
-    </>
   );
 }

@@ -38,6 +38,10 @@ async function seedVorgemerktHero(page: Page) {
             active_persona_id: persona,
             seeded_at: new Date().toISOString(),
             reliable_mode: true,
+            // Match seed.ts SEED_CONTENT_VERSION so the boot does NOT trigger the
+            // content-version reseed (seed.ts §A5), which would overwrite the
+            // pre-injected hero termine bucket below with the default persona seed.
+            seed_content_version: 3,
           }),
         );
         const now = Date.now();
@@ -296,12 +300,14 @@ test('out-of-month day text colour meets >= 4.5:1 (prior fix: text-text-muted no
     const buttons = Array.from(
       grid.querySelectorAll('[role="gridcell"] button'),
     ) as HTMLElement[];
-    const pageBg = parse(getComputedStyle(document.body).backgroundColor);
-    const pageBgRgb: [number, number, number] = [
-      pageBg[0],
-      pageBg[1],
-      pageBg[2],
-    ];
+    // Under Liquid Glass the page's light fill is an ambient gradient on <html>;
+    // document.body.backgroundColor is transparent (alpha 0). Treating that as
+    // black would mis-measure the calendar day text against a colour that is not
+    // actually behind it — composite over the visible light page (white in this
+    // light-mode probe) instead. The >= 4.5:1 assertion below is unchanged.
+    const rawBg = parse(getComputedStyle(document.body).backgroundColor);
+    const pageBgRgb: [number, number, number] =
+      rawBg[3] === 0 ? [255, 255, 255] : [rawBg[0], rawBg[1], rawBg[2]];
     let worst = 999;
     let worstColor = '';
     for (const b of buttons) {
@@ -359,21 +365,19 @@ test('event-bearing days expose the category breakdown in the cell aria-label (t
   }
 });
 
-test('center lists render as labelled regions (Anstehende Termine + Fristen)', async ({
+test('agenda + rail render as labelled regions (Anstehend + Kalender)', async ({
   page,
 }) => {
   await setLocale(page, 'de');
   await page.goto('/termine', { waitUntil: 'networkidle' });
   await waitForTermine(page);
-  const anstehende = page.getByRole('heading', {
-    name: /^Anstehende Termine$/i,
-  });
-  const fristen = page.getByRole('heading', {
-    name: /^Fristen, die Sie im Blick/i,
-  });
-  await expect(anstehende, 'Anstehende-Termine heading present').toHaveCount(1);
-  await expect(fristen, 'Fristen heading present').toHaveCount(1);
-  // Both lists are headings inside <section aria-labelledby> regions.
+  // The two disjoint center lists are merged into one chronological Agenda; the
+  // always-present labelled regions are now Agenda („Anstehend") + Rail
+  // („Kalender"). Both are <section aria-labelledby> > div > h2[id] (contract).
+  const agenda = page.getByRole('heading', { name: /^Anstehend$/i });
+  const kalender = page.getByRole('heading', { name: /^Kalender$/i });
+  await expect(agenda, 'Agenda heading present').toHaveCount(1);
+  await expect(kalender, 'Rail heading present').toHaveCount(1);
   const wiring = await page.evaluate(() => {
     const headings = Array.from(
       document.querySelectorAll('main section[aria-labelledby] > div > h2[id]'),

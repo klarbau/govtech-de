@@ -32,9 +32,9 @@ interface MonthCalendarProps {
   /** ISO date treated as "today" (SSR-stable demo now). */
   todayIso: string;
   /**
-   * yyyy-MM-dd → per-category event breakdown. A dot's colour is derived from
-   * which categories the day carries (single → that colour, >1 → amber); the
-   * cell aria-label announces the breakdown in TEXT (colour-independent a11y).
+   * yyyy-MM-dd → per-category event breakdown. Days with any entry carry ONE
+   * neutral marker dot; the cell aria-label announces the per-category breakdown
+   * in TEXT (colour-independent a11y), so no colour coding is needed.
    */
   events: Record<string, DayEventBreakdown>;
   onSelect: (iso: string | null) => void;
@@ -232,16 +232,6 @@ export function MonthCalendar({
                 0,
               );
 
-              // Dot colour: a single category → that hue, >1 → amber „mehrere".
-              const dotClass =
-                activeCategories.length > 1
-                  ? 'cal-dot-mehrere'
-                  : activeCategories[0] === 'fristen'
-                    ? 'cal-dot-frist'
-                    : activeCategories[0] === 'erinnerungen'
-                      ? 'cal-dot-erinnerung'
-                      : 'cal-dot-termin';
-
               // Colour-independent a11y: spell the per-category breakdown in text.
               const eventSuffix =
                 count > 0
@@ -279,10 +269,12 @@ export function MonthCalendar({
                       // Solid muted token for out-of-month (>= 4.5:1 vs page bg).
                       !inMonth && 'text-text-muted',
                       inMonth && !isSelected && 'text-text-primary hover:bg-surface-muted',
-                      // Today = ring/outline (keeps dark text → contrast-safe vs
-                      // page bg), matching the accessible baseline; only the
-                      // selected day gets the filled primary pill.
-                      isToday && !isSelected && 'font-semibold ring-2 ring-inset ring-primary',
+                      // Today = soft Waldgrün fill + primary numeral (contrast-safe
+                      // on the 12%-wash in both themes); the SELECTED day keeps the
+                      // solid primary pill so the two states stay distinguishable.
+                      isToday &&
+                        !isSelected &&
+                        'bg-primary/10 font-semibold text-primary ring-1 ring-inset ring-primary/40',
                       isSelected && 'bg-primary font-semibold text-primary-foreground',
                     )}
                   >
@@ -292,7 +284,7 @@ export function MonthCalendar({
                         aria-hidden="true"
                         className={cn(
                           'absolute bottom-1 size-1 rounded-full',
-                          isSelected ? 'bg-primary-foreground' : dotClass,
+                          isSelected ? 'bg-primary-foreground' : 'bg-primary/70',
                         )}
                       />
                     ) : null}
