@@ -1271,3 +1271,104 @@ html[data-lg] .app-topnav .lg-top-search {
     animation: haube-dot-tick 480ms cubic-bezier(0.23, 1, 0.32, 1);
   }
 }
+
+/* ── Landing header + hero reflow (WCAG 1.4.10) ──────────────────────────────
+   The FROZEN prototype-v2.css keeps the landing header on ONE row down to
+   769px and the hero on THREE columns down to 1024px. Neither fits: measured
+   at 900px the brand wordmark wrapped and the „Anmelden"-CTA overflowed the
+   viewport by 26px; at 1024px nav labels and the step-3 Behörden-Chips broke
+   mid-word („Einwohnermelde amt"). The one-row header + 3-col hero truly fit
+   only ≥1160px — below that, reuse the treatments the frozen sheet already
+   defines for ≤768 (nav on its own row) and ≤1023 (2-col hero + stats band).
+   Selectors carry one extra type/class so they out-specify the later-imported
+   prototype-v2.css (same reasoning as the blocks above). */
+
+/* Never let the wordmark or a nav label wrap internally (new properties —
+   the frozen sheet sets none of them on the landing variants). Scoped to
+   .landing-header: the app TopNav reuses `.landing-nav` inside `.app-topnav`
+   and must stay untouched. */
+.landing-header .gt-brand-logo,
+.landing-header .landing-nav a,
+.landing-header .landing-nav .menu {
+  white-space: nowrap;
+}
+
+/* If a Behörden compound ever has to break inside a chip, hyphenate at
+   syllables (lang="de" is app-wide) instead of the bare `anywhere` break. */
+.flow-chip > span {
+  hyphens: auto;
+}
+
+/* The onboarding (auth) layout shares `.landing-header` but carries no nav
+   and keeps its sticky one-row chrome — every header rule below is therefore
+   gated on :has(.landing-nav), i.e. it hits the marketing header on / only. */
+
+/* Row 1 = brand ←→ actions. Above 1159px the nav's flex:1 fills the middle;
+   once the nav wraps onto its own row nothing separates brand and actions,
+   so pin them to the edges (also tidies the frozen ≤768 phone header, where
+   „Anmelden" floated mid-row next to the brand). */
+@media (max-width: 1159px) {
+  header.landing-header:has(.landing-nav) {
+    justify-content: space-between;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1159px) {
+  header.landing-header:has(.landing-nav) {
+    flex-wrap: wrap;
+    gap: 12px 18px;
+    height: auto;
+    padding-top: 14px;
+    padding-bottom: 14px;
+    position: static;
+  }
+  .landing-header .landing-nav {
+    order: 3;
+    flex-basis: 100%;
+    flex-wrap: wrap;
+    gap: 14px 22px;
+    margin-left: 0;
+  }
+  /* Fluid H1: „Verwaltung," is one un-wrappable word ≈300px at the fixed
+     52px — too wide for the narrow intro column near 769px. Resolves back
+     to the base 52px from ~930px up. */
+  section.hero h1 {
+    font-size: clamp(34px, 5.6vw, 52px);
+  }
+}
+
+/* 1024–1159px: extend the ≤1023 two-column hero (intro + flow card, stats
+   band below) — the 3-column grid squeezes the flow card until the chips
+   break mid-word and the stats column turns into a sliver. */
+@media (min-width: 1024px) and (max-width: 1159px) {
+  section.hero {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.4fr);
+    gap: 32px;
+    margin-bottom: 56px;
+  }
+  aside.hero-stats {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    align-self: stretch;
+  }
+  .hero-stats .hero-stat {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 8px 0;
+  }
+  .hero-stats .hero-stat + .hero-stat {
+    border-top: none;
+    border-left: 1px solid var(--border);
+    padding-left: 28px;
+    margin-left: 28px;
+  }
+}
+
+/* 769–899px: the 2-col hero's flow column is too narrow for two chip columns
+   („Rentenversicherung" needs ≈184px) — stack them, as ≤768 already does. */
+@media (min-width: 769px) and (max-width: 899px) {
+  ul.flow-recipients {
+    grid-template-columns: 1fr;
+  }
+}
+
