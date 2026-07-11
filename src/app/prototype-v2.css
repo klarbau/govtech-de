@@ -1593,9 +1593,44 @@ button { font: inherit; cursor: pointer; }
 .vd-hero-nr-val { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--ink-2); }
 .vd-hero-status { flex: none; }
 
-/* Gesamtfortschritt */
+/* Aktionsband „Ihr nächster Schritt" — full-width unter dem Hero, damit die
+   einzige Aktion des Screens nie unterhalb des Folds in der Rail hängt.
+   Flächen über flip-sichere Tokens (kein --brand-50/--green-50 inline: die
+   flippen nicht und ertränkten die CTA grün-auf-grün im Dark-Mode). */
+.vd-next {
+  display: flex; align-items: center; gap: 18px 28px;
+  background: var(--color-accent-soft);
+  border: 1px solid var(--brand-200);
+  border-radius: var(--r-lg);
+  padding: 20px 24px;
+  box-shadow: var(--shadow-1);
+  margin-bottom: 18px;
+}
+.dark .vd-next { border-color: var(--color-border-strong); }
+.vd-next-body { flex: 1; min-width: 0; }
+.vd-next-kicker { margin: 0; font-size: 13px; font-weight: 600; color: var(--brand-700); }
+.vd-next-aktion { margin: 6px 0 0; font-size: 16px; font-weight: 600; color: var(--ink); line-height: 1.45; max-width: 64ch; }
+.vd-next-meta {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;
+  margin: 10px 0 0; font-size: 12.5px; color: var(--ink-3);
+}
+.vd-next-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; flex: none; }
+.vd-next-actions .badge svg { width: 13px; height: 13px; }
+.vd-next.is-done { background: var(--green-50); border-color: var(--green-100); }
+.vd-next.is-done .vd-next-kicker { color: var(--green-700); }
+/* --green-* flippen nicht → dedizierte Dark-Flächen/Farben für den Done-Zustand. */
+.dark .vd-next.is-done { background: var(--color-success-soft); border-color: var(--color-border-strong); }
+.dark .vd-next.is-done .vd-next-kicker { color: var(--color-success); }
+.vd-next-check { width: 28px; height: 28px; color: var(--color-success); flex: none; margin-inline-end: 6px; }
+@media (max-width: 760px) {
+  .vd-next { flex-direction: column; align-items: stretch; }
+  .vd-next-actions { justify-content: flex-start; }
+}
+
+/* Gesamtfortschritt. Rechte Spalte 320px + gap 24px = exakt die vg-layout-Rail
+   darunter — sonst fluchten die rechten Karten nicht untereinander. */
 .vd-progress {
-  display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 18px;
+  display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 24px;
   align-items: stretch; margin-bottom: 4px;
 }
 .vd-progress-main {
@@ -1611,7 +1646,9 @@ button { font: inherit; cursor: pointer; }
   background: var(--surface-muted); border: 1px solid var(--border);
 }
 .vd-progress-seg.is-filled { background: var(--green-500); border-color: var(--green-500); }
-.vd-progress-seg.is-active { background: var(--amber-500); border-color: var(--amber-500); }
+/* Aktiver (laufender) Schritt: weiche Amber-Tönung statt Vollfüllung — ein
+   voll gefülltes Segment las sich bei „0 von 1 Schritten" als 100 %. */
+.vd-progress-seg.is-active { background: color-mix(in srgb, var(--amber-500) 30%, transparent); border-color: var(--amber-500); }
 .vd-fertig {
   display: flex; align-items: center; gap: 14px;
   background: var(--surface-soft); border: 1px solid var(--border);
@@ -1682,8 +1719,10 @@ button { font: inherit; cursor: pointer; }
 .vd-berechtigungen h3 { display: flex; align-items: center; gap: 8px; }
 .vd-berechtigungen h3 svg { width: 16px; height: 16px; color: var(--ink-3); }
 .vd-berechtigungen-list { margin: 12px 0 0; padding: 0; }
+/* dt + dd sind DIREKTE Kinder des dl > div-Wrappers (WCAG 1.3.1); das Icon
+   lebt im dt, der Wert rückt unter das Label ein. Kein Chevron mehr — die
+   Zeilen sind keine Links. */
 .vd-berechtigungen-row {
-  display: flex; align-items: center; gap: 12px;
   padding: 11px 0; border-top: 1px solid var(--border);
 }
 .vd-berechtigungen-row:first-child { border-top: 0; padding-top: 0; }
@@ -1693,10 +1732,8 @@ button { font: inherit; cursor: pointer; }
   background: var(--icon-tile); color: var(--brand-600);
 }
 .vd-berechtigungen-icon svg { width: 16px; height: 16px; }
-.vd-berechtigungen-stack { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-.vd-berechtigungen-row dt { color: var(--ink-3); font-size: 12px; }
-.vd-berechtigungen-row dd { margin: 0; font-size: 13px; font-weight: 500; color: var(--ink); line-height: 1.4; }
-.vd-berechtigungen-chevron { width: 16px; height: 16px; color: var(--ink-4); flex: none; }
+.vd-berechtigungen-row dt { display: flex; align-items: center; gap: 10px; color: var(--ink-3); font-size: 12px; }
+.vd-berechtigungen-row dd { margin: 4px 0 0; margin-inline-start: 42px; font-size: 13px; font-weight: 500; color: var(--ink); line-height: 1.4; }
 .vd-berechtigungen-link {
   display: inline-flex; align-items: center; gap: 5px;
   margin-top: 14px; color: var(--brand-600); font-weight: 500; font-size: 13px;
@@ -2909,7 +2946,11 @@ button { font: inherit; cursor: pointer; }
 }
 .hero-trust svg { width: 16px; height: 16px; color: var(--brand-600); }
 
-/* ── Signature process-flow diagram (CSS only, never an image) ───────────── */
+/* ── Signature process-flow diagram (CSS only, never an image) ─────────────
+   Redesign 2026-07-09: vertical 3-step stepper (marker rail + numbered
+   kickers) — the old horizontal chain ended in a free-floating lock and the
+   chip grid below had no visible relation to it. One continuous rail now
+   carries the story: Antrag → GovTech-DE koordiniert → Stellen informiert. */
 .flow-card {
   margin: 0;
   background: var(--surface);
@@ -2920,208 +2961,244 @@ button { font: inherit; cursor: pointer; }
   display: flex; flex-direction: column;
 }
 .flow-eyebrow {
-  margin: 0 0 22px;
+  margin: 0 0 24px;
   font-size: 11.5px; font-weight: 600; letter-spacing: 0.08em;
   text-transform: uppercase; color: var(--ink-3);
 }
-.flow-stage {
-  display: flex; align-items: center; gap: 0;
-  margin-bottom: 24px;
-}
-.flow-node {
-  display: flex; align-items: center; gap: 12px;
-  padding: 14px 16px;
-  border: 1px solid var(--border);
-  border-radius: var(--r-md);
-  background: var(--surface);
-  min-width: 0; flex: 1;
-}
-.flow-node-citizen { background: var(--surface-muted); border-color: var(--brand-100); }
-.flow-node-icon {
-  flex: none;
-  width: 40px; height: 40px; border-radius: var(--r-sm);
-  display: inline-flex; align-items: center; justify-content: center;
-  background: rgba(255,255,255,0.72); color: var(--brand-600);
-}
-.flow-node-icon svg { width: 20px; height: 20px; }
-.flow-node-mark { flex: none; width: 40px; height: 40px; }
-.flow-node-mark svg { width: 40px; height: 40px; border-radius: var(--r-sm); }
-.flow-node-text { display: flex; flex-direction: column; min-width: 0; }
-.flow-node-title { font-weight: 600; color: var(--ink); font-size: 14px; }
-.flow-node-sub { font-size: 11.5px; color: var(--ink-3); line-height: 1.4; }
-/* Connector lines between the three stage nodes. */
-.flow-connector {
-  flex: none; align-self: center;
-  width: 28px; height: 0;
-  border-top: 1.5px solid var(--brand-200);
-  position: relative;
-}
-.flow-connector::after {
-  content: ''; position: absolute; right: -1px; top: -4px;
-  width: 0; height: 0;
-  border-top: 4px solid transparent; border-bottom: 4px solid transparent;
-  border-left: 6px solid var(--brand-200);
-}
-/* Secure hand-off hub: green circle, white lock. */
-.flow-lock {
-  flex: none;
-  width: 48px; height: 48px; border-radius: 50%;
-  display: inline-flex; align-items: center; justify-content: center;
-  background: var(--brand-fill);
-}
-.flow-lock svg { width: 22px; height: 22px; color: #fff; }
-
-/* Fan-out to 6 destination chips. */
-.flow-recipients {
-  list-style: none; margin: 0 0 20px; padding: 14px 0 0;
-  border-top: 1px dashed var(--brand-200);
-  display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
-}
-.flow-chip {
-  display: flex; align-items: center; gap: 8px;
-  padding: 10px 12px;
-  border: 1px solid var(--border);
-  border-radius: var(--r-md);
-  background: var(--surface);
-  font-size: 12.5px; font-weight: 500; color: var(--ink);
-  min-width: 0;
-}
-.flow-chip > span { min-width: 0; overflow-wrap: anywhere; line-height: 1.25; }
-.flow-chip-check { flex: none; width: 15px; height: 15px; color: var(--green-600); }
-.flow-chip-icon { flex: none; width: 15px; height: 15px; color: var(--ink-3); }
-/* Dashed return line + caption. */
-.flow-return {
-  margin: auto 0 0;
-  padding-top: 14px;
-  border-top: 1.5px dashed var(--brand-200);
-  text-align: center;
-  font-size: 12.5px; color: var(--ink-3);
-}
-
-/* ── Stats card (right column) ───────────────────────────────────────────── */
-.hero-stats {
+.flow-steps {
+  list-style: none; margin: 0 0 24px; padding: 0;
   display: flex; flex-direction: column;
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  background: var(--surface);
-  box-shadow: var(--shadow-1);
-  padding: 8px 20px;
 }
-.hero-stat {
-  display: flex; align-items: flex-start; gap: 14px;
-  padding: 20px 0;
+.flow-step {
+  position: relative;
+  display: flex; gap: 16px;
+  padding-bottom: 26px;
 }
-.hero-stat + .hero-stat { border-top: 1px solid var(--border); }
-.hero-stat-icon {
+.flow-step:last-child { padding-bottom: 0; }
+/* Rail segment from this marker down to the next one. */
+.flow-step:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 21px; top: 48px; bottom: 4px;
+  width: 2px; border-radius: 1px;
+  background: var(--brand-200);
+}
+/* --brand-200 stays a light sage in dark mode (token does not flip) — too
+   loud as a rail over the dark card; step down to the neutral border. */
+.dark .flow-step:not(:last-child)::before { background: var(--border-strong); }
+.flow-step-marker {
   flex: none;
   width: 44px; height: 44px; border-radius: 50%;
   display: inline-flex; align-items: center; justify-content: center;
   background: var(--icon-tile); color: var(--brand-600);
 }
-.hero-stat-icon svg { width: 20px; height: 20px; }
-.hero-stat-body { display: flex; flex-direction: column; min-width: 0; }
+.flow-step-marker svg { width: 20px; height: 20px; }
+/* Gov step wears the brand crest full-bleed instead of an icon tile. */
+.flow-step-marker-gov { background: none; border-radius: 0; }
+.flow-step-marker-gov svg { width: 44px; height: 44px; }
+.flow-step-body {
+  display: flex; flex-direction: column;
+  min-width: 0; flex: 1;
+  padding-top: 2px;
+}
+.flow-step-kicker {
+  font-size: 10.5px; font-weight: 600; letter-spacing: 0.07em;
+  text-transform: uppercase; color: var(--ink-4);
+}
+.flow-step-title {
+  font-weight: 600; color: var(--ink);
+  font-size: 15px; line-height: 1.35;
+  margin-top: 2px;
+}
+.flow-step-sub { font-size: 12.5px; color: var(--ink-3); line-height: 1.5; margin-top: 3px; }
+/* Secure hand-off pill: the lock now labels what it means. */
+.flow-secure {
+  align-self: flex-start;
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 10px;
+  padding: 4px 11px;
+  border-radius: var(--r-pill);
+  background: var(--brand-fill); color: #fff;
+  font-size: 11.5px; font-weight: 600;
+}
+.flow-secure svg { width: 12px; height: 12px; }
+/* Step-3 recipients: calm confirmation chips (check + label only). */
+.flow-recipients {
+  list-style: none; margin: 12px 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;
+}
+.flow-chip {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface-muted);
+  font-size: 12.5px; font-weight: 500; color: var(--ink-2);
+  min-width: 0;
+}
+.flow-chip > span { min-width: 0; overflow-wrap: anywhere; line-height: 1.25; }
+.flow-chip-check { flex: none; width: 14px; height: 14px; color: var(--green-600); }
+/* Status footer: live dot + caption. */
+.flow-return {
+  margin: auto 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  text-align: center;
+  font-size: 12.5px; color: var(--ink-3);
+}
+.flow-return-dot {
+  flex: none;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--green-600);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .flow-return-dot { animation: flow-pulse 2.4s ease-in-out infinite; }
+}
+@keyframes flow-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(23, 138, 82, 0.35); }
+  50% { box-shadow: 0 0 0 6px rgba(23, 138, 82, 0); }
+}
+
+/* ── Kennzahlen (right column) ───────────────────────────────────────────
+   Redesign 2026-07-09: bare editorial figures with hairline dividers —
+   the boxed icon-tile + big-number stat stack was the third instance of
+   the generated stat-card template on this page. Figure and label share
+   one line; separation comes from whitespace, not a panel. */
+.hero-stats {
+  display: flex; flex-direction: column;
+  align-self: center;
+}
+.hero-stat { padding: 20px 0; }
+.hero-stat + .hero-stat { border-top: 1px solid var(--border); }
+.hero-stat-lead {
+  margin: 0;
+  font-size: 15px; font-weight: 600; color: var(--ink-2);
+  line-height: 1.3;
+}
 .hero-stat-num {
   font-family: var(--font-display);
-  font-size: 26px; font-weight: 700; line-height: 1.1; color: var(--ink);
+  font-size: 26px; font-weight: 700; color: var(--ink);
   font-variant-numeric: tabular-nums; letter-spacing: -0.01em;
+  margin-right: 2px;
 }
-.hero-stat-label { font-size: 14px; font-weight: 600; color: var(--ink-2); margin-top: 2px; }
-.hero-stat-sub { font-size: 12px; color: var(--ink-3); line-height: 1.45; margin-top: 4px; }
+.hero-stat-sub { margin: 6px 0 0; font-size: 12.5px; color: var(--ink-3); line-height: 1.5; }
 
-/* ── 4.3 Lebenslagen quick-row (5 equal cards) ───────────────────────────── */
+/* ── 4.3 Lebenslagen index ───────────────────────────────────────────────
+   Redesign 2026-07-09: editorial link rows with hairline dividers instead of
+   the 5-equal-cards grid (icon tile above heading + arrow in every identical
+   box = the classic generated-design template). Icons sit inline in the
+   title, uncontained; separation comes from whitespace + hairlines. */
 .lebenslagen { margin-bottom: 72px; }
 .lebenslagen h2 {
   font-family: var(--font-display);
   font-size: 28px; font-weight: 600; letter-spacing: -0.015em;
   margin: 0; color: var(--ink);
 }
-.lebenslagen-grid {
-  display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;
+.lebenslagen-index {
+  list-style: none; margin: 0; padding: 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
-.lebenslage-card {
-  display: flex; flex-direction: column;
-  position: relative;
-  padding: 20px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
+.lebenslagen-index li + li { border-top: 1px solid var(--border); }
+.lebenslage-row {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.7fr) auto;
+  align-items: center;
+  gap: 6px 40px;
+  margin: 0 -14px;
+  padding: 19px 14px;
+  border-radius: var(--r-md);
   color: var(--ink);
-  transition: border-color .15s ease, transform .15s ease, box-shadow .15s ease;
+  text-decoration: none;
 }
-.lebenslage-card:hover {
-  border-color: var(--border-strong);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-1);
+.lebenslage-row-title {
+  display: inline-flex; align-items: center; gap: 12px;
+  font-family: var(--font-display);
+  font-size: 19px; font-weight: 600; letter-spacing: -0.01em;
+  min-width: 0;
 }
-.lebenslage-icon {
-  width: 44px; height: 44px; border-radius: var(--r-md);
-  display: inline-flex; align-items: center; justify-content: center;
-  background: var(--icon-tile); color: var(--brand-600);
-  margin-bottom: 14px;
+.lebenslage-row-title svg { flex: none; width: 18px; height: 18px; color: var(--brand-600); }
+.lebenslage-row-desc {
+  font-size: 14px; color: var(--ink-3); line-height: 1.5;
+  max-width: 58ch; min-width: 0;
 }
-.lebenslage-icon svg { width: 22px; height: 22px; }
-.lebenslage-title { font-weight: 600; font-size: 16px; color: var(--ink); }
-.lebenslage-desc { font-size: 12.5px; color: var(--ink-3); line-height: 1.5; margin-top: 6px; }
-.lebenslage-arrow {
-  width: 16px; height: 16px; color: var(--ink-4);
-  margin-top: 14px;
+.lebenslage-row-arrow {
+  width: 18px; height: 18px; color: var(--ink-4);
+  justify-self: end;
+  transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1), color 200ms ease;
 }
-.lebenslage-card:hover .lebenslage-arrow { color: var(--brand-600); }
+@media (hover: hover) and (pointer: fine) {
+  .lebenslage-row:hover { background: rgba(11, 18, 32, 0.035); }
+  .dark .lebenslage-row:hover { background: rgba(255, 255, 255, 0.05); }
+  .lebenslage-row:hover .lebenslage-row-arrow {
+    transform: translateX(4px);
+    color: var(--brand-600);
+  }
+}
 
-/* ── 4.4 Trust-principles band (graugrün surface) ────────────────────────── */
+/* ── 4.4 Trust-principles band (graugrün surface) ────────────────────────
+   Redesign 2026-07-09: text-led columns divided by vertical hairlines — the
+   icon tiles above each heading repeated the generated-card template a third
+   time on one page. Plain statements read more like a legal commitment. */
 .principles {
   background: var(--surface-muted);
   border-radius: var(--r-xl);
-  padding: 40px 40px;
+  padding: 36px 40px;
   margin-bottom: 16px;
 }
 .principles-grid {
   list-style: none; margin: 0; padding: 0;
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px;
+  display: grid; grid-template-columns: repeat(3, 1fr);
 }
-.principle { display: flex; flex-direction: column; }
-.principle-icon {
-  width: 44px; height: 44px; border-radius: var(--r-md);
-  display: inline-flex; align-items: center; justify-content: center;
-  background: var(--surface); color: var(--brand-600);
-  border: 1px solid var(--border);
-  margin-bottom: 16px;
+.principle {
+  display: flex; flex-direction: column;
+  padding: 4px 36px;
 }
-.principle-icon svg { width: 22px; height: 22px; }
+.principle:first-child { padding-left: 0; }
+.principle:last-child { padding-right: 0; }
+.principle + .principle { border-left: 1px solid var(--border); }
 .principle-title {
   font-size: 16px; font-weight: 600; color: var(--ink);
   margin: 0 0 8px; line-height: 1.35;
 }
 .principle-desc { font-size: 13.5px; color: var(--ink-2); line-height: 1.55; margin: 0; }
 
-/* ── Evidence band: „Warum DeutschlandID-first?" (kommunal.de) ───────────── */
+/* ── Evidence band: „Warum DeutschlandID-first?" (kommunal.de) ───────────
+   Redesign 2026-07-09: report-style figure rows (large number in a narrow
+   left column, statement beside it, hairline dividers) instead of two
+   identical bordered stat boxes — the "stat banner" template. */
 .evidence { margin-bottom: 72px; }
-.evidence-head { margin-bottom: 24px; }
+.evidence-head { margin-bottom: 20px; }
 .evidence-head h2 {
   font-family: var(--font-display);
   font-size: 28px; font-weight: 600; letter-spacing: -0.015em;
   margin: 0; color: var(--ink);
 }
-.evidence-grid {
+.evidence-figures {
   list-style: none; margin: 0; padding: 0;
-  display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+  border-top: 1px solid var(--border);
 }
-.evidence-fact {
-  display: flex; flex-direction: column; gap: 10px;
-  padding: 24px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
+.evidence-figure {
+  display: grid;
+  grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
+  gap: 6px 48px;
+  align-items: center;
+  padding: 24px 4px;
+  border-bottom: 1px solid var(--border);
 }
 .evidence-num {
   font-family: var(--font-display);
-  font-size: 34px; font-weight: 600; letter-spacing: -0.02em;
+  font-size: 44px; font-weight: 600; letter-spacing: -0.025em;
   color: var(--brand-600); font-variant-numeric: tabular-nums;
-  line-height: 1.05;
+  line-height: 1;
 }
-.evidence-text { font-size: 14px; color: var(--ink-2); line-height: 1.55; margin: 0; }
+.evidence-text {
+  font-size: 14.5px; color: var(--ink-2); line-height: 1.55;
+  margin: 0; max-width: 52ch;
+}
 .evidence-source {
-  margin: 16px 0 0; font-size: 12.5px; color: var(--ink-3); line-height: 1.6;
+  margin: 14px 0 0; font-size: 12.5px; color: var(--ink-3); line-height: 1.6;
 }
 
 /* ── 4.5 Footer trust bar ────────────────────────────────────────────────── */
@@ -3167,14 +3244,14 @@ button { font: inherit; cursor: pointer; }
     gap: 32px;
     margin-bottom: 56px;
   }
-  .hero-stats { grid-column: 1 / -1; }
-  .hero-stats {
-    flex-direction: row; flex-wrap: wrap;
-    padding: 4px 20px;
+  /* Kennzahlen drop below intro+flow: one row, vertical hairlines between. */
+  .hero-stats { grid-column: 1 / -1; flex-direction: row; align-self: stretch; }
+  .hero-stat { flex: 1 1 0; min-width: 0; padding: 8px 0; }
+  .hero-stat + .hero-stat {
+    border-top: none; border-left: 1px solid var(--border);
+    padding-left: 28px; margin-left: 28px;
   }
-  .hero-stat { flex: 1 1 30%; min-width: 200px; }
-  .hero-stat + .hero-stat { border-top: none; }
-  .lebenslagen-grid { grid-template-columns: repeat(3, 1fr); }
+  .lebenslage-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto; gap: 6px 28px; }
 }
 
 /* Phone: single-column everything, fluid H1, wrapping header nav. */
@@ -3201,28 +3278,37 @@ button { font: inherit; cursor: pointer; }
   .hero h1 { font-size: clamp(34px, 8vw, 52px); }
   .hero-cta .btn { flex: 1 1 auto; justify-content: center; }
   .hero-stats { flex-direction: column; }
-  .hero-stat { min-width: 0; }
-  .hero-stat + .hero-stat { border-top: 1px solid var(--border); }
+  .hero-stat { padding: 16px 0; }
+  .hero-stat + .hero-stat {
+    border-left: none; padding-left: 0; margin-left: 0;
+    border-top: 1px solid var(--border);
+  }
 
   .flow-card { padding: 22px 20px 20px; }
-  .flow-stage { flex-direction: column; align-items: stretch; gap: 12px; }
-  .flow-node { flex: none; }
-  .flow-connector {
-    align-self: center;
-    width: 0; height: 18px;
-    border-top: none; border-left: 1.5px solid var(--brand-200);
-  }
-  .flow-connector::after {
-    right: auto; left: -4px; top: auto; bottom: -1px;
-    border-left: 4px solid transparent; border-right: 4px solid transparent;
-    border-top: 6px solid var(--brand-200); border-bottom: none;
-  }
-  .flow-lock { align-self: center; }
-  .flow-recipients { grid-template-columns: repeat(2, 1fr); }
+  .flow-step { gap: 13px; }
+  .flow-step-marker { width: 40px; height: 40px; }
+  .flow-step-marker-gov svg { width: 40px; height: 40px; }
+  .flow-step:not(:last-child)::before { left: 19px; top: 44px; }
+  /* Long Behörden nouns (Einwohnermeldeamt) break mid-word in two columns
+     at phone width — stack the chips instead. */
+  .flow-recipients { grid-template-columns: 1fr; }
 
-  .lebenslagen-grid { grid-template-columns: repeat(2, 1fr); }
+  /* Index rows stack: title + arrow on the first line, description below. */
+  .lebenslage-row { grid-template-columns: minmax(0, 1fr) auto; gap: 4px 16px; padding: 16px 14px; }
+  .lebenslage-row-desc { grid-column: 1 / -1; }
+  .lebenslage-row-arrow { grid-row: 1; grid-column: 2; }
+
+  /* Figure rows stack: number above statement. */
+  .evidence-figure { grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 20px 0; }
+  .evidence-num { font-size: 36px; }
+
   .principles { padding: 28px 24px; }
-  .principles-grid { grid-template-columns: 1fr; gap: 24px; }
+  .principles-grid { grid-template-columns: 1fr; }
+  .principle { padding: 20px 0; }
+  .principle:first-child { padding-top: 0; }
+  .principle:last-child { padding-bottom: 0; }
+  .principle + .principle { border-left: none; border-top: 1px solid var(--border); }
+
   .landing-footer { padding: 28px 20px 36px; }
   .landing-footer-bar { gap: 16px; }
 }
@@ -3232,9 +3318,6 @@ button { font: inherit; cursor: pointer; }
   .landing-header { padding: 12px 14px; }
   .landing-page { padding: 24px 14px 40px; }
   .hero-cta .btn { flex-basis: 100%; }
-  .flow-recipients { grid-template-columns: 1fr; }
-  .lebenslagen-grid { grid-template-columns: 1fr; }
-  .evidence-grid { grid-template-columns: 1fr; }
 }
 
 
