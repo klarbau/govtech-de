@@ -9,25 +9,17 @@ import {
   ArrowRight,
   Baby,
   Box,
-  Building,
-  Building2,
   Check,
   ChevronDown,
-  Clock,
   Euro,
-  Eye,
-  FileText,
   Fingerprint,
   Home,
   IdCard,
-  Landmark,
   Lock,
   Mail,
-  MoreHorizontal,
   Share2,
   ShieldCheck,
   User,
-  Users,
 } from 'lucide-react';
 
 import { ParthenonCrest } from '@/components/layout/ParthenonCrest';
@@ -39,14 +31,15 @@ import { LiquidGlassAux } from '@/components/layout/LiquidGlassAux';
 // client IntlProvider is not statically prerenderable in this setup.
 export const dynamic = 'force-dynamic';
 
-// Hero process-flow fan-out destinations (Brandbook §4.2 — 6 bordered chips).
+// Hero process-flow step-3 recipients (redesign 2026-07-09: vertical stepper,
+// check-only chips — the per-Behörde icons doubled the glyph noise).
 const FLOW_RECIPIENTS = [
-  { icon: Building, label: 'Einwohnermeldeamt' },
-  { icon: FileText, label: 'Finanzamt' },
-  { icon: Users, label: 'Ausländerbehörde' },
-  { icon: ShieldCheck, label: 'Krankenkasse' },
-  { icon: Landmark, label: 'Rentenversicherung' },
-  { icon: MoreHorizontal, label: 'Weitere Stellen' },
+  'Einwohnermeldeamt',
+  'Finanzamt',
+  'Ausländerbehörde',
+  'Krankenkasse',
+  'Rentenversicherung',
+  'Weitere Stellen',
 ] as const;
 
 // Lebenslagen quick-row (Brandbook §4.3).
@@ -154,124 +147,130 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* CENTER — signature process-flow diagram */}
+          {/* CENTER — signature process-flow diagram: a vertical 3-step story
+              (one rail, numbered steps) instead of the old horizontal chain
+              whose lock + chip grid read as disconnected fragments. */}
           <figure
             className="flow-card"
             role="group"
-            aria-label="Ablauf eines Antrags: Eine Bürgerin oder ein Bürger macht eine Angabe. GovTech-DE bereitet den Vorgang vor, prüft die Daten und bestimmt die Routen, übermittelt diese sicher und informiert sechs zuständige Stellen — Einwohnermeldeamt, Finanzamt, Ausländerbehörde, Krankenkasse, Rentenversicherung und weitere Stellen. Status und nächste Schritte bleiben jederzeit im Blick."
+            aria-label="Ablauf eines Antrags in drei Schritten"
           >
             <p className="flow-eyebrow">Ein Antrag. Koordiniert und sicher.</p>
 
-            <div className="flow-stage">
-              {/* Node A — citizen */}
-              <div className="flow-node flow-node-citizen">
-                <span className="flow-node-icon">
+            <ol className="flow-steps">
+              {/* Step 1 — citizen */}
+              <li className="flow-step">
+                <span className="flow-step-marker" aria-hidden="true">
                   <User aria-hidden="true" />
                 </span>
-                <div className="flow-node-text">
-                  <span className="flow-node-title">Bürgerin oder Bürger</span>
-                  <span className="flow-node-sub">Ein Antrag / eine Angabe</span>
-                </div>
-              </div>
-
-              <span className="flow-connector" aria-hidden="true" />
-
-              {/* Node B — GovTech-DE */}
-              <div className="flow-node flow-node-gov">
-                <span className="flow-node-mark">
-                  <ParthenonCrest />
-                </span>
-                <div className="flow-node-text">
-                  <span className="flow-node-title">GovTech-DE</span>
-                  <span className="flow-node-sub">
-                    Vorgang vorbereiten · Daten prüfen · Routen bestimmen
+                <div className="flow-step-body">
+                  <span className="flow-step-kicker">Schritt 1</span>
+                  <span className="flow-step-title">Sie stellen einen Antrag</span>
+                  <span className="flow-step-sub">
+                    Ein Antrag, eine Angabe – mehr ist nicht nötig.
                   </span>
                 </div>
-              </div>
+              </li>
 
-              <span className="flow-connector" aria-hidden="true" />
+              {/* Step 2 — GovTech-DE coordinates + secure hand-off */}
+              <li className="flow-step">
+                <span
+                  className="flow-step-marker flow-step-marker-gov"
+                  aria-hidden="true"
+                >
+                  <ParthenonCrest />
+                </span>
+                <div className="flow-step-body">
+                  <span className="flow-step-kicker">Schritt 2</span>
+                  <span className="flow-step-title">GovTech-DE koordiniert</span>
+                  <span className="flow-step-sub">
+                    Prüft Ihre Daten und bestimmt die zuständigen Stellen.
+                  </span>
+                  <span className="flow-secure">
+                    <Lock aria-hidden="true" />
+                    Verschlüsselt übermittelt
+                  </span>
+                </div>
+              </li>
 
-              {/* Secure hand-off hub */}
-              <span className="flow-lock" aria-hidden="true">
-                <Lock aria-hidden="true" />
-              </span>
-            </div>
-
-            {/* Fan-out to 6 destination chips */}
-            <ul className="flow-recipients">
-              {FLOW_RECIPIENTS.map(({ icon: Icon, label }) => (
-                <li key={label} className="flow-chip">
-                  <Check className="flow-chip-check" aria-hidden="true" />
-                  <Icon className="flow-chip-icon" aria-hidden="true" />
-                  <span>{label}</span>
-                </li>
-              ))}
-            </ul>
+              {/* Step 3 — recipients informed */}
+              <li className="flow-step">
+                <span className="flow-step-marker" aria-hidden="true">
+                  <Check aria-hidden="true" />
+                </span>
+                <div className="flow-step-body">
+                  <span className="flow-step-kicker">Schritt 3</span>
+                  <span className="flow-step-title">
+                    Zuständige Stellen werden informiert
+                  </span>
+                  <ul className="flow-recipients">
+                    {FLOW_RECIPIENTS.map((label) => (
+                      <li key={label} className="flow-chip">
+                        <Check className="flow-chip-check" aria-hidden="true" />
+                        <span>{label}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            </ol>
 
             <figcaption className="flow-return">
+              <span className="flow-return-dot" aria-hidden="true" />
               Status &amp; nächste Schritte immer im Blick
             </figcaption>
           </figure>
 
-          {/* RIGHT — stats card */}
+          {/* RIGHT — Kennzahlen: bare editorial figures (redesign 2026-07-09,
+              no panel, no icon tiles — see docs/research/ai-design-tells.md) */}
           <aside className="hero-stats" aria-label="Kennzahlen">
             <div className="hero-stat">
-              <span className="hero-stat-icon">
-                <Clock aria-hidden="true" />
-              </span>
-              <div className="hero-stat-body">
-                <span className="hero-stat-num">8+ Std.</span>
-                <span className="hero-stat-label">gespart</span>
-                <span className="hero-stat-sub">
-                  Durch intelligente Vorbereitung und direkte Übermittlung.
-                </span>
-              </div>
+              <p className="hero-stat-lead">
+                <span className="hero-stat-num">8+ Std.</span> gespart
+              </p>
+              <p className="hero-stat-sub">
+                Durch intelligente Vorbereitung und direkte Übermittlung.
+              </p>
             </div>
             <div className="hero-stat">
-              <span className="hero-stat-icon">
-                <Building2 aria-hidden="true" />
-              </span>
-              <div className="hero-stat-body">
-                <span className="hero-stat-num">6</span>
-                <span className="hero-stat-label">Behörden informiert</span>
-                <span className="hero-stat-sub">
-                  Automatisch die richtigen Stellen zur richtigen Zeit.
-                </span>
-              </div>
+              <p className="hero-stat-lead">
+                <span className="hero-stat-num">6</span> Behörden informiert
+              </p>
+              <p className="hero-stat-sub">
+                Automatisch die richtigen Stellen zur richtigen Zeit.
+              </p>
             </div>
             <div className="hero-stat">
-              <span className="hero-stat-icon">
-                <Eye aria-hidden="true" />
-              </span>
-              <div className="hero-stat-body">
-                <span className="hero-stat-num">24/7</span>
-                <span className="hero-stat-label">im Blick</span>
-                <span className="hero-stat-sub">
-                  Transparenter Status und klare nächste Schritte.
-                </span>
-              </div>
+              <p className="hero-stat-lead">
+                <span className="hero-stat-num">24/7</span> im Blick
+              </p>
+              <p className="hero-stat-sub">
+                Transparenter Status und klare nächste Schritte.
+              </p>
             </div>
           </aside>
         </section>
 
-        {/* ── Lebenslagen quick-row ─────────────────────────────────────── */}
+        {/* ── Lebenslagen index: editorial link rows, no card grid ──────── */}
         <section className="lebenslagen" id="leistungen" aria-labelledby="lebenslagen-title">
           <h2 id="lebenslagen-title">Lebenslagen</h2>
           <p className="section-sub">
             Starten Sie dort, wo Sie gerade stehen – wir koordinieren den Rest.
           </p>
-          <div className="lebenslagen-grid">
+          <ul className="lebenslagen-index">
             {LEBENSLAGEN.map(({ icon: Icon, title, desc, href }) => (
-              <Link key={title} href={href} className="lebenslage-card">
-                <span className="lebenslage-icon">
-                  <Icon aria-hidden="true" />
-                </span>
-                <span className="lebenslage-title">{title}</span>
-                <span className="lebenslage-desc">{desc}</span>
-                <ArrowRight className="lebenslage-arrow" aria-hidden="true" />
-              </Link>
+              <li key={title}>
+                <Link href={href} className="lebenslage-row">
+                  <span className="lebenslage-row-title">
+                    <Icon aria-hidden="true" />
+                    {title}
+                  </span>
+                  <span className="lebenslage-row-desc">{desc}</span>
+                  <ArrowRight className="lebenslage-row-arrow" aria-hidden="true" />
+                </Link>
+              </li>
             ))}
-          </div>
+          </ul>
         </section>
 
         {/* ── Evidence: Warum DeutschlandID-first? (kommunal.de) ────────────── */}
@@ -283,15 +282,15 @@ export default function HomePage() {
               abgebrochen wird.
             </p>
           </div>
-          <ul className="evidence-grid">
-            <li className="evidence-fact">
+          <ul className="evidence-figures">
+            <li className="evidence-figure">
               <span className="evidence-num">91 %</span>
               <p className="evidence-text">
                 brechen in Hamburg den Vorgang ab, sobald sie im Online-Antrag auf
                 die BundID-Anmeldung treffen.
               </p>
             </li>
-            <li className="evidence-fact">
+            <li className="evidence-figure">
               <span className="evidence-num">14 von 306</span>
               <p className="evidence-text">
                 bundesfinanzierten EfA-Lösungen werden flächendeckend nachgenutzt –
@@ -313,27 +312,18 @@ export default function HomePage() {
           </h2>
           <ul className="principles-grid">
             <li className="principle">
-              <span className="principle-icon">
-                <Lock aria-hidden="true" />
-              </span>
               <h3 className="principle-title">Private Empfänger nur mit Einwilligung</h3>
               <p className="principle-desc">
                 Ihre Daten werden nur an private Stellen weitergegeben, wenn Sie zustimmen.
               </p>
             </li>
             <li className="principle">
-              <span className="principle-icon">
-                <ShieldCheck aria-hidden="true" />
-              </span>
               <h3 className="principle-title">Sensibler Schritt nur mit eID-Bestätigung</h3>
               <p className="principle-desc">
                 Für kritische Vorgänge ist Ihre Identität immer sicher und eindeutig bestätigt.
               </p>
             </li>
             <li className="principle">
-              <span className="principle-icon">
-                <Landmark aria-hidden="true" />
-              </span>
               <h3 className="principle-title">Keine Daten ohne Rechtsgrundlage</h3>
               <p className="principle-desc">
                 Wir verarbeiten Daten ausschließlich auf Basis gesetzlicher Grundlagen.

@@ -20,6 +20,8 @@ interface OnboardingPersonaSelectProps {
 /**
  * Persona selection (Screen C). Carries the step's single `<h1>`. Selection is
  * remembered (passed up) but NOT committed — the reseed happens on Screen D.
+ * Layout: an account-picker list with hairlines instead of stacked ID cards;
+ * the [MOCK] disclosure sits as a quiet inline chip next to the step kicker.
  */
 export function OnboardingPersonaSelect({
   onSelect,
@@ -30,20 +32,21 @@ export function OnboardingPersonaSelect({
   const tFlow = useTranslations('onboarding');
 
   return (
-    <Card className="mx-auto w-full max-w-xl gap-5 p-6 sm:p-8">
-      <div className="flex flex-col gap-1">
-        <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">
-          {tFlow('wizard_step', { current: 2, total: 3 })}
-        </p>
+    <Card className="mx-auto w-full max-w-2xl gap-5 p-6 sm:p-8">
+      <div className="flex flex-col gap-1.5">
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">
+            {tFlow('wizard_step', { current: 2, total: 3 })}
+          </p>
+          <MockWatermarkBanner variant="inline" />
+        </div>
         <h1 className="text-2xl font-bold text-text-primary md:text-3xl">
           {t('title')}
         </h1>
         <p className="text-sm text-text-secondary">{t('subtitle')}</p>
       </div>
 
-      <MockWatermarkBanner />
-
-      <ul className="flex flex-col gap-3">
+      <ul className="-mx-3 flex flex-col divide-y divide-border">
         {ONBOARDING_PERSONA_IDS.map((personaId) => {
           const stem = PERSONA_I18N_KEY[personaId];
           return (
@@ -52,6 +55,7 @@ export function OnboardingPersonaSelect({
                 personaId={personaId}
                 name={t(`${stem}.name`)}
                 descriptor={t(`${stem}.descriptor`)}
+                story={t(`${stem}.story`)}
                 selected={selectedId === personaId}
                 onClick={() => onSelect(personaId)}
               />

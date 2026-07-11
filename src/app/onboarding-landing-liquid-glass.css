@@ -45,18 +45,20 @@ html[data-lg-aux] {
   --lg-canvas: linear-gradient(180deg, #f7f9f9 0%, #eef2f2 100%);
 }
 
+/* Dark = forest glass, mirrored from liquid-glass-core.css (redo 2026-07-09) —
+   same green-cast recipe at unchanged luminance/alpha; see the note there. */
 html[data-lg-aux].dark {
-  --lg-glass-soft: linear-gradient(180deg, rgba(34, 42, 54, 0.5), rgba(24, 30, 40, 0.36));
-  --lg-glass-raised: linear-gradient(180deg, rgba(46, 56, 70, 0.9), rgba(34, 42, 54, 0.78));
+  --lg-glass-soft: linear-gradient(180deg, rgba(30, 46, 39, 0.5), rgba(21, 34, 28, 0.36));
+  --lg-glass-raised: linear-gradient(180deg, rgba(38, 58, 49, 0.92), rgba(27, 44, 36, 0.82));
   --lg-mint: linear-gradient(180deg, rgba(24, 58, 44, 0.66), rgba(18, 46, 35, 0.5));
   --lg-hairline: rgba(255, 255, 255, 0.1);
-  --lg-edge: rgba(255, 255, 255, 0.12);
-  --lg-edge-strong: rgba(255, 255, 255, 0.16);
+  --lg-edge: rgba(255, 255, 255, 0.14);
+  --lg-edge-strong: rgba(255, 255, 255, 0.2);
   --lg-mint-border: rgba(95, 184, 154, 0.3);
   --lg-shadow-lift: 0 12px 30px -18px rgba(0, 0, 0, 0.6);
   --lg-shadow-card: 0 4px 16px -12px rgba(0, 0, 0, 0.5);
   --lg-shadow-panel: 0 34px 80px -34px rgba(0, 0, 0, 0.66), 0 8px 24px -14px rgba(0, 0, 0, 0.5);
-  --lg-canvas: linear-gradient(180deg, #0d1117 0%, #0b0f15 100%);
+  --lg-canvas: linear-gradient(180deg, #0d1613 0%, #0a100d 100%);
 }
 
 /* ── Canvas + ambient refraction field ─────────────────────────────────────── */
@@ -77,8 +79,19 @@ html[data-lg-aux] .lg-ambient {
   overflow: hidden;
   pointer-events: none;
 }
-html[data-lg-aux].dark .lg-ambient {
-  opacity: 0.5;
+/* Dark ambient — own aurora palette instead of dimming the light blobs (they
+   are white-mixed pastels and vanish over near-black); matches the core sheet. */
+html[data-lg-aux].dark .lg-blob--a {
+  background: radial-gradient(closest-side, rgba(52, 150, 122, 0.3), rgba(52, 150, 122, 0) 74%);
+}
+html[data-lg-aux].dark .lg-blob--b {
+  background: radial-gradient(closest-side, rgba(64, 118, 180, 0.26), rgba(64, 118, 180, 0) 74%);
+}
+html[data-lg-aux].dark .lg-blob--c {
+  background: radial-gradient(closest-side, rgba(118, 106, 190, 0.2), rgba(118, 106, 190, 0) 76%);
+}
+html[data-lg-aux].dark .lg-blob--d {
+  background: radial-gradient(closest-side, rgba(44, 132, 124, 0.26), rgba(44, 132, 124, 0) 74%);
 }
 html[data-lg-aux] .lg-blob {
   position: absolute;
@@ -125,7 +138,7 @@ html[data-lg-aux] .landing-header {
   box-shadow: 0 10px 30px -20px rgba(15, 61, 46, 0.16);
 }
 html[data-lg-aux].dark .landing-header {
-  background: linear-gradient(180deg, rgba(28, 35, 47, 0.74), rgba(20, 26, 36, 0.56));
+  background: linear-gradient(180deg, rgba(24, 36, 30, 0.76), rgba(15, 24, 20, 0.58));
 }
 
 /* Hero eyebrow pill — raised glass. */
@@ -172,43 +185,12 @@ html[data-lg-aux].dark .flow-card {
   border-color: var(--lg-hairline);
 }
 
-/* Hero stats column. */
-html[data-lg-aux] .hero-stats {
-  background: var(--lg-glass-raised);
-  border: 1px solid var(--lg-edge);
-  box-shadow: var(--lg-shadow-lift), inset 0 1px 0 var(--lg-edge-strong);
-}
-html[data-lg-aux].dark .hero-stats {
-  border-color: var(--lg-hairline);
-}
+/* Hero Kennzahlen (redesign 2026-07-09) are bare editorial figures — no glass
+   panel, so the hero reads as ONE glass hero (flow-card) + quiet type column. */
 
-/* Lebenslagen cards — floating glass with a motion-safe hover lift. */
-html[data-lg-aux] .lebenslage-card {
-  background: var(--lg-glass-raised);
-  border: 1px solid var(--lg-edge);
-  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
-}
-html[data-lg-aux].dark .lebenslage-card {
-  border-color: var(--lg-hairline);
-}
-html[data-lg-aux] .lebenslage-card:hover {
-  border-color: var(--lg-edge);
-  transform: translateY(-2px);
-  box-shadow: var(--lg-shadow-lift), inset 0 1px 0 var(--lg-edge-strong);
-}
-html[data-lg-aux].dark .lebenslage-card:hover {
-  border-color: var(--lg-hairline);
-}
-
-/* Evidence facts — raised glass. */
-html[data-lg-aux] .evidence-fact {
-  background: var(--lg-glass-raised);
-  border: 1px solid var(--lg-edge);
-  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
-}
-html[data-lg-aux].dark .evidence-fact {
-  border-color: var(--lg-hairline);
-}
+/* Lebenslagen index + evidence figures (redesign 2026-07-09) are editorial
+   hairline rows on the bare canvas — deliberately NOT glass, so the lower
+   page alternates module shapes instead of repeating the card grid. */
 
 /* Trust-principles band — lifted to a floating glass panel. */
 html[data-lg-aux] .principles {
@@ -236,15 +218,8 @@ html[data-lg-aux].dark .landing-badge {
   border-color: var(--lg-hairline);
 }
 
-/* Green-tinted icon tiles — the app's mint-glass treatment (surfaces only; the
-   Waldgrün icon glyph colour is left intact). */
-html[data-lg-aux] .lebenslage-icon,
-html[data-lg-aux] .hero-stat-icon,
-html[data-lg-aux] .principle-icon {
-  background: var(--lg-mint);
-  border: 1px solid var(--lg-mint-border);
-  box-shadow: inset 0 1px 0 var(--lg-edge-strong);
-}
+/* (Icon-tile mint-glass treatment removed 2026-07-09 with the last landing
+   icon tiles — docs/research/ai-design-tells.md § icon containers.) */
 
 /* ═══════════════════════════════════════════════════════════════════════════
    Onboarding — full surface pass (the shared frosted header is handled above)
@@ -288,4 +263,102 @@ html[data-lg-aux] .lg-aux-panel {
 }
 html[data-lg-aux].dark .lg-aux-panel {
   border-color: var(--lg-hairline);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Mobile-Comfort — Zone D §8.4 · Landing burger disclosure (≤767px)
+   ---------------------------------------------------------------------------
+   The wrapped 5-link `.landing-nav` stacked into ~3 rows under the logo on the
+   phone. ≤767px it is swapped for a burger (`LandingMobileNav`). The burger is
+   hidden by default (this ONE base rule, not aux-gated) so on desktop AND with
+   the kill-switch (`NEXT_PUBLIC_LG=0` → no `data-lg-aux`) the header falls back
+   to its pre-wave wrapped nav — consistent with the kill-switch being the
+   cheapest full revert. Everything visible/glass is `data-lg-aux`-scoped so no
+   App-Shell rule leaks. No motion (nothing to gate for reduced-motion).
+   ═══════════════════════════════════════════════════════════════════════════ */
+.landing-mobile-nav {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  html[data-lg-aux] .landing-header {
+    position: relative;
+  }
+  html[data-lg-aux] .landing-header .landing-nav {
+    display: none;
+  }
+  html[data-lg-aux] .landing-mobile-nav {
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+html[data-lg-aux] .landing-burger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-md, 12px);
+  background: var(--lg-glass-raised);
+  border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+  color: var(--ink);
+  cursor: pointer;
+}
+html[data-lg-aux].dark .landing-burger {
+  border-color: var(--lg-hairline);
+}
+html[data-lg-aux] .landing-burger svg {
+  width: 22px;
+  height: 22px;
+}
+html[data-lg-aux] .landing-burger:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+html[data-lg-aux] .landing-burger-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  margin-top: 1px;
+  padding: 8px;
+  /* Opaque menu overlay: a solid surface base carries the glass sheen on top so
+     the dark hero can't bleed through (no backdrop-filter needed — keeps the
+     landing's single-frost budget on the header). */
+  background-color: var(--surface);
+  background-image: var(--lg-glass-raised);
+  border-top: 1px solid var(--lg-hairline);
+  border-bottom: 1px solid var(--lg-hairline);
+  box-shadow: var(--lg-shadow-panel);
+}
+html[data-lg-aux] .landing-burger-panel ul {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+html[data-lg-aux] .landing-burger-panel a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: var(--r-md, 12px);
+  color: var(--ink-2);
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+}
+html[data-lg-aux] .landing-burger-panel a:hover {
+  background: var(--lg-mint);
+  color: var(--ink);
+}
+html[data-lg-aux] .landing-burger-panel a:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: -2px;
 }

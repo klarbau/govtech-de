@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { Check, ChevronRight, Info } from 'lucide-react';
+import { Info } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
@@ -66,24 +66,6 @@ function FlagMark({ className }: { className?: string }) {
   );
 }
 
-/** Gold contact-chip glyph with inner divider lines. Decorative. */
-function ChipGlyph({ className }: { className?: string }) {
-  return (
-    <span
-      aria-hidden="true"
-      className={cn(
-        'relative inline-flex h-[22px] w-7 items-center justify-center rounded-[3px] bg-amber-300 ring-1 ring-amber-500/40',
-        className,
-      )}
-    >
-      <span className="absolute inset-x-1 top-1.5 h-px bg-amber-600/50" />
-      <span className="absolute inset-x-1 top-1/2 h-px -translate-y-1/2 bg-amber-600/50" />
-      <span className="absolute inset-x-1 bottom-1.5 h-px bg-amber-600/50" />
-      <span className="absolute left-1/2 top-1 h-[14px] w-px -translate-x-1/2 bg-amber-600/40" />
-    </span>
-  );
-}
-
 interface EidCredentialCardBaseProps {
   name: string;
 }
@@ -97,29 +79,16 @@ interface EidCredentialHeroProps extends EidCredentialCardBaseProps {
   birthdate?: string;
 }
 
-interface EidCredentialSelectProps extends EidCredentialCardBaseProps {
-  variant: 'select';
-  descriptor: string;
-  selected?: boolean;
-  onClick: () => void;
-}
-
-type EidCredentialCardProps = EidCredentialHeroProps | EidCredentialSelectProps;
+type EidCredentialCardProps = EidCredentialHeroProps;
 
 /**
  * A credible digital-ID credential rendered as a real artifact — flag stripe,
- * gold chip, MRZ line, honest `[MOCK]` stamp. No gradients/glow/glass: the
- * authenticity is document detailing, not effect.
- *
- * - `hero`: full dark credential, the visual anchor of the transparency screen.
- * - `select`: a light, scannable credential row that reads as one ID in a rack.
+ * MRZ line, honest `[MOCK]` stamp. No gradients/glow/glass: the authenticity
+ * is document detailing, not effect. `hero` is the single variant: the full
+ * dark credential anchoring the transparency screen and the Stammdaten hero.
  */
 export function EidCredentialCard(props: EidCredentialCardProps) {
   const t = useTranslations('onboarding.eid_card');
-
-  if (props.variant === 'select') {
-    return <EidCredentialSelect {...props} mockLabel={t('mock')} />;
-  }
 
   return (
     <EidCredentialHero
@@ -208,66 +177,3 @@ function EidCredentialHero({
   );
 }
 
-function EidCredentialSelect({
-  name,
-  descriptor,
-  selected = false,
-  onClick,
-  mockLabel,
-}: EidCredentialSelectProps & { mockLabel: string }) {
-  const mrz = formatMrz(name);
-
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={selected}
-      className={cn(
-        'relative flex w-full min-h-[44px] items-center gap-3 overflow-hidden rounded-lg border bg-surface py-3 pe-4 ps-5 text-start transition-colors',
-        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
-        selected
-          ? 'border-primary bg-accent-soft'
-          : 'border-border hover:border-border-strong hover:bg-surface-muted',
-      )}
-    >
-      <span
-        aria-hidden="true"
-        className="absolute inset-y-0 start-0 flex w-1 flex-col overflow-hidden rounded-s-lg"
-      >
-        <span className="flex-1 bg-[#000000]" />
-        <span className="flex-1 bg-[#DD0000]" />
-        <span className="flex-1 bg-[#FFCE00]" />
-      </span>
-
-      <ChipGlyph className="shrink-0" />
-
-      <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-        <span className="truncate text-base font-semibold text-text-primary">{name}</span>
-        <span className="text-sm text-text-secondary">{descriptor}</span>
-        <span
-          aria-hidden="true"
-          className="truncate font-mono text-[10px] tracking-[0.15em] text-text-muted"
-          dir="ltr"
-        >
-          {mrz}
-        </span>
-      </span>
-
-      <span
-        aria-hidden="true"
-        className="shrink-0 rounded border border-border px-1 py-0.5 text-[9px] font-bold uppercase tracking-widest text-text-muted"
-      >
-        {mockLabel}
-      </span>
-
-      {selected ? (
-        <Check className="size-5 shrink-0 text-primary" aria-hidden="true" />
-      ) : (
-        <ChevronRight
-          className="size-5 shrink-0 text-text-muted rtl:-scale-x-100"
-          aria-hidden="true"
-        />
-      )}
-    </button>
-  );
-}
