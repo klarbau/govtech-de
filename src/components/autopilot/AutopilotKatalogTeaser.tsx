@@ -3,28 +3,18 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import {
-  Baby,
-  Building2,
-  ChevronRight,
-  Clock,
-  Euro,
-  Flower2,
-  Home,
-} from 'lucide-react';
+import { ArrowRight, Baby, ChevronRight, Euro, Flower2, Home } from 'lucide-react';
 
 import { api } from '@/lib/mock-backend';
 import type { AutopilotKatalogEntry, Behoerde } from '@/types';
 
-const ICON_BY_ID: Record<
-  AutopilotKatalogEntry['id'],
-  { icon: React.ReactNode; tone: string }
-> = {
-  umzug: { icon: <Home aria-hidden="true" />, tone: '' },
-  kindergeburt: { icon: <Baby aria-hidden="true" />, tone: 'green' },
-  steuererklaerung: { icon: <Euro aria-hidden="true" />, tone: 'violet' },
-  // Trauerfall/Nachlass — sober, respektvoll: neutrale Tonalität, kein Farbakzent.
-  trauerfall: { icon: <Flower2 aria-hidden="true" />, tone: '' },
+// Inline-Glyph je Lebenslage (klein, ohne Container — §A3): der Icon-Kreis war
+// der „Icon-Tile über der Überschrift"-Marker. Neutrale Grün-Akzentfarbe für alle.
+const ICON_BY_ID: Record<AutopilotKatalogEntry['id'], React.ReactNode> = {
+  umzug: <Home aria-hidden="true" />,
+  kindergeburt: <Baby aria-hidden="true" />,
+  steuererklaerung: <Euro aria-hidden="true" />,
+  trauerfall: <Flower2 aria-hidden="true" />,
 };
 
 /**
@@ -72,12 +62,11 @@ export function AutopilotKatalogTeaser() {
         </Link>
       </div>
 
-      <div className="katalog-grid">
+      <ul className="border-t border-border">
         {entries.map((entry) => {
           const isLive = entry.status === 'live';
           const href = isLive ? '/vorgaenge/umzug/start' : '/vorgaenge';
           const title = safe(t, `${entry.id}.titel`);
-          const meta = ICON_BY_ID[entry.id];
           // Single beteiligte Stelle → ihr Kurzname (erstes Wort, z. B.
           // „Finanzamt"); sonst der konservative „ca. N Behörden"-Zähler.
           const singleName = behoerdenNames[entry.behoerden_preview[0] ?? ''];
@@ -86,34 +75,40 @@ export function AutopilotKatalogTeaser() {
               ? singleName.split(' ')[0]
               : t('behoerden_count', { count: entry.behoerden_count });
           return (
-            <Link key={entry.id} href={href} className="katalog-card">
-              <div className="kc-head">
-                <span className={`icon-circle lg ${meta.tone}`}>{meta.icon}</span>
-                <div className="kc-text">
-                  {!isLive ? (
-                    <span className="badge outline" style={{ marginBottom: 6 }}>
-                      {t('vorschau_badge')}
-                    </span>
-                  ) : null}
-                  <div className="kc-title">{title}</div>
-                  <p className="kc-desc">{safe(t, `${entry.id}.beschreibung`)}</p>
+            <li key={entry.id} className="border-b border-border">
+              <Link
+                href={href}
+                className="group relative flex items-start gap-3 rounded-md py-4 pl-1 pr-8 no-underline transition-colors hover:bg-surface-muted/50"
+              >
+                <span
+                  className="mt-0.5 shrink-0 text-primary [&>svg]:size-[18px]"
+                  aria-hidden="true"
+                >
+                  {ICON_BY_ID[entry.id]}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                    <span className="font-semibold text-text-primary">{title}</span>
+                    {!isLive ? (
+                      <span className="badge outline">{t('vorschau_badge')}</span>
+                    ) : null}
+                  </div>
+                  <p className="mt-1 text-sm leading-snug text-text-secondary">
+                    {safe(t, `${entry.id}.beschreibung`)}
+                  </p>
+                  <p className="mt-1.5 text-xs tabular-nums text-text-muted">
+                    {behoerdenMetric} · {t('zeit_gespart', { min: entry.geschaetzte_zeitersparnis_min })}
+                  </p>
                 </div>
-              </div>
-              <div className="kc-meta">
-                <span className="kc-m">
-                  <Building2 aria-hidden="true" />
-                  <span>{behoerdenMetric}</span>
-                </span>
-                <span className="kc-m">
-                  <Clock aria-hidden="true" />
-                  <span>{t('zeit_gespart', { min: entry.geschaetzte_zeitersparnis_min })}</span>
-                </span>
-                <ChevronRight className="kc-chev" aria-hidden="true" />
-              </div>
-            </Link>
+                <ArrowRight
+                  aria-hidden="true"
+                  className="absolute right-1 top-4 size-4 text-text-muted transition-transform motion-reduce:transition-none group-hover:translate-x-1"
+                />
+              </Link>
+            </li>
           );
         })}
-      </div>
+      </ul>
     </section>
   );
 }

@@ -91,9 +91,9 @@ html[data-lg][data-lg-screen='familie'] .app-content .hh-banner {
   box-shadow: inset 0 1px 0 var(--lg-edge);
 }
 
-/* ── Vorgang / Nachweis rows — soft frosted boxed sub-surfaces ─────────────── */
-html[data-lg][data-lg-screen='familie'] .app-content .fm-list .item,
-html[data-lg][data-lg-screen='familie'] .app-content .nb-list .item {
+/* ── Vorgang rows — soft frosted boxed sub-surfaces (the Nachweise block is now
+   an editorial hairline list, so it carries no boxed sub-surface). ─────────── */
+html[data-lg][data-lg-screen='familie'] .app-content .fm-list .item {
   border-top: 0;
   border-radius: 12px;
   padding: 12px 14px;
@@ -103,12 +103,10 @@ html[data-lg][data-lg-screen='familie'] .app-content .nb-list .item {
   box-shadow: inset 0 1px 0 var(--lg-edge);
   transition: box-shadow 0.2s ease, background 0.2s ease;
 }
-html[data-lg][data-lg-screen='familie'] .app-content .fm-list .item:first-of-type,
-html[data-lg][data-lg-screen='familie'] .app-content .nb-list .item:first-of-type {
+html[data-lg][data-lg-screen='familie'] .app-content .fm-list .item:first-of-type {
   margin-top: 0;
 }
-html[data-lg][data-lg-screen='familie'] .app-content .fm-list .item:hover,
-html[data-lg][data-lg-screen='familie'] .app-content .nb-list .item:hover {
+html[data-lg][data-lg-screen='familie'] .app-content .fm-list .item:hover {
   background: var(--lg-glass-raised);
   box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
 }

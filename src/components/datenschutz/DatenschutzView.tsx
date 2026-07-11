@@ -351,42 +351,55 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
         {liveAnnouncement}
       </div>
 
-      {/* Stat row */}
-      <div className="ds2-stats">
-        <div className="ds2-stat">
-          <span className="icon-circle green">
-            <ShieldCheck aria-hidden="true" />
-          </span>
-          <div className="ds2-stat-body">
-            <div className="ds2-stat-label">{t('datenschutz.stats.aktiv_title')}</div>
-            <div className="ds2-stat-num">
+      {/* Kennzahlen — editorial rows: value + label on one line, hairline
+          separators, no boxes, no icons (docs/research/ai-design-tells.md §1). */}
+      <div
+        className="ds2-kennzahlen mt-[18px] flex flex-col divide-y divide-border border-y border-border sm:flex-row sm:divide-x sm:divide-y-0"
+        role="group"
+        aria-label={t('datenschutz.stats.strip_label')}
+        tabIndex={0}
+      >
+        <div className="flex flex-col justify-center gap-1 py-4 sm:flex-1 sm:py-3 sm:pr-6">
+          <p className="flex flex-wrap items-baseline gap-x-2">
+            <span className="text-2xl font-semibold leading-tight tabular-nums text-text-primary">
               {t('datenschutz.stats.aktiv_value', {
                 active: activeCount,
                 total: totalCount,
               })}
-            </div>
-            <div className="ds2-stat-sub">{t('datenschutz.stats.aktiv_sub')}</div>
-          </div>
+            </span>
+            <span className="text-sm font-medium text-text-secondary">
+              {t('datenschutz.stats.aktiv_title')}
+            </span>
+          </p>
+          <p className="text-xs leading-relaxed text-text-secondary">
+            {t('datenschutz.stats.aktiv_sub')}
+          </p>
         </div>
-        <div className="ds2-stat">
-          <span className="icon-circle">
-            <Eye aria-hidden="true" />
-          </span>
-          <div className="ds2-stat-body">
-            <div className="ds2-stat-label">{t('datenschutz.stats.anfragen_title')}</div>
-            <div className="ds2-stat-num ds2-num">{anfragenCount}</div>
-            <div className="ds2-stat-sub">{t('datenschutz.stats.anfragen_sub')}</div>
-          </div>
+        <div className="flex flex-col justify-center gap-1 py-4 sm:flex-1 sm:px-6 sm:py-3">
+          <p className="flex flex-wrap items-baseline gap-x-2">
+            <span className="text-2xl font-semibold leading-tight tabular-nums text-text-primary">
+              {anfragenCount}
+            </span>
+            <span className="text-sm font-medium text-text-secondary">
+              {t('datenschutz.stats.anfragen_title')}
+            </span>
+          </p>
+          <p className="text-xs leading-relaxed text-text-secondary">
+            {t('datenschutz.stats.anfragen_sub')}
+          </p>
         </div>
-        <div className="ds2-stat">
-          <span className="icon-circle">
-            <Clock aria-hidden="true" />
-          </span>
-          <div className="ds2-stat-body">
-            <div className="ds2-stat-label">{t('datenschutz.stats.letzte_title')}</div>
-            <div className="ds2-stat-num ds2-num">{letzteAktivitaet}</div>
-            <div className="ds2-stat-sub">{t('datenschutz.stats.letzte_sub')}</div>
-          </div>
+        <div className="flex flex-col justify-center gap-1 py-4 sm:flex-1 sm:px-6 sm:py-3">
+          <p className="flex flex-wrap items-baseline gap-x-2">
+            <span className="text-2xl font-semibold leading-tight tabular-nums text-text-primary">
+              {letzteAktivitaet}
+            </span>
+            <span className="text-sm font-medium text-text-secondary">
+              {t('datenschutz.stats.letzte_title')}
+            </span>
+          </p>
+          <p className="text-xs leading-relaxed text-text-secondary">
+            {t('datenschutz.stats.letzte_sub')}
+          </p>
         </div>
       </div>
 

@@ -145,7 +145,12 @@ test('three stat tiles are links with accessible names in visual order', async (
   await page.goto('/dashboard', { waitUntil: 'networkidle' });
   await waitForDashboard(page);
   const tiles = await page.evaluate(() => {
-    return Array.from(document.querySelectorAll('main a.stat-tile')).map((link) => ({
+    // Design-debt wave 2026-07-09: the boxed .stat-tile trio was de-templated
+    // into editorial "Kennzahlen" link rows (number + label on one line,
+    // hairline dividers) — same three links, no panel boxes.
+    return Array.from(
+      document.querySelectorAll('main [data-testid="dash-kennzahl-list"] a'),
+    ).map((link) => ({
       name:
         link.getAttribute('aria-label') ||
         (link.textContent ?? '').replace(/\s+/g, ' ').trim(),
@@ -154,8 +159,8 @@ test('three stat tiles are links with accessible names in visual order', async (
   });
   console.log('[STAT-TILES] ' + JSON.stringify(tiles));
   // Redesign mockup #3: the right rail stacks Posteingang / Offene Vorgänge /
-  // Fristen as stat tiles (the standalone Termine tile was dropped — Termine is
-  // covered by the left "Nächster Termin" card), plus the Kontrolle card below.
+  // Fristen as Kennzahlen rows (the standalone Termine tile was dropped — Termine
+  // is covered by the left "Nächster Termin" card), plus the Kontrolle card below.
   expect(tiles.length).toBe(3);
   const expectedHrefs = ['/posteingang', '/vorgaenge', '/posteingang'];
   expect(tiles.map((t) => t.href)).toEqual(expectedHrefs);

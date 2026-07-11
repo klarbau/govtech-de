@@ -9,14 +9,12 @@ import {
   Briefcase,
   CalendarDays,
   Check,
-  CheckCircle2,
   ChevronRight,
   ChevronUp,
   Clock,
   FilePlus2,
   FileText,
   Filter,
-  FolderOpen,
   Heart,
   Home,
   IdCard,
@@ -102,9 +100,6 @@ function daysSince(iso: string | undefined, nowIso: string): number {
   return Math.max(0, Math.floor((b - a) / (1000 * 60 * 60 * 24)));
 }
 
-type IconTone = 'brand' | 'green' | 'amber' | 'violet' | 'pink' | 'teal';
-const SMALL_TONES: IconTone[] = ['violet', 'pink', 'teal', 'amber', 'brand', 'green'];
-
 interface SmallVorgang {
   id: string;
   titel: string;
@@ -116,7 +111,6 @@ interface SmallVorgang {
   actionLabel: string;
   state: 'abgeschlossen' | 'warten' | 'laufend';
   href: string;
-  tone: IconTone;
 }
 
 interface BigStep {
@@ -198,6 +192,13 @@ function typIcon(typ: string): typeof Home {
   if (typ.startsWith('steuer')) return BadgeEuro;
   return TYP_ICON[typ] ?? FileText;
 }
+
+const QUICK_LINKS: Array<{ href: string; icon: typeof FilePlus2; label: string }> = [
+  { href: '/lebenslagen', icon: FilePlus2, label: 'Neuen Vorgang starten' },
+  { href: '/lebenslagen', icon: LayoutGrid, label: 'Häufige Dienstleistungen' },
+  { href: '/dokumente', icon: FileText, label: 'Unterlagen verwalten' },
+  { href: '/stammdaten', icon: Settings, label: 'Profil & Einstellungen' },
+];
 
 export function VorgaengeView() {
   const [vorgaenge, setVorgaenge] = React.useState<Vorgang[]>([]);
@@ -314,7 +315,7 @@ export function VorgaengeView() {
   /* Small cards: up to 6 visible Vorgänge (excluding the featured Umzug). */
   const smallVorgaenge: SmallVorgang[] = React.useMemo(() => {
     const filtered = visibleVorgaenge.filter((v) => v.id !== featuredUmzug?.id);
-    return filtered.slice(0, 6).map<SmallVorgang>((v, idx) => {
+    return filtered.slice(0, 6).map<SmallVorgang>((v) => {
       const frist = naechsteFrist(v, nowIso);
       const done = isAbgeschlossen(v);
       const state: SmallVorgang['state'] = done ? 'abgeschlossen' : isWarten(v) ? 'warten' : 'laufend';
@@ -329,7 +330,6 @@ export function VorgaengeView() {
         actionLabel: done ? '' : nextActionLabel(v),
         state,
         href: `/vorgaenge/${encodeURIComponent(v.id)}`,
-        tone: SMALL_TONES[idx % SMALL_TONES.length],
       };
     });
   }, [visibleVorgaenge, featuredUmzug, nowIso, behoerdeName]);
@@ -403,57 +403,16 @@ export function VorgaengeView() {
       .slice(0, 3);
   }, [vorgaenge, nowIso, behoerdeName]);
 
-  function focusList() {
-    listRef.current?.focus();
-  }
-
   if (!loaded) {
     return <VorgaengeSkeleton />;
   }
 
-  const statTiles: Array<{
-    id: string;
-    icon: typeof FolderOpen;
-    tone: IconTone;
-    num: number;
-    label: string;
-    onActivate: () => void;
-  }> = [
-    {
-      id: 'offen',
-      icon: FolderOpen,
-      tone: 'brand',
-      num: rail.offen,
-      label: 'Offene Vorgänge',
-      onActivate: () => setActiveTab('laufend'),
-    },
-    {
-      id: 'warten',
-      icon: Clock,
-      tone: 'amber',
-      num: counts.warten,
-      label: 'Warten auf Sie',
-      onActivate: () => setActiveTab('warten'),
-    },
-    {
-      id: 'fristen',
-      icon: CalendarDays,
-      tone: 'violet',
-      num: rail.fristen14,
-      label: 'Fristen in 14 Tagen',
-      onActivate: () => {
-        setActiveTab('alle');
-        focusList();
-      },
-    },
-    {
-      id: 'fertig',
-      icon: CheckCircle2,
-      tone: 'green',
-      num: counts.abgeschlossen,
-      label: 'Abgeschlossen',
-      onActivate: () => setActiveTab('abgeschlossen'),
-    },
+  /* Editorial Kennzahlen-Zeile: nur die Werte, die die Filter-Chips unten NICHT
+     bereits führen. „Warten auf Sie" und „Abgeschlossen" sind mit den Chips
+     (gleiche Zahl, gleiches Label) deckungsgleich und hier weggelassen. */
+  const kennzahlen: Array<{ id: string; num: number; label: string }> = [
+    { id: 'offen', num: rail.offen, label: 'Offene Vorgänge' },
+    { id: 'fristen', num: rail.fristen14, label: 'Fristen in 14 Tagen' },
   ];
 
   return (
@@ -466,25 +425,22 @@ export function VorgaengeView() {
         <div className="sub">Verwalten Sie Ihre Anträge und behördlichen Prozesse an einem Ort.</div>
       </div>
 
-      <div className="vg-stats">
-        {statTiles.map((tile) => {
-          const Icon = tile.icon;
-          return (
-            <div key={tile.id} className="stat-tile">
-              <div className="st-head">
-                <span className={`icon-circle ${tile.tone}`}>
-                  <Icon aria-hidden="true" />
-                </span>
-              </div>
-              <div className="st-num">{tile.num}</div>
-              <div className="st-sub">{tile.label}</div>
-              <button type="button" className="st-cta vg-stat-cta" onClick={tile.onActivate}>
-                Ansehen <ChevronRight aria-hidden="true" />
-              </button>
-            </div>
-          );
-        })}
-      </div>
+      <dl
+        data-testid="vorgaenge-kennzahl-strip"
+        className="mb-6 flex flex-col divide-y divide-border border-y border-border sm:mb-7 sm:flex-row sm:divide-x sm:divide-y-0 sm:border-y-0 sm:border-none"
+      >
+        {kennzahlen.map((k) => (
+          <div
+            key={k.id}
+            className="flex items-baseline gap-2 py-3 sm:flex-col sm:items-start sm:gap-0.5 sm:py-0 sm:pr-10 sm:pl-10 sm:first:pl-0"
+          >
+            <dt className="order-2 text-sm text-text-secondary sm:order-2">{k.label}</dt>
+            <dd className="order-1 m-0 text-2xl font-semibold tabular-nums leading-none text-text-primary sm:order-1 sm:text-3xl">
+              {k.num}
+            </dd>
+          </div>
+        ))}
+      </dl>
 
       <div className="vg-toolbar">
         <div className="tab-chips">
@@ -620,80 +576,73 @@ export function VorgaengeView() {
           ) : null}
 
           {smallVorgaenge.length > 0 ? (
-            <div className="vg-cards">
+            <ul data-testid="vorgaenge-list" className="mt-6 border-t border-border">
               {smallVorgaenge.map((u) => {
                 const Icon = typIcon(u.typ);
                 return (
-                  <div key={u.id} className="vg-card">
-                    <div className="vg-card-head">
-                      <span className={`icon-circle ${u.tone}`}>
-                        <Icon aria-hidden="true" />
-                      </span>
-                      <div className="grow">
-                        <div className="title" title={u.titel}>{u.titel}</div>
-                        <div className="sub">{u.primaryBehoerde}</div>
-                      </div>
-                      {u.state === 'abgeschlossen' ? (
-                        <span className="badge green">
-                          <span className="dot" style={{ background: 'var(--green-500)' }} />
-                          Abgeschlossen
-                        </span>
-                      ) : u.state === 'warten' ? (
-                        <span className="badge amber">
-                          <span className="dot" style={{ background: 'var(--amber-500)' }} />
-                          Warten auf Sie
-                        </span>
-                      ) : (
-                        <span className="badge brand">
-                          <span className="dot" style={{ background: 'var(--brand-500)' }} />
-                          Laufend
-                        </span>
-                      )}
-                    </div>
-
-                    {u.state === 'abgeschlossen' ? (
-                      <div className="vg-naction done">
-                        <div className="t">
-                          <Check aria-hidden="true" />
-                          Abgeschlossen{u.abgeschlossenAm ? ` am ${u.abgeschlossenAm}` : ''}
-                        </div>
-                        <div className="s">Alle Behörden wurden informiert.</div>
-                      </div>
-                    ) : (
-                      <div className="vg-naction">
-                        <div className="vg-naction-main">
-                          <span className="lbl">Nächste Aktion</span>
-                          <span className="act">{u.actionLabel}</span>
-                        </div>
-                        {u.fristDays !== null ? (
-                          <div className="vg-naction-frist">
-                            <span className="d">Fällig in {u.fristDays} Tagen</span>
-                            {u.fristIso ? (
-                              <span className="dt">am {formatDateShort(u.fristIso)}</span>
-                            ) : null}
+                  <li key={u.id} className="border-b border-border">
+                    <div className="flex flex-col gap-2 py-4 sm:flex-row sm:items-center sm:gap-4">
+                      <div className="flex min-w-0 flex-1 items-start gap-3">
+                        <Icon className="mt-0.5 h-5 w-5 shrink-0 text-text-secondary" aria-hidden="true" />
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                            <span className="font-medium text-text-primary" title={u.titel}>
+                              {u.titel}
+                            </span>
+                            {u.state === 'abgeschlossen' ? (
+                              <span className="badge green">
+                                <span className="dot" style={{ background: 'var(--green-500)' }} />
+                                Abgeschlossen
+                              </span>
+                            ) : u.state === 'warten' ? (
+                              <span className="badge amber">
+                                <span className="dot" style={{ background: 'var(--amber-500)' }} />
+                                Warten auf Sie
+                              </span>
+                            ) : (
+                              <span className="badge brand">
+                                <span className="dot" style={{ background: 'var(--brand-500)' }} />
+                                Laufend
+                              </span>
+                            )}
                           </div>
-                        ) : null}
+                          <p className="mt-0.5 text-sm text-text-secondary">{u.primaryBehoerde}</p>
+                          {u.state === 'abgeschlossen' ? (
+                            <p className="mt-1 text-sm text-text-secondary">
+                              Abgeschlossen{u.abgeschlossenAm ? ` am ${u.abgeschlossenAm}` : ''} · Alle Behörden wurden informiert.
+                            </p>
+                          ) : (
+                            <p className="mt-1 text-sm text-text-secondary">
+                              <span className="text-text-primary">Nächste Aktion: {u.actionLabel}</span>
+                              {u.fristDays !== null ? (
+                                <>
+                                  {' · '}Fällig in {u.fristDays} Tagen
+                                  {u.fristIso ? ` (am ${formatDateShort(u.fristIso)})` : ''}
+                                </>
+                              ) : null}
+                            </p>
+                          )}
+                        </div>
                       </div>
-                    )}
-
-                    <div className="vg-card-actions">
-                      <Link href={u.href} className="btn btn-secondary">
-                        {u.state === 'abgeschlossen' ? 'Vorgang ansehen' : 'Weiter bearbeiten'}
-                      </Link>
-                      <button
-                        type="button"
-                        className="btn btn-secondary btn-sm vg-kebab"
-                        aria-label="Mehr Aktionen"
-                        disabled
-                        aria-disabled="true"
-                      >
-                        <MoreVertical aria-hidden="true" />
-                      </button>
+                      <div className="flex shrink-0 items-center gap-2 pl-8 sm:pl-0">
+                        <Link href={u.href} className="btn btn-secondary">
+                          {u.state === 'abgeschlossen' ? 'Vorgang ansehen' : 'Weiter bearbeiten'}
+                        </Link>
+                        <button
+                          type="button"
+                          className="btn btn-secondary btn-sm vg-kebab"
+                          aria-label="Mehr Aktionen"
+                          disabled
+                          aria-disabled="true"
+                        >
+                          <MoreVertical aria-hidden="true" />
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  </li>
                 );
               })}
-            </div>
+            </ul>
           ) : null}
 
           {!bigVorgang && smallVorgaenge.length === 0 ? (
@@ -791,35 +740,22 @@ export function VorgaengeView() {
 
           <section className="rail-card">
             <h3>Schnellzugriff</h3>
-            <ul className="vg-quick">
-              <li>
-                <Link href="/lebenslagen" className="vg-quick-tile">
-                  <FilePlus2 aria-hidden="true" />
-                  <span>Neuen Vorgang starten</span>
-                  <ChevronRight className="vg-quick-arrow" aria-hidden="true" />
-                </Link>
-              </li>
-              <li>
-                <Link href="/lebenslagen" className="vg-quick-tile">
-                  <LayoutGrid aria-hidden="true" />
-                  <span>Häufige Dienstleistungen</span>
-                  <ChevronRight className="vg-quick-arrow" aria-hidden="true" />
-                </Link>
-              </li>
-              <li>
-                <Link href="/dokumente" className="vg-quick-tile">
-                  <FileText aria-hidden="true" />
-                  <span>Unterlagen verwalten</span>
-                  <ChevronRight className="vg-quick-arrow" aria-hidden="true" />
-                </Link>
-              </li>
-              <li>
-                <Link href="/stammdaten" className="vg-quick-tile">
-                  <Settings aria-hidden="true" />
-                  <span>Profil &amp; Einstellungen</span>
-                  <ChevronRight className="vg-quick-arrow" aria-hidden="true" />
-                </Link>
-              </li>
+            <ul>
+              {QUICK_LINKS.map(({ href, icon: Icon, label }) => (
+                <li key={label} className="border-t border-border first:border-t-0">
+                  <Link
+                    href={href}
+                    className="group flex min-h-11 items-center gap-3 py-2 text-sm font-medium text-text-primary"
+                  >
+                    <Icon className="h-4 w-4 shrink-0 text-text-secondary" aria-hidden="true" />
+                    <span className="flex-1">{label}</span>
+                    <ChevronRight
+                      className="h-4 w-4 shrink-0 text-text-secondary transition-transform ease-out group-hover:translate-x-1 motion-reduce:transition-none"
+                      aria-hidden="true"
+                    />
+                  </Link>
+                </li>
+              ))}
             </ul>
           </section>
         </aside>
@@ -837,19 +773,17 @@ function VorgaengeSkeleton() {
         <Skeleton shape="text" className="h-8 w-48" />
         <Skeleton shape="text" className="mt-2 w-72" />
       </div>
-      <div className="vg-stats">
-        <Skeleton className="h-32 rounded-2xl" />
-        <Skeleton className="h-32 rounded-2xl" />
-        <Skeleton className="h-32 rounded-2xl" />
-        <Skeleton className="h-32 rounded-2xl" />
+      <div className="mb-7 flex gap-10">
+        <Skeleton className="h-10 w-28 rounded-md" />
+        <Skeleton className="h-10 w-36 rounded-md" />
       </div>
       <div className="vg-layout" style={{ marginTop: 18 }}>
         <div className="flex flex-col gap-6">
           <Skeleton className="h-56 rounded-2xl" />
-          <div className="vg-cards">
-            <Skeleton className="h-44 rounded-2xl" />
-            <Skeleton className="h-44 rounded-2xl" />
-            <Skeleton className="h-44 rounded-2xl" />
+          <div className="flex flex-col">
+            <Skeleton className="h-16 rounded-none border-b border-border" />
+            <Skeleton className="h-16 rounded-none border-b border-border" />
+            <Skeleton className="h-16 rounded-none border-b border-border" />
           </div>
         </div>
         <Skeleton className="h-96 rounded-2xl" />

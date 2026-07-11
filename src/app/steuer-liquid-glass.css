@@ -64,9 +64,8 @@ html[data-lg][data-lg-screen='steuer'].dark .app-content
   opacity: 0.25;
 }
 
-/* ── Datenquellen (SSoT-Herkunft) + Fortschritt — soft frosted insets on the hero
-   („aus Lohnsteuerbescheinigung" reads as hairline-meta, Posteingang optics). ── */
-html[data-lg][data-lg-screen='steuer'] .app-content .qcard,
+/* ── Fortschritt — soft frosted inset on the hero. (Datenquellen is now an
+   editorial hairline list on the frost, so it needs no boxed sub-surface.) ─── */
 html[data-lg][data-lg-screen='steuer'] .app-content .progress-row {
   background: var(--lg-glass-soft);
   border: 1px solid var(--lg-hairline);

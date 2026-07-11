@@ -660,7 +660,7 @@ test('DEMO - Green-Tour: Das neue grüne Design, funktional (Anna)', async ({
   ).toBeVisible({ timeout: 30_000 });
   // Wait for the KPI tiles + Termindetails panel to populate.
   await page
-    .locator('.tm-kpis .tm-kpi')
+    .locator('[data-testid="termine-kennzahl-strip"] > *')
     .first()
     .waitFor({ timeout: 12_000 })
     .catch(() => {});
@@ -673,7 +673,7 @@ test('DEMO - Green-Tour: Das neue grüne Design, funktional (Anna)', async ({
     'Frist-gerecht gefunden und vorgemerkt — Sie bestätigen. Nie automatisch gebucht.',
   );
   // Pan across the 4-KPI row, then push into the Termindetails panel.
-  await zoomTo(page, page.locator('.tm-kpis'), {
+  await zoomTo(page, page.locator('[data-testid="termine-kennzahl-strip"]'), {
     scale: 1.24,
     ms: 1000,
     ease: EASE_PUNCH,
@@ -696,7 +696,7 @@ test('DEMO - Green-Tour: Das neue grüne Design, funktional (Anna)', async ({
     page.getByRole('heading', { name: 'Vorgänge', level: 1 }),
   ).toBeVisible({ timeout: 30_000 });
   await page
-    .locator('.vg-stats .stat-tile')
+    .locator('[data-testid="vorgaenge-kennzahl-strip"] > *')
     .first()
     .waitFor({ timeout: 12_000 })
     .catch(() => {});
@@ -709,7 +709,7 @@ test('DEMO - Green-Tour: Das neue grüne Design, funktional (Anna)', async ({
     'Jeder Vorgang mit klarer „Nächster Schritt"-Führung.',
   );
   // KPI stat row → the green Umzug timeline (the featured big card).
-  await zoomTo(page, page.locator('.vg-stats'), {
+  await zoomTo(page, page.locator('[data-testid="vorgaenge-kennzahl-strip"]'), {
     scale: 1.22,
     ms: 900,
     ease: EASE_PUNCH,
@@ -720,7 +720,7 @@ test('DEMO - Green-Tour: Das neue grüne Design, funktional (Anna)', async ({
     await zoomTo(page, bigCard, { scale: 1.2, ms: 1300, ease: EASE_GLIDE });
     await beat(page, 1500);
   } else {
-    await zoomTo(page, page.locator('.vg-cards').first(), {
+    await zoomTo(page, page.locator('[data-testid="vorgaenge-list"]').first(), {
       scale: 1.24,
       ms: 1200,
       ease: EASE_GLIDE,

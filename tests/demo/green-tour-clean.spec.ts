@@ -388,13 +388,13 @@ test('CLEAN - Green-Tour raw capture (Anna)', async ({ page }) => {
     page.getByRole('heading', { name: 'Termine', level: 1 }),
   ).toBeVisible({ timeout: 30_000 });
   await page
-    .locator('.tm-kpis .tm-kpi')
+    .locator('[data-testid="termine-kennzahl-strip"] > *')
     .first()
     .waitFor({ timeout: 12_000 })
     .catch(() => {});
   await revealPage(page);
   await beat(page, 1000);
-  await panIf(page, page.locator('.tm-kpis'), 1300);
+  await panIf(page, page.locator('[data-testid="termine-kennzahl-strip"]'), 1300);
   await panIf(page, page.locator('.tm-detail'), 1800);
 
   /* ── Szene 7 — Vorgänge: green command-center, „Nächster Schritt" ───────── */
@@ -403,15 +403,15 @@ test('CLEAN - Green-Tour raw capture (Anna)', async ({ page }) => {
     page.getByRole('heading', { name: 'Vorgänge', level: 1 }),
   ).toBeVisible({ timeout: 30_000 });
   await page
-    .locator('.vg-stats .stat-tile')
+    .locator('[data-testid="vorgaenge-kennzahl-strip"] > *')
     .first()
     .waitFor({ timeout: 12_000 })
     .catch(() => {});
   await revealPage(page);
   await beat(page, 1000);
-  await panIf(page, page.locator('.vg-stats'), 1300);
+  await panIf(page, page.locator('[data-testid="vorgaenge-kennzahl-strip"]'), 1300);
   await panIf(page, page.locator('.vg-big'), 1800);
-  await panIf(page, page.locator('.vg-cards'), 1600);
+  await panIf(page, page.locator('[data-testid="vorgaenge-list"]'), 1600);
 
   // Final settle so the cut doesn't end on a hard frame.
   await beat(page, 1600);

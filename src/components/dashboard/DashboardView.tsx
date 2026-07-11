@@ -10,14 +10,12 @@ import {
   Check,
   CheckCircle2,
   ChevronRight,
-  Clock,
   Clock3,
   ExternalLink,
   FileText,
   Folder,
   Gauge,
   IdCard,
-  Mail,
   MapPin,
   Shield,
 } from 'lucide-react';
@@ -190,6 +188,29 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
     toast(tWohngeld('consent_revoked_toast'));
   }
 
+  // §A1 — Kennzahlen als redaktionelle Zeilen (Zahl + Label auf einer Zeile,
+  // Hairline-Trenner, kein Panel/Icon) statt der drei geboxten Stat-Kacheln.
+  const kennzahlen = [
+    {
+      href: '/posteingang',
+      num: snapshot?.posteingang_tile.ungelesen ?? 0,
+      label: t('kacheln.posteingang.titel'),
+      sub: t('tiles.posteingang_sub'),
+    },
+    {
+      href: '/vorgaenge',
+      num: snapshot?.vorgangs_stand_tile.length ?? 0,
+      label: t('kacheln.vorgaenge.titel'),
+      sub: t('tiles.vorgaenge_sub'),
+    },
+    {
+      href: '/posteingang',
+      num: fristenWithin14,
+      label: t('kacheln.fristen.titel'),
+      sub: t('tiles.fristen_sub'),
+    },
+  ];
+
   if (snapshot === null && error === null) {
     return (
       <>
@@ -246,35 +267,55 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
                 </div>
               </div>
             ) : (
-              <ol className="heute-grid">
+              <ol className="border-t border-border">
                 {visibleTodos.map((item, idx) => {
                   const view = mapToHeuteItem(item, idx);
                   const sub = reasonSubline(view.reasonToken, t);
                   // Die generische „Frist rückt näher"-Begründung ist redundant,
                   // sobald die Fällig-Datum-Zeile ohnehin sichtbar ist — dann
-                  // wird sie über alle Karten hinweg zu Rauschen (§B3). Nur
+                  // wird sie über alle Zeilen hinweg zu Rauschen (§B3). Nur
                   // informative Sublines (Termin/Folgevorgang/manuell) bleiben.
                   const showSub =
                     sub.length > 0 &&
                     !(view.reasonToken === 'frist_naehe' && Boolean(view.fristDatum));
                   return (
-                    <li key={view.id} className="heute-tile">
-                      <Link href={view.href} className="heute-tile-link">
-                        <span className={`icon-circle ${view.iconCircleTone}`}>{view.icon}</span>
-                        <div className="ht-body">
-                          <div className="ht-titel">{view.titel}</div>
-                          {showSub ? <div className="ht-sub">{sub}</div> : null}
-                        </div>
+                    <li
+                      key={view.id}
+                      className="group relative border-b border-border last:border-b-0"
+                    >
+                      <Link
+                        href={view.href}
+                        className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-md py-4 pl-1 pr-10 no-underline transition-colors hover:bg-surface-muted/40 sm:flex-nowrap sm:pr-20"
+                      >
+                        <span
+                          className="shrink-0 text-text-muted [&>svg]:size-4"
+                          aria-hidden="true"
+                        >
+                          {view.icon}
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <span className="block font-semibold leading-snug text-text-primary">
+                            {view.titel}
+                          </span>
+                          {showSub ? (
+                            <span className="mt-0.5 block text-xs leading-snug text-text-muted">
+                              {sub}
+                            </span>
+                          ) : null}
+                        </span>
                         {view.fristDatum ? (
-                          <div className="ht-frist">
-                            <Calendar aria-hidden="true" />
+                          <span className="order-last flex shrink-0 basis-full items-center gap-1.5 pl-7 text-xs font-medium tabular-nums text-text-secondary sm:order-none sm:basis-auto sm:pl-0">
+                            <Calendar aria-hidden="true" className="size-3.5 text-text-muted" />
                             {t('heute.frist_bis', { datum: view.fristDatum })}
-                          </div>
+                          </span>
                         ) : null}
-                        <ChevronRight className="ht-chev" aria-hidden="true" />
                       </Link>
+                      <ChevronRight
+                        aria-hidden="true"
+                        className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-text-muted transition-[transform,opacity] motion-reduce:transition-none group-hover:translate-x-1 group-hover:opacity-0 group-focus-within:opacity-0"
+                      />
                       <div
-                        className="ht-actions"
+                        className="pointer-events-none absolute right-2 top-1/2 flex -translate-y-1/2 gap-1 rounded-lg bg-surface-muted p-0.5 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100 [&_button:focus-visible]:opacity-100"
                         role="group"
                         aria-label={t('heute.actions_label', { titel: view.titel })}
                       >
@@ -283,6 +324,7 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
                           aria-label={t('heute.done')}
                           title={t('heute.done')}
                           onClick={() => handleDone(view.sourceId)}
+                          className="grid size-9 place-items-center rounded-md border border-border bg-surface text-text-secondary transition-colors hover:bg-surface-muted hover:text-text-primary [&>svg]:size-4"
                         >
                           <Check />
                         </button>
@@ -291,6 +333,7 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
                           aria-label={t('heute.snooze')}
                           title={t('heute.snooze')}
                           onClick={() => handleSnooze(view.sourceId)}
+                          className="grid size-9 place-items-center rounded-md border border-border bg-surface text-text-secondary transition-colors hover:bg-surface-muted hover:text-text-primary [&>svg]:size-4"
                         >
                           <Clock3 />
                         </button>
@@ -415,44 +458,30 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
             />
           ) : null}
 
-          <div className="dash-tiles">
-            <Link className="stat-tile" href="/posteingang">
-              <div className="st-head">
-                <span className="icon-circle"><Mail aria-hidden="true" /></span>
-                <h3>{t('kacheln.posteingang.titel')}</h3>
-              </div>
-              <div className="st-num">{snapshot?.posteingang_tile.ungelesen ?? 0}</div>
-              <div className="st-sub">{t('tiles.posteingang_sub')}</div>
-              <span className="st-cta">
-                {t('tiles.posteingang_cta')}
-                <ChevronRight aria-hidden="true" />
-              </span>
-            </Link>
-            <Link className="stat-tile" href="/vorgaenge">
-              <div className="st-head">
-                <span className="icon-circle"><Folder aria-hidden="true" /></span>
-                <h3>{t('kacheln.vorgaenge.titel')}</h3>
-              </div>
-              <div className="st-num">{snapshot?.vorgangs_stand_tile.length ?? 0}</div>
-              <div className="st-sub">{t('tiles.vorgaenge_sub')}</div>
-              <span className="st-cta">
-                {t('tiles.vorgaenge_cta')}
-                <ChevronRight aria-hidden="true" />
-              </span>
-            </Link>
-            <Link className="stat-tile" href="/posteingang">
-              <div className="st-head">
-                <span className="icon-circle"><Clock aria-hidden="true" /></span>
-                <h3>{t('kacheln.fristen.titel')}</h3>
-              </div>
-              <div className="st-num">{fristenWithin14}</div>
-              <div className="st-sub">{t('tiles.fristen_sub')}</div>
-              <span className="st-cta">
-                {t('tiles.fristen_cta')}
-                <ChevronRight aria-hidden="true" />
-              </span>
-            </Link>
-          </div>
+          <ul data-testid="dash-kennzahl-list" className="border-t border-border">
+            {kennzahlen.map(({ href, num, label, sub }) => (
+              <li key={label} className="border-b border-border">
+                <Link
+                  href={href}
+                  className="group relative block rounded-md px-1 py-4 no-underline transition-colors hover:bg-surface-muted/60"
+                >
+                  <span className="flex items-baseline gap-3 pr-7">
+                    <span className="text-2xl font-bold leading-none tabular-nums text-text-primary">
+                      {num}
+                    </span>
+                    <span className="font-semibold text-text-primary">{label}</span>
+                  </span>
+                  <span className="mt-1 block pr-7 text-xs leading-snug text-text-muted">
+                    {sub}
+                  </span>
+                  <ChevronRight
+                    aria-hidden="true"
+                    className="absolute right-1 top-1/2 size-4 -translate-y-1/2 text-text-muted transition-transform motion-reduce:transition-none group-hover:translate-x-1"
+                  />
+                </Link>
+              </li>
+            ))}
+          </ul>
 
           <section aria-labelledby="kontrolle-title" className="kontrolle-card">
             <div className="kontrolle-head">
@@ -599,7 +628,6 @@ interface HeuteView {
   aktenzeichen?: string;
   href: string;
   icon: React.ReactNode;
-  iconCircleTone: string;
   fristDatum: string | null;
 }
 
@@ -628,7 +656,6 @@ function mapToHeuteItem(item: unknown, idx: number): HeuteView {
       aktenzeichen: ta.aktenzeichen,
       href: ta.target_route,
       icon: iconForReason(ta.reason_token, ta.source_typ, idx),
-      iconCircleTone: idx === 0 ? 'violet' : '',
       fristDatum: ta.frist_datum ? formatDDMMYYYY(new Date(ta.frist_datum)) : null,
     };
   }

@@ -865,64 +865,72 @@ export function AssistentView() {
               {tCommon('loading')}
             </span>
           ) : null}
-          <Link className="ctx-row" href="/posteingang">
-            <span className="icon-circle">
-              <Mail aria-hidden="true" />
-            </span>
-            <div className="grow">
-              <div className="t">{tKontext('posteingang')}</div>
-              <div className="s">
+          <div className="flex flex-col">
+            <Link
+              href="/posteingang"
+              className="flex min-h-11 items-center gap-3 border-t border-border py-3 first:border-t-0"
+            >
+              <Mail className="size-4 shrink-0 text-text-secondary" aria-hidden="true" />
+              <span className="grow text-sm font-medium text-text-primary">
+                {tKontext('posteingang')}
+              </span>
+              <span className="text-xs tabular-nums text-text-secondary">
                 {counts ? (
                   tKontext('posteingang_value', { ungelesen: counts.ungeleseneBriefe })
                 ) : (
-                  <Skeleton shape="text" className="w-28" />
+                  <Skeleton shape="text" className="w-20" />
                 )}
-              </div>
-            </div>
-            <ChevronRight aria-hidden="true" />
-          </Link>
-          <Link className="ctx-row" href="/dokumente">
-            <span className="icon-circle">
-              <FileText aria-hidden="true" />
-            </span>
-            <div className="grow">
-              <div className="t">{tKontext('dokumente')}</div>
-              <div className="s">
+              </span>
+              <ChevronRight className="size-4 shrink-0 text-text-secondary" aria-hidden="true" />
+            </Link>
+            <Link
+              href="/dokumente"
+              className="flex min-h-11 items-center gap-3 border-t border-border py-3 first:border-t-0"
+            >
+              <FileText className="size-4 shrink-0 text-text-secondary" aria-hidden="true" />
+              <span className="grow text-sm font-medium text-text-primary">
+                {tKontext('dokumente')}
+              </span>
+              <span className="text-xs tabular-nums text-text-secondary">
                 {counts ? (
                   tKontext('dokumente_value', { count: counts.dokumente })
                 ) : (
-                  <Skeleton shape="text" className="w-24" />
+                  <Skeleton shape="text" className="w-20" />
                 )}
-              </div>
-            </div>
-            <ChevronRight aria-hidden="true" />
-          </Link>
-          <Link className="ctx-row" href="/termine">
-            <span className="icon-circle">
-              <Calendar aria-hidden="true" />
-            </span>
-            <div className="grow">
-              <div className="t">{tKontext('termine')}</div>
-              <div className="s">
+              </span>
+              <ChevronRight className="size-4 shrink-0 text-text-secondary" aria-hidden="true" />
+            </Link>
+            <Link
+              href="/termine"
+              className="flex min-h-11 items-center gap-3 border-t border-border py-3 first:border-t-0"
+            >
+              <Calendar className="size-4 shrink-0 text-text-secondary" aria-hidden="true" />
+              <span className="grow text-sm font-medium text-text-primary">
+                {tKontext('termine')}
+              </span>
+              <span className="text-xs tabular-nums text-text-secondary">
                 {counts ? (
                   tKontext('termine_value', { count: counts.termine })
                 ) : (
-                  <Skeleton shape="text" className="w-24" />
+                  <Skeleton shape="text" className="w-20" />
                 )}
-              </div>
-            </div>
-            <ChevronRight aria-hidden="true" />
-          </Link>
-          <Link className="ctx-row" href="/stammdaten">
-            <span className="icon-circle">
-              <User aria-hidden="true" />
-            </span>
-            <div className="grow">
-              <div className="t">{tKontext('stammdaten')}</div>
-              <div className="s">{tKontext('stammdaten_value')}</div>
-            </div>
-            <ChevronRight aria-hidden="true" />
-          </Link>
+              </span>
+              <ChevronRight className="size-4 shrink-0 text-text-secondary" aria-hidden="true" />
+            </Link>
+            <Link
+              href="/stammdaten"
+              className="flex min-h-11 items-center gap-3 border-t border-border py-3 first:border-t-0"
+            >
+              <User className="size-4 shrink-0 text-text-secondary" aria-hidden="true" />
+              <span className="grow text-sm font-medium text-text-primary">
+                {tKontext('stammdaten')}
+              </span>
+              <span className="text-xs text-text-secondary">
+                {tKontext('stammdaten_value')}
+              </span>
+              <ChevronRight className="size-4 shrink-0 text-text-secondary" aria-hidden="true" />
+            </Link>
+          </div>
 
           <div className="ctx-foot">
             <div className="row">

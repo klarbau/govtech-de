@@ -68,14 +68,6 @@ const QUELLE_ICONS: Array<{ Icon: React.ComponentType<{ className?: string }>; i
   { Icon: Database, iconClass: '' },
 ];
 
-function quelleVisual(
-  idx: number,
-  total: number,
-): { Icon: React.ComponentType<{ className?: string }>; iconClass: string; full: boolean } {
-  const base = QUELLE_ICONS[idx % QUELLE_ICONS.length];
-  return { ...base, full: idx === total - 1 };
-}
-
 export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
   const t = useTranslations();
   const [uebersicht, setUebersicht] = React.useState<SteuerUebersicht | null>(null);
@@ -173,22 +165,31 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
                   {t('steuer.hero.basis_hint')}
                 </div>
               </div>
-              <div className="quellen-grid">
-                <div className="lbl">{t('steuer.hero.datenquellen_label')}</div>
-                {datenquellen.map((q, i) => {
-                  const visual = quelleVisual(i, datenquellen.length);
-                  return (
-                    <div key={q.id} className={`qcard${visual.full ? ' full' : ''}`}>
-                      <span className={`icon-circle${visual.iconClass ? ` ${visual.iconClass}` : ''}`}>
-                        <visual.Icon />
-                      </span>
-                      <div>
-                        <div className="t">{t(q.label_i18n_key)}</div>
-                        <div className="s">{resolveBehoerdeName(q.herkunft)}</div>
-                      </div>
-                    </div>
-                  );
-                })}
+              <div className="st-quellen">
+                <div className="mb-2 text-[13px] font-medium text-text-primary">
+                  {t('steuer.hero.datenquellen_label')}
+                </div>
+                <ul className="flex flex-col">
+                  {datenquellen.map((q, i) => {
+                    const Icon = QUELLE_ICONS[i % QUELLE_ICONS.length].Icon;
+                    return (
+                      <li
+                        key={q.id}
+                        className="flex items-baseline gap-2.5 border-t border-border py-2.5"
+                      >
+                        <Icon className="size-4 shrink-0 translate-y-0.5 text-text-secondary" />
+                        <div className="min-w-0">
+                          <div className="text-[13px] font-semibold text-text-primary">
+                            {t(q.label_i18n_key)}
+                          </div>
+                          <div className="text-xs text-text-secondary">
+                            {resolveBehoerdeName(q.herkunft)}
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
               </div>
             </div>
 

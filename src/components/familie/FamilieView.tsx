@@ -34,7 +34,7 @@ import type {
   HaushaltView,
 } from '@/types';
 
-const NACHWEIS_ICON: Record<string, React.ComponentType> = {
+const NACHWEIS_ICON: Record<string, React.ComponentType<{ className?: string }>> = {
   geburtsurkunde: FileText,
   sorge_vollmacht: FileText,
   vertretungsrechte: User,
@@ -224,7 +224,7 @@ export function FamilieView() {
               </Link>
             </div>
 
-            <div className="fm-card nb-list">
+            <div className="fm-card">
               <div style={{ marginBottom: 16 }}>
                 <div className="text-md fw-600">{t('nachweise.title')}</div>
                 <div className="muted text-xs">{t('nachweise.subtitle')}</div>
@@ -232,32 +232,38 @@ export function FamilieView() {
               {(view?.nachweise ?? []).length === 0 ? (
                 <div className="muted text-sm">{t('nachweise.empty')}</div>
               ) : (
-                (view?.nachweise ?? []).map((n: FamilieNachweis) => {
-                  const Icon = NACHWEIS_ICON[n.typ] ?? FileText;
-                  return (
-                    <div key={n.typ} className="item">
-                      <span className="icon-circle">
-                        <Icon />
-                      </span>
-                      <div>
-                        <div className="t">
-                          {tRoot(n.titel_i18n_key)}
-                          {n.status === 'verifiziert' ? (
-                            <CheckCircle2 />
+                <div className="flex flex-col">
+                  {(view?.nachweise ?? []).map((n: FamilieNachweis) => {
+                    const Icon = NACHWEIS_ICON[n.typ] ?? FileText;
+                    return (
+                      <div
+                        key={n.typ}
+                        className="flex items-baseline gap-3 border-t border-border py-3 first:border-t-0"
+                      >
+                        <Icon className="size-4 shrink-0 translate-y-0.5 text-text-secondary" />
+                        <div className="min-w-0 grow">
+                          <div className="flex items-center gap-2 text-sm font-semibold text-text-primary">
+                            {tRoot(n.titel_i18n_key)}
+                            {n.status === 'verifiziert' ? (
+                              <CheckCircle2
+                                className="size-3.5 shrink-0 text-success"
+                                aria-hidden="true"
+                              />
+                            ) : null}
+                          </div>
+                          <div className="text-xs text-text-secondary">
+                            {t(`nachweise.status.${n.status}`)}
+                          </div>
+                          {n.status === 'speculative' ? (
+                            <div className="text-xs text-text-secondary">
+                              {t('nachweise.speculative_hint')}
+                            </div>
                           ) : null}
                         </div>
-                        <div className="s">
-                          {t(`nachweise.status.${n.status}`)}
-                        </div>
-                        {n.status === 'speculative' ? (
-                          <div className="muted text-xs">
-                            {t('nachweise.speculative_hint')}
-                          </div>
-                        ) : null}
                       </div>
-                    </div>
-                  );
-                })
+                    );
+                  })}
+                </div>
               )}
               <Link className="all-link" href="/dokumente">
                 {t('nachweise.show_all')}{' '}
