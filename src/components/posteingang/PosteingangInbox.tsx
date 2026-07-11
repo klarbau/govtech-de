@@ -166,10 +166,6 @@ export function PosteingangInbox({
   // Distinguishes „erster Refresh noch unterwegs" von „Posteingang ist leer":
   // flippt erst, wenn der initiale Refresh abgeschlossen ist (Erfolg ODER Fehler).
   const [loaded, setLoaded] = React.useState(initial.letters.length > 0);
-  // Search query is shared with the top-bar „Suchen"-pill (`PosteingangTopSearch`
-  // in the global TopNav) via a module-level store — the two inputs live in
-  // separate React trees across the app-shell boundary. The in-list field below
-  // stays as the < 1024px fallback; both write the same query.
   const searchQuery = usePosteingangSearch((s) => s.query);
   const setSearchQuery = usePosteingangSearch((s) => s.setQuery);
   const [statusTab, setStatusTab] = React.useState<StatusTab>('alle');

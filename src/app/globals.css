@@ -1135,6 +1135,42 @@ a.text-primary-foreground {
   }
 }
 
+/* ── App top-nav reflow (WCAG 1.4.10) ────────────────────────────────────────
+   Two narrow-viewport fixes for the Liquid-Glass header, whose right-hand
+   actions cluster (`.app-topnav-actions`: Autopilot-Puls · Bedienhilfen ·
+   Sprache · Theme · Nutzer · Menü) reintroduced horizontal overflow the
+   2026-07-02 reflow wave had solved. Both rules out-specify the later-imported
+   prototype-v2.css / liquid-glass-core.css: globals.css is imported first, so an
+   equal-specificity rule would lose on source order (same reasoning as the
+   display-font block above). */
+
+/* 1) Below the 358px overflow crossover the cluster (296px, pinned to the right
+      edge) no longer fits at 320px. Drop the optional „Autopilot aktiv" ambient
+      pulse — a transient link that only appears while a Vorgang runs and merely
+      duplicates the /assistent path already in the mobile drawer. This mirrors
+      the FROZEN ≤560px header-strip block (wordmark, language label, user name
+      are all hidden there). 360px and up stays pixel-identical. */
+@media (max-width: 359px) {
+  .app-topnav-actions .lw-pulse {
+    display: none;
+  }
+}
+
+/* 2) At exactly 1024px /posteingang shows the meta-nav AND the „Suchen ⌘K" glass
+      pill AND the full actions cluster at once (nav and pill both un-hide at
+      ≥1024px). Together they overran the row, clipping the account chip and
+      wrapping „Über uns" to two lines. Two additive rules relieve the pinch:
+      (a) let the glass pill yield ~80px by lowering its min-width — it keeps its
+      comfortable flex-basis:400px on wider screens, so this only bites in the
+      1024–1056px band; (b) keep the short meta-nav labels on one line so the
+      flex row can't shrink „Über uns" into a two-line wrap. */
+html[data-lg] .app-topnav .lg-top-search {
+  min-width: 120px;
+}
+.app-topnav-center .topnav-link {
+  white-space: nowrap;
+}
+
 /* ── Umzug-Run cascade motion ────────────────────────────────────────────────
    Makes the (already-real) autopilot cascade feel like an unfolding sequence:
    each station's check draws itself in, the node pops, and the connector fills

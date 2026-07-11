@@ -3,10 +3,11 @@ import { getTranslations } from 'next-intl/server';
 
 import { A11yMenu } from './A11yMenu';
 import { AutopilotPulse } from './AutopilotPulse';
+import { GlobalSearch } from './GlobalSearch';
+import { GlobalSearchMobileButton } from './GlobalSearchMobileButton';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { MobileNav } from './MobileNav';
 import { ParthenonCrest } from './ParthenonCrest';
-import { PosteingangTopSearch } from '@/components/posteingang/PosteingangTopSearch';
 import { ThemeToggle } from './ThemeToggle';
 import { TopNavLink } from './TopNavLink';
 import { TopNavResourcesMenu } from './TopNavResourcesMenu';
@@ -45,11 +46,14 @@ export async function TopNav() {
 
       <div className="app-topnav-spacer" />
 
-      {/* Route-scoped: renders the Liquid-Glass „Suchen ⌘K" pill only on
-          /posteingang (null elsewhere), plus its trailing centring spacer. */}
-      <PosteingangTopSearch />
+      {/* App-wide „Suchen ⌘K" combobox (≥1024px): the pill IS the input; on
+          focus it expands and an anchored dropdown drops down below it. Holds
+          the global ⌘K listener and the mobile search bar. Trailing spacer
+          centres the pill in the header. */}
+      <GlobalSearch />
 
       <div className="landing-header-actions app-topnav-actions">
+        <GlobalSearchMobileButton />
         <AutopilotPulse />
         <A11yMenu />
         <LanguageSwitcher />

@@ -166,15 +166,21 @@ html[data-lg] .app-topnav {
   box-shadow: 0 10px 30px -20px rgba(15, 61, 46, 0.16);
 }
 html[data-lg].dark .app-topnav {
-  background: linear-gradient(180deg, rgba(28, 35, 47, 0.74), rgba(20, 26, 36, 0.56));
+  background: linear-gradient(180deg, rgba(24, 36, 30, 0.76), rgba(15, 24, 20, 0.58));
 }
 
 /* Top-bar global search — the „Suchen ⌘K" pill from the mockup, centred between
-   the meta-nav and the account cluster. Rendered by `PosteingangTopSearch` (only
-   on /posteingang) and flanked by two flex spacers so it holds the middle. */
+   the meta-nav and the account cluster. v1.1: the pill IS the `role="combobox"`
+   input (`GlobalSearch`); on focus it animates from a ~220px rest width to
+   ~400px and the anchored dropdown drops down below it (no modal, no scrim).
+   Flanked by two flex spacers so it holds the middle. */
 html[data-lg] .lg-top-search {
-  flex: 0 1 400px;
-  min-width: 200px;
+  position: relative;
+  /* Viewport-aware width + high flex-shrink: the pill takes its clamp width when
+     the header has room, but yields (down to globals' 120px min) before it can
+     push the meta-nav or the account cluster off-screen at narrow desktop. */
+  flex: 0 1000 auto;
+  width: clamp(150px, 18vw, 220px);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -183,6 +189,13 @@ html[data-lg] .lg-top-search {
   border-radius: 14px;
   background: linear-gradient(180deg, rgba(15, 61, 46, 0.055), rgba(15, 61, 46, 0.035));
   box-shadow: inset 0 1.5px 3px rgba(15, 61, 46, 0.08), inset 0 0 0 1px rgba(15, 61, 46, 0.05), 0 1px 0 rgba(255, 255, 255, 0.7);
+  transition: width 180ms ease-out;
+}
+/* Focus expands the pill into the wide search field + shows the focus ring. */
+html[data-lg] .lg-top-search:focus-within {
+  width: clamp(220px, 32vw, 400px);
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 html[data-lg].dark .lg-top-search {
   background: rgba(255, 255, 255, 0.05);
@@ -203,6 +216,11 @@ html[data-lg] .lg-top-search-input {
   outline: none;
   font-size: 14px;
   color: var(--ink);
+  /* Placeholder wider than the pill ellipsizes instead of hard-clipping. */
+  text-overflow: ellipsis;
+}
+html[data-lg] .lg-top-search-input::placeholder {
+  color: var(--color-text-muted);
 }
 html[data-lg] .lg-top-search-kbd {
   flex: none;
@@ -216,6 +234,11 @@ html[data-lg] .lg-top-search-kbd {
   font: 600 11.5px / 1 var(--font-sans, inherit);
   letter-spacing: 0.02em;
   color: var(--color-text-muted);
+  transition: opacity 150ms ease-out;
+}
+/* Fade the ⌘K hint out once the field carries text (v1.1). */
+html[data-lg] .lg-top-search-input:not(:placeholder-shown) ~ .lg-top-search-kbd {
+  opacity: 0;
 }
 html[data-lg].dark .lg-top-search-kbd {
   background: rgba(255, 255, 255, 0.1);
@@ -223,12 +246,102 @@ html[data-lg].dark .lg-top-search-kbd {
 }
 html[data-lg] .lg-top-search-spacer { flex: 1 1 auto; }
 
-/* Below 1024px the header is too dense for a search pill — hide it (and its
-   centring spacer) and let the in-list search take over (revealed by the
-   matching min-width rule further down). */
+/* Close button — only inside the mobile search bar. */
+html[data-lg] .lg-top-search-close { display: none; }
+
+/* Below 1024px the inline pill is hidden; the magnifier opens a fixed
+   full-width search bar (`.is-mobile-open`) that drops down under the 68px
+   `.app-topnav`, with the same combobox + dropdown. */
 @media (max-width: 1023px) {
   html[data-lg] .lg-top-search,
   html[data-lg] .lg-top-search-spacer { display: none; }
+  html[data-lg] .lg-top-search.is-mobile-open {
+    display: flex;
+    position: fixed;
+    top: 68px;
+    left: 0;
+    right: 0;
+    z-index: 55;
+    width: auto;
+    height: 56px;
+    padding: 0 10px 0 16px;
+    border-radius: 0;
+    /* Near-opaque (blur-free surface): the bar sits over page content with no
+       backdrop-filter, so it must not let the hero heading bleed through. */
+    background: #ffffff;
+    border-bottom: 1px solid var(--lg-hairline);
+    box-shadow: var(--lg-shadow-card);
+    animation: lg-search-bar-in 180ms ease-out;
+  }
+  html[data-lg].dark .lg-top-search.is-mobile-open {
+    background: #1c2c25;
+  }
+  html[data-lg] .lg-top-search.is-mobile-open:focus-within {
+    width: auto;
+    outline-offset: -2px;
+  }
+  html[data-lg] .lg-top-search.is-mobile-open .lg-top-search-kbd {
+    display: none;
+  }
+  html[data-lg] .lg-top-search.is-mobile-open .lg-top-search-close {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+  }
+  html[data-lg] .lg-top-search.is-mobile-open .lg-top-search-close > svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+@keyframes lg-search-bar-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* The required mobile search magnifier permanently occupies an actions-cluster
+   slot, widening it by ~40px. globals.css already drops the optional Autopilot
+   pulse below 359px for the same reflow reason ("duplicates the /assistent path
+   in the mobile drawer"); with the magnifier the cluster now overflows further
+   up, so extend that drop through the phone/small-tablet range. Shows again
+   ≥768px, where the header has ample room. `html[data-lg]` out-specifies the
+   globals rule, so it wins on both specificity and source order. */
+@media (max-width: 767px) {
+  html[data-lg] .app-topnav-actions .lw-pulse {
+    display: none;
+  }
+}
+
+/* Final reclaim so brand + the required search magnifier + the account controls
+   fit at 320px with zero document overflow (WCAG 1.4.10): compress the
+   actions-cluster gaps at phone widths. Sanctioned header-density tweak;
+   `html[data-lg]` out-specifies the FROZEN prototype-v2.css `.app-topnav-actions`
+   gap on both specificity and source order. */
+@media (max-width: 400px) {
+  html[data-lg] .app-topnav {
+    gap: 8px;
+  }
+  html[data-lg] .app-topnav-actions {
+    gap: 4px;
+  }
+}
+/* Smallest phones (≤360px): trim the header side padding too so 320px clears
+   with margin. Matches the compact header tier that already hides the wordmark. */
+@media (max-width: 360px) {
+  html[data-lg] .app-topnav {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  html[data-lg] .app-topnav-actions {
+    gap: 3px;
+  }
 }
 
 /* ── Left global sidebar — frosted column, floating pills ────────────────── */
@@ -510,4 +623,150 @@ html[data-lg] .app-content table tbody tr:hover {
 }
 html[data-lg].dark .app-content table tbody tr:hover {
   background: rgba(255, 255, 255, 0.06);
+}
+
+/* ── App-wide search — anchored dropdown (v1.1, non-modal combobox) ──────────
+   The „Suchen ⌘K" pill IS the combobox input (`.lg-top-search` above, which
+   animates its width on focus). Results render in this anchored, NON-modal
+   dropdown below the input — no scrim, no focus trap. Blur-free per the LG blur
+   budget (the Shell already spends its 2 blur layers): a near-opaque glass
+   surface with NO backdrop-filter; enter is opacity + translateY from the top
+   edge (≤200 ms ease-out). Desktop: pinned to BOTH edges of the pill — the
+   dropdown never juts out past the field it belongs to (the pill is always in
+   its expanded :focus-within width while the dropdown is open, ≥ ~330px at
+   1024px). Mobile: full width under the search bar. */
+html[data-lg] .lg-search-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  max-height: min(60vh, 520px);
+  overflow-y: auto;
+  padding: 8px;
+  border: 1px solid var(--lg-hairline);
+  border-radius: 16px;
+  /* Near-opaque (blur-free surface): no backdrop-filter, so it must fully mask
+     the page content behind it — no bleed-through of the hero heading. */
+  background: #ffffff;
+  box-shadow: var(--lg-shadow-panel);
+  transform-origin: top;
+  animation: lg-search-drop-in 160ms ease-out;
+}
+html[data-lg].dark .lg-search-dropdown {
+  background: #1c2c25;
+}
+@keyframes lg-search-drop-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (max-width: 1023px) {
+  html[data-lg] .lg-top-search.is-mobile-open .lg-search-dropdown {
+    top: 100%;
+    max-height: min(70vh, 560px);
+    border-top: 0;
+    border-radius: 0 0 16px 16px;
+  }
+}
+html[data-lg] .lg-search-offline {
+  margin: 2px 2px 8px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(15, 61, 46, 0.05);
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+}
+html[data-lg].dark .lg-search-offline {
+  background: rgba(255, 255, 255, 0.05);
+}
+html[data-lg] .lg-search-hint {
+  padding: 18px 12px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+html[data-lg] .lg-search-empty {
+  padding: 22px 16px;
+  text-align: center;
+}
+html[data-lg] .lg-search-empty-title {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--ink);
+}
+html[data-lg] .lg-search-empty-hint {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+html[data-lg] .lg-search-group + .lg-search-group {
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid var(--lg-hairline);
+}
+html[data-lg] .lg-search-group-label {
+  padding: 8px 10px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+html[data-lg] .lg-search-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+html[data-lg] .lg-search-option.is-active {
+  background: rgba(15, 61, 46, 0.09);
+}
+html[data-lg].dark .lg-search-option.is-active {
+  background: rgba(255, 255, 255, 0.09);
+}
+html[data-lg] .lg-search-option-icon {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-muted);
+}
+html[data-lg] .lg-search-option-text {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+html[data-lg] .lg-search-option-title {
+  overflow: hidden;
+  font-size: 14px;
+  color: var(--ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+html[data-lg] .lg-search-option-sub {
+  overflow: hidden;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* a11y (v1.1 carry-over fix): on the active/highlighted row the subtitle sits
+   on a lightened surface where the muted token risked < 4.5:1 in dark. Promote
+   it to --color-text-secondary (≥7:1 vs surface; lighter in dark / darker in
+   light → higher contrast on the active tint in BOTH themes). */
+html[data-lg] .lg-search-option.is-active .lg-search-option-sub {
+  color: var(--color-text-secondary);
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-lg] .lg-top-search,
+  html[data-lg] .lg-top-search-kbd {
+    transition: none;
+  }
+  html[data-lg] .lg-search-dropdown,
+  html[data-lg] .lg-top-search.is-mobile-open {
+    animation: none;
+  }
 }

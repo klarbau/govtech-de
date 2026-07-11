@@ -6,12 +6,12 @@ interface PosteingangSearchState {
 }
 
 /**
- * Cross-tree bridge for the Posteingang search box. The mockup puts search in
- * the app header (`PosteingangTopSearch`, hosted in the global `TopNav`) while
- * the list it filters lives in `PosteingangInbox`, rendered as the route's page
- * children — siblings across the app-shell boundary that cannot share React
- * state directly. This module-level Zustand store connects them without
- * threading props through the layout. Only /posteingang reads or writes it.
+ * Backing store for the Posteingang in-list search field. Since the app-wide
+ * „Suchen ⌘K" pill was generalised into `GlobalSearch` (which navigates
+ * rather than filtering the inbox), this store is written and read only by the
+ * in-list search field in `PosteingangInbox` to filter the letter list. It is
+ * kept as a module-level Zustand store (rather than local `useState`) so the
+ * query survives the field's re-renders. Only /posteingang uses it.
  */
 export const usePosteingangSearch = create<PosteingangSearchState>((set) => ({
   query: '',
