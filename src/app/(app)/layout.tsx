@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 
 import { SelectionVorlesen } from '@/components/a11y/SelectionVorlesen';
+import { BottomTabBar } from '@/components/layout/BottomTabBar';
 import { LiquidGlassChrome } from '@/components/layout/LiquidGlassChrome';
 import { SideNav } from '@/components/layout/SideNav';
 import { TopNav } from '@/components/layout/TopNav';
@@ -38,6 +39,7 @@ export default async function AppLayout({
             {children}
           </main>
         </div>
+        <BottomTabBar />
       </LiveBackendProvider>
       <SelectionVorlesen />
     </>

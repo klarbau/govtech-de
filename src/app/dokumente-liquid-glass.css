@@ -97,3 +97,34 @@ html[data-lg][data-lg-screen='dokumente'] .app-content .rail .card {
 html[data-lg][data-lg-screen='dokumente'].dark .app-content .rail .card {
   border-color: var(--lg-hairline);
 }
+
+/* ── Mobile preamble collapse (mobile-comfort Zone B) ────────────────────────
+   The search/filter command bar takes ~55% of the first phone screen. Trim its
+   padding and pull the 5 category tabs into one horizontally scrollable line
+   (hidden scrollbar, keyboard-reachable) so the vault table clears the fold.
+   Layout only, no text colours; nothing leaks past 767px. */
+@media (max-width: 767px) {
+  html[data-lg][data-lg-screen='dokumente'] .app-content .dk-search {
+    padding: 14px;
+  }
+  html[data-lg][data-lg-screen='dokumente'] .app-content .dk-search .input-icon {
+    margin-bottom: 12px;
+  }
+  html[data-lg][data-lg-screen='dokumente'] .app-content .dk-filterbar .tab-chips {
+    flex: 1 1 auto;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-block: 4px;
+    margin-block: -4px;
+  }
+  html[data-lg][data-lg-screen='dokumente']
+    .app-content
+    .dk-filterbar
+    .tab-chips::-webkit-scrollbar {
+    display: none;
+  }
+  html[data-lg][data-lg-screen='dokumente'] .app-content .dk-filterbar .tab-chips .chip {
+    flex: 0 0 auto;
+  }
+}

@@ -15,6 +15,7 @@ import './prototype-v2.css';
 // screen-scoped Posteingang specifics. Imported last so they win on order as
 // well as specificity.
 import './liquid-glass-core.css';
+import './mobile-nav.css';
 import './posteingang-liquid-glass.css';
 import './dashboard-liquid-glass.css';
 import './assistent-liquid-glass.css';

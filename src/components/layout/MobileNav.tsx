@@ -15,9 +15,13 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 
+import { A11yMenu } from './A11yMenu';
+import { LanguageSwitcher } from './LanguageSwitcher';
 import { navItems } from './nav-items';
 import { ParthenonCrest } from './ParthenonCrest';
 import { PosteingangUnreadBadge } from './PosteingangUnreadBadge';
+import { ThemeToggle } from './ThemeToggle';
+import { UserMenu } from './UserMenu';
 
 function isActive(pathname: string | null, href: string): boolean {
   if (!pathname) return false;
@@ -122,6 +126,15 @@ export function MobileNav() {
                 <span>{tShell('sidebar.logout')}</span>
               </Link>
             </nav>
+          </div>
+          {/* Utilities dropped from the phone top bar (mobile-nav.css hides
+              `.app-topnav-util-extra` ≤767); mounted here so they stay
+              reachable. Own mounts — popover/menu state is independent. */}
+          <div className="gt-sidebar-utils">
+            <A11yMenu />
+            <LanguageSwitcher />
+            <ThemeToggle />
+            <UserMenu />
           </div>
         </SheetBody>
       </SheetContent>

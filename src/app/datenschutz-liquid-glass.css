@@ -67,3 +67,48 @@ html[data-lg][data-lg-screen='datenschutz'] .app-content .ds2-footer {
 html[data-lg][data-lg-screen='datenschutz'].dark .app-content .ds2-footer {
   box-shadow: var(--lg-shadow-card);
 }
+
+/* ── Mobile preamble collapse (mobile-comfort Zone B) ────────────────────────
+   Shrink the two-line H1 + three-line subtitle and pull the three stacked
+   Kennzahlen-Blöcke into one compact horizontally scrollable hairline row
+   (hidden scrollbar, all text preserved) so the consent cockpit clears the fold
+   on a phone. Hook: `.ds2-kennzahlen` (added to the strip in DatenschutzView).
+   Layout only, no text colours; nothing leaks past 767px. */
+@media (max-width: 767px) {
+  html[data-lg][data-lg-screen='datenschutz'] .app-content .gt-page-head {
+    margin-bottom: 12px;
+  }
+  html[data-lg][data-lg-screen='datenschutz'] .app-content .gt-page-head h1 {
+    font-size: 24px;
+  }
+  html[data-lg][data-lg-screen='datenschutz'] .app-content .gt-page-head .sub {
+    font-size: 13px;
+  }
+
+  html[data-lg][data-lg-screen='datenschutz'] .app-content .ds2-kennzahlen {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  html[data-lg][data-lg-screen='datenschutz']
+    .app-content
+    .ds2-kennzahlen::-webkit-scrollbar {
+    display: none;
+  }
+  html[data-lg][data-lg-screen='datenschutz'] .app-content .ds2-kennzahlen > div {
+    flex: 0 0 auto;
+    padding: 8px 16px 8px 0;
+    border-top: 0;
+  }
+  html[data-lg][data-lg-screen='datenschutz']
+    .app-content
+    .ds2-kennzahlen
+    > div
+    + div {
+    border-top: 0;
+    border-left: 1px solid var(--border);
+    padding-left: 16px;
+  }
+}

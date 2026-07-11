@@ -184,3 +184,66 @@ html[data-lg][data-lg-screen='vorgaenge'].dark [aria-labelledby='block-a-title']
 /* Iridescent primary CTA (the Umzug "Autopilot starten" commit) is opt-in via
    `.lg-iridescent` in the JSX; recipe + button-slot specificity override live
    in liquid-glass-core.css — nothing screen-specific here. */
+
+/* ── Mobile preamble collapse (mobile-comfort Zone B) ────────────────────────
+   Kennzahlen strip → one compact hairline row, filter tabs → a single
+   horizontally scrollable line (hidden scrollbar, keyboard-reachable), head +
+   toolbar tightened, and the always-disabled decorative Filter button hidden on
+   phones so the featured Vorgang clears the fold. Layout only, no desktop leak. */
+@media (max-width: 767px) {
+  html[data-lg][data-lg-screen='vorgaenge'] .gt-page-head {
+    margin-bottom: 12px;
+  }
+  html[data-lg][data-lg-screen='vorgaenge'] .gt-page-head h1 {
+    font-size: 23px;
+  }
+  html[data-lg][data-lg-screen='vorgaenge'] .gt-page-head .sub {
+    font-size: 13px;
+  }
+
+  html[data-lg][data-lg-screen='vorgaenge'] [data-testid='vorgaenge-kennzahl-strip'] {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 0;
+    margin-bottom: 14px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  html[data-lg][data-lg-screen='vorgaenge']
+    [data-testid='vorgaenge-kennzahl-strip']
+    > div {
+    flex: 1 1 0;
+    align-items: baseline;
+    padding: 8px 12px;
+    border-top: 0;
+  }
+  html[data-lg][data-lg-screen='vorgaenge']
+    [data-testid='vorgaenge-kennzahl-strip']
+    > div
+    + div {
+    border-top: 0;
+    border-left: 1px solid var(--border);
+  }
+
+  html[data-lg][data-lg-screen='vorgaenge'] .vg-toolbar {
+    gap: 10px;
+  }
+  html[data-lg][data-lg-screen='vorgaenge'] .vg-toolbar .tab-chips {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-block: 4px;
+    margin-block: -4px;
+  }
+  html[data-lg][data-lg-screen='vorgaenge']
+    .vg-toolbar
+    .tab-chips::-webkit-scrollbar {
+    display: none;
+  }
+  html[data-lg][data-lg-screen='vorgaenge'] .vg-toolbar .tab-chips .chip {
+    flex: 0 0 auto;
+  }
+  html[data-lg][data-lg-screen='vorgaenge'] .vg-toolbar .filter {
+    display: none;
+  }
+}

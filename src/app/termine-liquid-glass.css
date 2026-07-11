@@ -103,3 +103,69 @@ html[data-lg][data-lg-screen='termine'].dark .vg-search-input {
   background: rgba(255, 255, 255, 0.05);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
+
+/* ── Mobile preamble collapse (mobile-comfort Zone B) ────────────────────────
+   Pull the KPI strip into one compact scrollable hairline row, the filter tabs
+   into a single horizontally scrollable line (hidden scrollbar, still keyboard-
+   reachable — chips are focusable buttons the browser scrolls into view), and
+   shrink the head so the first Termin clears the fold on a phone. Layout only,
+   no text colours; nothing below 768px leaks into the desktop layout. */
+@media (max-width: 767px) {
+  html[data-lg][data-lg-screen='termine'] .gt-page-head {
+    margin-bottom: 12px;
+  }
+  html[data-lg][data-lg-screen='termine'] .gt-page-head h1 {
+    font-size: 23px;
+  }
+  html[data-lg][data-lg-screen='termine'] .gt-page-head .sub {
+    font-size: 13px;
+  }
+
+  html[data-lg][data-lg-screen='termine'] [data-testid='termine-kennzahl-strip'] {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 0;
+    overflow-x: auto;
+    margin-bottom: 14px;
+    scrollbar-width: none;
+  }
+  html[data-lg][data-lg-screen='termine']
+    [data-testid='termine-kennzahl-strip']::-webkit-scrollbar {
+    display: none;
+  }
+  html[data-lg][data-lg-screen='termine']
+    [data-testid='termine-kennzahl-strip']
+    > div {
+    flex: 0 0 auto;
+    justify-content: center;
+    padding: 8px 16px 8px 0;
+    border-top: 0;
+  }
+  html[data-lg][data-lg-screen='termine']
+    [data-testid='termine-kennzahl-strip']
+    > div
+    + div {
+    border-top: 0;
+    border-left: 1px solid var(--border);
+    padding-left: 16px;
+  }
+
+  html[data-lg][data-lg-screen='termine'] .tm-toolbar {
+    gap: 10px;
+  }
+  html[data-lg][data-lg-screen='termine'] .tm-toolbar .tab-chips {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-block: 4px;
+    margin-block: -4px;
+  }
+  html[data-lg][data-lg-screen='termine']
+    .tm-toolbar
+    .tab-chips::-webkit-scrollbar {
+    display: none;
+  }
+  html[data-lg][data-lg-screen='termine'] .tm-toolbar .tab-chips .chip {
+    flex: 0 0 auto;
+  }
+}

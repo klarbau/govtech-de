@@ -770,3 +770,24 @@ html[data-lg] .lg-search-option.is-active .lg-search-option-sub {
     animation: none;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Mobile-Comfort — Zone D blur budget (docs/specs/mobile-comfort.md §8.3)
+   ---------------------------------------------------------------------------
+   On phones the per-screen frosted hero panels live inside `.app-content` and
+   SCROLL with it — their backdrop-filter re-blurs on every scroll frame, which
+   is the scroll-jank the wave targets. ≤767px we drop content-zone blur to a
+   plain translucent surface (the glass gradient + edge + shadow already read as
+   "glass" without a live blur — same recipe the content CARDS use app-wide).
+   The frost that MUST stay is on fixed / non-scrolling SHELL layers, which all
+   sit OUTSIDE `.app-content`: `.app-topnav`, `.app-sidenav`, the Burger sheet +
+   dialogs (`[data-slot='sheet-content' | 'dialog-content']`, portalled to body)
+   and the Bottom-Tab-Bar (Zone A). The pinned Assistent `.composer` (Zone C) is
+   fixed too, so it is excepted here. Everything is under `html[data-lg]` →
+   fully inert when NEXT_PUBLIC_LG=0 (kill-switch untouched). */
+@media (max-width: 767px) {
+  html[data-lg] .app-content *:not(.composer) {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+}

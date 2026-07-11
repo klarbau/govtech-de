@@ -1620,3 +1620,90 @@ span.ll-oo-qualifier { white-space: nowrap; }
 @media (max-width: 760px) {
   section.vd-next.is-done { flex-direction: row; align-items: center; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Mobile-Comfort — Zone D (docs/specs/mobile-comfort.md §8.1 + §8.2)
+   Phone-only (≤767px) touch-target + font-size baseline. Enlarges HIT AREAS
+   and lifts body text off the sub-13px floor without any layout rebuild — the
+   whole block is one @media, so ≥768/Desktop is untouched. Appended (never
+   re-sorted) so the frozen `a{}` WCAG layer above and the prototype-v2 cascade
+   fixes stay put.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  /* ── §8.1 Tap targets ≥44×44 ──────────────────────────────────────────────
+     Buttons, button-like anchors, chips and form controls get a ≥44px hit box.
+     Two documented exclusions: the consent `.toggle` switch keeps its essential
+     36×20 track (WCAG 2.5.8 essential exception — enlarging the button IS the
+     visual), and the 7-column month-calendar day cells keep their grid-fit size
+     (reset below) so 7×44 can't overflow the card. Plain inline text links
+     (breadcrumb, phase-item) fall under the WCAG 2.5.8 inline exception and are
+     intentionally left. */
+  button:not(.toggle),
+  [role='button'],
+  .btn,
+  .chip,
+  [data-slot='select-trigger'],
+  select,
+  a.gt-brand,
+  a.card-head-link,
+  a.kontrolle-link,
+  a.llh-card-link,
+  a.llh-empf-edit {
+    min-height: 44px;
+  }
+  button:not(.toggle),
+  [role='button'],
+  .chip,
+  [data-slot='select-trigger'],
+  a.gt-brand,
+  .gt-user-pill {
+    min-width: 44px;
+  }
+  [data-slot='input'],
+  input:not([type='checkbox']):not([type='radio']),
+  textarea {
+    min-height: 44px;
+  }
+
+  /* Month-calendar day cells (role=grid) opt out — a deliberate 36px 7-col grid
+     (the component documents this); forcing 44px makes neighbouring day pills
+     overlap inside the ~32px grid tracks. 36px still clears WCAG 2.5.8 AA (24px). */
+  [role='grid'] button {
+    min-height: 0;
+    min-width: 0;
+  }
+
+  /* ── §8.2 Font minimum ────────────────────────────────────────────────────
+     Body/Fließtext floor → 13px: Tailwind `text-xs` (12px) used in flow context
+     plus the descriptive sub/body/desc class families. Genuine micro-meta
+     (timestamps, badges, legal § lines, table headers — their own classes) keep
+     their ≥12px size and are not matched here.
+     The `html ` prefix adds one type selector so these out-specify the equal-
+     specificity `.ei-sub`/`.text-xs` rules in the LATER-imported prototype-v2.css
+     + Tailwind utilities (same tie-break idiom as the blocks above, L1295). */
+  html .text-xs,
+  html [class*='-sub'],
+  html [class*='-body'],
+  html [class*='-desc'] {
+    font-size: 0.8125rem;
+  }
+  /* Hard floor — nothing below 12px. The 11/10px arbitrary utilities (refs,
+     badge chips, [MOCK] tag, ZUKUNFT chip, norm tooltips) → 12px micro-meta. */
+  html .text-\[11px\],
+  html .text-\[10px\] {
+    font-size: 0.75rem;
+  }
+  /* A few high-count descriptive-body classes the pattern rules miss (their own
+     names don't end in -sub/-body/-desc, or a 2-class source out-specifies the
+     pattern). Selectors carry the extra type/parent to beat the LATER-imported
+     prototype-v2.css source specificity. Genuine micro-labels (`.umz-*-label`,
+     dates, badges) are intentionally left at their ≥12px meta size (§8.2). */
+  html .erledigt-item .ei-sub,
+  html .ds2-empf-kat,
+  html .ds2-note,
+  html .ds2-principle-link,
+  html .ds2-recent .item .s,
+  html .ds2-badges li {
+    font-size: 0.8125rem;
+  }
+}

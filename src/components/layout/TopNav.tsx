@@ -54,11 +54,16 @@ export async function TopNav() {
 
       <div className="landing-header-actions app-topnav-actions">
         <GlobalSearchMobileButton />
-        <AutopilotPulse />
-        <A11yMenu />
-        <LanguageSwitcher />
-        <ThemeToggle />
-        <UserMenu />
+        {/* ≤767px this cluster is hidden (mobile-nav.css); every entry stays
+            reachable in the burger sheet. `display:contents` ≥768 keeps the
+            items as direct flex children so desktop spacing is unchanged. */}
+        <div className="app-topnav-util-extra">
+          <AutopilotPulse />
+          <A11yMenu />
+          <LanguageSwitcher />
+          <ThemeToggle />
+          <UserMenu />
+        </div>
         <MobileNav />
       </div>
     </header>

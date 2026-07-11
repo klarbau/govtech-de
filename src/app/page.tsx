@@ -24,6 +24,7 @@ import {
 
 import { ParthenonCrest } from '@/components/layout/ParthenonCrest';
 import { ThemeToggle } from '@/components/layout/ThemeToggle';
+import { LandingMobileNav } from '@/components/landing/LandingMobileNav';
 
 import { LiquidGlassAux } from '@/components/layout/LiquidGlassAux';
 
@@ -115,6 +116,7 @@ export default function HomePage() {
             <User aria-hidden="true" />
             Anmelden
           </Link>
+          <LandingMobileNav />
         </div>
       </header>
 

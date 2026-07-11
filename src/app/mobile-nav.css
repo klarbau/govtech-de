@@ -1,0 +1,188 @@
+/* ============================================================================
+   MOBILE COMFORT — Zone A: Bottom-Tab-Bar + TopNav-Declutter + Content-Padding
+   (spec docs/specs/mobile-comfort.md §5)
+
+   Owns the phone (≤767px) primary-navigation chrome:
+   - the fixed bottom tab bar (`.mobile-tabbar`),
+   - the shared height contract `--mobile-tabbar-h`,
+   - the content bottom-padding so nothing hides behind the bar,
+   - the top-bar declutter (hide the utility cluster ≤767, kept reachable in the
+     burger sheet — see MobileNav),
+   - the one Posteingang bottom-clearance rule.
+
+   z-index order (§4.3): content < .mobile-tabbar (40) < pinned composer <
+   sticky .app-topnav (50) < burger sheet overlay (portal, z-50 — paints over
+   the bar). The bar sits below the sheet so the focus-trapped drawer covers it.
+
+   Kill-switch safe: without Liquid-Glass (NEXT_PUBLIC_LG=0) the bar wears a
+   solid --surface fill; the LG frost below only augments it.
+   lightningcss: no end-comment sequence inside comments.
+   ============================================================================ */
+
+:root {
+  --mobile-tabbar-h: 56px;
+}
+
+/* ── Top-bar utility wrapper ─────────────────────────────────────────────────
+   `display: contents` on ≥768 so the five utilities stay direct flex children
+   of `.app-topnav-actions` (desktop gaps unchanged). Declared before the ≤767
+   media block so the `display:none` override below wins on source order (media
+   queries add no specificity). */
+.app-topnav-util-extra {
+  display: contents;
+}
+
+/* ── Bottom tab bar ──────────────────────────────────────────────────────── */
+.mobile-tabbar {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .mobile-tabbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 40;
+    display: flex;
+    height: calc(var(--mobile-tabbar-h) + env(safe-area-inset-bottom));
+    padding-bottom: env(safe-area-inset-bottom);
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+  }
+
+  .mobile-tabbar-item {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    min-height: 44px;
+    padding: 6px 2px;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mobile-tabbar-item[data-active='true'] {
+    color: var(--color-primary);
+  }
+
+  /* "Posteingang" is the longest of the five labels; a slight flex bias lets
+     it render untruncated down to 320px while the others still fit. */
+  .mobile-tabbar-item[href^='/posteingang'] {
+    flex-grow: 1.2;
+  }
+
+  .mobile-tabbar-item:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-style: solid;
+    outline-offset: -3px;
+    border-radius: 8px;
+  }
+
+  .mobile-tabbar-icon {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mobile-tabbar-icon svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .mobile-tabbar-label {
+    font-size: 12px;
+    line-height: 1.1;
+    font-weight: 500;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Below 360px the longest labels (Posteingang) no longer fit five-up at
+     12px; 11px + zero inline padding beats ellipsis-truncation there. */
+  @media (max-width: 359px) {
+    .mobile-tabbar-label {
+      font-size: 11px;
+    }
+
+    .mobile-tabbar-item {
+      padding-inline: 0;
+    }
+  }
+
+  /* Unread badge on the Posteingang tab — a small counter pill anchored to the
+     icon corner. Scoped to the bar so the shared `.lw-nav-badge` in
+     Side/MobileNav is untouched. */
+  .mobile-tabbar .lw-nav-badge {
+    position: absolute;
+    top: -5px;
+    left: 12px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: var(--color-primary);
+    color: var(--color-primary-foreground);
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  /* Clear the fixed bar so page content is never trapped behind it. */
+  .app-content {
+    padding-bottom: calc(var(--mobile-tabbar-h) + env(safe-area-inset-bottom));
+  }
+
+  /* Posteingang keeps its own `.app-content` cascade (`:has(.post-content)`
+     width overrides); scope the clearance to the screen so it wins regardless.
+     Its 100vh split model is ≥1280px-only, so it never coexists with the bar —
+     this only guards the phone document-scroll tier. */
+  html[data-lg][data-lg-screen='posteingang'] .app-content {
+    padding-bottom: calc(var(--mobile-tabbar-h) + env(safe-area-inset-bottom));
+  }
+
+  /* Top-bar declutter: drop the utility cluster on phones; every entry stays
+     reachable in the burger sheet (see `.gt-sidebar-utils`). */
+  .app-topnav-util-extra {
+    display: none;
+  }
+}
+
+/* Liquid-Glass frost — the bar is fixed (no scroll repaint), so a backdrop
+   filter is within the shell blur budget (§8.3 exempts fixed shell chrome). */
+html[data-lg] .mobile-tabbar {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.85));
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  border-top: 1px solid var(--lg-hairline);
+  box-shadow: 0 -8px 24px -18px rgba(15, 61, 46, 0.22);
+}
+html[data-lg].dark .mobile-tabbar {
+  background: linear-gradient(180deg, rgba(24, 36, 30, 0.78), rgba(15, 24, 20, 0.88));
+}
+
+/* Burger-sheet utility group: only meaningful ≤767 where the top bar drops the
+   utilities. Above 768 the top bar carries them, so hide the sheet copy to
+   avoid a redundant duplicate cluster in the 768–1023 burger band. */
+.gt-sidebar-utils {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 0 4px;
+}
+@media (min-width: 768px) {
+  .gt-sidebar-utils {
+    display: none;
+  }
+}
