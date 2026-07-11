@@ -35,6 +35,24 @@
     "about_project": "Proje hakkında",
     "brand_label": "GovTech-DE, genel bakışa"
   },
+  "search": {
+    "trigger_label": "Ara",
+    "mobile_open": "Aramayı aç",
+    "dialog_label": "Uygulama genelinde arama",
+    "input_placeholder": "Mektuplarda, işlemlerde, belgelerde, randevularda ara …",
+    "input_aria": "Arama terimi girin",
+    "hint_min_chars": "Lütfen en az 2 karakter girin.",
+    "no_results": "«{query}» için sonuç yok.",
+    "no_results_hint": "Yazımı kontrol edin — veya bir bölümü doğrudan açın.",
+    "results_status": "{count, plural, =0 {Sonuç yok} one {# sonuç} other {# sonuç}}",
+    "group_briefe": "Mektuplar",
+    "group_vorgaenge": "İşlemler",
+    "group_dokumente": "Belgeler",
+    "group_termine": "Randevular",
+    "group_seiten": "Sayfalar",
+    "offline_notice": "Bazı bölümler şu anda erişilebilir değil. Sayfa sonuçları gösterilmeye devam ediyor.",
+    "close": "Kapat"
+  },
   "lebenslagen": {
     "breadcrumb_catalog": "Hizmet kataloğu",
     "title": "Hizmetleri bulun.",
@@ -302,7 +320,6 @@
       "gesamtdauer": "Toplam süre (tahmini)",
       "schritte_insgesamt": "Toplam adım",
       "beteiligte_behoerden_count": "İlgili kurumlar",
-      "alle_schritte": "Tüm adımları göster",
       "naechster_schritt": "Sonraki adım",
       "naechster_schritt_body": "Belgeleri zaten yüklediniz ve koşulları kontrol ettiniz.",
       "vorgang_speichern": "İşlemi kaydet",
@@ -321,7 +338,7 @@
       "mock_payment": "[MOCK ödeme]",
       "cta_beantragen": "Şimdi başvur",
       "cta_antragslos": "Başvuru gerekmez",
-      "cta_cascade_view": "Otomatik işlemeyi görüntüle",
+      "cta_cascade_start": "Otomatik işlemi başlat",
       "datenschutz_title": "Verileriniz korunuyor",
       "datenschutz_body": "Her makam için yalnızca asgari düzeyde gerekli veri kümesi iletilir — şifreli olarak ve yalnızca yetkili makamlara.",
       "datenschutz_link": "Veri koruma merkezini aç",
@@ -444,9 +461,6 @@
         "synthetic_note": "yakl. değer (tahmini)",
         "update_eta": "tahminen 2–3 iş günü içinde",
         "docs_created": "{date} tarihinde oluşturuldu",
-        "demo_play": "Canlı demoyu oynat",
-        "demo_playing": "Oynatılıyor …",
-        "demo_aria": "İşlem akışını demo olarak oynat",
         "tl_status_running": "çalışıyor",
         "tl_status_queue": "sırada",
         "tl_status_eid": "eID gerekli",
@@ -1061,7 +1075,14 @@
       "stop": "Durdur",
       "running": "Sesli okunuyor…",
       "privacy": "Sesli okuma doğrudan cihazınızda gerçekleşir. Hiçbir veri aktarılmaz.",
-      "unsupported": "Sesli okuma tarayıcınız tarafından desteklenmiyor. Lütfen cihazınızın kendi sesli okuma özelliğini kullanın."
+      "unsupported": "Sesli okuma tarayıcınız tarafından desteklenmiyor. Lütfen cihazınızın kendi sesli okuma özelliğini kullanın.",
+      "tempo": {
+        "label": "Hız",
+        "langsam": "Yavaş",
+        "normal": "Normal",
+        "schnell": "Hızlı",
+        "announce": "Sesli okuma hızı {value}"
+      }
     },
     "contrast": {
       "label": "Kontrastı artır"
@@ -1083,12 +1104,70 @@
       "announce": "Erişilebilirlik ayarları sıfırlandı."
     },
     "storage_note": "Ayarlarınız yalnızca bu cihazda saklanır.",
-    "native_note": "İpucu: Cihazınızın yardımcı teknolojisi en güvenilir yöntem olmaya devam eder."
+    "native_note": "İpucu: Cihazınızın yardımcı teknolojisi en güvenilir yöntem olmaya devam eder.",
+    "dgs": {
+      "heading": "İşaret dili (Gebärdensprache, DGS)",
+      "video_label": "Alman işaret dilinde (Gebärdensprache, DGS) açıklama videosu",
+      "mock_note": "Yer tutucu — bu demoda video bulunmuyor.",
+      "contents_intro": "Video şunları açıklar:",
+      "content_1": "Bu portalın ne olduğunu ve ne için kullanabileceğinizi.",
+      "content_2": "Portalda nasıl yolunuzu bulacağınızı.",
+      "content_3": "Erişilebilirlik beyanının (Erklärung zur Barrierefreiheit) en önemli noktalarını.",
+      "real_note": "İşaret dili videosu otomatik oluşturulmaz, çekilir."
+    },
+    "page_link": {
+      "label": "Erişilebilirlik beyanı (Erklärung zur Barrierefreiheit)"
+    }
   },
   "footer": {
     "imprint": "Künye (Impressum)",
     "privacy": "Gizlilik",
     "accessibility": "Erişilebilirlik"
+  },
+  "barrierefreiheit": {
+    "page": {
+      "title": "Erişilebilirlik beyanı (Erklärung zur Barrierefreiheit)",
+      "intro": "Not: Bu prototip, erişilebilirlik işlevlerini simüle eder. Bağlayıcı gereklilikler BITV 2.0 §§ 3–4, BGG § 11 ve uyumlaştırılmış EN 301 549 (WCAG 2.1 AA) standardından doğar. Otomatik olarak sade dile (Leichte Sprache) aktarılan metinler hukuken bağlayıcı kararlar değildir."
+    },
+    "status": {
+      "heading": "Uygunluk durumu",
+      "body": "Bu prototip, aşağıdaki standartlara uygunluğu hedefler. Bu bir gösterimdir, resmî olarak sunulmuş bir uygunluk beyanı değildir.",
+      "wcag": "WCAG 2.1, Düzey AA",
+      "bitv": "BITV 2.0 (§§ 3–4)",
+      "en": "EN 301 549",
+      "stand_label": "Durum tarihi",
+      "stand_value": "10.07.2026",
+      "konformitaet_label": "Hedeflenen uygunluk",
+      "konformitaet_value": "büyük ölçüde uygun"
+    },
+    "limitations": {
+      "heading": "Bilinen kısıtlamalar",
+      "intro": "Aşağıdaki kısıtlamaların farkındayız. Bunlar üzerinde çalışıyoruz.",
+      "item_onboarding": "Oturum açma bölümünde bazı iletişim kutuları henüz klavyeyle tam olarak kullanılamıyor.",
+      "item_vorgang": "İşlem ayrıntı görünümünde bazı listelerin yapısı ekran okuyucular için henüz ideal biçimde işaretlenmemiş.",
+      "item_dark": "Koyu modda bazı kontrol öğeleri henüz tam renk kontrastına ulaşmıyor.",
+      "item_mock": "İşaret dili ve sade dil (Leichte Sprache) içerikleri bu demoda yer tutucudur."
+    },
+    "melden": {
+      "heading": "Engel bildir",
+      "intro": "Bir engel mi fark ettiniz? Lütfen kısaca açıklayın.",
+      "beschreibung_label": "Ne fark ettiniz?",
+      "beschreibung_placeholder": "Örneğin: Bir düğmeye klavyeyle erişilemiyor.",
+      "seite_label": "Hangi sayfada? (isteğe bağlı)",
+      "kontakt_label": "Geri bildirim için e-posta adresiniz (isteğe bağlı)",
+      "submit": "Bildirimi gönder",
+      "confirmation": "Teşekkür ederiz. Bu demoda hiçbir bildirim gönderilmez veya saklanmaz.",
+      "reset": "Yeni bildirim"
+    },
+    "schlichtung": {
+      "heading": "Uzlaştırma kurumu (Schlichtungsstelle)",
+      "body": "Yanıtımızdan memnun kalmazsanız § 16 BGG uyarınca uzlaştırma kurumuna (Schlichtungsstelle nach § 16 BGG) başvurabilirsiniz. Bu kurum, Federal Hükümet'in Engelli Kişilerin Çıkarlarından Sorumlu Görevlisi bünyesinde kurulmuştur.",
+      "link": "BGG uyarınca uzlaştırma kurumuna"
+    },
+    "more": {
+      "heading": "Diğer yardımlar",
+      "panel_hint": "Yazı tipi boyutu, kontrast ve sesli okuma gibi görüntüleme ayarlarına sağ üstteki «Erişilebilirlik» menüsünden ulaşabilirsiniz."
+    }
   },
   "error": {
     "not_found": {
@@ -1107,6 +1186,9 @@
       "open": "Menüyü aç",
       "close": "Menüyü kapat",
       "nav_label": "Ana menü"
+    },
+    "bottomnav": {
+      "nav_label": "Ana bölümler"
     },
     "user": {
       "menu_label": "Kullanıcı menüsünü aç",
@@ -1219,7 +1301,8 @@
     },
     "welcome": {
       "title": "GovTech DE'ye hoş geldiniz",
-      "subtitle": "Giriş yapın veya demoyu başlatın."
+      "subtitle": "Resmî işlemleriniz için tek giriş — taşınmadan çocuk parasına (Kindergeld) kadar.",
+      "or": "veya"
     },
     "method": {
       "deutschlandid": {
@@ -1270,18 +1353,21 @@
     },
     "persona": {
       "title": "Demo için bir kimlik seçin",
-      "subtitle": "Kimliği daha sonra istediğiniz zaman değiştirebilirsiniz.",
+      "subtitle": "Üç kurgusal kişi, üç gerçek yaşam durumu — istediğiniz zaman değiştirebilirsiniz.",
       "anna": {
         "name": "Anna Petrov",
-        "descriptor": "Berlin · ücretli çalışan · Rus"
+        "descriptor": "Berlin · ücretli çalışan · Rus",
+        "story": "Tobias ve küçük Lev ile Berlin-Mitte'ye yeni taşındı."
       },
       "schmidt": {
         "name": "Schmidt ailesi",
-        "descriptor": "Hamburg · çocuklu aile · Alman"
+        "descriptor": "Hamburg · çocuklu aile · Alman",
+        "story": "Mia yeni doğdu — abisi Felix herkesi meşgul ediyor."
       },
       "mehmet": {
         "name": "Mehmet Yıldız",
-        "descriptor": "Köln · serbest meslek · Türk"
+        "descriptor": "Köln · serbest meslek · Türk",
+        "story": "Müşterilerine yenilenebilir enerji danışmanlığı veriyor; iki randevu arasında evrak işlerine zaman kalmıyor."
       },
       "back": "Geri"
     },
@@ -1310,7 +1396,7 @@
       },
       "required_group": "Zorunlu bilgiler",
       "required_badge": "Gerekli",
-      "required_caption": "Bu bilgiler giriş için gereklidir.",
+      "required_caption": "Giriş için gereklidir — tüm bilgiler eID üzerinden doğrulanmıştır.",
       "optional_group": "İsteğe bağlı bilgiler",
       "optional_badge": "Yalnızca gerektiğinde",
       "optional_caption": "Bu bilgiler isteğe bağlıdır ve yalnızca onayınızla aktarılır.",
@@ -1904,15 +1990,6 @@
       "subtitle_template": "{adresse} · taşınma {stichtag}",
       "headline": "Otomatik pilotla taşınma",
       "headline_sub": "Bir kez onaylarsınız — sonraki adımları sistem koordine eder.",
-      "demo": {
-        "title": "Otomatik pilotu canlı deneyimleyin",
-        "mock_badge": "[MOCK]",
-        "body": "Örnek bir taşınma başlatın. Sistem, simüle edilmiş bir adres değişikliğini tetikler ve bunu ilgili tüm kurumlar arasında koordine eder — kendiniz onayladığınız eID doğrulamaları dâhil. Gerçek hiçbir veri aktarılmaz.",
-        "address_label": "Örnek adres",
-        "cta_start": "Örnek taşınmayı başlat",
-        "starting": "Örnek taşınma başlatılıyor …",
-        "error": "Örnek taşınma başlatılamadı. Lütfen tekrar deneyin."
-      },
       "vorgang_label": "İşlem #{id}",
       "status": {
         "pending": "bekliyor",
@@ -2000,12 +2077,17 @@
       "termine_title": "Bu işleme ait randevular ({count})",
       "no_next_step": "Şu anda sizden bir şey istenmiyor. İlgili makamlar işlemi yürütüyor.",
       "hero_sub": "Yeni adresinizi bildirin – ilgili makamları sizin için biz bilgilendiriyoruz.",
+      "hero_sub_generic": "Bu işleme ait tüm adımlar, süreler ve yazılar tek bir yerde.",
+      "next_step_frist": "Süre sonu: {datum}",
       "vorgangsnummer_label": "İşlem numarası",
       "vorgangsnummer_copy_aria": "İşlem numarasını kopyala",
       "progress_title": "Genel ilerleme",
       "progress_steps": "{total} adımdan {done} tanesi",
       "fertigstellung_label": "Tahmini tamamlanma",
       "fertigstellung_value": "2–3 gün",
+      "fertigstellung_label_after_action": "Adımınızdan sonra tamamlanma",
+      "fertigstellung_label_in_review": "Makam inceliyor — genellikle",
+      "fertigstellung_label_done": "Tamamlanma tarihi",
       "timeline_title": "Bu işlemdeki adımlar ({count})",
       "steps_overview_title": "İşleminize genel bakış",
       "steps_overview_sub": "Talebinizi koordine eder ve ilgili makamlara iletiriz.",
@@ -2195,6 +2277,18 @@
     "watermark": {
       "banner": "[MOCK – idari demo, gerçek veri yok]",
       "inline": "[MOCK]"
+    },
+    "leichte_sprache": {
+      "cta": "Sade dilde açıkla (Leichte Sprache)",
+      "cta_hint": "Kısa cümleler. Basit kelimeler.",
+      "collapse": "Sade dili gizle (Leichte Sprache)",
+      "heading": "Sade dilde (Leichte Sprache)",
+      "badge_simplified": "Otomatik sadeleştirildi",
+      "badge_not_binding": "Hukuken bağlayıcı olmayan metin",
+      "original_leading": "Mektubun tamamı aşağıda değişmeden yer alır. Aslı olan mektup geçerlidir.",
+      "disclaimer_body": "Bu sürüm, mektubu daha hızlı anlamanıza yardımcı olmak içindir. Hukuken bağlayıcı bir metin değildir. Aslı olan resmî karar geçerlidir. Sorularınız veya süreler için lütfen asıl belgeye güvenin ya da ilgili makama sorun.",
+      "disclaimer_pruefung": "Not: Bu sadeleştirme otomatik olarak oluşturulmuştur ve hedef gruptan test edenler tarafından denetlenmemiştir (Netzwerk Leichte Sprache).",
+      "de_only_note": "Sade dil (Leichte Sprache) bir Alman standardıdır ve yalnızca Almanca olarak mevcuttur."
     },
     "list": {
       "tab_chronologisch": "Zaman sırasıyla",
@@ -3389,7 +3483,7 @@
         "adressuebermittlung_buergeramt_beitragsservice": "Yayın katkı payı servisine (Beitragsservice) adres aktarımı",
         "adressuebermittlung_buergeramt_gkv": "Sağlık sigortasına adres akışı (DEÜV)",
         "adressuebermittlung_buergeramt_standesamt": "Nüfus dairesine (Standesamt) adres aktarımı",
-        "adressuebermittlung_buergeramt_bundesdruckerei": "Kimlik kartı (Personalausweis) adres güncellemesi (Bundesdruckerei)",
+        "eat_adressaktualisierung_auslaenderbehoerde": "Oturma izni adres güncellemesi (Ausländerbehörde)",
         "adressuebermittlung_buergeramt_bapersbw": "Askerlik kaydı için adres bildirimi",
         "behoerde_zu_buerger_brief_eingang": "Resmî mektup gelen kutusuna ulaştı",
         "app_religion_angezeigt": "Dini aidiyet uygulamada gösterildi",
@@ -3802,10 +3896,15 @@
           "familienstand": "Medeni durum"
         },
         "familienstand": {
-          "verheiratet": "evli",
-          "ledig": "bekâr",
-          "geschieden": "boşanmış",
-          "verwitwet": "dul"
+          "verheiratet": "Evli",
+          "ledig": "Bekâr",
+          "geschieden": "Boşanmış",
+          "verwitwet": "Dul"
+        },
+        "nationality": {
+          "deutsch": "Alman",
+          "russisch": "Rus",
+          "tuerkisch": "Türk"
         }
       },
       "kontakt": {
@@ -3908,6 +4007,9 @@
       "label": "Profil tamamlandı",
       "aria": "Profil yüzde {percent} oranında tamamlandı",
       "letzte_aktualisierung": "Son güncelleme: {datum}"
+    },
+    "format": {
+      "uhrzeit": "{zeit}"
     },
     "dialog": {
       "close": "Kapat",
@@ -4164,6 +4266,20 @@
   "termine": {
     "title": "Randevular",
     "subtitle": "Sistemin sizin için takip ettiği randevular.",
+    "wartet": {
+      "titel": "Sizi bekliyor",
+      "hint": "Bu kayıtların şimdi onayınıza ihtiyacı var."
+    },
+    "agenda": {
+      "titel": "Yaklaşan",
+      "heute": "Bugün",
+      "morgen": "Yarın",
+      "leer": "Yaklaşan bir şey yok — her şey güncel."
+    },
+    "rail": {
+      "titel": "Takvim",
+      "vergangen_link": "Geçmiş randevuları görüntüle"
+    },
     "spur": {
       "termine_titel": "Sistemin sizin için takip ettiği randevular",
       "termine_leer": "Şu anda yaklaşan randevu yok.",
@@ -4172,6 +4288,7 @@
     },
     "kpi": {
       "naechster_termin": "Sonraki randevu",
+      "strip_label": "Randevu göstergeleri",
       "offene_fristen": "Açık süreler",
       "offene_fristen_sub": "İşlem gerekli",
       "bestaetigte": "Onaylı randevular",
@@ -4188,7 +4305,7 @@
       "vergangen": "Geçmiş"
     },
     "toolbar": {
-      "suche_placeholder": "Randevu, kurum veya işlem ara",
+      "suche_placeholder": "Randevu veya kurum ara",
       "suche_label": "Randevularda ara",
       "filter": "Filtre",
       "export": "Takvimi dışa aktar"
@@ -4390,6 +4507,7 @@
     "frist_praefix": "Süre: {datum}",
     "faellig_praefix": "Son tarih: {datum}",
     "uhr_dauer": "{zeit} ({dauer} dk.)",
+    "zeit_range": "{range}",
     "action": {
       "bestaetigen": "Onayla",
       "verschieben": "Ertele",
@@ -4517,6 +4635,7 @@
     },
     "stats": {
       "aktiv_title": "Etkin onaylar",
+      "strip_label": "Onay göstergeleri",
       "aktiv_value": "{total} alıcıdan {active} tanesi",
       "aktiv_sub": "Veri paylaşımı için verilen onaylar",
       "anfragen_title": "Talepler (30 gün)",

@@ -35,6 +35,24 @@
     "about_project": "Über das Projekt",
     "brand_label": "GovTech-DE, zur Übersicht"
   },
+  "search": {
+    "trigger_label": "Suchen",
+    "mobile_open": "Suche öffnen",
+    "dialog_label": "App-weite Suche",
+    "input_placeholder": "Suchen in Briefen, Vorgängen, Dokumenten, Terminen …",
+    "input_aria": "Suchbegriff eingeben",
+    "hint_min_chars": "Bitte geben Sie mindestens 2 Zeichen ein.",
+    "no_results": "Keine Treffer für „{query}“.",
+    "no_results_hint": "Prüfen Sie die Schreibweise — oder öffnen Sie einen Bereich direkt.",
+    "results_status": "{count, plural, =0 {Keine Treffer} one {# Treffer} other {# Treffer}}",
+    "group_briefe": "Briefe",
+    "group_vorgaenge": "Vorgänge",
+    "group_dokumente": "Dokumente",
+    "group_termine": "Termine",
+    "group_seiten": "Seiten",
+    "offline_notice": "Einige Bereiche sind gerade nicht erreichbar. Seiten-Treffer werden weiterhin angezeigt.",
+    "close": "Schließen"
+  },
   "lebenslagen": {
     "breadcrumb_catalog": "Leistungskatalog",
     "title": "Leistungen finden.",
@@ -302,7 +320,6 @@
       "gesamtdauer": "Gesamtdauer (geschätzt)",
       "schritte_insgesamt": "Schritte insgesamt",
       "beteiligte_behoerden_count": "Beteiligte Behörden",
-      "alle_schritte": "Alle Schritte im Überblick anzeigen",
       "naechster_schritt": "Nächster Schritt",
       "naechster_schritt_body": "Sie haben bereits Nachweise hochgeladen und die Voraussetzungen geprüft.",
       "vorgang_speichern": "Vorgang speichern",
@@ -321,7 +338,7 @@
       "mock_payment": "[MOCK-Zahlung]",
       "cta_beantragen": "Jetzt beantragen",
       "cta_antragslos": "Kein Antrag nötig",
-      "cta_cascade_view": "Automatische Bearbeitung ansehen",
+      "cta_cascade_start": "Automatische Bearbeitung starten",
       "datenschutz_title": "Ihre Daten sind geschützt",
       "datenschutz_body": "Es wird nur der für die jeweilige Stelle minimal nötige Datensatz übermittelt — verschlüsselt und nur an zuständige Behörden.",
       "datenschutz_link": "Datenschutz-Cockpit öffnen",
@@ -444,9 +461,6 @@
         "synthetic_note": "ca.-Wert (Schätzung)",
         "update_eta": "voraussichtlich in 2–3 Werktagen",
         "docs_created": "erstellt am {date}",
-        "demo_play": "Live-Demo abspielen",
-        "demo_playing": "Wird abgespielt …",
-        "demo_aria": "Bearbeitungsablauf als Demo abspielen",
         "tl_status_running": "läuft",
         "tl_status_queue": "in Warteschlange",
         "tl_status_eid": "eID erforderlich",
@@ -1061,7 +1075,14 @@
       "stop": "Stoppen",
       "running": "Wird vorgelesen…",
       "privacy": "Vorlesen erfolgt direkt auf Ihrem Gerät. Es werden keine Daten übertragen.",
-      "unsupported": "Vorlesen wird von Ihrem Browser nicht unterstützt. Bitte nutzen Sie die Vorlesefunktion Ihres Geräts."
+      "unsupported": "Vorlesen wird von Ihrem Browser nicht unterstützt. Bitte nutzen Sie die Vorlesefunktion Ihres Geräts.",
+      "tempo": {
+        "label": "Tempo",
+        "langsam": "Langsam",
+        "normal": "Normal",
+        "schnell": "Schnell",
+        "announce": "Vorlese-Tempo {value}"
+      }
     },
     "contrast": {
       "label": "Kontrast erhöhen"
@@ -1083,12 +1104,70 @@
       "announce": "Bedienhilfen zurückgesetzt."
     },
     "storage_note": "Ihre Einstellungen werden nur auf diesem Gerät gespeichert.",
-    "native_note": "Tipp: Die assistive Technik Ihres Geräts bleibt der zuverlässigste Weg."
+    "native_note": "Tipp: Die assistive Technik Ihres Geräts bleibt der zuverlässigste Weg.",
+    "dgs": {
+      "heading": "Gebärdensprache (DGS)",
+      "video_label": "Erklärvideo in Gebärdensprache (DGS)",
+      "mock_note": "Platzhalter — in dieser Demo ist kein Video hinterlegt.",
+      "contents_intro": "Das Video erklärt:",
+      "content_1": "Was dieses Portal ist und wofür Sie es nutzen können.",
+      "content_2": "Wie Sie sich im Portal zurechtfinden.",
+      "content_3": "Die wichtigsten Punkte der Erklärung zur Barrierefreiheit.",
+      "real_note": "Ein Gebärdensprach-Video wird gedreht, nicht automatisch erzeugt."
+    },
+    "page_link": {
+      "label": "Erklärung zur Barrierefreiheit"
+    }
   },
   "footer": {
     "imprint": "Impressum",
     "privacy": "Datenschutz",
     "accessibility": "Barrierefreiheit"
+  },
+  "barrierefreiheit": {
+    "page": {
+      "title": "Erklärung zur Barrierefreiheit",
+      "intro": "Hinweis: Dieser Prototyp simuliert die Barrierefreiheits-Funktionen. Verbindliche Anforderungen ergeben sich aus BITV 2.0 §§ 3–4, BGG § 11 sowie der harmonisierten Norm EN 301 549 (WCAG 2.1 AA). Automatisch in Leichte Sprache übertragene Texte sind keine rechtsverbindlichen Bescheide."
+    },
+    "status": {
+      "heading": "Konformitätsstatus",
+      "body": "Dieser Prototyp strebt die Konformität mit den folgenden Standards an. Dies ist eine Demonstration und keine amtlich hinterlegte Konformitätserklärung.",
+      "wcag": "WCAG 2.1, Stufe AA",
+      "bitv": "BITV 2.0 (§§ 3–4)",
+      "en": "EN 301 549",
+      "stand_label": "Stand",
+      "stand_value": "10.07.2026",
+      "konformitaet_label": "Angestrebte Konformität",
+      "konformitaet_value": "weitgehend konform"
+    },
+    "limitations": {
+      "heading": "Bekannte Einschränkungen",
+      "intro": "Uns sind die folgenden Einschränkungen bekannt. Wir arbeiten daran.",
+      "item_onboarding": "Im Bereich Anmeldung sind einzelne Dialoge mit der Tastatur noch nicht vollständig bedienbar.",
+      "item_vorgang": "In der Vorgangs-Detailansicht ist die Struktur einzelner Listen für Screenreader noch nicht ideal ausgezeichnet.",
+      "item_dark": "Im dunklen Modus erreichen einzelne Bedien-Elemente noch nicht den vollen Farbkontrast.",
+      "item_mock": "Die Inhalte in Gebärdensprache und Leichter Sprache sind in dieser Demo Platzhalter."
+    },
+    "melden": {
+      "heading": "Barriere melden",
+      "intro": "Ist Ihnen eine Barriere aufgefallen? Beschreiben Sie sie bitte kurz.",
+      "beschreibung_label": "Was ist Ihnen aufgefallen?",
+      "beschreibung_placeholder": "Zum Beispiel: Ein Knopf lässt sich mit der Tastatur nicht erreichen.",
+      "seite_label": "Auf welcher Seite? (optional)",
+      "kontakt_label": "Ihre E-Mail für eine Rückmeldung (optional)",
+      "submit": "Meldung absenden",
+      "confirmation": "Vielen Dank. In dieser Demo wird keine Meldung gesendet oder gespeichert.",
+      "reset": "Neue Meldung"
+    },
+    "schlichtung": {
+      "heading": "Schlichtungsstelle",
+      "body": "Sind Sie mit unserer Rückmeldung nicht zufrieden, können Sie die Schlichtungsstelle nach § 16 BGG anrufen. Sie ist bei dem Beauftragten der Bundesregierung für die Belange von Menschen mit Behinderungen eingerichtet.",
+      "link": "Zur Schlichtungsstelle nach dem BGG"
+    },
+    "more": {
+      "heading": "Weitere Hilfen",
+      "panel_hint": "Anzeige-Einstellungen wie Schriftgröße, Kontrast und Vorlesen finden Sie über das Menü „Barrierefreiheit“ oben rechts."
+    }
   },
   "error": {
     "not_found": {
@@ -1107,6 +1186,9 @@
       "open": "Navigation öffnen",
       "close": "Navigation schließen",
       "nav_label": "Hauptnavigation"
+    },
+    "bottomnav": {
+      "nav_label": "Hauptbereiche"
     },
     "user": {
       "menu_label": "Benutzermenü öffnen",
@@ -1219,7 +1301,8 @@
     },
     "welcome": {
       "title": "Willkommen bei GovTech DE",
-      "subtitle": "Melden Sie sich an oder starten Sie die Demo."
+      "subtitle": "Ein Zugang für Ihre Behördengänge — vom Umzug bis zum Kindergeld.",
+      "or": "oder"
     },
     "method": {
       "deutschlandid": {
@@ -1270,18 +1353,21 @@
     },
     "persona": {
       "title": "Wählen Sie eine Identität für die Demo",
-      "subtitle": "Sie können die Identität später jederzeit wechseln.",
+      "subtitle": "Drei erfundene Personen, drei echte Lebenslagen — Sie können später jederzeit wechseln.",
       "anna": {
         "name": "Anna Petrov",
-        "descriptor": "Berlin · angestellt · russisch"
+        "descriptor": "Berlin · angestellt · russisch",
+        "story": "Gerade mit Tobias und dem kleinen Lev nach Berlin-Mitte gezogen."
       },
       "schmidt": {
         "name": "Familie Schmidt",
-        "descriptor": "Hamburg · Familie mit Kind · deutsch"
+        "descriptor": "Hamburg · Familie mit Kind · deutsch",
+        "story": "Mia ist gerade zur Welt gekommen — der große Bruder Felix hält alle auf Trab."
       },
       "mehmet": {
         "name": "Mehmet Yıldız",
-        "descriptor": "Köln · selbstständig · türkisch"
+        "descriptor": "Köln · selbstständig · türkisch",
+        "story": "Berät Kunden zu erneuerbaren Energien; Papierkram passt selten zwischen zwei Termine."
       },
       "back": "Zurück"
     },
@@ -1310,7 +1396,7 @@
       },
       "required_group": "Pflichtangaben",
       "required_badge": "Erforderlich",
-      "required_caption": "Diese Angaben sind für die Anmeldung erforderlich.",
+      "required_caption": "Für die Anmeldung erforderlich — alle Angaben sind über Ihre eID verifiziert.",
       "optional_group": "Optionale Angaben",
       "optional_badge": "Nur bei Bedarf",
       "optional_caption": "Diese Informationen sind optional und werden nur übertragen, wenn Sie zustimmen.",
@@ -1907,15 +1993,6 @@
       "subtitle_template": "{adresse} · Stichtag {stichtag}",
       "headline": "Umzug auf Autopilot",
       "headline_sub": "Sie bestätigen einmal – das System koordiniert die nächsten Schritte.",
-      "demo": {
-        "title": "Autopilot live erleben",
-        "mock_badge": "[MOCK]",
-        "body": "Starten Sie einen Beispiel-Umzug. Das System löst eine simulierte Adressänderung aus und koordiniert sie durch alle beteiligten Behörden – einschließlich der eID-Bestätigungen, die Sie selbst freigeben. Es werden keine echten Daten übermittelt.",
-        "address_label": "Beispiel-Adresse",
-        "cta_start": "Beispiel-Umzug starten",
-        "starting": "Beispiel-Umzug wird gestartet …",
-        "error": "Der Beispiel-Umzug konnte nicht gestartet werden. Bitte versuchen Sie es erneut."
-      },
       "vorgang_label": "Vorgang #{id}",
       "status": {
         "pending": "wartet",
@@ -2003,12 +2080,17 @@
       "termine_title": "Termine zu diesem Vorgang ({count})",
       "no_next_step": "Aktuell ist von Ihnen nichts zu tun. Die beteiligten Stellen arbeiten den Vorgang ab.",
       "hero_sub": "Melden Sie Ihren Wohnsitz um – wir informieren die zuständigen Stellen für Sie.",
+      "hero_sub_generic": "Alle Schritte, Fristen und Briefe zu diesem Vorgang an einem Ort.",
+      "next_step_frist": "Frist: {datum}",
       "vorgangsnummer_label": "Vorgangsnummer",
       "vorgangsnummer_copy_aria": "Vorgangsnummer kopieren",
       "progress_title": "Gesamtfortschritt",
       "progress_steps": "{done} von {total} Schritten",
       "fertigstellung_label": "Voraussichtliche Fertigstellung",
       "fertigstellung_value": "2–3 Tage",
+      "fertigstellung_label_after_action": "Fertigstellung nach Ihrem Schritt",
+      "fertigstellung_label_in_review": "Behörde prüft — in der Regel",
+      "fertigstellung_label_done": "Abgeschlossen am",
       "timeline_title": "Schritte im Vorgang ({count})",
       "steps_overview_title": "Ihr Vorgang im Überblick",
       "steps_overview_sub": "Wir koordinieren Ihre Anfrage und leiten sie an die zuständigen Stellen weiter.",
@@ -2198,6 +2280,18 @@
     "watermark": {
       "banner": "[MOCK – Verwaltungsdemo, keine echten Daten]",
       "inline": "[MOCK]"
+    },
+    "leichte_sprache": {
+      "cta": "In Leichter Sprache erläutern",
+      "cta_hint": "Kurze Sätze. Einfache Wörter.",
+      "collapse": "Leichte Sprache ausblenden",
+      "heading": "In Leichter Sprache",
+      "badge_simplified": "Automatisch vereinfacht",
+      "badge_not_binding": "Kein rechtsverbindlicher Text",
+      "original_leading": "Der vollständige Brief steht unverändert darunter. Es gilt der Brief im Original.",
+      "disclaimer_body": "Diese Fassung soll Ihnen helfen, den Brief schneller zu verstehen. Sie ist kein rechtsverbindlicher Text. Es gilt der amtliche Bescheid im Original. Bei Fragen oder Fristen verlassen Sie sich bitte auf das Originaldokument oder fragen Sie Ihre Behörde.",
+      "disclaimer_pruefung": "Hinweis: Diese Vereinfachung wurde automatisch erstellt und nicht von Prüfer:innen aus der Zielgruppe geprüft (Netzwerk Leichte Sprache).",
+      "de_only_note": "Leichte Sprache ist ein deutscher Standard und liegt nur auf Deutsch vor."
     },
     "list": {
       "tab_chronologisch": "Chronologisch",
@@ -3418,7 +3512,7 @@
         "adressuebermittlung_buergeramt_beitragsservice": "Adressübermittlung an Rundfunkbeitragsservice",
         "adressuebermittlung_buergeramt_gkv": "Adressfluss zur Krankenkasse (DEÜV)",
         "adressuebermittlung_buergeramt_standesamt": "Adressübermittlung an das Standesamt",
-        "adressuebermittlung_buergeramt_bundesdruckerei": "Adressaktualisierung Personalausweis (Bundesdruckerei)",
+        "eat_adressaktualisierung_auslaenderbehoerde": "Adressaktualisierung Aufenthaltstitel (Ausländerbehörde)",
         "adressuebermittlung_buergeramt_bapersbw": "Wehrerfassungs-Adressmitteilung",
         "behoerde_zu_buerger_brief_eingang": "Behördlicher Brief im Posteingang eingegangen",
         "app_religion_angezeigt": "Religionsmerkmal in der App angezeigt",
@@ -4036,6 +4130,11 @@
           "ledig": "ledig",
           "geschieden": "geschieden",
           "verwitwet": "verwitwet"
+        },
+        "nationality": {
+          "deutsch": "Deutsch",
+          "russisch": "Russisch",
+          "tuerkisch": "Türkisch"
         }
       },
       "kontakt": {
@@ -4138,6 +4237,9 @@
       "label": "Profil vollständig",
       "aria": "Profil zu {percent} Prozent vollständig",
       "letzte_aktualisierung": "Letzte Aktualisierung: {datum}"
+    },
+    "format": {
+      "uhrzeit": "{zeit} Uhr"
     },
     "dialog": {
       "close": "Schließen",
@@ -4395,6 +4497,20 @@
   "termine": {
     "title": "Termine",
     "subtitle": "Alle Termine, Fristen und Erinnerungen an einem Ort.",
+    "wartet": {
+      "titel": "Wartet auf Sie",
+      "hint": "Diese Einträge brauchen jetzt Ihre Bestätigung."
+    },
+    "agenda": {
+      "titel": "Anstehend",
+      "heute": "Heute",
+      "morgen": "Morgen",
+      "leer": "Nichts Anstehendes — Sie sind auf dem Laufenden."
+    },
+    "rail": {
+      "titel": "Kalender",
+      "vergangen_link": "Vergangene Termine ansehen"
+    },
     "spur": {
       "termine_titel": "Termine, um die sich das System kümmert",
       "termine_leer": "Aktuell keine anstehenden Termine.",
@@ -4403,6 +4519,7 @@
     },
     "kpi": {
       "naechster_termin": "Nächster Termin",
+      "strip_label": "Termin-Kennzahlen",
       "offene_fristen": "Offene Fristen",
       "offene_fristen_sub": "Handlungsbedarf",
       "bestaetigte": "Bestätigte Termine",
@@ -4419,7 +4536,7 @@
       "vergangen": "Vergangen"
     },
     "toolbar": {
-      "suche_placeholder": "Termine, Behörden oder Vorgänge suchen",
+      "suche_placeholder": "Termine oder Behörden suchen",
       "suche_label": "Termine durchsuchen",
       "filter": "Filter",
       "export": "Kalender exportieren"
@@ -4620,7 +4737,8 @@
     "fristen_offen": "{count, plural, =0 {Keine offenen Fristen} =1 {1 offene Frist} other {# offene Fristen}}",
     "frist_praefix": "Frist: {datum}",
     "faellig_praefix": "Fällig: {datum}",
-    "uhr_dauer": "{zeit} ({dauer} Min.)",
+    "uhr_dauer": "{zeit} Uhr ({dauer} Min.)",
+    "zeit_range": "{range} Uhr",
     "action": {
       "bestaetigen": "Bestätigen",
       "verschieben": "Verschieben",
@@ -4748,6 +4866,7 @@
     },
     "stats": {
       "aktiv_title": "Einwilligungen aktiv",
+      "strip_label": "Einwilligungs-Kennzahlen",
       "aktiv_value": "{active} von {total} Empfängern",
       "aktiv_sub": "Erteilte Einwilligungen zur Datenweitergabe",
       "anfragen_title": "Anfragen (30 Tage)",

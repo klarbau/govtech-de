@@ -35,6 +35,24 @@
     "about_project": "About the project",
     "brand_label": "GovTech-DE, to the overview"
   },
+  "search": {
+    "trigger_label": "Search",
+    "mobile_open": "Open search",
+    "dialog_label": "App-wide search",
+    "input_placeholder": "Search letters, cases, documents, appointments …",
+    "input_aria": "Enter a search term",
+    "hint_min_chars": "Please enter at least 2 characters.",
+    "no_results": "No results for “{query}”.",
+    "no_results_hint": "Check the spelling — or open a section directly.",
+    "results_status": "{count, plural, =0 {No results} one {# result} other {# results}}",
+    "group_briefe": "Letters",
+    "group_vorgaenge": "Cases",
+    "group_dokumente": "Documents",
+    "group_termine": "Appointments",
+    "group_seiten": "Pages",
+    "offline_notice": "Some areas are currently unavailable. Page results are still shown.",
+    "close": "Close"
+  },
   "lebenslagen": {
     "breadcrumb_catalog": "Service catalogue",
     "title": "Find services.",
@@ -302,7 +320,6 @@
       "gesamtdauer": "Total duration (estimated)",
       "schritte_insgesamt": "Steps in total",
       "beteiligte_behoerden_count": "Authorities involved",
-      "alle_schritte": "Show all steps at a glance",
       "naechster_schritt": "Next step",
       "naechster_schritt_body": "You have already uploaded evidence and checked the requirements.",
       "vorgang_speichern": "Save procedure",
@@ -321,7 +338,7 @@
       "mock_payment": "[MOCK payment]",
       "cta_beantragen": "Apply now",
       "cta_antragslos": "No application needed",
-      "cta_cascade_view": "View automatic processing",
+      "cta_cascade_start": "Start automatic processing",
       "datenschutz_title": "Your data is protected",
       "datenschutz_body": "Only the minimum data set needed for each authority is transmitted — encrypted and only to the responsible authorities.",
       "datenschutz_link": "Open privacy cockpit",
@@ -444,9 +461,6 @@
         "synthetic_note": "approx. value (estimate)",
         "update_eta": "expected in 2–3 working days",
         "docs_created": "created on {date}",
-        "demo_play": "Play live demo",
-        "demo_playing": "Playing …",
-        "demo_aria": "Play the processing sequence as a demo",
         "tl_status_running": "running",
         "tl_status_queue": "in queue",
         "tl_status_eid": "eID required",
@@ -1061,7 +1075,14 @@
       "stop": "Stop",
       "running": "Reading aloud…",
       "privacy": "Reading aloud runs directly on your device. No data is transmitted.",
-      "unsupported": "Read aloud is not supported by your browser. Please use your device's own read-aloud feature."
+      "unsupported": "Read aloud is not supported by your browser. Please use your device's own read-aloud feature.",
+      "tempo": {
+        "label": "Speed",
+        "langsam": "Slow",
+        "normal": "Normal",
+        "schnell": "Fast",
+        "announce": "Read-aloud speed {value}"
+      }
     },
     "contrast": {
       "label": "Increase contrast"
@@ -1083,12 +1104,70 @@
       "announce": "Accessibility settings reset."
     },
     "storage_note": "Your settings are stored only on this device.",
-    "native_note": "Tip: Your device's assistive technology remains the most reliable option."
+    "native_note": "Tip: Your device's assistive technology remains the most reliable option.",
+    "dgs": {
+      "heading": "German Sign Language (DGS)",
+      "video_label": "Explanatory video in German Sign Language (DGS)",
+      "mock_note": "Placeholder — no video is included in this demo.",
+      "contents_intro": "The video explains:",
+      "content_1": "What this portal is and what you can use it for.",
+      "content_2": "How to find your way around the portal.",
+      "content_3": "The key points of the accessibility statement (Erklärung zur Barrierefreiheit).",
+      "real_note": "A sign-language video is filmed, not generated automatically."
+    },
+    "page_link": {
+      "label": "Accessibility statement (Erklärung zur Barrierefreiheit)"
+    }
   },
   "footer": {
     "imprint": "Imprint",
     "privacy": "Privacy",
     "accessibility": "Accessibility"
+  },
+  "barrierefreiheit": {
+    "page": {
+      "title": "Accessibility statement (Erklärung zur Barrierefreiheit)",
+      "intro": "Note: This prototype simulates the accessibility features. Binding requirements arise from BITV 2.0 §§ 3–4, BGG § 11 and the harmonised standard EN 301 549 (WCAG 2.1 AA). Texts converted automatically into plain language (Leichte Sprache) are not legally binding decisions."
+    },
+    "status": {
+      "heading": "Conformance status",
+      "body": "This prototype aims for conformance with the following standards. This is a demonstration and not an officially filed declaration of conformance.",
+      "wcag": "WCAG 2.1, Level AA",
+      "bitv": "BITV 2.0 (§§ 3–4)",
+      "en": "EN 301 549",
+      "stand_label": "As of",
+      "stand_value": "10.07.2026",
+      "konformitaet_label": "Targeted conformance",
+      "konformitaet_value": "largely conformant"
+    },
+    "limitations": {
+      "heading": "Known limitations",
+      "intro": "We are aware of the following limitations. We are working on them.",
+      "item_onboarding": "In the sign-in area, some dialogs cannot yet be fully operated with the keyboard.",
+      "item_vorgang": "In the case detail view, the structure of some lists is not yet ideally marked up for screen readers.",
+      "item_dark": "In dark mode, some controls do not yet reach full colour contrast.",
+      "item_mock": "The sign-language and plain-language (Leichte Sprache) content is placeholder in this demo."
+    },
+    "melden": {
+      "heading": "Report a barrier",
+      "intro": "Did you notice a barrier? Please describe it briefly.",
+      "beschreibung_label": "What did you notice?",
+      "beschreibung_placeholder": "For example: A button cannot be reached with the keyboard.",
+      "seite_label": "On which page? (optional)",
+      "kontakt_label": "Your email for a reply (optional)",
+      "submit": "Send report",
+      "confirmation": "Thank you. In this demo no report is sent or stored.",
+      "reset": "New report"
+    },
+    "schlichtung": {
+      "heading": "Conciliation body (Schlichtungsstelle)",
+      "body": "If you are not satisfied with our reply, you can call on the conciliation body under § 16 BGG (Schlichtungsstelle nach § 16 BGG). It is established at the Federal Government Commissioner for the Interests of People with Disabilities.",
+      "link": "To the conciliation body under the BGG"
+    },
+    "more": {
+      "heading": "More assistance",
+      "panel_hint": "Display settings such as font size, contrast and read-aloud are available via the “Accessibility” menu at the top right."
+    }
   },
   "error": {
     "not_found": {
@@ -1107,6 +1186,9 @@
       "open": "Open navigation",
       "close": "Close navigation",
       "nav_label": "Main navigation"
+    },
+    "bottomnav": {
+      "nav_label": "Main sections"
     },
     "user": {
       "menu_label": "Open user menu",
@@ -1219,7 +1301,8 @@
     },
     "welcome": {
       "title": "Welcome to GovTech DE",
-      "subtitle": "Sign in or start the demo."
+      "subtitle": "One place for your dealings with public authorities — from moving home to child benefit (Kindergeld).",
+      "or": "or"
     },
     "method": {
       "deutschlandid": {
@@ -1270,18 +1353,21 @@
     },
     "persona": {
       "title": "Choose an identity for the demo",
-      "subtitle": "You can change the identity later at any time.",
+      "subtitle": "Three invented people, three real life situations — you can switch at any time.",
       "anna": {
         "name": "Anna Petrov",
-        "descriptor": "Berlin · employed · Russian"
+        "descriptor": "Berlin · employed · Russian",
+        "story": "Just moved to Berlin-Mitte with Tobias and little Lev."
       },
       "schmidt": {
         "name": "The Schmidt family",
-        "descriptor": "Hamburg · family with a child · German"
+        "descriptor": "Hamburg · family with a child · German",
+        "story": "Mia has just been born — big brother Felix keeps everyone busy."
       },
       "mehmet": {
         "name": "Mehmet Yıldız",
-        "descriptor": "Cologne · self-employed · Turkish"
+        "descriptor": "Cologne · self-employed · Turkish",
+        "story": "Advises clients on renewable energy; paperwork rarely fits between two appointments."
       },
       "back": "Back"
     },
@@ -1310,7 +1396,7 @@
       },
       "required_group": "Required details",
       "required_badge": "Required",
-      "required_caption": "These details are required to sign in.",
+      "required_caption": "Required for signing in — all details are verified via your eID.",
       "optional_group": "Optional details",
       "optional_badge": "Only if needed",
       "optional_caption": "This information is optional and is only transmitted if you consent.",
@@ -1904,15 +1990,6 @@
       "subtitle_template": "{adresse} · move-in {stichtag}",
       "headline": "Change of address on autopilot",
       "headline_sub": "You confirm once — the system coordinates the next steps.",
-      "demo": {
-        "title": "Experience the autopilot live",
-        "mock_badge": "[MOCK]",
-        "body": "Start a sample move. The system triggers a simulated change of address and coordinates it across all authorities involved — including the eID confirmations that you release yourself. No real data is transmitted.",
-        "address_label": "Sample address",
-        "cta_start": "Start sample move",
-        "starting": "Starting sample move …",
-        "error": "The sample move could not be started. Please try again."
-      },
       "vorgang_label": "Case #{id}",
       "status": {
         "pending": "waiting",
@@ -2000,12 +2077,17 @@
       "termine_title": "Appointments for this case ({count})",
       "no_next_step": "Nothing is required from you right now. The involved authorities are working through the case.",
       "hero_sub": "Register your new address – we inform the responsible authorities for you.",
+      "hero_sub_generic": "All steps, deadlines and letters for this case in one place.",
+      "next_step_frist": "Deadline: {datum}",
       "vorgangsnummer_label": "Case number",
       "vorgangsnummer_copy_aria": "Copy case number",
       "progress_title": "Overall progress",
       "progress_steps": "{done} of {total} steps",
       "fertigstellung_label": "Estimated completion",
       "fertigstellung_value": "2–3 days",
+      "fertigstellung_label_after_action": "Completion after your step",
+      "fertigstellung_label_in_review": "Authority reviewing — typically",
+      "fertigstellung_label_done": "Completed on",
       "timeline_title": "Steps in this case ({count})",
       "steps_overview_title": "Your case at a glance",
       "steps_overview_sub": "We coordinate your request and forward it to the responsible authorities.",
@@ -2195,6 +2277,18 @@
     "watermark": {
       "banner": "[MOCK – administrative demo, no real data]",
       "inline": "[MOCK]"
+    },
+    "leichte_sprache": {
+      "cta": "Explain in plain language (Leichte Sprache)",
+      "cta_hint": "Short sentences. Simple words.",
+      "collapse": "Hide plain language (Leichte Sprache)",
+      "heading": "In plain language (Leichte Sprache)",
+      "badge_simplified": "Automatically simplified",
+      "badge_not_binding": "Not a legally binding text",
+      "original_leading": "The full letter appears unchanged below. The original letter is what counts.",
+      "disclaimer_body": "This version is meant to help you understand the letter more quickly. It is not a legally binding text. The official decision in its original form is what counts. For questions or deadlines, please rely on the original document or ask your authority.",
+      "disclaimer_pruefung": "Note: This simplification was created automatically and has not been reviewed by testers from the target group (Netzwerk Leichte Sprache).",
+      "de_only_note": "Plain language (Leichte Sprache) is a German standard and is available only in German."
     },
     "list": {
       "tab_chronologisch": "Chronological",
@@ -3389,7 +3483,7 @@
         "adressuebermittlung_buergeramt_beitragsservice": "Address transmission to the broadcasting fee service (Beitragsservice)",
         "adressuebermittlung_buergeramt_gkv": "Address flow to the health insurer (DEÜV)",
         "adressuebermittlung_buergeramt_standesamt": "Address transmission to the registry office (Standesamt)",
-        "adressuebermittlung_buergeramt_bundesdruckerei": "Identity card (Personalausweis) address update (Bundesdruckerei)",
+        "eat_adressaktualisierung_auslaenderbehoerde": "Residence permit address update (immigration authority)",
         "adressuebermittlung_buergeramt_bapersbw": "Address notification for military registration",
         "behoerde_zu_buerger_brief_eingang": "Official letter received in your inbox",
         "app_religion_angezeigt": "Religious affiliation shown in the app",
@@ -3802,10 +3896,15 @@
           "familienstand": "Marital status"
         },
         "familienstand": {
-          "verheiratet": "married",
-          "ledig": "single",
-          "geschieden": "divorced",
-          "verwitwet": "widowed"
+          "verheiratet": "Married",
+          "ledig": "Single",
+          "geschieden": "Divorced",
+          "verwitwet": "Widowed"
+        },
+        "nationality": {
+          "deutsch": "German",
+          "russisch": "Russian",
+          "tuerkisch": "Turkish"
         }
       },
       "kontakt": {
@@ -3908,6 +4007,9 @@
       "label": "Profile complete",
       "aria": "Profile {percent} percent complete",
       "letzte_aktualisierung": "Last updated: {datum}"
+    },
+    "format": {
+      "uhrzeit": "{zeit}"
     },
     "dialog": {
       "close": "Close",
@@ -4164,6 +4266,20 @@
   "termine": {
     "title": "Appointments",
     "subtitle": "Appointments the system takes care of for you.",
+    "wartet": {
+      "titel": "Waiting on you",
+      "hint": "These items now need your confirmation."
+    },
+    "agenda": {
+      "titel": "Upcoming",
+      "heute": "Today",
+      "morgen": "Tomorrow",
+      "leer": "Nothing upcoming — you're all caught up."
+    },
+    "rail": {
+      "titel": "Calendar",
+      "vergangen_link": "View past appointments"
+    },
     "spur": {
       "termine_titel": "Appointments the system takes care of for you",
       "termine_leer": "No upcoming appointments right now.",
@@ -4172,6 +4288,7 @@
     },
     "kpi": {
       "naechster_termin": "Next appointment",
+      "strip_label": "Appointment statistics",
       "offene_fristen": "Open deadlines",
       "offene_fristen_sub": "Action needed",
       "bestaetigte": "Confirmed appointments",
@@ -4188,7 +4305,7 @@
       "vergangen": "Past"
     },
     "toolbar": {
-      "suche_placeholder": "Search appointments, authorities or cases",
+      "suche_placeholder": "Search appointments or authorities",
       "suche_label": "Search appointments",
       "filter": "Filter",
       "export": "Export calendar"
@@ -4390,6 +4507,7 @@
     "frist_praefix": "Deadline: {datum}",
     "faellig_praefix": "Due: {datum}",
     "uhr_dauer": "{zeit} ({dauer} min)",
+    "zeit_range": "{range}",
     "action": {
       "bestaetigen": "Confirm",
       "verschieben": "Reschedule",
@@ -4517,6 +4635,7 @@
     },
     "stats": {
       "aktiv_title": "Active consents",
+      "strip_label": "Consent statistics",
       "aktiv_value": "{active} of {total} recipients",
       "aktiv_sub": "Consents granted for data sharing",
       "anfragen_title": "Requests (30 days)",
