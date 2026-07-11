@@ -9,7 +9,10 @@ const ROUTES = [
   { name: 'posteingang', path: '/posteingang' },
   { name: 'umzug-start', path: '/vorgaenge/umzug/start' },
   { name: 'umzug-preview', path: '/vorgaenge/umzug/preview' },
-  { name: 'umzug-run', path: '/vorgaenge/umzug/run' },
+  {
+    name: 'umzug-run',
+    path: '/vorgaenge/umzug/run?vorgangId=vg-anna-umzug-2026-completed',
+  },
   {
     name: 'umzug-detail',
     path: `/vorgaenge/umzug/${LAUFENDER_VORGANG_ID}`,

@@ -236,7 +236,8 @@ export interface LebenslageConfig {
    *  'lebenslage-cascade' = the generic `runLebenslageCascade` (the 7 new ones). */
   engine: 'umzug-saga' | 'lebenslage-cascade';
   /** Detail-page href. Default `/lebenslagen/{slug}`; Umzug overrides to
-   *  `/vorgaenge/umzug/run` so the router keeps the spine untouched. */
+   *  `/vorgaenge/umzug/start` (the real wizard entry) so the router keeps the
+   *  spine untouched. */
   href: string;
 }
 

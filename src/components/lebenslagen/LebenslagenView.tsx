@@ -84,7 +84,7 @@ interface BeliebtEntry {
 
 const BELIEBTE: BeliebtEntry[] = [
   { slug: 'geburt', href: '/lebenslagen/geburt', icon: Baby, tone: 'pink', category: 'familie', i18nKey: 'geburt' },
-  { slug: 'umzug', href: '/vorgaenge/umzug/run', icon: Home, tone: 'brand', category: 'wohnen', i18nKey: 'umzug' },
+  { slug: 'umzug', href: '/vorgaenge/umzug/start', icon: Home, tone: 'brand', category: 'wohnen', i18nKey: 'umzug' },
   {
     slug: 'aufenthalt-verlaengerung',
     href: '/lebenslagen/aufenthalt-verlaengerung',
@@ -102,7 +102,7 @@ const BELIEBTE: BeliebtEntry[] = [
 const REAL_HREFS: Record<string, string> = {
   geburt: '/lebenslagen/geburt',
   kindergeld: '/lebenslagen/kindergeld',
-  umzug: '/vorgaenge/umzug/run',
+  umzug: '/vorgaenge/umzug/start',
   wohngeld: '/lebenslagen/wohngeld',
   aufenthalt: '/lebenslagen/aufenthalt-verlaengerung',
   pflege: '/lebenslagen/pflegegrad',
@@ -199,7 +199,7 @@ interface EmpfRow {
 }
 const EMPFOHLEN: EmpfRow[] = [
   { key: 'geburt', icon: Baby, tone: 'pink', href: '/lebenslagen/geburt' },
-  { key: 'umzug', icon: Home, tone: 'brand', href: '/vorgaenge/umzug/run' },
+  { key: 'umzug', icon: Home, tone: 'brand', href: '/vorgaenge/umzug/start' },
   { key: 'wohngeld', icon: BadgeEuro, tone: 'teal', href: '/lebenslagen/wohngeld' },
 ];
 

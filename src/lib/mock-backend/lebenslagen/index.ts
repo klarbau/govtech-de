@@ -7,7 +7,8 @@
  * `api`, kein Engine-Aufruf, keine Persistenz.
  *
  * Umzug erscheint als **display-only Stub** (§2.1): `engine: 'umzug-saga'`,
- * `href: '/vorgaenge/umzug/run'`. Der Stub läuft NIE durch die neue Cascade-
+ * `href: '/vorgaenge/umzug/start'` (der echte Wizard-Einstieg — ein Umzug-Vorgang
+ * wird per Nutzeraktion angelegt). Der Stub läuft NIE durch die neue Cascade-
  * Engine — er hält den Katalog auf 9 Karten/eine Form, ohne die Spine zu berühren.
  */
 import type { LebenslageConfig, LebenslageCatalogEntry } from './types';
@@ -22,9 +23,10 @@ import { kinderzuschlagConfig } from './configs/kinderzuschlag';
 
 /**
  * Umzug-Stub (§2.1): minimale Display-Felder + leere Cascade. Routing über
- * `engine: 'umzug-saga'` → `/vorgaenge/umzug/run`. Die echte Umzug-Logik bleibt
- * im bestehenden Saga-Engine + run-page; dieser Stub liefert nur die Katalog-
- * Kachel-Metadaten. KEIN Cascade-Schritt — die neue Engine ignoriert ihn.
+ * `engine: 'umzug-saga'` → `/vorgaenge/umzug/start` (der echte Wizard-Einstieg).
+ * Die echte Umzug-Logik bleibt im bestehenden Saga-Engine + run-page; dieser Stub
+ * liefert nur die Katalog-Kachel-Metadaten. KEIN Cascade-Schritt — die neue Engine
+ * ignoriert ihn.
  */
 const umzugStub: LebenslageConfig = {
   slug: 'umzug',
@@ -34,7 +36,7 @@ const umzugStub: LebenslageConfig = {
   mode: 'hybrid',
   zukunft: false,
   engine: 'umzug-saga',
-  href: '/vorgaenge/umzug/run',
+  href: '/vorgaenge/umzug/start',
   zustaendige_behoerden: [
     'buergeramt-berlin-mitte',
     'finanzamt-berlin-mitte-tiergarten',

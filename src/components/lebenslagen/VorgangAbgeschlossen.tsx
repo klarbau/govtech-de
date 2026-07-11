@@ -21,7 +21,6 @@ import {
   Landmark,
   Lock,
   Minus,
-  Play,
   ShieldCheck,
   Users,
 } from 'lucide-react';
@@ -48,7 +47,6 @@ import {
   splitRechtsgrundlage,
   type CascadeRowData,
 } from './lebenslagen-shared';
-import { useCascadeReplay } from './use-cascade-replay';
 
 function formatDay(iso?: string): string | null {
   if (!iso) return null;
@@ -124,31 +122,13 @@ export function VorgangAbgeschlossen({
     [rows, orderIdx],
   );
 
-  // ── Live-Demo replay — extracted verbatim into `useCascadeReplay` (purely
-  // local display state; never touches the backend). confirmEid is a local
-  // replay tap and must not re-confirm the already-completed Vorgang.
-  const { effectiveStatuses, inDemo, demoRunning, play, confirmEid } =
-    useCascadeReplay(orderedRows);
+  // Der Vorgang ist abgeschlossen — die angezeigten Status sind die realen,
+  // terminalen Schritt-Status (kein Replay mehr).
+  const effectiveStatuses = orderedRows.map((r) => r.step.status);
 
-  // ── Derived view-state (real or replay) ───────────────────────────────────
-  const total = orderedRows.length;
-  const eidIdx = effectiveStatuses.findIndex(isEidWaiting);
-  const workingIdx = effectiveStatuses.findIndex((s) => s === 'in_progress');
+  // ── Derived view-state ─────────────────────────────────────────────────────
   const confirmedCount = effectiveStatuses.filter(isDoneStep).length;
-  const resolvedCount = effectiveStatuses.filter(
-    (s) => isDoneStep(s) || isSkippedStep(s),
-  ).length;
-  const allResolved = total > 0 && resolvedCount === total;
-  const displayPct = inDemo
-    ? Math.round((resolvedCount / Math.max(total, 1)) * 100)
-    : 100;
-
-  const labelOf = React.useCallback(
-    (r: CascadeRowData) => r.cfg?.kurzlabel ?? r.step.aktion,
-    [],
-  );
-  const activeIdx = eidIdx >= 0 ? eidIdx : workingIdx;
-  const activeRow = activeIdx >= 0 ? orderedRows[activeIdx] : null;
+  const displayPct = 100;
 
   const confirmedDisplayRows = orderedRows.filter((_, idx) =>
     isDoneStep(effectiveStatuses[idx]),
@@ -173,41 +153,11 @@ export function VorgangAbgeschlossen({
 
   // Ein abgeschlossener Vorgang hat keine „aktuelle Phase" — kurzes
   // „Abgeschlossen" statt des (langen) letzten Step-Namens, der die Überblick-
-  // Card sonst vertikal aufbläht. Im Replay (inDemo && !allResolved) bleibt der
-  // aktive Step-Name die richtige Info.
-  const phaseLabel =
-    !inDemo || allResolved
-      ? tr('phase_done')
-      : activeRow
-        ? labelOf(activeRow)
-        : tc('preparing');
-
-  const overviewPillLabel = inDemo && !allResolved ? tc('running') : tc('done');
-
-  const nextMode: 'done' | 'eid' | 'working' =
-    !inDemo || allResolved ? 'done' : eidIdx >= 0 ? 'eid' : 'working';
-  const nextTitle =
-    nextMode === 'done'
-      ? tr('next_done_title')
-      : activeRow
-        ? labelOf(activeRow)
-        : tc('preparing');
-  const nextSub =
-    nextMode === 'done'
-      ? tr('next_done_sub')
-      : nextMode === 'eid'
-        ? tr('next_eid_title_sub')
-        : tr('next_working_sub', { behoerde: activeRow?.behoerdeName ?? '' });
-
-  const liveMessage = !inDemo
-    ? ''
-    : allResolved
-      ? tr('next_done_title')
-      : eidIdx >= 0
-        ? `${activeRow ? labelOf(activeRow) : ''} – ${tr('tl_status_eid')}`
-        : workingIdx >= 0
-          ? `${activeRow ? labelOf(activeRow) : ''} – ${tr('tl_status_running')}`
-          : tc('preparing');
+  // Card sonst vertikal aufbläht.
+  const phaseLabel = tr('phase_done');
+  const overviewPillLabel = tc('done');
+  const nextTitle = tr('next_done_title');
+  const nextSub = tr('next_done_sub');
 
   const bescheidLetter = React.useMemo(() => {
     if (related.letters.length === 0) return null;
@@ -255,7 +205,6 @@ export function VorgangAbgeschlossen({
     if (isDoneStep(status)) {
       return (
         <span className="vab-node is-done">
-          {inDemo ? <span className="vab-node-pulse" aria-hidden="true" /> : null}
           <Check aria-hidden="true" />
         </span>
       );
@@ -350,9 +299,7 @@ export function VorgangAbgeschlossen({
           <h2 id="vab-overview-title" className="gt-card-title">
             {tr('overview_title')}
           </h2>
-          <span
-            className={`badge ${inDemo && !allResolved ? 'brand' : 'green'} vab-overview-pill`}
-          >
+          <span className="badge green vab-overview-pill">
             {overviewPillLabel}
           </span>
         </div>
@@ -435,10 +382,6 @@ export function VorgangAbgeschlossen({
   return (
     <div className="vab-layout lk-layout" style={{ marginTop: 20 }}>
       <div className="vab-main">
-        <p className="vab-sr-live" role="status" aria-live="polite">
-          {liveMessage}
-        </p>
-
         {/* 1) Side-by-side title + overview */}
         {title ? (
           <div className="vab-tophead">
@@ -554,25 +497,12 @@ export function VorgangAbgeschlossen({
           </div>
         </section>
 
-        {/* 3) Alle Schritte im Überblick — + Live-Demo player */}
+        {/* 3) Alle Schritte im Überblick */}
         <section className="gt-card vab-timeline-card" aria-labelledby="vab-timeline-title">
           <div className="gt-card-head vab-timeline-head">
             <h2 id="vab-timeline-title" className="gt-card-title">
               {tr('timeline_title')}
             </h2>
-            {total > 0 ? (
-              <button
-                type="button"
-                className="vab-demo-btn"
-                onClick={play}
-                disabled={demoRunning}
-                aria-pressed={demoRunning}
-                aria-label={tr('demo_aria')}
-              >
-                <Play aria-hidden="true" />
-                <span>{demoRunning ? tr('demo_playing') : tr('demo_play')}</span>
-              </button>
-            ) : null}
           </div>
           <ol className="vab-timeline">
             {orderedRows.map((r, idx) => {
@@ -782,33 +712,14 @@ export function VorgangAbgeschlossen({
             </h3>
             <p className="vab-next-sub">{nextSub}</p>
             <div className="vab-next-cta">
-              {nextMode === 'eid' ? (
-                <button type="button" className="vab-eid-btn" onClick={confirmEid}>
-                  <Fingerprint aria-hidden="true" />
-                  <span>{tc('confirm_eid')}</span>
-                </button>
-              ) : (
-                <Link href={bescheidHref} className="vab-btn">
-                  <span>{tr('details_ansehen')}</span>
-                  <ChevronRight aria-hidden="true" />
-                </Link>
-              )}
+              <Link href={bescheidHref} className="vab-btn">
+                <span>{tr('details_ansehen')}</span>
+                <ChevronRight aria-hidden="true" />
+              </Link>
             </div>
           </div>
-          <span className={`vab-next-circle is-${nextMode}`} aria-hidden="true">
-            {nextMode === 'done' ? (
-              <Check />
-            ) : nextMode === 'eid' ? (
-              <>
-                <span className="vab-node-halo is-amber" />
-                <Fingerprint />
-              </>
-            ) : (
-              <>
-                <span className="vab-node-halo" />
-                <span className="vab-spinner" />
-              </>
-            )}
+          <span className="vab-next-circle is-done" aria-hidden="true">
+            <Check />
           </span>
         </section>
 
@@ -885,7 +796,7 @@ export function VorgangAbgeschlossen({
           <ul className="vab-check-list">
             {orderedRows.map((r, idx) => {
               const done = isDoneStep(effectiveStatuses[idx]);
-              if (!inDemo && !done) return null;
+              if (!done) return null;
               return (
                 <li key={r.step.id} className={done ? '' : 'is-pending'}>
                   {done ? (

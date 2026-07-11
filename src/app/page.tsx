@@ -48,7 +48,7 @@ const LEBENSLAGEN = [
     icon: Home,
     title: 'Umzug',
     desc: 'Adresse ändern und Behörden informieren – in einem Vorgang.',
-    href: '/vorgaenge/umzug/run',
+    href: '/vorgaenge/umzug/start',
   },
   {
     icon: Baby,

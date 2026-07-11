@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { Suspense } from 'react';
-import { notFound, useSearchParams } from 'next/navigation';
+import { notFound, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Info } from 'lucide-react';
 
@@ -30,14 +30,17 @@ import {
 
 function LebenslageCascadeInner({ slug }: { slug: string }) {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const t = useTranslations();
   const tc = useTranslations('lebenslagen.detail.cascade');
   const td = useTranslations('lebenslagen.detail');
   const tHero = useTranslations('lebenslagen.detail.cascade.heroStatus');
 
-  const queryVorgangId = searchParams?.get('vorgangId') ?? null;
-
-  const [vorgangId, setVorgangId] = React.useState<string | null>(queryVorgangId);
+  // Eine Kaskade ist die Live-Ansicht eines bereits angelegten Vorgangs — sie
+  // startet nie selbst. Ohne ?vorgangId gibt es nichts zu zeigen; wir leiten auf
+  // die Detailseite zurück, wo der Start per Nutzeraktion („Automatische
+  // Bearbeitung starten") ausgelöst wird.
+  const vorgangId = searchParams?.get('vorgangId') ?? null;
   const [config, setConfig] = React.useState<LebenslageConfig | null>(null);
   const [notFoundFlag, setNotFoundFlag] = React.useState(false);
   const [loadError, setLoadError] = React.useState(false);
@@ -50,9 +53,13 @@ function LebenslageCascadeInner({ slug }: { slug: string }) {
     documents: Document[];
   }>({ letters: [], documents: [] });
 
-  const startedRef = React.useRef(false);
   const receiptFetchedRef = React.useRef(false);
   const relatedFetchedRef = React.useRef(false);
+
+  // Ohne ?vorgangId zurück auf die Detailseite (kein stiller Vorgang-Start).
+  React.useEffect(() => {
+    if (!vorgangId) router.replace(`/lebenslagen/${slug}`);
+  }, [vorgangId, slug, router]);
 
   // Config laden (für gate/zukunft/aktenzeichen-Korrelation + antragslos-Start).
   React.useEffect(() => {
@@ -98,29 +105,6 @@ function LebenslageCascadeInner({ slug }: { slug: string }) {
       cancelled = true;
     };
   }, []);
-
-  // Antragslos-Einstieg: ohne ?vorgangId einmalig die Kaskade starten.
-  React.useEffect(() => {
-    if (!config) return;
-    if (vorgangId) return;
-    if (startedRef.current) return;
-    startedRef.current = true;
-    let cancelled = false;
-    (async () => {
-      try {
-        const { vorgangId: newId } = await loadWithRetry(() => api.starteLebenslage(slug, {}, []));
-        if (!cancelled) setVorgangId(newId);
-      } catch (err) {
-        if (cancelled) return;
-        startedRef.current = false; // erlaubt erneuten Start-Versuch via Retry.
-        if (isGenuineNotFound(err)) setNotFoundFlag(true);
-        else setLoadError(true);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [config, vorgangId, slug, reloadKey]);
 
   // Initialer Vorgang-Load.
   React.useEffect(() => {

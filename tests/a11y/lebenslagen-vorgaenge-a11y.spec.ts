@@ -221,7 +221,7 @@ test('interactive: kindergeld antragslos → cascade → abgeschlossen + Aktenze
   test.setTimeout(120_000);
   await setLocale(page, 'de');
   await gotoDetail(page, 'kindergeld');
-  await page.locator(':is(a,button)', { hasText: 'Automatische Bearbeitung ansehen' }).first().click();
+  await page.locator(':is(a,button)', { hasText: 'Automatische Bearbeitung starten' }).first().click();
   await page.waitForURL(/\/lebenslagen\/kindergeld\/cascade/, { timeout: 15000 });
   await drainCascade(page);
   await expect(
@@ -278,7 +278,7 @@ test('axe DARK kindergeld cascade completion', async ({ page }) => {
   await page.goto('/lebenslagen/kindergeld', { waitUntil: 'networkidle' });
   await page.evaluate(() => document.documentElement.classList.add('dark'));
   await page.locator('main h1').first().waitFor({ timeout: 15000 });
-  await page.locator(':is(a,button)', { hasText: 'Automatische Bearbeitung ansehen' }).first().click();
+  await page.locator(':is(a,button)', { hasText: 'Automatische Bearbeitung starten' }).first().click();
   await page.waitForURL(/\/lebenslagen\/kindergeld\/cascade/, { timeout: 15000 });
   await page.evaluate(() => document.documentElement.classList.add('dark'));
   await drainCascade(page);

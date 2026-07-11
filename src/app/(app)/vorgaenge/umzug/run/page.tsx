@@ -4,7 +4,6 @@ import * as React from 'react';
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Loader2 } from 'lucide-react';
 
 import { ProtokollInspector } from '@/components/autopilot/ProtokollInspector';
 import { HerkunftBadge } from '@/components/autopilot/HerkunftBadge';
@@ -25,7 +24,6 @@ import {
 import { api } from '@/lib/mock-backend';
 import type { LebenslageConfig } from '@/lib/mock-backend/lebenslagen/types';
 import type {
-  Adresse,
   AutopilotStepStatus,
   Behoerde,
   BehoerdeId,
@@ -40,15 +38,28 @@ import type {
  * wie die sieben Lebenslagen (`VorgangInBearbeitung` / `VorgangAbgeschlossen`),
  * gespeist aus der live Autopilot-Tick-Subscription — DO NOT BREAK. */
 
-/* Demo-Beispiel-Umzug (ohne ?vorgangId): realistisch-synthetische Berliner
- * Adresse mit echter PLZ. Nur Mock-Daten. */
-const DEMO_ADRESSE: Adresse = {
-  strasse: 'Bergmannstraße',
-  hausnummer: '42',
-  plz: '10961',
-  ort: 'Berlin',
-  land: 'DE',
-};
+/* Fresh-Run-Reveal-Marker (sessionStorage): die inszenierte Enthüllung ist die
+ * Live-Ansicht des Start-Übergangs und läuft pro Vorgang GENAU EINMAL. Ein
+ * Reload danach zeigt den autoritativen Snapshot 1:1. Das ist reiner
+ * Präsentations-Zustand — KEINE Mock-Backend-Daten —, deshalb sessionStorage
+ * statt der localStorage-Persistenzschicht. */
+function revealMarkerKey(vorgangId: string): string {
+  return `gt-umzug-reveal:${vorgangId}`;
+}
+function hasRevealPlayed(vorgangId: string): boolean {
+  try {
+    return sessionStorage.getItem(revealMarkerKey(vorgangId)) !== null;
+  } catch {
+    return false;
+  }
+}
+function markRevealPlayed(vorgangId: string): void {
+  try {
+    sessionStorage.setItem(revealMarkerKey(vorgangId), '1');
+  } catch {
+    /* sessionStorage unavailable — the reveal may simply replay on reload */
+  }
+}
 
 /* Reveal-Pacer-Beats (ms). Der Mock-Backend-State ist längst real — wir
  * sequenzieren nur die Enthüllung, damit die Kaskade als Animation erlebbar
@@ -109,7 +120,6 @@ function UmzugRunInner() {
   const [config, setConfig] = useState<LebenslageConfig | null>(null);
   const [vorgang, setVorgang] = useState<Vorgang | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [isStarting, setIsStarting] = useState(false);
   const [behoerdenById, setBehoerdenById] = useState<Record<BehoerdeId, Behoerde>>({});
   const [receipt, setReceipt] = useState<ValueReceipt | null>(null);
   const [related, setRelated] = useState<{
@@ -240,6 +250,13 @@ function UmzugRunInner() {
     step();
   }, [applyEvent, readReducedMotion]);
 
+  /* Ohne ?vorgangId gibt es keinen Vorgang zu zeigen. Ein Umzug-Vorgang wird per
+   * Nutzeraktion im Wizard angelegt — dorthin leiten wir zurück (kein stiller
+   * Demo-Start mehr). */
+  useEffect(() => {
+    if (!vorgangId) router.replace('/vorgaenge/umzug/start');
+  }, [vorgangId, router]);
+
   /* Config laden — der Umzug-Stub (leere Cascade, kein Ergebnis). Beide Dossier-
    * Komponenten gehen damit anstandslos um; nichts wird synthetisiert. */
   useEffect(() => {
@@ -257,10 +274,9 @@ function UmzugRunInner() {
     };
   }, []);
 
-  /* Initial fetch. With a vorgangId we load that live autopilot session.
-   * Without one (the demo entry point) we load the seeded Umzug-Vorgang from
-   * the backend so the cascade view is sourced from real mock data and never
-   * empty — the same derivation path handles both cases. */
+  /* Initial fetch. With a vorgangId we load that live autopilot session. Without
+   * one the redirect effect above sends the user to the wizard, so this effect
+   * simply no-ops. */
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -287,9 +303,12 @@ function UmzugRunInner() {
             v.status !== 'abgeschlossen' &&
             Number.isFinite(angelegtMs) &&
             Date.now() - angelegtMs < FRESH_RUN_WINDOW_MS &&
-            revealable.length > 0;
+            revealable.length > 0 &&
+            !hasRevealPlayed(vorgangId);
 
           if (isFreshRun) {
+            // Der inszenierte Reveal läuft pro Vorgang genau einmal.
+            markRevealPlayed(vorgangId);
             const downgraded: Vorgang = {
               ...v,
               schritte: v.schritte.map((s) =>
@@ -342,9 +361,6 @@ function UmzugRunInner() {
             setVorgang(v);
             drain();
           }
-        } else {
-          const umzuege = await api.getVorgaenge({ typ: 'umzug' });
-          if (!cancelled && umzuege.length > 0) setVorgang(umzuege[0]);
         }
       } catch (err) {
         if (!cancelled) setError(err instanceof Error ? err.message : td('load_error'));
@@ -460,39 +476,11 @@ function UmzugRunInner() {
     confirmStep: api.bestaetigeAutopilotSchritt,
   });
 
-  /* Demo-Start (kein ?vorgangId): explizit klick-gated. Löst einen echten
-   * (Mock-)Umzug aus — Preview → Start mit dynamischen Block-B-Consents — und
-   * navigiert auf dieselbe Route mit ?vorgangId; die bestehenden Effekte
-   * übernehmen dann Fetch + gepacte Tick-Subscription. HARD-RULE: Write nur auf
-   * Klick, nie beim Seitenaufruf. */
-  const startDemo = useCallback(async () => {
-    setIsStarting(true);
-    setError(null);
-    const stichtag = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
-      .toISOString()
-      .slice(0, 10);
-    try {
-      const preview = await api.previewUmzug({
-        neue_adresse: DEMO_ADRESSE,
-        stichtag,
-      });
-      const { vorgangId: newId } = await api.startUmzug({
-        neue_adresse: DEMO_ADRESSE,
-        stichtag,
-        betroffene_personen: [],
-        consents: preview.block_b.map((s) => s.behoerde_id),
-        source: 'ui',
-      });
-      router.replace(
-        `/vorgaenge/umzug/run?vorgangId=${encodeURIComponent(newId)}`,
-      );
-    } catch (err) {
-      setError(err instanceof Error ? err.message : tRun('demo.error'));
-      setIsStarting(false);
-    }
-  }, [router, tRun]);
-
   const isDone = vorgang?.status === 'abgeschlossen';
+
+  // Ohne ?vorgangId leitet der Effekt oben in den Wizard um; bis dahin nichts
+  // rendern.
+  if (!vorgangId) return null;
 
   return (
     // Kein eigenes <main className="app-content"> — das (app)-Layout stellt
@@ -500,10 +488,8 @@ function UmzugRunInner() {
     // doppelte main-Landmark.
     <div>
       {/* When done, the dossier renders its own <h1> — suppress the page head
-          so the completed Umzug view keeps exactly one <h1>. On the demo entry
-          (no ?vorgangId) always keep the page <h1> so the demo card's <h2>
-          never precedes the seeded fallback dossier's <h1> (heading order). */}
-      {!isDone || !vorgangId ? (
+          so the completed Umzug view keeps exactly one <h1>. */}
+      {!isDone ? (
         <div className="gt-page-head">
           <h1>{tRun('headline')}</h1>
           <div className="sub">{tRun('headline_sub')}</div>
@@ -514,47 +500,6 @@ function UmzugRunInner() {
         <div className="gt-banner amber" role="alert">
           {error}
         </div>
-      ) : null}
-
-      {!vorgangId ? (
-        <section
-          className="gt-card umzug-demo-card"
-          aria-labelledby="umzug-demo-title"
-          style={{ marginBottom: 20 }}
-        >
-          <div className="gt-card-head">
-            <h2 id="umzug-demo-title" className="gt-card-title">
-              {tRun('demo.title')}
-            </h2>
-            <span className="badge outline">{tRun('demo.mock_badge')}</span>
-          </div>
-          <p
-            style={{
-              margin: '0 0 12px',
-              color: 'var(--ink-2)',
-              lineHeight: 1.6,
-              fontSize: 14,
-            }}
-          >
-            {tRun('demo.body')}
-          </p>
-          <p style={{ margin: '0 0 16px', fontSize: 13.5, color: 'var(--ink-3)' }}>
-            <span style={{ fontWeight: 600 }}>{tRun('demo.address_label')}:</span>{' '}
-            {DEMO_ADRESSE.strasse} {DEMO_ADRESSE.hausnummer}, {DEMO_ADRESSE.plz}{' '}
-            {DEMO_ADRESSE.ort}
-          </p>
-          <button
-            type="button"
-            className="btn btn-primary btn-lg"
-            onClick={startDemo}
-            disabled={isStarting}
-          >
-            {isStarting ? (
-              <Loader2 className="vlf-spin" aria-hidden="true" />
-            ) : null}
-            {isStarting ? tRun('demo.starting') : tRun('demo.cta_start')}
-          </button>
-        </section>
       ) : null}
 
       {vorgangId ? (

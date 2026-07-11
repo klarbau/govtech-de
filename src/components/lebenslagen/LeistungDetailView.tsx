@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import {
   ArrowRight,
@@ -178,7 +178,27 @@ function DetailReady({
 }) {
   const t = useTranslations();
   const td = useTranslations('lebenslagen.detail');
+  const router = useRouter();
   const Icon = iconForConfig(config.icon);
+
+  // Antragsloser Start: der Klick LEGT den Vorgang an (Write-on-Click) und
+  // öffnet dann dessen Live-Kaskade. Die Kaskadenseite selbst startet nie.
+  const [isStarting, setIsStarting] = React.useState(false);
+  const [startError, setStartError] = React.useState(false);
+
+  async function startCascade() {
+    setIsStarting(true);
+    setStartError(false);
+    try {
+      const { vorgangId } = await api.starteLebenslage(config.slug, {}, []);
+      router.push(
+        `/lebenslagen/${config.slug}/cascade?vorgangId=${encodeURIComponent(vorgangId)}`,
+      );
+    } catch {
+      setStartError(true);
+      setIsStarting(false);
+    }
+  }
 
   /**
    * Fristen-Rescue (wow-#12): Datum deterministisch aus dem Persona-Seed
@@ -229,7 +249,6 @@ function DetailReady({
 
   const istAntragslos = config.mode === 'antragslos';
   const antragHref = `/lebenslagen/${config.slug}/antrag`;
-  const cascadeHref = `/lebenslagen/${config.slug}/cascade`;
   const phaseLabel = td(`phase.${PHASE_LABEL_KEY[config.kategorie]}`);
   const dauer = config.dauer_geschaetzt_key ? t(config.dauer_geschaetzt_key) : '—';
   const docCount = config.benoetigte_dokumente_keys.length;
@@ -550,12 +569,6 @@ function DetailReady({
                 <dd>{config.zustaendige_behoerden.length}</dd>
               </div>
             </dl>
-            {config.cascade.length > 0 ? (
-              <Link href={cascadeHref} className="llh-card-link ll-blick-foot">
-                {td('alle_schritte')}
-                <ArrowRight aria-hidden="true" />
-              </Link>
-            ) : null}
           </section>
 
           {/* R2 — Ihre Daten sind geschützt */}
@@ -590,10 +603,15 @@ function DetailReady({
             </p>
             <div className="ll-next-actions">
               {istAntragslos ? (
-                <Link href={cascadeHref} className="btn btn-primary ll-next-primary">
+                <button
+                  type="button"
+                  className="btn btn-primary ll-next-primary"
+                  onClick={startCascade}
+                  disabled={isStarting}
+                >
                   <ArrowRight aria-hidden="true" />
-                  {td('cta_cascade_view')}
-                </Link>
+                  {td('cta_cascade_start')}
+                </button>
               ) : (
                 <Link href={antragHref} className="btn btn-primary ll-next-primary">
                   {td('cta_beantragen')}
@@ -605,6 +623,11 @@ function DetailReady({
                 {td('vorgang_speichern')}
               </button>
             </div>
+            {startError ? (
+              <p className="ll-next-foot" role="alert">
+                {td('load_error')}
+              </p>
+            ) : null}
             <p className="ll-next-foot">{td('vorgang_fortsetzen')}</p>
           </section>
         </aside>
