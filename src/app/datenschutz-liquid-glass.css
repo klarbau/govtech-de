@@ -31,19 +31,10 @@
    the established `--lg-*` vocabulary, not invented.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ── Übersichts-Kacheln (Stat row) — raised glass, no backdrop-filter ──────────
-   The three top stat tiles are the only content surface that is NOT a `.gt-card`
-   (base fills them with `--surface`). Lift them onto the same blur-free raised
-   glass as the section cards so the overview reads as one glass family. Static
-   (the tiles are non-interactive), so no hover-lift. */
-html[data-lg][data-lg-screen='datenschutz'] .app-content .ds2-stat {
-  background: var(--lg-glass-raised);
-  border: 1px solid var(--lg-edge);
-  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
-}
-html[data-lg][data-lg-screen='datenschutz'].dark .app-content .ds2-stat {
-  border-color: var(--lg-hairline);
-}
+/* The Kennzahlen row is now a boxless editorial strip (Tailwind hairlines) —
+   no glass surface here (see docs/research/ai-design-tells.md §1). The calm,
+   trustworthy register is unchanged: the section cards + mint footer carry the
+   glass; the overview reads as quiet text. */
 
 /* ── Daten-Aktualität-Fold-in (pass-3) — Hairline-Meta, nicht raised ──────────
    The [ZUKUNFT 2027] „Aktualität der Datenquellen" section is a `.gt-card`, so
