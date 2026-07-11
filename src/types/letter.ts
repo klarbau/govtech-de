@@ -231,6 +231,16 @@ export interface Letter {
    */
   betrag_cent?: number;
   betrag_richtung?: 'erstattung' | 'nachzahlung';
+  /**
+   * V2 Barrierefreiheit — vorautorisierte Leichte-Sprache-Fassung des Briefs.
+   * DE-only von Natur aus (Leichte Sprache ist ein deutscher Standard). Plain
+   * Text im Netzwerk-Leichte-Sprache-Stil: EINE Aussage pro Zeile (`\n`),
+   * Leerzeile (`\n\n`) zwischen Themen-Blöcken. NICHT rechtsverbindlich,
+   * NICHT KI-live-generiert — Seed-Content. Nur auf ausgewählten Demo-Briefen
+   * gepflegt; fehlt das Feld, zeigt der Reader keinen LS-Eintrittspunkt.
+   * Spec: barrierefreiheit-v2.md §6.1.
+   */
+  leichte_sprache?: string;
 }
 
 /** Status-Filter inkl. abgeleiteter Frist-Buckets. */

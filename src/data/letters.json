@@ -30,7 +30,8 @@
     "empfangen_am": "2026-03-12T08:14:00.000Z",
     "bescheid_dated_at": "2026-03-09",
     "betrag_cent": 37100,
-    "betrag_richtung": "erstattung"
+    "betrag_richtung": "erstattung",
+    "leichte_sprache": "Das ist Ihr Steuer-Bescheid für das Jahr 2024.\nEin Steuer-Bescheid ist ein Brief vom Finanz-Amt.\nDas Finanz-Amt kümmert sich um Ihre Steuern.\n\nSie bekommen Geld zurück.\nSie bekommen 371 Euro.\nDas Finanz-Amt zahlt das Geld auf Ihr Konto.\nDas Geld kommt in etwa 14 Tagen.\n\nSie müssen dafür nichts tun.\n\nSie finden den Bescheid falsch?\nDann können Sie Einspruch machen.\nEinspruch heißt: Sie sagen dem Finanz-Amt Ihre Meinung.\nDafür haben Sie 1 Monat Zeit.\n\nWichtig:\nDieser einfache Text ist nur eine Hilfe.\nEs gilt der Brief vom Finanz-Amt."
   },
   {
     "id": "letter-aok-rechnung-zuzahlung",
@@ -86,7 +87,8 @@
     ],
     "status": "gelesen",
     "empfangen_am": "@now-8d",
-    "bescheid_dated_at": "@now-11d"
+    "bescheid_dated_at": "@now-11d",
+    "leichte_sprache": "Das ist ein Brief vom Beitrags-Service.\nDer Beitrags-Service sammelt den Rundfunk-Beitrag ein.\nDer Rundfunk-Beitrag ist Geld für Radio und Fernsehen.\nIn Deutschland zahlt fast jeder Haushalt diesen Beitrag.\n\nSie zahlen 18 Euro und 36 Cent im Monat.\nSie zahlen alle 3 Monate.\nSie zahlen immer zum 15.\n\nSie finden den Beitrag falsch?\nDann können Sie Widerspruch machen.\nWiderspruch heißt: Sie sagen Ihre Meinung.\nDafür haben Sie 1 Monat Zeit.\n\nSie haben wenig Geld?\nDann können Sie sich vielleicht befreien lassen.\nBefreien heißt: Sie müssen dann nicht zahlen.\nFragen Sie beim Beitrags-Service nach.\n\nWichtig:\nDieser einfache Text ist nur eine Hilfe.\nEs gilt der Brief vom Beitrags-Service."
   },
   {
     "id": "letter-abh-erinnerung-verlaengerung",
@@ -782,7 +784,8 @@
     ],
     "status": "ungelesen",
     "empfangen_am": "2026-05-13T07:45:00.000Z",
-    "bescheid_dated_at": "2026-05-08"
+    "bescheid_dated_at": "2026-05-08",
+    "leichte_sprache": "Das ist Ihr Steuer-Bescheid für das Jahr 2024.\nEin Steuer-Bescheid ist ein Brief vom Finanz-Amt.\nDas Finanz-Amt kümmert sich um Ihre Steuern.\n\nSie müssen Geld zahlen.\nSie müssen 1247 Euro zahlen.\nSie zahlen das Geld an das Finanz-Amt.\nSie haben Zeit bis zum 12. Juni 2026.\n\nBitte zahlen Sie das Geld pünktlich.\n\nSie finden den Bescheid falsch?\nDann können Sie Einspruch machen.\nEinspruch heißt: Sie sagen dem Finanz-Amt Ihre Meinung.\nDafür haben Sie 1 Monat Zeit.\n\nWichtig:\nDieser einfache Text ist nur eine Hilfe.\nEs gilt der Brief vom Finanz-Amt."
   },
   {
     "id": "letter-schmidt-beitragsservice-festsetzung",

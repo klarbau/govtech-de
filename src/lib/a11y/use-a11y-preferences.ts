@@ -3,7 +3,11 @@
 import * as React from 'react';
 
 import { useA11yPreferencesContext } from '@/components/providers/A11yPreferencesProvider';
-import { FONT_SCALES, type FontScale } from '@/lib/a11y/preferences';
+import {
+  FONT_SCALES,
+  type FontScale,
+  type ReadAloudRate,
+} from '@/lib/a11y/preferences';
 
 export interface UseA11yPreferences {
   fontScale: FontScale;
@@ -11,6 +15,7 @@ export interface UseA11yPreferences {
   readable: boolean;
   reduceMotion: boolean;
   selectionReadAloud: boolean;
+  readAloudRate: ReadAloudRate;
   isDefault: boolean;
   canIncreaseFont: boolean;
   canDecreaseFont: boolean;
@@ -24,6 +29,7 @@ export interface UseA11yPreferences {
   setReadable: (value: boolean) => void;
   setReduceMotion: (value: boolean) => void;
   setSelectionReadAloud: (value: boolean) => void;
+  setReadAloudRate: (value: ReadAloudRate) => void;
   reset: () => void;
 }
 
@@ -66,6 +72,10 @@ export function useA11yPreferences(): UseA11yPreferences {
     (value: boolean) => setPreferences({ ...prefs, selectionReadAloud: value }),
     [prefs, setPreferences],
   );
+  const setReadAloudRate = React.useCallback(
+    (value: ReadAloudRate) => setPreferences({ ...prefs, readAloudRate: value }),
+    [prefs, setPreferences],
+  );
 
   return {
     fontScale: prefs.fontScale,
@@ -73,6 +83,7 @@ export function useA11yPreferences(): UseA11yPreferences {
     readable: prefs.readable,
     reduceMotion: prefs.reduceMotion,
     selectionReadAloud: prefs.selectionReadAloud,
+    readAloudRate: prefs.readAloudRate,
     isDefault,
     canIncreaseFont,
     canDecreaseFont,
@@ -98,6 +109,7 @@ export function useA11yPreferences(): UseA11yPreferences {
     setReadable,
     setReduceMotion,
     setSelectionReadAloud,
+    setReadAloudRate,
     reset,
   };
 }

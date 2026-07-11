@@ -10,6 +10,9 @@
 
 export type FontScale = 100 | 115 | 130 | 150;
 
+/** Vorlese-Tempo (SpeechSynthesisUtterance.rate): langsam | normal | schnell. */
+export type ReadAloudRate = 0.8 | 1 | 1.25;
+
 export interface A11yPreferences {
   fontScale: FontScale;
   contrast: boolean;
@@ -21,6 +24,12 @@ export interface A11yPreferences {
    * is intentionally absent from the no-FOUC pre-paint path (nothing to flash).
    */
   selectionReadAloud: boolean;
+  /**
+   * BEHAVIORAL pref (not visual): speech-synthesis rate for on-device Vorlesen.
+   * Consumed directly by `use-speech.ts` (no visual class, absent from the
+   * no-FOUC pre-paint path — nothing to flash).
+   */
+  readAloudRate: ReadAloudRate;
 }
 
 export const A11Y_DEFAULTS: A11yPreferences = {
@@ -29,11 +38,14 @@ export const A11Y_DEFAULTS: A11yPreferences = {
   readable: false,
   reduceMotion: false,
   selectionReadAloud: false,
+  readAloudRate: 1,
 };
 
 export const A11Y_STORAGE_KEY = 'govtech-de:v1:a11y:prefs';
 
 export const FONT_SCALES: readonly FontScale[] = [100, 115, 130, 150];
+
+export const READ_ALOUD_RATES: readonly ReadAloudRate[] = [0.8, 1, 1.25];
 
 /** `100 → 1`, `115 → 1.15`, … — the multiplier consumed by `--a11y-zoom`. */
 export function fontScaleToZoom(scale: FontScale): number {
@@ -44,6 +56,12 @@ function clampFontScale(value: unknown): FontScale {
   return (FONT_SCALES as readonly number[]).includes(value as number)
     ? (value as FontScale)
     : A11Y_DEFAULTS.fontScale;
+}
+
+export function clampReadAloudRate(value: unknown): ReadAloudRate {
+  return (READ_ALOUD_RATES as readonly number[]).includes(value as number)
+    ? (value as ReadAloudRate)
+    : A11Y_DEFAULTS.readAloudRate;
 }
 
 function asBool(value: unknown, fallback: boolean): boolean {
@@ -69,6 +87,7 @@ export function parsePreferences(raw: unknown): A11yPreferences {
       obj.selectionReadAloud,
       A11Y_DEFAULTS.selectionReadAloud,
     ),
+    readAloudRate: clampReadAloudRate(obj.readAloudRate),
   };
 }
 
@@ -110,7 +129,8 @@ export function isDefault(prefs: A11yPreferences): boolean {
     prefs.contrast === A11Y_DEFAULTS.contrast &&
     prefs.readable === A11Y_DEFAULTS.readable &&
     prefs.reduceMotion === A11Y_DEFAULTS.reduceMotion &&
-    prefs.selectionReadAloud === A11Y_DEFAULTS.selectionReadAloud
+    prefs.selectionReadAloud === A11Y_DEFAULTS.selectionReadAloud &&
+    prefs.readAloudRate === A11Y_DEFAULTS.readAloudRate
   );
 }
 

@@ -4,6 +4,8 @@ import * as React from 'react';
 import { usePathname } from 'next/navigation';
 import { useLocale } from 'next-intl';
 
+import { useA11yPreferences } from '@/lib/a11y/use-a11y-preferences';
+
 export type SpeechStatus = 'idle' | 'playing' | 'paused';
 
 export interface UseSpeech {
@@ -63,6 +65,14 @@ export function useSpeech(): UseSpeech {
   const pathname = usePathname();
   const locale = useLocale();
 
+  // Read the device-local Vorlese-Tempo pref and hold it in a ref so a tempo
+  // change takes effect on the NEXT chunk without recreating callbacks or
+  // restarting playback (spec §6.3). Both Panel-Vorlesen and Selektions-
+  // Vorlesen pick this up for free — no call-site change.
+  const { readAloudRate } = useA11yPreferences();
+  const rateRef = React.useRef(readAloudRate);
+  rateRef.current = readAloudRate;
+
   const voiceRef = React.useRef<SpeechSynthesisVoice | null>(null);
   const queueRef = React.useRef<string[]>([]);
   const indexRef = React.useRef(0);
@@ -97,6 +107,7 @@ export function useSpeech(): UseSpeech {
     }
     const utterance = new SpeechSynthesisUtterance(chunk);
     utterance.lang = 'de-DE';
+    utterance.rate = rateRef.current;
     if (voiceRef.current) utterance.voice = voiceRef.current;
     utterance.onend = () => {
       indexRef.current += 1;

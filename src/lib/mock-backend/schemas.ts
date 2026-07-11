@@ -487,6 +487,10 @@ export const letterSchema = z
     // Euro-Cent. Optional; additiv — existing letters bleiben kompatibel.
     betrag_cent: z.number().int().optional(),
     betrag_richtung: z.enum(['erstattung', 'nachzahlung']).optional(),
+    // V2 Barrierefreiheit — vorautorisierte Leichte-Sprache-Fassung (DE-only,
+    // Plain-Text mit `\n`). Additiv; nur auf ausgewählten Demo-Briefen gepflegt.
+    // Spec barrierefreiheit-v2.md §6.1.
+    leichte_sprache: z.string().optional(),
   })
   .passthrough();
 

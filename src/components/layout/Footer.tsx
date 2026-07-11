@@ -21,7 +21,7 @@ export async function Footer() {
           <Link href="#" className="hover:text-text-primary">
             {t('privacy')}
           </Link>
-          <Link href="#" className="hover:text-text-primary">
+          <Link href="/barrierefreiheit" className="hover:text-text-primary">
             {t('accessibility')}
           </Link>
         </nav>

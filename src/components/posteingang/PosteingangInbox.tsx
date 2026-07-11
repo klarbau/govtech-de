@@ -63,6 +63,7 @@ import type {
 import { ErkannteAufgabePanel } from './ErkannteAufgabePanel';
 import { ErklaererBulletList } from './ErklaererBulletList';
 import { ErklaererLangToggle } from './ErklaererLangToggle';
+import { LeichteSpracheReveal } from './LeichteSpracheReveal';
 import { TranslationDisclaimerBadge } from './TranslationDisclaimerBadge';
 import { seededLangsFor, useErklaererLang } from './use-erklaerer-lang';
 import { downloadIcs } from './download-ics';
@@ -1358,6 +1359,12 @@ function PostDetail({
           </dd>
         </div>
       </dl>
+
+      {/* Leichte-Sprache-Erläuterung (Spec §4.1, HERO): erste Aktion nach dem
+          Brief-Kopf, opt-in; der Originaltext bleibt darunter führend. */}
+      <div className="mt-4">
+        <LeichteSpracheReveal letter={letter} />
+      </div>
 
       <div className="post-doc-tabs" role="tablist" aria-label={t3('detail.tabs_aria')}>
         <button

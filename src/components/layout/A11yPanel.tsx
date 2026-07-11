@@ -1,9 +1,11 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { Minus, Pause, Play, Plus, RotateCcw, Square } from 'lucide-react';
 
+import { DgsErklaervideoPlaceholder } from '@/components/a11y/DgsErklaervideoPlaceholder';
 import { Switch } from '@/components/ui/switch';
 import {
   Dialog,
@@ -14,8 +16,19 @@ import {
 } from '@/components/ui/dialog';
 import { useA11yPreferences } from '@/lib/a11y/use-a11y-preferences';
 import { useSpeech } from '@/lib/a11y/use-speech';
-import { A11Y_DEFAULTS } from '@/lib/a11y/preferences';
+import {
+  A11Y_DEFAULTS,
+  clampReadAloudRate,
+  type ReadAloudRate,
+} from '@/lib/a11y/preferences';
 import { cn } from '@/lib/utils';
+
+/** Maps a Vorlese-Tempo rate to its label key under `a11y.vorlesen.tempo`. */
+function tempoLabelKey(rate: ReadAloudRate): 'langsam' | 'normal' | 'schnell' {
+  if (rate === 0.8) return 'langsam';
+  if (rate === 1.25) return 'schnell';
+  return 'normal';
+}
 
 interface A11yPanelProps {
   id: string;
@@ -46,6 +59,8 @@ export function A11yPanel({ id, open, onOpenChange }: A11yPanelProps) {
     setReadable,
     setReduceMotion,
     setSelectionReadAloud,
+    readAloudRate,
+    setReadAloudRate,
     reset,
   } = useA11yPreferences();
   const speech = useSpeech();
@@ -88,11 +103,24 @@ export function A11yPanel({ id, open, onOpenChange }: A11yPanelProps) {
     speech.play(readMainText());
   }, [speech]);
 
+  const handleTempoChange = React.useCallback(
+    (event: React.ChangeEvent<HTMLSelectElement>) => {
+      const next = clampReadAloudRate(Number(event.target.value));
+      setReadAloudRate(next);
+      setAnnounce(
+        t('vorlesen.tempo.announce', {
+          value: t(`vorlesen.tempo.${tempoLabelKey(next)}`),
+        }),
+      );
+    },
+    [setReadAloudRate, t],
+  );
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         id={id}
-        className="sm:max-w-md"
+        className="max-h-[85vh] overflow-y-auto sm:max-w-md"
         aria-describedby={`${id}-subtitle`}
       >
         <DialogHeader>
@@ -207,6 +235,24 @@ export function A11yPanel({ id, open, onOpenChange }: A11yPanelProps) {
               {t('vorlesen.unsupported')}
             </p>
           )}
+          <div className="flex items-center gap-3">
+            <label
+              htmlFor={`${id}-tempo`}
+              className="text-sm font-medium text-text-primary"
+            >
+              {t('vorlesen.tempo.label')}
+            </label>
+            <select
+              id={`${id}-tempo`}
+              value={readAloudRate}
+              onChange={handleTempoChange}
+              className="rounded-md border border-border bg-card px-2 py-1.5 text-sm text-text-primary"
+            >
+              <option value={0.8}>{t('vorlesen.tempo.langsam')}</option>
+              <option value={1}>{t('vorlesen.tempo.normal')}</option>
+              <option value={1.25}>{t('vorlesen.tempo.schnell')}</option>
+            </select>
+          </div>
         </section>
 
         <hr className="border-border" />
@@ -243,6 +289,22 @@ export function A11yPanel({ id, open, onOpenChange }: A11yPanelProps) {
 
         <hr className="border-border" />
 
+        {/* Gebärdensprache (DGS) — statischer [MOCK]-Platzhalter (Spec §4.2). */}
+        <section
+          aria-labelledby={`${id}-dgs-label`}
+          className="flex flex-col gap-2"
+        >
+          <h3
+            id={`${id}-dgs-label`}
+            className="text-sm font-semibold text-text-primary"
+          >
+            {t('dgs.heading')}
+          </h3>
+          <DgsErklaervideoPlaceholder />
+        </section>
+
+        <hr className="border-border" />
+
         <button
           type="button"
           onClick={handleReset}
@@ -252,6 +314,14 @@ export function A11yPanel({ id, open, onOpenChange }: A11yPanelProps) {
           <RotateCcw className="size-4" aria-hidden="true" />
           {t('reset.label')}
         </button>
+
+        <Link
+          href="/barrierefreiheit"
+          onClick={() => onOpenChange(false)}
+          className="w-fit text-sm font-medium text-primary underline underline-offset-4 hover:no-underline"
+        >
+          {t('page_link.label')}
+        </Link>
 
         <div className="flex flex-col gap-1 border-t border-border pt-3 text-xs leading-relaxed text-text-secondary">
           <p>{t('storage_note')}</p>
