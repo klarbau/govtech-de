@@ -134,7 +134,7 @@ export function TerminRescheduleDialog({
                     <Calendar aria-hidden="true" />
                     <span className="tabular-nums">
                       {formatDateLong(slot, dateLocale)} ·{' '}
-                      {formatTimeRange(slot)}
+                      {t('zeit_range', { range: formatTimeRange(slot) })}
                     </span>
                     <span
                       style={{

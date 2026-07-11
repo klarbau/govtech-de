@@ -11,7 +11,9 @@ export function dayKey(iso: string): string {
 
 export function formatDateLong(iso: string, locale: Locale): string {
   try {
-    return format(parseISO(iso), 'EEEE, dd. MMMM yyyy', { locale });
+    // 'PPPP' = lokalisiertes Langdatum inkl. Wochentag („Sonntag, 12. Juli 2026"
+    // / "Sunday, July 12th, 2026") — kein deutsches Muster in Fremd-Locales.
+    return format(parseISO(iso), 'PPPP', { locale });
   } catch {
     return iso.slice(0, 10);
   }
@@ -19,17 +21,19 @@ export function formatDateLong(iso: string, locale: Locale): string {
 
 export function formatDateShort(iso: string, locale: Locale): string {
   try {
-    return format(parseISO(iso), 'EE, dd. MMM yyyy', { locale });
+    return format(parseISO(iso), 'EE, PP', { locale });
   } catch {
     return iso.slice(0, 10);
   }
 }
 
+/** Reiner 24h-Zeitraum ohne Suffix — das deutsche „Uhr" hängt die i18n-Ebene an
+ *  (`termine.zeit_range` / `termine.uhr_dauer`). */
 export function formatTimeRange(iso: string, durationMinutes = 45): string {
   try {
     const d = parseISO(iso);
     const end = new Date(d.getTime() + durationMinutes * 60 * 1000);
-    return `${format(d, 'HH:mm')} – ${format(end, 'HH:mm')} Uhr`;
+    return `${format(d, 'HH:mm')} – ${format(end, 'HH:mm')}`;
   } catch {
     return '';
   }

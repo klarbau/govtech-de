@@ -39,6 +39,16 @@ function atNeun(d: Date): Date {
   return out;
 }
 
+/** Sa/So → Freitag davor (Bürgeramt-Slots liegen nie am Wochenende; rückwärts
+ *  gerollt bleibt der Slot garantiert ≤ Frist). */
+function aufWerktagZurueck(d: Date): Date {
+  const out = new Date(d);
+  const day = out.getDay();
+  if (day === 6) out.setDate(out.getDate() - 1);
+  else if (day === 0) out.setDate(out.getDate() - 2);
+  return out;
+}
+
 /** Ganze Kalendertage zwischen zwei Daten (gerundet, vorzeichenbehaftet a→b). */
 function tageZwischen(a: Date, b: Date): number {
   return Math.round((b.getTime() - a.getTime()) / MS_PER_TAG);
@@ -81,6 +91,18 @@ export function letzterSichererAnmeldungSlot(
       // Nicht über die Frist hinausschieben — so nah wie möglich an ≤ Frist.
       slot = verschoben.getTime() <= frist.getTime() ? verschoben : frist;
     }
+  }
+
+  // Werktag-Klammer: Wochenend-Slot rollt auf den Freitag davor. Läge der
+  // dadurch vor „jetzt" (nur nach der §9-Edge möglich), stattdessen vorwärts
+  // auf Montag — weiterhin ≤ Frist gedeckelt.
+  const werktag = aufWerktagZurueck(slot);
+  if (nowIso && !Number.isNaN(new Date(nowIso).getTime()) && werktag.getTime() < new Date(nowIso).getTime()) {
+    const vorwaerts = new Date(slot);
+    vorwaerts.setDate(vorwaerts.getDate() + (slot.getDay() === 6 ? 2 : 1));
+    slot = vorwaerts.getTime() <= frist.getTime() ? vorwaerts : frist;
+  } else {
+    slot = werktag;
   }
 
   return {

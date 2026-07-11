@@ -1061,6 +1061,18 @@ a.text-primary-foreground {
   color: var(--color-primary-foreground);
 }
 
+/* Termine-Toolbar: die geteilte `.vg-search` aus der FROZEN prototype-v2.css
+   ist 240px breit — zu schmal für die Such-Placeholder („Termine oder Behörden
+   suchen" / "Search appointments or authorities"), die mittendrin abgeschnitten
+   wurden. Nur auf dem Termine-Toolbar verbreitern; die höhere Spezifität
+   (0,3,0) gewinnt gegen die später importierte Basisregel, das min-width-Gate
+   lässt das ≤540px-`width:100%`-Stacking von prototype-v2.css unberührt. */
+@media (min-width: 541px) {
+  .tm-toolbar .tm-toolbar-actions .vg-search {
+    width: 300px;
+  }
+}
+
 /* The completed-dossier "Aktuelle Phase" cell can hold a long Behörden-Aktion
    (e.g. „Adressaktualisierung Aufenthaltstitel — Antrag vor Ablauf wahren").
    The FROZEN prototype-v2.css `.vab-stat-num-sm` sets no wrap behaviour, so a

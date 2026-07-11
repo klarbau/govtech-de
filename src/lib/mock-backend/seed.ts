@@ -78,7 +78,7 @@ const DEFAULT_PERSONA_ID = 'anna-petrov';
 // älter/fehlt, werden die Persona-Buckets gegen einen frischen Anker neu geseedet
 // (statt den alten Stand zu zeigen). Kein globaler `v1→v2`-Namespace-Bump — der
 // würde ALLE Buckets (inkl. Orchestrierungs-State) purgen.
-const SEED_CONTENT_VERSION = 2;
+const SEED_CONTENT_VERSION = 3;
 
 // ---------------------------------------------------------------------------
 // §A1 — Relative-Zeit-Anker / Sentinel-Resolver
@@ -112,12 +112,24 @@ function isSentinel(value: unknown): value is string {
   return typeof value === 'string' && value.startsWith('@now') && SENTINEL_RE.test(value);
 }
 
+/** Sa/So → nächster Montag. Behörden-Termine finden nie am Wochenende statt,
+ *  und Fristen, die auf Sa/So enden, laufen erst am nächsten Werktag ab
+ *  (§ 193 BGB / § 31 Abs. 3 VwVfG). */
+function rollToWeekday(d: Date): void {
+  const day = d.getUTCDay();
+  if (day === 6) d.setUTCDate(d.getUTCDate() + 2);
+  else if (day === 0) d.setUTCDate(d.getUTCDate() + 1);
+}
+
 function resolveSentinel(sentinel: string, anchor: Date, dateOnly: boolean): string {
   const m = sentinel.match(SENTINEL_RE);
   const offsetDays = m?.[1] ? parseInt(m[1], 10) : 0;
   const hasTime = Boolean(m && m[2] != null && m[3] != null);
   const d = new Date(anchor);
   d.setUTCDate(d.getUTCDate() + offsetDays);
+  // Termine (Uhrzeit-Suffix) immer, zukünftige Fristen/Daten ebenfalls auf
+  // Werktage klemmen; vergangene Daten (Ausstellungs-/Protokolldaten) bleiben.
+  if (hasTime || offsetDays > 0) rollToWeekday(d);
   // Uhrzeit-Suffix (`@HH:MM`) → voller Timestamp mit Geschäftszeit, auch bei
   // DATE_ONLY_KEYS (Termine tragen so eine echte Uhrzeit statt Mitternacht).
   if (hasTime) {
