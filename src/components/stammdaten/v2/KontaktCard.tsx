@@ -1,10 +1,9 @@
 'use client';
 
-import { Phone, Pencil, CheckCircle2 } from 'lucide-react';
+import { Pencil, CheckCircle2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 import { Button } from '@/components/ui/button';
-import { IconCircle } from '@/components/shared/IconCircle';
 import { Badge } from '@/components/ui/badge';
 
 interface KontaktCardProps {
@@ -38,15 +37,12 @@ export function KontaktCard({
       data-testid="v2-kontakt-card"
     >
       <header className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <IconCircle icon={<Phone />} tone="neutral" size="sm" />
-          <h2
-            id="v2-kontakt-title"
-            className="text-base font-semibold text-text-primary"
-          >
-            {t('card_title')}
-          </h2>
-        </div>
+        <h2
+          id="v2-kontakt-title"
+          className="text-base font-semibold text-text-primary"
+        >
+          {t('card_title')}
+        </h2>
         <Button type="button" variant="outline" size="sm" onClick={onEdit}>
           <Pencil aria-hidden="true" />
           {tCta('bearbeiten')}

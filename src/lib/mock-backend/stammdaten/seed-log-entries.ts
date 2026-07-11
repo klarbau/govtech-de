@@ -131,17 +131,24 @@ const ANNA_ENTRIES: SeedEntryDraft[] = [
     rechtsgrundlage: '§ 36 BMG',
     note: 'persona_id:anna-petrov; field_id:anschrift_aktuell; quelle:umzug_cascade; mock:true',
   },
+  // eAT-Adressaktualisierung bei der Ausländerbehörde (LEA Berlin): Anna ist
+  // russische Staatsangehörige mit Aufenthaltstitel (§ 18g AufenthG) und hat
+  // KEINEN deutschen Personalausweis — die Anschrift wird auf dem eAT
+  // aktualisiert, nicht auf einem PA bei der Bundesdruckerei. Der eAT-Chip wird
+  // NUTZERGESTEUERT per eID gepflegt (§ 18 PAuswG); es gibt keinen automatischen
+  // Melderegister→Ausländerbehörde-Push (docs/domain/umzug.md „Anna-Petrov-Pain-
+  // Pattern" + fit-connect-cascade-delineation Row 9; spiegelt Mehmets ABH-
+  // Eintrag). Daher `app_aktivitaet`, kein `behoerde_zu_behoerde`.
   {
     timestamp: isoMinutesAgo(7, annaSeedTime),
-    kategorie: 'behoerde_zu_behoerde',
-    field_id: 'anschrift_aktuell',
-    sektion: 'anschrift',
-    absender_behoerde_id: 'buergeramt-berlin-friedrichshain-kreuzberg',
-    empfaenger_id: 'bundesdruckerei',
+    kategorie: 'app_aktivitaet',
+    field_id: 'aufenthaltstitel',
+    sektion: 'dokumente',
+    empfaenger_id: 'abh-berlin-lea',
     zweck_i18n_key:
-      'stammdaten.aktivitaet.zweck.adressuebermittlung_buergeramt_bundesdruckerei',
-    rechtsgrundlage: '§ 28 PAuswG',
-    note: 'persona_id:anna-petrov; field_id:anschrift_aktuell; quelle:umzug_cascade; mock:true',
+      'stammdaten.aktivitaet.zweck.eat_adressaktualisierung_auslaenderbehoerde',
+    rechtsgrundlage: '§ 18 PAuswG (eID, nutzergesteuert)',
+    note: 'persona_id:anna-petrov; field_id:aufenthaltstitel; quelle:eat_eid_update; mock:true',
   },
   // Schließung der vorherigen Adresse beim Beitragsservice (Datenkranz-
   // Vollständigkeit; Loom-Cut Sek. 8–14).

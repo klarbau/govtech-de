@@ -78,7 +78,7 @@ const DEFAULT_PERSONA_ID = 'anna-petrov';
 // älter/fehlt, werden die Persona-Buckets gegen einen frischen Anker neu geseedet
 // (statt den alten Stand zu zeigen). Kein globaler `v1→v2`-Namespace-Bump — der
 // würde ALLE Buckets (inkl. Orchestrierungs-State) purgen.
-const SEED_CONTENT_VERSION = 3;
+const SEED_CONTENT_VERSION = 4;
 
 // ---------------------------------------------------------------------------
 // §A1 — Relative-Zeit-Anker / Sentinel-Resolver
@@ -251,6 +251,16 @@ export function seedIfEmpty(): void {
       seeded_at: new Date().toISOString(),
       seed_content_version: SEED_CONTENT_VERSION,
     });
+    // §A5 — Referenz-Persona-Fixtures sind sticky im `personas`-Bucket:
+    // `readOrInit` oben behält bei bestehenden Ständen den Alt-Wert, und
+    // `seedForPersona` schreibt nur `profile` (aktive Persona), nie das Array.
+    // `buildStammdaten` liest die DokumenteCard-Quelle (Identitätsdokumente:
+    // Reisepass/Personalausweis) aber aus diesem Array. Ein reiner Content-Bump
+    // erreicht korrigierte Persona-Felder (z. B. Anna/Mehmet: Reisepass statt
+    // Personalausweis) sonst NICHT. Bei Bump neu schreiben, damit Live-Tunnel-
+    // Stände sie bekommen. `personas` ist read-only Referenz — User-Edits liegen
+    // in eigenen `stammdaten:*`-Buckets und werden nicht überschrieben.
+    write('personas' as CollectionKey, fixtures.personas);
     seedForPersona(meta.active_persona_id);
     return;
   }

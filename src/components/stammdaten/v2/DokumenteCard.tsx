@@ -14,7 +14,6 @@ import { format, parseISO } from 'date-fns';
 import { de as deLocale } from 'date-fns/locale';
 
 import { Button } from '@/components/ui/button';
-import { IconCircle } from '@/components/shared/IconCircle';
 import { Badge } from '@/components/ui/badge';
 
 interface DokumenteCardProps {
@@ -102,15 +101,12 @@ export function DokumenteCard({
       data-testid="v2-dokumente-card"
     >
       <header className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <IconCircle icon={<IdCardIcon />} tone="neutral" size="sm" />
-          <h2
-            id="v2-dokumente-title"
-            className="text-base font-semibold text-text-primary"
-          >
-            {t('title')}
-          </h2>
-        </div>
+        <h2
+          id="v2-dokumente-title"
+          className="text-base font-semibold text-text-primary"
+        >
+          {t('title')}
+        </h2>
         <Button type="button" variant="outline" size="sm" onClick={onEdit}>
           <Settings aria-hidden="true" />
           {t('verwalten')}
@@ -131,10 +127,10 @@ export function DokumenteCard({
                 {row.icon}
               </span>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-[13.5px] font-medium text-text-primary">
+                <p className="text-[13.5px] font-medium text-text-primary">
                   {row.title}
                 </p>
-                <p className="truncate text-xs text-text-secondary tabular-nums">
+                <p className="text-xs text-text-secondary tabular-nums">
                   {row.sub}
                 </p>
               </div>

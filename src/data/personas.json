@@ -10,9 +10,9 @@
     "geschlecht": "w",
     "religion": "ohne",
     "fruehere_namen": [],
-    "personalausweis_nr": {
-      "nummer": "[MOCK] T0123456X",
-      "gueltig_bis": "2032-08-04"
+    "reisepass": {
+      "nummer": "[MOCK] 76 2201458",
+      "gueltig_bis": "2033-06-18"
     },
     "kontakt": {
       "bundid_email": {
@@ -481,9 +481,9 @@
         "sonstige": "brief"
       }
     },
-    "personalausweis_nr": {
-      "nummer": "[MOCK] K7783255M",
-      "gueltig_bis": "2031-09-04"
+    "reisepass": {
+      "nummer": "[MOCK] U 04471829",
+      "gueltig_bis": "2032-11-30"
     },
     "eat_can": "[MOCK] T0123456X",
     "azr_nr": "[MOCK] 6724813-090",

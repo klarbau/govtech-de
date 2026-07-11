@@ -1,12 +1,11 @@
 'use client';
 
-import { BadgeCheck, Fingerprint, Landmark, CheckCircle2 } from 'lucide-react';
+import { Fingerprint, Landmark, CheckCircle2 } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslations } from 'next-intl';
 import { format, parseISO } from 'date-fns';
 import { de as deLocale } from 'date-fns/locale';
 
-import { IconCircle } from '@/components/shared/IconCircle';
 import { Badge } from '@/components/ui/badge';
 
 interface WeitereVerifizierungenCardProps {
@@ -57,8 +56,7 @@ export function WeitereVerifizierungenCard({
       className="rounded-[var(--radius-card)] border border-border bg-surface p-5 shadow-[var(--shadow-1)]"
       data-testid="v2-weitere-card"
     >
-      <header className="mb-3 flex items-center gap-2">
-        <IconCircle icon={<BadgeCheck />} tone="neutral" size="sm" />
+      <header className="mb-3">
         <h2
           id="v2-weitere-title"
           className="text-base font-semibold text-text-primary"
@@ -78,10 +76,10 @@ export function WeitereVerifizierungenCard({
               {row.icon}
             </span>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-[13.5px] font-medium text-text-primary">
+              <p className="text-[13.5px] font-medium text-text-primary">
                 {row.title}
               </p>
-              <p className="truncate text-xs text-text-secondary tabular-nums">
+              <p className="text-xs text-text-secondary tabular-nums">
                 {row.value}
                 {verifiziertAm
                   ? ` · ${t('verifiziert_am', { datum: verifiziertAm })}`

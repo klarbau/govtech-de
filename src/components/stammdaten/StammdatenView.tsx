@@ -1,10 +1,9 @@
 'use client';
 
 import * as React from 'react';
-import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { parseISO } from 'date-fns';
-import { FilePlus, Link2, MapPin, Pencil } from 'lucide-react';
+import { MapPin, Pencil } from 'lucide-react';
 
 import { api } from '@/lib/mock-backend';
 import {
@@ -179,7 +178,8 @@ export function StammdatenView({ nowIso }: StammdatenViewProps) {
   return (
     <>
       <header className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-        <div className="flex items-start gap-5">
+        {/* Phones: heading first, ring row underneath (visual reverse only). */}
+        <div className="flex items-start gap-5 max-[560px]:flex-col-reverse max-[560px]:gap-4">
           <ProfilCompletenessRing
             percent={percent}
             letzteAktualisierungIso={letzteAktualisierungIso}
@@ -202,17 +202,9 @@ export function StammdatenView({ nowIso }: StammdatenViewProps) {
             <Pencil aria-hidden="true" />
             {tCta('bearbeiten')}
           </Button>
-          <Button variant="outline" render={<Link href="/dokumente" />}>
-            <FilePlus aria-hidden="true" />
-            {tHead('actions.dokument_hinzufuegen')}
-          </Button>
           <Button type="button" variant="outline" onClick={openAnschriftEdit}>
             <MapPin aria-hidden="true" />
             {tHead('actions.adresse_aendern')}
-          </Button>
-          <Button variant="outline" render={<Link href="/datenschutz" />}>
-            <Link2 aria-hidden="true" />
-            {tHead('actions.verknuepfung_verwalten')}
           </Button>
         </div>
       </header>
@@ -224,101 +216,94 @@ export function StammdatenView({ nowIso }: StammdatenViewProps) {
         kontaktVerifiziert={kontaktVerifiziert}
       />
 
-      <div className="sd-bento mt-1">
-        <div className="sd-bento-left">
-          <div className="sd-span-2">
-            <ProfilCard
-              vorname={stammdaten.identitaet.vornamen}
-              nachname={stammdaten.identitaet.familienname}
-              geburtsdatumIso={geburt}
-              staatsangehoerigkeit={capitalize(staatsangehoerigkeit)}
-              partnerVorhanden={Boolean(partner)}
-            />
-          </div>
-          <div className="sd-span-2">
-            <KontaktCard
-              email={email}
-              emailVerifiziert={emailVerifiziert}
-              mobil={mobil}
-              mobilVerifiziert={mobilVerifiziert}
-            />
-          </div>
-          <div className="sd-span-2">
-            <AnschriftCard
-              adresse={anschrift}
-              zuletztBestaetigtIso={anschriftBestaetigtIso}
-            />
-          </div>
-
-          <div className="sd-span-3">
-            <DokumenteCard
-              reisepass={
-                reisepass
-                  ? { nummer: reisepass.nummer, gueltigBisIso: reisepass.gueltig_bis }
-                  : undefined
-              }
-              personalausweis={
-                personalausweis
-                  ? {
-                      nummer: personalausweis.nummer,
-                      gueltigBisIso: personalausweis.gueltig_bis,
-                    }
-                  : undefined
-              }
-              aufenthaltstitel={
-                aufenthalt
-                  ? { norm: aufenthalt.norm, gueltigBisIso: aufenthalt.valid_until }
-                  : undefined
-              }
-            />
-          </div>
-          <div className="sd-span-3">
-            <FamilieCard
-              partner={
-                partner
-                  ? {
-                      vorname: partner.vorname,
-                      nachname: partner.nachname,
-                      geburtsdatumIso: partner.geburtsdatum,
-                    }
-                  : undefined
-              }
-              kinder={kinder.map((kind) => ({
-                vorname: kind.vorname,
-                nachname: kind.nachname,
-                geburtsdatumIso: kind.geburtsdatum,
-              }))}
-            />
-          </div>
-
-          <div className="sd-span-2">
-            <VersicherungVorsorgeCard
-              krankenkasse={
-                kk ? { traegerName: kk.traeger, kvnr } : undefined
-              }
-              altersvorsorgeTraeger={
-                persona.rentenversicherungsnummer
-                  ? t('altersvorsorge.gesetzliche_rente')
-                  : undefined
-              }
-            />
-          </div>
-          <div className="sd-span-2">
-            <VerbundeneNachweiseCard />
-          </div>
-          <div className="sd-span-2">
-            <WeitereVerifizierungenCard
-              steuerId={persona.steuer_id}
-              sozialversicherungsnummer={persona.rentenversicherungsnummer}
-              verifiziertAmIso={VERIFIZIERT_AM_MOCK_ISO}
-            />
-          </div>
+      {/* Card region — three independent flex columns (identity · records ·
+          trust & audit) inside a responsive grid. Each column stacks its own
+          cards, so there is no cross-column row alignment and therefore no
+          ragged dead zones; columns are wide enough (≈325–415px in the
+          1280–1600px band) that no card title or value clips. */}
+      <div className="mt-2 grid grid-cols-1 items-start gap-[18px] lg:grid-cols-2 xl:grid-cols-3">
+        {/* Column 1 — who you are: profile, contact, address, coverage. */}
+        <div className="flex flex-col gap-[18px]">
+          <ProfilCard
+            vorname={stammdaten.identitaet.vornamen}
+            nachname={stammdaten.identitaet.familienname}
+            geburtsdatumIso={geburt}
+            staatsangehoerigkeit={staatsangehoerigkeit}
+            partnerVorhanden={Boolean(partner)}
+          />
+          <KontaktCard
+            email={email}
+            emailVerifiziert={emailVerifiziert}
+            mobil={mobil}
+            mobilVerifiziert={mobilVerifiziert}
+          />
+          <AnschriftCard
+            adresse={anschrift}
+            zuletztBestaetigtIso={anschriftBestaetigtIso}
+          />
+          <VersicherungVorsorgeCard
+            krankenkasse={kk ? { traegerName: kk.traeger, kvnr } : undefined}
+            altersvorsorgeTraeger={
+              persona.rentenversicherungsnummer
+                ? t('altersvorsorge.gesetzliche_rente')
+                : undefined
+            }
+          />
         </div>
 
-        <AenderungsprotokollCard
-          entries={log}
-          behoerdenById={data.behoerdenById}
-        />
+        {/* Column 2 — documents, family, and the wallet-proofs highlight. */}
+        <div className="flex flex-col gap-[18px]">
+          <DokumenteCard
+            reisepass={
+              reisepass
+                ? { nummer: reisepass.nummer, gueltigBisIso: reisepass.gueltig_bis }
+                : undefined
+            }
+            personalausweis={
+              personalausweis
+                ? {
+                    nummer: personalausweis.nummer,
+                    gueltigBisIso: personalausweis.gueltig_bis,
+                  }
+                : undefined
+            }
+            aufenthaltstitel={
+              aufenthalt
+                ? { norm: aufenthalt.norm, gueltigBisIso: aufenthalt.valid_until }
+                : undefined
+            }
+          />
+          <FamilieCard
+            partner={
+              partner
+                ? {
+                    vorname: partner.vorname,
+                    nachname: partner.nachname,
+                    geburtsdatumIso: partner.geburtsdatum,
+                  }
+                : undefined
+            }
+            kinder={kinder.map((kind) => ({
+              vorname: kind.vorname,
+              nachname: kind.nachname,
+              geburtsdatumIso: kind.geburtsdatum,
+            }))}
+          />
+          <VerbundeneNachweiseCard />
+        </div>
+
+        {/* Column 3 (rail) — verified identifiers and the audit trail. */}
+        <div className="flex flex-col gap-[18px] lg:col-span-2 xl:col-span-1">
+          <WeitereVerifizierungenCard
+            steuerId={persona.steuer_id}
+            sozialversicherungsnummer={persona.rentenversicherungsnummer}
+            verifiziertAmIso={VERIFIZIERT_AM_MOCK_ISO}
+          />
+          <AenderungsprotokollCard
+            entries={log}
+            behoerdenById={data.behoerdenById}
+          />
+        </div>
       </div>
 
       <DatenhoheitFooter />
@@ -371,11 +356,4 @@ function StammdatenSkeleton() {
       </div>
     </div>
   );
-}
-
-// ── helpers ─────────────────────────────────────────────────────────────────
-
-function capitalize(s: string): string {
-  if (!s) return s;
-  return s.charAt(0).toUpperCase() + s.slice(1);
 }

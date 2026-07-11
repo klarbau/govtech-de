@@ -1,10 +1,9 @@
 'use client';
 
-import { Shield, Pencil, PiggyBank, ChevronRight, PlusCircle } from 'lucide-react';
+import { Pencil, PiggyBank, ChevronRight, PlusCircle } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 import { Button } from '@/components/ui/button';
-import { IconCircle } from '@/components/shared/IconCircle';
 import { Badge } from '@/components/ui/badge';
 
 interface VersicherungVorsorgeCardProps {
@@ -41,15 +40,12 @@ export function VersicherungVorsorgeCard({
       data-testid="v2-versicherung-card"
     >
       <header className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <IconCircle icon={<Shield />} tone="neutral" size="sm" />
-          <h2
-            id="v2-versicherung-title"
-            className="text-base font-semibold text-text-primary"
-          >
-            {t('title')}
-          </h2>
-        </div>
+        <h2
+          id="v2-versicherung-title"
+          className="text-base font-semibold text-text-primary"
+        >
+          {t('title')}
+        </h2>
         <Button type="button" variant="outline" size="sm" onClick={onEdit}>
           <Pencil aria-hidden="true" />
           {tCta('bearbeiten')}
@@ -66,10 +62,10 @@ export function VersicherungVorsorgeCard({
               {deriveMonogram(krankenkasse.traegerName)}
             </span>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-[13.5px] font-medium text-text-primary">
+              <p className="text-[13.5px] font-medium text-text-primary">
                 {t('krankenkasse')}
               </p>
-              <p className="truncate text-xs text-text-secondary tabular-nums">
+              <p className="text-xs text-text-secondary tabular-nums">
                 {krankenkasse.traegerName}
                 {krankenkasse.kvnr
                   ? ` · ${t('versichertennummer', { nr: krankenkasse.kvnr })}`
@@ -92,10 +88,10 @@ export function VersicherungVorsorgeCard({
               <PiggyBank />
             </span>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-[13.5px] font-medium text-text-primary">
+              <p className="text-[13.5px] font-medium text-text-primary">
                 {t('altersvorsorge')}
               </p>
-              <p className="truncate text-xs text-text-secondary">
+              <p className="text-xs text-text-secondary">
                 {altersvorsorgeTraeger}
                 {altersvorsorgeSeitIso
                   ? ` · ${t('versichert_seit', { datum: formatSeit(altersvorsorgeSeitIso) })}`

@@ -1,9 +1,7 @@
 'use client';
 
-import { ShieldCheck, Check, CheckCircle2 } from 'lucide-react';
+import { Check, CheckCircle2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-
-import { IconCircle } from '@/components/shared/IconCircle';
 
 /**
  * Green-bento — „Verbundene Nachweise & Wallet" highlighted card (Spec § 5.2).
@@ -26,15 +24,12 @@ export function VerbundeneNachweiseCard() {
       data-testid="v2-nachweise-card"
     >
       <header className="mb-3 flex items-start justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <IconCircle icon={<ShieldCheck />} tone="success" size="sm" />
-          <h2
-            id="v2-nachweise-title"
-            className="text-base font-semibold text-text-primary"
-          >
-            {t('title')}
-          </h2>
-        </div>
+        <h2
+          id="v2-nachweise-title"
+          className="text-base font-semibold text-text-primary"
+        >
+          {t('title')}
+        </h2>
         <span
           role="img"
           aria-label={t('seal_aria')}

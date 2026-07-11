@@ -1,12 +1,11 @@
 'use client';
 
-import { User, Pencil } from 'lucide-react';
+import { Pencil } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { format, parseISO } from 'date-fns';
 import { de as deLocale } from 'date-fns/locale';
 
 import { Button } from '@/components/ui/button';
-import { IconCircle } from '@/components/shared/IconCircle';
 
 interface ProfilCardProps {
   vorname: string;
@@ -47,15 +46,12 @@ export function ProfilCard({
       data-testid="v2-profil-card"
     >
       <header className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <IconCircle icon={<User />} tone="neutral" size="sm" />
-          <h2
-            id="v2-profil-title"
-            className="text-base font-semibold text-text-primary"
-          >
-            {t('card_title')}
-          </h2>
-        </div>
+        <h2
+          id="v2-profil-title"
+          className="text-base font-semibold text-text-primary"
+        >
+          {t('card_title')}
+        </h2>
         <Button
           type="button"
           variant="outline"
@@ -73,12 +69,29 @@ export function ProfilCard({
         <KvRow label={t('kv.geburtsdatum')} value={geburtsdatum} />
         <KvRow
           label={t('kv.staatsangehoerigkeit')}
-          value={staatsangehoerigkeit}
+          value={nationalityLabel(staatsangehoerigkeit, t)}
         />
         <KvRow label={t('kv.familienstand')} value={familienstand} />
       </dl>
     </section>
   );
+}
+
+/**
+ * Map a raw seed nationality value (e.g. `"russisch"`) to its localized label
+ * via i18n, falling back to the capitalized raw value for unknown nations so
+ * the field never shows a bare key.
+ */
+function nationalityLabel(
+  raw: string,
+  t: ReturnType<typeof useTranslations>,
+): string {
+  const key = raw.trim().toLowerCase();
+  return t.has(`nationality.${key}`) ? t(`nationality.${key}`) : capitalize(raw);
+}
+
+function capitalize(s: string): string {
+  return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
 }
 
 function KvRow({ label, value }: { label: string; value: string }) {

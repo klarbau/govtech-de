@@ -1,12 +1,11 @@
 'use client';
 
-import { Users, Pencil, ChevronRight, PlusCircle } from 'lucide-react';
+import { Pencil, ChevronRight, PlusCircle } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { format, parseISO } from 'date-fns';
 import { de as deLocale } from 'date-fns/locale';
 
 import { Button } from '@/components/ui/button';
-import { IconCircle } from '@/components/shared/IconCircle';
 import { Avatar } from '@/components/shared/Avatar';
 
 interface FamilieMember {
@@ -41,15 +40,12 @@ export function FamilieCard({ kinder, partner, onEdit, onAdd }: FamilieCardProps
       data-testid="v2-familie-card"
     >
       <header className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <IconCircle icon={<Users />} tone="neutral" size="sm" />
-          <h2
-            id="v2-familie-title"
-            className="text-base font-semibold text-text-primary"
-          >
-            {t('card_title')}
-          </h2>
-        </div>
+        <h2
+          id="v2-familie-title"
+          className="text-base font-semibold text-text-primary"
+        >
+          {t('card_title')}
+        </h2>
         <Button type="button" variant="outline" size="sm" onClick={onEdit}>
           <Pencil aria-hidden="true" />
           {tCta('bearbeiten')}

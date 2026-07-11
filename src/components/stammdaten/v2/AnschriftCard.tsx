@@ -1,12 +1,11 @@
 'use client';
 
-import { Home, Pencil, Check } from 'lucide-react';
+import { Pencil, Check } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { format, parseISO } from 'date-fns';
 import { de as deLocale } from 'date-fns/locale';
 
 import { Button } from '@/components/ui/button';
-import { IconCircle } from '@/components/shared/IconCircle';
 import { Badge } from '@/components/ui/badge';
 import type { Adresse } from '@/types/adresse';
 
@@ -42,15 +41,12 @@ export function AnschriftCard({
       data-testid="v2-anschrift-card"
     >
       <header className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <IconCircle icon={<Home />} tone="neutral" size="sm" />
-          <h2
-            id="v2-anschrift-title"
-            className="text-base font-semibold text-text-primary"
-          >
-            {t('title')}
-          </h2>
-        </div>
+        <h2
+          id="v2-anschrift-title"
+          className="text-base font-semibold text-text-primary"
+        >
+          {t('title')}
+        </h2>
         <Button type="button" variant="outline" size="sm" onClick={onEdit}>
           <Pencil aria-hidden="true" />
           {t('aendern')}

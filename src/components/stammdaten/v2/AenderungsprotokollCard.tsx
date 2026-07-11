@@ -19,10 +19,8 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { format, parseISO } from 'date-fns';
-import { de as deLocale } from 'date-fns/locale';
 
-import { IconCircle } from '@/components/shared/IconCircle';
+import { formatDateDe, formatTimeDe } from '@/lib/utils';
 import type { Behoerde } from '@/types';
 import type { UebermittlungsLogEntry } from '@/types/stammdaten';
 
@@ -64,9 +62,10 @@ export function AenderungsprotokollCard({
   const t = useTranslations('stammdaten.v2.protokoll');
   const tRoot = useTranslations();
   const tLog = useTranslations('stammdaten.aktivitaet');
+  const tFmt = useTranslations('stammdaten.format');
 
   const rows = entries.slice(0, limit).map((entry) =>
-    deriveRow(entry, behoerdenById, tRoot, tLog),
+    deriveRow(entry, behoerdenById, tRoot, tLog, tFmt),
   );
 
   return (
@@ -76,15 +75,12 @@ export function AenderungsprotokollCard({
       data-testid="v2-protokoll-card"
     >
       <header className="mb-1 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <IconCircle icon={<Clock />} tone="neutral" size="sm" />
-          <h2
-            id="v2-protokoll-title"
-            className="text-base font-semibold text-text-primary"
-          >
-            {t('title')}
-          </h2>
-        </div>
+        <h2
+          id="v2-protokoll-title"
+          className="text-base font-semibold text-text-primary"
+        >
+          {t('title')}
+        </h2>
         <Link
           href="/datenschutz"
           data-testid="v2-protokoll-alle-anzeigen"
@@ -155,6 +151,7 @@ function deriveRow(
   behoerdenById: Record<string, Behoerde>,
   tRoot: ReturnType<typeof useTranslations>,
   tLog: ReturnType<typeof useTranslations>,
+  tFmt: ReturnType<typeof useTranslations>,
 ): DerivedRow {
   let zweck: string;
   try {
@@ -172,15 +169,13 @@ function deriveRow(
       ? behoerdenById[entry.empfaenger_id]
       : undefined;
 
-  let when1 = entry.timestamp;
-  let when2 = '';
-  try {
-    const dt = parseISO(entry.timestamp);
-    when1 = format(dt, 'dd.MM.yyyy', { locale: deLocale });
-    when2 = format(dt, "HH:mm 'Uhr'", { locale: deLocale });
-  } catch {
-    // keep raw timestamp
-  }
+  // Numeric date (dd.MM.yyyy) stays locale-neutral; the German „Uhr" suffix is
+  // supplied by the i18n layer (`stammdaten.format.uhrzeit`) so it drops out in
+  // non-German locales. Guard the suffix key so locales that have not localized
+  // it yet show a bare time rather than a raw key path.
+  const when1 = formatDateDe(entry.timestamp) || entry.timestamp;
+  const zeit = formatTimeDe(entry.timestamp);
+  const when2 = zeit && tFmt.has('uhrzeit') ? tFmt('uhrzeit', { zeit }) : zeit;
 
   const { Icon, tone } = resolveRowVisual(entry, empfaenger ?? absender);
 
@@ -228,6 +223,8 @@ function resolveRowVisual(
     if (f.includes('letter') || z.includes('brief') || z.includes('email'))
       return { Icon: Mail, tone: 'neutral' };
     if (z.includes('ki')) return { Icon: Sparkles, tone: 'neutral' };
+    if (f.includes('aufenthaltstitel') || z.includes('aufenthaltstitel') || z.includes('eat_'))
+      return { Icon: IdCard, tone: 'neutral' };
     if (f.includes('dokument') || z.includes('dokument'))
       return { Icon: FileText, tone: 'neutral' };
     if (f.includes('einwilligung') || f.includes('datenschutz') || z.includes('einwilligung'))
