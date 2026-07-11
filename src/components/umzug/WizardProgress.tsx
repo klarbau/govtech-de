@@ -89,7 +89,7 @@ function Step({ labelKey, isDone, isCurrent, isLast, index }: StepProps) {
         <span className="flex flex-col">
           <span
             className={cn(
-              'text-sm font-medium',
+              'sr-only text-sm font-medium min-[480px]:not-sr-only',
               isCurrent ? 'text-foreground' : isDone ? 'text-foreground' : 'text-muted-foreground',
             )}
           >

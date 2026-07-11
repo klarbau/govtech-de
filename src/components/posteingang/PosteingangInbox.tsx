@@ -42,6 +42,7 @@ import {
   X,
 } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 import { api } from '@/lib/mock-backend';
@@ -161,6 +162,7 @@ export function PosteingangInbox({
   const t3 = useTranslations('posteingang.mockup3');
   const tCommon = useTranslations('common');
   const tNav = useTranslations('nav');
+  const router = useRouter();
   const [letters, setLetters] = React.useState<Letter[]>(initial.letters);
   const [behoerdenById, setBehoerdenById] = React.useState(initial.behoerdenById);
   const [hasLoaded, setHasLoaded] = React.useState(initial.letters.length > 0);
@@ -457,7 +459,20 @@ export function PosteingangInbox({
       <div className={replyGutterOpen ? 'post-content post-content--reply-open' : 'post-content'}>
       <div className="post-shell">
         <div className="post-main">
-      <div className={listExpanded || !selectedLetter ? 'post-layout post-layout--list-only' : 'post-layout'}>
+      {/* < 1280px ist die Brief-Route die Detail-Ansicht (Master→Detail über
+          die URL): auf /posteingang/[id] zeigt `--mobile-reader` NUR den
+          Reader, /posteingang nur die Liste. ≥ 1280px hat die Klasse keine
+          Wirkung (Zwei-Spalten-Inline-Modell unverändert). */}
+      <div
+        className={[
+          listExpanded || !selectedLetter ? 'post-layout post-layout--list-only' : 'post-layout',
+          initialSelectedLetterId && readerOpen && selectedLetter
+            ? 'post-layout--mobile-reader'
+            : '',
+        ]
+          .filter(Boolean)
+          .join(' ')}
+      >
       {/* Archive-faithful list COLUMN: header (menu · title + unread count ·
           filter), tabs and the scrolling card stream live inside the fixed
           396px column, so the reader panel rises to full height beside it.
@@ -644,7 +659,18 @@ export function PosteingangInbox({
               onVorgangErstellen={() => setVorgangModalLetter(selectedLetter)}
               onOriginaltextToggle={() => setOriginalTextOpen((v) => !v)}
               originaltextOpen={originalTextOpen}
-              onClose={() => setReaderOpen(false)}
+              onClose={() => {
+                // < 1280px auf der Brief-Route: „Zurück" führt zur Liste
+                // (eigene URL je Ansicht, Browser-Back bleibt konsistent).
+                if (
+                  initialSelectedLetterId &&
+                  !window.matchMedia('(min-width: 1280px)').matches
+                ) {
+                  router.push('/posteingang');
+                  return;
+                }
+                setReaderOpen(false);
+              }}
             />
           )}
         </AnimatePresence>
@@ -987,7 +1013,7 @@ function PostItemRow({
         if (
           e.detail !== 0 &&
           typeof window !== 'undefined' &&
-          window.matchMedia('(min-width: 1024px)').matches &&
+          window.matchMedia('(min-width: 1280px)').matches &&
           !e.metaKey &&
           !e.ctrlKey &&
           !e.shiftKey

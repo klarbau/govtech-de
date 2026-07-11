@@ -105,10 +105,13 @@ html[data-lg][data-lg-screen='posteingang'] .post-layout--list-only > .lg-list-c
   html[data-lg][data-lg-screen='posteingang'] .post-layout > .lg-list-col { transition: none; }
 }
 
-/* Archive viewport model (≥ 1024px): the PAGE never scrolls — the app shell is
+/* Archive viewport model (≥ 1280px): the PAGE never scrolls — the app shell is
    pinned to the viewport, the list column and the reader panel scroll
-   independently inside it (mockup: 100vh grid, overflow hidden). */
-@media (min-width: 1024px) {
+   independently inside it (mockup: 100vh grid, overflow hidden). Engages only
+   ≥1280px: with the persistent ~252px app rail the content area below that is
+   too tight for a two-pane split (the reader would collapse to ~276px and clip
+   its toolbar/CTA) — 1024–1279 stacks instead (list over reader, full width). */
+@media (min-width: 1280px) {
   html[data-lg][data-lg-screen='posteingang'],
   html[data-lg][data-lg-screen='posteingang'] body {
     height: 100%;
@@ -163,14 +166,24 @@ html[data-lg][data-lg-screen='posteingang'] .post-layout--list-only > .lg-list-c
   html[data-lg][data-lg-screen='posteingang'] .lg-reader-scroll::-webkit-scrollbar { width: 0; height: 0; }
 }
 
-/* Stack on narrow screens (list over detail); the card-click nav to
-   /posteingang/[id] is the primary path below 1024px anyway. */
-@media (max-width: 1023px) {
+/* Master→detail below 1280px: ONE pane at a time, switched over the URL.
+   /posteingang shows only the list (the always-mounted reader is display:none —
+   also out of the a11y tree), /posteingang/[id] gets `--mobile-reader` from the
+   component and shows only the reader; its „Zurück" navigates back to the list.
+   Full column width on both — otherwise the reader keeps its intrinsic ~609px
+   content width (align-items:flex-start never stretches it) and spills past
+   the viewport. */
+@media (max-width: 1279px) {
   html[data-lg][data-lg-screen='posteingang'] .post-layout { flex-direction: column; }
-  html[data-lg][data-lg-screen='posteingang'] .post-layout > .lg-list-col {
+  html[data-lg][data-lg-screen='posteingang'] .post-layout > .lg-list-col,
+  html[data-lg][data-lg-screen='posteingang'] .post-layout > .post-detail {
     flex: none;
     width: 100%;
+    max-width: 100%;
   }
+  html[data-lg][data-lg-screen='posteingang'] .post-layout > .post-detail { display: none; }
+  html[data-lg][data-lg-screen='posteingang'] .post-layout--mobile-reader > .post-detail { display: block; }
+  html[data-lg][data-lg-screen='posteingang'] .post-layout--mobile-reader > .lg-list-col { display: none; }
 }
 
 /* Archive list header: menu · title + unread count · filter. */
@@ -401,7 +414,7 @@ html[data-lg][data-lg-screen='posteingang'] .post-tab {
   font-size: 13px;
   white-space: nowrap;
 }
-@media (min-width: 1024px) {
+@media (min-width: 1280px) {
   html[data-lg][data-lg-screen='posteingang'] .post-tabs {
     flex-wrap: nowrap;
     justify-content: space-between;
@@ -541,11 +554,11 @@ html[data-lg][data-lg-screen='posteingang'] .post-detail .btn-primary::after {
 /* Padding moves off the panel onto its three slots so toolbar + CTA bar can
    pin edge-to-edge while only the middle scrolls (≥1024; stacked mode keeps
    the base panel padding via the fallback below). */
-@media (min-width: 1024px) {
+@media (min-width: 1280px) {
   html[data-lg][data-lg-screen='posteingang'] .post-detail { padding: 0; }
   html[data-lg][data-lg-screen='posteingang'] .lg-reader-scroll { padding: 10px 28px 20px; }
 }
-@media (max-width: 1023px) {
+@media (max-width: 1279px) {
   html[data-lg][data-lg-screen='posteingang'] .lg-reader-toolbar { margin: -6px -6px 10px; }
 }
 
@@ -554,7 +567,12 @@ html[data-lg][data-lg-screen='posteingang'] .lg-reader-toolbar {
   flex: none;
   display: flex;
   align-items: center;
+  /* Wrap instead of clipping when the reader is narrow (stacked mode + the
+     tighter ≥1280 two-pane widths). Only wraps when the row genuinely overflows;
+     stays a single row wherever there is room. */
+  flex-wrap: wrap;
   gap: 4px;
+  row-gap: 2px;
   padding: 14px 18px 2px 22px;
 }
 html[data-lg][data-lg-screen='posteingang'] .lg-tool {
@@ -649,7 +667,7 @@ html[data-lg][data-lg-screen='posteingang'] .lg-reader-cta {
   backdrop-filter: blur(20px) saturate(1.4);
 }
 html[data-lg][data-lg-screen='posteingang'].dark .lg-reader-cta {
-  background: linear-gradient(180deg, rgba(20, 26, 36, 0.1), rgba(20, 26, 36, 0.55));
+  background: linear-gradient(180deg, rgba(16, 27, 22, 0.1), rgba(16, 27, 22, 0.55));
 }
 html[data-lg][data-lg-screen='posteingang'] .lg-cta-main {
   flex: 1.2;
@@ -720,8 +738,39 @@ html[data-lg][data-lg-screen='posteingang'] .post-content--reply-open .lg-cta-se
   flex: none;
   width: 100%;
 }
+/* Narrow mobile reader: the two long German CTAs („Als erledigt markieren" +
+   „In Vorgang überführen") + bookmark don't fit one row — stack them (same
+   reflow as the reply-open gutter) so „Als erledigt markieren" is never clipped. */
+@media (max-width: 560px) {
+  html[data-lg][data-lg-screen='posteingang'] .lg-reader-cta { flex-direction: column; align-items: stretch; }
+  html[data-lg][data-lg-screen='posteingang'] .lg-cta-main,
+  html[data-lg][data-lg-screen='posteingang'] .lg-cta-secondary {
+    flex: none;
+    width: 100%;
+  }
+  html[data-lg][data-lg-screen='posteingang'] .lg-cta-bookmark { align-self: flex-start; }
+}
 /* Verified line + Vorgang chip may wrap on narrow readers instead of clipping. */
 html[data-lg][data-lg-screen='posteingang'] .lg-reader-verify { flex-wrap: wrap; row-gap: 4px; }
+
+/* „Nächste Schritte" on a narrow reader: force each action button onto its own
+   line under the label instead of shrinking the label to one word per line. The
+   frozen `.step-row { flex-wrap: wrap }` (@≤560px, prototype-v2.css) never fires
+   because `.step-text { flex: 1 }` shrinks to 0 first — giving the label a full
+   flex-basis makes the button wrap. */
+@media (max-width: 560px) {
+  /* 100% basis stranded the tick alone on row 1 — reserve its 18px + 12px gap
+     so tick + label share the first line and the wrapped button (frozen
+     margin-left: 30px) aligns exactly under the text. */
+  html[data-lg][data-lg-screen='posteingang'] .step-text { flex-basis: calc(100% - 30px); }
+  /* Tick aligns with the step TITLE, not the centre of the wrapped block. */
+  html[data-lg][data-lg-screen='posteingang'] .step-row { align-items: flex-start; }
+  html[data-lg][data-lg-screen='posteingang'] .step-tick { margin-top: 1px; }
+  /* Same reflow for the „Fragen zum Bescheid?" card — let its CTA drop below the
+     text instead of squeezing the title to one word per line. */
+  html[data-lg][data-lg-screen='posteingang'] .post-fragen { flex-wrap: wrap; }
+  html[data-lg][data-lg-screen='posteingang'] .post-fragen-body { flex-basis: 100%; }
+}
 
 /* ── Mockup parity: toolbar spread, body paragraphs, documents card ──────── */
 
@@ -733,6 +782,75 @@ html[data-lg][data-lg-screen='posteingang'] .lg-tool-group {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  /* Let the tool buttons wrap onto a second row before the group is forced
+     wider than the reader (narrow readers) — reachable, never clipped. */
+  flex-wrap: wrap;
+  row-gap: 2px;
+}
+
+/* Phone reader toolbar: ONE row — „Zurück" (icon + label, in row) left, the
+   working actions as icon-only squares right. Labels move to a visually-hidden
+   span (accessible name stays), the never-wired disabled tools and the ✕
+   (redundant with „Zurück" here) disappear. Sits AFTER the toolbar/close/group
+   base rules — same specificity, so source order decides the cascade. */
+@media (max-width: 560px) {
+  html[data-lg][data-lg-screen='posteingang'] .lg-reader-toolbar {
+    flex-wrap: nowrap;
+    gap: 2px;
+    padding: 10px 8px 2px;
+  }
+  html[data-lg][data-lg-screen='posteingang'] .lg-reader-toolbar > .lg-tool {
+    flex-direction: row;
+    gap: 6px;
+    padding: 8px 10px;
+  }
+  /* Icons hug the right corner: the group stops growing (base: flex 1 1 auto
+     shared 50/50 with the flex-1 spacer → its right edge sat mid-row) and
+     orders BEHIND the spacer, which now absorbs the whole middle. The divider
+     would sit orphaned next to „Zurück" — drop it. */
+  html[data-lg][data-lg-screen='posteingang'] .lg-tool-group {
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+    order: 2;
+    gap: 2px;
+  }
+  html[data-lg][data-lg-screen='posteingang'] .lg-tool-divider { display: none; }
+  html[data-lg][data-lg-screen='posteingang'] .lg-tool-group .lg-tool {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    justify-content: center;
+  }
+  html[data-lg][data-lg-screen='posteingang'] .lg-tool-group .lg-tool span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  html[data-lg][data-lg-screen='posteingang'] .lg-tool-group .lg-tool:disabled { display: none; }
+  html[data-lg][data-lg-screen='posteingang'] .lg-reader-close { display: none; }
+  html[data-lg][data-lg-screen='posteingang'] .post-detail h2 { font-size: 20px; }
+  /* Long Behörden names lose their identity to a one-line ellipsis on phones
+     („Bezirksamt Mitte von B…") — allow two lines there; same for attachment
+     file names in the reader. */
+  html[data-lg][data-lg-screen='posteingang'] .lg-card-top { align-items: flex-start; }
+  html[data-lg][data-lg-screen='posteingang'] .lg-card-name {
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  html[data-lg][data-lg-screen='posteingang'] .lg-doc-name {
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
 }
 
 /* Body excerpt as plain letter paragraphs (mockup), not a quoted snippet. */
@@ -860,4 +978,10 @@ html[data-lg][data-lg-screen='posteingang'].dark .lg-cta-bookmark {
   border-color: rgba(255, 255, 255, 0.14);
   background: rgba(255, 255, 255, 0.07);
   box-shadow: none;
+}
+/* Phones: the never-wired bookmark stub (disabled, „nicht verfügbar")
+   stranded alone under the stacked footer CTAs — hidden like the other
+   disabled tool stubs. AFTER the base rule: same specificity, source order. */
+@media (max-width: 560px) {
+  html[data-lg][data-lg-screen='posteingang'] .lg-cta-bookmark { display: none; }
 }

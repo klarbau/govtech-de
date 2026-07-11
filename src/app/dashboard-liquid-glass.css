@@ -139,3 +139,37 @@ html[data-lg][data-lg-screen='dashboard'] .app-content .lg-glass-surface-accent 
 html[data-lg][data-lg-screen='dashboard'].dark .app-content .lg-glass-surface-accent {
   box-shadow: var(--lg-shadow-card);
 }
+
+/* ── Mobile stack: narrow-column squeeze fix (≤ 400px) ─────────────────────────
+   Layout only (never a text colour). At phone widths the frozen row rules in
+   prototype-v2.css keep the „Automatisch erledigt" (.erledigt-item) and
+   „Aktivitäten" (.aktiv-item) rows as a single flex line, so the fixed-width
+   meta column (Datum + Erledigt-Badge / Status-Pill) starves the Behörden-name
+   down to one word per line. Below 400px the name keeps the first line at full
+   remaining width and the meta drops onto its own line beneath it, aligned under
+   the name (46px = 34px icon + 12px gap). The row-gap comes from the frozen
+   `gap:12px` on the rows. */
+@media (max-width: 400px) {
+  html[data-lg][data-lg-screen='dashboard'] .app-content .erledigt-item {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  html[data-lg][data-lg-screen='dashboard'] .app-content .erledigt-item .ei-meta {
+    flex-basis: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 46px;
+  }
+
+  html[data-lg][data-lg-screen='dashboard'] .app-content .aktiv-item {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  html[data-lg][data-lg-screen='dashboard'] .app-content .aktiv-item .aktiv-body {
+    flex-basis: calc(100% - 46px);
+  }
+  html[data-lg][data-lg-screen='dashboard'] .app-content .aktiv-item .aktiv-status {
+    margin-left: 46px;
+  }
+}

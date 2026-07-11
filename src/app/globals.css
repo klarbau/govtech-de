@@ -1384,3 +1384,239 @@ html[data-lg] .app-topnav .lg-top-search {
   }
 }
 
+/* ── Mobile-Adaptations-Welle 2026-07-10 ─────────────────────────────────────
+   Overrides for the FROZEN prototype-v2.css (globals imports first → every
+   selector here carries +1 specificity via its tag prefix). Phones stack the
+   Datenschutz tables into per-row cards: the 6-column consent table and the
+   5-column audit log clipped mid-word inside their overflow-x wrappers on
+   ≤ 700px — swiping a data-privacy table is not an acceptable reading path. */
+@media (max-width: 700px) {
+  /* Einwilligungen (6 cols: Empfänger · Zweck · Kategorien · Status · Toggle
+     · Chevron) → card: row 1 = Empfänger + Toggle, then Zweck, Kategorien,
+     Status full-width; decorative chevron dropped. */
+  div.ds2-consent-scroll { overflow-x: visible; }
+  table.ds2-consent-table,
+  table.ds2-consent-table > tbody { display: block; }
+  table.ds2-consent-table > thead { display: none; }
+  table.ds2-consent-table tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    row-gap: 6px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  table.ds2-consent-table tr:last-child { border-bottom: 0; }
+  table.ds2-consent-table td {
+    display: block;
+    padding: 0;
+    border-bottom: 0;
+  }
+  table.ds2-consent-table td:nth-child(1) { grid-row: 1; grid-column: 1; }
+  table.ds2-consent-table td:nth-child(5) { grid-row: 1; grid-column: 2; justify-self: end; }
+  table.ds2-consent-table td:nth-child(2),
+  table.ds2-consent-table td:nth-child(3),
+  table.ds2-consent-table td:nth-child(4) { grid-column: 1 / -1; }
+  table.ds2-consent-table td.ds2-zweck { max-width: none; }
+  table.ds2-consent-table td:nth-child(6) { display: none; }
+
+  /* Audit-Log (5 cols) → stacked entry: Zeitpunkt fine-print, Ereignis bold,
+     Empfänger, Rechtsgrundlage, Details-Link. */
+  div.ds2-audit-scroll { overflow-x: visible; }
+  table.ds2-audit-table,
+  table.ds2-audit-table > tbody { display: block; }
+  table.ds2-audit-table > thead { display: none; }
+  table.ds2-audit-table tr {
+    display: block;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  table.ds2-audit-table tr:last-child { border-bottom: 0; }
+  table.ds2-audit-table td {
+    display: block;
+    padding: 0 0 2px;
+    border-bottom: 0;
+  }
+  table.ds2-audit-table td.ds2-when { font-size: 12px; color: var(--ink-3); }
+  table.ds2-audit-table td.ds2-ereignis { font-weight: 600; }
+  table.ds2-audit-table td.ds2-grund { color: var(--ink-3); font-size: 12.5px; }
+  table.ds2-audit-table td:last-child { padding-top: 4px; }
+}
+
+/* Steuer „Übersicht der Steuerbereiche" (4 cols: Bereich · Betrag · Status ·
+   Aktion): the amounts clipped after the thousands separator inside the scroll
+   wrapper. Phone card: row 1 = Bereich + Betrag, row 2 = Status + Aktion. */
+@media (max-width: 700px) {
+  div.st-table-scroll { overflow-x: visible; }
+  div.st-table-scroll > table,
+  div.st-table-scroll > table > tbody { display: block; }
+  div.st-table-scroll > table > thead { display: none; }
+  div.st-table-scroll > table tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    row-gap: 6px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  div.st-table-scroll > table tr:last-child { border-bottom: 0; }
+  div.st-table-scroll > table td {
+    display: block;
+    padding: 0;
+    border-bottom: 0;
+  }
+  div.st-table-scroll > table td:nth-child(1) { grid-row: 1; grid-column: 1; }
+  div.st-table-scroll > table td:nth-child(2) { grid-row: 1; grid-column: 2; }
+  div.st-table-scroll > table td:nth-child(3) { grid-row: 2; grid-column: 1; }
+  div.st-table-scroll > table td:nth-child(4) { grid-row: 2; grid-column: 2; }
+}
+
+/* Steuer „Wichtige Fristen": the day-count badge squeezed titles into
+   one-word-per-line ladders — on phones it wraps under the text instead. */
+@media (max-width: 560px) {
+  .frist-card div.item { grid-template-columns: 32px minmax(0, 1fr); }
+  .frist-card div.item > .badge { grid-column: 2; justify-self: start; }
+}
+
+/* Dokumente table (5 cols: Dokument · Kategorie · Status · Daten · Aktionen):
+   Kategorie/Status clipped inside the x-scroll card. Phone card: row 1 =
+   Dokument + Aktionen, row 2 = Kategorie ↔ Status, row 3 = Daten. Sort headers
+   disappear with the thead — the tabs + search above stay the mobile filter. */
+@media (max-width: 700px) {
+  div.dk-table { overflow-x: visible; padding: 4px 16px 8px; }
+  div.dk-table > table,
+  div.dk-table > table > tbody { display: block; }
+  div.dk-table > table > thead { display: none; }
+  div.dk-table > table tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    row-gap: 8px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  div.dk-table > table tr:last-child { border-bottom: 0; }
+  div.dk-table > table td {
+    display: block;
+    padding: 0;
+    border-bottom: 0;
+  }
+  div.dk-table > table td:nth-child(1) { grid-row: 1; grid-column: 1; }
+  div.dk-table > table td:nth-child(5) { grid-row: 1; grid-column: 2; justify-self: end; }
+  div.dk-table > table td:nth-child(2) { grid-row: 2; grid-column: 1; }
+  div.dk-table > table td:nth-child(3) { grid-row: 2; grid-column: 2; justify-self: end; }
+  div.dk-table > table td:nth-child(4) {
+    grid-row: 3;
+    grid-column: 1 / -1;
+    color: var(--ink-3);
+    font-size: 12.5px;
+  }
+  /* The document cell's nr/[MOCK]/chip row wraps instead of forcing width. */
+  .dk-doc div.s { flex-wrap: wrap; }
+  div.dk-actions { margin: 0; }
+}
+
+/* Shared card head (title ↔ sub/action, space-between): on phones the
+   squeeze turns headings into one-word-per-line ladders („Ihr / Vorgang / im
+   / Überblick"). Stack head children vertically instead. */
+@media (max-width: 560px) {
+  div.gt-card-head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+}
+
+/* Familie: the status badge column squeezed „Gemeinsame Vorgänge" texts into
+   single-word wraps — badge moves under the text on phones. Same treatment
+   for the „Mein Haushalt" head (title over button). */
+@media (max-width: 560px) {
+  .fm-list div.item { grid-template-columns: 40px minmax(0, 1fr); row-gap: 6px; }
+  .fm-list div.item > .badge { grid-column: 2; justify-self: start; }
+  div.hh-head { flex-wrap: wrap; gap: 10px; }
+}
+
+/* Lebenslage „Benötigte Nachweise": name + status badge + action shared one
+   flex row — the name column collapsed to a word ladder. Phones: name takes
+   the full first row, badge + action follow underneath. */
+@media (max-width: 560px) {
+  ul.ll-doklist li { flex-wrap: wrap; row-gap: 8px; }
+  ul.ll-doklist .ll-dok-name { flex: 1 1 calc(100% - 29px); }
+  ul.ll-doklist .ll-dok-status { margin-left: 29px; }
+  ul.ll-doklist .ll-dok-action { margin-left: auto; }
+}
+
+/* Lebenslagen search: the example placeholder clips hard against the button —
+   ellipsize instead of cutting mid-word. */
+input.llh-search-input { text-overflow: ellipsis; }
+
+/* Dokumente phone cards: long German compounds („Wohnungsgeberbestätigung")
+   are wider than the narrowed title column and would paint under the action
+   icons — hyphenate instead. */
+@media (max-width: 700px) {
+  .dk-doc div.t { hyphens: auto; overflow-wrap: break-word; }
+}
+
+/* Audit-Log cells carry nowrap/ellipsis/max-width in the frozen sheet — on
+   the stacked phone layout every value may wrap in full instead. */
+@media (max-width: 700px) {
+  table.ds2-audit-table td.ds2-when,
+  table.ds2-audit-table td.ds2-ereignis,
+  table.ds2-audit-table td.ds2-empf-col,
+  table.ds2-audit-table td.ds2-grund {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    max-width: none;
+    overflow-wrap: break-word;
+  }
+}
+
+/* Lebenslage „(Once-Only)"-Qualifier im Kartentitel bricht nicht mehr mitten
+   in der Klammer („(Once- / Only)"). */
+span.ll-oo-qualifier { white-space: nowrap; }
+
+/* Datenschutz „Letzte Aktivitäten": the timestamp+badge column sat pinned
+   top-right next to 6-line wrapped titles — on phones it moves under the
+   text (left-aligned), same treatment as the other badge-squeeze rows. */
+@media (max-width: 560px) {
+  .act li.item,
+  .act div.item { grid-template-columns: 40px minmax(0, 1fr); row-gap: 6px; }
+  .act li.item > .meta,
+  .act div.item > .meta { grid-column: 2; text-align: left; display: flex; align-items: center; gap: 8px; }
+  .act li.item > .meta .when,
+  .act div.item > .meta .when { margin-bottom: 0; }
+}
+
+/* Vorgänge featured card: the right meta column (status badge +
+   „Verantwortlich: Sie") squeezed the description into a word ladder on
+   phones — it wraps to a full-width left-aligned line under the text. */
+@media (max-width: 560px) {
+  div.vg-big-head { flex-wrap: wrap; }
+  .vg-big-head div.vg-big-meta {
+    flex-basis: 100%;
+    text-align: left;
+    padding-left: 64px; /* 48px icon + 16px gap — aligns with title/sub */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+  }
+  .vg-big-head div.vg-big-meta > .muted { white-space: nowrap; }
+  .vg-big-head div.vg-big-meta > .muted { margin-top: 0 !important; }
+}
+
+/* Dokumente filter bar: the chip strip (flex:1) got pinched to ~208px beside
+   the Filter button, stacking every chip on its own row inside the narrow
+   column. Phones: Filter takes its own top row, chips flow full-width. */
+@media (max-width: 560px) {
+  div.dk-filterbar .tab-chips { flex: 1 1 100%; order: 2; }
+  div.dk-filterbar > .dk-filter { order: 1; margin-left: auto; }
+}
+
+/* Vorgang-Detail „nichts zu tun"-Banner: the ≤760px column layout (meant for
+   the CTA variant's full-width actions) stranded the decorative check icon
+   alone under the text — the done state stays a row. */
+@media (max-width: 760px) {
+  section.vd-next.is-done { flex-direction: row; align-items: center; }
+}
