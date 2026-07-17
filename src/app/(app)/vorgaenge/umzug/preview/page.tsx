@@ -36,6 +36,9 @@ export default function UmzugPreviewPage() {
   >({});
   const [, startTransition] = useTransition();
   const [isStarting, setIsStarting] = useState(false);
+  // Bumped by „Erneut versuchen" — router.refresh() allein re-runt den
+  // Client-Effect nicht, der Fehlerzustand wäre sonst permanent.
+  const [reloadTick, setReloadTick] = useState(0);
 
   useEffect(() => {
     if (!draft.neueAdresse || !draft.stichtagIso) {
@@ -59,7 +62,7 @@ export default function UmzugPreviewPage() {
     return () => {
       cancelled = true;
     };
-  }, [draft.neueAdresse, draft.stichtagIso, router, t]);
+  }, [draft.neueAdresse, draft.stichtagIso, router, t, reloadTick]);
 
   const subtitleAdresse = draft.neueAdresse
     ? `${draft.neueAdresse.strasse} ${draft.neueAdresse.hausnummer}${draft.neueAdresse.zusatz ? ' ' + draft.neueAdresse.zusatz : ''}, ${draft.neueAdresse.plz} ${draft.neueAdresse.ort}`
@@ -128,7 +131,11 @@ export default function UmzugPreviewPage() {
               variant="outline"
               size="sm"
               className="mt-3"
-              onClick={() => router.refresh()}
+              onClick={() => {
+                setError(null);
+                setPreview(null);
+                setReloadTick((n) => n + 1);
+              }}
             >
               {tCommon('cta.erneut_versuchen')}
             </Button>

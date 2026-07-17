@@ -21,7 +21,7 @@ import {
   OrchestrationTestBridge,
   RecoveryBanner,
 } from '@/components/orchestration';
-import { api } from '@/lib/mock-backend';
+import { api, MockBackendError } from '@/lib/mock-backend';
 import type { LebenslageConfig } from '@/lib/mock-backend/lebenslagen/types';
 import type {
   AutopilotStepStatus,
@@ -282,8 +282,20 @@ function UmzugRunInner() {
     (async () => {
       try {
         if (vorgangId) {
-          const v = await api.getVorgang(vorgangId);
-          if (cancelled) return;
+          // Transiente Mock-Fehler (simulierte 5%-Rate) überbrücken — nur ein
+          // echtes VORGANG_NOT_FOUND bricht sofort ab (Muster wie im
+          // VorgangDetailLoader). Ohne Retry bliebe die Seite bannernd stehen.
+          let v: Vorgang | undefined;
+          for (let attempt = 0; attempt < 3 && !v; attempt++) {
+            try {
+              v = await api.getVorgang(vorgangId);
+            } catch (e) {
+              const fatal =
+                e instanceof MockBackendError && e.code === 'VORGANG_NOT_FOUND';
+              if (fatal || attempt === 2) throw e;
+            }
+          }
+          if (cancelled || !v) return;
 
           // Fresh-Run-Snapshot-Reveal: bei einem gerade gestarteten Lauf ist die
           // Saga oft schneller fertig als dieser Fetch — der Snapshot trägt
