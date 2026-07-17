@@ -38,6 +38,12 @@ response.html
 # Local generated artifacts (do not commit)
 .codegraph/
 .audit-shots/
+shots/
+
+# Isolated Next build dirs (NEXT_DIST_DIR — prod-gate runs beside the live dev .next)
+.next-turbo/
+.next-prod/
+.next-orch/
 
 # Demo-video takes (regenerate with `npm run demo:record`)
 demo-recording/
