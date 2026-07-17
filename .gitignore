@@ -59,6 +59,7 @@ demo-recording/
 
 # One-off local probe/screenshot scripts + their image output
 tmp-*
+.tmp-shots/
 .dark-shots/
 .ds-sync/
 ds-bundle/
