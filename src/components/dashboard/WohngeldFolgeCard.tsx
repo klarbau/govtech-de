@@ -9,11 +9,26 @@ import { Button } from '@/components/ui/button';
 import { IconCircle } from '@/components/shared/IconCircle';
 import { ZukunftChip } from '@/components/shared/ZukunftChip';
 import { api } from '@/lib/mock-backend';
-import type { PersonaId, WohngeldAnspruchEstimate } from '@/types';
+import type { Behoerde, PersonaId, WohngeldAnspruchEstimate } from '@/types';
 
 interface WohngeldFolgeCardProps {
   personaId: PersonaId;
   className?: string;
+}
+
+/**
+ * Löst die kommunale Wohngeldstelle am Wohnort der Persona aus den Behörden-Daten
+ * auf (statt Berlin hartzukodieren). Kein Treffer → `null` → generische Rahmung.
+ */
+function resolveWohngeldstelleName(behoerden: Behoerde[], ort?: string): string | null {
+  if (!ort) return null;
+  const match = behoerden.find(
+    (b) =>
+      b.kategorie === 'kommune' &&
+      b.adresse?.ort === ort &&
+      /wohngeld/i.test(b.name_de),
+  );
+  return match?.name_de ?? null;
 }
 
 /**
@@ -36,13 +51,24 @@ export function WohngeldFolgeCard({ personaId, className }: WohngeldFolgeCardPro
   const [estimate, setEstimate] = React.useState<WohngeldAnspruchEstimate | null>(
     null,
   );
+  const [zustaendigName, setZustaendigName] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     let cancelled = false;
     void (async () => {
       try {
-        const result = await api.getWohngeldHinweis(personaId);
-        if (!cancelled) setEstimate(result);
+        // Estimate ist die Gate-Bedingung (rendert sonst nicht); Persona + Behörden
+        // sind best-effort für die persona-scoped Zuständigkeits-Zeile.
+        const [result, persona, behoerden] = await Promise.all([
+          api.getWohngeldHinweis(personaId),
+          api.getProfile().catch(() => null),
+          api.getBehoerden().catch(() => [] as Behoerde[]),
+        ]);
+        if (cancelled) return;
+        setEstimate(result);
+        setZustaendigName(
+          resolveWohngeldstelleName(behoerden as Behoerde[], persona?.adresse?.ort),
+        );
       } catch {
         // Folge-Card ist nice-to-have — bei Fetch-Fehler rendert sie nicht.
       }
@@ -87,11 +113,15 @@ export function WohngeldFolgeCard({ personaId, className }: WohngeldFolgeCardPro
         {t('cta')}
       </Button>
 
-      <p className="text-xs text-text-muted">{t('zustaendig')}</p>
+      <p className="text-xs text-text-muted">
+        {zustaendigName
+          ? t('zustaendig_named', { name: zustaendigName })
+          : t('zustaendig_generic')}
+      </p>
 
       <p className="flex flex-wrap items-center gap-1.5 text-xs text-text-muted">
         <ZukunftChip label={t('zukunft_chip')} />
-        {t('disclaimer')}
+        {t('disclaimer_norm', { normen: estimate.rechtsgrundlage.join(' · ') })}
       </p>
     </section>
   );

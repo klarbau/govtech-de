@@ -266,7 +266,11 @@ export async function dispatchReadTool(
           );
         }
         const { thema } = validation.data as FindeZustaendigeStelleInput;
-        const treffer = findeZustaendigeStelle(thema);
+        // Persona-scoped (#15): am Wohnort der Persona auflösen (z. B. Köln →
+        // Kölner Stellen) statt Berlin hartzukodieren. Profil best-effort — bei
+        // Fetch-Fehler bleibt es beim generischen (Berlin-)Default.
+        const persona = await api.getProfile().catch(() => null);
+        const treffer = findeZustaendigeStelle(thema, persona?.adresse?.ort);
         if (!treffer) {
           // Ehrlich „nicht im Katalog": KEINE erfundene Zuständigkeit. Das Modell
           // verweist auf die allgemeine Behördenauskunft, statt zu raten.

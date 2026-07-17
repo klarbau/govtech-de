@@ -1365,6 +1365,12 @@ export const kinderzuschlagRadarDismissedBucketSchema = z.record(z.string());
 /** Bucket `govtech-de:v1:kinderzuschlag-radar:consent` — Record<PersonaId, boolean>. */
 export const kinderzuschlagRadarConsentBucketSchema = z.record(z.boolean());
 
+/** Bucket `govtech-de:v1:aufenthalt-frist-nudge:dismissed` — Record<PersonaId, ISO-Timestamp>. */
+export const aufenthaltFristNudgeDismissedBucketSchema = z.record(z.string());
+
+/** Bucket `govtech-de:v1:aufenthalt-frist-nudge:snoozed-until` — Record<PersonaId, ISO-Datum>. */
+export const aufenthaltFristNudgeSnoozedBucketSchema = z.record(z.string());
+
 // Compile-time guard: zod-Enum und TS-Union (`DashboardSortMode`) identisch.
 import type { DashboardSortMode as _DashboardSortModeTs } from '@/types/dashboard';
 type _SchemaDashboardSortMode = z.infer<typeof dashboardSortModeSchema>;

@@ -12,6 +12,18 @@ interface AnspruchLaneRowProps {
 }
 
 /**
+ * Explizite Zuordnung Backend-Vollkey → relativer Key. `t` ist auf den
+ * `anspruchLane`-Namespace gescoped; die Einträge tragen den vollqualifizierten
+ * Key (`anspruchLane.…`). Statt fragilem Prefix-`.replace()` wird hier bewusst
+ * gemappt (unbekannter Key fällt sichtbar auf sich selbst zurück).
+ */
+const RELATIVE_KEY: Record<string, string> = {
+  'anspruchLane.kindergeld.titel': 'kindergeld.titel',
+  'anspruchLane.foederal.bund': 'foederal.bund',
+  'anspruchLane.foederal.kommunal': 'foederal.kommunal',
+};
+
+/**
  * `<AnspruchLaneRow>` (Spec `anspruch-arc.md` § 4.2, Beat b) — der kompakte
  * „Eingerichtet"-Eintrag (NUR antragsloses Kindergeld).
  *
@@ -30,13 +42,13 @@ export function AnspruchLaneRow({ entry }: AnspruchLaneRowProps) {
       <div className="flex flex-col gap-1">
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-sm font-semibold text-text-primary">
-            {t(entry.titel_i18n_key.replace('anspruchLane.', ''), { kind })}
+            {t(RELATIVE_KEY[entry.titel_i18n_key] ?? entry.titel_i18n_key, { kind })}
           </span>
           <ZukunftChip label={t('kindergeld.zukunft_chip')} />
         </div>
         <span className="text-xs text-text-secondary">{t('kindergeld.status')}</span>
         <span className="text-xs text-text-muted">
-          {t(entry.foederal_label_i18n_key.replace('anspruchLane.', ''))} ·{' '}
+          {t(RELATIVE_KEY[entry.foederal_label_i18n_key] ?? entry.foederal_label_i18n_key)} ·{' '}
           {t('kindergeld.phasing')}
         </span>
       </div>

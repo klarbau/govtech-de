@@ -3,7 +3,7 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { ArrowRight, CalendarClock } from 'lucide-react';
+import { ArrowRight, CalendarClock, Clock3, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { IconCircle } from '@/components/shared/IconCircle';
@@ -11,21 +11,15 @@ import { ZukunftChip } from '@/components/shared/ZukunftChip';
 import { formatDateDe } from '@/lib/utils';
 import type { Persona } from '@/types';
 
-/**
- * Persona-Gate (wow-#10): nur Anna Petrov trägt die vollständige § 18g-Blue-Card-
- * Verlängerungs-Story (LEA-Brief + Vorgang-Stub + Termin-Empfehlung). Andere
- * Personas mit eAT (Mehmet, § 21) haben diese Kaskade nicht geseedet → kein Nudge.
- */
-const AUFENTHALT_NUDGE_PERSONA_ID = 'anna-petrov';
-
 /** Ab hier zeigt der Nudge die dringlichere „läuft bald ab"-Rahmung (Tage-Anzeige). */
 const ABLAUF_BALD_TAGE = 120;
 
 /**
  * Fristbewachungs-Horizont: bis so viele Tage vor Ablauf wird die Frist proaktiv
  * bewacht (schwächere, ehrliche „wir bereiten rechtzeitig vor"-Variante). Annas
- * eAT läuft 14.09.2027 ab (~14 Monate) → dieser Horizont hält den Nudge ehrlich,
- * ohne das seed-Datum zu verbiegen (das an Brief + Vorgang-Fristen gekoppelt ist).
+ * eAT läuft 14.09.2027 ab (~14 Monate), Mehmets § 21 am 31.08.2027 → dieser
+ * Horizont hält den Nudge ehrlich, ohne die seed-Daten zu verbiegen (die an
+ * Brief + Vorgang-Fristen gekoppelt sind).
  */
 const FRISTBEWACHUNG_HORIZONT_TAGE = 450;
 
@@ -36,19 +30,24 @@ export interface AufenthaltFristView {
   norm: string;
   tageBis: number;
   variant: AufenthaltFristVariant;
+  /** Zuständige Ausländerbehörde (behoerde_id aus dem Titel) — für die Namens-
+   *  Auflösung (LEA Berlin / ABH Köln …), damit die Card nicht Berlin hartkodiert. */
+  abhBehoerdeId?: string;
 }
 
 /**
- * Leitet das View-Model des Antizipations-Nudges rein aus der bereits geladenen
- * Persona ab (kein neuer Estimate-Pfad, kein Mock-Backend-Call). Liefert `null`,
- * wenn die Persona nicht gilt, keinen Aufenthaltstitel trägt oder das Ablaufdatum
- * außerhalb des Bewachungs-Horizonts liegt.
+ * Leitet das View-Model des Antizipations-Nudges (wow-#10) rein aus der bereits
+ * geladenen Persona ab (kein neuer Estimate-Pfad, kein Mock-Backend-Call).
+ *
+ * Persona-generisch (Pass-3-Followup): der Nudge zeigt für JEDE Persona, deren
+ * Aufenthaltstitel-Ablauf in den Bewachungs-Horizont fällt — Mehmet-fähig ohne
+ * Seed-Änderung. Liefert `null`, wenn die Persona keinen Aufenthaltstitel trägt
+ * oder das Ablaufdatum außerhalb des Horizonts (bzw. bereits abgelaufen) liegt.
  */
 export function resolveAufenthaltFristNudge(
   persona: Persona,
   nowIso: string,
 ): AufenthaltFristView | null {
-  if (persona.id !== AUFENTHALT_NUDGE_PERSONA_ID) return null;
   const titel = persona.aufenthaltstitel;
   if (!titel?.valid_until) return null;
 
@@ -64,11 +63,19 @@ export function resolveAufenthaltFristNudge(
     norm: titel.norm,
     tageBis,
     variant: tageBis <= ABLAUF_BALD_TAGE ? 'ablauf_bald' : 'bewacht',
+    abhBehoerdeId: titel.abh_behoerde_id,
   };
 }
 
 interface AufenthaltFristNudgeProps {
   view: AufenthaltFristView;
+  /** Aufgelöster Name der zuständigen Ausländerbehörde (aus `view.abhBehoerdeId`).
+   *  Fehlt er, fällt die Zuständigkeits-Zeile auf die generische Rahmung zurück. */
+  behoerdeName?: string;
+  /** Nudge dauerhaft schließen — persistiert deviceLocal über `api`. */
+  onDismiss: () => void;
+  /** Nudge für eine Weile verstecken ("Später erinnern") — persistiert über `api`. */
+  onSnooze: () => void;
 }
 
 /**
@@ -84,8 +91,16 @@ interface AufenthaltFristNudgeProps {
  *  - [ZUKUNFT 2027]-Rahmung via `<ZukunftChip>`; proaktive Fristbewachung ist
  *    Zielbild, keine Rechtswirkung. Synthetische [MOCK]-Demo-Daten.
  */
-export function AufenthaltFristNudge({ view }: AufenthaltFristNudgeProps) {
+export function AufenthaltFristNudge({
+  view,
+  behoerdeName,
+  onDismiss,
+  onSnooze,
+}: AufenthaltFristNudgeProps) {
   const t = useTranslations('aufenthaltFristNudge');
+  // Generische Dismiss/Snooze-Labels aus dem Wohngeld-Hinweis wiederverwenden
+  // („Hinweis schließen" / „Später erinnern") — kein eigener Keys-Satz nötig.
+  const tCtl = useTranslations('wohngeldHinweis');
   const titleId = React.useId();
 
   const datum = formatDateDe(view.validUntilIso);
@@ -104,13 +119,35 @@ export function AufenthaltFristNudge({ view }: AufenthaltFristNudgeProps) {
       aria-labelledby={titleId}
       className="lg-glass-surface flex flex-col gap-3 rounded-xl border border-border bg-card p-4 shadow-sm"
     >
-      <div className="flex items-start gap-3">
-        <IconCircle icon={<CalendarClock />} tone="primary" size="md" />
-        <div className="flex flex-col gap-0.5">
-          <span className="text-xs font-medium text-text-muted">{eyebrow}</span>
-          <h2 id={titleId} className="text-sm font-semibold text-text-primary">
-            {t('title')}
-          </h2>
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-start gap-3">
+          <IconCircle icon={<CalendarClock />} tone="primary" size="md" />
+          <div className="flex flex-col gap-0.5">
+            <span className="text-xs font-medium text-text-muted">{eyebrow}</span>
+            <h2 id={titleId} className="text-sm font-semibold text-text-primary">
+              {t('title')}
+            </h2>
+          </div>
+        </div>
+        <div className="flex shrink-0 gap-1">
+          <button
+            type="button"
+            aria-label={tCtl('snooze')}
+            title={tCtl('snooze')}
+            onClick={onSnooze}
+            className="grid size-9 place-items-center rounded-md border border-border bg-surface text-text-secondary transition-colors hover:bg-surface-muted hover:text-text-primary [&>svg]:size-4"
+          >
+            <Clock3 aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            aria-label={tCtl('dismiss')}
+            title={tCtl('dismiss')}
+            onClick={onDismiss}
+            className="grid size-9 place-items-center rounded-md border border-border bg-surface text-text-secondary transition-colors hover:bg-surface-muted hover:text-text-primary [&>svg]:size-4"
+          >
+            <X aria-hidden="true" />
+          </button>
         </div>
       </div>
 
@@ -157,7 +194,7 @@ export function AufenthaltFristNudge({ view }: AufenthaltFristNudgeProps) {
       <p className="text-xs text-text-muted">{t('termin_konditional')}</p>
 
       <div className="flex flex-col gap-1 text-xs text-text-muted">
-        <p>{t('zustaendig')}</p>
+        <p>{behoerdeName ? t('zustaendig_named', { name: behoerdeName }) : t('zustaendig')}</p>
         <p>{t('rechtsgrundlage')}</p>
       </div>
 

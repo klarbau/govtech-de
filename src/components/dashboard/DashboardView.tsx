@@ -59,6 +59,7 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
   const [behoerdenNames, setBehoerdenNames] = React.useState<Record<string, string>>({});
   const [dismissed, setDismissed] = React.useState<Set<string>>(() => new Set());
   const [wohngeldHidden, setWohngeldHidden] = React.useState(false);
+  const [aufenthaltHidden, setAufenthaltHidden] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const lastSeenWrittenRef = React.useRef(false);
 
@@ -67,9 +68,15 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
     const priorLogin = new Date(
       new Date(nowIso).getTime() - DEMO_PRIOR_LOGIN_DAYS * 24 * 60 * 60 * 1000,
     ).toISOString();
-    const snap = await api.getDashboard(p.id, { last_seen_at: priorLogin });
+    // Aufenthalt-Frist-Nudge-Suppression (dismiss/snooze) parallel mitziehen —
+    // der Nudge selbst wird komponentenlokal aus der Persona abgeleitet.
+    const [snap, aufenthaltSuppressed] = await Promise.all([
+      api.getDashboard(p.id, { last_seen_at: priorLogin }),
+      api.isAufenthaltFristNudgeSuppressed(p.id).catch(() => false),
+    ]);
     setPersona(p);
     setSnapshot(snap);
+    setAufenthaltHidden(aufenthaltSuppressed);
     return p;
   }, [nowIso]);
 
@@ -123,6 +130,7 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
   const aufenthaltFrist = persona
     ? resolveAufenthaltFristNudge(persona, nowIso)
     : null;
+  const showAufenthalt = aufenthaltFrist !== null && !aufenthaltHidden;
 
   // „Aktivitäten" speist sich aus echten Vorgangs-Bewegungen (letzte
   // Schritt-Timestamps), neueste zuerst, max. 3 — distinkt vom Autopilot-Feed.
@@ -188,6 +196,28 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
     toast(tWohngeld('consent_revoked_toast'));
   }
 
+  async function handleAufenthaltDismiss() {
+    if (!persona) return;
+    setAufenthaltHidden(true);
+    try {
+      await api.dismissAufenthaltFristNudge(persona.id);
+      await reload();
+    } catch {
+      /* optimistic hide already applied */
+    }
+  }
+
+  async function handleAufenthaltSnooze() {
+    if (!persona) return;
+    setAufenthaltHidden(true);
+    try {
+      await api.snoozeAufenthaltFristNudge(persona.id, 30);
+      await reload();
+    } catch {
+      /* optimistic hide already applied */
+    }
+  }
+
   // §A1 — Kennzahlen als redaktionelle Zeilen (Zahl + Label auf einer Zeile,
   // Hairline-Trenner, kein Panel/Icon) statt der drei geboxten Stat-Kacheln.
   const kennzahlen = [
@@ -242,8 +272,17 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
             />
           ) : null}
 
-          {aufenthaltFrist ? (
-            <AufenthaltFristNudge view={aufenthaltFrist} />
+          {showAufenthalt && aufenthaltFrist ? (
+            <AufenthaltFristNudge
+              view={aufenthaltFrist}
+              behoerdeName={
+                aufenthaltFrist.abhBehoerdeId
+                  ? behoerdenNames[aufenthaltFrist.abhBehoerdeId]
+                  : undefined
+              }
+              onDismiss={handleAufenthaltDismiss}
+              onSnooze={handleAufenthaltSnooze}
+            />
           ) : null}
 
           <section aria-labelledby="dashboard-heute-zu-tun" className="heute-card">
@@ -511,7 +550,7 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
         </div>
       </div>
 
-      <div style={{ marginTop: 24 }}>
+      <div className="mt-6">
         <AutopilotKatalogTeaser />
       </div>
 

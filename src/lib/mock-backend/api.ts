@@ -147,6 +147,12 @@ import type {
 } from '@/types/orchestration';
 import { appendLogEntry, stammdatenApi } from './stammdaten/api';
 import { dashboardApi } from './dashboard/api';
+import { resolveZustaendigeBehoerde } from '@/lib/behoerde-zustaendigkeit';
+import {
+  isAufenthaltFristNudgeSuppressed,
+  persistAufenthaltFristNudgeDismiss,
+  persistAufenthaltFristNudgeSnooze,
+} from './dashboard/aufenthalt-frist-nudge';
 import {
   persistWohngeldConsent,
   persistWohngeldDismiss,
@@ -1566,6 +1572,17 @@ export interface MockBackendApi {
     personaId: PersonaId,
     consent: boolean,
   ): Promise<void>;
+
+  // ---------------------- Proaktiver Aufenthaltstitel-Frist-Nudge ------------------
+  // wow-backlog #10 — Fristbewachung der Aufenthaltstitel-Verlängerung. Der
+  // View-Estimate ist komponentenlokal (`resolveAufenthaltFristNudge`); hier
+  // lebt nur der deviceLocal Dismiss/Snooze-Gate.
+  /** `true`, wenn der Nudge für die Persona unterdrückt ist (dismissed / Snooze aktiv). */
+  isAufenthaltFristNudgeSuppressed(personaId: PersonaId): Promise<boolean>;
+  /** Persistiert „nicht mehr anzeigen" (Nudge kommt nach Reload nicht zurück). */
+  dismissAufenthaltFristNudge(personaId: PersonaId): Promise<void>;
+  /** Versteckt den Nudge für `tage` Tage (Snooze). */
+  snoozeAufenthaltFristNudge(personaId: PersonaId, tage: number): Promise<void>;
   /**
    * AI-seitiger Ranking-Stub (assistant-engineer-owned). Liefert hier den
    * deterministischen Frist-Fallback; läuft NICHT durch `withLatency()`.
@@ -3367,6 +3384,25 @@ export const api: MockBackendApi & {
       persistWohngeldConsent(personaId, consent);
     }),
 
+  // ---------- Proaktiver Aufenthaltstitel-Frist-Nudge (wow-backlog #10) ----------
+  // Dismiss/Snooze-Gate lebt in `dashboard/aufenthalt-frist-nudge.ts`; der
+  // View-Estimate bleibt komponentenlokal (`resolveAufenthaltFristNudge`).
+  isAufenthaltFristNudgeSuppressed: (personaId) =>
+    withLatency<boolean>(() => {
+      ensureBooted();
+      return isAufenthaltFristNudgeSuppressed(personaId, new Date());
+    }),
+  dismissAufenthaltFristNudge: (personaId) =>
+    withLatency<void>(() => {
+      ensureBooted();
+      persistAufenthaltFristNudgeDismiss(personaId);
+    }),
+  snoozeAufenthaltFristNudge: (personaId, tage) =>
+    withLatency<void>(() => {
+      ensureBooted();
+      persistAufenthaltFristNudgeSnooze(personaId, tage);
+    }),
+
   // ---------- Proaktiver Kinderzuschlag-Anspruch-Radar (anspruch-arc.md § 6) ----------
   // Estimate + Consent-/Dismiss-Gate leben in
   // `lebenslagen/kinderzuschlag-estimate.ts` (geteilt mit dem anspruch_lane-Pfad).
@@ -3444,62 +3480,75 @@ export const api: MockBackendApi & {
     }),
 
   getAutopilotKatalog: () =>
-    withLatency<AutopilotKatalogEntry[]>(() => [
-      {
-        id: 'umzug',
-        status: 'live',
-        titel_key: 'katalog.umzug.titel',
-        beschreibung_key: 'katalog.umzug.beschreibung',
-        behoerden_preview: [
-          'buergeramt-berlin-mitte',
-          'finanzamt-berlin-mitte-tiergarten',
-          'kfz-berlin-labo',
-          'aok-nordost',
-          'familienkasse-berlin-brandenburg',
-          'abh-berlin-lea',
-        ],
-        behoerden_count: 6,
-        geschaetzte_zeitersparnis_min: 45,
-      },
-      {
-        id: 'kindergeburt',
-        status: 'demnaechst',
-        titel_key: 'katalog.kindergeburt.titel',
-        beschreibung_key: 'katalog.kindergeburt.beschreibung',
-        behoerden_preview: [
-          'standesamt-berlin-mitte',
-          'familienkasse-berlin-brandenburg',
-          'aok-nordost',
-        ],
-        behoerden_count: 7,
-        geschaetzte_zeitersparnis_min: 60,
-      },
-      {
-        id: 'steuererklaerung',
-        status: 'demnaechst',
-        titel_key: 'katalog.steuererklaerung.titel',
-        beschreibung_key: 'katalog.steuererklaerung.beschreibung',
-        behoerden_preview: ['finanzamt-berlin-mitte-tiergarten'],
-        behoerden_count: 1,
-        geschaetzte_zeitersparnis_min: 90,
-      },
-      {
-        // Reiner Katalog-Teaser (wow-#G) — KEINE Vertical, KEIN Flow, kein
-        // Persona-Bezug (kein Sterbefall in den Seeds). Nur echte beteiligte
-        // Stellen; Werte sind konservative „ca."-Vorschau-Schätzungen.
-        id: 'trauerfall',
-        status: 'demnaechst',
-        titel_key: 'katalog.trauerfall.titel',
-        beschreibung_key: 'katalog.trauerfall.beschreibung',
-        behoerden_preview: [
-          'standesamt-berlin-mitte',
-          'nachlassgericht-berlin-mitte',
-          'drv-bund',
-        ],
-        behoerden_count: 5,
-        geschaetzte_zeitersparnis_min: 120,
-      },
-    ]),
+    withLatency<AutopilotKatalogEntry[]>(() => {
+      ensureBooted();
+      // Persona-scoped (#15): die `behoerden_preview`-Slugs sind Berlin-Seeds —
+      // gegen den Wohnort der aktiven Persona auflösen, damit z. B. Mehmet (Köln)
+      // die Kölner Stellen sieht. Ortsgebundene Templates ohne lokalen Seed
+      // fallen still weg (der angezeigte `behoerden_count` bleibt die
+      // maßgebliche „ca."-Zahl); NIEMALS stillschweigend Berlin.
+      const ort = loadProfile().adresse?.ort;
+      const scope = (ids: string[]): string[] =>
+        ids
+          .map((id) => resolveZustaendigeBehoerde(id, ort)?.id)
+          .filter((id): id is string => Boolean(id));
+      return [
+        {
+          id: 'umzug',
+          status: 'live',
+          titel_key: 'katalog.umzug.titel',
+          beschreibung_key: 'katalog.umzug.beschreibung',
+          behoerden_preview: scope([
+            'buergeramt-berlin-mitte',
+            'finanzamt-berlin-mitte-tiergarten',
+            'kfz-berlin-labo',
+            'aok-nordost',
+            'familienkasse-berlin-brandenburg',
+            'abh-berlin-lea',
+          ]),
+          behoerden_count: 6,
+          geschaetzte_zeitersparnis_min: 45,
+        },
+        {
+          id: 'kindergeburt',
+          status: 'demnaechst',
+          titel_key: 'katalog.kindergeburt.titel',
+          beschreibung_key: 'katalog.kindergeburt.beschreibung',
+          behoerden_preview: scope([
+            'standesamt-berlin-mitte',
+            'familienkasse-berlin-brandenburg',
+            'aok-nordost',
+          ]),
+          behoerden_count: 7,
+          geschaetzte_zeitersparnis_min: 60,
+        },
+        {
+          id: 'steuererklaerung',
+          status: 'demnaechst',
+          titel_key: 'katalog.steuererklaerung.titel',
+          beschreibung_key: 'katalog.steuererklaerung.beschreibung',
+          behoerden_preview: scope(['finanzamt-berlin-mitte-tiergarten']),
+          behoerden_count: 1,
+          geschaetzte_zeitersparnis_min: 90,
+        },
+        {
+          // Reiner Katalog-Teaser (wow-#G) — KEINE Vertical, KEIN Flow, kein
+          // Persona-Bezug (kein Sterbefall in den Seeds). Nur echte beteiligte
+          // Stellen; Werte sind konservative „ca."-Vorschau-Schätzungen.
+          id: 'trauerfall',
+          status: 'demnaechst',
+          titel_key: 'katalog.trauerfall.titel',
+          beschreibung_key: 'katalog.trauerfall.beschreibung',
+          behoerden_preview: scope([
+            'standesamt-berlin-mitte',
+            'nachlassgericht-berlin-mitte',
+            'drv-bund',
+          ]),
+          behoerden_count: 5,
+          geschaetzte_zeitersparnis_min: 120,
+        },
+      ];
+    }),
 
   exportiereDokumentEudi: (docId: string) =>
     withLatency<EudiExportPreview>(() => {

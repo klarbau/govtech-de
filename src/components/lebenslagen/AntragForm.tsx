@@ -152,6 +152,33 @@ function AntragFormReady({
 
   const [eidOpen, setEidOpen] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  // Pflichtfeld-Validierung (a11y): invalide Feld-Keys nach einem Submit-Versuch.
+  const [fieldErrors, setFieldErrors] = React.useState<Record<string, boolean>>({});
+
+  const clearFieldError = React.useCallback((key: string) => {
+    setFieldErrors((prev) => {
+      if (!prev[key]) return prev;
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
+  }, []);
+
+  /** Leere/ungesetzte Pflichtfelder (Text/Datum/Zahl/Checkbox/Upload). */
+  const findInvalidFields = React.useCallback((): string[] => {
+    const invalid: string[] = [];
+    for (const f of config.formFields) {
+      if (!f.required) continue;
+      if (f.typ === 'upload') {
+        if (!uploads[f.key]) invalid.push(f.key);
+      } else if (f.typ === 'checkbox') {
+        if (fields[f.key]?.value !== 'true') invalid.push(f.key);
+      } else if ((fields[f.key]?.value ?? '').trim() === '') {
+        invalid.push(f.key);
+      }
+    }
+    return invalid;
+  }, [config.formFields, fields, uploads]);
 
   // Datenminimierung: Datenkategorien je Empfänger-Behörde, abgeleitet aus der
   // Kaskade. Consent-Empfänger sind erst aktiv, wenn ihre Einwilligung an ist.
@@ -209,9 +236,19 @@ function AntragFormReady({
       <form
         className="lk-layout"
         style={{ marginTop: 8 }}
+        noValidate
         onSubmit={(e) => {
           e.preventDefault();
           setError(null);
+          const invalid = findInvalidFields();
+          if (invalid.length > 0) {
+            const map: Record<string, boolean> = {};
+            for (const k of invalid) map[k] = true;
+            setFieldErrors(map);
+            document.getElementById(`ll-field-${invalid[0]}`)?.focus();
+            return;
+          }
+          setFieldErrors({});
           setEidOpen(true);
         }}
       >
@@ -226,6 +263,8 @@ function AntragFormReady({
               {config.formFields.map((f) => {
                 const fs = fields[f.key];
                 const inputId = `ll-field-${f.key}`;
+                const errorId = `${inputId}-error`;
+                const invalid = fieldErrors[f.key] === true;
                 const labelText = tf(`${f.key}.label`);
                 const isUpload = f.typ === 'upload';
                 return (
@@ -253,7 +292,11 @@ function AntragFormReady({
                         id={inputId}
                         className={`ll-dropzone${uploads[f.key] ? ' is-set' : ''}`}
                         aria-pressed={uploads[f.key] === true}
-                        onClick={() => setUploads((u) => ({ ...u, [f.key]: !u[f.key] }))}
+                        aria-describedby={invalid ? errorId : undefined}
+                        onClick={() => {
+                          clearFieldError(f.key);
+                          setUploads((u) => ({ ...u, [f.key]: !u[f.key] }));
+                        }}
                       >
                         <UploadCloud aria-hidden="true" />
                         <span>
@@ -269,12 +312,15 @@ function AntragFormReady({
                           id={inputId}
                           type="checkbox"
                           checked={fs.value === 'true'}
-                          onChange={(e) =>
+                          aria-invalid={invalid || undefined}
+                          aria-describedby={invalid ? errorId : undefined}
+                          onChange={(e) => {
+                            clearFieldError(f.key);
                             setFields((prev) => ({
                               ...prev,
                               [f.key]: { ...prev[f.key], value: e.target.checked ? 'true' : '' },
-                            }))
-                          }
+                            }));
+                          }}
                         />
                         <span>{tf(`${f.key}.hint`)}</span>
                       </label>
@@ -285,15 +331,23 @@ function AntragFormReady({
                         type={f.typ === 'date' ? 'date' : f.typ === 'number' ? 'number' : 'text'}
                         value={fs.value}
                         required={f.required}
+                        aria-invalid={invalid || undefined}
+                        aria-describedby={invalid ? errorId : undefined}
                         placeholder={fs.isUserInput ? tf(`${f.key}.hint`) : undefined}
-                        onChange={(e) =>
+                        onChange={(e) => {
+                          clearFieldError(f.key);
                           setFields((prev) => ({
                             ...prev,
                             [f.key]: { ...prev[f.key], value: e.target.value },
-                          }))
-                        }
+                          }));
+                        }}
                       />
                     )}
+                    {invalid ? (
+                      <p id={errorId} role="alert" className="mt-1 text-xs text-destructive">
+                        {td('field_required')}
+                      </p>
+                    ) : null}
                   </div>
                 );
               })}

@@ -22,6 +22,7 @@
  */
 
 import behoerdenData from '@/data/behoerden.json';
+import { resolveZustaendigeBehoerde } from '@/lib/behoerde-zustaendigkeit';
 import type { Behoerde } from '@/types';
 
 const BEHOERDEN = behoerdenData as unknown as Behoerde[];
@@ -224,8 +225,20 @@ function toEbene(kategorie: Behoerde['kategorie']): ZustaendigkeitEbene | null {
  * Bei mehreren Treffern gewinnt die LÄNGSTE gematchte Phrase; bei Gleichstand
  * die frühere Katalog-Position (stabil). Kein Treffer → `null` („nicht im
  * Katalog"). Wirft nie — offline-graceful.
+ *
+ * Persona-scoped (#15): Wird `ort` (Wohnort der Persona, `persona.adresse.ort`)
+ * übergeben, wird die im Katalog hinterlegte Berlin-Template-Behörde auf die am
+ * Wohnort zuständige Stelle aufgelöst (Muster `resolveZustaendigeBehoerde`) —
+ * z. B. „aufenthaltstitel" → Stadt Köln (Ausländerbehörde) für eine Köln-Persona
+ * statt LEA Berlin. Bundesbehörden (Familienkasse, BZSt, DRV-Bund) bleiben
+ * unverändert. Ist die Zuständigkeit ortsgebunden, aber für den Wohnort keine
+ * Stelle geseedet → `null` (ehrlich „keine hinterlegte Stelle", NIEMALS
+ * stillschweigend Berlin). Ohne `ort` gilt das Berlin-Default (rückwärtskompat).
  */
-export function findeZustaendigeStelle(thema: string): ZustaendigkeitTreffer | null {
+export function findeZustaendigeStelle(
+  thema: string,
+  ort?: string,
+): ZustaendigkeitTreffer | null {
   if (!thema || typeof thema !== 'string') return null;
   const hay = normalize(thema);
   if (hay.length === 0) return null;
@@ -243,8 +256,13 @@ export function findeZustaendigeStelle(thema: string): ZustaendigkeitTreffer | n
   }
   if (!best) return null;
 
-  const behoerde = BEHOERDE_BY_ID.get(best.eintrag.behoerdeId);
-  if (!behoerde) return null; // defensiv: Katalog-Drift → lieber „nicht gefunden".
+  // Persona-scoped auflösen, wenn ein Wohnort vorliegt; sonst Berlin-Template.
+  // `null` bei ortsgebundener Zuständigkeit ohne lokalen Seed → ehrlich „nicht
+  // hinterlegt" statt der falschen Berlin-Stelle.
+  const behoerde = ort
+    ? resolveZustaendigeBehoerde(best.eintrag.behoerdeId, ort)
+    : BEHOERDE_BY_ID.get(best.eintrag.behoerdeId);
+  if (!behoerde) return null; // defensiv: Katalog-Drift / kein lokaler Seed.
   const ebene = toEbene(behoerde.kategorie);
   if (!ebene) return null; // defensiv: nur bund/land/kommune sind zuständige Behörden.
 

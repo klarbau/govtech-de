@@ -82,6 +82,11 @@ export type CollectionKey =
   // (Default `true`, wenn kein Eintrag) widerruft die proaktive Erkennung.
   | 'kinderzuschlag-radar:dismissed'
   | 'kinderzuschlag-radar:consent'
+  // Proaktiver Aufenthaltstitel-Frist-Nudge (wow-backlog #10). deviceLocal-State
+  // pro Persona: `dismissed` schließt den Nudge dauerhaft, `snoozed-until`
+  // versteckt ihn bis zum Datum. Bei zod-Fehler reseedet `read()` nur diese Buckets.
+  | 'aufenthalt-frist-nudge:dismissed'
+  | 'aufenthalt-frist-nudge:snoozed-until'
   // Resilient Orchestration Engine (`resilient-orchestration-engine.md` § 2.5).
   // Eigener Schema-Version-Marker (`orchestration:schema-version`, start `1`) —
   // bleibt im bestehenden `v1`-Namespace; KEIN globaler v1→v2-Bump (der würde
