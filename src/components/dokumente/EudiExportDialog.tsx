@@ -153,6 +153,7 @@ export function EudiExportDialog({ open, onOpenChange, doc }: EudiExportDialogPr
     <AlertDialogPrimitive.Root open={open} onOpenChange={(next) => onOpenChange(next)}>
       <AlertDialogPrimitive.Portal>
         <AlertDialogPrimitive.Backdrop
+          data-slot="dialog-overlay"
           aria-hidden="true"
           className={cn(
             'fixed inset-0 z-50 bg-black/40 p-4',
@@ -161,6 +162,7 @@ export function EudiExportDialog({ open, onOpenChange, doc }: EudiExportDialogPr
           )}
         />
         <AlertDialogPrimitive.Popup
+          data-slot="dialog-content"
           aria-modal="true"
           aria-labelledby="eudi-dialog-title"
           onKeyDown={handleEscape}

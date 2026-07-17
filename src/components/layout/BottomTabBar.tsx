@@ -22,6 +22,15 @@ const tabItems: NavItem[] = TAB_HREFS.map((href) =>
   navItems.find((item) => item.href === href),
 ).filter((item): item is NavItem => Boolean(item));
 
+if (process.env.NODE_ENV !== 'production' && tabItems.length !== TAB_HREFS.length) {
+  const missing = TAB_HREFS.filter(
+    (href) => !navItems.some((item) => item.href === href),
+  );
+  console.error(
+    `[BottomTabBar] TAB_HREFS not found in navItems (silently dropped): ${missing.join(', ')}`,
+  );
+}
+
 function isActive(pathname: string | null, href: string): boolean {
   if (!pathname) return false;
   return pathname === href || pathname.startsWith(`${href}/`);

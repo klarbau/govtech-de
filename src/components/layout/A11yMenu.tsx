@@ -8,8 +8,6 @@ import { useA11yPreferences } from '@/lib/a11y/use-a11y-preferences';
 
 import { A11yPanel } from './A11yPanel';
 
-const PANEL_ID = 'a11y-panel';
-
 /**
  * Header trigger for the Bedienhilfen panel. Mirrors the `ThemeToggle`
  * `.gt-header-btn icon` pattern. Shows a small active dot when any preference
@@ -19,6 +17,7 @@ export function A11yMenu() {
   const t = useTranslations('a11y');
   const { isDefault } = useA11yPreferences();
   const [open, setOpen] = React.useState(false);
+  const panelId = React.useId();
 
   const label = t('menu.open');
 
@@ -32,7 +31,7 @@ export function A11yMenu() {
         title={label}
         aria-haspopup="dialog"
         aria-expanded={open}
-        aria-controls={PANEL_ID}
+        aria-controls={panelId}
       >
         <Accessibility aria-hidden="true" />
         {!isDefault && (
@@ -42,7 +41,7 @@ export function A11yMenu() {
           />
         )}
       </button>
-      <A11yPanel id={PANEL_ID} open={open} onOpenChange={setOpen} />
+      <A11yPanel id={panelId} open={open} onOpenChange={setOpen} />
     </>
   );
 }

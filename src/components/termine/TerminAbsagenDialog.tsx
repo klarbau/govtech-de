@@ -51,12 +51,14 @@ export function TerminAbsagenDialog({
     <AlertDialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
       <AlertDialogPrimitive.Portal>
         <AlertDialogPrimitive.Backdrop
+          data-slot="dialog-overlay"
           className={cn(
             'fixed inset-0 z-50 bg-black/40 data-open:animate-in data-open:fade-in-0',
             'data-closed:animate-out data-closed:fade-out-0',
           )}
         />
         <AlertDialogPrimitive.Popup
+          data-slot="dialog-content"
           aria-modal="true"
           aria-labelledby={titleId}
           aria-describedby={bodyId}

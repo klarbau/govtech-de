@@ -33,6 +33,7 @@ import {
 } from '@/components/ui/dialog';
 import { Skeleton } from '@/components/shared/Skeleton';
 import { ZukunftChip } from '@/components/shared/ZukunftChip';
+import { resolveBehoerdeName } from '@/lib/behoerde-name';
 import { api } from '@/lib/mock-backend';
 import { formatDateDe } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
@@ -271,11 +272,12 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
     (entry: UebermittlungsLogEntry): string | undefined =>
       entry.absender_behoerde_id
         ? behoerdenById[entry.absender_behoerde_id]?.name_de ??
-          entry.absender_behoerde_id
+          resolveBehoerdeName(entry.absender_behoerde_id)
         : entry.empfaenger_id
           ? t.has(`datenschutz.einwilligungen.${entry.empfaenger_id}`)
             ? t(`datenschutz.einwilligungen.${entry.empfaenger_id}`)
-            : entry.empfaenger_id
+            : behoerdenById[entry.empfaenger_id]?.name_de ??
+              resolveBehoerdeName(entry.empfaenger_id)
           : undefined,
     [behoerdenById, t],
   );

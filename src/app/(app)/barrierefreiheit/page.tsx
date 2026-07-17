@@ -19,6 +19,7 @@ export default async function BarrierefreiheitPage() {
   const tShell = await getTranslations('shell.breadcrumb');
   const t = await getTranslations('barrierefreiheit');
   const tDgs = await getTranslations('a11y.dgs');
+  const tCommon = await getTranslations('common');
 
   return (
     <>
@@ -143,6 +144,7 @@ export default async function BarrierefreiheitPage() {
             className="inline-flex w-fit items-center gap-1.5 text-sm font-medium text-primary underline underline-offset-4 hover:no-underline"
           >
             {t('schlichtung.link')}
+            <span className="sr-only">{tCommon('link_neues_fenster')}</span>
             <ExternalLink className="size-3.5" aria-hidden="true" />
           </a>
         </section>

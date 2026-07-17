@@ -138,16 +138,12 @@
     line-height: 1;
   }
 
-  /* Clear the fixed bar so page content is never trapped behind it. */
+  /* Clear the fixed bar so page content is never trapped behind it. Posteingang
+     shares this generic clearance: its own `.app-content` overrides (the
+     `:has(.post-content)` width uncap and the 100vh split-height chain) are all
+     gated ≥1100/1280px, so at this ≤767px phone tier no higher-specificity
+     posteingang rule touches `padding-bottom` — the generic rule wins. */
   .app-content {
-    padding-bottom: calc(var(--mobile-tabbar-h) + env(safe-area-inset-bottom));
-  }
-
-  /* Posteingang keeps its own `.app-content` cascade (`:has(.post-content)`
-     width overrides); scope the clearance to the screen so it wins regardless.
-     Its 100vh split model is ≥1280px-only, so it never coexists with the bar —
-     this only guards the phone document-scroll tier. */
-  html[data-lg][data-lg-screen='posteingang'] .app-content {
     padding-bottom: calc(var(--mobile-tabbar-h) + env(safe-area-inset-bottom));
   }
 
