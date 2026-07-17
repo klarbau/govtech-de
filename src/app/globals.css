@@ -1056,7 +1056,12 @@ html {
    Button-rendered-as-Link (`<Button render={<Link>}>`). That made primary CTAs
    render dark text on the Waldgrün fill (~1.5:1). This unlayered, higher-
    specificity rule restores the token so anchor CTAs keep AA contrast,
-   regardless of import order or @layer. */
+   regardless of import order or @layer.
+
+   Redundant seit dem ROOT-Fix (prototype-v2.css: der a-Reset ist jetzt in
+   @layer base gewrappt, sodass Utilities natürlich gewinnen). Bewusst belassen
+   als billiger, harmloser Sicherheitsgurt; entfernbar, sobald visuell
+   verifiziert (kein weiterer unlayered a-color-Reset kollidiert). */
 a.text-primary-foreground {
   color: var(--color-primary-foreground);
 }
