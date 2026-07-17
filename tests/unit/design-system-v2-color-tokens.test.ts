@@ -5,7 +5,7 @@
  *
  * SUPERSEDES the design-system-v2 `--ds-color-* oklch()` contract. The
  * foundation redesign consolidates onto ONE cool-neutral, white-surface,
- * single-cobalt token set declared as plain `--color-*: #hex` variables
+ * single-primary (Waldgrün since 2026-06-18) token set declared as plain `--color-*: #hex` variables
  * (see docs/specs/redesign-foundation.md § 6.A and docs/demo-spine.md). The
  * old warm-neutral OKLCH tokens no longer exist in globals.css, so this suite
  * is re-pointed at the new hex set and recomputes the contrast floors against
@@ -223,26 +223,26 @@ describe('redesign-foundation snapshot — hex token values pinned', () => {
   test('LIGHT token values', () => {
     const expected: Record<string, string> = {
       '--color-surface': '#FFFFFF',
-      '--color-surface-page': '#F7F8FA',
+      '--color-surface-page': '#FAFAF8',
       '--color-surface-raised': '#FFFFFF',
-      '--color-surface-muted': '#EEF1F5',
-      '--color-border': '#E3E7ED',
-      '--color-border-strong': '#C7CDD6',
-      '--color-text-primary': '#1A1F2A',
+      '--color-surface-muted': '#E7ECE7',
+      '--color-border': '#DEE3DF',
+      '--color-border-strong': '#C4C9C3',
+      '--color-text-primary': '#0B1220',
       '--color-text-secondary': '#4B5563',
       '--color-text-muted': '#545C69',
-      '--color-primary': '#2563EB',
-      '--color-primary-hover': '#1D4FD8',
-      '--color-primary-active': '#1A45BE',
-      '--color-accent-soft': '#EAF1FE',
+      '--color-primary': '#0F3D2E',
+      '--color-primary-hover': '#0C3325',
+      '--color-primary-active': '#0A2A1F',
+      '--color-accent-soft': '#ECF1EE',
       '--color-success': '#137034',
       '--color-success-soft': '#E7F6EC',
       '--color-warning': '#B45309',
       '--color-warning-soft': '#FEF3DA',
       '--color-danger': '#B91C1C',
       '--color-danger-soft': '#FCE8E8',
-      '--color-info': '#2563EB',
-      '--color-info-soft': '#EAF1FE',
+      '--color-info': '#0F3D2E',
+      '--color-info-soft': '#ECF1EE',
     };
     for (const [name, hex] of Object.entries(expected)) {
       expect(tok(LIGHT, name), name).toBe(hex);
@@ -251,27 +251,27 @@ describe('redesign-foundation snapshot — hex token values pinned', () => {
 
   test('DARK token values', () => {
     const expected: Record<string, string> = {
-      '--color-surface': '#1A1E27',
-      '--color-surface-page': '#13161D',
-      '--color-surface-raised': '#1A1E27',
-      '--color-surface-muted': '#242935',
-      '--color-border': '#2C3340',
-      '--color-border-strong': '#404A5B',
-      '--color-text-primary': '#ECEFF4',
-      '--color-text-secondary': '#B6BDC9',
-      '--color-text-muted': '#9AA2B0',
-      '--color-primary': '#5B8DEF',
-      '--color-primary-hover': '#4F82EC',
-      '--color-primary-active': '#3F74E6',
-      '--color-accent-soft': '#152038',
+      '--color-surface': '#151D19',
+      '--color-surface-page': '#0C1210',
+      '--color-surface-raised': '#1B2620',
+      '--color-surface-muted': '#212C26',
+      '--color-border': '#32423A',
+      '--color-border-strong': '#3D5045',
+      '--color-text-primary': '#EAF1EC',
+      '--color-text-secondary': '#B4C2B9',
+      '--color-text-muted': '#98A69D',
+      '--color-primary': '#5FB89A',
+      '--color-primary-hover': '#54AD8F',
+      '--color-primary-active': '#49A284',
+      '--color-accent-soft': '#15291F',
       '--color-success': '#5CC98A',
       '--color-success-soft': '#13351F',
       '--color-warning': '#E3B341',
       '--color-warning-soft': '#3A2C0E',
       '--color-danger': '#F2837C',
       '--color-danger-soft': '#3A1714',
-      '--color-info': '#5B8DEF',
-      '--color-info-soft': '#152038',
+      '--color-info': '#5FB89A',
+      '--color-info-soft': '#15291F',
     };
     for (const [name, hex] of Object.entries(expected)) {
       expect(tok(DARK, name), name).toBe(hex);

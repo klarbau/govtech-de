@@ -86,8 +86,11 @@ describe('design-system-v2 Phase 5e — Print + Hochkontrast', () => {
       }
       const block = GLOBALS_CSS.slice(opener!.index, end + 1);
       expect(block).toMatch(/\.dark\s*\{/);
-      // The dark override must lift primary to a light, high-chroma blue.
-      expect(block).toMatch(/--color-primary:\s*#9DBBFF/i);
+      // Since the --hc-* indirection the mapping block points primary at the
+      // hc variable; the .dark scope (outside the media block) must lift
+      // --hc-primary to the light Waldgrün high-contrast tone.
+      expect(block).toMatch(/--color-primary:\s*var\(--hc-primary\)/i);
+      expect(GLOBALS_CSS).toMatch(/\.dark\s*\{[\s\S]*?--hc-primary:\s*#A8D8C4/i);
     });
   });
 
@@ -111,7 +114,7 @@ describe('design-system-v2 Phase 5e — Print + Hochkontrast', () => {
 
     test('foundation neutral scale is declared as --color-* hex tokens', () => {
       expect(GLOBALS_CSS).toMatch(/--color-surface:\s*#FFFFFF/);
-      expect(GLOBALS_CSS).toMatch(/--color-text-primary:\s*#1A1F2A/);
+      expect(GLOBALS_CSS).toMatch(/--color-text-primary:\s*#0B1220/);
     });
   });
 });
