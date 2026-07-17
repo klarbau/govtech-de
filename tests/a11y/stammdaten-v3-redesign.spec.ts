@@ -1,19 +1,20 @@
 /**
- * Stammdaten V3 redesign a11y + visual gate.
+ * Stammdaten a11y + visual gate — live „Green Bento" surface.
  *
- * Covers the new "Verifizierter Identitätsraum + Once-Only-Maschine" surface:
- *   page <h1> → IdentitaetsHero (EidCredentialCard) → OnceOnlyRegisterPanel
- *   → 3-column v2 card grid → DatenhoheitFooter.
+ * Covers the live StammdatenView:
+ *   page <h1> „Stammdaten" → completeness-ring header + 4-chip verify row
+ *   → v2 card grid (Profil · Kontakt · Anschrift · Versicherung · Dokumente ·
+ *   Familie · Verbundene Nachweise & Wallet · Weitere Verifizierungen ·
+ *   Änderungsprotokoll) → DatenhoheitFooter.
  *
  * Asserts axe-clean (LIGHT + DARK + mobile), exactly one main/h1, non-skipped
- * headings, an honest non-zero Once-Only register count, and captures
- * full-page screenshots used to eyeball the redesign.
+ * headings, and captures full-page screenshots used to eyeball the redesign.
  *
- * DEFERRED (test.fixme, 2026-06-20): the green "Waldgrün" brandbook redesign won
- * the /stammdaten surface (green-bento StammdatenView) in the design-merge to main.
- * The V3 IdentitaetsHero + OnceOnlyRegisterPanel components are preserved in git
- * history but are no longer rendered by the live view, so these specs target
- * orphaned markup (#sd-hero-title never mounts). Un-fixme if V3 is re-wired.
+ * Rewritten 2026-07-17: the earlier V3 „IdentitaetsHero + OnceOnlyRegisterPanel"
+ * surface (`#sd-hero-title`, `#sd-onceonly-title`) lost the design-merge to the
+ * green-bento StammdatenView and no longer mounts. The axe + structure passes
+ * are re-pointed at the live anchors; the Once-Only register-count test was
+ * dropped (no OnceOnlyRegisterPanel in the live view).
  */
 import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
@@ -57,9 +58,12 @@ async function setupPersona(page: Page, personaId: string, locale = 'de') {
 
 async function warm(page: Page) {
   await page.goto('/stammdaten', { waitUntil: 'networkidle' });
-  await page.locator('#sd-hero-title').waitFor({ state: 'visible', timeout: 30_000 });
+  await page.locator('main h1').first().waitFor({ state: 'visible', timeout: 30_000 });
   await page
-    .locator('#sd-onceonly-title')
+    .locator('[data-testid="v2-verify-chips"]')
+    .waitFor({ state: 'visible', timeout: 30_000 });
+  await page
+    .locator('[data-testid="v2-protokoll-card"]')
     .waitFor({ state: 'visible', timeout: 30_000 });
   await page.waitForTimeout(500);
 }
@@ -81,12 +85,12 @@ async function runAxe(page: Page) {
   return { results, blockers };
 }
 
-test.fixme('axe LIGHT desktop + screenshot', async ({ page }) => {
+test('axe LIGHT desktop + screenshot', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 1000 });
   await setupPersona(page, 'anna-petrov');
   await warm(page);
   await page.screenshot({
-    path: path.join(SHOT_DIR, 'stammdaten-v3-light-desktop.png'),
+    path: path.join(SHOT_DIR, 'stammdaten-light-desktop.png'),
     fullPage: true,
   });
   const { results, blockers } = await runAxe(page);
@@ -94,7 +98,7 @@ test.fixme('axe LIGHT desktop + screenshot', async ({ page }) => {
   expect(blockers, JSON.stringify(blockers, null, 2)).toHaveLength(0);
 });
 
-test.fixme('axe DARK desktop + screenshot', async ({ page }) => {
+test('axe DARK desktop + screenshot', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 1000 });
   await setupPersona(page, 'anna-petrov');
   await page.emulateMedia({ colorScheme: 'dark' });
@@ -102,7 +106,7 @@ test.fixme('axe DARK desktop + screenshot', async ({ page }) => {
   await page.evaluate(() => document.documentElement.classList.add('dark'));
   await page.waitForTimeout(400);
   await page.screenshot({
-    path: path.join(SHOT_DIR, 'stammdaten-v3-dark-desktop.png'),
+    path: path.join(SHOT_DIR, 'stammdaten-dark-desktop.png'),
     fullPage: true,
   });
   const { results, blockers } = await runAxe(page);
@@ -110,12 +114,12 @@ test.fixme('axe DARK desktop + screenshot', async ({ page }) => {
   expect(blockers, JSON.stringify(blockers, null, 2)).toHaveLength(0);
 });
 
-test.fixme('axe LIGHT mobile + screenshot (responsive)', async ({ page }) => {
+test('axe LIGHT mobile + screenshot (responsive)', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 900 });
   await setupPersona(page, 'anna-petrov');
   await warm(page);
   await page.screenshot({
-    path: path.join(SHOT_DIR, 'stammdaten-v3-light-mobile.png'),
+    path: path.join(SHOT_DIR, 'stammdaten-light-mobile.png'),
     fullPage: true,
   });
   // The page content (everything inside <main>) must not overflow at narrow
@@ -159,7 +163,7 @@ test.fixme('axe LIGHT mobile + screenshot (responsive)', async ({ page }) => {
   expect(blockers, JSON.stringify(blockers, null, 2)).toHaveLength(0);
 });
 
-test.fixme('structure: one main + one h1, non-skipped headings', async ({ page }) => {
+test('structure: one main + one h1, non-skipped headings', async ({ page }) => {
   await setupPersona(page, 'anna-petrov');
   await warm(page);
   const info = await page.evaluate(() => ({
@@ -178,31 +182,4 @@ test.fixme('structure: one main + one h1, non-skipped headings', async ({ page }
   for (let i = 1; i < info.levels.length; i++) {
     expect(info.levels[i] - info.levels[i - 1]).toBeLessThanOrEqual(1);
   }
-});
-
-test.fixme('Once-Only panel: honest non-zero register count + node chips + verify chips', async ({
-  page,
-}) => {
-  await setupPersona(page, 'anna-petrov');
-  await warm(page);
-  const data = await page.evaluate(() => {
-    const panel = document.querySelector(
-      'section[aria-labelledby="sd-onceonly-title"]',
-    );
-    const summary = panel?.querySelector('p')?.textContent ?? '';
-    const chips = panel?.querySelectorAll('ul[role="list"] > li').length ?? 0;
-    const verify = document.querySelector('[data-testid="v2-verify-chips"]');
-    const verifyChips = verify ? verify.children.length : 0;
-    const countMatch = summary.match(/\b(\d+)\b/);
-    return {
-      summary,
-      chips,
-      verifyChips,
-      count: countMatch ? Number(countMatch[1]) : 0,
-    };
-  });
-  console.log('[ONCE-ONLY] ' + JSON.stringify(data));
-  expect(data.count).toBeGreaterThan(0);
-  expect(data.chips).toBeGreaterThanOrEqual(5);
-  expect(data.verifyChips).toBeGreaterThanOrEqual(2);
 });

@@ -1,21 +1,19 @@
 /**
- * Stammdaten V1 a11y — full-page axe (Spec § 12.3).
- * 0 critical, 0 serious violations × 2 viewports × 2 tabs.
+ * Stammdaten a11y — full-page axe (Spec § 12.3).
+ * 0 critical, 0 serious violations × 2 viewports.
+ *
+ * Rewritten 2026-07-17 against the live „Green Bento" StammdatenView: the old
+ * hero+tabs surface (`stammdaten-hero`, `tab-wallet`, `wallet-subtab`) was
+ * replaced by a flat v2 card grid. The wallet sub-tab no longer exists as a
+ * separate surface — its card (`v2-nachweise-card` „Verbundene Nachweise &
+ * Wallet") is one of the cards scanned by this full-page pass — so the former
+ * per-tab split collapses into a single full-page scan per viewport.
  */
 import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 const LOCALE_COOKIE_NAME = 'govtech-de:v1:locale';
 const NS = 'govtech-de:v1:';
-
-// DEFERRED (2026-05-31): the stammdaten re-skin stripped every data-testid from the live
-// StammdatenView; the hero/section/v2 anchors now live in orphaned, un-wired components
-// (src/components/stammdaten/v2/*, StammdatenHero.tsx). The live page is verified
-// axe-clean (0 WCAG 2.1 AA violations) — un-integrated redesign work, not an a11y
-// regression. Re-enable once those components are wired back. See docs/CHANGELOG.md.
-test.beforeEach(() => {
-  test.fixme(true, 'Deferred: stammdaten redesign testids not wired into the live view; live page verified axe-clean. See docs/CHANGELOG.md.');
-});
 
 async function setupPersona(page: Page, personaId: string) {
   await page.context().addCookies([
@@ -54,37 +52,24 @@ async function setupPersona(page: Page, personaId: string) {
 async function warm(page: Page) {
   await page.goto('/stammdaten', { waitUntil: 'networkidle' });
   await page
-    .locator('[data-testid="stammdaten-hero"]')
+    .locator('[data-testid="v2-profil-card"]')
+    .waitFor({ state: 'visible', timeout: 15_000 });
+  // Right-rail „Änderungsprotokoll" is the last card to hydrate; wait for it so
+  // the axe pass covers the whole grid, not a mid-mount snapshot.
+  await page
+    .locator('[data-testid="v2-protokoll-card"]')
     .waitFor({ state: 'visible', timeout: 15_000 });
 }
 
-test.describe('V1 Stammdaten a11y — full page', () => {
+test.describe('Stammdaten a11y — full page', () => {
   for (const viewport of [
     { width: 375, height: 800, label: 'mobile' },
     { width: 1280, height: 900, label: 'desktop' },
   ]) {
-    test(`axe scan profil tab @${viewport.label}`, async ({ page }) => {
+    test(`axe scan full page @${viewport.label}`, async ({ page }) => {
       await page.setViewportSize(viewport);
       await setupPersona(page, 'anna-petrov');
       await warm(page);
-
-      const results = await new AxeBuilder({ page })
-        .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
-        .analyze();
-      const blockers = results.violations.filter(
-        (v) => v.impact === 'serious' || v.impact === 'critical',
-      );
-      expect(blockers, JSON.stringify(blockers, null, 2)).toHaveLength(0);
-    });
-
-    test(`axe scan wallet tab @${viewport.label}`, async ({ page }) => {
-      await page.setViewportSize(viewport);
-      await setupPersona(page, 'anna-petrov');
-      await warm(page);
-      await page.locator('[data-testid="tab-wallet"]').click();
-      await page
-        .locator('[data-testid="wallet-subtab"]')
-        .waitFor({ state: 'visible' });
 
       const results = await new AxeBuilder({ page })
         .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])

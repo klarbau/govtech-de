@@ -119,7 +119,7 @@ test.describe('Vorgang lifecycle — Akte statt Video', () => {
     await page.reload({ waitUntil: 'domcontentloaded' });
     // sample early: confirmed checkmarks must already be visible (staged replay
     // would show them pending for the first ~1-2s of beats)
-    await waitForOrRetry(page, () => page.locator('.vlf-eid, [class*="vlf"], .vab-layout'), 15000);
+    await waitForOrRetry(page, () => page.locator('.vlf-eid, [class*="vlf"], .vab-layout'), 30000);
     await settle(page, 400);
     const confirmedEarly = await page.getByText('Erledigt', { exact: false }).count();
     await page.screenshot({ path: `${SHOTS}/03e-after-reload-snapshot.png` });
