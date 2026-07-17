@@ -24,16 +24,14 @@
     "user_menu": "Benutzermenü"
   },
   "topnav": {
-    "nav_label": "Hauptnavigation",
     "meta_nav_label": "Servicenavigation",
-    "solutions": "Lösungen",
     "lebenslagen": "Lebenslagen",
-    "security_privacy": "Sicherheit & Datenschutz",
     "resources": "Ressourcen",
     "about_us": "Über uns",
     "help": "Hilfe & Kontakt",
     "about_project": "Über das Projekt",
-    "brand_label": "GovTech-DE, zur Übersicht"
+    "brand_label": "GovTech-DE, zur Übersicht",
+    "nav_label": "Hauptnavigation"
   },
   "search": {
     "trigger_label": "Suchen",
@@ -500,7 +498,8 @@
         "body_template": "Wir übermitteln Ihren Antrag mit Ihrem elektronischen Identitätsnachweis (eID) an {behoerde}.",
         "confirm": "Mit eID bestätigen",
         "cancel": "Abbrechen"
-      }
+      },
+      "field_required": "Dieses Feld ist erforderlich."
     },
     "geburt": {
       "title": "Geburt eines Kindes",
@@ -842,6 +841,14 @@
       "value_receipt_hinweis": "Das Elterneinkommen muss weiterhin selbst nachgewiesen werden; gespart werden Stammdaten-Erfassung und Behördengänge."
     },
     "umzug": {
+      "title": "Umzug",
+      "lead": "Einmal melden statt sechs Behördengänge: Ihre Ummeldung wird koordiniert an alle zuständigen Stellen übermittelt — sensible Schritte bestätigen Sie einzeln per eID.",
+      "rechtsgrundlagen": {
+        "bmg": {
+          "bedeutung": "Meldepflicht bei Wohnungswechsel: Anmeldung innerhalb von zwei Wochen nach Einzug bei der Meldebehörde."
+        }
+      },
+      "value_receipt_hinweis": "Geschätzte Ersparnis gegenüber sechs einzelnen Behördengängen mit Papierformularen.",
       "ergebnis": {
         "lead": "Ihr Umzug ist abgeschlossen — alle zuständigen Stellen wurden über Ihre neue Anschrift informiert.",
         "kennzahl_label": "Ummeldung",
@@ -1210,90 +1217,6 @@
       "home": "Startseite"
     }
   },
-  "landing": {
-    "eyebrow": "GovTech DE — Konzept-Demo",
-    "title": "Verwaltung neu gedacht",
-    "subtitle": "Ein Konzept-Prototyp einer bürgerzentrierten Schicht über DeutschlandID, EUDI Wallet und Deutschland-Stack. Alle Daten sind synthetisch.",
-    "personas_title": "Wählen Sie eine Persona",
-    "personas_helper": "Die Demo lädt eine vorbereitete Datenlage. Sie können jederzeit wechseln.",
-    "persona_anna": "Anna Petrov, 28 — Blue Card EU, Berlin",
-    "persona_schmidt": "Familie Schmidt — Hamburg, Geburt erwartet",
-    "persona_mehmet": "Mehmet Yıldız, 34 — Köln, Gewerbe geplant",
-    "cta_continue": "Demo öffnen",
-    "nav": {
-      "aria_label": "Hauptnavigation",
-      "leistungen": "Leistungen",
-      "buerger": "Für Bürger:innen",
-      "behoerden": "Für Behörden",
-      "sicherheit": "Sicherheit & Datenschutz",
-      "ueber_uns": "Über uns",
-      "login": "Anmelden"
-    },
-    "hero": {
-      "badge": "Die Verwaltung, die mitdenkt.",
-      "title": "Behörden, aber auf Autopilot.",
-      "subtitle": "Ein Bürgerportal für Deutschland, das Vorgänge vorbereitet, Daten vorausfüllt und den nächsten Schritt erklärt.",
-      "cta_primary": "Demo starten",
-      "cta_secondary": "Mehr erfahren",
-      "trust": "Sicher. Vertrauenswürdig. Deutschlandweit."
-    },
-    "diagram": {
-      "you_label": "Sie als Bürger:in",
-      "input_title": "Einmal angeben",
-      "input_body": "Wir verstehen Ihr Anliegen und bereiten alles vor.",
-      "autopilot_label": "Autopilot",
-      "autopilot_sub": "Vorgang vorbereiten · Daten vorausfüllen · Nächsten Schritt erklären",
-      "authorities_label": "Ihre Behörden",
-      "behoerde1_name": "Einwohnermeldeamt",
-      "behoerde1_status": "Daten prüfen",
-      "behoerde2_name": "Ausländerbehörde",
-      "behoerde2_status": "Antrag bearbeiten",
-      "behoerde3_name": "Finanzamt",
-      "behoerde3_status": "Bescheid erhalten",
-      "control_bar": "Sie behalten jederzeit den Überblick und die Kontrolle.",
-      "sr_summary": "Ablauf: Sie geben Ihr Anliegen einmal an, der Autopilot bereitet den Vorgang vor und benachrichtigt alle zuständigen Behörden — Einwohnermeldeamt, Ausländerbehörde und Finanzamt. Sie behalten jederzeit Überblick und Kontrolle."
-    },
-    "features": {
-      "title": "Was die Demo zeigt"
-    },
-    "feature": {
-      "umzug": {
-        "title": "Umzug",
-        "desc": "Wir melden Ihre neue Adresse bei allen relevanten Stellen."
-      },
-      "kindergeburt": {
-        "title": "Kindergeburt",
-        "desc": "Anmeldung im Rathaus, GEMA & mehr – in Minuten."
-      },
-      "aufenthalt": {
-        "title": "Aufenthaltstitel verlängern",
-        "desc": "Antrag vorbereiten, Dokumente prüfen, Termin buchen."
-      },
-      "posteingang": {
-        "title": "Posteingang mit KI-Erklärer",
-        "desc": "Verstehen statt verzweifeln – klärt, fasst zusammen, hilft."
-      }
-    },
-    "trust": {
-      "title": "Auf einer vertrauenswürdigen Basis",
-      "deutschlandid": {
-        "title": "DeutschlandID",
-        "desc": "Sicher anmelden mit Ihrer digitalen Identität."
-      },
-      "eudi": {
-        "title": "EUDI Wallet",
-        "desc": "EU-weit anerkannt und zukunftssicher."
-      },
-      "bitv": {
-        "title": "BITV-konform",
-        "desc": "Barrierefrei, verständlich und für alle zugänglich."
-      },
-      "mock": {
-        "title": "Mock-Demo 2027-Vision",
-        "desc": "Ein Blick in die Zukunft der Verwaltung in Deutschland."
-      }
-    }
-  },
   "onboarding": {
     "wizard_step": "Schritt {current} von {total}",
     "topbar": {
@@ -1445,96 +1368,13 @@
       "guten_tag": "Guten Morgen, {name}",
       "sub": "Hier ist Ihr Überblick für heute. Wir halten Sie auf dem Laufenden."
     },
-    "demo_banner": {
-      "text": "Demo-Modus · Mock-Daten · Originale liegen in den amtlichen Postfächern",
-      "disclaimer_link": "Disclaimer ansehen"
-    },
-    "diff": {
-      "title": "Seit Ihrem letzten Login",
-      "neue_briefe": "neue Briefe",
-      "frist_naeher": "Frist näher gerückt",
-      "vorgang_abgeschlossen": "Vorgang abgeschlossen",
-      "last_login_tooltip": "Auf diesem Gerät zuletzt am {datum}",
-      "first_login": "Erster Login auf diesem Gerät",
-      "no_changes": "Keine Änderungen seit Ihrem letzten Login"
-    },
-    "heute_zu_tun": {
-      "title": "Heute zu tun",
-      "sort_aria": "Sortierung der Aktionsempfehlungen",
-      "sort": {
-        "ki": "KI",
-        "frist": "Frist",
-        "behoerde": "Behörde",
-        "vorgang": "Vorgang"
-      },
-      "empty_title": "Alles erledigt",
-      "empty_description": "Sie haben {count} Vorgänge in {jahr} abgeschlossen.",
-      "sort_disabled_tooltip": "Keine Aktionen zum Sortieren"
-    },
-    "priority": {
-      "fristnaehe": "Fristnähe",
-      "folgevorgang": "Folgevorgang",
-      "manuell": "Manuell priorisiert",
-      "termin": "Termin steht"
-    },
-    "frist_inline": {
-      "in_one_day": "Frist in 1 Tag",
-      "in_n_days": "Frist in {days} Tagen",
-      "on_date": "Frist {datum}",
-      "overdue": "Frist {datum} überschritten"
-    },
-    "tile": {
-      "fristen": {
-        "title": "Fristen",
-        "next": "Nächste Frist: {datum}",
-        "open_count": "{count} offen",
-        "none": "Keine offenen Fristen"
-      },
-      "posteingang": {
-        "title": "Posteingang",
-        "value": "{ungelesen} ungelesen · {gesamt} gesamt"
-      },
-      "vorgaenge": {
-        "title": "Vorgänge",
-        "value": "{laufend} laufend",
-        "value_running_done": "{laufend} läuft, {abgeschlossen} abgeschlossen"
-      },
-      "termine": {
-        "title": "Termine",
-        "next": "Nächster Termin {datum}",
-        "none": "Kein Termin geplant"
-      },
-      "datenschutz": {
-        "title": "Datenschutz-Cockpit",
-        "value": "{count} Aktivitäten in 30 Tagen"
-      },
-      "stammdaten": {
-        "title": "Stammdaten-Status",
-        "value": "Adresse prüfen",
-        "last_confirmed": "Adresse zuletzt bestätigt am {datum}",
-        "never_confirmed": "Noch nicht bestätigt"
-      },
-      "cta_ansehen": "Ansehen",
-      "cta_oeffnen": "Öffnen"
-    },
     "error": {
       "load": "Das Dashboard konnte nicht geladen werden."
     },
     "loading": "Dashboard wird geladen",
     "titel": "Dashboard",
-    "untertitel": "Ihr persönlicher Überblick über Briefe, Fristen und Vorgänge",
     "fehler": {
       "laden": "Daten konnten nicht geladen werden."
-    },
-    "letzter_login": "letzter Login vor {days} Tagen · auf diesem Gerät",
-    "prototyp_hinweis": {
-      "text": "Demo-Modus · Mock-Daten · Originale liegen in den amtlichen Postfächern"
-    },
-    "seit_login": {
-      "titel": "Seit Ihrem letzten Login",
-      "neue_briefe": "neue Briefe",
-      "frist_naeher": "Frist näher gerückt",
-      "vorgang_abgeschlossen": "Vorgang abgeschlossen"
     },
     "heute": {
       "titel": "Heute wichtig",
@@ -1614,12 +1454,12 @@
     },
     "tiles": {
       "posteingang_sub": "Ungelesene Nachrichten in Ihrem Posteingang",
-      "posteingang_cta": "Zum Posteingang",
       "fristen_sub": "Fristen in den nächsten 14 Tagen",
+      "vorgaenge_sub": "Laufende Vorgänge in Bearbeitung",
+      "posteingang_cta": "Zum Posteingang",
       "fristen_cta": "Fristen ansehen",
       "termine_sub": "Nächster Termin: {datum}",
       "termine_cta": "Alle Termine",
-      "vorgaenge_sub": "Laufende Vorgänge in Bearbeitung",
       "vorgaenge_cta": "Vorgänge ansehen"
     },
     "kontrolle": {
@@ -1662,6 +1502,83 @@
         "titel": "Stammdaten-Status",
         "cta": "Ansehen"
       }
+    },
+    "tile": {
+      "fristen": {
+        "title": "Fristen",
+        "next": "Nächste Frist: {datum}",
+        "open_count": "{count} offen",
+        "none": "Keine offenen Fristen"
+      },
+      "posteingang": {
+        "title": "Posteingang",
+        "value": "{ungelesen} ungelesen · {gesamt} gesamt"
+      },
+      "vorgaenge": {
+        "title": "Vorgänge",
+        "value": "{laufend} laufend",
+        "value_running_done": "{laufend} läuft, {abgeschlossen} abgeschlossen"
+      },
+      "termine": {
+        "title": "Termine",
+        "next": "Nächster Termin {datum}",
+        "none": "Kein Termin geplant"
+      },
+      "datenschutz": {
+        "title": "Datenschutz-Cockpit",
+        "value": "{count} Aktivitäten in 30 Tagen"
+      },
+      "stammdaten": {
+        "title": "Stammdaten-Status",
+        "value": "Adresse prüfen",
+        "last_confirmed": "Adresse zuletzt bestätigt am {datum}",
+        "never_confirmed": "Noch nicht bestätigt"
+      },
+      "cta_ansehen": "Ansehen",
+      "cta_oeffnen": "Öffnen"
+    },
+    "heute_zu_tun": {
+      "title": "Heute zu tun",
+      "sort_aria": "Sortierung der Aktionsempfehlungen",
+      "sort": {
+        "ki": "KI",
+        "frist": "Frist",
+        "behoerde": "Behörde",
+        "vorgang": "Vorgang"
+      },
+      "empty_title": "Alles erledigt",
+      "empty_description": "Sie haben {count} Vorgänge in {jahr} abgeschlossen.",
+      "sort_disabled_tooltip": "Keine Aktionen zum Sortieren"
+    },
+    "diff": {
+      "title": "Seit Ihrem letzten Login",
+      "neue_briefe": "neue Briefe",
+      "frist_naeher": "Frist näher gerückt",
+      "vorgang_abgeschlossen": "Vorgang abgeschlossen",
+      "last_login_tooltip": "Auf diesem Gerät zuletzt am {datum}",
+      "first_login": "Erster Login auf diesem Gerät",
+      "no_changes": "Keine Änderungen seit Ihrem letzten Login"
+    },
+    "priority": {
+      "fristnaehe": "Fristnähe",
+      "folgevorgang": "Folgevorgang",
+      "manuell": "Manuell priorisiert",
+      "termin": "Termin steht"
+    },
+    "seit_login": {
+      "titel": "Seit Ihrem letzten Login",
+      "neue_briefe": "neue Briefe",
+      "frist_naeher": "Frist näher gerückt",
+      "vorgang_abgeschlossen": "Vorgang abgeschlossen"
+    },
+    "demo_banner": {
+      "text": "Demo-Modus · Mock-Daten · Originale liegen in den amtlichen Postfächern",
+      "disclaimer_link": "Disclaimer ansehen"
+    },
+    "untertitel": "Ihr persönlicher Überblick über Briefe, Fristen und Vorgänge",
+    "letzter_login": "letzter Login vor {days} Tagen · auf diesem Gerät",
+    "prototyp_hinweis": {
+      "text": "Demo-Modus · Mock-Daten · Originale liegen in den amtlichen Postfächern"
     }
   },
   "wohngeldFolge": {
@@ -1671,8 +1588,11 @@
     "plus_context": "Seit der Wohngeld-Plus-Reform 2023 sind rund dreimal so viele Haushalte berechtigt — bezogen wird es von deutlich weniger.",
     "cta": "Anspruch prüfen & Antrag vorbereiten",
     "zustaendig": "Zuständig: Bezirksamt Mitte von Berlin — Wohngeldstelle (kommunal).",
+    "zustaendig_named": "Zuständig: {name} (kommunal).",
+    "zustaendig_generic": "Zuständig: Ihre örtliche Wohngeldstelle (kommunal).",
     "zukunft_chip": "ZUKUNFT 2027",
-    "disclaimer": "Unverbindliche Schätzung, keine Bewilligung. § 22 Abs. 1 WoGG."
+    "disclaimer": "Unverbindliche Schätzung, keine Bewilligung. § 22 Abs. 1 WoGG.",
+    "disclaimer_norm": "Unverbindliche Schätzung, keine Bewilligung. {normen}"
   },
   "anspruchLane": {
     "title": "Ihnen steht zu",
@@ -1710,6 +1630,7 @@
     "nicht_eingereicht": "Der Antrag ist vorbereitet, aber noch nicht gestellt — Sie behalten die Kontrolle.",
     "cta": "Verlängerung vorbereiten",
     "zustaendig": "Zuständig: Landesamt für Einwanderung Berlin (LEA).",
+    "zustaendig_named": "Zuständig: {name}.",
     "rechtsgrundlage": "§ 81 Abs. 4 S. 1 AufenthG (Fortgeltungsfiktion) · Hinweis auf Basis Ihrer Stammdaten.",
     "zukunft_chip": "ZUKUNFT 2027",
     "disclaimer": "Proaktive Fristbewachung ist ein Zielbild — synthetische [MOCK]-Demo-Daten, keine Rechtswirkung."
@@ -1737,7 +1658,6 @@
   "wohngeldHinweis": {
     "title": "Möglicher Anspruch erkannt",
     "collapsed_title": "Möglicher Wohngeld-Anspruch erkannt",
-    "collapsed_hint": "Tippen zum Prüfen · [MOCK]",
     "collapse": "Hinweis einklappen",
     "chip_haushalt": "Haushalt {n}",
     "chip_mietstufe": "Mietstufe {stufe}",
@@ -1745,15 +1665,10 @@
     "chip_amtlich": "amtlich abgeglichen",
     "need_inline": "Noch nötig: Bruttoeinkommen · Mietvertrag",
     "trigger_label": "Sie haben vermutlich Anspruch auf Wohngeld.",
-    "amount_range": "ca. {min} – {max} € / Monat",
     "amount_schaetzung": "Schätzung",
     "amount_a11y": "Geschätzter Mietzuschuss zwischen {min} und {max} Euro pro Monat — unverbindliche Schätzung.",
-    "non_take_up": "Rund die Hälfte der Berechtigten beantragt Wohngeld nie — prüfen Sie, ob es Ihnen zusteht.",
     "datenblock_title": "Genutzte Daten (Datenminimierung)",
     "daten_haushalt": "Haushaltsgröße ({n}, aus Melderegister)",
-    "daten_mietstufe": "Mietstufe {stufe} (registrierte Gemeinde {ort}) [MOCK]",
-    "daten_wohnverhaeltnis": "Wohnverhältnis: zur Miete",
-    "daten_ergaenzen": "Sie ergänzen noch: Bruttoeinkommen und Mietvertrag",
     "cta_primary": "Anspruch prüfen & Antrag vorbereiten",
     "rechtsgrundlage": "Rechtsgrundlage: {normen}",
     "consent_line": "Hinweis auf Basis Ihrer Einwilligung zu proaktiven Anspruchs-Hinweisen (Koalitionsvertrag 2025).",
@@ -1764,27 +1679,20 @@
     "snooze": "Später erinnern",
     "behoerde": "Zuständig: Bezirksamt Mitte von Berlin — Wohngeldstelle",
     "headline": "Sie haben möglicherweise Anspruch auf Wohngeld",
-    "betrag_label": "Geschätzter Betrag",
     "amount_value": "ca. {min}–{max} €",
     "amount_per": "/ Monat",
     "subline": "Prüfen Sie Ihren Anspruch und bereiten Sie Ihren Antrag in wenigen Schritten vor.",
     "reasons_title": "Warum das zutrifft",
-    "reason_datenabgleich": "Datenabgleich: mit amtlichen Daten verifiziert",
-    "needed_title": "Noch erforderlich",
-    "needed_einkommen": "Bruttoeinkommen",
-    "needed_mietvertrag": "Mietvertrag",
     "how_calculated": "Wie wurde das berechnet?",
     "rail_aria": "Eckdaten zur Schätzung",
-    "rail_betrag_label": "Geschätzter Monatsbetrag",
-    "rail_betrag_value": "{min} – {max} €",
-    "rail_zeit_label": "Zeit gespart",
-    "rail_zeit_value": "ca. 8 Std.",
-    "rail_behoerde_label": "Zuständige Behörde",
-    "rail_behoerde_value": "Bezirksamt Mitte von Berlin",
-    "rail_sicher_title": "Ihre Daten sind sicher",
-    "rail_sicher_body": "Verschlüsselte Übertragung und Verarbeitung",
     "disclaimer": "Dies ist eine unverbindliche Schätzung auf Basis Ihrer Angaben und Daten aus amtlichen Quellen. Die tatsächliche Höhe wird ausschließlich von der zuständigen Behörde festgelegt. Mit dem Fortfahren willigen Sie in die proaktive Anspruchsprüfung ein.",
-    "learn_more": "Mehr erfahren"
+    "learn_more": "Mehr erfahren",
+    "amount_range": "ca. {min} – {max} € / Monat",
+    "non_take_up": "Rund die Hälfte der Berechtigten beantragt Wohngeld nie — prüfen Sie, ob es Ihnen zusteht.",
+    "daten_mietstufe": "Mietstufe {stufe} (registrierte Gemeinde {ort}) [MOCK]",
+    "daten_wohnverhaeltnis": "Wohnverhältnis: zur Miete",
+    "daten_ergaenzen": "Sie ergänzen noch: Bruttoeinkommen und Mietvertrag",
+    "betrag_label": "Geschätzter Betrag"
   },
   "common": {
     "cta": {
@@ -1798,7 +1706,6 @@
     "filter_active": "{count} Filter aktiv",
     "search": "Suchen",
     "loading": "Wird geladen …",
-    "all": "Alle",
     "show_all": "Alle anzeigen",
     "actions": {
       "close": "Schließen",
@@ -1811,10 +1718,6 @@
       "prev": "Vorherige Seite",
       "next": "Nächste Seite",
       "page": "Seite {page}"
-    },
-    "context_chip": {
-      "prototype": "Prototyp · Mock-Daten",
-      "speculative": "Spekulatives Demo-Feature"
     },
     "empty": {
       "default_title": "Keine Einträge",
@@ -1862,7 +1765,9 @@
       "title": "Frist nach § 17 BMG — Details",
       "open_cta": "Warum 14 Tage?",
       "close_cta": "Schließen"
-    }
+    },
+    "link_neues_fenster": "(öffnet in neuem Fenster)",
+    "all": "Alle"
   },
   "umzug": {
     "wizard": {
@@ -2134,9 +2039,6 @@
       "title": "Wie kann ich Ihnen helfen?",
       "description": "Stellen Sie eine Frage oder wählen Sie einen Vorschlag."
     },
-    "streaming": {
-      "typing": "Assistent schreibt …"
-    },
     "error": {
       "stream": "Die Antwort konnte nicht geladen werden. Bitte erneut versuchen.",
       "retry": "Erneut versuchen",
@@ -2234,7 +2136,8 @@
       "mock_note": "[MOCK] · Prototyp simuliert — keine reale Übermittlung an die Familienkasse. Antragsloses Kindergeld ist ein Regierungsentwurf; die Auszahlung erfolgt gestuft ab 2027.",
       "cta_start": "Kindergeld einrichten",
       "cta_cancel": "Abbrechen",
-      "cancelled": "Abgebrochen."
+      "cancelled": "Abgebrochen.",
+      "status_resolved": "Eingerichtet."
     },
     "kontext": {
       "title": "Kontext",
@@ -2251,12 +2154,12 @@
       "datenschutz_body": "Es werden nur die für Ihre Frage nötigen Daten verarbeitet. Originale bleiben in den amtlichen Postfächern.",
       "datenschutz_link": "Mehr zu Datenschutz",
       "aside_label": "Kontext des Assistenten"
+    },
+    "streaming": {
+      "typing": "Assistent schreibt …"
     }
   },
   "posteingang": {
-    "skip_link": {
-      "zur_brief_liste": "Zum Brief-Listen-Bereich springen"
-    },
     "rail": {
       "nav_aria": "Posteingang-Ordner",
       "title": "Posteingang",
@@ -3044,18 +2947,19 @@
       "no_target": "Kein geführter Vorgang verfügbar",
       "zukunft_hint": "[ZUKUNFT 2027] Briefinhalt wird automatisch erkannt · [MOCK]",
       "calendar_disabled_a11y": "Kalender-Eintrag nicht möglich: Frist nicht eindeutig aus dem Originalbrief erkannt. Bitte im Original prüfen."
+    },
+    "skip_link": {
+      "zur_brief_liste": "Zum Brief-Listen-Bereich springen"
     }
   },
   "vorgaenge": {
     "title": "Vorgänge",
     "subtitle": "Laufende und abgeschlossene Behördenprozesse im Überblick",
-    "filter": {
-      "alle": "Alle",
-      "laufend": "Laufend",
-      "warten": "Warten auf Sie",
-      "abgeschlossen": "Abgeschlossen"
+    "empty": {
+      "title": "Keine Vorgänge in dieser Ansicht",
+      "body": "In dieser Ansicht sind aktuell keine Vorgänge vorhanden.",
+      "cta_umzug": "Umzug starten"
     },
-    "filter_aria": "Vorgänge nach Status filtern",
     "card": {
       "progress": "{erledigt} von {gesamt} erledigt",
       "progress_label": "Fortschritt",
@@ -3075,15 +2979,6 @@
       "gestartet_label": "Gestartet: {datum}",
       "menu_aria": "Weitere Aktionen für {titel}"
     },
-    "stepper": {
-      "aria": "Fortschritt des Vorgangs {titel}",
-      "node_done": "{behoerde}: abgeschlossen",
-      "node_active": "{behoerde}: in Bearbeitung",
-      "node_pending": "{behoerde}: ausstehend",
-      "node_failed": "{behoerde}: fehlgeschlagen",
-      "date_running": "Verifizierung läuft",
-      "date_pending": "Ausstehend"
-    },
     "rail": {
       "title": "Was ist gerade wichtig?",
       "subtitle": "Hinweise zu Ihren laufenden Vorgängen",
@@ -3101,10 +2996,14 @@
       "alle_ansehen": "Alle Vorgänge ansehen",
       "empty": "Aktuell ist nichts dringend."
     },
-    "empty": {
-      "title": "Keine Vorgänge in dieser Ansicht",
-      "body": "In dieser Ansicht sind aktuell keine Vorgänge vorhanden.",
-      "cta_umzug": "Umzug starten"
+    "stepper": {
+      "aria": "Fortschritt des Vorgangs {titel}",
+      "node_done": "{behoerde}: abgeschlossen",
+      "node_active": "{behoerde}: in Bearbeitung",
+      "node_pending": "{behoerde}: ausstehend",
+      "node_failed": "{behoerde}: fehlgeschlagen",
+      "date_running": "Verifizierung läuft",
+      "date_pending": "Ausstehend"
     },
     "typ": {
       "umzug": "Umzug",
@@ -3114,6 +3013,12 @@
       "gewerbeanmeldung": "Gewerbeanmeldung",
       "anmeldung": "Anmeldung",
       "sonstige": "Vorgang"
+    },
+    "filter": {
+      "alle": "Alle",
+      "laufend": "Laufend",
+      "warten": "Warten auf Sie",
+      "abgeschlossen": "Abgeschlossen"
     }
   },
   "stammdaten": {
@@ -3371,95 +3276,6 @@
         "drv": {
           "label": "DRV-Nr."
         }
-      }
-    },
-    "korrekturweg": {
-      "familienname": {
-        "pointer": "Korrektur beim Standesamt nach § 1355 BGB / § 45 PStG."
-      },
-      "fruehere_namen": {
-        "pointer": "Korrektur beim Standesamt nach § 45 PStG."
-      },
-      "vornamen": {
-        "pointer": "Korrektur beim Standesamt nach § 45 PStG."
-      },
-      "doktorgrad": {
-        "pointer": "Korrektur über Bürgeramt mit Beleg-Upload (§ 3 Abs. 1 Nr. 6 BMG)."
-      },
-      "geburtsdatum": {
-        "pointer": "Korrektur beim Standesamt des Geburtsorts."
-      },
-      "geburtsort": {
-        "pointer": "Korrektur beim Standesamt des Geburtsorts."
-      },
-      "geschlecht": {
-        "pointer": "Erklärung beim Standesamt nach § 4 SBGG (Anmeldung) und § 2 SBGG (persönliche Beurkundung)."
-      },
-      "staatsangehoerigkeit": {
-        "pointer": "Korrektur über Einbürgerungsbehörde nach StAG."
-      },
-      "steuer_id": {
-        "pointer": "Lebenslang vergeben durch das Bundeszentralamt für Steuern (§ 139b AO) — nicht änderbar."
-      },
-      "anschrift_aktuell": {
-        "pointer": "Bürgeramt-Termin oder elektronische Wohnsitz-Anmeldung (eWA) nach § 17 BMG."
-      },
-      "anschriften_historisch": {
-        "pointer": "Korrekturen werden durch eine neue Anmeldung nach § 17 BMG ausgelöst."
-      },
-      "familienstand": {
-        "pointer": "Korrektur beim Standesamt nach PStG."
-      },
-      "partner": {
-        "pointer": "Korrektur beim Standesamt nach PStG."
-      },
-      "kinder": {
-        "pointer": "Korrektur beim Standesamt nach § 21 PStG."
-      },
-      "eheschliessung": {
-        "pointer": "Korrektur beim Standesamt der Eheschließung."
-      },
-      "personalausweis": {
-        "pointer": "Neuausstellung beim Bürgeramt nach PAuswG."
-      },
-      "reisepass": {
-        "pointer": "Neuausstellung beim Bürgeramt nach PassG."
-      },
-      "eat_can": {
-        "pointer": "Korrektur über die Ausländerbehörde nach AufenthG."
-      },
-      "azr_nr": {
-        "pointer": "Korrektur über die Ausländerbehörde nach § 34 AZRG."
-      },
-      "religionszugehoerigkeit": {
-        "pointer": "Eintritt / Austritt: Standesamt oder Religionsgemeinschaft; Speicherung nach § 3 Abs. 1 Nr. 11 BMG."
-      },
-      "kontakt_email": {
-        "pointer": "Direkt im BundID-Konto änderbar (App-Einstellung)."
-      },
-      "kontakt_mobil": {
-        "pointer": "Direkt im BundID-Konto änderbar (App-Einstellung)."
-      },
-      "sprachpraeferenz": {
-        "pointer": "App-interne Einstellung — keine Behörden-Wirkung."
-      },
-      "iban": {
-        "pointer": "Heute (Mai 2026) pro Behörde separat zu hinterlegen — diese App simuliert ein 2027-Pattern."
-      },
-      "auskunftssperre": {
-        "pointer": "Antrag mit Begründung beim Bürgeramt nach § 51 Abs. 1 BMG."
-      },
-      "uebermittlungssperren": {
-        "pointer": "Antrag beim Bürgeramt nach §§ 42 Abs. 3, 50 Abs. 5 BMG (ohne Begründung)."
-      },
-      "kvnr": {
-        "pointer": "Korrektur über das Mitgliedsportal Ihrer Krankenkasse (§ 290 SGB V)."
-      },
-      "drv_versicherungsnummer": {
-        "pointer": "Korrektur über das DRV-Konto (§ 147 SGB VI)."
-      },
-      "elstam": {
-        "pointer": "Korrektur über Mein ELSTER bzw. das Finanzamt (§ 39 EStG)."
       }
     },
     "disclaimer": {
@@ -4096,13 +3912,6 @@
       "show_all": "Vollständiges Protokoll anzeigen",
       "pilot_note": "Stand der Register-Anbindung: Pilot-Phase — die Abdeckung wird laufend erweitert."
     },
-    "sections": {
-      "region_title": "Ihre Stammdaten im Detail"
-    },
-    "aenderungsprotokoll": {
-      "title": "Änderungsprotokoll",
-      "show_all": "Alle Änderungen anzeigen"
-    },
     "hoheit": {
       "title": "Sie haben die Hoheit über Ihre Daten",
       "cta": "Einstellungen verwalten"
@@ -4112,9 +3921,6 @@
       "versicherung_vorsorge": "Versicherung & Vorsorge",
       "identitaetsdokumente": "Identitätsdokumente",
       "familie_bezugspersonen": "Familie & Bezugspersonen"
-    },
-    "cross_link": {
-      "familie": "Zu Familie"
     },
     "v2": {
       "profil": {
@@ -4200,10 +4006,6 @@
         "body_link": "Mehr zu Ihren Rechten und zur Datenverwendung.",
         "cta": "Datennutzung verwalten"
       },
-      "secondary": {
-        "heading": "Weitere Bereiche",
-        "subtitle": "Renten, Krankenversicherung, Mobilität, Notification-Präferenzen und Sperren — als sekundäre Schicht unter dem Hauptraster."
-      },
       "nachweise": {
         "title": "Verbundene Nachweise & Wallet",
         "body": "Ihre digitalen Nachweise sind sicher in der Wallet verbunden und bei Bedarf verifizierbar.",
@@ -4223,6 +4025,10 @@
         "verifiziert_am": "Verifiziert am: {datum}",
         "verifiziert_badge": "Verifiziert",
         "alle_anzeigen": "Alle Verifizierungen anzeigen"
+      },
+      "secondary": {
+        "heading": "Weitere Bereiche",
+        "subtitle": "Renten, Krankenversicherung, Mobilität, Notification-Präferenzen und Sperren — als sekundäre Schicht unter dem Hauptraster."
       }
     },
     "header": {
@@ -4252,6 +4058,105 @@
         "title": "Anschrift ändern",
         "body": "Ihre Meldeanschrift wird vom Bürgeramt im Melderegister geführt. Eine Adressänderung erfolgt über die Ummeldung – in dieser Demo als Umzug-Autopilot abgebildet."
       }
+    },
+    "korrekturweg": {
+      "familienname": {
+        "pointer": "Korrektur beim Standesamt nach § 1355 BGB / § 45 PStG."
+      },
+      "fruehere_namen": {
+        "pointer": "Korrektur beim Standesamt nach § 45 PStG."
+      },
+      "vornamen": {
+        "pointer": "Korrektur beim Standesamt nach § 45 PStG."
+      },
+      "doktorgrad": {
+        "pointer": "Korrektur über Bürgeramt mit Beleg-Upload (§ 3 Abs. 1 Nr. 6 BMG)."
+      },
+      "geburtsdatum": {
+        "pointer": "Korrektur beim Standesamt des Geburtsorts."
+      },
+      "geburtsort": {
+        "pointer": "Korrektur beim Standesamt des Geburtsorts."
+      },
+      "geschlecht": {
+        "pointer": "Erklärung beim Standesamt nach § 4 SBGG (Anmeldung) und § 2 SBGG (persönliche Beurkundung)."
+      },
+      "staatsangehoerigkeit": {
+        "pointer": "Korrektur über Einbürgerungsbehörde nach StAG."
+      },
+      "steuer_id": {
+        "pointer": "Lebenslang vergeben durch das Bundeszentralamt für Steuern (§ 139b AO) — nicht änderbar."
+      },
+      "anschrift_aktuell": {
+        "pointer": "Bürgeramt-Termin oder elektronische Wohnsitz-Anmeldung (eWA) nach § 17 BMG."
+      },
+      "anschriften_historisch": {
+        "pointer": "Korrekturen werden durch eine neue Anmeldung nach § 17 BMG ausgelöst."
+      },
+      "familienstand": {
+        "pointer": "Korrektur beim Standesamt nach PStG."
+      },
+      "partner": {
+        "pointer": "Korrektur beim Standesamt nach PStG."
+      },
+      "kinder": {
+        "pointer": "Korrektur beim Standesamt nach § 21 PStG."
+      },
+      "eheschliessung": {
+        "pointer": "Korrektur beim Standesamt der Eheschließung."
+      },
+      "personalausweis": {
+        "pointer": "Neuausstellung beim Bürgeramt nach PAuswG."
+      },
+      "reisepass": {
+        "pointer": "Neuausstellung beim Bürgeramt nach PassG."
+      },
+      "eat_can": {
+        "pointer": "Korrektur über die Ausländerbehörde nach AufenthG."
+      },
+      "azr_nr": {
+        "pointer": "Korrektur über die Ausländerbehörde nach § 34 AZRG."
+      },
+      "religionszugehoerigkeit": {
+        "pointer": "Eintritt / Austritt: Standesamt oder Religionsgemeinschaft; Speicherung nach § 3 Abs. 1 Nr. 11 BMG."
+      },
+      "kontakt_email": {
+        "pointer": "Direkt im BundID-Konto änderbar (App-Einstellung)."
+      },
+      "kontakt_mobil": {
+        "pointer": "Direkt im BundID-Konto änderbar (App-Einstellung)."
+      },
+      "sprachpraeferenz": {
+        "pointer": "App-interne Einstellung — keine Behörden-Wirkung."
+      },
+      "iban": {
+        "pointer": "Heute (Mai 2026) pro Behörde separat zu hinterlegen — diese App simuliert ein 2027-Pattern."
+      },
+      "auskunftssperre": {
+        "pointer": "Antrag mit Begründung beim Bürgeramt nach § 51 Abs. 1 BMG."
+      },
+      "uebermittlungssperren": {
+        "pointer": "Antrag beim Bürgeramt nach §§ 42 Abs. 3, 50 Abs. 5 BMG (ohne Begründung)."
+      },
+      "kvnr": {
+        "pointer": "Korrektur über das Mitgliedsportal Ihrer Krankenkasse (§ 290 SGB V)."
+      },
+      "drv_versicherungsnummer": {
+        "pointer": "Korrektur über das DRV-Konto (§ 147 SGB VI)."
+      },
+      "elstam": {
+        "pointer": "Korrektur über Mein ELSTER bzw. das Finanzamt (§ 39 EStG)."
+      }
+    },
+    "aenderungsprotokoll": {
+      "title": "Änderungsprotokoll",
+      "show_all": "Alle Änderungen anzeigen"
+    },
+    "sections": {
+      "region_title": "Ihre Stammdaten im Detail"
+    },
+    "cross_link": {
+      "familie": "Zu Familie"
     }
   },
   "dokumente": {
@@ -4289,11 +4194,11 @@
       "nr_prefix": "Nr. "
     },
     "daten": {
+      "ausgestellt_label": "Ausgestellt",
+      "gueltig_bis_label": "Gültig bis",
       "ausgestellt": "Ausgestellt {datum}",
       "gueltig_bis": "Gültig bis {datum}",
-      "unbefristet": "unbefristet",
-      "ausgestellt_label": "Ausgestellt",
-      "gueltig_bis_label": "Gültig bis"
+      "unbefristet": "unbefristet"
     },
     "action": {
       "ansehen": "{name} ansehen",
@@ -4353,24 +4258,12 @@
       "cta": "Dokument verwenden",
       "cta_toast": "Dokumente werden in dieser Demo direkt in einem Vorgang als Anlage ausgewählt."
     },
-    "preview": {
-      "title": "Dokumentvorschau",
-      "description": "Vorschau der hinterlegten Dokument-Metadaten. Diese Demo zeigt keine echte Urkunde.",
-      "qr_label": "QR-Prüfcode",
-      "eudi_yes": "Für EUDI-Wallet exportierbar",
-      "eudi_no": "Nicht EUDI-exportierbar",
-      "aussteller": "Ausstellende Behörde",
-      "nr_label": "Dokumentnummer",
-      "ausgestellt_label": "Ausgestellt am",
-      "gueltig_bis_label": "Gültig bis"
-    },
     "empty": {
       "title": "Noch keine Dokumente",
       "filter_title": "Keine Dokumente für diesen Filter",
       "filter_description": "Wählen Sie eine andere Kategorie oder einen anderen Suchbegriff."
     },
     "error": "Dokumente konnten nicht geladen werden.",
-    "demo_action_toast": "Demo-Funktion — in diesem Prototyp nicht hinterlegt.",
     "filter": {
       "button": "Filter",
       "sort_label": "Sortieren nach",
@@ -4492,7 +4385,19 @@
       "demo_note": "[MOCK] Demo: ausgestellt von einem Demo-Issuer mit eigenem Trust-Anchor — nicht von einer deutschen Meldebehörde und nicht vom Staat. Format und Signaturprüfung sind echt; die Wallet-Ausstellung durch Behörden ist eine Zukunftsfunktion (EUDI-Wallet ab 2. Januar 2027).",
       "download": "Herunterladen",
       "close": "Schließen"
-    }
+    },
+    "preview": {
+      "title": "Dokumentvorschau",
+      "description": "Vorschau der hinterlegten Dokument-Metadaten. Diese Demo zeigt keine echte Urkunde.",
+      "qr_label": "QR-Prüfcode",
+      "eudi_yes": "Für EUDI-Wallet exportierbar",
+      "eudi_no": "Nicht EUDI-exportierbar",
+      "aussteller": "Ausstellende Behörde",
+      "nr_label": "Dokumentnummer",
+      "ausgestellt_label": "Ausgestellt am",
+      "gueltig_bis_label": "Gültig bis"
+    },
+    "demo_action_toast": "Demo-Funktion — in diesem Prototyp nicht hinterlegt."
   },
   "termine": {
     "title": "Termine",
@@ -4511,22 +4416,16 @@
       "titel": "Kalender",
       "vergangen_link": "Vergangene Termine ansehen"
     },
-    "spur": {
-      "termine_titel": "Termine, um die sich das System kümmert",
-      "termine_leer": "Aktuell keine anstehenden Termine.",
-      "fristen_titel": "Fristen, die Sie im Blick behalten müssen",
-      "fristen_leer": "Keine offenen Fristen."
-    },
     "kpi": {
       "naechster_termin": "Nächster Termin",
       "strip_label": "Termin-Kennzahlen",
       "offene_fristen": "Offene Fristen",
-      "offene_fristen_sub": "Handlungsbedarf",
       "bestaetigte": "Bestätigte Termine",
-      "bestaetigte_sub": "In den nächsten 30 Tagen",
       "warten": "Warten auf Rückmeldung",
-      "warten_sub": "Termine in Klärung",
-      "kein_termin": "Kein Termin"
+      "kein_termin": "Kein Termin",
+      "offene_fristen_sub": "Handlungsbedarf",
+      "bestaetigte_sub": "In den nächsten 30 Tagen",
+      "warten_sub": "Termine in Klärung"
     },
     "tabs": {
       "alle": "Alle",
@@ -4538,23 +4437,8 @@
     "toolbar": {
       "suche_placeholder": "Termine oder Behörden suchen",
       "suche_label": "Termine durchsuchen",
-      "filter": "Filter",
-      "export": "Kalender exportieren"
-    },
-    "liste": {
-      "anstehende_titel": "Anstehende Termine",
-      "alle_termine": "Alle Termine anzeigen",
-      "alle_fristen": "Alle Fristen anzeigen",
-      "erinnerungen_titel": "Erinnerungen"
-    },
-    "cal": {
-      "legend": {
-        "titel": "Legende",
-        "termine": "Termine",
-        "fristen": "Fristen",
-        "erinnerungen": "Erinnerungen",
-        "mehrere": "Mehrere Einträge"
-      }
+      "export": "Kalender exportieren",
+      "filter": "Filter"
     },
     "hero": {
       "tag": "Vorgemerkt",
@@ -4629,13 +4513,6 @@
       "vergangene_zeigen": "Vergangene & abgesagte anzeigen",
       "vergangene_ausblenden": "Vergangene & abgesagte ausblenden"
     },
-    "naechste": {
-      "title": "Nächste Termine",
-      "details_aria": "Details: {betreff}"
-    },
-    "weitere": {
-      "title": "Weitere Termine & Erinnerungen"
-    },
     "row": {
       "details_cta": "Details",
       "zum_vorgang_cta": "Zum Vorgang",
@@ -4670,25 +4547,25 @@
     },
     "detail": {
       "status_label": "Status: {status}",
-      "titel": "Termindetails",
       "schliessen": "Termindetails schließen",
       "zugehoeriger_vorgang": "Zugehöriger Vorgang",
       "link_hinweis": "Link wird 24 h vorher per E-Mail zugestellt.",
       "vorbereitung_titel": "Vorbereitung",
       "zum_vorgang": "Zum Vorgang",
-      "verschieben": "Termin verschieben"
+      "verschieben": "Termin verschieben",
+      "titel": "Termindetails"
     },
     "reschedule": {
       "title": "Anderen Termin suchen",
       "intro": "Wir suchen einen anderen freien Termin für Sie ([MOCK]).",
-      "confirm": "Auf diesen Termin verschieben",
       "slot_mock_suffix": "[MOCK]",
       "warteliste_titel": "Aktuell kein freier Termin",
       "warteliste_text": "Wir setzen Sie auf die Warteliste und melden uns, sobald einer frei wird.",
       "warteliste_cta": "Auf die Warteliste setzen",
       "warteliste_toast": "Sie stehen auf der Warteliste ([MOCK]).",
       "toast_template": "Termin verschoben auf {datum}.",
-      "toast_error": "Termin konnte nicht verschoben werden — bitte erneut versuchen."
+      "toast_error": "Termin konnte nicht verschoben werden — bitte erneut versuchen.",
+      "confirm": "Auf diesen Termin verschieben"
     },
     "naechster_schritt": {
       "title": "Nächster Schritt",
@@ -4700,8 +4577,8 @@
       "storno_text": "Sie können Ihren Termin bis 48 Stunden vorher online stornieren oder verschieben."
     },
     "vorbereitung": {
-      "title": "Gut vorbereitet zum Termin",
       "reisepass": "Reisepass mitbringen",
+      "title": "Gut vorbereitet zum Termin",
       "alter_titel": "Alten Aufenthaltstitel mitbringen",
       "biometrie": "Biometrisches Passfoto mitbringen",
       "gebuehr": "Bearbeitungsgebühr bereithalten",
@@ -4734,9 +4611,6 @@
     },
     "error": "Termine konnten nicht geladen werden.",
     "retry": "Erneut versuchen",
-    "fristen_offen": "{count, plural, =0 {Keine offenen Fristen} =1 {1 offene Frist} other {# offene Fristen}}",
-    "frist_praefix": "Frist: {datum}",
-    "faellig_praefix": "Fällig: {datum}",
     "uhr_dauer": "{zeit} Uhr ({dauer} Min.)",
     "zeit_range": "{range} Uhr",
     "action": {
@@ -4749,7 +4623,34 @@
       "bestaetigt": "Bestätigt",
       "abgesagt": "Abgesagt",
       "vorschlag": "Vorgeschlagen"
-    }
+    },
+    "cal": {
+      "legend": {
+        "titel": "Legende",
+        "termine": "Termine",
+        "fristen": "Fristen",
+        "erinnerungen": "Erinnerungen",
+        "mehrere": "Mehrere Einträge"
+      }
+    },
+    "spur": {
+      "termine_titel": "Termine, um die sich das System kümmert",
+      "termine_leer": "Aktuell keine anstehenden Termine.",
+      "fristen_titel": "Fristen, die Sie im Blick behalten müssen",
+      "fristen_leer": "Keine offenen Fristen."
+    },
+    "liste": {
+      "anstehende_titel": "Anstehende Termine",
+      "alle_termine": "Alle Termine anzeigen",
+      "alle_fristen": "Alle Fristen anzeigen",
+      "erinnerungen_titel": "Erinnerungen"
+    },
+    "weitere": {
+      "title": "Weitere Termine & Erinnerungen"
+    },
+    "fristen_offen": "{count, plural, =0 {Keine offenen Fristen} =1 {1 offene Frist} other {# offene Fristen}}",
+    "frist_praefix": "Frist: {datum}",
+    "faellig_praefix": "Fällig: {datum}"
   },
   "steuer": {
     "title": "Steuer",
@@ -4761,9 +4662,9 @@
       "basis_hint": "Auf Basis Ihrer bereits bekannten Daten",
       "erstattung_label": "Voraussichtliche Erstattung",
       "erstattung_aria": "Voraussichtliche Erstattung {betrag}",
+      "datenquellen_label": "Datenquellen",
       "nachzahlung_label": "Voraussichtliche Nachzahlung",
-      "nachzahlung_aria": "Voraussichtliche Nachzahlung {betrag}",
-      "datenquellen_label": "Datenquellen"
+      "nachzahlung_aria": "Voraussichtliche Nachzahlung {betrag}"
     },
     "quelle": {
       "lohnsteuer": "Lohnsteuer",
@@ -4781,10 +4682,10 @@
       "anzeigen": "Anzeigen",
       "abgabe": "Zur Abgabe bereit",
       "abgabe_desc": "Prüfung abschließen und Erklärung abgeben",
-      "schritt_aria": "Schritt {n} von 3: {label}",
       "status_done": "abgeschlossen",
       "status_active": "aktiv",
-      "status_pending": "offen"
+      "status_pending": "offen",
+      "schritt_aria": "Schritt {n} von 3: {label}"
     },
     "bereiche": {
       "title": "Übersicht der Steuerbereiche"
@@ -4837,26 +4738,25 @@
     "datenschutz": {
       "title": "Datenschutz-Hinweis",
       "verarbeitet_label": "Verarbeitete Daten",
+      "rechtsgrundlage_label": "Rechtsgrundlage",
+      "empfaenger_label": "Empfänger",
+      "minimierung_hint": "Es werden nur die für die Steuererklärung erforderlichen Daten verarbeitet.",
+      "mehr": "Mehr zu Datenschutz",
       "daten": {
         "lohn": "Lohn- und Gehaltsdaten",
         "kv": "Krankenversicherungsbeiträge",
         "kind": "Daten zu Kindern (Kindergeld)"
-      },
-      "rechtsgrundlage_label": "Rechtsgrundlage",
-      "empfaenger_label": "Empfänger",
-      "minimierung_hint": "Es werden nur die für die Steuererklärung erforderlichen Daten verarbeitet.",
-      "mehr": "Mehr zu Datenschutz"
+      }
     },
+    "demo_action_toast": "Demo-Funktion — in diesem Prototyp nicht hinterlegt.",
+    "alle_bereiche": "Alle Bereiche anzeigen",
     "empty": {
       "title": "Kein Steuer-Entwurf vorhanden",
       "description": "Für dieses Steuerjahr liegen noch keine vorausgefüllten Daten vor."
     },
     "error": "Steuer-Übersicht konnte nicht geladen werden.",
     "retry": "Erneut versuchen",
-    "loading": "Lädt…",
-    "demo_action_toast": "Demo-Funktion — in diesem Prototyp nicht hinterlegt.",
-    "alle_bereiche": "Alle Bereiche anzeigen",
-    "weniger_bereiche": "Weniger anzeigen"
+    "loading": "Lädt…"
   },
   "datenschutz": {
     "page": {
@@ -4940,8 +4840,8 @@
     "aktivitaet": {
       "title": "Letzte Aktivitäten",
       "show_all": "Alle Aktivitäten anzeigen",
-      "show_less": "Weniger anzeigen",
-      "empty": "Noch keine Aktivitäten erfasst."
+      "empty": "Noch keine Aktivitäten erfasst.",
+      "show_less": "Weniger anzeigen"
     },
     "activity": {
       "typ": {
@@ -4953,9 +4853,9 @@
       "fallback": "Aktivität",
       "brief_geoeffnet": "Brief geöffnet",
       "ki_zusammenfassung": "KI-Zusammenfassung erstellt",
-      "adresse_uebermittelt": "Adresse an Behörde übermittelt",
       "dokument_geladen": "Dokument heruntergeladen",
-      "einwilligung_erteilt": "Einwilligung erteilt"
+      "einwilligung_erteilt": "Einwilligung erteilt",
+      "adresse_uebermittelt": "Adresse an Behörde übermittelt"
     },
     "einwilligungen": {
       "title": "Einwilligungen",
@@ -4980,6 +4880,15 @@
       "announce_aus": "Einwilligung {empfaenger} ausgeschaltet"
     },
     "quellen": {
+      "aktualitaet_note": {
+        "title": "Aktualität Ihrer Datenquellen",
+        "zukunft_chip": "ZUKUNFT 2027",
+        "amtswegig": "Nach einer Ummeldung schreiben angebundene Register — Meldebehörde, Finanzamt, Rundfunkbeitrag — Ihre neue Anschrift von Amts wegen fort. Sie reichen dafür nichts ein.",
+        "detektion": "Ihre letzte Ummeldung war am {datum}. Stellen ohne automatische Rückmeldung könnten noch einen älteren Stand haben — einen Live-Abgleich über alle Register nehmen wir bewusst nicht vor.",
+        "abh": "Die Ausländerbehörde erhält Adressänderungen nur auf Ihre eID-Bestätigung (§ 18 PAuswG). Sensible Stellen aktualisieren wir bewusst nicht per automatischem Push — so behalten Sie die Kontrolle darüber, wer die Änderung erfährt.",
+        "rechtsgrundlage": "Rechtsgrundlage: § 6 BMG · § 6 IDNrG — amtswegige Fortschreibung im Registerverbund. Nicht angebundene Stellen berichtigen Sie bei Bedarf nach Art. 16 DSGVO.",
+        "korrekturweg_link": "Korrekturweg in den Stammdaten ansehen"
+      },
       "title": "Datenquellen & Empfänger",
       "subtitle": "Übersicht darüber, welche Stellen auf Ihre Daten zugreifen und wie.",
       "col_stelle": "Stelle / Dienst",
@@ -4990,26 +4899,17 @@
       "einwilligungsbasiert": "Einwilligungsbasiert",
       "aktuell": "aktuell",
       "angezeigt": "{shown} von {total} Datenquellen angezeigt.",
-      "show_all": "Alle Empfänger anzeigen",
-      "aktualitaet_note": {
-        "title": "Aktualität Ihrer Datenquellen",
-        "zukunft_chip": "ZUKUNFT 2027",
-        "amtswegig": "Nach einer Ummeldung schreiben angebundene Register — Meldebehörde, Finanzamt, Rundfunkbeitrag — Ihre neue Anschrift von Amts wegen fort. Sie reichen dafür nichts ein.",
-        "detektion": "Ihre letzte Ummeldung war am {datum}. Stellen ohne automatische Rückmeldung könnten noch einen älteren Stand haben — einen Live-Abgleich über alle Register nehmen wir bewusst nicht vor.",
-        "abh": "Die Ausländerbehörde erhält Adressänderungen nur auf Ihre eID-Bestätigung (§ 18 PAuswG). Sensible Stellen aktualisieren wir bewusst nicht per automatischem Push — so behalten Sie die Kontrolle darüber, wer die Änderung erfährt.",
-        "rechtsgrundlage": "Rechtsgrundlage: § 6 BMG · § 6 IDNrG — amtswegige Fortschreibung im Registerverbund. Nicht angebundene Stellen berichtigen Sie bei Bedarf nach Art. 16 DSGVO.",
-        "korrekturweg_link": "Korrekturweg in den Stammdaten ansehen"
-      }
+      "show_all": "Alle Empfänger anzeigen"
     },
     "kontrolle": {
       "title": "Ihre Datenschutz-Kontrolle",
       "subtitle": "Sie entscheiden, wer Ihre Daten wie verwenden darf.",
       "zugriffsprotokoll": "Zugriffsprotokoll",
-      "zugriffsprotokoll_desc": "Alle Datenzugriffe nachvollziehen",
       "datenexport": "Datenexport",
       "export_bereit": "Export bereit",
-      "datenexport_desc": "Ihre Daten nach Art. 20 DSGVO mitnehmen",
       "einstellungen": "Einstellungen",
+      "zugriffsprotokoll_desc": "Alle Datenzugriffe nachvollziehen",
+      "datenexport_desc": "Ihre Daten nach Art. 20 DSGVO mitnehmen",
       "einstellungen_desc": "Präferenzen und Sperren verwalten",
       "vision_hint": "Diese Funktion ist Teil der 2027-Vision dieser Demo."
     },
@@ -5029,14 +4929,14 @@
     "export": {
       "hinweis": "[MOCK] Speculative-Design-Demo — keine echten personenbezogenen Daten."
     },
-    "toast": {
-      "einwilligung_error": "Einwilligung konnte nicht gespeichert werden."
-    },
     "empty": {
       "title": "Noch keine Aktivitäten",
       "description": "Sobald Daten verarbeitet werden, erscheinen sie hier."
     },
     "error": "Datenschutz-Daten konnten nicht geladen werden.",
+    "toast": {
+      "einwilligung_error": "Einwilligung konnte nicht gespeichert werden."
+    },
     "retry": "Erneut versuchen"
   },
   "familie": {
@@ -5071,10 +4971,10 @@
       "close": "Schließen"
     },
     "vertretung_banner": {
-      "title": "Vertretung",
-      "body": "Sie können Vorgänge für Mitglieder Ihres Haushalts vertretungsweise bearbeiten.",
       "titel": "Sie sind berechtigte Vertretung für {name}.",
-      "text": "Sie können Vorgänge für {vorname} einsehen und verwalten."
+      "text": "Sie können Vorgänge für {vorname} einsehen und verwalten.",
+      "title": "Vertretung",
+      "body": "Sie können Vorgänge für Mitglieder Ihres Haushalts vertretungsweise bearbeiten."
     },
     "vorgaenge": {
       "title": "Gemeinsame Vorgänge",
@@ -5132,58 +5032,6 @@
       "body": "Für dieses Profil sind keine Haushaltsmitglieder erfasst."
     }
   },
-  "autopilotRun": {
-    "title": "Umzug auf Autopilot",
-    "subtitle": "Sie bestätigen einmal – das System koordiniert die nächsten Schritte.",
-    "banner": {
-      "running_title": "Kaskade wird ausgeführt",
-      "running_subtitle": "Ihre Angaben werden sicher an die zuständigen Behörden übermittelt.",
-      "completed_title": "Alle Behörden informiert",
-      "completed_subtitle": "Alle {count, plural, =1 {zuständige Stelle hat} other {# zuständigen Stellen haben}} Ihre Adressänderung erhalten.",
-      "partial_title": "Fast geschafft",
-      "partial_subtitle": "Die meisten Stellen wurden informiert. Bei einzelnen Schritten ist ein erneuter Versuch nötig.",
-      "status_partial": "Teilweise abgeschlossen"
-    },
-    "cascade": {
-      "aria_label": "Fortschritt der Behörden-Benachrichtigung"
-    },
-    "node": {
-      "status": {
-        "ausstehend": "Ausstehend",
-        "eid_required": "Bestätigung erforderlich",
-        "failed": "Fehlgeschlagen"
-      },
-      "eid_cta": "Mit eID bestätigen",
-      "timestamp_pending": "—",
-      "aktenzeichen_prefix": "Az."
-    },
-    "action": {
-      "buergeramt": "Adresse übermittelt",
-      "finanzamt": "Zuständigkeit bestätigt",
-      "beitragsservice": "Adresse aktualisiert",
-      "bundesdruckerei": "Aufkleber wird erstellt",
-      "krankenkasse": "Übermittlung geplant",
-      "kfz": "Verifizierung läuft",
-      "familienkasse": "Zuständigkeit wird übernommen",
-      "auslaenderbehoerde": "Aktualisierung vorbereitet",
-      "fallback": "Adresse übermittelt"
-    },
-    "uebersicht": {
-      "title": "Ihr Umzug – Übersicht",
-      "neue_adresse_label": "Neue Adresse",
-      "einzugsdatum_label": "Einzugsdatum",
-      "autopilot_bereich_label": "Autopilot-Bereich",
-      "behoerden_count": "{count, plural, =1 {1 Behörde} other {# Behörden}}",
-      "schutz_title": "Ihre Daten sind geschützt",
-      "schutz_subtitle": "Übermittlung verschlüsselt, nur an zuständige Stellen.",
-      "schutz_link": "Mehr zum Datenschutz"
-    },
-    "feed": {
-      "title": "Live-Aktivitäten",
-      "started_title": "Autopilot gestartet",
-      "started_subtitle": "Ihre Angaben wurden geprüft und die Kaskade gestartet."
-    }
-  },
   "convenience": {
     "value_receipt": {
       "title": "Ihre Ersparnis",
@@ -5223,9 +5071,6 @@
       "personalnummer": "Personalnummer",
       "kennzeichen": "Kennzeichen"
     },
-    "assistant": {
-      "run_summary_intro": "Zusammenfassung Ihrer Ersparnis"
-    },
     "inline_cascade": {
       "live_region_label": "Live: Behörden werden informiert",
       "once_only_label": "Felder, die Sie nicht ausfüllen mussten",
@@ -5252,6 +5097,9 @@
         "legal_note_summary": "Rechtlicher Hinweis zum antragslosen Kindergeld",
         "legal_note_body": "Antragsloses Kindergeld ist ein Regierungsentwurf (Kabinettbeschluss 18.03.2026); die Schlussabstimmung im Bundestag ist für den 09.07.2026 terminiert, noch nicht beschlossen. Inkrafttreten ist zum 01.01.2027 geplant, die automatische Auszahlung erfolgt gestuft ab 2027. Real geregelt ist die zugrunde liegende Datenkette: Das Standesamt beurkundet die Geburt (§ 21 PStG), die Meldebehörde und das BZSt vergeben die Steuer-ID (§ 139b AO), und die Familienkasse setzt das Kindergeld fest und zahlt aus (§ 66/§ 70 EStG). Die eID-Bestätigung des Auszahlungskontos stützt sich auf § 18 PAuswG. Alle Daten sind synthetisch ([MOCK])."
       }
+    },
+    "assistant": {
+      "run_summary_intro": "Zusammenfassung Ihrer Ersparnis"
     }
   },
   "termin_autopilot": {
@@ -5295,7 +5143,6 @@
     },
     "zukunft_label": "[ZUKUNFT]",
     "zukunft_hint": "Diese register-übergreifende Weiterleitung ist heute nur teilweise automatisiert. Die vollständige Vernetzung ist Ziel der Registermodernisierung (NOOTS/IDNr).",
-    "rueckmeldung_label": "Rückmeldung an die bisherige Meldebehörde (§ 33 BMG)",
     "disclaimer_long": "Hinweis: Dieser Prototyp simuliert die Übermittlung. Die Wohnsitzanmeldung selbst läuft real über das mandatierte Format OSCI-XMeld (§ 2 BMeldDigiV), nicht über FIT-Connect. FIT-Connect ist der OZG-Transportweg für Bürger-Anträge — in dieser Demo nur für die antragsförmigen, eID-bestätigten Schritte (i-Kfz, Familienkasse, Ausländerbehörde) und ausschließlich gegen eine TEST-Umgebung mit selbst registriertem [MOCK destination]. Es wurde keine reale Behörde adressiert. Die register-zu-register-Weiterleitungen (§§ 33, 36 BMG) sind heute nur teilweise automatisiert; die vollständige Vernetzung ist Ziel der Registermodernisierung (NOOTS/IDNr) — hier als [ZUKUNFT] markiert."
   },
   "fit_connect": {
@@ -5344,14 +5191,12 @@
   },
   "katalog": {
     "titel": "Autopilot-Katalog",
-    "untertitel": "Lebenslagen, die der Autopilot für Sie übernimmt.",
     "lebenslagen_titel": "Lebenslagen / Autopilot-Katalog",
     "alle_lebenslagen": "Alle Lebenslagen ansehen",
     "behoerden_count": "ca. {count} Behörden",
     "zeit_gespart": "ca. {min} Min. gespart",
     "behoerden_label": "Beteiligte Stellen",
     "vorschau_badge": "In Vorbereitung",
-    "starten": "Umzug starten",
     "umzug": {
       "titel": "Umzug",
       "beschreibung": "Eine Bestätigung — wir melden Ihre neue Anschrift bei allen zuständigen Stellen."
@@ -5371,26 +5216,28 @@
     "status": {
       "live": "verfügbar",
       "demnaechst": "demnächst"
-    }
+    },
+    "untertitel": "Lebenslagen, die der Autopilot für Sie übernimmt.",
+    "starten": "Umzug starten"
   },
   "orchestration": {
     "mock_tag": "[MOCK]",
     "panel": {
       "title": "Engine-Protokoll",
       "mock_line": "Fälschungs-evidente Hash-Kette [MOCK] — lokal, SHA-256, kein echtes OSCI/XTA.",
-      "laufzettel_label": "Laufzettel",
       "empty": "Noch keine Protokoll-Einträge.",
       "seq_label": "Eintrag #{seq}",
-      "hash_chain_label": "Hash-Kette",
       "hash_link_aria": "Verkettung: vorheriger Hash {prev} verweist auf {hash}.",
+      "laufzettel_label": "Laufzettel",
+      "hash_chain_label": "Hash-Kette",
       "toggle_inspector": "Engine-Protokoll anzeigen",
       "chain_intact_hint": "Jeder Eintrag ist über SHA-256 mit dem vorherigen verkettet."
     },
     "quittung": {
       "positive": "Quittung: positiv (Auftrag ausgeführt)",
       "negative": "Quittung: negativ (nicht zustellbar)",
-      "accepted_at": "Laufzettel: angenommen {ts}",
-      "transport_code": "Transportcode: {code}"
+      "transport_code": "Transportcode: {code}",
+      "accepted_at": "Laufzettel: angenommen {ts}"
     },
     "event": {
       "saga_started": "Vorgang gestartet",
@@ -5429,9 +5276,6 @@
       "half_open": "halb-offen",
       "chip_aria": "{behoerde}: Schaltzustand {state}"
     },
-    "retry": {
-      "countdown": "Erneuter Versuch in {seconds} s"
-    },
     "compensation": {
       "summary": "Teilweise abgeschlossen — eine Übermittlung wurde zurückgenommen [MOCK].",
       "remediation": "So beheben Sie das: Prüfen Sie die markierte Übermittlung und stoßen Sie sie bei Bedarf erneut an.",
@@ -5452,6 +5296,9 @@
     "aria": {
       "audit_live": "Engine-Protokoll, Live-Aktualisierungen",
       "resilience_live": "Resilienz-Status, Live-Aktualisierungen"
+    },
+    "retry": {
+      "countdown": "Erneuter Versuch in {seconds} s"
     }
   },
   "shared": {
@@ -5496,14 +5343,6 @@
       "reference_ecosystem_badge": "reference-ecosystem",
       "simple_status": "Echtheit automatisch geprüft"
     },
-    "once_only": {
-      "wallet_path_note": "Sie halten die Bestätigung und legen sie selbst vor; die nächste Stelle prüft die Signatur."
-    },
-    "letter": {
-      "subject": "Ihre amtliche Meldebestätigung liegt vor",
-      "body": "Nach Ihrer Anmeldung steht Ihnen die amtliche Meldebestätigung (§ 24 Abs. 2 BMG) als Nachweis zur Verfügung. Sie finden sie in „Dokumente“. {disclaimer_short}",
-      "ai_summary": "Ihre Meldebestätigung ist da. Sie können sie der nächsten Stelle vorlegen — diese prüft die Signatur, statt erneut zu fragen."
-    },
     "disclosure": {
       "sheet_title": "Der nächsten Stelle vorlegen",
       "intro": "Sie legen nur diese Felder offen (Datenminimierung):",
@@ -5514,9 +5353,17 @@
       "cta": "Nur diese Felder vorlegen",
       "cta_aria": "Ausgewählte Felder der nächsten Stelle vorlegen und Signatur prüfen"
     },
+    "letter": {
+      "subject": "Ihre amtliche Meldebestätigung liegt vor",
+      "body": "Nach Ihrer Anmeldung steht Ihnen die amtliche Meldebestätigung (§ 24 Abs. 2 BMG) als Nachweis zur Verfügung. Sie finden sie in „Dokumente“. {disclaimer_short}",
+      "ai_summary": "Ihre Meldebestätigung ist da. Sie können sie der nächsten Stelle vorlegen — diese prüft die Signatur, statt erneut zu fragen."
+    },
     "disclaimer": {
       "short": "Hinweis: Dieser Prototyp simuliert die Ausstellung. Die amtliche Meldebestätigung beruht real auf § 24 Abs. 2 BMG (elektronisch: § 10 BMeldDigiV). Hier ausgestellt von einem Demo-Issuer, nicht von einer deutschen Behörde — Format echt, Autorität Demo ([reference-ecosystem]). Wallet-Ausstellung durch Behörden = Zukunft ([ZUKUNFT], EUDI-Wallet ab 2. Jan 2027). Once-Only hier wallet-basiert, nicht Register-Austausch (NOOTS).",
       "long": "Hinweis: Die amtliche Meldebestätigung ist das Dokument, das Sie nach einer Anmeldung erhalten (§ 24 Abs. 2 BMG, elektronisch i. V. m. § 10 BMeldDigiV / § 23a BMG). In diesem Prototyp wird sie von einem Demo-Issuer mit eigenem Trust-Anchor als verifiable credential ausgestellt — nicht von einer deutschen Meldebehörde und nicht vom Staat; das Format und die Signaturprüfung sind echt ([reference-ecosystem]), die Autorität ist Demo. Dass eine deutsche Meldebehörde eine Meldebestätigung als Wallet-Nachweis (PuB-EAA) ausstellt, ist eine Zukunftsfunktion ([ZUKUNFT]); die deutsche EUDI-Wallet startet gemäss eIDAS 2.0 (VO (EU) 2024/1183) am 2. Januar 2027. Once-Only zeigt diese Demo über den wallet-basierten Weg (Sie präsentieren den Nachweis selbst) — nicht über register-zu-register-Austausch (NOOTS/Registermodernisierung)."
+    },
+    "once_only": {
+      "wallet_path_note": "Sie halten die Bestätigung und legen sie selbst vor; die nächste Stelle prüft die Signatur."
     }
   },
   "protokoll": {
@@ -5593,5 +5440,133 @@
     "autopilot_active": "Autopilot aktiv",
     "autopilot_active_aria": "Autopilot aktiv — Assistenten öffnen",
     "unread_badge_aria": "{count, plural, one {# ungelesene Nachricht im Posteingang} other {# ungelesene Nachrichten im Posteingang}}"
+  },
+  "landing": {
+    "diagram": {
+      "you_label": "Sie als Bürger:in",
+      "input_title": "Einmal angeben",
+      "input_body": "Wir verstehen Ihr Anliegen und bereiten alles vor.",
+      "autopilot_label": "Autopilot",
+      "autopilot_sub": "Vorgang vorbereiten · Daten vorausfüllen · Nächsten Schritt erklären",
+      "authorities_label": "Ihre Behörden",
+      "behoerde1_name": "Einwohnermeldeamt",
+      "behoerde1_status": "Daten prüfen",
+      "behoerde2_name": "Ausländerbehörde",
+      "behoerde2_status": "Antrag bearbeiten",
+      "behoerde3_name": "Finanzamt",
+      "behoerde3_status": "Bescheid erhalten",
+      "control_bar": "Sie behalten jederzeit den Überblick und die Kontrolle.",
+      "sr_summary": "Ablauf: Sie geben Ihr Anliegen einmal an, der Autopilot bereitet den Vorgang vor und benachrichtigt alle zuständigen Behörden — Einwohnermeldeamt, Ausländerbehörde und Finanzamt. Sie behalten jederzeit Überblick und Kontrolle."
+    },
+    "trust": {
+      "title": "Auf einer vertrauenswürdigen Basis",
+      "deutschlandid": {
+        "title": "DeutschlandID",
+        "desc": "Sicher anmelden mit Ihrer digitalen Identität."
+      },
+      "eudi": {
+        "title": "EUDI Wallet",
+        "desc": "EU-weit anerkannt und zukunftssicher."
+      },
+      "bitv": {
+        "title": "BITV-konform",
+        "desc": "Barrierefrei, verständlich und für alle zugänglich."
+      },
+      "mock": {
+        "title": "Mock-Demo 2027-Vision",
+        "desc": "Ein Blick in die Zukunft der Verwaltung in Deutschland."
+      }
+    },
+    "feature": {
+      "umzug": {
+        "title": "Umzug",
+        "desc": "Wir melden Ihre neue Adresse bei allen relevanten Stellen."
+      },
+      "kindergeburt": {
+        "title": "Kindergeburt",
+        "desc": "Anmeldung im Rathaus, GEMA & mehr – in Minuten."
+      },
+      "aufenthalt": {
+        "title": "Aufenthaltstitel verlängern",
+        "desc": "Antrag vorbereiten, Dokumente prüfen, Termin buchen."
+      },
+      "posteingang": {
+        "title": "Posteingang mit KI-Erklärer",
+        "desc": "Verstehen statt verzweifeln – klärt, fasst zusammen, hilft."
+      }
+    },
+    "nav": {
+      "aria_label": "Hauptnavigation",
+      "leistungen": "Leistungen",
+      "buerger": "Für Bürger:innen",
+      "behoerden": "Für Behörden",
+      "sicherheit": "Sicherheit & Datenschutz",
+      "ueber_uns": "Über uns",
+      "login": "Anmelden"
+    },
+    "hero": {
+      "badge": "Die Verwaltung, die mitdenkt.",
+      "title": "Behörden, aber auf Autopilot.",
+      "subtitle": "Ein Bürgerportal für Deutschland, das Vorgänge vorbereitet, Daten vorausfüllt und den nächsten Schritt erklärt.",
+      "cta_primary": "Demo starten",
+      "cta_secondary": "Mehr erfahren",
+      "trust": "Sicher. Vertrauenswürdig. Deutschlandweit."
+    },
+    "eyebrow": "GovTech DE — Konzept-Demo",
+    "title": "Verwaltung neu gedacht",
+    "subtitle": "Ein Konzept-Prototyp einer bürgerzentrierten Schicht über DeutschlandID, EUDI Wallet und Deutschland-Stack. Alle Daten sind synthetisch.",
+    "cta_continue": "Demo öffnen"
+  },
+  "autopilotRun": {
+    "action": {
+      "buergeramt": "Adresse übermittelt",
+      "finanzamt": "Zuständigkeit bestätigt",
+      "beitragsservice": "Adresse aktualisiert",
+      "bundesdruckerei": "Aufkleber wird erstellt",
+      "krankenkasse": "Übermittlung geplant",
+      "kfz": "Verifizierung läuft",
+      "familienkasse": "Zuständigkeit wird übernommen",
+      "auslaenderbehoerde": "Aktualisierung vorbereitet",
+      "fallback": "Adresse übermittelt"
+    },
+    "uebersicht": {
+      "title": "Ihr Umzug – Übersicht",
+      "neue_adresse_label": "Neue Adresse",
+      "einzugsdatum_label": "Einzugsdatum",
+      "autopilot_bereich_label": "Autopilot-Bereich",
+      "behoerden_count": "{count, plural, =1 {1 Behörde} other {# Behörden}}",
+      "schutz_title": "Ihre Daten sind geschützt",
+      "schutz_subtitle": "Übermittlung verschlüsselt, nur an zuständige Stellen.",
+      "schutz_link": "Mehr zum Datenschutz"
+    },
+    "banner": {
+      "running_title": "Kaskade wird ausgeführt",
+      "running_subtitle": "Ihre Angaben werden sicher an die zuständigen Behörden übermittelt.",
+      "completed_title": "Alle Behörden informiert",
+      "completed_subtitle": "Alle {count, plural, =1 {zuständige Stelle hat} other {# zuständigen Stellen haben}} Ihre Adressänderung erhalten.",
+      "partial_title": "Fast geschafft",
+      "partial_subtitle": "Die meisten Stellen wurden informiert. Bei einzelnen Schritten ist ein erneuter Versuch nötig.",
+      "status_partial": "Teilweise abgeschlossen"
+    },
+    "node": {
+      "status": {
+        "ausstehend": "Ausstehend",
+        "eid_required": "Bestätigung erforderlich",
+        "failed": "Fehlgeschlagen"
+      },
+      "eid_cta": "Mit eID bestätigen",
+      "timestamp_pending": "—",
+      "aktenzeichen_prefix": "Az."
+    },
+    "feed": {
+      "title": "Live-Aktivitäten",
+      "started_title": "Autopilot gestartet",
+      "started_subtitle": "Ihre Angaben wurden geprüft und die Kaskade gestartet."
+    },
+    "title": "Umzug auf Autopilot",
+    "subtitle": "Sie bestätigen einmal – das System koordiniert die nächsten Schritte.",
+    "cascade": {
+      "aria_label": "Fortschritt der Behörden-Benachrichtigung"
+    }
   }
 }

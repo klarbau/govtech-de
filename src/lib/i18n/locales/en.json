@@ -24,16 +24,14 @@
     "user_menu": "User menu"
   },
   "topnav": {
-    "nav_label": "Main navigation",
     "meta_nav_label": "Service navigation",
-    "solutions": "Solutions (Lösungen)",
     "lebenslagen": "Life events (Lebenslagen)",
-    "security_privacy": "Security & privacy",
     "resources": "Resources",
     "about_us": "About us",
     "help": "Help & contact",
     "about_project": "About the project",
-    "brand_label": "GovTech-DE, to the overview"
+    "brand_label": "GovTech-DE, to the overview",
+    "nav_label": "Main navigation"
   },
   "search": {
     "trigger_label": "Search",
@@ -500,7 +498,8 @@
         "body_template": "We will transmit your application to {behoerde} using your electronic identity (eID).",
         "confirm": "Confirm with eID",
         "cancel": "Cancel"
-      }
+      },
+      "field_required": "This field is required."
     },
     "geburt": {
       "title": "Birth of a child",
@@ -842,6 +841,14 @@
       "value_receipt_hinweis": "Parental income still has to be proven yourself; what is saved is the entry of master data and trips to the authorities."
     },
     "umzug": {
+      "title": "Moving house",
+      "lead": "Register once instead of six visits to the authorities: your change of address is transmitted in a coordinated way to all the relevant offices — you confirm sensitive steps individually via eID.",
+      "rechtsgrundlagen": {
+        "bmg": {
+          "bedeutung": "Duty to register when you change address: you must register within two weeks of moving in with the residents' registration office (Meldebehörde)."
+        }
+      },
+      "value_receipt_hinweis": "Estimated saving compared with six separate visits to the authorities using paper forms.",
       "ergebnis": {
         "lead": "Your move is complete — all the relevant authorities have been informed of your new address.",
         "kennzahl_label": "Re-registration (Ummeldung)",
@@ -1210,90 +1217,6 @@
       "home": "Home"
     }
   },
-  "landing": {
-    "eyebrow": "GovTech DE — concept demo",
-    "title": "Public administration, rethought",
-    "subtitle": "A concept prototype of a citizen-centred layer on top of DeutschlandID, EUDI Wallet and the Deutschland-Stack. All data is synthetic.",
-    "personas_title": "Choose a persona",
-    "personas_helper": "The demo loads a prepared dataset. You can switch at any time.",
-    "persona_anna": "Anna Petrov, 28 — Blue Card EU, Berlin",
-    "persona_schmidt": "The Schmidt family — Hamburg, baby on the way",
-    "persona_mehmet": "Mehmet Yıldız, 34 — Cologne, planning to register a business",
-    "cta_continue": "Open the demo",
-    "nav": {
-      "aria_label": "Main navigation",
-      "leistungen": "Services",
-      "buerger": "For citizens",
-      "behoerden": "For authorities",
-      "sicherheit": "Security & data protection",
-      "ueber_uns": "About us",
-      "login": "Sign in"
-    },
-    "hero": {
-      "badge": "Public administration that thinks ahead.",
-      "title": "Public services, on autopilot.",
-      "subtitle": "A citizen portal for Germany that prepares your cases, pre-fills your data and explains the next step.",
-      "cta_primary": "Start the demo",
-      "cta_secondary": "Learn more",
-      "trust": "Secure. Trustworthy. Nationwide."
-    },
-    "diagram": {
-      "you_label": "You, the citizen",
-      "input_title": "Enter it once",
-      "input_body": "We understand your request and prepare everything.",
-      "autopilot_label": "Autopilot",
-      "autopilot_sub": "Prepare the case · pre-fill data · explain the next step",
-      "authorities_label": "Your authorities",
-      "behoerde1_name": "Residents' Registration Office (Einwohnermeldeamt)",
-      "behoerde1_status": "Verify data",
-      "behoerde2_name": "Immigration Office (Ausländerbehörde)",
-      "behoerde2_status": "Process application",
-      "behoerde3_name": "Tax Office (Finanzamt)",
-      "behoerde3_status": "Receive notice",
-      "control_bar": "You stay in the picture and in control at all times.",
-      "sr_summary": "Flow: you enter your request once, the autopilot prepares the case and notifies all responsible authorities — Residents' Registration Office (Einwohnermeldeamt), Immigration Office (Ausländerbehörde) and Tax Office (Finanzamt). You stay in the picture and in control at all times."
-    },
-    "features": {
-      "title": "What the demo shows"
-    },
-    "feature": {
-      "umzug": {
-        "title": "Moving home",
-        "desc": "We report your new address to all relevant offices."
-      },
-      "kindergeburt": {
-        "title": "Birth of a child",
-        "desc": "Registration at the town hall, GEMA and more – in minutes."
-      },
-      "aufenthalt": {
-        "title": "Extend residence permit",
-        "desc": "Prepare the application, check documents, book an appointment."
-      },
-      "posteingang": {
-        "title": "Inbox with AI explainer",
-        "desc": "Understand instead of despair – it clarifies, summarises and helps."
-      }
-    },
-    "trust": {
-      "title": "Built on a trustworthy foundation",
-      "deutschlandid": {
-        "title": "DeutschlandID",
-        "desc": "Sign in securely with your digital identity."
-      },
-      "eudi": {
-        "title": "EUDI Wallet",
-        "desc": "Recognised across the EU and future-proof."
-      },
-      "bitv": {
-        "title": "BITV-compliant",
-        "desc": "Accessible, understandable and open to everyone."
-      },
-      "mock": {
-        "title": "Mock demo, 2027 vision",
-        "desc": "A glimpse into the future of public administration in Germany."
-      }
-    }
-  },
   "onboarding": {
     "wizard_step": "Step {current} of {total}",
     "topbar": {
@@ -1445,96 +1368,13 @@
       "guten_tag": "Good morning, {name}",
       "sub": "Here is your overview for today. We keep you up to date."
     },
-    "demo_banner": {
-      "text": "Demo mode · mock data · originals stay in the official mailboxes",
-      "disclaimer_link": "View disclaimer"
-    },
-    "diff": {
-      "title": "Since your last login",
-      "neue_briefe": "new letters",
-      "frist_naeher": "deadline closer",
-      "vorgang_abgeschlossen": "case completed",
-      "last_login_tooltip": "Last seen on this device on {datum}",
-      "first_login": "First login on this device",
-      "no_changes": "No changes since your last login"
-    },
-    "heute_zu_tun": {
-      "title": "To do today",
-      "sort_aria": "Sort the recommended actions",
-      "sort": {
-        "ki": "AI",
-        "frist": "Deadline",
-        "behoerde": "Authority",
-        "vorgang": "Case"
-      },
-      "empty_title": "All done",
-      "empty_description": "You have completed {count} cases in {jahr}.",
-      "sort_disabled_tooltip": "No actions to sort"
-    },
-    "priority": {
-      "fristnaehe": "Deadline near",
-      "folgevorgang": "Follow-up case",
-      "manuell": "Prioritised manually",
-      "termin": "Appointment set"
-    },
-    "tile": {
-      "fristen": {
-        "title": "Deadlines",
-        "next": "Next deadline: {datum}",
-        "open_count": "{count} open",
-        "none": "No open deadlines"
-      },
-      "posteingang": {
-        "title": "Inbox",
-        "value": "{ungelesen} unread · {gesamt} total"
-      },
-      "vorgaenge": {
-        "title": "Cases",
-        "value": "{laufend} in progress",
-        "value_running_done": "{laufend} running, {abgeschlossen} completed"
-      },
-      "termine": {
-        "title": "Appointments",
-        "next": "Next appointment {datum}",
-        "none": "No appointment scheduled"
-      },
-      "datenschutz": {
-        "title": "Privacy cockpit",
-        "value": "{count} activities in 30 days"
-      },
-      "stammdaten": {
-        "title": "Master-data status",
-        "value": "Check address",
-        "last_confirmed": "Address last confirmed on {datum}",
-        "never_confirmed": "Not yet confirmed"
-      },
-      "cta_ansehen": "View",
-      "cta_oeffnen": "Open"
-    },
     "error": {
       "load": "The dashboard could not be loaded."
     },
     "loading": "Loading dashboard",
-    "frist_inline": {
-      "in_one_day": "Deadline in 1 day",
-      "in_n_days": "Deadline in {days} days",
-      "on_date": "Deadline {datum}",
-      "overdue": "Deadline {datum} missed"
-    },
     "titel": "Dashboard",
-    "untertitel": "Your personal overview of letters, deadlines and cases",
     "fehler": {
       "laden": "Data could not be loaded."
-    },
-    "letzter_login": "last login {days} days ago · on this device",
-    "prototyp_hinweis": {
-      "text": "Demo mode · mock data · originals stay in the official mailboxes"
-    },
-    "seit_login": {
-      "titel": "Since your last login",
-      "neue_briefe": "new letters",
-      "frist_naeher": "deadline closer",
-      "vorgang_abgeschlossen": "case completed"
     },
     "heute": {
       "titel": "Important today",
@@ -1614,12 +1454,12 @@
     },
     "tiles": {
       "posteingang_sub": "Unread messages in your inbox",
-      "posteingang_cta": "Go to inbox",
       "fristen_sub": "Deadlines within the next 14 days",
+      "vorgaenge_sub": "Ongoing cases in progress",
+      "posteingang_cta": "Go to inbox",
       "fristen_cta": "View deadlines",
       "termine_sub": "Next appointment: {datum}",
       "termine_cta": "All appointments",
-      "vorgaenge_sub": "Ongoing cases in progress",
       "vorgaenge_cta": "View cases"
     },
     "kontrolle": {
@@ -1662,6 +1502,83 @@
         "titel": "Master-data status",
         "cta": "View"
       }
+    },
+    "tile": {
+      "fristen": {
+        "title": "Deadlines",
+        "next": "Next deadline: {datum}",
+        "open_count": "{count} open",
+        "none": "No open deadlines"
+      },
+      "posteingang": {
+        "title": "Inbox",
+        "value": "{ungelesen} unread · {gesamt} total"
+      },
+      "vorgaenge": {
+        "title": "Cases",
+        "value": "{laufend} in progress",
+        "value_running_done": "{laufend} running, {abgeschlossen} completed"
+      },
+      "termine": {
+        "title": "Appointments",
+        "next": "Next appointment {datum}",
+        "none": "No appointment scheduled"
+      },
+      "datenschutz": {
+        "title": "Privacy cockpit",
+        "value": "{count} activities in 30 days"
+      },
+      "stammdaten": {
+        "title": "Master-data status",
+        "value": "Check address",
+        "last_confirmed": "Address last confirmed on {datum}",
+        "never_confirmed": "Not yet confirmed"
+      },
+      "cta_ansehen": "View",
+      "cta_oeffnen": "Open"
+    },
+    "heute_zu_tun": {
+      "title": "To do today",
+      "sort_aria": "Sort the recommended actions",
+      "sort": {
+        "ki": "AI",
+        "frist": "Deadline",
+        "behoerde": "Authority",
+        "vorgang": "Case"
+      },
+      "empty_title": "All done",
+      "empty_description": "You have completed {count} cases in {jahr}.",
+      "sort_disabled_tooltip": "No actions to sort"
+    },
+    "diff": {
+      "title": "Since your last login",
+      "neue_briefe": "new letters",
+      "frist_naeher": "deadline closer",
+      "vorgang_abgeschlossen": "case completed",
+      "last_login_tooltip": "Last seen on this device on {datum}",
+      "first_login": "First login on this device",
+      "no_changes": "No changes since your last login"
+    },
+    "priority": {
+      "fristnaehe": "Deadline near",
+      "folgevorgang": "Follow-up case",
+      "manuell": "Prioritised manually",
+      "termin": "Appointment set"
+    },
+    "seit_login": {
+      "titel": "Since your last login",
+      "neue_briefe": "new letters",
+      "frist_naeher": "deadline closer",
+      "vorgang_abgeschlossen": "case completed"
+    },
+    "demo_banner": {
+      "text": "Demo mode · mock data · originals stay in the official mailboxes",
+      "disclaimer_link": "View disclaimer"
+    },
+    "untertitel": "Your personal overview of letters, deadlines and cases",
+    "letzter_login": "last login {days} days ago · on this device",
+    "prototyp_hinweis": {
+      "text": "Demo mode · mock data · originals stay in the official mailboxes"
     }
   },
   "wohngeldFolge": {
@@ -1671,8 +1588,11 @@
     "plus_context": "Since the Wohngeld-Plus reform of 2023, around three times as many households are entitled — yet far fewer actually claim it.",
     "cta": "Check entitlement & prepare application",
     "zustaendig": "Responsible: Bezirksamt Mitte von Berlin — Wohngeldstelle (housing benefit office, municipal).",
+    "zustaendig_named": "Responsible: {name} (municipal).",
+    "zustaendig_generic": "Responsible: your local housing-benefit office (Wohngeldstelle, municipal).",
     "zukunft_chip": "ZUKUNFT 2027",
-    "disclaimer": "Non-binding estimate, not an approval. § 22 Abs. 1 WoGG."
+    "disclaimer": "Non-binding estimate, not an approval. § 22 Abs. 1 WoGG.",
+    "disclaimer_norm": "Non-binding estimate, not an approval. {normen}"
   },
   "anspruchLane": {
     "title": "You are entitled to",
@@ -1710,6 +1630,7 @@
     "nicht_eingereicht": "The application is prepared but not yet submitted — you stay in control.",
     "cta": "Prepare renewal",
     "zustaendig": "Responsible: Landesamt für Einwanderung Berlin (LEA).",
+    "zustaendig_named": "Responsible: {name}.",
     "rechtsgrundlage": "§ 81 Abs. 4 S. 1 AufenthG (Fortgeltungsfiktion / continued-validity provision) · notice based on your master data.",
     "zukunft_chip": "ZUKUNFT 2027",
     "disclaimer": "Proactive deadline monitoring is a target vision — synthetic [MOCK] demo data, no legal effect."
@@ -1737,7 +1658,6 @@
   "wohngeldHinweis": {
     "title": "Possible entitlement detected",
     "collapsed_title": "Possible housing-benefit entitlement detected",
-    "collapsed_hint": "Tap to check · [MOCK]",
     "collapse": "Collapse notice",
     "chip_haushalt": "Household {n}",
     "chip_mietstufe": "Rent level {stufe}",
@@ -1745,15 +1665,10 @@
     "chip_amtlich": "officially verified",
     "need_inline": "Still needed: gross income · rental contract",
     "trigger_label": "You are likely entitled to Wohngeld (housing benefit).",
-    "amount_range": "approx. {min} – {max} € / month",
     "amount_schaetzung": "Estimate",
     "amount_a11y": "Estimated rent subsidy between {min} and {max} euros per month — non-binding estimate.",
-    "non_take_up": "About half of those entitled never claim Wohngeld (housing benefit) — check whether you qualify.",
     "datenblock_title": "Data used (data minimisation)",
     "daten_haushalt": "Household size ({n}, from the Melderegister / population register)",
-    "daten_mietstufe": "Mietstufe (rent tier) {stufe} (registered municipality {ort}) [MOCK]",
-    "daten_wohnverhaeltnis": "Housing situation: renting",
-    "daten_ergaenzen": "Still to add: gross income and tenancy agreement",
     "cta_primary": "Check entitlement & prepare application",
     "rechtsgrundlage": "Legal basis: {normen}",
     "consent_line": "Notice based on your consent to proactive entitlement notices (Koalitionsvertrag 2025 / coalition agreement).",
@@ -1764,27 +1679,20 @@
     "snooze": "Remind me later",
     "behoerde": "Responsible: Bezirksamt Mitte von Berlin — Wohngeldstelle (housing benefit office)",
     "headline": "You may be entitled to housing benefit (Wohngeld)",
-    "betrag_label": "Estimated amount",
     "amount_value": "approx. {min}–{max} €",
     "amount_per": "/ month",
     "subline": "Check whether you qualify and prepare your application in just a few steps.",
     "reasons_title": "Why this applies",
-    "reason_datenabgleich": "Data match: verified against official records",
-    "needed_title": "Still needed",
-    "needed_einkommen": "Gross income",
-    "needed_mietvertrag": "Tenancy agreement",
     "how_calculated": "How was this calculated?",
     "rail_aria": "Key figures for the estimate",
-    "rail_betrag_label": "Estimated monthly amount",
-    "rail_betrag_value": "{min} – {max} €",
-    "rail_zeit_label": "Time saved",
-    "rail_zeit_value": "approx. 8 hrs",
-    "rail_behoerde_label": "Responsible authority",
-    "rail_behoerde_value": "Bezirksamt Mitte von Berlin",
-    "rail_sicher_title": "Your data is secure",
-    "rail_sicher_body": "Encrypted transfer and processing",
     "disclaimer": "This is a non-binding estimate based on the information you provided and data from official sources. The actual amount is determined solely by the responsible authority. By continuing, you consent to the proactive eligibility check.",
-    "learn_more": "Learn more"
+    "learn_more": "Learn more",
+    "amount_range": "approx. {min} – {max} € / month",
+    "non_take_up": "About half of those entitled never claim Wohngeld (housing benefit) — check whether you qualify.",
+    "daten_mietstufe": "Mietstufe (rent tier) {stufe} (registered municipality {ort}) [MOCK]",
+    "daten_wohnverhaeltnis": "Housing situation: renting",
+    "daten_ergaenzen": "Still to add: gross income and tenancy agreement",
+    "betrag_label": "Estimated amount"
   },
   "common": {
     "cta": {
@@ -1798,7 +1706,6 @@
     "filter_active": "{count} filters active",
     "search": "Search",
     "loading": "Loading …",
-    "all": "All",
     "show_all": "Show all",
     "actions": {
       "close": "Close",
@@ -1811,10 +1718,6 @@
       "prev": "Previous page",
       "next": "Next page",
       "page": "Page {page}"
-    },
-    "context_chip": {
-      "prototype": "Prototype · mock data",
-      "speculative": "Speculative demo feature"
     },
     "empty": {
       "default_title": "No entries",
@@ -1859,7 +1762,9 @@
       "title": "Deadline under § 17 BMG — details",
       "open_cta": "Why 14 days?",
       "close_cta": "Close"
-    }
+    },
+    "link_neues_fenster": "(opens in a new window)",
+    "all": "All"
   },
   "umzug": {
     "wizard": {
@@ -2131,9 +2036,6 @@
       "title": "How can I help you?",
       "description": "Ask a question or pick a suggestion."
     },
-    "streaming": {
-      "typing": "Assistant is typing …"
-    },
     "error": {
       "stream": "The reply could not be loaded. Please try again.",
       "retry": "Try again",
@@ -2231,7 +2133,8 @@
       "mock_note": "[MOCK] · Prototype simulation — no real transmission to the family benefits office (Familienkasse). Application-free child benefit is a government bill (Regierungsentwurf); payment starts in stages from 2027.",
       "cta_start": "Set up child benefit",
       "cta_cancel": "Cancel",
-      "cancelled": "Cancelled."
+      "cancelled": "Cancelled.",
+      "status_resolved": "Set up."
     },
     "kontext": {
       "title": "Context",
@@ -2248,12 +2151,12 @@
       "datenschutz_body": "Only the data needed for your question is processed. Originals stay in the official mailboxes.",
       "datenschutz_link": "More on data protection",
       "aside_label": "Assistant context"
+    },
+    "streaming": {
+      "typing": "Assistant is typing …"
     }
   },
   "posteingang": {
-    "skip_link": {
-      "zur_brief_liste": "Skip to letter list"
-    },
     "rail": {
       "nav_aria": "Inbox folders",
       "title": "Inbox",
@@ -3032,18 +2935,19 @@
       "no_target": "No guided case available",
       "zukunft_hint": "[ZUKUNFT 2027] Letter content is detected automatically · [MOCK]",
       "calendar_disabled_a11y": "Calendar entry not available: the deadline could not be clearly identified in the original letter. Please check in the original."
+    },
+    "skip_link": {
+      "zur_brief_liste": "Skip to letter list"
     }
   },
   "vorgaenge": {
     "title": "Cases",
     "subtitle": "Your ongoing and completed administrative processes at a glance",
-    "filter": {
-      "alle": "All",
-      "laufend": "Ongoing",
-      "warten": "Waiting on you",
-      "abgeschlossen": "Completed"
+    "empty": {
+      "title": "No cases in this view",
+      "body": "There are currently no cases in this view.",
+      "cta_umzug": "Start a move"
     },
-    "filter_aria": "Filter cases by status",
     "card": {
       "progress": "{erledigt} of {gesamt} done",
       "progress_label": "Progress",
@@ -3063,15 +2967,6 @@
       "gestartet_label": "Started: {datum}",
       "menu_aria": "More actions for {titel}"
     },
-    "stepper": {
-      "aria": "Progress of the case {titel}",
-      "node_done": "{behoerde}: completed",
-      "node_active": "{behoerde}: in progress",
-      "node_pending": "{behoerde}: pending",
-      "node_failed": "{behoerde}: failed",
-      "date_running": "Verification in progress",
-      "date_pending": "Pending"
-    },
     "rail": {
       "title": "What needs attention now?",
       "subtitle": "Highlights from your ongoing cases",
@@ -3089,10 +2984,14 @@
       "alle_ansehen": "View all cases",
       "empty": "Nothing urgent right now."
     },
-    "empty": {
-      "title": "No cases in this view",
-      "body": "There are currently no cases in this view.",
-      "cta_umzug": "Start a move"
+    "stepper": {
+      "aria": "Progress of the case {titel}",
+      "node_done": "{behoerde}: completed",
+      "node_active": "{behoerde}: in progress",
+      "node_pending": "{behoerde}: pending",
+      "node_failed": "{behoerde}: failed",
+      "date_running": "Verification in progress",
+      "date_pending": "Pending"
     },
     "typ": {
       "umzug": "Change of address",
@@ -3102,6 +3001,12 @@
       "gewerbeanmeldung": "Business registration",
       "anmeldung": "Registration",
       "sonstige": "Case"
+    },
+    "filter": {
+      "alle": "All",
+      "laufend": "Ongoing",
+      "warten": "Waiting on you",
+      "abgeschlossen": "Completed"
     }
   },
   "stammdaten": {
@@ -3349,95 +3254,6 @@
         "drv": {
           "label": "DRV no."
         }
-      }
-    },
-    "korrekturweg": {
-      "familienname": {
-        "pointer": "Correction at the registry office (Standesamt) under § 1355 BGB / § 45 PStG."
-      },
-      "fruehere_namen": {
-        "pointer": "Correction at the registry office (Standesamt) under § 45 PStG."
-      },
-      "vornamen": {
-        "pointer": "Correction at the registry office (Standesamt) under § 45 PStG."
-      },
-      "doktorgrad": {
-        "pointer": "Correction via the citizens' office (Bürgeramt) with proof upload (§ 3 (1) no. 6 BMG)."
-      },
-      "geburtsdatum": {
-        "pointer": "Correction at the registry office (Standesamt) of the place of birth."
-      },
-      "geburtsort": {
-        "pointer": "Correction at the registry office (Standesamt) of the place of birth."
-      },
-      "geschlecht": {
-        "pointer": "Declaration at the registry office (Standesamt) under § 4 SBGG (registration) and § 2 SBGG (in-person notarisation)."
-      },
-      "staatsangehoerigkeit": {
-        "pointer": "Correction via the naturalisation authority (Einbürgerungsbehörde) under StAG."
-      },
-      "steuer_id": {
-        "pointer": "Issued for life by the Federal Central Tax Office (Bundeszentralamt für Steuern) under § 139b AO — cannot be changed."
-      },
-      "anschrift_aktuell": {
-        "pointer": "Citizens' office (Bürgeramt) appointment or electronic registration (eWA) under § 17 BMG."
-      },
-      "anschriften_historisch": {
-        "pointer": "Updates are triggered by a new registration under § 17 BMG."
-      },
-      "familienstand": {
-        "pointer": "Correction at the registry office (Standesamt) under PStG."
-      },
-      "partner": {
-        "pointer": "Correction at the registry office (Standesamt) under PStG."
-      },
-      "kinder": {
-        "pointer": "Correction at the registry office (Standesamt) under § 21 PStG."
-      },
-      "eheschliessung": {
-        "pointer": "Correction at the registry office (Standesamt) where the marriage was registered."
-      },
-      "personalausweis": {
-        "pointer": "Reissue at the citizens' office (Bürgeramt) under PAuswG."
-      },
-      "reisepass": {
-        "pointer": "Reissue at the citizens' office (Bürgeramt) under PassG."
-      },
-      "eat_can": {
-        "pointer": "Correction via the immigration authority (Ausländerbehörde) under AufenthG."
-      },
-      "azr_nr": {
-        "pointer": "Correction via the immigration authority (Ausländerbehörde) under § 34 AZRG."
-      },
-      "religionszugehoerigkeit": {
-        "pointer": "Joining / leaving: registry office (Standesamt) or religious community; storage under § 3 (1) no. 11 BMG."
-      },
-      "kontakt_email": {
-        "pointer": "Edit directly in your BundID account (app setting)."
-      },
-      "kontakt_mobil": {
-        "pointer": "Edit directly in your BundID account (app setting)."
-      },
-      "sprachpraeferenz": {
-        "pointer": "App-internal setting — has no effect on authorities."
-      },
-      "iban": {
-        "pointer": "Today (May 2026) the IBAN must be filed separately with each authority — this app simulates a 2027 pattern."
-      },
-      "auskunftssperre": {
-        "pointer": "Application with reasons at the citizens' office (Bürgeramt) under § 51 (1) BMG."
-      },
-      "uebermittlungssperren": {
-        "pointer": "Application at the citizens' office (Bürgeramt) under §§ 42 (3), 50 (5) BMG (no reasons required)."
-      },
-      "kvnr": {
-        "pointer": "Update via your health insurer's member portal (§ 290 SGB V)."
-      },
-      "drv_versicherungsnummer": {
-        "pointer": "Update via your DRV pension account (§ 147 SGB VI)."
-      },
-      "elstam": {
-        "pointer": "Update via Mein ELSTER or the tax office (Finanzamt) under § 39 EStG."
       }
     },
     "disclaimer": {
@@ -3866,13 +3682,6 @@
       "show_all": "Show full log",
       "pilot_note": "Register connection status: pilot phase — coverage is being expanded continuously."
     },
-    "sections": {
-      "region_title": "Your master data in detail"
-    },
-    "aenderungsprotokoll": {
-      "title": "Change log",
-      "show_all": "Show all changes"
-    },
     "hoheit": {
       "title": "You are in control of your data",
       "cta": "Manage settings"
@@ -3882,9 +3691,6 @@
       "versicherung_vorsorge": "Insurance & provision",
       "identitaetsdokumente": "Identity documents",
       "familie_bezugspersonen": "Family & dependants"
-    },
-    "cross_link": {
-      "familie": "Go to Family"
     },
     "v2": {
       "profil": {
@@ -3970,10 +3776,6 @@
         "body_link": "Learn more about your rights and how your data is used.",
         "cta": "Manage data use"
       },
-      "secondary": {
-        "heading": "Other areas",
-        "subtitle": "Pension, health insurance, mobility, notification preferences and blocks — secondary layer below the main grid."
-      },
       "nachweise": {
         "title": "Connected proofs & wallet",
         "body": "Your digital proofs are securely connected in the wallet and verifiable when needed.",
@@ -3993,6 +3795,10 @@
         "verifiziert_am": "Verified on: {datum}",
         "verifiziert_badge": "Verified",
         "alle_anzeigen": "Show all verifications"
+      },
+      "secondary": {
+        "heading": "Other areas",
+        "subtitle": "Pension, health insurance, mobility, notification preferences and blocks — secondary layer below the main grid."
       }
     },
     "header": {
@@ -4022,6 +3828,105 @@
         "title": "Change address",
         "body": "Your registered address is maintained by the Bürgeramt (citizens' office) in the population register (Melderegister). An address change is made via re-registration — shown in this demo as the move (Umzug) autopilot."
       }
+    },
+    "korrekturweg": {
+      "familienname": {
+        "pointer": "Correction at the registry office (Standesamt) under § 1355 BGB / § 45 PStG."
+      },
+      "fruehere_namen": {
+        "pointer": "Correction at the registry office (Standesamt) under § 45 PStG."
+      },
+      "vornamen": {
+        "pointer": "Correction at the registry office (Standesamt) under § 45 PStG."
+      },
+      "doktorgrad": {
+        "pointer": "Correction via the citizens' office (Bürgeramt) with proof upload (§ 3 (1) no. 6 BMG)."
+      },
+      "geburtsdatum": {
+        "pointer": "Correction at the registry office (Standesamt) of the place of birth."
+      },
+      "geburtsort": {
+        "pointer": "Correction at the registry office (Standesamt) of the place of birth."
+      },
+      "geschlecht": {
+        "pointer": "Declaration at the registry office (Standesamt) under § 4 SBGG (registration) and § 2 SBGG (in-person notarisation)."
+      },
+      "staatsangehoerigkeit": {
+        "pointer": "Correction via the naturalisation authority (Einbürgerungsbehörde) under StAG."
+      },
+      "steuer_id": {
+        "pointer": "Issued for life by the Federal Central Tax Office (Bundeszentralamt für Steuern) under § 139b AO — cannot be changed."
+      },
+      "anschrift_aktuell": {
+        "pointer": "Citizens' office (Bürgeramt) appointment or electronic registration (eWA) under § 17 BMG."
+      },
+      "anschriften_historisch": {
+        "pointer": "Updates are triggered by a new registration under § 17 BMG."
+      },
+      "familienstand": {
+        "pointer": "Correction at the registry office (Standesamt) under PStG."
+      },
+      "partner": {
+        "pointer": "Correction at the registry office (Standesamt) under PStG."
+      },
+      "kinder": {
+        "pointer": "Correction at the registry office (Standesamt) under § 21 PStG."
+      },
+      "eheschliessung": {
+        "pointer": "Correction at the registry office (Standesamt) where the marriage was registered."
+      },
+      "personalausweis": {
+        "pointer": "Reissue at the citizens' office (Bürgeramt) under PAuswG."
+      },
+      "reisepass": {
+        "pointer": "Reissue at the citizens' office (Bürgeramt) under PassG."
+      },
+      "eat_can": {
+        "pointer": "Correction via the immigration authority (Ausländerbehörde) under AufenthG."
+      },
+      "azr_nr": {
+        "pointer": "Correction via the immigration authority (Ausländerbehörde) under § 34 AZRG."
+      },
+      "religionszugehoerigkeit": {
+        "pointer": "Joining / leaving: registry office (Standesamt) or religious community; storage under § 3 (1) no. 11 BMG."
+      },
+      "kontakt_email": {
+        "pointer": "Edit directly in your BundID account (app setting)."
+      },
+      "kontakt_mobil": {
+        "pointer": "Edit directly in your BundID account (app setting)."
+      },
+      "sprachpraeferenz": {
+        "pointer": "App-internal setting — has no effect on authorities."
+      },
+      "iban": {
+        "pointer": "Today (May 2026) the IBAN must be filed separately with each authority — this app simulates a 2027 pattern."
+      },
+      "auskunftssperre": {
+        "pointer": "Application with reasons at the citizens' office (Bürgeramt) under § 51 (1) BMG."
+      },
+      "uebermittlungssperren": {
+        "pointer": "Application at the citizens' office (Bürgeramt) under §§ 42 (3), 50 (5) BMG (no reasons required)."
+      },
+      "kvnr": {
+        "pointer": "Update via your health insurer's member portal (§ 290 SGB V)."
+      },
+      "drv_versicherungsnummer": {
+        "pointer": "Update via your DRV pension account (§ 147 SGB VI)."
+      },
+      "elstam": {
+        "pointer": "Update via Mein ELSTER or the tax office (Finanzamt) under § 39 EStG."
+      }
+    },
+    "aenderungsprotokoll": {
+      "title": "Change log",
+      "show_all": "Show all changes"
+    },
+    "sections": {
+      "region_title": "Your master data in detail"
+    },
+    "cross_link": {
+      "familie": "Go to Family"
     }
   },
   "dokumente": {
@@ -4059,11 +3964,11 @@
       "nr_prefix": "No. "
     },
     "daten": {
+      "ausgestellt_label": "Issued",
+      "gueltig_bis_label": "Valid until",
       "ausgestellt": "Issued {datum}",
       "gueltig_bis": "Valid until {datum}",
-      "unbefristet": "no expiry",
-      "ausgestellt_label": "Issued",
-      "gueltig_bis_label": "Valid until"
+      "unbefristet": "no expiry"
     },
     "action": {
       "ansehen": "View {name}",
@@ -4120,24 +4025,12 @@
       "cta": "Use document",
       "cta_toast": "In this demo, documents are selected directly as an attachment within a case."
     },
-    "preview": {
-      "title": "Document preview",
-      "description": "Preview of the stored document metadata. This demo shows no real certificate.",
-      "qr_label": "QR verification code",
-      "eudi_yes": "Can be exported to the EUDI Wallet",
-      "eudi_no": "Cannot be exported to EUDI",
-      "aussteller": "Issuing authority",
-      "nr_label": "Document number",
-      "ausgestellt_label": "Issued on",
-      "gueltig_bis_label": "Valid until"
-    },
     "empty": {
       "title": "No documents yet",
       "filter_title": "No documents for this filter",
       "filter_description": "Choose a different category or search term."
     },
     "error": "Documents could not be loaded.",
-    "demo_action_toast": "Demo feature — not implemented in this prototype.",
     "filter": {
       "sort_label": "Sort by",
       "sort_name": "Name (A–Z)",
@@ -4261,7 +4154,19 @@
     },
     "rail": {
       "aside_label": "Document quick access and recently added"
-    }
+    },
+    "preview": {
+      "title": "Document preview",
+      "description": "Preview of the stored document metadata. This demo shows no real certificate.",
+      "qr_label": "QR verification code",
+      "eudi_yes": "Can be exported to the EUDI Wallet",
+      "eudi_no": "Cannot be exported to EUDI",
+      "aussteller": "Issuing authority",
+      "nr_label": "Document number",
+      "ausgestellt_label": "Issued on",
+      "gueltig_bis_label": "Valid until"
+    },
+    "demo_action_toast": "Demo feature — not implemented in this prototype."
   },
   "termine": {
     "title": "Appointments",
@@ -4280,22 +4185,16 @@
       "titel": "Calendar",
       "vergangen_link": "View past appointments"
     },
-    "spur": {
-      "termine_titel": "Appointments the system takes care of for you",
-      "termine_leer": "No upcoming appointments right now.",
-      "fristen_titel": "Deadlines you need to keep an eye on",
-      "fristen_leer": "No open deadlines."
-    },
     "kpi": {
       "naechster_termin": "Next appointment",
       "strip_label": "Appointment statistics",
       "offene_fristen": "Open deadlines",
-      "offene_fristen_sub": "Action needed",
       "bestaetigte": "Confirmed appointments",
-      "bestaetigte_sub": "In the next 30 days",
       "warten": "Awaiting response",
-      "warten_sub": "Appointments being clarified",
-      "kein_termin": "No appointment"
+      "kein_termin": "No appointment",
+      "offene_fristen_sub": "Action needed",
+      "bestaetigte_sub": "In the next 30 days",
+      "warten_sub": "Appointments being clarified"
     },
     "tabs": {
       "alle": "All",
@@ -4307,23 +4206,8 @@
     "toolbar": {
       "suche_placeholder": "Search appointments or authorities",
       "suche_label": "Search appointments",
-      "filter": "Filter",
-      "export": "Export calendar"
-    },
-    "liste": {
-      "anstehende_titel": "Upcoming appointments",
-      "alle_termine": "Show all appointments",
-      "alle_fristen": "Show all deadlines",
-      "erinnerungen_titel": "Reminders"
-    },
-    "cal": {
-      "legend": {
-        "titel": "Legend",
-        "termine": "Appointments",
-        "fristen": "Deadlines",
-        "erinnerungen": "Reminders",
-        "mehrere": "Multiple entries"
-      }
+      "export": "Export calendar",
+      "filter": "Filter"
     },
     "hero": {
       "tag": "Reserved for you",
@@ -4398,13 +4282,6 @@
       "vergangene_zeigen": "Show past & cancelled",
       "vergangene_ausblenden": "Hide past & cancelled"
     },
-    "naechste": {
-      "title": "Upcoming appointments",
-      "details_aria": "Details: {betreff}"
-    },
-    "weitere": {
-      "title": "More appointments & reminders"
-    },
     "row": {
       "details_cta": "Details",
       "zum_vorgang_cta": "Go to case",
@@ -4439,25 +4316,25 @@
     },
     "detail": {
       "status_label": "Status: {status}",
-      "titel": "Appointment details",
       "schliessen": "Close appointment details",
       "zugehoeriger_vorgang": "Related case",
       "link_hinweis": "The link will be sent by email 24 h in advance.",
       "vorbereitung_titel": "Preparation",
       "zum_vorgang": "Go to case",
-      "verschieben": "Reschedule appointment"
+      "verschieben": "Reschedule appointment",
+      "titel": "Appointment details"
     },
     "reschedule": {
       "title": "Find another appointment",
       "intro": "We are looking for another free appointment for you ([MOCK]).",
-      "confirm": "Reschedule to this appointment",
       "slot_mock_suffix": "[MOCK]",
       "warteliste_titel": "No free appointment right now",
       "warteliste_text": "We will add you to the waiting list and get in touch as soon as one becomes available.",
       "warteliste_cta": "Add me to the waiting list",
       "warteliste_toast": "You are on the waiting list ([MOCK]).",
       "toast_template": "Appointment rescheduled to {datum}.",
-      "toast_error": "The appointment could not be rescheduled — please try again."
+      "toast_error": "The appointment could not be rescheduled — please try again.",
+      "confirm": "Reschedule to this appointment"
     },
     "naechster_schritt": {
       "title": "Next step",
@@ -4469,8 +4346,8 @@
       "storno_text": "You can cancel or reschedule your appointment online up to 48 hours in advance."
     },
     "vorbereitung": {
-      "title": "Well prepared for your appointment",
       "reisepass": "Bring your passport",
+      "title": "Well prepared for your appointment",
       "alter_titel": "Bring your old residence permit (Aufenthaltstitel)",
       "biometrie": "Bring a biometric passport photo",
       "gebuehr": "Have the processing fee ready",
@@ -4503,9 +4380,6 @@
     },
     "error": "Appointments could not be loaded.",
     "retry": "Try again",
-    "fristen_offen": "{count, plural, =0 {No open deadlines} =1 {1 open deadline} other {# open deadlines}}",
-    "frist_praefix": "Deadline: {datum}",
-    "faellig_praefix": "Due: {datum}",
     "uhr_dauer": "{zeit} ({dauer} min)",
     "zeit_range": "{range}",
     "action": {
@@ -4518,7 +4392,34 @@
       "bestaetigt": "Confirmed",
       "abgesagt": "Cancelled",
       "vorschlag": "Proposed"
-    }
+    },
+    "cal": {
+      "legend": {
+        "titel": "Legend",
+        "termine": "Appointments",
+        "fristen": "Deadlines",
+        "erinnerungen": "Reminders",
+        "mehrere": "Multiple entries"
+      }
+    },
+    "spur": {
+      "termine_titel": "Appointments the system takes care of for you",
+      "termine_leer": "No upcoming appointments right now.",
+      "fristen_titel": "Deadlines you need to keep an eye on",
+      "fristen_leer": "No open deadlines."
+    },
+    "liste": {
+      "anstehende_titel": "Upcoming appointments",
+      "alle_termine": "Show all appointments",
+      "alle_fristen": "Show all deadlines",
+      "erinnerungen_titel": "Reminders"
+    },
+    "weitere": {
+      "title": "More appointments & reminders"
+    },
+    "fristen_offen": "{count, plural, =0 {No open deadlines} =1 {1 open deadline} other {# open deadlines}}",
+    "frist_praefix": "Deadline: {datum}",
+    "faellig_praefix": "Due: {datum}"
   },
   "steuer": {
     "title": "Taxes",
@@ -4530,9 +4431,9 @@
       "basis_hint": "Based on data already on record",
       "erstattung_label": "Estimated refund",
       "erstattung_aria": "Estimated refund {betrag}",
+      "datenquellen_label": "Data sources",
       "nachzahlung_label": "Estimated amount due",
-      "nachzahlung_aria": "Estimated amount due {betrag}",
-      "datenquellen_label": "Data sources"
+      "nachzahlung_aria": "Estimated amount due {betrag}"
     },
     "quelle": {
       "lohnsteuer": "Wage tax",
@@ -4550,10 +4451,10 @@
       "anzeigen": "View",
       "abgabe": "Ready to submit",
       "abgabe_desc": "Finish checking and submit your return",
-      "schritt_aria": "Step {n} of 3: {label}",
       "status_done": "completed",
       "status_active": "active",
-      "status_pending": "open"
+      "status_pending": "open",
+      "schritt_aria": "Step {n} of 3: {label}"
     },
     "bereiche": {
       "title": "Overview of tax categories"
@@ -4606,26 +4507,25 @@
     "datenschutz": {
       "title": "Data protection notice",
       "verarbeitet_label": "Data processed",
+      "rechtsgrundlage_label": "Legal basis",
+      "empfaenger_label": "Recipient",
+      "minimierung_hint": "Only the data required for the tax return is processed.",
+      "mehr": "More about data protection",
       "daten": {
         "lohn": "Wage and salary data",
         "kv": "Health insurance contributions",
         "kind": "Data about children (child benefit)"
-      },
-      "rechtsgrundlage_label": "Legal basis",
-      "empfaenger_label": "Recipient",
-      "minimierung_hint": "Only the data required for the tax return is processed.",
-      "mehr": "More about data protection"
+      }
     },
+    "demo_action_toast": "Demo feature — not implemented in this prototype.",
+    "alle_bereiche": "Show all categories",
     "empty": {
       "title": "No tax draft available",
       "description": "No pre-filled data is available yet for this tax year."
     },
     "error": "The tax overview could not be loaded.",
     "retry": "Try again",
-    "loading": "Loading…",
-    "demo_action_toast": "Demo feature — not implemented in this prototype.",
-    "alle_bereiche": "Show all categories",
-    "weniger_bereiche": "Show fewer"
+    "loading": "Loading…"
   },
   "datenschutz": {
     "page": {
@@ -4707,8 +4607,8 @@
     "aktivitaet": {
       "title": "Recent activity",
       "show_all": "Show all activity",
-      "show_less": "Show less",
-      "empty": "No activity recorded yet."
+      "empty": "No activity recorded yet.",
+      "show_less": "Show less"
     },
     "activity": {
       "typ": {
@@ -4720,9 +4620,9 @@
       "fallback": "Activity",
       "brief_geoeffnet": "Letter opened",
       "ki_zusammenfassung": "AI summary created",
-      "adresse_uebermittelt": "Address transferred to authority",
       "dokument_geladen": "Document downloaded",
-      "einwilligung_erteilt": "Consent given"
+      "einwilligung_erteilt": "Consent given",
+      "adresse_uebermittelt": "Address transferred to authority"
     },
     "einwilligungen": {
       "title": "Consents",
@@ -4747,17 +4647,6 @@
       "announce_aus": "Consent {empfaenger} switched off"
     },
     "quellen": {
-      "title": "Data sources & recipients",
-      "subtitle": "An overview of which offices access your data and how.",
-      "col_stelle": "Office / service",
-      "col_zugriffsart": "Access type",
-      "col_aktualitaet": "Last updated",
-      "automatisch": "Automatically synchronised",
-      "einwilligungsbasiert": "Consent-based",
-      "aktuell": "up to date",
-      "angezeigt": "Showing {shown} of {total} data sources.",
-      "show_all": "Show all recipients",
-      "col_aktion": "Action",
       "aktualitaet_note": {
         "title": "How up to date your data sources are",
         "zukunft_chip": "ZUKUNFT 2027",
@@ -4766,17 +4655,28 @@
         "abh": "The immigration authority (Ausländerbehörde) receives address changes only upon your eID confirmation (§ 18 PAuswG). We deliberately do not update sensitive offices via automatic push — this keeps you in control of who learns about the change.",
         "rechtsgrundlage": "Legal basis: § 6 BMG · § 6 IDNrG — ex officio updating within the register network. You correct offices that are not connected yourself, where needed, under Art. 16 GDPR.",
         "korrekturweg_link": "View the correction path in your master data"
-      }
+      },
+      "title": "Data sources & recipients",
+      "subtitle": "An overview of which offices access your data and how.",
+      "col_stelle": "Office / service",
+      "col_zugriffsart": "Access type",
+      "col_aktualitaet": "Last updated",
+      "col_aktion": "Action",
+      "automatisch": "Automatically synchronised",
+      "einwilligungsbasiert": "Consent-based",
+      "aktuell": "up to date",
+      "angezeigt": "Showing {shown} of {total} data sources.",
+      "show_all": "Show all recipients"
     },
     "kontrolle": {
       "title": "Your data-protection controls",
       "subtitle": "You decide who may use your data and how.",
       "zugriffsprotokoll": "Access log",
-      "zugriffsprotokoll_desc": "Trace all data access",
       "datenexport": "Data export",
       "export_bereit": "Export ready",
-      "datenexport_desc": "Take your data with you under Art. 20 GDPR (DSGVO)",
       "einstellungen": "Settings",
+      "zugriffsprotokoll_desc": "Trace all data access",
+      "datenexport_desc": "Take your data with you under Art. 20 GDPR (DSGVO)",
       "einstellungen_desc": "Manage preferences and blocks",
       "vision_hint": "This function is part of this demo's 2027 vision."
     },
@@ -4796,14 +4696,14 @@
     "export": {
       "hinweis": "[MOCK] Speculative-design demo — no real personal data."
     },
-    "toast": {
-      "einwilligung_error": "The consent could not be saved."
-    },
     "empty": {
       "title": "No activity yet",
       "description": "As soon as data is processed, it will appear here."
     },
     "error": "The data-protection information could not be loaded.",
+    "toast": {
+      "einwilligung_error": "The consent could not be saved."
+    },
     "retry": "Try again"
   },
   "familie": {
@@ -4838,10 +4738,10 @@
       "close": "Close"
     },
     "vertretung_banner": {
-      "title": "Representation",
-      "body": "You can handle cases on behalf of members of your household (Vertretung).",
       "titel": "You are the authorised representative for {name}.",
-      "text": "You can view and manage cases for {vorname}."
+      "text": "You can view and manage cases for {vorname}.",
+      "title": "Representation",
+      "body": "You can handle cases on behalf of members of your household (Vertretung)."
     },
     "vorgaenge": {
       "title": "Shared cases",
@@ -4899,58 +4799,6 @@
       "body": "No household members are recorded for this profile."
     }
   },
-  "autopilotRun": {
-    "title": "Change of address on autopilot",
-    "subtitle": "You confirm once – the system coordinates the next steps.",
-    "banner": {
-      "running_title": "Running the cascade",
-      "running_subtitle": "Your details are being sent securely to the responsible authorities.",
-      "completed_title": "All authorities notified",
-      "completed_subtitle": "All {count, plural, =1 {responsible office has} other {# responsible offices have}} received your change of address.",
-      "partial_title": "Almost there",
-      "partial_subtitle": "Most offices have been notified. A few steps need to be retried.",
-      "status_partial": "Partly completed"
-    },
-    "cascade": {
-      "aria_label": "Progress of authority notifications"
-    },
-    "node": {
-      "status": {
-        "ausstehend": "Pending",
-        "eid_required": "Confirmation required",
-        "failed": "Failed"
-      },
-      "eid_cta": "Confirm with eID",
-      "timestamp_pending": "—",
-      "aktenzeichen_prefix": "Ref."
-    },
-    "action": {
-      "buergeramt": "Address sent",
-      "finanzamt": "Responsibility confirmed",
-      "beitragsservice": "Address updated",
-      "bundesdruckerei": "Sticker being issued",
-      "krankenkasse": "Transfer scheduled",
-      "kfz": "Verification in progress",
-      "familienkasse": "Responsibility being assumed",
-      "auslaenderbehoerde": "Update prepared",
-      "fallback": "Address sent"
-    },
-    "uebersicht": {
-      "title": "Your move – overview",
-      "neue_adresse_label": "New address",
-      "einzugsdatum_label": "Move-in date",
-      "autopilot_bereich_label": "Autopilot area",
-      "behoerden_count": "{count, plural, =1 {1 authority} other {# authorities}}",
-      "schutz_title": "Your data is protected",
-      "schutz_subtitle": "Transmission encrypted, only to the responsible offices.",
-      "schutz_link": "More about data protection"
-    },
-    "feed": {
-      "title": "Live activity",
-      "started_title": "Autopilot started",
-      "started_subtitle": "Your details were checked and the cascade was started."
-    }
-  },
   "convenience": {
     "value_receipt": {
       "title": "Your savings",
@@ -4990,9 +4838,6 @@
       "personalnummer": "personnel number",
       "kennzeichen": "vehicle registration"
     },
-    "assistant": {
-      "run_summary_intro": "Summary of your savings"
-    },
     "inline_cascade": {
       "live_region_label": "Live: authorities are being notified",
       "once_only_label": "fields you did not have to fill in",
@@ -5019,6 +4864,9 @@
         "legal_note_summary": "Legal note on application-free child benefit",
         "legal_note_body": "Application-free child benefit is a government bill (Regierungsentwurf, cabinet decision 18.03.2026); the final vote in the Bundestag is scheduled for 09.07.2026 and has not yet been passed. Entry into force is planned for 01.01.2027, with automatic payment rolled out in stages from 2027. What is already law is the underlying data chain: the registry office (Standesamt) records the birth (§ 21 PStG), the registration authority (Meldebehörde) and the BZSt assign the tax ID (§ 139b AO), and the family benefits office (Familienkasse) determines and pays the child benefit (§ 66/§ 70 EStG). The eID confirmation of the payout account is based on § 18 PAuswG. All data is synthetic ([MOCK])."
       }
+    },
+    "assistant": {
+      "run_summary_intro": "Summary of your savings"
     }
   },
   "termin_autopilot": {
@@ -5062,7 +4910,6 @@
     },
     "zukunft_label": "[ZUKUNFT]",
     "zukunft_hint": "This cross-register forwarding is only partially automated today. Full interconnection is the goal of the register modernisation (Registermodernisierung — NOOTS/IDNr).",
-    "rueckmeldung_label": "Feedback to the previous registration authority (§ 33 BMG)",
     "disclaimer_long": "Note: this prototype simulates the transmission. The residence registration itself runs in reality via the mandated format OSCI-XMeld (§ 2 BMeldDigiV), not via FIT-Connect. FIT-Connect is the OZG transport channel for citizen applications — in this demo used only for the application-based, eID-confirmed steps (i-Kfz, Familienkasse, Ausländerbehörde) and exclusively against a TEST environment with a self-registered [MOCK destination]. No real authority was addressed. The register-to-register forwardings (§§ 33, 36 BMG) are only partially automated today; full interconnection is the goal of the register modernisation (Registermodernisierung — NOOTS/IDNr) — marked here as [ZUKUNFT]."
   },
   "fit_connect": {
@@ -5111,10 +4958,8 @@
   },
   "katalog": {
     "titel": "Autopilot catalogue",
-    "untertitel": "Life situations the autopilot handles for you.",
     "behoerden_label": "Offices involved",
     "vorschau_badge": "In preparation",
-    "starten": "Start change of address",
     "umzug": {
       "titel": "Change of address",
       "beschreibung": "One confirmation — we report your new address to all responsible offices."
@@ -5138,26 +4983,28 @@
     "lebenslagen_titel": "Life situations / Autopilot catalogue",
     "alle_lebenslagen": "View all life situations",
     "behoerden_count": "approx. {count} authorities",
-    "zeit_gespart": "approx. {min} min saved"
+    "zeit_gespart": "approx. {min} min saved",
+    "untertitel": "Life situations the autopilot handles for you.",
+    "starten": "Start change of address"
   },
   "orchestration": {
     "mock_tag": "[MOCK]",
     "panel": {
       "title": "Engine log",
       "mock_line": "Tamper-evident hash chain [MOCK] — local, SHA-256, no real OSCI/XTA.",
-      "laufzettel_label": "Delivery record (Laufzettel)",
       "empty": "No log entries yet.",
       "seq_label": "Entry #{seq}",
-      "hash_chain_label": "Hash chain",
       "hash_link_aria": "Chaining: previous hash {prev} points to {hash}.",
+      "laufzettel_label": "Delivery record (Laufzettel)",
+      "hash_chain_label": "Hash chain",
       "toggle_inspector": "Show engine log",
       "chain_intact_hint": "Each entry is chained to the previous one via SHA-256."
     },
     "quittung": {
       "positive": "Receipt (Quittung): positive (request executed)",
       "negative": "Receipt (Quittung): negative (could not be delivered)",
-      "accepted_at": "Delivery record (Laufzettel): accepted {ts}",
-      "transport_code": "Transport code: {code}"
+      "transport_code": "Transport code: {code}",
+      "accepted_at": "Delivery record (Laufzettel): accepted {ts}"
     },
     "event": {
       "saga_started": "Process started",
@@ -5196,9 +5043,6 @@
       "half_open": "half-open",
       "chip_aria": "{behoerde}: switch state {state}"
     },
-    "retry": {
-      "countdown": "Retry in {seconds} s"
-    },
     "compensation": {
       "summary": "Partly completed — one transmission was undone [MOCK].",
       "remediation": "How to resolve this: review the flagged transmission and trigger it again if needed.",
@@ -5219,6 +5063,9 @@
     "aria": {
       "audit_live": "Engine log, live updates",
       "resilience_live": "Resilience status, live updates"
+    },
+    "retry": {
+      "countdown": "Retry in {seconds} s"
     }
   },
   "shared": {
@@ -5262,14 +5109,6 @@
       "not_yet_issued": "Not issued yet — please complete the move (Umzug) first.",
       "reference_ecosystem_badge": "reference-ecosystem"
     },
-    "once_only": {
-      "wallet_path_note": "You hold the certificate and present it yourself; the next office checks the signature."
-    },
-    "letter": {
-      "subject": "Your official registration certificate (Meldebestätigung) is ready",
-      "body": "After your registration (Anmeldung), the official registration certificate (Meldebestätigung, § 24 Abs. 2 BMG) is available to you as proof. You will find it in “Dokumente”. {disclaimer_short}",
-      "ai_summary": "Your registration certificate is here. You can present it to the next office — they check the signature instead of asking again."
-    },
     "disclosure": {
       "sheet_title": "Present to the next office",
       "intro": "You disclose only these fields (data minimisation):",
@@ -5280,9 +5119,17 @@
       "cta": "Present only these fields",
       "cta_aria": "Present the selected fields to the next office and check the signature"
     },
+    "letter": {
+      "subject": "Your official registration certificate (Meldebestätigung) is ready",
+      "body": "After your registration (Anmeldung), the official registration certificate (Meldebestätigung, § 24 Abs. 2 BMG) is available to you as proof. You will find it in “Dokumente”. {disclaimer_short}",
+      "ai_summary": "Your registration certificate is here. You can present it to the next office — they check the signature instead of asking again."
+    },
     "disclaimer": {
       "short": "Note: this prototype simulates the issuance. The official registration certificate (Meldebestätigung) is really based on § 24 Abs. 2 BMG (electronic: § 10 BMeldDigiV). Here it is issued by a demo issuer, not by a German authority — format real, authority demo ([reference-ecosystem]). Issuance into the wallet by authorities is a future feature ([ZUKUNFT], EUDI Wallet from 2. Jan 2027). Once-Only here is wallet-based, not register exchange (NOOTS).",
       "long": "Note: the official registration certificate (Meldebestätigung) is the document you receive after a registration (Anmeldung) (§ 24 Abs. 2 BMG, electronic in conjunction with § 10 BMeldDigiV / § 23a BMG). In this prototype it is issued as a verifiable credential by a demo issuer with its own trust anchor — not by a German registration authority (Meldebehörde) and not by the state; the format and the signature check are real ([reference-ecosystem]), the authority is demo. That a German registration authority issues a registration certificate as a wallet credential (PuB-EAA) is a future feature ([ZUKUNFT]); the German EUDI Wallet launches under eIDAS 2.0 (Regulation (EU) 2024/1183) on 2. Januar 2027. This demo shows Once-Only via the wallet-based path (you present the proof yourself) — not via register-to-register exchange (NOOTS/Registermodernisierung)."
+    },
+    "once_only": {
+      "wallet_path_note": "You hold the certificate and present it yourself; the next office checks the signature."
     }
   },
   "protokoll": {
@@ -5359,5 +5206,133 @@
     "autopilot_active": "Autopilot active",
     "autopilot_active_aria": "Autopilot active — open the assistant",
     "unread_badge_aria": "{count, plural, one {# unread message in your inbox} other {# unread messages in your inbox}}"
+  },
+  "landing": {
+    "diagram": {
+      "you_label": "You, the citizen",
+      "input_title": "Enter it once",
+      "input_body": "We understand your request and prepare everything.",
+      "autopilot_label": "Autopilot",
+      "autopilot_sub": "Prepare the case · pre-fill data · explain the next step",
+      "authorities_label": "Your authorities",
+      "behoerde1_name": "Residents' Registration Office (Einwohnermeldeamt)",
+      "behoerde1_status": "Verify data",
+      "behoerde2_name": "Immigration Office (Ausländerbehörde)",
+      "behoerde2_status": "Process application",
+      "behoerde3_name": "Tax Office (Finanzamt)",
+      "behoerde3_status": "Receive notice",
+      "control_bar": "You stay in the picture and in control at all times.",
+      "sr_summary": "Flow: you enter your request once, the autopilot prepares the case and notifies all responsible authorities — Residents' Registration Office (Einwohnermeldeamt), Immigration Office (Ausländerbehörde) and Tax Office (Finanzamt). You stay in the picture and in control at all times."
+    },
+    "trust": {
+      "title": "Built on a trustworthy foundation",
+      "deutschlandid": {
+        "title": "DeutschlandID",
+        "desc": "Sign in securely with your digital identity."
+      },
+      "eudi": {
+        "title": "EUDI Wallet",
+        "desc": "Recognised across the EU and future-proof."
+      },
+      "bitv": {
+        "title": "BITV-compliant",
+        "desc": "Accessible, understandable and open to everyone."
+      },
+      "mock": {
+        "title": "Mock demo, 2027 vision",
+        "desc": "A glimpse into the future of public administration in Germany."
+      }
+    },
+    "feature": {
+      "umzug": {
+        "title": "Moving home",
+        "desc": "We report your new address to all relevant offices."
+      },
+      "kindergeburt": {
+        "title": "Birth of a child",
+        "desc": "Registration at the town hall, GEMA and more – in minutes."
+      },
+      "aufenthalt": {
+        "title": "Extend residence permit",
+        "desc": "Prepare the application, check documents, book an appointment."
+      },
+      "posteingang": {
+        "title": "Inbox with AI explainer",
+        "desc": "Understand instead of despair – it clarifies, summarises and helps."
+      }
+    },
+    "nav": {
+      "aria_label": "Main navigation",
+      "leistungen": "Services",
+      "buerger": "For citizens",
+      "behoerden": "For authorities",
+      "sicherheit": "Security & data protection",
+      "ueber_uns": "About us",
+      "login": "Sign in"
+    },
+    "hero": {
+      "badge": "Public administration that thinks ahead.",
+      "title": "Public services, on autopilot.",
+      "subtitle": "A citizen portal for Germany that prepares your cases, pre-fills your data and explains the next step.",
+      "cta_primary": "Start the demo",
+      "cta_secondary": "Learn more",
+      "trust": "Secure. Trustworthy. Nationwide."
+    },
+    "eyebrow": "GovTech DE — concept demo",
+    "title": "Public administration, rethought",
+    "subtitle": "A concept prototype of a citizen-centred layer on top of DeutschlandID, EUDI Wallet and the Deutschland-Stack. All data is synthetic.",
+    "cta_continue": "Open the demo"
+  },
+  "autopilotRun": {
+    "action": {
+      "buergeramt": "Address sent",
+      "finanzamt": "Responsibility confirmed",
+      "beitragsservice": "Address updated",
+      "bundesdruckerei": "Sticker being issued",
+      "krankenkasse": "Transfer scheduled",
+      "kfz": "Verification in progress",
+      "familienkasse": "Responsibility being assumed",
+      "auslaenderbehoerde": "Update prepared",
+      "fallback": "Address sent"
+    },
+    "uebersicht": {
+      "title": "Your move – overview",
+      "neue_adresse_label": "New address",
+      "einzugsdatum_label": "Move-in date",
+      "autopilot_bereich_label": "Autopilot area",
+      "behoerden_count": "{count, plural, =1 {1 authority} other {# authorities}}",
+      "schutz_title": "Your data is protected",
+      "schutz_subtitle": "Transmission encrypted, only to the responsible offices.",
+      "schutz_link": "More about data protection"
+    },
+    "banner": {
+      "running_title": "Running the cascade",
+      "running_subtitle": "Your details are being sent securely to the responsible authorities.",
+      "completed_title": "All authorities notified",
+      "completed_subtitle": "All {count, plural, =1 {responsible office has} other {# responsible offices have}} received your change of address.",
+      "partial_title": "Almost there",
+      "partial_subtitle": "Most offices have been notified. A few steps need to be retried.",
+      "status_partial": "Partly completed"
+    },
+    "node": {
+      "status": {
+        "ausstehend": "Pending",
+        "eid_required": "Confirmation required",
+        "failed": "Failed"
+      },
+      "eid_cta": "Confirm with eID",
+      "timestamp_pending": "—",
+      "aktenzeichen_prefix": "Ref."
+    },
+    "feed": {
+      "title": "Live activity",
+      "started_title": "Autopilot started",
+      "started_subtitle": "Your details were checked and the cascade was started."
+    },
+    "title": "Change of address on autopilot",
+    "subtitle": "You confirm once – the system coordinates the next steps.",
+    "cascade": {
+      "aria_label": "Progress of authority notifications"
+    }
   }
 }
