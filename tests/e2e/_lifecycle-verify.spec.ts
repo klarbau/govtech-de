@@ -8,10 +8,34 @@
  */
 import { test, expect, type Page } from '@playwright/test';
 
-const SHOTS = '/tmp/claude-0/-root-projects-govtech/ebdefdbb-63d8-44d6-80db-5e9abf8aebdb/scratchpad/shots';
+const SHOTS = process.env.LIFECYCLE_SHOTS_DIR || 'test-results/lifecycle-shots';
 
 async function settle(page: Page, ms = 600) {
   await page.waitForTimeout(ms);
+}
+
+/**
+ * Waits for `target`, riding out the mock backend's simulated 5% transient
+ * error rate (this spec intentionally runs WITHOUT ?reliable=1): whenever the
+ * generic error state surfaces, its "Erneut versuchen" button is clicked and
+ * the wait continues.
+ */
+async function waitForOrRetry(
+  page: Page,
+  target: () => ReturnType<Page['locator']>,
+  timeout = 20000,
+) {
+  const deadline = Date.now() + timeout;
+  for (;;) {
+    if ((await target().count()) > 0) return;
+    const retry = page.getByRole('button', { name: 'Erneut versuchen' });
+    if ((await retry.count()) > 0) await retry.first().click();
+    if (Date.now() > deadline) {
+      await target().first().waitFor({ timeout: 1000 });
+      return;
+    }
+    await page.waitForTimeout(400);
+  }
 }
 
 test.describe('Vorgang lifecycle — Akte statt Video', () => {
@@ -32,7 +56,7 @@ test.describe('Vorgang lifecycle — Akte statt Video', () => {
       '/vorgaenge/umzug/run?vorgangId=vg-anna-umzug-2026-completed',
       { waitUntil: 'domcontentloaded' },
     );
-    await page.locator('.vab-layout').first().waitFor({ timeout: 20000 });
+    await waitForOrRetry(page, () => page.locator('.vab-layout'), 20000);
     await settle(page, 1200);
     // no replay affordances anywhere
     await expect(page.locator('.vab-demo-btn')).toHaveCount(0);
@@ -47,6 +71,7 @@ test.describe('Vorgang lifecycle — Akte statt Video', () => {
     test.setTimeout(180_000);
     // -- wizard step 1: address + stichtag + wohnungsgeber demo file
     await page.goto('/vorgaenge/umzug/start', { waitUntil: 'domcontentloaded' });
+    await waitForOrRetry(page, () => page.getByLabel(/Straße/i), 20000);
     await page.getByLabel(/Straße/i).first().fill('Waldstraße');
     await page.getByLabel(/Hausnummer/i).first().fill('12');
     await page.getByLabel(/^PLZ/i).first().fill('04105');
@@ -69,7 +94,7 @@ test.describe('Vorgang lifecycle — Akte statt Video', () => {
 
     // -- wizard step 2: preview → start
     const startBtn = page.getByRole('button', { name: 'Autopilot starten' });
-    await startBtn.waitFor({ timeout: 20000 });
+    await waitForOrRetry(page, () => page.getByRole('button', { name: 'Autopilot starten' }), 20000);
     await page.screenshot({ path: `${SHOTS}/03b-wizard-preview.png` });
     await startBtn.click();
 
@@ -94,7 +119,7 @@ test.describe('Vorgang lifecycle — Akte statt Video', () => {
     await page.reload({ waitUntil: 'domcontentloaded' });
     // sample early: confirmed checkmarks must already be visible (staged replay
     // would show them pending for the first ~1-2s of beats)
-    await page.locator('.vlf-eid, [class*="vlf"], .vab-layout').first().waitFor({ timeout: 15000 });
+    await waitForOrRetry(page, () => page.locator('.vlf-eid, [class*="vlf"], .vab-layout'), 15000);
     await settle(page, 400);
     const confirmedEarly = await page.getByText('Erledigt', { exact: false }).count();
     await page.screenshot({ path: `${SHOTS}/03e-after-reload-snapshot.png` });
@@ -116,7 +141,7 @@ test.describe('Vorgang lifecycle — Akte statt Video', () => {
       }
       await settle(page, 2500);
     }
-    await page.locator('.vab-layout').first().waitFor({ timeout: 60000 });
+    await waitForOrRetry(page, () => page.locator('.vab-layout'), 60000);
     await settle(page, 1500);
     await expect(page.locator('.vab-demo-btn')).toHaveCount(0);
     await expect(page.getByRole('button', { name: /abspielen/i })).toHaveCount(0);
@@ -124,7 +149,7 @@ test.describe('Vorgang lifecycle — Akte statt Video', () => {
 
     // -- revisit the same URL later: still the static record
     await page.goto(runUrl, { waitUntil: 'domcontentloaded' });
-    await page.locator('.vab-layout').first().waitFor({ timeout: 20000 });
+    await waitForOrRetry(page, () => page.locator('.vab-layout'), 20000);
     await expect(page.getByRole('button', { name: /abspielen/i })).toHaveCount(0);
   });
 
@@ -169,7 +194,7 @@ test.describe('Vorgang lifecycle — Akte statt Video', () => {
     await page.waitForURL('**/vorgaenge/umzug/run?vorgangId=vg-anna-umzug-2026-completed', {
       timeout: 15000,
     });
-    await page.locator('.vab-layout').first().waitFor({ timeout: 20000 });
+    await waitForOrRetry(page, () => page.locator('.vab-layout'), 20000);
     await expect(page.getByRole('button', { name: /abspielen/i })).toHaveCount(0);
   });
 

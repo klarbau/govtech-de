@@ -153,7 +153,7 @@ async function surfaceUmzugConfirm(page: Page) {
     timeout: 20_000,
   });
   await waitForBridge(page);
-  const composer = page.getByPlaceholder(/.+/).first();
+  const composer = page.getByRole('textbox', { name: 'Nachricht an den Assistenten' });
   await composer.click();
   await composer.fill('leite meinen Umzug ein');
   await composer.press('Enter');

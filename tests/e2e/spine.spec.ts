@@ -191,12 +191,13 @@ test.describe('SPINE — assistant → autopilot → posteingang (demo-shipped g
     await expect(
       page.getByRole('heading', { name: 'Heute wichtig' }),
     ).toBeVisible();
-    // Nav tiles (Posteingang + Offene Vorgänge among the stat cards).
+    // Nav tiles (Posteingang + Offene Vorgänge among the stat cards — link
+    // tiles since the UX-audit wave, no headings anymore).
     await expect(
-      page.getByRole('heading', { name: 'Posteingang', exact: true }),
+      page.getByRole('link', { name: /in Ihrem Posteingang/ }),
     ).toBeVisible();
     await expect(
-      page.getByRole('heading', { name: 'Offene Vorgänge', exact: true }),
+      page.getByRole('link', { name: /Offene Vorgänge/ }),
     ).toBeVisible();
 
     /* ── Step 3: Assistent — confirm card surfaces ──────────────────────── */
@@ -207,7 +208,7 @@ test.describe('SPINE — assistant → autopilot → posteingang (demo-shipped g
       });
     });
 
-    const composer = page.getByPlaceholder(/.+/).first();
+    const composer = page.getByRole('textbox', { name: 'Nachricht an den Assistenten' });
     await composer.click();
     await composer.fill('leite meinen Umzug ein');
     await composer.press('Enter');
@@ -340,7 +341,7 @@ test.describe('SPINE — assistant → autopilot → posteingang (demo-shipped g
       });
     });
 
-    const composer = page.getByPlaceholder(/.+/).first();
+    const composer = page.getByRole('textbox', { name: 'Nachricht an den Assistenten' });
     await composer.click();
     await composer.fill('leite meinen Umzug ein');
     await composer.press('Enter');

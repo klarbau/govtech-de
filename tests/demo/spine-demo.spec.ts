@@ -563,7 +563,7 @@ test('DEMO - Umzug-Autopilot walkthrough (Anna)', async ({ page }) => {
   await beat(page, 700);
   await caption(page, 'Assistent', 'Ein Satz genügt — kein Formular, kein Behördendeutsch.');
 
-  const composer = page.getByPlaceholder(/.+/).first();
+  const composer = page.getByRole('textbox', { name: 'Nachricht an den Assistenten' });
   await clickAt(page, composer);
   await composer.pressSequentially('leite meinen Umzug ein', { delay: 55 });
   await beat(page, 550);

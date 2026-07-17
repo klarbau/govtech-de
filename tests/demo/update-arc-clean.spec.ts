@@ -323,7 +323,7 @@ test('CLEAN - Update-Arc raw capture (Anna)', async ({ page }) => {
   await page.mouse.move(cursor.x, cursor.y);
   await beat(page, 800);
 
-  const composer = page.getByPlaceholder(/.+/).first();
+  const composer = page.getByRole('textbox', { name: 'Nachricht an den Assistenten' });
   await clickAt(page, composer);
   await composer.pressSequentially('leite meinen Umzug ein', { delay: 50 });
   await beat(page, 450);

@@ -786,7 +786,7 @@ test('DEMO - Update-Arc: Echte Systeme unter dem Prototyp (Anna)', async ({
   await beat(page, 600);
   await caption(page, 'Assistent', 'Ein Satz genügt — den Rest koordiniert das System.');
 
-  const composer = page.getByPlaceholder(/.+/).first();
+  const composer = page.getByRole('textbox', { name: 'Nachricht an den Assistenten' });
   await clickAt(page, composer);
   await composer.pressSequentially('leite meinen Umzug ein', { delay: 50 });
   await beat(page, 450);

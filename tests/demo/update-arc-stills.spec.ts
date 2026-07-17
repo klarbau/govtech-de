@@ -250,7 +250,7 @@ test('UPDATE-ARC stills (Anna)', async ({ page }) => {
   await page.goto('/assistent?reliable=1', { waitUntil: 'domcontentloaded' });
   await expect(page.getByText(/Hallo Anna/).first()).toBeVisible({ timeout: 30_000 });
   await installCleanStyle(page);
-  const composer = page.getByPlaceholder(/.+/).first();
+  const composer = page.getByRole('textbox', { name: 'Nachricht an den Assistenten' });
   await composer.click();
   await composer.pressSequentially('leite meinen Umzug ein', { delay: 12 });
   await composer.press('Enter');

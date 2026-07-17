@@ -121,7 +121,7 @@ async function reachTerminRow(page: Page) {
   await page.goto('/assistent?reliable=1', { waitUntil: 'domcontentloaded' });
   await expect(page.getByText(/Hallo Anna/).first()).toBeVisible({ timeout: 20_000 });
 
-  const composer = page.getByPlaceholder(/.+/).first();
+  const composer = page.getByRole('textbox', { name: 'Nachricht an den Assistenten' });
   await composer.click();
   await composer.fill('leite meinen Umzug ein');
   await composer.press('Enter');
@@ -175,7 +175,7 @@ test.describe('Termin-Autopilot in-cascade consequence row (WCAG 2.1 AA)', () =>
     const before = await readTermine(page);
     expect(before.filter((t) => t.id.startsWith('termin-anmeldung-'))).toHaveLength(0);
 
-    const composer = page.getByPlaceholder(/.+/).first();
+    const composer = page.getByRole('textbox', { name: 'Nachricht an den Assistenten' });
     await composer.click();
     await composer.fill('leite meinen Umzug ein');
     await composer.press('Enter');

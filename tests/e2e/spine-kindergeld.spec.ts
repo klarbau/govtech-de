@@ -177,7 +177,7 @@ test.describe('SPINE — Kindergeld antragslos → confirm → in-thread cascade
       });
     });
 
-    const composer = page.getByPlaceholder(/.+/).first();
+    const composer = page.getByRole('textbox', { name: 'Nachricht an den Assistenten' });
     await composer.click();
     await composer.fill('Richte bitte das Kindergeld für mein Kind ein.');
     await composer.press('Enter');
