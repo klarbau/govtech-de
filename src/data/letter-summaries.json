@@ -167,17 +167,17 @@
   },
   "letter-bundesdruckerei-pa-aufkleber": {
     "pre_open": {
-      "text": "Bundesdruckerei · PA-Aufkleber Versand · Keine Frist",
+      "text": "Bundesdruckerei · eAT-Adressaufkleber Versand · Keine Frist",
       "generated_at": "2026-05-08T08:00:00.000Z"
     },
     "post_open": {
       "bullets": [
-        { "text": "Adressaufkleber für Ihren Personalausweis nach § 28 PAuswG **versandt**." },
+        { "text": "Adressaufkleber für das Zusatzblatt Ihres Aufenthaltstitels (eAT) nach § 78a AufenthG **versandt**." },
         { "text": "Voraussichtliche Lieferzeit: 5–10 Werktage." },
         { "text": "Keine Aktion erforderlich." }
       ],
       "citations": [
-        { "bullet_index": 0, "original_zitat": "Adressaufkleber für Ihren Personalausweis nach § 28 PAuswG hergestellt und versendet wurde." },
+        { "bullet_index": 0, "original_zitat": "Adressaufkleber für das Zusatzblatt zu Ihrem elektronischen Aufenthaltstitel (eAT) nach § 78a AufenthG hergestellt und versendet wurde." },
         { "bullet_index": 1, "original_zitat": "Sie erhalten den Aufkleber innerhalb der nächsten 5–10 Werktage." },
         { "bullet_index": 2, "original_zitat": "" }
       ],

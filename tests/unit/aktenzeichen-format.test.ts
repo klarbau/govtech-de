@@ -113,8 +113,8 @@ const FORMAT_RULES: FormatRule[] = [
     behoerdeIds: ['vbg-hamburg'],
   },
   {
-    name: 'Bundesdruckerei — BD-PA/YYYY-MM-NNNNNN',
-    regex: new RegExp(`^${MOCK}BD-PA/\\d{4}-\\d{2}-\\d{6}$`),
+    name: 'Bundesdruckerei — BD-<DOKTYP>/YYYY-MM-NNNNNN (PA, EAT …)',
+    regex: new RegExp(`^${MOCK}BD-[A-Z]+/\\d{4}-\\d{2}-\\d{6}$`),
     behoerdeIds: ['bundesdruckerei'],
   },
   {

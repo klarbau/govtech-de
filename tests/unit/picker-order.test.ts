@@ -215,7 +215,7 @@ describe('Picker-Order — Spec § 6.2 Tabelle', () => {
     expect(order).toEqual(['informative_rueckmeldung', 'freitext']);
   });
 
-  test('sonstiges + none (Bundesdruckerei) → [informative_rueckmeldung, freitext]', () => {
+  test('sonstiges + none (Bundesdruckerei eAT-Adressaufkleber) → [informative_rueckmeldung, freitext]', () => {
     const order = getReplyTemplatePickerOrder(
       findLetter('letter-bundesdruckerei-pa-aufkleber'),
     );

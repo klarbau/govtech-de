@@ -3,14 +3,14 @@
     "id": "doc-anna-reisepass",
     "owner_persona_id": "anna-petrov",
     "typ": "reisepass",
-    "titel": "Reisepass",
-    "ausstellende_behoerde_id": "bundesdruckerei",
+    "titel": "Reisepass (Russische Föderation)",
+    "ausstellende_behoerde_id": "Generalkonsulat der Russischen Föderation, Bonn",
     "ausgestellt_am": "2023-06-19",
     "gueltig_bis": "2033-06-18",
     "kategorie": "ausweise",
-    "dokument_nr": "[MOCK] C01X00T47",
-    "qr_payload": "[MOCK-QR] reisepass://bundesdruckerei/2023-06-19/anna-petrov?nr=C01X00T47 [MOCK – Verwaltungsdemo, keine echten Daten]",
-    "eudi_compatible": true,
+    "dokument_nr": "[MOCK] 76 2201458",
+    "qr_payload": "[MOCK-QR] reisepass://generalkonsulat-rf-bonn/2023-06-19/anna-petrov?nr=76-2201458 [MOCK – Verwaltungsdemo, keine echten Daten]",
+    "eudi_compatible": false,
     "watermark": "[MOCK]"
   },
   {
@@ -253,20 +253,6 @@
     "dokument_nr": "[MOCK] AV-MSG-2023-0188",
     "qr_payload": "[MOCK-QR] arbeitsvertrag://mittelstand-software-gmbh/2023-03-20/anna-petrov [MOCK – Verwaltungsdemo, keine echten Daten]",
     "eudi_compatible": false,
-    "watermark": "[MOCK]"
-  },
-  {
-    "id": "doc-anna-personalausweis",
-    "owner_persona_id": "anna-petrov",
-    "typ": "meldebestaetigung",
-    "titel": "Personalausweis-Adressbestätigung (Ablauf bald)",
-    "ausstellende_behoerde_id": "bundesdruckerei",
-    "ausgestellt_am": "2016-08-05",
-    "gueltig_bis": "2026-08-04",
-    "kategorie": "ausweise",
-    "dokument_nr": "[MOCK] T0123456X",
-    "qr_payload": "[MOCK-QR] personalausweis://bundesdruckerei/2016-08-05/anna-petrov?nr=T0123456X [MOCK – Verwaltungsdemo, keine echten Daten]",
-    "eudi_compatible": true,
     "watermark": "[MOCK]"
   },
   {

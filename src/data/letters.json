@@ -626,11 +626,11 @@
     "id": "letter-bundesdruckerei-pa-aufkleber",
     "absender_behoerde_id": "bundesdruckerei",
     "empfaenger_persona_id": "anna-petrov",
-    "aktenzeichen": "[MOCK] BD-PA/2024-09-114277",
-    "betreff": "Versandbestätigung Adressaufkleber Personalausweis",
-    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nBundesdruckerei GmbH, Kommandantenstraße 18, 10969 Berlin\n\nSehr geehrte Frau Petrov,\n\nin oben genannter Angelegenheit bestätigen wir, dass der Adressaufkleber für Ihren Personalausweis nach § 28 PAuswG hergestellt und versendet wurde. Sie erhalten den Aufkleber innerhalb der nächsten 5–10 Werktage.\n\nMit freundlichen Grüßen\nBundesdruckerei GmbH\nAz. [MOCK] BD-PA/2024-09-114277",
+    "aktenzeichen": "[MOCK] BD-EAT/2024-09-114277",
+    "betreff": "Versandbestätigung Adressaufkleber Aufenthaltstitel (Zusatzblatt)",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nBundesdruckerei GmbH, Kommandantenstraße 18, 10969 Berlin\n\nSehr geehrte Frau Petrov,\n\nin oben genannter Angelegenheit bestätigen wir, dass der Adressaufkleber für das Zusatzblatt zu Ihrem elektronischen Aufenthaltstitel (eAT) nach § 78a AufenthG hergestellt und versendet wurde. Sie erhalten den Aufkleber innerhalb der nächsten 5–10 Werktage.\n\nMit freundlichen Grüßen\nBundesdruckerei GmbH\nAz. [MOCK] BD-EAT/2024-09-114277",
     "ai_summary": {
-      "de": "Adressaufkleber für Ihren Personalausweis ist auf dem Postweg — voraussichtlich 5–10 Werktage."
+      "de": "Adressaufkleber für das Zusatzblatt Ihres Aufenthaltstitels (eAT) ist auf dem Postweg — voraussichtlich 5–10 Werktage."
     },
     "archetype": "sonstiges",
     "auth_channel": "briefpost",
