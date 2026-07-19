@@ -1377,7 +1377,7 @@
       "laden": "Не удалось загрузить данные."
     },
     "heute": {
-      "titel": "Важно сегодня",
+      "titel": "Сегодня",
       "tab_ki": "ИИ",
       "tab_frist": "Срок",
       "tab_behoerde": "Ведомство",
@@ -1395,111 +1395,82 @@
       "reason_frist_naehe": "Срок ближе, чем у других Ваших открытых задач.",
       "reason_termin_steht": "Запись на приём уже назначена.",
       "reason_folgevorgang": "Следующий шаг в рамках текущего процесса.",
-      "reason_manuell_priorisiert": "Отмечено Вами как важное."
+      "reason_manuell_priorisiert": "Отмечено Вами как важное.",
+      "alle_anzeigen": "Показать все",
+      "slot_bis": "до {datum}",
+      "slot_hinweis": "Примечание",
+      "termin_video_hinweis": "Ссылка придёт за 24 ч по эл. почте",
+      "slot_wohngeld_titel": "Возможное право на жилищное пособие (Wohngeld): ок. {min}–{max} € / месяц",
+      "slot_wohngeld_titel_risiko": "Жилищное пособие (Wohngeld): планируемая реформа может Вас затронуть",
+      "slot_wohngeld_sub": "Оценка на основе Ваших основных данных · проверить",
+      "slot_aufenthalt_titel": "Вид на жительство (Aufenthaltstitel) истекает в {monat} — продление подготовлено",
+      "slot_aufenthalt_sub": "Осталось {count, plural, one {# пункт} few {# пункта} many {# пунктов} other {# пунктов}} · {behoerde}"
     },
-    "triumph": {
-      "title": "Сделано за Вас",
-      "subtitle": "Переезд передан в {count} ведомств — Вам не пришлось ничего делать.",
-      "zeitersparnis": "сэкономлено ок. {min} мин",
-      "link": "Посмотреть процесс",
-      "gerade_eben": "только что",
-      "koordiniert": "Переезд скоординирован за Вас",
-      "body": "Ваш новый адрес передан в несколько инстанций. Больше Вам ничего делать не нужно.",
-      "badge_abgeschlossen": "Завершено",
-      "zeit_label": "Сэкономлено времени",
-      "std_value": "ок. {hours} ч",
-      "min_value": "ок. {min} мин",
-      "zeit_caption": "по сравнению с отдельными обращениями",
-      "stellen_label": "Уведомлённые инстанции",
-      "stellen_caption": "Ведомства и учреждения",
-      "overview_title": "Ваш переезд: обзор",
-      "ring_label": "Выполнено {percent}%",
-      "ring_aria": "Переезд выполнен на {percent} процентов",
-      "stellen_informiert": "Уведомлено ведомств: {done} из {total}",
-      "naechster_schritt_label": "Следующий шаг",
-      "naechster_schritt_wert": "Проверьте подтверждения во входящих",
-      "naechster_schritt_frist": "Срок до {datum}",
-      "zum_umzug": "Перейти к переезду"
+    "tldr": {
+      "keine_fristen": "Нет сроков в ближайшие 14 дней",
+      "fristen": "{count, plural, one {<b>Один срок</b>} few {<b># срока</b>} many {<b># сроков</b>} other {<b># сроков</b>}} в ближайшие 14 дней, ближайший — <b>{datum}</b>",
+      "fristen_ohne_datum": "{count, plural, one {<b>Один срок</b>} few {<b># срока</b>} many {<b># сроков</b>} other {<b># сроков</b>}} в ближайшие 14 дней",
+      "umzug": "Ваш переезд: <b>{done} из {total} инстанций</b> уведомлены"
     },
-    "erledigt_feed": {
-      "title": "Сделано автоматически",
-      "count_aria": "Автоматически выполнено шагов: {count}",
-      "badge_erledigt": "Готово",
-      "empty": "Пока ничего не сделано автоматически.",
+    "umzug_panel": {
+      "titel": "Ваш переезд в {ort}",
+      "state_laeuft": "выполняется автоматически",
+      "state_fertig": "полностью зарегистрирован",
+      "stellen": "{done} из {total} инстанций уведомлены",
+      "segbar_aria": "Выполнено {done} из {total} шагов",
+      "naechster": "Ещё не завершено: <b>{schritt}</b> — <due>до {datum}</due>. После этого переезд будет полностью зарегистрирован.",
+      "naechster_ohne_frist": "Ещё не завершено: <b>{schritt}</b>. После этого переезд будет полностью зарегистрирован.",
+      "schritt_default": "Проверьте подтверждения во входящих",
+      "cta_pruefen": "Проверить подтверждения",
       "alle_schritte": "Показать все шаги",
-      "termin_pending": "Требуется подтверждение записи на приём",
-      "termin_bestaetigen": "Подтвердить запись"
+      "meta": "{aktion} — выполнено {zeit}. Всего сэкономлено {ersparnis}.",
+      "meta_ohne_eintrag": "Так Вы сэкономили {ersparnis}.",
+      "ersparnis_std": "ок. {hours} ч",
+      "ersparnis_min": "ок. {min} мин"
     },
-    "aktivitaeten": {
-      "titel": "Активность",
-      "alle": "Показать всю активность",
-      "bewegung": "Последнее изменение: {zeit}",
-      "status": {
-        "angelegt": "Создано",
-        "in_pruefung": "На проверке",
-        "genehmigt": "Одобрено",
-        "abgelehnt": "Отклонено",
-        "abgeschlossen": "Завершено"
-      }
+    "kennzahl": {
+      "posteingang": "Непрочитанные сообщения",
+      "vorgaenge": "Процессы в обработке",
+      "fristen": "Сроки в ближайшие 14 дней"
+    },
+    "autopilot_verfuegbar": {
+      "titel": "Автопилот доступен для",
+      "in_vorbereitung": "в подготовке",
+      "alle": "Все жизненные ситуации"
+    },
+    "kontrolle_fuss": {
+      "text": "Никакой передачи данных без правового основания или Вашего явного согласия.",
+      "mehr": "Подробнее о защите данных"
     },
     "naechster_termin": {
-      "titel": "Ближайшая запись на приём",
-      "badge_bestaetigt": "Подтверждено",
-      "details": "Подробнее",
-      "kalender": "В календарь",
-      "none": "Записей на приём нет",
       "praesenz": "Очно",
       "video": "Видеоприём",
       "telefon": "Приём по телефону"
-    },
-    "tiles": {
-      "posteingang_sub": "Непрочитанные сообщения в Ваших входящих",
-      "fristen_sub": "Сроки в ближайшие 14 дней",
-      "vorgaenge_sub": "Текущие процессы в обработке",
-      "posteingang_cta": "Перейти во входящие",
-      "fristen_cta": "Посмотреть сроки",
-      "termine_sub": "Ближайшая запись: {datum}",
-      "termine_cta": "Все записи",
-      "vorgaenge_cta": "Посмотреть процессы"
-    },
-    "kontrolle": {
-      "title": "Под Вашим контролем",
-      "subtitle": "Вы решаете, кто что получает — безопасно и прозрачно.",
-      "punkt_einwilligung": "Частные получатели — только с Вашего согласия",
-      "punkt_eid": "Чувствительный шаг — только с подтверждением eID",
-      "punkt_rechtsgrundlage": "Никаких данных без правового основания",
-      "mehr": "Подробнее о защите данных"
     },
     "achievement": {
       "jahr": "{count} процессов выполнено за Вас в этом году"
     },
     "kacheln": {
       "fristen": {
-        "titel": "Сроки",
         "offen": "{count} открыт.",
         "cta": "Посмотреть"
       },
       "posteingang": {
-        "titel": "Входящие",
         "ungelesen": "{count} непрочитано",
         "cta": "Открыть"
       },
       "vorgaenge": {
-        "titel": "Открытые процессы",
         "stand": "{laeuft} в работе, {abgeschlossen} завершено",
         "cta": "Посмотреть"
       },
       "termine": {
-        "titel": "Встречи",
         "cta": "Посмотреть"
       },
       "datenschutz": {
-        "titel": "Центр конфиденциальности",
         "aktivitaeten": "{count} действий за 30 дней",
         "cta": "Открыть"
       },
       "stammdaten": {
-        "titel": "Статус анкетных данных",
         "cta": "Посмотреть"
       }
     },
@@ -4958,8 +4929,6 @@
   },
   "katalog": {
     "titel": "Каталог автопилота",
-    "behoerden_label": "Задействованные ведомства",
-    "vorschau_badge": "В подготовке",
     "umzug": {
       "titel": "Переезд",
       "beschreibung": "Одно подтверждение — мы сообщим Ваш новый адрес во все компетентные ведомства."
@@ -4980,10 +4949,6 @@
       "live": "доступно",
       "demnaechst": "скоро"
     },
-    "lebenslagen_titel": "Жизненные ситуации / каталог Autopilot",
-    "alle_lebenslagen": "Посмотреть все жизненные ситуации",
-    "behoerden_count": "ок. {count} ведомств",
-    "zeit_gespart": "сэкономлено ок. {min} мин",
     "untertitel": "Жизненные ситуации, которые автопилот берёт на себя.",
     "starten": "Запустить переезд"
   },

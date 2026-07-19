@@ -1,71 +1,46 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   Dashboard — Liquid Glass (Welle 1)
+   Dashboard — Liquid Glass (Redesign „Ein Blick, eine Antwort")
    ---------------------------------------------------------------------------
    Screen-scoped rules for /dashboard on top of liquid-glass-core.css. Every
    rule is gated under `html[data-lg][data-lg-screen='dashboard']` (the screen
    attribute set by <LiquidGlassScreen name="dashboard">) and further scoped to
-   `.app-content`, so nothing leaks onto the shell or other routes — several of
-   the dashboard's class names are shared (`.stat-tile` also on /vorgaenge,
-   `.icon-circle`/`.badge` app-wide). Surfaces only (background · border · shadow
-   · backdrop-filter · radius) — never text colours, so the Waldgrün tokens keep
-   their light/dark contrast.
+   `.app-content`, so nothing leaks onto the shell or other routes. Surfaces only
+   (background · border · shadow · backdrop-filter · radius) — never text
+   colours, so the Waldgrün tokens keep their light/dark contrast.
 
-   Recipes are transcribed from the established Liquid-Glass vocabulary (the
-   core `--lg-*` tokens + the Posteingang glass-card / frosted-sub-surface
-   values), not invented.
+   The redesign is mostly boxless (the „Heute" list, Kennzahlen, Autopilot-
+   Teaser + Kontrolle-Fußzeile are hairline rows/text — no glass surface). Only
+   these three surface families remain:
+     · `.dash-umzug-panel`   — the ONE frosted content surface (Umzug-Anker).
+     · `.whx` / `.wh-card`   — the Wohngeld-Disclosure content (near-opaque glass).
+     · `.lg-glass-surface(-accent)` — AufenthaltFristNudge + AnspruchLane cards.
 
    backdrop-filter budget: the shell zone already spends its two blur layers on
    .app-topnav + .app-sidenav. Content cards therefore get NO backdrop-filter —
    a near-opaque glass gradient + edge + shadow carries them. The ONE exception
-   is the `.umz-hero` „Ihr Umzug im Überblick" panel — the screen's hero surface,
-   which frosts once (one hero/panel per screen, per plan §1).
+   is the `.dash-umzug-panel`, which frosts once (one hero/panel per screen).
+   Per the Mobile-Comfort contract the panel is blur-free ≤ 767px (solid glass).
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ── Top-level content cards — floating glass, no backdrop-filter ──────────── */
-html[data-lg][data-lg-screen='dashboard'] .app-content .heute-card,
-html[data-lg][data-lg-screen='dashboard'] .app-content .nt-card,
-html[data-lg][data-lg-screen='dashboard'] .app-content .kontrolle-card,
-html[data-lg][data-lg-screen='dashboard'] .app-content .stat-tile,
-html[data-lg][data-lg-screen='dashboard'] .app-content .whx,
-html[data-lg][data-lg-screen='dashboard'] .app-content .wh-card {
-  background: var(--lg-glass-raised);
-  border: 1px solid var(--lg-edge);
-  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
-  transition: box-shadow 0.25s ease, transform 0.18s ease;
-}
-html[data-lg][data-lg-screen='dashboard'].dark .app-content .heute-card,
-html[data-lg][data-lg-screen='dashboard'].dark .app-content .nt-card,
-html[data-lg][data-lg-screen='dashboard'].dark .app-content .kontrolle-card,
-html[data-lg][data-lg-screen='dashboard'].dark .app-content .stat-tile,
-html[data-lg][data-lg-screen='dashboard'].dark .app-content .whx,
-html[data-lg][data-lg-screen='dashboard'].dark .app-content .wh-card {
-  border-color: var(--lg-hairline);
-}
-/* Risiko-Wohngeld keeps its green left accent on top of the glass rim. */
-html[data-lg][data-lg-screen='dashboard'] .app-content .wh-card {
-  border-left: 3px solid var(--green-600);
-}
-
-/* Clickable stat tiles lift on hover instead of swapping to a flat soft fill. */
-html[data-lg][data-lg-screen='dashboard'] .app-content .stat-tile:hover {
-  background: var(--lg-glass-raised);
-  box-shadow: var(--lg-shadow-lift), inset 0 1px 0 var(--lg-edge);
-}
-
-/* ── Hero panel — the ONE frosted content surface (Umzug-Überblick) ────────── */
-html[data-lg][data-lg-screen='dashboard'] .app-content .umz-hero {
+/* ── Hero panel — the ONE frosted content surface (Umzug-Anker) ─────────────── */
+html[data-lg][data-lg-screen='dashboard'] .app-content .dash-umzug-panel {
   position: relative;
   background: var(--lg-glass);
-  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
-  backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
   border: 1px solid var(--lg-edge);
   box-shadow: var(--lg-shadow-panel), inset 0 1px 0 var(--lg-edge-strong);
 }
-html[data-lg][data-lg-screen='dashboard'].dark .app-content .umz-hero {
+/* Blur only ≥ 768px (Mobile-Comfort: content stays blur-free on phones). */
+@media (min-width: 768px) {
+  html[data-lg][data-lg-screen='dashboard'] .app-content .dash-umzug-panel {
+    -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+    backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  }
+}
+html[data-lg][data-lg-screen='dashboard'].dark .app-content .dash-umzug-panel {
   border-color: var(--lg-hairline);
 }
 /* Top-edge specular highlight (static — matches the Posteingang reader panel). */
-html[data-lg][data-lg-screen='dashboard'] .app-content .umz-hero::before {
+html[data-lg][data-lg-screen='dashboard'] .app-content .dash-umzug-panel::before {
   content: '';
   position: absolute;
   top: 0;
@@ -76,49 +51,28 @@ html[data-lg][data-lg-screen='dashboard'] .app-content .umz-hero::before {
   background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.95) 24%, rgba(255, 255, 255, 0.4) 64%, rgba(255, 255, 255, 0) 100%);
   pointer-events: none;
 }
-html[data-lg][data-lg-screen='dashboard'].dark .app-content .umz-hero::before {
+html[data-lg][data-lg-screen='dashboard'].dark .app-content .dash-umzug-panel::before {
   opacity: 0.25;
 }
-/* Divider inside the hero reads as a hairline over the frosted field. */
-html[data-lg][data-lg-screen='dashboard'] .app-content .umz-hero .umz-hero-divider {
-  background: var(--lg-hairline);
-}
 
-/* ── Autopilot-catalogue cards — glass sub-surfaces (keep their 14px radius) ── */
-html[data-lg][data-lg-screen='dashboard'] .app-content .katalog-card {
+/* ── Wohngeld-Disclosure content — near-opaque glass card, no backdrop-filter ── */
+html[data-lg][data-lg-screen='dashboard'] .app-content .whx,
+html[data-lg][data-lg-screen='dashboard'] .app-content .wh-card {
   background: var(--lg-glass-raised);
   border: 1px solid var(--lg-edge);
   box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
   transition: box-shadow 0.25s ease, transform 0.18s ease;
 }
-html[data-lg][data-lg-screen='dashboard'].dark .app-content .katalog-card {
+html[data-lg][data-lg-screen='dashboard'].dark .app-content .whx,
+html[data-lg][data-lg-screen='dashboard'].dark .app-content .wh-card {
   border-color: var(--lg-hairline);
 }
-html[data-lg][data-lg-screen='dashboard'] .app-content .katalog-card:hover {
-  background: var(--lg-glass-raised);
-  box-shadow: var(--lg-shadow-lift), inset 0 1px 0 var(--lg-edge);
+/* Risiko-Wohngeld keeps its green left accent on top of the glass rim. */
+html[data-lg][data-lg-screen='dashboard'] .app-content .wh-card {
+  border-left: 3px solid var(--green-600);
 }
 
-/* ── Nested tiles inside the glass cards — soft frosted sub-surfaces ────────── */
-/* „Heute wichtig" todo tiles sit ON the near-opaque .heute-card, so they read
-   as lighter frosted panels (recipe from the Posteingang inner sub-cards). */
-html[data-lg][data-lg-screen='dashboard'] .app-content .heute-tile {
-  background: rgba(255, 255, 255, 0.66);
-  border: 1px solid var(--lg-hairline);
-  box-shadow: 0 1px 2px rgba(15, 61, 46, 0.04);
-}
-html[data-lg][data-lg-screen='dashboard'].dark .app-content .heute-tile {
-  background: rgba(255, 255, 255, 0.05);
-}
-html[data-lg][data-lg-screen='dashboard'] .app-content .heute-tile:hover {
-  background: rgba(255, 255, 255, 0.82);
-  box-shadow: var(--lg-shadow-card);
-}
-html[data-lg][data-lg-screen='dashboard'].dark .app-content .heute-tile:hover {
-  background: rgba(255, 255, 255, 0.08);
-}
-
-/* ── Utility-class dashboard cards — glass via a shared hook (no bespoke class)
+/* ── Utility-class dashboard cards — glass via a shared hook ────────────────────
    AufenthaltFristNudge + AnspruchLaneRow carry `.lg-glass-surface`; the
    accent-tinted KinderzuschlagRadarCard carries `.lg-glass-surface-accent`
    (green mint glass from the core `--lg-mint*` tokens). Both are dashboard-only
@@ -138,38 +92,4 @@ html[data-lg][data-lg-screen='dashboard'] .app-content .lg-glass-surface-accent 
 }
 html[data-lg][data-lg-screen='dashboard'].dark .app-content .lg-glass-surface-accent {
   box-shadow: var(--lg-shadow-card);
-}
-
-/* ── Mobile stack: narrow-column squeeze fix (≤ 400px) ─────────────────────────
-   Layout only (never a text colour). At phone widths the frozen row rules in
-   prototype-v2.css keep the „Automatisch erledigt" (.erledigt-item) and
-   „Aktivitäten" (.aktiv-item) rows as a single flex line, so the fixed-width
-   meta column (Datum + Erledigt-Badge / Status-Pill) starves the Behörden-name
-   down to one word per line. Below 400px the name keeps the first line at full
-   remaining width and the meta drops onto its own line beneath it, aligned under
-   the name (46px = 34px icon + 12px gap). The row-gap comes from the frozen
-   `gap:12px` on the rows. */
-@media (max-width: 400px) {
-  html[data-lg][data-lg-screen='dashboard'] .app-content .erledigt-item {
-    flex-wrap: wrap;
-    align-items: flex-start;
-  }
-  html[data-lg][data-lg-screen='dashboard'] .app-content .erledigt-item .ei-meta {
-    flex-basis: 100%;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    padding-left: 46px;
-  }
-
-  html[data-lg][data-lg-screen='dashboard'] .app-content .aktiv-item {
-    flex-wrap: wrap;
-    align-items: flex-start;
-  }
-  html[data-lg][data-lg-screen='dashboard'] .app-content .aktiv-item .aktiv-body {
-    flex-basis: calc(100% - 46px);
-  }
-  html[data-lg][data-lg-screen='dashboard'] .app-content .aktiv-item .aktiv-status {
-    margin-left: 46px;
-  }
 }

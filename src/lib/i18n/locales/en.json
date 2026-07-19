@@ -1377,7 +1377,7 @@
       "laden": "Data could not be loaded."
     },
     "heute": {
-      "titel": "Important today",
+      "titel": "Today",
       "tab_ki": "AI",
       "tab_frist": "Deadline",
       "tab_behoerde": "Authority",
@@ -1395,111 +1395,82 @@
       "reason_frist_naehe": "The deadline is closer than for your other open actions.",
       "reason_termin_steht": "An appointment has already been arranged.",
       "reason_folgevorgang": "Follow-up step from an ongoing process.",
-      "reason_manuell_priorisiert": "Marked as important by you."
+      "reason_manuell_priorisiert": "Marked as important by you.",
+      "alle_anzeigen": "Show all",
+      "slot_bis": "by {datum}",
+      "slot_hinweis": "Note",
+      "termin_video_hinweis": "Link arrives 24 h before by email",
+      "slot_wohngeld_titel": "Possible housing benefit (Wohngeld) entitlement: approx. {min}–{max} € / month",
+      "slot_wohngeld_titel_risiko": "Housing benefit (Wohngeld): a planned reform could affect you",
+      "slot_wohngeld_sub": "Estimate based on your profile data · get it checked",
+      "slot_aufenthalt_titel": "Residence permit (Aufenthaltstitel) expires in {monat} — renewal is prepared",
+      "slot_aufenthalt_sub": "{count, plural, one {# item still open} other {# items still open}} · {behoerde}"
     },
-    "triumph": {
-      "title": "Done for you",
-      "subtitle": "Move reported to {count} authorities — you didn't have to do anything.",
-      "zeitersparnis": "approx. {min} min saved",
-      "link": "View case",
-      "gerade_eben": "just now",
-      "koordiniert": "Your move has been coordinated for you",
-      "body": "Your new address has been sent to several offices. There's nothing more for you to do.",
-      "badge_abgeschlossen": "Completed",
-      "zeit_label": "Time saved",
-      "std_value": "approx. {hours} hrs",
-      "min_value": "approx. {min} min",
-      "zeit_caption": "compared to filing individually",
-      "stellen_label": "Offices informed",
-      "stellen_caption": "Authorities & institutions",
-      "overview_title": "Your move at a glance",
-      "ring_label": "{percent}% completed",
-      "ring_aria": "Move {percent} percent completed",
-      "stellen_informiert": "{done} of {total} offices informed",
-      "naechster_schritt_label": "Next step",
-      "naechster_schritt_wert": "Check confirmations in your inbox",
-      "naechster_schritt_frist": "Due by {datum}",
-      "zum_umzug": "Go to move"
+    "tldr": {
+      "keine_fristen": "No deadlines in the next 14 days",
+      "fristen": "{count, plural, one {<b>One deadline</b>} other {<b># deadlines</b>}} in the next 14 days, the next on <b>{datum}</b>",
+      "fristen_ohne_datum": "{count, plural, one {<b>One deadline</b>} other {<b># deadlines</b>}} in the next 14 days",
+      "umzug": "Your move: <b>{done} of {total} offices</b> informed"
     },
-    "erledigt_feed": {
-      "title": "Done automatically",
-      "count_aria": "{count} steps completed automatically",
-      "badge_erledigt": "Done",
-      "empty": "Nothing done automatically yet.",
-      "alle_schritte": "Show all steps",
-      "termin_pending": "Appointment confirmation required",
-      "termin_bestaetigen": "Confirm appointment"
+    "umzug_panel": {
+      "titel": "Your move to {ort}",
+      "state_laeuft": "running automatically",
+      "state_fertig": "fully reported",
+      "stellen": "{done} of {total} offices informed",
+      "segbar_aria": "{done} of {total} steps completed",
+      "naechster": "Still open: <b>{schritt}</b> — <due>by {datum}</due>. After that, the move is fully reported.",
+      "naechster_ohne_frist": "Still open: <b>{schritt}</b>. After that, the move is fully reported.",
+      "schritt_default": "Check confirmations in your inbox",
+      "cta_pruefen": "Check confirmations",
+      "alle_schritte": "View all steps",
+      "meta": "{aktion} — done {zeit}. {ersparnis} saved in total.",
+      "meta_ohne_eintrag": "You saved {ersparnis} as a result.",
+      "ersparnis_std": "approx. {hours} hrs",
+      "ersparnis_min": "approx. {min} min"
     },
-    "aktivitaeten": {
-      "titel": "Activity",
-      "alle": "Show all activity",
-      "bewegung": "Last update: {zeit}",
-      "status": {
-        "angelegt": "Created",
-        "in_pruefung": "Under review",
-        "genehmigt": "Approved",
-        "abgelehnt": "Rejected",
-        "abgeschlossen": "Completed"
-      }
+    "kennzahl": {
+      "posteingang": "Unread messages",
+      "vorgaenge": "Cases in progress",
+      "fristen": "Deadlines in the next 14 days"
+    },
+    "autopilot_verfuegbar": {
+      "titel": "Autopilot available for",
+      "in_vorbereitung": "in preparation",
+      "alle": "View all life events"
+    },
+    "kontrolle_fuss": {
+      "text": "No transmission without a legal basis or your explicit consent.",
+      "mehr": "More about data protection"
     },
     "naechster_termin": {
-      "titel": "Next appointment",
-      "badge_bestaetigt": "Confirmed",
-      "details": "View details",
-      "kalender": "Add to calendar",
-      "none": "No appointment scheduled",
       "praesenz": "In person",
       "video": "Video appointment",
       "telefon": "Phone appointment"
-    },
-    "tiles": {
-      "posteingang_sub": "Unread messages in your inbox",
-      "fristen_sub": "Deadlines within the next 14 days",
-      "vorgaenge_sub": "Ongoing cases in progress",
-      "posteingang_cta": "Go to inbox",
-      "fristen_cta": "View deadlines",
-      "termine_sub": "Next appointment: {datum}",
-      "termine_cta": "All appointments",
-      "vorgaenge_cta": "View cases"
-    },
-    "kontrolle": {
-      "title": "Your control",
-      "subtitle": "You decide who receives what — securely and transparently.",
-      "punkt_einwilligung": "Private recipients only with your consent",
-      "punkt_eid": "Sensitive steps only with eID confirmation",
-      "punkt_rechtsgrundlage": "No data without a legal basis",
-      "mehr": "More about data protection"
     },
     "achievement": {
       "jahr": "{count} cases handled for you this year"
     },
     "kacheln": {
       "fristen": {
-        "titel": "Deadlines",
         "offen": "{count} open",
         "cta": "View"
       },
       "posteingang": {
-        "titel": "Inbox",
         "ungelesen": "{count} unread",
         "cta": "Open"
       },
       "vorgaenge": {
-        "titel": "Open cases",
         "stand": "{laeuft} running, {abgeschlossen} completed",
         "cta": "View"
       },
       "termine": {
-        "titel": "Appointments",
         "cta": "View"
       },
       "datenschutz": {
-        "titel": "Privacy cockpit",
         "aktivitaeten": "{count} activities in 30 days",
         "cta": "Open"
       },
       "stammdaten": {
-        "titel": "Master-data status",
         "cta": "View"
       }
     },
@@ -4958,8 +4929,6 @@
   },
   "katalog": {
     "titel": "Autopilot catalogue",
-    "behoerden_label": "Offices involved",
-    "vorschau_badge": "In preparation",
     "umzug": {
       "titel": "Change of address",
       "beschreibung": "One confirmation — we report your new address to all responsible offices."
@@ -4980,10 +4949,6 @@
       "live": "available",
       "demnaechst": "coming soon"
     },
-    "lebenslagen_titel": "Life situations / Autopilot catalogue",
-    "alle_lebenslagen": "View all life situations",
-    "behoerden_count": "approx. {count} authorities",
-    "zeit_gespart": "approx. {min} min saved",
     "untertitel": "Life situations the autopilot handles for you.",
     "starten": "Start change of address"
   },

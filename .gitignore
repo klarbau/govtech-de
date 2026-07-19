@@ -44,6 +44,7 @@ shots/
 .next-turbo/
 .next-prod/
 .next-orch/
+.next-e2e-dash/
 
 # Demo-video takes (regenerate with `npm run demo:record`)
 demo-recording/

@@ -2,7 +2,7 @@
  * SPINE e2e — the "demo-shipped" gate (docs/demo-spine.md, steps 2–6).
  *
  * Proves the headline-wow path runs green deterministically, key-independent:
- *   2. Dashboard renders (greeting + "Heute wichtig" + nav tiles).
+ *   2. Dashboard renders (greeting + "Heute" section + rail kennzahl links).
  *   3. Assistent: user says "leite meinen Umzug ein" → UmzugConfirmCard surfaces
  *      with the proposed Behörden. The real assistant LLM needs an API key, so
  *      the SSE route is MOCKED (see `mockAssistantRoute`) — the mock emits a
@@ -187,17 +187,18 @@ test.describe('SPINE — assistant → autopilot → posteingang (demo-shipped g
       ).toBeVisible({ timeout: 20_000 });
     });
 
-    // "Heute wichtig" section.
+    // "Heute" section (redesign „Ein Blick, eine Antwort" — heading renamed
+    // from "Heute wichtig" to "Heute").
     await expect(
-      page.getByRole('heading', { name: 'Heute wichtig' }),
+      page.getByRole('heading', { name: 'Heute', exact: true }),
     ).toBeVisible();
-    // Nav tiles (Posteingang + Offene Vorgänge among the stat cards — link
-    // tiles since the UX-audit wave, no headings anymore).
+    // Kennzahl links in the rail (single-line labels since the redesign:
+    // "Ungelesene Nachrichten" / "Vorgänge in Bearbeitung").
     await expect(
-      page.getByRole('link', { name: /in Ihrem Posteingang/ }),
+      page.getByRole('link', { name: /Ungelesene Nachrichten/ }),
     ).toBeVisible();
     await expect(
-      page.getByRole('link', { name: /Offene Vorgänge/ }),
+      page.getByRole('link', { name: /Vorgänge in Bearbeitung/ }),
     ).toBeVisible();
 
     /* ── Step 3: Assistent — confirm card surfaces ──────────────────────── */

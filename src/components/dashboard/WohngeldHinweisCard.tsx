@@ -38,6 +38,14 @@ interface WohngeldHinweisCardProps {
   onDismiss: () => void;
   onSnooze: () => void;
   onRevokeConsent: () => void;
+  /**
+   * Disclosure-Modus (Dashboard-„Heute"-Liste): ist dieser Callback gesetzt,
+   * rendert die Karte ausschließlich ihren entfalteten Inhalt (kein eigener
+   * Einklapp-Trigger) — die „Heute"-Zeile darüber steuert das Auf-/Zuklappen.
+   * Der Einklapp-Knopf im Karten-Kopf ruft dann diesen Callback statt der
+   * komponentenlokalen Kollaps-Logik.
+   */
+  onRequestCollapse?: () => void;
 }
 
 /**
@@ -64,6 +72,7 @@ export function WohngeldHinweisCard({
   onDismiss,
   onSnooze,
   onRevokeConsent,
+  onRequestCollapse,
 }: WohngeldHinweisCardProps) {
   const t = useTranslations('wohngeldHinweis');
   const titleId = React.useId();
@@ -73,7 +82,12 @@ export function WohngeldHinweisCard({
   // Entdeckung startet EINGEKLAPPT: ruhige Disclosure-Zeile statt Hero-Karte.
   // Klick auf den Kopf klappt die volle Karte an Ort und Stelle auf. Die Risiko-
   // Variante (eigene Compliance-Rahmung) bleibt unverändert immer entfaltet.
-  const [collapsed, setCollapsed] = React.useState(!isRisiko);
+  // Im Disclosure-Modus (Dashboard-„Heute") ist die Karte immer entfaltet — die
+  // Zeile darüber besitzt die Kollaps-Steuerung.
+  const disclosureMode = onRequestCollapse !== undefined;
+  const [collapsedInternal, setCollapsed] = React.useState(!isRisiko);
+  const collapsed = disclosureMode ? false : collapsedInternal;
+  const handleCollapse = onRequestCollapse ?? (() => setCollapsed(true));
 
   if (isRisiko) {
     return (
@@ -127,7 +141,7 @@ export function WohngeldHinweisCard({
             titleId={titleId}
             estimate={estimate}
             ort={ort}
-            onCollapse={() => setCollapsed(true)}
+            onCollapse={handleCollapse}
             onDismiss={onDismiss}
             onSnooze={onSnooze}
             onRevokeConsent={onRevokeConsent}

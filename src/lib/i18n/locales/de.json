@@ -1377,7 +1377,7 @@
       "laden": "Daten konnten nicht geladen werden."
     },
     "heute": {
-      "titel": "Heute wichtig",
+      "titel": "Heute",
       "sort_aria": "Sortierung der Aktionsempfehlungen",
       "tab_ki": "KI",
       "tab_frist": "Frist",
@@ -1395,111 +1395,82 @@
       "reason_frist_naehe": "Frist rückt näher als bei Ihren anderen offenen Aktionen.",
       "reason_termin_steht": "Ein Termin ist bereits vereinbart.",
       "reason_folgevorgang": "Folgeschritt aus einem laufenden Verfahren.",
-      "reason_manuell_priorisiert": "Von Ihnen als wichtig markiert."
+      "reason_manuell_priorisiert": "Von Ihnen als wichtig markiert.",
+      "alle_anzeigen": "Alle anzeigen",
+      "slot_bis": "bis {datum}",
+      "slot_hinweis": "Hinweis",
+      "termin_video_hinweis": "Link kommt 24 h vorher per E-Mail",
+      "slot_wohngeld_titel": "Möglicher Wohngeld-Anspruch: ca. {min}–{max} € / Monat",
+      "slot_wohngeld_titel_risiko": "Wohngeld: geplante Novelle könnte Sie betreffen",
+      "slot_wohngeld_sub": "Schätzung aus Ihren Stammdaten · prüfen lassen",
+      "slot_aufenthalt_titel": "Aufenthaltstitel läuft im {monat} ab — Verlängerung ist vorbereitet",
+      "slot_aufenthalt_sub": "Noch {count} Punkte offen · {behoerde}"
     },
-    "triumph": {
-      "title": "Erledigt für Sie",
-      "subtitle": "Umzug an {count} Behörden gemeldet — Sie mussten nichts tun.",
-      "zeitersparnis": "ca. {min} Min gespart",
-      "link": "Vorgang ansehen",
-      "gerade_eben": "gerade eben",
-      "koordiniert": "Umzug wurde für Sie koordiniert",
-      "body": "Ihre neue Adresse wurde an mehrere Stellen übermittelt. Sie müssen nichts weiter tun.",
-      "badge_abgeschlossen": "Abgeschlossen",
-      "zeit_label": "Zeit gespart",
-      "std_value": "ca. {hours} Std.",
-      "min_value": "ca. {min} Min.",
-      "zeit_caption": "gegenüber Einzelmeldungen",
-      "stellen_label": "Informierte Stellen",
-      "stellen_caption": "Ämter & Institutionen",
-      "overview_title": "Ihr Umzug im Überblick",
-      "ring_label": "{percent} % abgeschlossen",
-      "ring_aria": "Umzug zu {percent} Prozent abgeschlossen",
-      "stellen_informiert": "{done} von {total} Stellen informiert",
-      "naechster_schritt_label": "Nächster Schritt",
-      "naechster_schritt_wert": "Bestätigungen im Posteingang prüfen",
-      "naechster_schritt_frist": "Fällig bis {datum}",
-      "zum_umzug": "Zum Umzug gehen"
+    "tldr": {
+      "keine_fristen": "Keine Fristen in den nächsten 14 Tagen",
+      "fristen": "{count, plural, one {<b>Eine Frist</b>} other {<b># Fristen</b>}} in den nächsten 14 Tagen, die nächste am <b>{datum}</b>",
+      "fristen_ohne_datum": "{count, plural, one {<b>Eine Frist</b>} other {<b># Fristen</b>}} in den nächsten 14 Tagen",
+      "umzug": "Ihr Umzug: <b>{done} von {total} Stellen</b> informiert"
     },
-    "erledigt_feed": {
-      "title": "Automatisch erledigt",
-      "count_aria": "{count} automatisch erledigte Schritte",
-      "badge_erledigt": "Erledigt",
-      "empty": "Noch nichts automatisch erledigt.",
-      "alle_schritte": "Alle Schritte anzeigen",
-      "termin_pending": "Terminbestätigung erforderlich",
-      "termin_bestaetigen": "Termin bestätigen"
+    "umzug_panel": {
+      "titel": "Ihr Umzug nach {ort}",
+      "state_laeuft": "läuft automatisch",
+      "state_fertig": "vollständig gemeldet",
+      "stellen": "{done} von {total} Stellen informiert",
+      "segbar_aria": "{done} von {total} Schritten abgeschlossen",
+      "naechster": "Noch offen: <b>{schritt}</b> — <due>bis {datum}</due>. Danach ist der Umzug vollständig gemeldet.",
+      "naechster_ohne_frist": "Noch offen: <b>{schritt}</b>. Danach ist der Umzug vollständig gemeldet.",
+      "schritt_default": "Bestätigungen im Posteingang prüfen",
+      "cta_pruefen": "Bestätigungen prüfen",
+      "alle_schritte": "Alle Schritte ansehen",
+      "meta": "{aktion} — erledigt {zeit}. Insgesamt {ersparnis} gespart.",
+      "meta_ohne_eintrag": "Sie haben dadurch {ersparnis} gespart.",
+      "ersparnis_std": "ca. {hours} Std.",
+      "ersparnis_min": "ca. {min} Min."
     },
-    "aktivitaeten": {
-      "titel": "Aktivitäten",
-      "alle": "Alle Aktivitäten anzeigen",
-      "bewegung": "Letzte Bewegung: {zeit}",
-      "status": {
-        "angelegt": "Angelegt",
-        "in_pruefung": "In Prüfung",
-        "genehmigt": "Genehmigt",
-        "abgelehnt": "Abgelehnt",
-        "abgeschlossen": "Abgeschlossen"
-      }
+    "kennzahl": {
+      "posteingang": "Ungelesene Nachrichten",
+      "vorgaenge": "Vorgänge in Bearbeitung",
+      "fristen": "Fristen in den nächsten 14 Tagen"
+    },
+    "autopilot_verfuegbar": {
+      "titel": "Autopilot verfügbar für",
+      "in_vorbereitung": "in Vorbereitung",
+      "alle": "Alle Lebenslagen ansehen"
+    },
+    "kontrolle_fuss": {
+      "text": "Keine Übermittlung ohne Rechtsgrundlage oder Ihre ausdrückliche Einwilligung.",
+      "mehr": "Mehr zum Datenschutz"
     },
     "naechster_termin": {
-      "titel": "Nächster Termin",
-      "badge_bestaetigt": "Bestätigt",
-      "details": "Details ansehen",
-      "kalender": "In Kalender",
-      "none": "Kein Termin geplant",
       "praesenz": "Vor Ort",
       "video": "Video-Termin",
       "telefon": "Telefon-Termin"
-    },
-    "tiles": {
-      "posteingang_sub": "Ungelesene Nachrichten in Ihrem Posteingang",
-      "fristen_sub": "Fristen in den nächsten 14 Tagen",
-      "vorgaenge_sub": "Laufende Vorgänge in Bearbeitung",
-      "posteingang_cta": "Zum Posteingang",
-      "fristen_cta": "Fristen ansehen",
-      "termine_sub": "Nächster Termin: {datum}",
-      "termine_cta": "Alle Termine",
-      "vorgaenge_cta": "Vorgänge ansehen"
-    },
-    "kontrolle": {
-      "title": "Ihre Kontrolle",
-      "subtitle": "Sie entscheiden, wer was erhält – sicher und transparent.",
-      "punkt_einwilligung": "Private Empfänger nur mit Einwilligung",
-      "punkt_eid": "Sensibler Schritt nur mit eID-Bestätigung",
-      "punkt_rechtsgrundlage": "Keine Daten ohne Rechtsgrundlage",
-      "mehr": "Mehr zum Datenschutz"
     },
     "achievement": {
       "jahr": "{count} Vorgänge dieses Jahr für Sie erledigt"
     },
     "kacheln": {
       "fristen": {
-        "titel": "Fristen",
         "offen": "{count} offen",
         "cta": "Ansehen"
       },
       "posteingang": {
-        "titel": "Posteingang",
         "ungelesen": "{count} ungelesen",
         "cta": "Öffnen"
       },
       "vorgaenge": {
-        "titel": "Offene Vorgänge",
         "stand": "{laeuft} läuft, {abgeschlossen} abgeschlossen",
         "cta": "Ansehen"
       },
       "termine": {
-        "titel": "Termine",
         "cta": "Ansehen"
       },
       "datenschutz": {
-        "titel": "Datenschutz-Cockpit",
         "aktivitaeten": "{count} Aktivitäten in 30 Tagen",
         "cta": "Öffnen"
       },
       "stammdaten": {
-        "titel": "Stammdaten-Status",
         "cta": "Ansehen"
       }
     },
@@ -5191,12 +5162,6 @@
   },
   "katalog": {
     "titel": "Autopilot-Katalog",
-    "lebenslagen_titel": "Lebenslagen / Autopilot-Katalog",
-    "alle_lebenslagen": "Alle Lebenslagen ansehen",
-    "behoerden_count": "ca. {count} Behörden",
-    "zeit_gespart": "ca. {min} Min. gespart",
-    "behoerden_label": "Beteiligte Stellen",
-    "vorschau_badge": "In Vorbereitung",
     "umzug": {
       "titel": "Umzug",
       "beschreibung": "Eine Bestätigung — wir melden Ihre neue Anschrift bei allen zuständigen Stellen."

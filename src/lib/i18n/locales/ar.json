@@ -1377,7 +1377,7 @@
       "laden": "تعذّر تحميل البيانات."
     },
     "heute": {
-      "titel": "مهم اليوم",
+      "titel": "اليوم",
       "tab_ki": "الذكاء الاصطناعي",
       "tab_frist": "الموعد النهائي",
       "tab_behoerde": "الجهة",
@@ -1395,111 +1395,82 @@
       "reason_frist_naehe": "الموعد النهائي أقرب من إجراءاتك المفتوحة الأخرى.",
       "reason_termin_steht": "تم تحديد موعد بالفعل.",
       "reason_folgevorgang": "خطوة لاحقة ضمن إجراء جارٍ.",
-      "reason_manuell_priorisiert": "وضعت علامة عليه كمهم."
+      "reason_manuell_priorisiert": "وضعت علامة عليه كمهم.",
+      "alle_anzeigen": "عرض الكل",
+      "slot_bis": "حتى {datum}",
+      "slot_hinweis": "ملاحظة",
+      "termin_video_hinweis": "يصل الرابط قبل 24 ساعة عبر البريد الإلكتروني",
+      "slot_wohngeld_titel": "استحقاق محتمل لبدل السكن (Wohngeld): نحو {min}–{max} € / شهرياً",
+      "slot_wohngeld_titel_risiko": "بدل السكن (Wohngeld): تعديل مُخطَّط قد يخصّك",
+      "slot_wohngeld_sub": "تقدير من بياناتك الأساسية · اطلب التحقّق",
+      "slot_aufenthalt_titel": "تصريح الإقامة (Aufenthaltstitel) ينتهي في {monat} — التمديد جاهز",
+      "slot_aufenthalt_sub": "تبقّى {count, plural, one {بند واحد} two {بندان} few {# بنود} many {# بنداً} other {# بند}} · {behoerde}"
     },
-    "triumph": {
-      "title": "أُنجز نيابةً عنك",
-      "subtitle": "تم إبلاغ {count} جهة بالانتقال — لم تضطر إلى فعل أي شيء.",
-      "zeitersparnis": "تم توفير {min} دقيقة تقريباً",
-      "link": "عرض المعاملة",
-      "gerade_eben": "للتو",
-      "koordiniert": "تمّ تنسيق انتقالك نيابةً عنك",
-      "body": "تمّ إرسال عنوانك الجديد إلى عدّة جهات. لا يلزمك فعل أي شيء آخر.",
-      "badge_abgeschlossen": "مكتمل",
-      "zeit_label": "الوقت الموفَّر",
-      "std_value": "{hours} ساعة تقريباً",
-      "min_value": "{min} دقيقة تقريباً",
-      "zeit_caption": "مقارنةً بالإبلاغ الفردي",
-      "stellen_label": "الجهات المُبلَّغة",
-      "stellen_caption": "الدوائر والمؤسسات",
-      "overview_title": "انتقالك في لمحة",
-      "ring_label": "اكتمل {percent}%",
-      "ring_aria": "اكتمل الانتقال بنسبة {percent} بالمئة",
-      "stellen_informiert": "تم إبلاغ {done} من {total} جهة",
-      "naechster_schritt_label": "الخطوة التالية",
-      "naechster_schritt_wert": "تحقق من التأكيدات في صندوق الوارد",
-      "naechster_schritt_frist": "الموعد النهائي حتى {datum}",
-      "zum_umzug": "الانتقال إلى الإجراء"
+    "tldr": {
+      "keine_fristen": "لا مواعيد نهائية خلال الـ 14 يوماً القادمة",
+      "fristen": "{count, plural, one {<b>موعد نهائي واحد</b>} two {<b>موعدان نهائيان</b>} few {<b># مواعيد نهائية</b>} many {<b># موعداً نهائياً</b>} other {<b># موعد نهائي</b>}} خلال الـ 14 يوماً القادمة، وأقربها في <b>{datum}</b>",
+      "fristen_ohne_datum": "{count, plural, one {<b>موعد نهائي واحد</b>} two {<b>موعدان نهائيان</b>} few {<b># مواعيد نهائية</b>} many {<b># موعداً نهائياً</b>} other {<b># موعد نهائي</b>}} خلال الـ 14 يوماً القادمة",
+      "umzug": "انتقالك: تم إبلاغ <b>{done} من {total} جهات</b>"
     },
-    "erledigt_feed": {
-      "title": "أُنجز تلقائياً",
-      "count_aria": "{count} خطوة أُنجزت تلقائياً",
-      "badge_erledigt": "منجَز",
-      "empty": "لم يُنجَز أي شيء تلقائياً بعد.",
+    "umzug_panel": {
+      "titel": "انتقالك إلى {ort}",
+      "state_laeuft": "يجري تلقائياً",
+      "state_fertig": "تم الإبلاغ بالكامل",
+      "stellen": "تم إبلاغ {done} من {total} جهات",
+      "segbar_aria": "اكتمل {done} من {total} خطوات",
+      "naechster": "لا يزال مفتوحاً: <b>{schritt}</b> — <due>حتى {datum}</due>. بعد ذلك يكون قد اكتمل الإبلاغ عن الانتقال.",
+      "naechster_ohne_frist": "لا يزال مفتوحاً: <b>{schritt}</b>. بعد ذلك يكون قد اكتمل الإبلاغ عن الانتقال.",
+      "schritt_default": "تحقق من التأكيدات في صندوق الوارد",
+      "cta_pruefen": "التحقّق من التأكيدات",
       "alle_schritte": "عرض جميع الخطوات",
-      "termin_pending": "يلزم تأكيد الموعد",
-      "termin_bestaetigen": "تأكيد الموعد"
+      "meta": "{aktion} — أُنجز {zeit}. إجمالاً تم توفير {ersparnis}.",
+      "meta_ohne_eintrag": "وبذلك وفّرت {ersparnis}.",
+      "ersparnis_std": "{hours} ساعة تقريباً",
+      "ersparnis_min": "{min} دقيقة تقريباً"
     },
-    "aktivitaeten": {
-      "titel": "النشاط",
-      "alle": "عرض كل النشاط",
-      "bewegung": "آخر تحديث: {zeit}",
-      "status": {
-        "angelegt": "أُنشئ",
-        "in_pruefung": "قيد المراجعة",
-        "genehmigt": "مُعتمَد",
-        "abgelehnt": "مرفوض",
-        "abgeschlossen": "مكتمل"
-      }
+    "kennzahl": {
+      "posteingang": "رسائل غير مقروءة",
+      "vorgaenge": "معاملات قيد المعالجة",
+      "fristen": "مواعيد نهائية خلال الـ 14 يوماً القادمة"
+    },
+    "autopilot_verfuegbar": {
+      "titel": "الطيار الآلي متاح لـ",
+      "in_vorbereitung": "قيد الإعداد",
+      "alle": "عرض جميع المواقف الحياتية"
+    },
+    "kontrolle_fuss": {
+      "text": "لا نقل للبيانات دون أساس قانوني أو موافقتك الصريحة.",
+      "mehr": "مزيد عن حماية البيانات"
     },
     "naechster_termin": {
-      "titel": "الموعد التالي",
-      "badge_bestaetigt": "مؤكَّد",
-      "details": "عرض التفاصيل",
-      "kalender": "إضافة إلى التقويم",
-      "none": "لا يوجد موعد مجدول",
       "praesenz": "حضورياً",
       "video": "موعد بالفيديو",
       "telefon": "موعد هاتفي"
-    },
-    "tiles": {
-      "posteingang_sub": "رسائل غير مقروءة في صندوق الوارد",
-      "fristen_sub": "المواعيد النهائية خلال الـ 14 يوماً القادمة",
-      "vorgaenge_sub": "المعاملات الجارية قيد المعالجة",
-      "posteingang_cta": "إلى صندوق الوارد",
-      "fristen_cta": "عرض المواعيد النهائية",
-      "termine_sub": "الموعد التالي: {datum}",
-      "termine_cta": "جميع المواعيد",
-      "vorgaenge_cta": "عرض المعاملات"
-    },
-    "kontrolle": {
-      "title": "تحكُّمك",
-      "subtitle": "أنت من يقرّر مَن يتلقّى ماذا — بأمان وشفافية.",
-      "punkt_einwilligung": "المستلِمون الخاصّون بموافقتك فقط",
-      "punkt_eid": "الخطوة الحسّاسة بتأكيد eID فقط",
-      "punkt_rechtsgrundlage": "لا بيانات بدون أساس قانوني",
-      "mehr": "مزيد عن حماية البيانات"
     },
     "achievement": {
       "jahr": "{count} معاملة أُنجزت نيابةً عنك هذا العام"
     },
     "kacheln": {
       "fristen": {
-        "titel": "المواعيد النهائية",
         "offen": "{count} مفتوح",
         "cta": "عرض"
       },
       "posteingang": {
-        "titel": "صندوق الوارد",
         "ungelesen": "{count} غير مقروء",
         "cta": "فتح"
       },
       "vorgaenge": {
-        "titel": "المعاملات المفتوحة",
         "stand": "{laeuft} قيد التنفيذ، {abgeschlossen} مكتمل",
         "cta": "عرض"
       },
       "termine": {
-        "titel": "المواعيد",
         "cta": "عرض"
       },
       "datenschutz": {
-        "titel": "مركز الخصوصية",
         "aktivitaeten": "{count} نشاط خلال 30 يوماً",
         "cta": "فتح"
       },
       "stammdaten": {
-        "titel": "حالة البيانات الأساسية",
         "cta": "عرض"
       }
     },
@@ -4958,8 +4929,6 @@
   },
   "katalog": {
     "titel": "كتالوج الطيار الآلي",
-    "behoerden_label": "الجهات المعنية",
-    "vorschau_badge": "قيد التحضير",
     "umzug": {
       "titel": "تغيير العنوان",
       "beschreibung": "تأكيد واحد — نُبلِغ عنوانك الجديد إلى جميع الجهات المختصّة."
@@ -4980,10 +4949,6 @@
       "live": "متاح",
       "demnaechst": "قريباً"
     },
-    "lebenslagen_titel": "المواقف الحياتية / كتالوج Autopilot",
-    "alle_lebenslagen": "عرض جميع المواقف الحياتية",
-    "behoerden_count": "نحو {count} جهة",
-    "zeit_gespart": "تم توفير {min} دقيقة تقريباً",
     "untertitel": "مواقف حياتية يتولّاها الطيار الآلي نيابةً عنك.",
     "starten": "بدء تغيير العنوان"
   },

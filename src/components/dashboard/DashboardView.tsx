@@ -2,38 +2,21 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
-import {
-  Calendar,
-  CalendarClock,
-  CalendarPlus,
-  Check,
-  CheckCircle2,
-  ChevronRight,
-  Clock3,
-  ExternalLink,
-  FileText,
-  Folder,
-  Gauge,
-  IdCard,
-  MapPin,
-  Shield,
-} from 'lucide-react';
-
+import { useLocale, useTranslations } from 'next-intl';
+import { ArrowRight, Check, Clock3 } from 'lucide-react';
 import { toast } from 'sonner';
 
-import { AutopilotKatalogTeaser } from '@/components/autopilot/AutopilotKatalogTeaser';
 import { AnspruchLane } from '@/components/dashboard/AnspruchLane';
 import {
   AufenthaltFristNudge,
   resolveAufenthaltFristNudge,
 } from '@/components/dashboard/AufenthaltFristNudge';
-import { ErledigtFeed } from '@/components/dashboard/ErledigtFeed';
-import { TriumphBanner } from '@/components/dashboard/TriumphBanner';
 import { WohngeldHinweisCard } from '@/components/dashboard/WohngeldHinweisCard';
 import { Skeleton } from '@/components/shared/Skeleton';
+import { resolveBehoerdeName } from '@/lib/behoerde-name';
 import { api } from '@/lib/mock-backend';
-import type { Behoerde, DashboardSnapshot, Persona } from '@/types';
+import { cn } from '@/lib/utils';
+import type { AutopilotKatalogEntry, DashboardSnapshot, Persona } from '@/types';
 import type { TopActionItem } from '@/types/dashboard';
 
 interface DashboardViewProps {
@@ -42,24 +25,42 @@ interface DashboardViewProps {
 
 const DEMO_PRIOR_LOGIN_DAYS = 23;
 
+/** Frist-Nähe-Schwelle: bis so viele Tage vor Ablauf färbt der Slot amber. */
+const FRIST_NAH_TAGE = 7;
+
 /**
- * `<DashboardView>` — Dashboard mit Konvenienz-Pass-1-Schicht: Triumph-Banner
- * (§B2), „Automatisch erledigt für Sie"-Feed (§B2), ruhiger Leer-Zustand für
- * „Heute zu tun" (§B2), Dismiss/Snooze auf To-dos (§C4), Autopilot-Katalog
- * (§A-katalog). Daten via `api.getProfile()` + `api.getDashboard()`.
+ * Offene Mitwirkungs-Punkte des Aufenthalts-Nudges. Entspricht den drei
+ * „Was noch von Ihnen kommt"-Zeilen, die `<AufenthaltFristNudge>` beim
+ * Aufklappen zeigt — der Slot-Zähler bleibt damit gegen den Inhalt prüfbar.
+ */
+const AUFENTHALT_OFFENE_PUNKTE = 3;
+
+/**
+ * `<DashboardView>` — „Ein Blick, eine Antwort" (Spec `dashboard-redesign.md`).
+ * Eine redaktionelle „Heute"-Liste (Top-Actions, nächster Termin, Wohngeld- und
+ * Aufenthalts-Hinweise als Disclosure-Zeilen), EIN Glas-Anker (Umzug-Panel), die
+ * „Ihnen steht zu"-Lane sowie eine schlanke Rail (Kennzahlen, Autopilot-Katalog,
+ * Kontrolle-Fußzeile). Daten via `api.getProfile()` + `api.getDashboard()`;
+ * Behörden-Namen synchron via `resolveBehoerdeName`, Katalog parallel geladen.
  */
 export function DashboardView({ nowIso }: DashboardViewProps) {
   const t = useTranslations('dashboard');
-  const tTermin = useTranslations('dashboard.naechster_termin');
-  const tAktiv = useTranslations('dashboard.aktivitaeten');
   const tCommon = useTranslations('common');
+  const tTermin = useTranslations('dashboard.naechster_termin');
+  const tKatalog = useTranslations('katalog');
   const tWohngeld = useTranslations('wohngeldHinweis');
+  const locale = useLocale();
+
   const [snapshot, setSnapshot] = React.useState<DashboardSnapshot | null>(null);
   const [persona, setPersona] = React.useState<Persona | null>(null);
-  const [behoerdenNames, setBehoerdenNames] = React.useState<Record<string, string>>({});
+  const [katalog, setKatalog] = React.useState<AutopilotKatalogEntry[]>([]);
   const [dismissed, setDismissed] = React.useState<Set<string>>(() => new Set());
   const [wohngeldHidden, setWohngeldHidden] = React.useState(false);
   const [aufenthaltHidden, setAufenthaltHidden] = React.useState(false);
+  const [wohngeldOpen, setWohngeldOpen] = React.useState(false);
+  const [aufenthaltOpen, setAufenthaltOpen] = React.useState(false);
+  const wohngeldPanelId = React.useId();
+  const aufenthaltPanelId = React.useId();
   const [error, setError] = React.useState<string | null>(null);
   const lastSeenWrittenRef = React.useRef(false);
 
@@ -82,6 +83,12 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
 
   React.useEffect(() => {
     let cancelled = false;
+    // Autopilot-Katalog parallel zum Profil/Dashboard laden (persona-unabhängig)
+    // — flacht den Fetch-Wasserfall ab. Behörden-Namen kommen synchron aus
+    // `resolveBehoerdeName` (behoerden.json), daher kein getBehoerden-Roundtrip.
+    const katalogPromise = api
+      .getAutopilotKatalog()
+      .catch(() => [] as AutopilotKatalogEntry[]);
     (async () => {
       try {
         const p = await reload();
@@ -90,16 +97,8 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
           lastSeenWrittenRef.current = true;
           await api.setLastSeen(p.id, nowIso);
         }
-        try {
-          const behoerden = (await api.getBehoerden()) as Behoerde[];
-          if (!cancelled) {
-            const names: Record<string, string> = {};
-            for (const b of behoerden) names[b.id] = b.name_de;
-            setBehoerdenNames(names);
-          }
-        } catch {
-          /* names are nice-to-have */
-        }
+        const cat = await katalogPromise;
+        if (!cancelled) setKatalog(cat);
       } catch {
         if (!cancelled) setError(t('fehler.laden'));
       }
@@ -111,37 +110,42 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
 
   const anrede = greetingAnrede(snapshot, persona);
   const highlight = snapshot?.autopilot_highlight;
-  const erledigtFeed = snapshot?.erledigt_feed ?? [];
+  const receipt = highlight?.value_receipt;
+  const umzugDone = receipt ? receipt.behoerden_count : 0;
+  const umzugTotal = receipt ? Math.max(umzugDone, receipt.klassische_schritte) : 0;
+  const umzugComplete = umzugTotal > 0 && umzugDone >= umzugTotal;
+  const umzugFristDate = nextUmzugFristDate(snapshot, nowIso);
+  const umzugOrt = persona?.adresse?.ort ?? '';
+  const erledigtLatest = snapshot?.erledigt_feed?.[0];
+
   const terminTile = snapshot?.termin_tile;
-  const umzugFristDatum = nextUmzugFrist(snapshot, nowIso);
 
   const visibleTodos = sortByRank(
     (snapshot?.top_actions ?? []).filter((a) => !dismissed.has(a.id)),
   ).slice(0, 3);
-  const todosEmpty = visibleTodos.length === 0;
 
   const wohngeldHinweis = snapshot?.wohngeld_hinweis ?? null;
   const showWohngeld = wohngeldHinweis !== null && !wohngeldHidden;
 
   const anspruchLane = snapshot?.anspruch_lane ?? [];
 
-  // Antizipations-Nudge (wow-#10): proaktive Fristbewachung für Annas eAT-
-  // Verlängerung — rein aus der Persona abgeleitet, kein Snapshot-Feld.
+  // Antizipations-Nudge (wow-#10): proaktive Fristbewachung — rein aus der
+  // Persona abgeleitet, kein Snapshot-Feld.
   const aufenthaltFrist = persona
     ? resolveAufenthaltFristNudge(persona, nowIso)
     : null;
   const showAufenthalt = aufenthaltFrist !== null && !aufenthaltHidden;
 
-  // „Aktivitäten" speist sich aus echten Vorgangs-Bewegungen (letzte
-  // Schritt-Timestamps), neueste zuerst, max. 3 — distinkt vom Autopilot-Feed.
-  const aktivitaeten = [...(snapshot?.vorgangs_stand_tile ?? [])]
-    .sort((a, b) => b.letzte_bewegung_iso.localeCompare(a.letzte_bewegung_iso))
-    .slice(0, 3);
+  const fristCount = snapshot?.frist_count_14d ?? 0;
+  const tldrDatum = earliestFristDatum(snapshot?.top_actions ?? [], nowIso, locale);
 
-  // §A2 — Zähler kommt aus dem Backend-Snapshot (volle collectFristen-Menge,
-  // gleiche Quelle/gleicher 14-Tage-Horizont wie /vorgaenge), statt aus dem auf
-  // 3 getruncten frist_tile — sonst zeigte die Kachel 0 trotz offener Fristen.
-  const fristenWithin14 = snapshot?.frist_count_14d ?? 0;
+  const heuteEmpty =
+    visibleTodos.length === 0 && !terminTile && !showWohngeld && !showAufenthalt;
+
+  // Autopilot-Katalog-Teaser in der Rail: nur die noch nicht live geschalteten
+  // Lebenslagen (Umzug ist bereits das Hero-Panel). Quelle: Katalog-Daten.
+  const autopilotEntries = katalog.filter((e) => e.status !== 'live');
+
   async function handleDone(reminderId: string) {
     setDismissed((prev) => new Set(prev).add(reminderId));
     try {
@@ -218,26 +222,21 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
     }
   }
 
-  // §A1 — Kennzahlen als redaktionelle Zeilen (Zahl + Label auf einer Zeile,
-  // Hairline-Trenner, kein Panel/Icon) statt der drei geboxten Stat-Kacheln.
   const kennzahlen = [
     {
       href: '/posteingang',
       num: snapshot?.posteingang_tile.ungelesen ?? 0,
-      label: t('kacheln.posteingang.titel'),
-      sub: t('tiles.posteingang_sub'),
+      label: t('kennzahl.posteingang'),
     },
     {
       href: '/vorgaenge',
       num: snapshot?.vorgangs_stand_tile.length ?? 0,
-      label: t('kacheln.vorgaenge.titel'),
-      sub: t('tiles.vorgaenge_sub'),
+      label: t('kennzahl.vorgaenge'),
     },
     {
       href: '/posteingang',
-      num: fristenWithin14,
-      label: t('kacheln.fristen.titel'),
-      sub: t('tiles.fristen_sub'),
+      num: fristCount,
+      label: t('kennzahl.fristen'),
     },
   ];
 
@@ -246,60 +245,90 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
       <>
         <div className="gt-page-head dash-head">
           <h1 className="dash-greeting">{t('greeting.guten_tag', { name: anrede })}</h1>
-          <p className="dash-greeting-sub">{t('greeting.sub')}</p>
+          <Skeleton className="mt-2 h-4 w-80 max-w-full" />
         </div>
         <DashboardSkeleton label={tCommon('loading')} />
       </>
     );
   }
 
+  const strong = (chunks: React.ReactNode) => (
+    <strong className="font-semibold text-text-primary">{chunks}</strong>
+  );
+  // Der „{done} von {total} Stellen"-Chunk darf nicht mitten in der Phrase
+  // umbrechen (Review-Nit a) — eigener nowrap-Strong nur für die TL;DR-Umzug-Zeile.
+  const strongNoWrap = (chunks: React.ReactNode) => (
+    <strong className="whitespace-nowrap font-semibold text-text-primary">{chunks}</strong>
+  );
+  const dueTag = (chunks: React.ReactNode) => (
+    <span className="font-semibold text-amber-700 dark:text-amber-400">{chunks}</span>
+  );
+
+  const fristenNode =
+    fristCount === 0
+      ? t('tldr.keine_fristen')
+      : tldrDatum
+        ? t.rich('tldr.fristen', { count: fristCount, datum: tldrDatum, b: strong })
+        : t.rich('tldr.fristen_ohne_datum', { count: fristCount, b: strong });
+  const umzugNode = highlight
+    ? t.rich('tldr.umzug', { done: umzugDone, total: umzugTotal, b: strongNoWrap })
+    : null;
+
+  const ersparnis = receipt
+    ? receipt.geschaetzte_zeitersparnis_min >= 120
+      ? t('umzug_panel.ersparnis_std', {
+          hours: Math.round(receipt.geschaetzte_zeitersparnis_min / 60),
+        })
+      : t('umzug_panel.ersparnis_min', { min: receipt.geschaetzte_zeitersparnis_min })
+    : '';
+
   return (
     <>
       <div className="gt-page-head dash-head">
         <h1 className="dash-greeting">{t('greeting.guten_tag', { name: anrede })}</h1>
-        <p className="dash-greeting-sub">{t('greeting.sub')}</p>
+        <p className="dash-greeting-sub md:max-w-[76ch]!">
+          {fristenNode}
+          {umzugNode ? (
+            <>
+              {' · '}
+              {umzugNode}
+            </>
+          ) : null}
+        </p>
       </div>
 
       <div className="dash-layout">
         <div className="dash-col">
-          {showWohngeld && wohngeldHinweis ? (
-            <WohngeldHinweisCard
-              estimate={wohngeldHinweis}
-              ort={persona?.adresse?.ort ?? ''}
-              onDismiss={handleWohngeldDismiss}
-              onSnooze={handleWohngeldSnooze}
-              onRevokeConsent={handleWohngeldRevokeConsent}
-            />
-          ) : null}
-
-          {showAufenthalt && aufenthaltFrist ? (
-            <AufenthaltFristNudge
-              view={aufenthaltFrist}
-              behoerdeName={
-                aufenthaltFrist.abhBehoerdeId
-                  ? behoerdenNames[aufenthaltFrist.abhBehoerdeId]
-                  : undefined
-              }
-              onDismiss={handleAufenthaltDismiss}
-              onSnooze={handleAufenthaltSnooze}
-            />
-          ) : null}
-
-          <section aria-labelledby="dashboard-heute-zu-tun" className="heute-card">
-            <div className="heute-head">
-              <h2 id="dashboard-heute-zu-tun">{t('heute.titel')}</h2>
-              <Link href="/posteingang" className="card-head-link">
-                {tCommon('show_all')}
-                <ChevronRight aria-hidden="true" />
+          {/* ── „Heute" — eine redaktionelle Liste (boxless, Hairlines) ─────── */}
+          <section aria-labelledby="dashboard-heute">
+            <div className="mb-1 flex items-baseline justify-between gap-3">
+              <h2
+                id="dashboard-heute"
+                className="text-[17px] font-semibold tracking-tight text-text-primary"
+              >
+                {t('heute.titel')}
+              </h2>
+              <Link
+                href="/posteingang"
+                className="shrink-0 text-[13px] text-text-muted no-underline transition-colors hover:text-text-secondary"
+              >
+                {t('heute.alle_anzeigen')}
               </Link>
             </div>
 
-            {todosEmpty ? (
-              <div className="heute-empty">
-                <span className="he-icon" aria-hidden="true"><Check /></span>
-                <div className="he-title">{t('heute.empty_title')}</div>
-                <div className="he-body">{t('heute.empty_body')}</div>
-                <div className="he-achievement">
+            {heuteEmpty ? (
+              <div className="flex flex-col items-start gap-1 border-t border-border py-8">
+                <span
+                  className="mb-1 grid size-9 place-items-center rounded-full bg-surface-muted text-primary [&>svg]:size-4"
+                  aria-hidden="true"
+                >
+                  <Check />
+                </span>
+                <div className="font-semibold text-text-primary">
+                  {t('heute.empty_title')}
+                </div>
+                <div className="text-sm text-text-muted">{t('heute.empty_body')}</div>
+                <div className="mt-1 text-sm text-text-secondary">
                   {t('achievement.jahr', {
                     count: snapshot?.vorgaenge_abgeschlossen_jahr ?? 0,
                   })}
@@ -307,16 +336,21 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
               </div>
             ) : (
               <ol className="border-t border-border">
-                {visibleTodos.map((item, idx) => {
-                  const view = mapToHeuteItem(item, idx);
-                  const sub = reasonSubline(view.reasonToken, t);
+                {visibleTodos.map((item) => {
+                  const view = mapToHeuteItem(item);
+                  const behoerde = resolveBehoerdeName(view.behoerdeId);
+                  const reason = reasonSubline(view.reasonToken, t);
                   // Die generische „Frist rückt näher"-Begründung ist redundant,
-                  // sobald die Fällig-Datum-Zeile ohnehin sichtbar ist — dann
-                  // wird sie über alle Zeilen hinweg zu Rauschen (§B3). Nur
-                  // informative Sublines (Termin/Folgevorgang/manuell) bleiben.
-                  const showSub =
-                    sub.length > 0 &&
+                  // sobald die Fällig-Datum-Zeile ohnehin sichtbar ist.
+                  const showReason =
+                    reason.length > 0 &&
                     !(view.reasonToken === 'frist_naehe' && Boolean(view.fristDatum));
+                  const sub = [behoerde, showReason ? reason : null]
+                    .filter(Boolean)
+                    .join(' · ');
+                  const near = view.fristIso
+                    ? daysUntil(view.fristIso, nowIso) <= FRIST_NAH_TAGE
+                    : false;
                   return (
                     <li
                       key={view.id}
@@ -324,35 +358,31 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
                     >
                       <Link
                         href={view.href}
-                        className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-md py-4 pl-1 pr-10 no-underline transition-colors hover:bg-surface-muted/40 sm:flex-nowrap sm:pr-20"
+                        className="grid grid-cols-[76px_minmax(0,1fr)] items-baseline gap-3 rounded-md py-3 pl-1 pr-12 no-underline transition-colors hover:bg-surface-muted/50 sm:grid-cols-[92px_minmax(0,1fr)] sm:pr-24"
                       >
                         <span
-                          className="shrink-0 text-text-muted [&>svg]:size-4"
-                          aria-hidden="true"
+                          className={cn(
+                            'whitespace-nowrap text-[12.5px] tabular-nums',
+                            near
+                              ? 'font-semibold text-amber-700 dark:text-amber-400'
+                              : 'text-text-muted',
+                          )}
                         >
-                          {view.icon}
+                          {view.fristDatum
+                            ? t('heute.slot_bis', { datum: shortDMY(view.fristDatum) })
+                            : ''}
                         </span>
-                        <span className="min-w-0 flex-1">
+                        <span className="min-w-0">
                           <span className="block font-semibold leading-snug text-text-primary">
                             {view.titel}
                           </span>
-                          {showSub ? (
-                            <span className="mt-0.5 block text-xs leading-snug text-text-muted">
+                          {sub ? (
+                            <span className="mt-0.5 block truncate text-[13px] leading-snug text-text-muted">
                               {sub}
                             </span>
                           ) : null}
                         </span>
-                        {view.fristDatum ? (
-                          <span className="order-last flex shrink-0 basis-full items-center gap-1.5 pl-7 text-xs font-medium tabular-nums text-text-secondary sm:order-none sm:basis-auto sm:pl-0">
-                            <Calendar aria-hidden="true" className="size-3.5 text-text-muted" />
-                            {t('heute.frist_bis', { datum: view.fristDatum })}
-                          </span>
-                        ) : null}
                       </Link>
-                      <ChevronRight
-                        aria-hidden="true"
-                        className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-text-muted transition-[transform,opacity] motion-reduce:transition-none group-hover:translate-x-1 group-hover:opacity-0 group-focus-within:opacity-0"
-                      />
                       <div
                         className="pointer-events-none absolute right-2 top-1/2 flex -translate-y-1/2 gap-1 rounded-lg bg-surface-muted p-0.5 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100 [&_button:focus-visible]:opacity-100"
                         role="group"
@@ -380,191 +410,306 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
                     </li>
                   );
                 })}
+
+                {terminTile ? (
+                  <li className="border-b border-border last:border-b-0">
+                    <Link
+                      href="/termine"
+                      className="grid grid-cols-[76px_minmax(0,1fr)] items-baseline gap-3 rounded-md py-3 pl-1 pr-3 no-underline transition-colors hover:bg-surface-muted/50 sm:grid-cols-[92px_minmax(0,1fr)]"
+                    >
+                      <span className="whitespace-nowrap text-[12.5px] tabular-nums text-text-muted">
+                        {formatTerminSlot(terminTile.datum_iso, locale)}
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block font-semibold leading-snug text-text-primary">
+                          {terminTile.betreff}
+                        </span>
+                        <span className="mt-0.5 block truncate text-[13px] leading-snug text-text-muted">
+                          {resolveBehoerdeName(terminTile.behoerde_id)}
+                          {' · '}
+                          {terminTile.ort_typ === 'video'
+                            ? t('heute.termin_video_hinweis')
+                            : tTermin(terminTile.ort_typ)}
+                        </span>
+                      </span>
+                    </Link>
+                  </li>
+                ) : null}
+
+                {showWohngeld && wohngeldHinweis ? (
+                  <li className="border-b border-border last:border-b-0">
+                    <button
+                      type="button"
+                      aria-expanded={wohngeldOpen}
+                      aria-controls={wohngeldOpen ? wohngeldPanelId : undefined}
+                      onClick={() => setWohngeldOpen((o) => !o)}
+                      className="grid w-full grid-cols-[76px_minmax(0,1fr)] items-baseline gap-3 rounded-md py-3 pl-1 pr-3 text-left transition-colors hover:bg-surface-muted/50 sm:grid-cols-[92px_minmax(0,1fr)]"
+                    >
+                      <span className="whitespace-nowrap text-[12.5px] text-text-muted">
+                        {t('heute.slot_hinweis')}
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block font-semibold leading-snug text-text-primary">
+                          {wohngeldHinweis.variant === 'risiko'
+                            ? t('heute.slot_wohngeld_titel_risiko')
+                            : t('heute.slot_wohngeld_titel', {
+                                min: wohngeldHinweis.geschaetzt_min_eur,
+                                max: wohngeldHinweis.geschaetzt_max_eur,
+                              })}
+                        </span>
+                        <span className="mt-0.5 block text-[13px] leading-snug text-text-muted">
+                          {t('heute.slot_wohngeld_sub')}
+                        </span>
+                      </span>
+                    </button>
+                    {wohngeldOpen ? (
+                      <div id={wohngeldPanelId} className="pb-4 pt-1">
+                        <WohngeldHinweisCard
+                          estimate={wohngeldHinweis}
+                          ort={persona?.adresse?.ort ?? ''}
+                          onDismiss={handleWohngeldDismiss}
+                          onSnooze={handleWohngeldSnooze}
+                          onRevokeConsent={handleWohngeldRevokeConsent}
+                          onRequestCollapse={() => setWohngeldOpen(false)}
+                        />
+                      </div>
+                    ) : null}
+                  </li>
+                ) : null}
+
+                {showAufenthalt && aufenthaltFrist ? (
+                  <li className="border-b border-border last:border-b-0">
+                    <button
+                      type="button"
+                      aria-expanded={aufenthaltOpen}
+                      aria-controls={aufenthaltOpen ? aufenthaltPanelId : undefined}
+                      onClick={() => setAufenthaltOpen((o) => !o)}
+                      className="grid w-full grid-cols-[76px_minmax(0,1fr)] items-baseline gap-3 rounded-md py-3 pl-1 pr-3 text-left transition-colors hover:bg-surface-muted/50 sm:grid-cols-[92px_minmax(0,1fr)]"
+                    >
+                      <span className="whitespace-nowrap text-[12.5px] text-text-muted">
+                        {t('heute.slot_hinweis')}
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block font-semibold leading-snug text-text-primary">
+                          {t('heute.slot_aufenthalt_titel', {
+                            monat: formatMonthYear(aufenthaltFrist.validUntilIso, locale),
+                          })}
+                        </span>
+                        <span className="mt-0.5 block text-[13px] leading-snug text-text-muted">
+                          {t('heute.slot_aufenthalt_sub', {
+                            count: AUFENTHALT_OFFENE_PUNKTE,
+                            behoerde: aufenthaltFrist.abhBehoerdeId
+                              ? resolveBehoerdeName(aufenthaltFrist.abhBehoerdeId)
+                              : '',
+                          })}
+                        </span>
+                      </span>
+                    </button>
+                    {aufenthaltOpen ? (
+                      <div id={aufenthaltPanelId} className="pb-4 pt-1">
+                        <AufenthaltFristNudge
+                          view={aufenthaltFrist}
+                          behoerdeName={
+                            aufenthaltFrist.abhBehoerdeId
+                              ? resolveBehoerdeName(aufenthaltFrist.abhBehoerdeId)
+                              : undefined
+                          }
+                          onDismiss={handleAufenthaltDismiss}
+                          onSnooze={handleAufenthaltSnooze}
+                        />
+                      </div>
+                    ) : null}
+                  </li>
+                ) : null}
               </ol>
             )}
           </section>
 
-          <section aria-labelledby="erledigt-feed-title" className="heute-card">
-            <div className="heute-head">
-              <h2 id="erledigt-feed-title" className="heute-head-title">
-                {t('erledigt_feed.title')}
-                <span className="head-count" aria-hidden="true">
-                  ({erledigtFeed.length})
+          {/* ── Umzug-Panel — der EINE Glas-Anker ────────────────────────────── */}
+          {highlight ? (
+            <section
+              aria-labelledby="dash-umzug-title"
+              className="dash-umzug-panel rounded-2xl border border-border bg-card p-6 shadow-sm"
+            >
+              <div className="flex items-baseline justify-between gap-3">
+                <h2
+                  id="dash-umzug-title"
+                  className="text-[17px] font-semibold text-text-primary"
+                >
+                  {t('umzug_panel.titel', { ort: umzugOrt })}
+                </h2>
+                <span
+                  className={cn(
+                    'shrink-0 text-[13px] font-semibold',
+                    umzugComplete ? 'text-text-secondary' : 'text-primary',
+                  )}
+                >
+                  {umzugComplete
+                    ? t('umzug_panel.state_fertig')
+                    : t('umzug_panel.state_laeuft')}
                 </span>
-                <span className="sr-only">
-                  {t('erledigt_feed.count_aria', { count: erledigtFeed.length })}
-                </span>
-              </h2>
-              <Link href="/vorgaenge" className="card-head-link">
-                {t('erledigt_feed.alle_schritte')}
-                <ChevronRight aria-hidden="true" />
-              </Link>
-            </div>
-            <ErledigtFeed
-              items={erledigtFeed.slice(0, 4)}
-              behoerdenNames={behoerdenNames}
-              nowIso={nowIso}
-            />
-          </section>
+              </div>
 
-          {/* „Ihnen steht zu"-Lane (anspruch-arc.md § 4.2) — bewusster Gegenpol
-           * zur Holschuld-Liste darüber. Rendert nur, wenn nicht leer. */}
-          {anspruchLane.length > 0 && persona ? (
-            <div className="heute-card">
-              <AnspruchLane
-                entries={anspruchLane}
-                personaId={persona.id}
-                onReload={reload}
-              />
-            </div>
-          ) : null}
+              <p className="mt-3 font-heading text-2xl font-bold tracking-tight text-text-primary">
+                {t('umzug_panel.stellen', { done: umzugDone, total: umzugTotal })}
+              </p>
 
-          {terminTile ? (
-            <section aria-labelledby="naechster-termin-title" className="nt-card">
-              <div className="nt-head">
-                <span className="icon-circle"><CalendarClock aria-hidden="true" /></span>
-                <h3 id="naechster-termin-title">{tTermin('titel')}</h3>
-                <span className="badge green nt-badge">{tTermin('badge_bestaetigt')}</span>
-              </div>
-              <p className="nt-betreff">{terminTile.betreff}</p>
-              <div className="nt-meta">
-                <span className="nt-meta-row">
-                  <CalendarClock aria-hidden="true" />
-                  {formatTerminDateTime(terminTile.datum_iso)}
-                </span>
-                <span className="nt-meta-row">
-                  <MapPin aria-hidden="true" />
-                  <span>
-                    <span className="nt-ort-typ">{tTermin(terminTile.ort_typ)}</span>
-                    {terminTile.ort_details ? ` · ${terminTile.ort_details}` : ''}
-                  </span>
-                </span>
-              </div>
-              <div className="nt-actions">
-                <Link href="/termine" className="btn btn-secondary btn-sm">
-                  {tTermin('details')}
-                </Link>
-                <Link href="/termine" className="btn btn-ghost btn-sm">
-                  <CalendarPlus aria-hidden="true" />
-                  {tTermin('kalender')}
-                </Link>
-              </div>
-            </section>
-          ) : null}
-
-          {aktivitaeten.length > 0 ? (
-            <section aria-labelledby="aktivitaeten-title" className="heute-card">
-              <div className="heute-head">
-                <h2 id="aktivitaeten-title">{tAktiv('titel')}</h2>
-                <Link href="/vorgaenge" className="card-head-link">
-                  {tAktiv('alle')}
-                  <ChevronRight aria-hidden="true" />
-                </Link>
-              </div>
-              <ul className="aktiv-feed">
-                {aktivitaeten.map((akt) => (
-                  <li key={akt.vorgang_id} className="aktiv-row">
-                    <Link href={`/vorgaenge/${akt.vorgang_id}`} className="aktiv-item">
-                      <span className="aktiv-icon" aria-hidden="true"><Folder /></span>
-                      <div className="aktiv-body">
-                        <div className="aktiv-titel">{akt.titel}</div>
-                        <div className="aktiv-sub">
-                          {tAktiv('bewegung', {
-                            zeit: relativeBewegung(akt.letzte_bewegung_iso, nowIso),
-                          })}
-                        </div>
-                      </div>
-                      <span className="badge brand aktiv-status">
-                        {tAktiv(`status.${akt.status}`)}
-                      </span>
-                    </Link>
-                  </li>
+              <div
+                className="mt-3 flex gap-1.5"
+                role="img"
+                aria-label={t('umzug_panel.segbar_aria', {
+                  done: umzugDone,
+                  total: umzugTotal,
+                })}
+              >
+                {Array.from({ length: umzugTotal }).map((_, i) => (
+                  <span
+                    key={i}
+                    className={cn(
+                      'h-1.5 flex-1 rounded-full',
+                      i < umzugDone
+                        ? 'bg-primary'
+                        : 'border-[1.5px] border-amber-600 dark:border-amber-400',
+                    )}
+                  />
                 ))}
-              </ul>
+              </div>
+
+              {!umzugComplete ? (
+                <p className="mt-4 text-sm leading-relaxed text-text-secondary">
+                  {umzugFristDate
+                    ? t.rich('umzug_panel.naechster', {
+                        schritt: t('umzug_panel.schritt_default'),
+                        datum: formatLongDate(umzugFristDate, locale),
+                        b: strong,
+                        due: dueTag,
+                      })
+                    : t.rich('umzug_panel.naechster_ohne_frist', {
+                        schritt: t('umzug_panel.schritt_default'),
+                        b: strong,
+                      })}
+                </p>
+              ) : null}
+
+              <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
+                {!umzugComplete ? (
+                  <Link
+                    href={`/vorgaenge/umzug/${highlight.vorgang_id}`}
+                    className="btn btn-primary"
+                  >
+                    {t('umzug_panel.cta_pruefen')}
+                  </Link>
+                ) : null}
+                <Link
+                  href={`/vorgaenge/umzug/${highlight.vorgang_id}`}
+                  className="text-[13.5px] text-text-secondary underline decoration-border underline-offset-[3px] transition-colors hover:text-text-primary"
+                >
+                  {t('umzug_panel.alle_schritte')}
+                </Link>
+              </div>
+
+              {receipt ? (
+                <p className="mt-4 border-t border-border pt-3 text-[12.5px] leading-relaxed text-text-muted">
+                  {erledigtLatest
+                    ? t('umzug_panel.meta', {
+                        aktion: erledigtLatest.agent_label,
+                        zeit: formatRelative(erledigtLatest.erledigt_at, nowIso, locale),
+                        ersparnis,
+                      })
+                    : t('umzug_panel.meta_ohne_eintrag', { ersparnis })}
+                </p>
+              ) : null}
             </section>
+          ) : null}
+
+          {/* ── „Ihnen steht zu"-Lane (boxless Sektion, interne Logik unverändert) */}
+          {anspruchLane.length > 0 && persona ? (
+            <AnspruchLane
+              entries={anspruchLane}
+              personaId={persona.id}
+              onReload={reload}
+            />
           ) : null}
         </div>
 
-        {/* Rail. On the stacked mobile layout (< lg) this column floats above
-            the action feed so the „Ihr Umzug im Überblick"-Fortschritt (the
-            headline demo moment) sits near the top instead of below the fold. */}
-        <div className="dash-col max-[1024px]:order-first">
-          {highlight ? (
-            <TriumphBanner
-              highlight={highlight}
-              variant="static"
-              fristDatum={umzugFristDatum}
-            />
-          ) : null}
-
+        {/* ── Rail ───────────────────────────────────────────────────────────── */}
+        <div className="dash-col">
           <ul data-testid="dash-kennzahl-list" className="border-t border-border">
-            {kennzahlen.map(({ href, num, label, sub }) => (
+            {kennzahlen.map(({ href, num, label }) => (
               <li key={label} className="border-b border-border">
                 <Link
                   href={href}
-                  className="group relative block rounded-md px-1 py-4 no-underline transition-colors hover:bg-surface-muted/60"
+                  className="flex items-baseline gap-3 rounded-md px-1 py-[13px] no-underline transition-colors hover:bg-surface-muted/60"
                 >
-                  <span className="flex items-baseline gap-3 pr-7">
-                    <span className="text-2xl font-bold leading-none tabular-nums text-text-primary">
-                      {num}
-                    </span>
-                    <span className="font-semibold text-text-primary">{label}</span>
+                  <span className="min-w-[30px] font-heading text-[22px] font-bold leading-none tabular-nums text-text-primary">
+                    {num}
                   </span>
-                  <span className="mt-1 block pr-7 text-xs leading-snug text-text-muted">
-                    {sub}
-                  </span>
-                  <ChevronRight
-                    aria-hidden="true"
-                    className="absolute right-1 top-1/2 size-4 -translate-y-1/2 text-text-muted transition-transform motion-reduce:transition-none group-hover:translate-x-1"
-                  />
+                  <span className="font-medium text-text-secondary">{label}</span>
                 </Link>
               </li>
             ))}
           </ul>
 
-          <section aria-labelledby="kontrolle-title" className="kontrolle-card">
-            <div className="kontrolle-head">
-              <span className="icon-circle"><Shield aria-hidden="true" /></span>
-              <h3 id="kontrolle-title">{t('kontrolle.title')}</h3>
-            </div>
-            <p className="kontrolle-sub">{t('kontrolle.subtitle')}</p>
-            <ul className="kontrolle-list">
-              <li>
-                <CheckCircle2 aria-hidden="true" />
-                <span>{t('kontrolle.punkt_einwilligung')}</span>
-              </li>
-              <li>
-                <CheckCircle2 aria-hidden="true" />
-                <span>{t('kontrolle.punkt_eid')}</span>
-              </li>
-              <li>
-                <CheckCircle2 aria-hidden="true" />
-                <span>{t('kontrolle.punkt_rechtsgrundlage')}</span>
-              </li>
-            </ul>
-            <Link href="/datenschutz" className="kontrolle-link">
-              {t('kontrolle.mehr')}
-              <ExternalLink aria-hidden="true" />
+          {autopilotEntries.length > 0 ? (
+            <section aria-labelledby="dash-autopilot-title">
+              <h2
+                id="dash-autopilot-title"
+                className="mb-2 text-[13px] font-semibold text-text-secondary"
+              >
+                {t('autopilot_verfuegbar.titel')}
+              </h2>
+              <p className="text-[13.5px] leading-relaxed text-text-secondary">
+                {autopilotEntries.map((entry, i) => (
+                  <React.Fragment key={entry.id}>
+                    {i > 0 ? ' · ' : ''}
+                    <span>
+                      {tKatalog(`${entry.id}.titel`)}
+                      {entry.status !== 'live' ? (
+                        <span className="text-text-muted">
+                          {' '}
+                          ({t('autopilot_verfuegbar.in_vorbereitung')})
+                        </span>
+                      ) : null}
+                    </span>
+                  </React.Fragment>
+                ))}
+              </p>
+              <Link
+                href="/lebenslagen"
+                className="group mt-2 inline-flex items-center gap-1 text-[13px] text-text-secondary no-underline underline-offset-[3px] transition-colors hover:text-text-primary hover:underline"
+              >
+                {t('autopilot_verfuegbar.alle')}
+                <ArrowRight
+                  aria-hidden="true"
+                  className="size-3.5 transition-transform motion-reduce:transition-none group-hover:translate-x-0.5"
+                />
+              </Link>
+            </section>
+          ) : null}
+
+          <p className="border-t border-border pt-[14px] text-[12.5px] leading-relaxed text-text-muted">
+            {t('kontrolle_fuss.text')}{' '}
+            <Link
+              href="/datenschutz"
+              className="underline decoration-border underline-offset-[3px] transition-colors hover:text-text-secondary"
+            >
+              {t('kontrolle_fuss.mehr')}
             </Link>
-          </section>
+          </p>
         </div>
       </div>
 
-      <div className="mt-6">
-        <AutopilotKatalogTeaser />
-      </div>
-
       {error && (
-        <p style={{ marginTop: '12px', color: 'var(--red-600)', fontSize: '13px' }}>{error}</p>
+        <p className="mt-3 text-[13px] text-[color:var(--red-600)]">{error}</p>
       )}
     </>
   );
 }
 
 /**
- * Ruhiger Lade-Zustand für das Dashboard: spiegelt grob das `dash-layout`
- * (Aktions-Feed links, Rail mit Hero/Kacheln/Kontrolle rechts). Dekorative
- * Shimmer-Blöcke; das sr-only-Label trägt die Semantik.
+ * Ruhiger Lade-Zustand: spiegelt grob das `dash-layout` (Heute-Liste + Panel
+ * links, Kennzahlen + Rail rechts). Dekorative Shimmer-Blöcke; das sr-only-Label
+ * trägt die Semantik.
  */
 function DashboardSkeleton({ label }: { label: string }) {
   return (
@@ -573,11 +718,11 @@ function DashboardSkeleton({ label }: { label: string }) {
       <div className="dash-layout">
         <div className="dash-col">
           <Skeleton className="h-64 rounded-2xl" />
-          <Skeleton className="h-48 rounded-2xl" />
+          <Skeleton className="h-40 rounded-2xl" />
         </div>
         <div className="dash-col">
-          <Skeleton className="h-56 rounded-2xl" />
-          <Skeleton className="h-32 rounded-2xl" />
+          <Skeleton className="h-40 rounded-2xl" />
+          <Skeleton className="h-24 rounded-2xl" />
         </div>
       </div>
     </div>
@@ -587,9 +732,7 @@ function DashboardSkeleton({ label }: { label: string }) {
 // ── helpers ───────────────────────────────────────────────────────────────
 
 /**
- * Reordnet die „Heute zu tun"-Aktionen in KI-Reihenfolge (Backend-`rank`,
- * 1 = oben). Die früheren alternativen Sortier-Modi (Frist/Behörde/Vorgang)
- * sind mit den Sortier-Tabs aus der UI entfernt worden.
+ * Reordnet die „Heute"-Aktionen in KI-Reihenfolge (Backend-`rank`, 1 = oben).
  */
 function sortByRank(actions: TopActionItem[]): TopActionItem[] {
   return [...actions].sort((a, b) => a.rank - b.rank);
@@ -614,38 +757,82 @@ function formatDDMMYYYY(d: Date): string {
   return `${dd}.${mm}.${d.getFullYear()}`;
 }
 
-/**
- * Relative DE-Zeitangabe („gerade eben", „vor 3 Std", „vor 5 Tagen") für die
- * „Aktivitäten"-Bewegungszeile. Speist sich aus echten Vorgangs-Timestamps.
- */
-function relativeBewegung(iso: string, nowIso: string): string {
+/** „24.07.2026" → „24.07." (Tag.Monat-Slot ohne Jahr). */
+function shortDMY(ddmmyyyy: string): string {
+  return ddmmyyyy.length >= 6 ? ddmmyyyy.slice(0, 6) : ddmmyyyy;
+}
+
+/** Tage bis zur Frist (aufgerundet); `Infinity` bei ungültigem Datum. */
+function daysUntil(iso: string, nowIso: string): number {
+  const then = new Date(iso).getTime();
+  const now = new Date(nowIso).getTime();
+  if (Number.isNaN(then) || Number.isNaN(now)) return Number.POSITIVE_INFINITY;
+  return Math.ceil((then - now) / 86_400_000);
+}
+
+/** Langes DE-Datum ohne Jahr für die TL;DR-/Panel-Zeile („24. Juli"). */
+function formatLongDate(d: Date, locale: string): string {
+  if (Number.isNaN(d.getTime())) return '';
+  return new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long' }).format(d);
+}
+
+/** Monat + Jahr, kurz („Sept. 2027"). */
+function formatMonthYear(iso: string, locale: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  return new Intl.DateTimeFormat(locale, { month: 'short', year: 'numeric' }).format(d);
+}
+
+/** Termin-Slot „{Wochentag kurz} · {HH:MM}" (locale-formatiert). */
+function formatTerminSlot(iso: string, locale: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  const weekday = new Intl.DateTimeFormat(locale, { weekday: 'short' }).format(d);
+  const time = new Intl.DateTimeFormat(locale, {
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(d);
+  return `${weekday} · ${time}`;
+}
+
+/** Relative Zeitangabe („vor 8 Stunden", „gestern") via Intl, locale-korrekt. */
+function formatRelative(iso: string, nowIso: string, locale: string): string {
   const then = new Date(iso).getTime();
   const now = new Date(nowIso).getTime();
   if (Number.isNaN(then) || Number.isNaN(now)) return '';
-  const diffMin = Math.round((now - then) / 60000);
-  if (diffMin < 2) return 'gerade eben';
-  if (diffMin < 60) return `vor ${diffMin} Min`;
+  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
+  const diffMin = Math.round((then - now) / 60000);
+  if (Math.abs(diffMin) < 60) return rtf.format(diffMin, 'minute');
   const diffH = Math.round(diffMin / 60);
-  if (diffH < 24) return `vor ${diffH} Std`;
+  if (Math.abs(diffH) < 24) return rtf.format(diffH, 'hour');
   const diffD = Math.round(diffH / 24);
-  return `vor ${diffD} Tag${diffD === 1 ? '' : 'en'}`;
+  return rtf.format(diffD, 'day');
 }
 
-/** Termin-Datum + Uhrzeit, DE-formatiert (z. B. „24.06.2025, 10:30 Uhr"). */
-function formatTerminDateTime(iso: string): string {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return iso;
-  const datum = formatDDMMYYYY(d);
-  const hh = String(d.getHours()).padStart(2, '0');
-  const mm = String(d.getMinutes()).padStart(2, '0');
-  return `${datum}, ${hh}:${mm} Uhr`;
+/** Frühestes zukünftiges Frist-Datum unter den Top-Actions, lang formatiert. */
+function earliestFristDatum(
+  actions: TopActionItem[],
+  nowIso: string,
+  locale: string,
+): string | undefined {
+  const now = new Date(nowIso).getTime();
+  if (Number.isNaN(now)) return undefined;
+  const upcoming = actions
+    .map((a) => (a.frist_datum ? new Date(a.frist_datum).getTime() : Number.NaN))
+    .filter((ts) => !Number.isNaN(ts) && ts >= now)
+    .sort((a, b) => a - b);
+  if (upcoming.length === 0) return undefined;
+  return formatLongDate(new Date(upcoming[0]), locale);
 }
 
 /**
- * Frist-Datum (DD.MM.YYYY) für die „Nächster Schritt"-Zeile der Umzug-Karte:
- * die nächstgelegene offene Frist ab `nowIso`, sonst undefined.
+ * Nächstgelegene offene Frist der Umzug-Kacheln ab `nowIso` (für die
+ * „Nächster Schritt"-Zeile des Panels), sonst undefined.
  */
-function nextUmzugFrist(snapshot: DashboardSnapshot | null, nowIso: string): string | undefined {
+function nextUmzugFristDate(
+  snapshot: DashboardSnapshot | null,
+  nowIso: string,
+): Date | undefined {
   const fristen = snapshot?.frist_tile ?? [];
   const now = new Date(nowIso).getTime();
   if (Number.isNaN(now)) return undefined;
@@ -654,68 +841,41 @@ function nextUmzugFrist(snapshot: DashboardSnapshot | null, nowIso: string): str
     .filter((ts) => !Number.isNaN(ts) && ts >= now)
     .sort((a, b) => a - b);
   if (upcoming.length === 0) return undefined;
-  return formatDDMMYYYY(new Date(upcoming[0]));
+  return new Date(upcoming[0]);
 }
 
 interface HeuteView {
   id: string;
   sourceId: string;
   titel: string;
-  /** Klartext-Begründung (z. B. „Frist rückt näher …") als Karten-Subline. */
+  /** Whitelist-Reason-Token (→ Klartext-Subline). */
   reasonToken: string;
-  /** Sekundäres Detail (Aktenzeichen) — Karten-fern, nur für SR/Detail. */
-  aktenzeichen?: string;
+  behoerdeId: string;
   href: string;
-  icon: React.ReactNode;
+  /** ISO-Frist (für Nähe-Berechnung). */
+  fristIso?: string;
+  /** DD.MM.YYYY-Frist (für den Slot). */
   fristDatum: string | null;
 }
 
-function mapToHeuteItem(item: unknown, idx: number): HeuteView {
-  if (
-    typeof item === 'object' &&
-    item !== null &&
-    'titel' in item &&
-    'target_route' in item
-  ) {
-    const ta = item as {
-      id: string;
-      source_id?: string;
-      titel: string;
-      target_route: string;
-      reason_token: string;
-      aktenzeichen?: string;
-      frist_datum?: string;
-      source_typ: string;
-    };
-    return {
-      id: ta.id,
-      sourceId: ta.source_id ?? ta.id,
-      titel: ta.titel,
-      reasonToken: ta.reason_token,
-      aktenzeichen: ta.aktenzeichen,
-      href: ta.target_route,
-      icon: iconForReason(ta.reason_token, ta.source_typ, idx),
-      fristDatum: ta.frist_datum ? formatDDMMYYYY(new Date(ta.frist_datum)) : null,
-    };
-  }
-  return item as HeuteView;
-}
-
-function iconForReason(token: string, sourceTyp: string, idx: number): React.ReactNode {
-  if (token === 'folgevorgang') return <FileText />;
-  if (sourceTyp === 'vorgang' || idx === 0) return <IdCard />;
-  if (idx === 2) return <Gauge />;
-  return <FileText />;
+function mapToHeuteItem(ta: TopActionItem): HeuteView {
+  return {
+    id: ta.id,
+    sourceId: ta.source_id ?? ta.id,
+    titel: ta.titel,
+    reasonToken: ta.reason_token,
+    behoerdeId: ta.behoerde_id,
+    href: ta.target_route,
+    fristIso: ta.frist_datum,
+    fristDatum: ta.frist_datum ? formatDDMMYYYY(new Date(ta.frist_datum)) : null,
+  };
 }
 
 /**
- * Whitelist-Reason-Token → i18n-Klartext-Subline für die „Heute wichtig"-Karte.
- * Unbekannte Tokens fallen auf leeren String zurück (keine Roh-Token-Anzeige).
+ * Whitelist-Reason-Token → i18n-Klartext-Subline. Unbekannte Tokens fallen auf
+ * leeren String zurück (keine Roh-Token-Anzeige).
  */
-function reasonSubline(
-  token: string,
-  t: ReturnType<typeof useTranslations>,
-): string {
+function reasonSubline(token: string, t: ReturnType<typeof useTranslations>): string {
   switch (token) {
     case 'frist_naehe':
       return t('heute.reason_frist_naehe');

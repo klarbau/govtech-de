@@ -1377,7 +1377,7 @@
       "laden": "Не вдалося завантажити дані."
     },
     "heute": {
-      "titel": "Важливо сьогодні",
+      "titel": "Сьогодні",
       "tab_ki": "ШІ",
       "tab_frist": "Термін",
       "tab_behoerde": "Відомство",
@@ -1395,111 +1395,82 @@
       "reason_frist_naehe": "Термін ближчий, ніж в інших Ваших відкритих завданнях.",
       "reason_termin_steht": "Запис на прийом уже призначено.",
       "reason_folgevorgang": "Наступний крок у межах поточної процедури.",
-      "reason_manuell_priorisiert": "Позначено Вами як важливе."
+      "reason_manuell_priorisiert": "Позначено Вами як важливе.",
+      "alle_anzeigen": "Показати все",
+      "slot_bis": "до {datum}",
+      "slot_hinweis": "Примітка",
+      "termin_video_hinweis": "Посилання надійде за 24 год електронною поштою",
+      "slot_wohngeld_titel": "Можливе право на житлову допомогу (Wohngeld): бл. {min}–{max} € / місяць",
+      "slot_wohngeld_titel_risiko": "Житлова допомога (Wohngeld): запланована реформа може Вас стосуватися",
+      "slot_wohngeld_sub": "Оцінка на основі Ваших основних даних · перевірити",
+      "slot_aufenthalt_titel": "Посвідка на проживання (Aufenthaltstitel) спливає у {monat} — продовження підготовлено",
+      "slot_aufenthalt_sub": "Залишилося {count, plural, one {# пункт} few {# пункти} many {# пунктів} other {# пунктів}} · {behoerde}"
     },
-    "triumph": {
-      "title": "Зроблено за Вас",
-      "subtitle": "Переїзд передано до {count} відомств — Вам не довелося нічого робити.",
-      "zeitersparnis": "заощаджено бл. {min} хв",
-      "link": "Переглянути справу",
-      "gerade_eben": "щойно",
-      "koordiniert": "Переїзд скоординовано за Вас",
-      "body": "Вашу нову адресу передано до кількох установ. Більше Вам нічого робити не потрібно.",
-      "badge_abgeschlossen": "Завершено",
-      "zeit_label": "Заощаджено часу",
-      "std_value": "бл. {hours} год",
-      "min_value": "бл. {min} хв",
-      "zeit_caption": "порівняно з окремими зверненнями",
-      "stellen_label": "Повідомлені установи",
-      "stellen_caption": "Відомства та установи",
-      "overview_title": "Ваш переїзд: огляд",
-      "ring_label": "Виконано {percent}%",
-      "ring_aria": "Переїзд виконано на {percent} відсотків",
-      "stellen_informiert": "Поінформовано відомств: {done} з {total}",
-      "naechster_schritt_label": "Наступний крок",
-      "naechster_schritt_wert": "Перевірте підтвердження у вхідних",
-      "naechster_schritt_frist": "Термін до {datum}",
-      "zum_umzug": "Перейти до переїзду"
+    "tldr": {
+      "keine_fristen": "Немає термінів у найближчі 14 днів",
+      "fristen": "{count, plural, one {<b>Один термін</b>} few {<b># терміни</b>} many {<b># термінів</b>} other {<b># термінів</b>}} у найближчі 14 днів, найближчий — <b>{datum}</b>",
+      "fristen_ohne_datum": "{count, plural, one {<b>Один термін</b>} few {<b># терміни</b>} many {<b># термінів</b>} other {<b># термінів</b>}} у найближчі 14 днів",
+      "umzug": "Ваш переїзд: <b>{done} з {total} інстанцій</b> поінформовано"
     },
-    "erledigt_feed": {
-      "title": "Зроблено автоматично",
-      "count_aria": "Автоматично виконано кроків: {count}",
-      "badge_erledigt": "Готово",
-      "empty": "Поки нічого не зроблено автоматично.",
+    "umzug_panel": {
+      "titel": "Ваш переїзд до {ort}",
+      "state_laeuft": "виконується автоматично",
+      "state_fertig": "повністю зареєстровано",
+      "stellen": "{done} з {total} інстанцій поінформовано",
+      "segbar_aria": "Виконано {done} з {total} кроків",
+      "naechster": "Ще не завершено: <b>{schritt}</b> — <due>до {datum}</due>. Після цього переїзд буде повністю зареєстровано.",
+      "naechster_ohne_frist": "Ще не завершено: <b>{schritt}</b>. Після цього переїзд буде повністю зареєстровано.",
+      "schritt_default": "Перевірте підтвердження у вхідних",
+      "cta_pruefen": "Перевірити підтвердження",
       "alle_schritte": "Показати всі кроки",
-      "termin_pending": "Потрібне підтвердження запису на прийом",
-      "termin_bestaetigen": "Підтвердити запис"
+      "meta": "{aktion} — виконано {zeit}. Загалом заощаджено {ersparnis}.",
+      "meta_ohne_eintrag": "Так Ви заощадили {ersparnis}.",
+      "ersparnis_std": "бл. {hours} год",
+      "ersparnis_min": "бл. {min} хв"
     },
-    "aktivitaeten": {
-      "titel": "Активність",
-      "alle": "Показати всю активність",
-      "bewegung": "Остання зміна: {zeit}",
-      "status": {
-        "angelegt": "Створено",
-        "in_pruefung": "На перевірці",
-        "genehmigt": "Схвалено",
-        "abgelehnt": "Відхилено",
-        "abgeschlossen": "Завершено"
-      }
+    "kennzahl": {
+      "posteingang": "Непрочитані повідомлення",
+      "vorgaenge": "Справи в опрацюванні",
+      "fristen": "Терміни в найближчі 14 днів"
+    },
+    "autopilot_verfuegbar": {
+      "titel": "Автопілот доступний для",
+      "in_vorbereitung": "у підготовці",
+      "alle": "Усі життєві ситуації"
+    },
+    "kontrolle_fuss": {
+      "text": "Жодної передачі даних без правової підстави або Вашої явної згоди.",
+      "mehr": "Докладніше про захист даних"
     },
     "naechster_termin": {
-      "titel": "Найближчий запис на прийом",
-      "badge_bestaetigt": "Підтверджено",
-      "details": "Детальніше",
-      "kalender": "У календар",
-      "none": "Записів на прийом немає",
       "praesenz": "Особисто",
       "video": "Відеоприйом",
       "telefon": "Прийом телефоном"
-    },
-    "tiles": {
-      "posteingang_sub": "Непрочитані повідомлення у Ваших вхідних",
-      "fristen_sub": "Терміни в найближчі 14 днів",
-      "vorgaenge_sub": "Поточні справи в обробці",
-      "posteingang_cta": "Перейти до вхідних",
-      "fristen_cta": "Переглянути терміни",
-      "termine_sub": "Найближчий запис: {datum}",
-      "termine_cta": "Усі записи",
-      "vorgaenge_cta": "Переглянути справи"
-    },
-    "kontrolle": {
-      "title": "Під Вашим контролем",
-      "subtitle": "Ви вирішуєте, хто що отримує — безпечно та прозоро.",
-      "punkt_einwilligung": "Приватні отримувачі — лише за Вашою згодою",
-      "punkt_eid": "Чутливий крок — лише з підтвердженням eID",
-      "punkt_rechtsgrundlage": "Жодних даних без правової підстави",
-      "mehr": "Докладніше про захист даних"
     },
     "achievement": {
       "jahr": "{count} справ виконано за Вас цього року"
     },
     "kacheln": {
       "fristen": {
-        "titel": "Терміни",
         "offen": "{count} відкрит.",
         "cta": "Переглянути"
       },
       "posteingang": {
-        "titel": "Вхідні",
         "ungelesen": "{count} непрочитано",
         "cta": "Відкрити"
       },
       "vorgaenge": {
-        "titel": "Відкриті справи",
         "stand": "{laeuft} у роботі, {abgeschlossen} завершено",
         "cta": "Переглянути"
       },
       "termine": {
-        "titel": "Зустрічі",
         "cta": "Переглянути"
       },
       "datenschutz": {
-        "titel": "Центр конфіденційності",
         "aktivitaeten": "{count} дій за 30 днів",
         "cta": "Відкрити"
       },
       "stammdaten": {
-        "titel": "Стан анкетних даних",
         "cta": "Переглянути"
       }
     },
@@ -4958,8 +4929,6 @@
   },
   "katalog": {
     "titel": "Каталог автопілота",
-    "behoerden_label": "Залучені відомства",
-    "vorschau_badge": "У підготовці",
     "umzug": {
       "titel": "Переїзд",
       "beschreibung": "Одне підтвердження — ми повідомимо Вашу нову адресу до всіх компетентних відомств."
@@ -4980,10 +4949,6 @@
       "live": "доступно",
       "demnaechst": "незабаром"
     },
-    "lebenslagen_titel": "Життєві ситуації / каталог Autopilot",
-    "alle_lebenslagen": "Переглянути всі життєві ситуації",
-    "behoerden_count": "бл. {count} відомств",
-    "zeit_gespart": "заощаджено бл. {min} хв",
     "untertitel": "Життєві ситуації, які автопілот бере на себе.",
     "starten": "Запустити переїзд"
   },
