@@ -23,13 +23,9 @@ import {
   FileText,
   Fingerprint,
   HeartPulse,
-  Home,
   Landmark,
   ListChecks,
   Loader2,
-  Scale,
-  Share2,
-  ShieldCheck,
   Tv,
 } from 'lucide-react';
 
@@ -39,7 +35,6 @@ import { LetterCard } from '@/components/posteingang/LetterCard';
 import { BehoerdenBadge } from '@/components/shared/BehoerdenBadge';
 import { Button } from '@/components/ui/button';
 import { DatenschutzCockpitLink } from '@/components/shared/DatenschutzCockpitLink';
-import { FristDetailModal } from '@/components/shared/FristDetailModal';
 import { PrototypeDisclaimer } from '@/components/shared/PrototypeDisclaimer';
 import { Skeleton } from '@/components/shared/Skeleton';
 import { TerminCard } from '@/components/shared/TerminCard';
@@ -337,6 +332,11 @@ function VorgangDetail({
     lettersById[l.id] = { aktenzeichen: l.aktenzeichen, betreff: l.betreff, id: l.id };
   }
 
+  // Echtes Aktenzeichen aus dem ersten Brief mit gesetztem Feld — nie die
+  // interne Vorgang-ID (ein Slug ist keine Behörden-Referenz). Fehlt es, wird
+  // die Zeile ausgelassen.
+  const aktenzeichen = letters.find((l) => l.aktenzeichen)?.aktenzeichen;
+
   const adresseAlt = readAdresseFromContext(vorgang.context, 'alte_adresse');
   const adresseNeu = readAdresseFromContext(vorgang.context, 'neue_adresse');
   const stichtag = readStichtagFromContext(vorgang.context);
@@ -363,11 +363,9 @@ function VorgangDetail({
 
   let fertigLabel = tv('fertigstellung_label');
   let fertigValue = tv('fertigstellung_value');
-  let fertigDone = false;
   if (closed && vorgang.abgeschlossen_am) {
     fertigLabel = tv('fertigstellung_label_done');
     fertigValue = format(parseISO(vorgang.abgeschlossen_am), 'd. MMMM yyyy', { locale: de });
-    fertigDone = true;
   } else if (allConfirmed) {
     fertigLabel = tv('fertigstellung_label_in_review');
   } else if (citizenTurn) {
@@ -381,12 +379,12 @@ function VorgangDetail({
       <VorgangHeaderClient
         title={vorgang.titel ?? t('title')}
         typ={vorgang.typ}
-        vorgangNummer={vorgang.id}
+        aktenzeichen={aktenzeichen}
         status={vorgang.status}
       />
 
       {/* The one thing the citizen must do sits full-width right under the
-        * hero — never buried in the rail below the fold. */}
+        * header — never buried in the rail below the fold. */}
       {nextStep ? (
         <NextStepBanner
           vorgangId={vorgang.id}
@@ -403,17 +401,6 @@ function VorgangDetail({
         <NoNextStepBanner />
       ) : null}
 
-      {totalCount > 0 ? (
-        <GesamtfortschrittCard
-          done={doneCount}
-          total={totalCount}
-          activeIndex={activeStepIndex}
-          fertigLabel={fertigLabel}
-          fertigValue={fertigValue}
-          fertigDone={fertigDone}
-        />
-      ) : null}
-
       <div className="vg-layout">
         <div className="flex flex-col gap-6">
           {receipt ? <ValueReceiptCard receipt={receipt} variant="static" /> : null}
@@ -424,6 +411,9 @@ function VorgangDetail({
             steps={vorgang.schritte}
             behoerdenById={behoerdenById}
             lettersById={lettersById}
+            done={doneCount}
+            total={totalCount}
+            activeIndex={activeStepIndex}
           />
 
           {relatedDocuments.length > 0 ? (
@@ -474,30 +464,17 @@ function VorgangDetail({
           ) : null}
         </div>
 
-        <aside aria-label={tv('summary_title')} className="flex flex-col gap-4">
-          <VorgangSummaryRail
+        <aside aria-label={tv('details_title')} className="flex flex-col gap-4">
+          <VorgangDetailsRail
             angelegtIso={vorgang.angelegt_am}
             stichtagIso={stichtag}
             behoerdenCount={vorgang.schritte.length}
             naechsteFristIso={naechsteFristIso}
+            fertigLabel={fertigLabel}
+            fertigValue={fertigValue}
+            rechtsgrundlage={primaryRechtsgrundlage}
+            vorgangId={id}
           />
-
-          {primaryRechtsgrundlage ? (
-            <BerechtigungenRail
-              rechtsgrundlage={primaryRechtsgrundlage}
-              behoerdenCount={vorgang.schritte.length}
-              vorgangId={id}
-            />
-          ) : null}
-
-          <div className="rail-card flex flex-col gap-3">
-            <h3>{tv('datenschutz_title')}</h3>
-            <p className="sub" style={{ marginBottom: 0 }}>
-              {tv('datenschutz_sub')}
-            </p>
-            <DatenschutzCockpitLink vorgangId={id} />
-            <FristDetailModal />
-          </div>
 
           <PrototypeDisclaimer />
         </aside>
@@ -624,18 +601,28 @@ function NoNextStepBanner() {
   );
 }
 
-/* Slimmed to the facts the hero doesn't already carry — status chip and
- * Vorgangsnummer live up there now, listing them twice was noise. */
-function VorgangSummaryRail({
+/* One quiet rail card instead of three stacked boxes: the temporal facts, then
+ * a hairline-separated Rechtsgrundlage/Berechtigungen block, then the
+ * Datenschutz-Cockpit link. Editorial hairline rows (no per-row icon tiles) so
+ * the rail never towers over a content-light main column. */
+function VorgangDetailsRail({
   angelegtIso,
   stichtagIso,
   behoerdenCount,
   naechsteFristIso,
+  fertigLabel,
+  fertigValue,
+  rechtsgrundlage,
+  vorgangId,
 }: {
   angelegtIso: string;
   stichtagIso?: string;
   behoerdenCount: number;
   naechsteFristIso?: string;
+  fertigLabel: string;
+  fertigValue: string;
+  rechtsgrundlage?: string;
+  vorgangId: string;
 }) {
   const tv = useTranslations('vorgang.detail');
   const angelegtLabel = format(parseISO(angelegtIso), 'd. MMMM yyyy', { locale: de });
@@ -647,37 +634,87 @@ function VorgangSummaryRail({
     : null;
 
   return (
-    <div className="rail-card">
-      <h3>{tv('summary_title')}</h3>
-      <dl className="flex flex-col">
-        <SummaryRow label={tv('summary_angelegt_label')}>{angelegtLabel}</SummaryRow>
-        {stichtagLabel ? (
-          <SummaryRow label={tv('summary_stichtag_label')}>{stichtagLabel}</SummaryRow>
-        ) : null}
-        <SummaryRow label={tv('summary_behoerden_label')}>{behoerdenCount}</SummaryRow>
-        {fristLabel ? (
-          <SummaryRow label={tv('summary_frist_label')}>
-            <span className="inline-flex items-center gap-1.5">
-              <Calendar className="size-3.5 text-muted-foreground" aria-hidden="true" />
-              {fristLabel}
-            </span>
-          </SummaryRow>
-        ) : null}
-      </dl>
+    <div className="rail-card flex flex-col gap-4">
+      <div>
+        <h3>{tv('details_title')}</h3>
+        <dl className="mt-2 flex flex-col">
+          <SummaryRow label={tv('summary_angelegt_label')}>{angelegtLabel}</SummaryRow>
+          {stichtagLabel ? (
+            <SummaryRow label={tv('summary_stichtag_label')}>{stichtagLabel}</SummaryRow>
+          ) : null}
+          <SummaryRow label={tv('summary_behoerden_label')}>{behoerdenCount}</SummaryRow>
+          {fristLabel ? (
+            <SummaryRow label={tv('summary_frist_label')}>
+              <span className="inline-flex items-center gap-1.5">
+                <Calendar className="size-3.5 text-muted-foreground" aria-hidden="true" />
+                {fristLabel}
+              </span>
+            </SummaryRow>
+          ) : null}
+          <SummaryRow label={fertigLabel}>{fertigValue}</SummaryRow>
+        </dl>
+      </div>
+
+      {rechtsgrundlage ? (
+        <div className="border-t border-border pt-4">
+          <h4 className="text-[13px] font-semibold text-text-secondary">
+            {tv('berechtigungen_title')}
+          </h4>
+          <dl className="mt-2 flex flex-col">
+            <SummaryRow label={tv('berechtigungen_basis_label')} stacked>
+              <span className="vd-mono">{rechtsgrundlage}</span>
+            </SummaryRow>
+            <SummaryRow label={tv('berechtigungen_datenweitergabe_label')} stacked>
+              {tv('berechtigungen_behoerden', { count: behoerdenCount })}
+            </SummaryRow>
+            <SummaryRow label={tv('berechtigungen_einwilligungen_label')} stacked>
+              {tv('berechtigungen_einwilligungen_value')}
+            </SummaryRow>
+          </dl>
+        </div>
+      ) : null}
+
+      <div className="border-t border-border pt-4">
+        <p className="mb-3 text-[13px] leading-relaxed text-text-muted">
+          {tv('datenschutz_sub')}
+        </p>
+        <DatenschutzCockpitLink vorgangId={vorgangId} />
+      </div>
     </div>
   );
 }
 
-function SummaryRow({ label, children }: { label: string; children: React.ReactNode }) {
+function SummaryRow({
+  label,
+  stacked = false,
+  children,
+}: {
+  label: string;
+  stacked?: boolean;
+  children: React.ReactNode;
+}) {
+  // Stacked = label above, value left-aligned below — for prose values (legal
+  // consents) that read badly ragged-right. Inline = label left, short value
+  // right (dates, counts): the value stays on one line, the label may wrap.
+  if (stacked) {
+    return (
+      <div className="border-t border-border py-2.5 first:border-t-0 first:pt-0">
+        <dt className="text-xs text-muted-foreground">{label}</dt>
+        <dd className="mt-1 text-sm font-medium leading-relaxed text-foreground">
+          {children}
+        </dd>
+      </div>
+    );
+  }
   return (
-    <div className="flex items-center justify-between gap-3 border-t border-border py-2.5 first:border-t-0 first:pt-0">
+    <div className="flex items-baseline justify-between gap-4 border-t border-border py-2.5 first:border-t-0 first:pt-0">
       <dt className="text-xs text-muted-foreground">{label}</dt>
-      <dd className="text-sm font-medium text-foreground">{children}</dd>
+      <dd className="shrink-0 text-right text-sm font-medium text-foreground">{children}</dd>
     </div>
   );
 }
 
-function VorgangsnummerValue({ value }: { value: string }) {
+function AktenzeichenValue({ value }: { value: string }) {
   const tv = useTranslations('vorgang.detail');
   const [copied, setCopied] = React.useState(false);
 
@@ -697,7 +734,7 @@ function VorgangsnummerValue({ value }: { value: string }) {
       <button
         type="button"
         onClick={handleCopy}
-        aria-label={tv('vorgangsnummer_copy_aria')}
+        aria-label={tv('aktenzeichen_copy_aria')}
         className="inline-flex size-6 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
       >
         {copied ? (
@@ -766,175 +803,80 @@ function VorgangDetailBreadcrumb({ title }: { title: string }) {
   );
 }
 
-/* Hero glyph by Vorgang-Typ — the old hard-coded Home read every Vorgang as an
- * Umzug. Money-benefit verticals get Euro, the rest a neutral file. */
-const HERO_ICON: Record<string, typeof Home> = {
-  umzug: Home,
-  familienkasse: Euro,
-  'steuer-jahr': Euro,
-  'aufenthaltstitel-verlaengerung': Fingerprint,
-};
-
+/* Boxless page head — the same `.gt-page-head` chrome every other screen uses.
+ * The old icon-circle hero tile (an AI-design tell) is gone; the title carries
+ * the meaning. Status sits inline at the top-right, the realistic Aktenzeichen
+ * (from the Vorgang's letters) below — never the internal slug id. */
 function VorgangHeaderClient({
   title,
   typ,
-  vorgangNummer,
+  aktenzeichen,
   status,
 }: {
   title: string;
   typ: Vorgang['typ'];
-  vorgangNummer: string;
+  aktenzeichen?: string;
   status: VorgangStatus;
 }) {
   const tv = useTranslations('vorgang.detail');
-  const HeroIcon = HERO_ICON[typ] ?? FileText;
   return (
-    <div className="vd-hero">
-      <span className="icon-circle lg" aria-hidden="true">
-        <HeroIcon />
-      </span>
-      <div className="vd-hero-body">
-        <h1 className="vd-hero-title">{title}</h1>
-        <p className="vd-hero-sub">
-          {typ === 'umzug' ? tv('hero_sub') : tv('hero_sub_generic')}
-        </p>
-        <p className="vd-hero-nr">
-          <span className="vd-hero-nr-lbl">{tv('vorgangsnummer_label')}:</span>{' '}
-          <VorgangsnummerValue value={vorgangNummer} />
-        </p>
+    <div className="gt-page-head">
+      <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
+        <h1>{title}</h1>
+        <div className="mt-0.5 shrink-0">
+          <VorgangStatusBadge status={status} />
+        </div>
       </div>
-      <div className="vd-hero-status">
-        <VorgangStatusBadge status={status} />
-      </div>
+      <p className="sub">{typ === 'umzug' ? tv('hero_sub') : tv('hero_sub_generic')}</p>
+      {aktenzeichen ? (
+        <p className="mt-2 text-[13px] text-muted-foreground">
+          <span>{tv('aktenzeichen_label')}:</span>{' '}
+          <AktenzeichenValue value={aktenzeichen} />
+        </p>
+      ) : null}
     </div>
   );
 }
 
-function GesamtfortschrittCard({
+/* Segment progress bar folded into the Schritte card head. Solid fill for done
+ * steps, an outlined pill for the rest (amber for the active step) — so the bar
+ * can never read as more progress than done/total. The amber outline is skipped
+ * when the active segment is the ONLY segment: full-track accent at „0 von 1"
+ * still reads as a filled bar at 6px height. Mirrors the dashboard seg-bar. */
+function StepProgressBar({
   done,
   total,
   activeIndex,
-  fertigLabel,
-  fertigValue,
-  fertigDone,
+  label,
 }: {
   done: number;
   total: number;
   activeIndex: number;
-  fertigLabel: string;
-  fertigValue: string;
-  fertigDone: boolean;
-}) {
-  const tv = useTranslations('vorgang.detail');
-  const segments = Array.from({ length: total }, (_, i) => i < done);
-  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
-  return (
-    <div className="vd-progress">
-      <div className="vd-progress-main">
-        <div className="vd-progress-head">
-          <span className="vd-progress-title">{tv('progress_title')}</span>
-          <span className="vd-progress-count">{tv('progress_steps', { done, total })}</span>
-        </div>
-        <div
-          className="vd-progress-track"
-          role="progressbar"
-          aria-valuenow={done}
-          aria-valuemin={0}
-          aria-valuemax={total}
-          aria-label={tv('progress_steps', { done, total })}
-        >
-          {segments.map((filled, i) => (
-            <span
-              key={i}
-              className={cn(
-                'vd-progress-seg',
-                filled && 'is-filled',
-                !filled && i === activeIndex && 'is-active',
-              )}
-              aria-hidden="true"
-            />
-          ))}
-        </div>
-        <span className="sr-only">{pct}%</span>
-      </div>
-      <div className="vd-fertig">
-        <span className="icon-circle" aria-hidden="true">
-          {fertigDone ? <CheckCircle2 /> : <Clock />}
-        </span>
-        <div>
-          <div className="vd-fertig-lbl">{fertigLabel}</div>
-          <div className="vd-fertig-val">{fertigValue}</div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function BerechtigungenRail({
-  rechtsgrundlage,
-  behoerdenCount,
-  vorgangId,
-}: {
-  rechtsgrundlage: string;
-  behoerdenCount: number;
-  vorgangId: string;
-}) {
-  const tv = useTranslations('vorgang.detail');
-  return (
-    <div className="rail-card vd-berechtigungen">
-      <h3>
-        <Scale aria-hidden="true" />
-        {tv('berechtigungen_title')}
-      </h3>
-      <dl className="vd-berechtigungen-list">
-        <BerechtigungenRow
-          icon={FileText}
-          label={tv('berechtigungen_basis_label')}
-          value={<span className="vd-mono">{rechtsgrundlage}</span>}
-        />
-        <BerechtigungenRow
-          icon={Share2}
-          label={tv('berechtigungen_datenweitergabe_label')}
-          value={tv('berechtigungen_behoerden', { count: behoerdenCount })}
-        />
-        <BerechtigungenRow
-          icon={ShieldCheck}
-          label={tv('berechtigungen_einwilligungen_label')}
-          value={tv('berechtigungen_einwilligungen_value')}
-        />
-      </dl>
-      <Link
-        href={`/datenschutz?vorgangId=${encodeURIComponent(vorgangId)}`}
-        className="vd-berechtigungen-link"
-      >
-        {tv('berechtigungen_details_link')}
-        <ArrowRight aria-hidden="true" />
-      </Link>
-    </div>
-  );
-}
-
-/* dt + dd are DIRECT children of the dl > div wrapper (WCAG 1.3.1 — the old
- * extra .vd-berechtigungen-stack nesting was invalid dl content). The chevron
- * is gone: these rows are not links, the arrow was a fake affordance. */
-function BerechtigungenRow({
-  icon: Icon,
-  label,
-  value,
-}: {
-  icon: typeof FileText;
   label: string;
-  value: React.ReactNode;
 }) {
   return (
-    <div className="vd-berechtigungen-row">
-      <dt>
-        <span className="vd-berechtigungen-icon" aria-hidden="true">
-          <Icon />
-        </span>
-        {label}
-      </dt>
-      <dd>{value}</dd>
+    <div
+      className="flex gap-1.5"
+      role="progressbar"
+      aria-valuenow={done}
+      aria-valuemin={0}
+      aria-valuemax={total}
+      aria-label={label}
+    >
+      {Array.from({ length: total }).map((_, i) => (
+        <span
+          key={i}
+          className={cn(
+            'h-1.5 flex-1 rounded-full',
+            i < done
+              ? 'bg-primary'
+              : i === activeIndex && total > 1
+                ? 'border-[1.5px] border-amber-600 dark:border-amber-400'
+                : 'border border-border',
+          )}
+          aria-hidden="true"
+        />
+      ))}
     </div>
   );
 }
@@ -1001,22 +943,49 @@ function BehoerdenStatusListClient({
   steps,
   behoerdenById,
   lettersById,
+  done,
+  total,
+  activeIndex,
 }: {
   steps: AutopilotStep[];
   behoerdenById: Record<BehoerdeId, Pick<Behoerde, 'name_de' | 'kategorie'>>;
   lettersById: Record<string, Pick<Letter, 'aktenzeichen' | 'betreff' | 'id'>>;
+  done: number;
+  total: number;
+  activeIndex: number;
 }) {
   const tv = useTranslations('vorgang.detail');
+  const progressLabel = tv('progress_steps', { done, total });
 
   return (
     <section aria-labelledby="behoerden-status-title" className="gt-card">
       <div className="gt-card-head">
-        <h2 id="behoerden-status-title" className="gt-card-title">
-          <ListChecks aria-hidden="true" />
-          {tv('steps_overview_title')}
-        </h2>
-        <p className="gt-card-sub">{tv('steps_overview_sub')}</p>
+        <div className="min-w-0">
+          <h2 id="behoerden-status-title" className="gt-card-title">
+            <ListChecks aria-hidden="true" />
+            {tv('steps_overview_title')}
+          </h2>
+          <p className="gt-card-sub">{tv('steps_overview_sub')}</p>
+        </div>
+        {total > 0 ? (
+          <span
+            className="shrink-0 text-[13px] tabular-nums text-text-muted"
+            aria-hidden="true"
+          >
+            {progressLabel}
+          </span>
+        ) : null}
       </div>
+      {total > 0 ? (
+        <div className="mb-6">
+          <StepProgressBar
+            done={done}
+            total={total}
+            activeIndex={activeIndex}
+            label={progressLabel}
+          />
+        </div>
+      ) : null}
       <ol className="vd-timeline">
         {steps.map((step, index) => (
           <TimelineRow

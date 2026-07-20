@@ -10,6 +10,7 @@ import { HerkunftBadge } from '@/components/autopilot/HerkunftBadge';
 import { UnterDerHaubeLeiste } from '@/components/autopilot/UnterDerHaubeLeiste';
 import { VorgangAbgeschlossen } from '@/components/lebenslagen/VorgangAbgeschlossen';
 import { VorgangInBearbeitung } from '@/components/lebenslagen/VorgangInBearbeitung';
+import { FristDetailModal } from '@/components/shared/FristDetailModal';
 import {
   buildCascadeRows,
   filledPctOf,
@@ -566,6 +567,11 @@ function UmzugRunInner() {
         <div style={{ marginTop: 20 }} className="flex flex-col gap-2">
           <HerkunftBadge />
           <UnterDerHaubeLeiste vorgangId={vorgangId} inspectorPointer />
+          {/* Quiet §-17-BMG-Fristerklärer — die Bußgeld-Copy lebt AUSSCHLIESSLICH
+              in <FristDetailModal> (Spec §8/§11). Bewusst hier im ruhigen
+              Datenschutz-/Protokoll-Footer, NICHT in Hero/Übersicht/Preview,
+              der Run-Hauptansicht oder dem Loom-Primärpfad. */}
+          <FristDetailModal />
         </div>
       ) : null}
 

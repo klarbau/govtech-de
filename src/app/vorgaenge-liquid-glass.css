@@ -100,19 +100,11 @@ html[data-lg][data-lg-screen='vorgaenge'].dark .vg-search-input {
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
-/* ── Detail /vorgaenge/[id] — hero, progress, timeline, rail ────────────────── */
-
-/* The single frosted hero panel of the screen (blur allowed here). */
-html[data-lg][data-lg-screen='vorgaenge'] .vd-hero {
-  background: var(--lg-glass);
-  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
-  backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
-  border: 1px solid var(--lg-edge);
-  box-shadow: var(--lg-shadow-panel), inset 0 1px 0 var(--lg-edge-strong);
-}
-html[data-lg][data-lg-screen='vorgaenge'].dark .vd-hero {
-  border-color: var(--lg-hairline);
-}
+/* ── Detail /vorgaenge/[id] — next-band, timeline, rail ─────────────────────── */
+/* The page head is boxless (`.gt-page-head`, no frost) and the Gesamtfortschritt
+   is folded into the Schritte card (a Tailwind seg-bar) — so the former
+   `.vd-hero` / `.vd-progress-main` / `.vd-fertig` / `.vd-berechtigungen-icon`
+   glass rules were removed here as dead after the Vorgang-Detail de-templating. */
 
 /* Aktionsband „Ihr nächster Schritt" — frosted-mint Fläche (blur-frei), damit
    die System-CTA (hell-lifted primary im Dark) auf beiden Themes absetzt. Der
@@ -121,21 +113,6 @@ html[data-lg][data-lg-screen='vorgaenge'] .vd-next:not(.is-done) {
   background: var(--lg-mint);
   border: 1px solid var(--lg-mint-border);
   box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge);
-}
-
-/* Gesamtfortschritt card + its "Voraussichtlich fertig" inset. */
-html[data-lg][data-lg-screen='vorgaenge'] .vd-progress-main {
-  background: var(--lg-glass-raised);
-  border: 1px solid var(--lg-edge);
-  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
-}
-html[data-lg][data-lg-screen='vorgaenge'].dark .vd-progress-main {
-  border-color: var(--lg-hairline);
-}
-html[data-lg][data-lg-screen='vorgaenge'] .vd-fertig {
-  background: var(--lg-glass-soft);
-  border: 1px solid var(--lg-hairline);
-  box-shadow: inset 0 1px 0 var(--lg-edge);
 }
 
 /* Timeline rows → glass: the Behörde icon tile as a frosted mint tile, the
@@ -152,14 +129,8 @@ html[data-lg][data-lg-screen='vorgaenge'] .vd-step-details {
   box-shadow: inset 0 1px 0 var(--lg-edge);
 }
 
-/* Right-rail cards on the detail (Zusammenfassung, Berechtigungen, Datenschutz)
-   are covered by the `.vg-layout .rail-card` rule above; the Berechtigungen icon
-   tile gets the same frosted mint treatment as the timeline tiles. */
-html[data-lg][data-lg-screen='vorgaenge'] .vd-berechtigungen-icon {
-  background: var(--lg-mint);
-  border: 1px solid var(--lg-mint-border);
-  box-shadow: inset 0 1px 0 var(--lg-edge);
-}
+/* The detail's single rail card (Details: Überblick + Rechtsgrundlage +
+   Datenschutz) is covered by the `.vg-layout .rail-card` rule above. */
 
 /* ── Preview /vorgaenge/umzug/preview — Block-A hero + iridescent commit CTA ─── */
 
