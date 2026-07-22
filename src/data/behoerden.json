@@ -1026,6 +1026,15 @@
     "bundid_postfach_anbindung": "in_pilotierung"
   },
   {
+    "id": "elterngeldstelle-hamburg-eimsbuettel",
+    "name_de": "Bezirksamt Hamburg-Eimsbüttel — Elterngeldstelle",
+    "kategorie": "kommune",
+    "zustaendige_themen": ["elterngeld", "elterngeld_plus", "partnerschaftsbonus"],
+    "adresse": { "strasse": "Grindelberg", "hausnummer": "66", "plz": "20144", "ort": "Hamburg", "land": "DE" },
+    "online": { "portal_url": "https://www.elterngeld-digital.de", "supports_eudi": false },
+    "bundid_postfach_anbindung": "in_pilotierung"
+  },
+  {
     "id": "afa-stw-berlin",
     "name_de": "Amt für Ausbildungsförderung beim studierendenWERK BERLIN",
     "kategorie": "land",

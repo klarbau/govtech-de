@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { format, parseISO } from 'date-fns';
 import { de } from 'date-fns/locale';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { toast } from 'sonner';
 import {
   AlertCircle,
@@ -143,8 +144,11 @@ export function VorgangDetailLoader({ id }: VorgangDetailLoaderProps) {
     | { kind: 'not-found' }
   >({ kind: 'loading' });
 
-  const load = React.useCallback(async () => {
-    setState({ kind: 'loading' });
+  const load = React.useCallback(async (opts?: { silent?: boolean }) => {
+    // `silent` = In-Place-Reconcile nach einer Aktion: kein Skeleton, die Seite
+    // bleibt gemountet, nur der frische Datenstand wird eingespielt. Sonst
+    // identischer Rumpf (inkl. Transient-Retry + Dossier-Dispatch).
+    if (!opts?.silent) setState({ kind: 'loading' });
     let vorgang: Vorgang | undefined;
     let letters: Letter[] = [];
     let termine: Termin[] = [];
@@ -210,6 +214,8 @@ export function VorgangDetailLoader({ id }: VorgangDetailLoaderProps) {
     });
   }, [id, router]);
 
+  const reconcile = React.useCallback(() => load({ silent: true }), [load]);
+
   React.useEffect(() => {
     void load();
   }, [load]);
@@ -222,7 +228,7 @@ export function VorgangDetailLoader({ id }: VorgangDetailLoaderProps) {
     return <VorgangDetailNotFound />;
   }
 
-  return <VorgangDetail data={state.data} id={id} reload={load} />;
+  return <VorgangDetail data={state.data} id={id} reconcile={reconcile} />;
 }
 
 function VorgangDetailSkeleton() {
@@ -312,14 +318,15 @@ function behoerdeStepIcon(name: string): typeof Building2 {
 function VorgangDetail({
   data,
   id,
-  reload,
+  reconcile,
 }: {
   data: LoadedState;
   id: string;
-  reload: () => Promise<void>;
+  reconcile: () => Promise<void>;
 }) {
   const t = useTranslations('umzug.detail');
   const tv = useTranslations('vorgang.detail');
+  const reduce = useReducedMotion();
   const { vorgang, letters, termine, behoerden, relatedDocuments, receipt } = data;
 
   const behoerdenById: Record<BehoerdeId, Pick<Behoerde, 'name_de' | 'kategorie'>> = {};
@@ -372,9 +379,46 @@ function VorgangDetail({
     fertigLabel = tv('fertigstellung_label_after_action');
   }
 
+  // Erledigt-Moment: eine stabile aria-live-Region (überlebt das Unmounten des
+  // Banners) + ein doneCount-Vergleich, der beim Schrittwechsel Ansage/Fokus
+  // steuert. `advanceFocusRef` wandert auf den neuen CTA, `justCompleted`
+  // schaltet den Check-Draw-in des Done-Banners nur beim Live-Übergang frei.
+  const [announcement, setAnnouncement] = React.useState('');
+  const [justCompleted, setJustCompleted] = React.useState(false);
+  const prevDoneRef = React.useRef<number | null>(null);
+  const advanceFocusRef = React.useRef(false);
+
+  React.useEffect(() => {
+    const prev = prevDoneRef.current;
+    prevDoneRef.current = doneCount;
+    if (prev === null || doneCount <= prev) return;
+    if (nextStep) {
+      setAnnouncement(tv('step_done_live_next', { aktion: nextStep.aktion }));
+      advanceFocusRef.current = true;
+    } else {
+      setAnnouncement(tv('step_done_live_all'));
+      setJustCompleted(true);
+    }
+  }, [doneCount, nextStep, tv]);
+
+  // Einmaliger, dezenter Seiten-Eintritts-Stagger (nur beim ersten Mount, nie
+  // beim Reconcile — VorgangDetail bleibt gemountet). reduced-motion: instant.
+  const entrance = (delay: number) =>
+    reduce
+      ? {}
+      : {
+          initial: { opacity: 0, y: 4 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 0.22, delay, ease: 'easeOut' as const },
+        };
+
   return (
     <>
       <VorgangDetailBreadcrumb title={vorgang.titel ?? t('title')} />
+
+      <p aria-live="polite" className="sr-only">
+        {announcement}
+      </p>
 
       <VorgangHeaderClient
         title={vorgang.titel ?? t('title')}
@@ -384,25 +428,49 @@ function VorgangDetail({
       />
 
       {/* The one thing the citizen must do sits full-width right under the
-        * header — never buried in the rail below the fold. */}
-      {nextStep ? (
-        <NextStepBanner
-          vorgangId={vorgang.id}
-          stepId={nextStep.id}
-          behoerdeName={nextBehoerde?.name_de ?? nextStep.behoerde_id}
-          kategorie={nextBehoerde?.kategorie}
-          aktion={nextStep.aktion}
-          rechtsgrundlage={nextStep.rechtsgrundlage}
-          letterId={nextStep.letter_id}
-          fristIso={naechsteFristIso}
-          reload={reload}
-        />
-      ) : vorgang.schritte.length > 0 && !receipt ? (
-        <NoNextStepBanner />
-      ) : null}
+        * header — never buried in the rail below the fold. On erledigen the
+        * banner morphs in place (AnimatePresence) to the next citizen step or
+        * the Done-state, instead of a full skeleton reload. */}
+      <motion.div {...entrance(0)}>
+        <AnimatePresence initial={false} mode="wait">
+          {nextStep ? (
+            <motion.div
+              key={nextStep.id}
+              initial={reduce ? false : { opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={reduce ? { opacity: 1 } : { opacity: 0, y: -6 }}
+              transition={{ duration: 0.22, ease: 'easeOut' }}
+            >
+              <NextStepBanner
+                vorgangId={vorgang.id}
+                stepId={nextStep.id}
+                status={nextStep.status}
+                behoerdeName={nextBehoerde?.name_de ?? nextStep.behoerde_id}
+                kategorie={nextBehoerde?.kategorie}
+                aktion={nextStep.aktion}
+                rechtsgrundlage={nextStep.rechtsgrundlage}
+                letterId={nextStep.letter_id}
+                fristIso={naechsteFristIso}
+                reconcile={reconcile}
+                advanceFocusRef={advanceFocusRef}
+              />
+            </motion.div>
+          ) : vorgang.schritte.length > 0 && !receipt ? (
+            <motion.div
+              key="done"
+              initial={reduce ? false : { opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={reduce ? { opacity: 1 } : { opacity: 0, y: -6 }}
+              transition={{ duration: 0.22, ease: 'easeOut' }}
+            >
+              <NoNextStepBanner draw={justCompleted} />
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
+      </motion.div>
 
       <div className="vg-layout">
-        <div className="flex flex-col gap-6">
+        <motion.div className="flex flex-col gap-6" {...entrance(0.06)}>
           {receipt ? <ValueReceiptCard receipt={receipt} variant="static" /> : null}
 
           {adresseNeu ? <AdresseDiffClient alt={adresseAlt} neu={adresseNeu} /> : null}
@@ -462,9 +530,13 @@ function VorgangDetail({
               </ul>
             </section>
           ) : null}
-        </div>
+        </motion.div>
 
-        <aside aria-label={tv('details_title')} className="flex flex-col gap-4">
+        <motion.aside
+          aria-label={tv('details_title')}
+          className="flex flex-col gap-4"
+          {...entrance(0.12)}
+        >
           <VorgangDetailsRail
             angelegtIso={vorgang.angelegt_am}
             stichtagIso={stichtag}
@@ -477,7 +549,7 @@ function VorgangDetail({
           />
 
           <PrototypeDisclaimer />
-        </aside>
+        </motion.aside>
       </div>
     </>
   );
@@ -489,26 +561,46 @@ function VorgangDetail({
 function NextStepBanner({
   vorgangId,
   stepId,
+  status,
   behoerdeName,
   kategorie,
   aktion,
   rechtsgrundlage,
   letterId,
   fristIso,
-  reload,
+  reconcile,
+  advanceFocusRef,
 }: {
   vorgangId: string;
   stepId: string;
+  status: AutopilotStepStatus;
   behoerdeName: string;
   kategorie?: Behoerde['kategorie'];
   aktion: string;
   rechtsgrundlage?: string;
   letterId?: string;
   fristIso?: string;
-  reload: () => Promise<void>;
+  reconcile: () => Promise<void>;
+  advanceFocusRef: React.MutableRefObject<boolean>;
 }) {
   const tv = useTranslations('vorgang.detail');
   const [busy, setBusy] = React.useState(false);
+  const sectionRef = React.useRef<HTMLElement>(null);
+  // `self_assigned` = Bürger-Eigenleistung: neutraler CTA + Hinweis, damit die
+  // Zeile nicht als Autopilot-Übermittlung gelesen wird.
+  const isSelf = status === 'self_assigned';
+
+  // Rückt der Banner nach dem Reconcile auf einen neuen Schritt vor, wandert der
+  // Fokus mit — sonst landete er nach dem Unmount des alten CTA auf <body>.
+  // Der neue Banner mountet erst nach dem Exit (mode="wait"), also nachdem das
+  // Eltern-doneCount-Flag gesetzt wurde.
+  React.useEffect(() => {
+    if (!advanceFocusRef.current) return;
+    advanceFocusRef.current = false;
+    sectionRef.current
+      ?.querySelector<HTMLButtonElement>('[data-vd-cta]')
+      ?.focus();
+  }, [advanceFocusRef]);
 
   const fristLabel = fristIso
     ? format(parseISO(fristIso), 'd. MMMM yyyy', { locale: de })
@@ -520,9 +612,10 @@ function NextStepBanner({
     try {
       await api.erledigeVorgangSchritt(vorgangId, stepId);
       toast.success(tv('step_done_toast'));
-      await reload();
-      // On success the step becomes `confirmed`, pickNextStep returns nothing,
-      // and this banner unmounts in favour of NoNextStepBanner — which takes focus.
+      // In-Place-Reconcile (kein Skeleton): der frische Datenstand triggert die
+      // gestaffelte Erledigt-Choreografie. Kein setBusy(false) im Erfolgsfall —
+      // dieser Banner wird von der AnimatePresence ersetzt.
+      await reconcile();
     } catch {
       toast.error(tv('step_done_error'));
       setBusy(false);
@@ -530,7 +623,7 @@ function NextStepBanner({
   };
 
   return (
-    <section aria-labelledby="next-step-title" className="vd-next">
+    <section ref={sectionRef} aria-labelledby="next-step-title" className="vd-next">
       <div className="vd-next-body">
         <h2 id="next-step-title" className="vd-next-kicker">
           {tv('next_step_title')}
@@ -545,6 +638,11 @@ function NextStepBanner({
             </span>
           ) : null}
         </div>
+        {isSelf ? (
+          <p className="mt-1.5 text-[13px] text-muted-foreground">
+            {tv('next_step_self_hint')}
+          </p>
+        ) : null}
       </div>
       <div className="vd-next-actions">
         {fristLabel ? (
@@ -562,21 +660,32 @@ function NextStepBanner({
             {tv('next_step_brief_cta')}
           </Link>
         ) : null}
-        <Button size="lg" onClick={handleErledigen} disabled={busy} aria-busy={busy}>
+        <Button
+          size="lg"
+          data-vd-cta
+          onClick={handleErledigen}
+          disabled={busy}
+          aria-busy={busy}
+        >
           {busy ? (
             <Loader2 className="animate-spin" aria-hidden="true" />
           ) : (
             <CheckCircle2 aria-hidden="true" />
           )}
-          {busy ? tv('step_done_busy') : tv('next_step_cta')}
+          {busy
+            ? tv('step_done_busy')
+            : isSelf
+              ? tv('next_step_cta_self')
+              : tv('next_step_cta')}
         </Button>
       </div>
     </section>
   );
 }
 
-function NoNextStepBanner() {
+function NoNextStepBanner({ draw }: { draw: boolean }) {
   const tv = useTranslations('vorgang.detail');
+  const reduce = useReducedMotion();
   const ref = React.useRef<HTMLElement>(null);
 
   React.useEffect(() => {
@@ -596,7 +705,17 @@ function NoNextStepBanner() {
         </h2>
         <p className="vd-next-aktion">{tv('no_next_step')}</p>
       </div>
-      <CheckCircle2 className="vd-next-check" aria-hidden="true" />
+      {/* Check zeichnet sich NUR beim Live-Übergang ein (draw); ein bereits
+        * fertig geladenes Dossier zeigt ihn statisch (initial={false}). */}
+      <motion.span
+        aria-hidden="true"
+        style={{ display: 'inline-flex', flexShrink: 0 }}
+        initial={draw && !reduce ? { scale: 0.6, opacity: 0 } : false}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={reduce ? { duration: 0 } : { type: 'spring', stiffness: 380, damping: 26 }}
+      >
+        <CheckCircle2 className="vd-next-check" aria-hidden="true" />
+      </motion.span>
     </section>
   );
 }
@@ -854,6 +973,7 @@ function StepProgressBar({
   activeIndex: number;
   label: string;
 }) {
+  const reduce = useReducedMotion();
   return (
     <div
       className="flex gap-1.5"
@@ -863,20 +983,34 @@ function StepProgressBar({
       aria-valuemax={total}
       aria-label={label}
     >
-      {Array.from({ length: total }).map((_, i) => (
-        <span
-          key={i}
-          className={cn(
-            'h-1.5 flex-1 rounded-full',
-            i < done
-              ? 'bg-primary'
-              : i === activeIndex && total > 1
+      {Array.from({ length: total }).map((_, i) => {
+        const filled = i < done;
+        const active = !filled && i === activeIndex && total > 1;
+        // Der grüne Fill überdeckt Rand + Fläche (−inset-px, overflow-hidden) und
+        // baut sich beim neu erledigten Segment logisch von der inline-Startkante
+        // auf. initial={false} → ein fertiges Dossier zeigt alles sofort gefüllt.
+        return (
+          <span
+            key={i}
+            aria-hidden="true"
+            className={cn(
+              'relative h-1.5 flex-1 overflow-hidden rounded-full',
+              active
                 ? 'border-[1.5px] border-amber-600 dark:border-amber-400'
                 : 'border border-border',
-          )}
-          aria-hidden="true"
-        />
-      ))}
+            )}
+          >
+            <motion.span
+              className="vd-seg-fill absolute -inset-px rounded-full bg-primary"
+              initial={false}
+              animate={{ scaleX: filled ? 1 : 0 }}
+              transition={
+                reduce ? { duration: 0 } : { duration: 0.32, delay: 0.04, ease: 'easeOut' }
+              }
+            />
+          </span>
+        );
+      })}
     </div>
   );
 }
@@ -955,6 +1089,7 @@ function BehoerdenStatusListClient({
   activeIndex: number;
 }) {
   const tv = useTranslations('vorgang.detail');
+  const reduce = useReducedMotion();
   const progressLabel = tv('progress_steps', { done, total });
 
   return (
@@ -972,7 +1107,18 @@ function BehoerdenStatusListClient({
             className="shrink-0 text-[13px] tabular-nums text-text-muted"
             aria-hidden="true"
           >
-            {progressLabel}
+            <AnimatePresence initial={false} mode="wait">
+              <motion.span
+                key={done}
+                style={{ display: 'inline-block' }}
+                initial={reduce ? false : { opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={reduce ? { opacity: 1 } : { opacity: 0 }}
+                transition={{ duration: 0.18 }}
+              >
+                {progressLabel}
+              </motion.span>
+            </AnimatePresence>
           </span>
         ) : null}
       </div>
@@ -1016,6 +1162,7 @@ function TimelineRow({
   const tRun = useTranslations('umzug.run');
   const tStep = useTranslations('convenience.step');
   const tv = useTranslations('vorgang.detail');
+  const reduce = useReducedMotion();
   const [open, setOpen] = React.useState(false);
 
   const viz = STATUS_VIZ[step.status];
@@ -1026,6 +1173,16 @@ function TimelineRow({
   const uebermitteltLabel = uebermitteltIso
     ? format(parseISO(uebermitteltIso), 'd. MMMM yyyy', { locale: de })
     : null;
+  // Echte Autopilot-Übermittlung (agent_label / Datenkategorien / eID) trägt
+  // „Übermittelt am"; eine Bürger-Eigenleistung neutral „Erledigt am".
+  const istUebermittlung = Boolean(
+    step.agent_label ||
+      (step.datenkategorien && step.datenkategorien.length > 0) ||
+      step.eid_confirmed_at,
+  );
+  const abschlussLabel = istUebermittlung
+    ? tv('uebermittelt_label')
+    : tv('erledigt_label');
   const StepTileIcon = behoerdeStepIcon(behoerde?.name_de ?? step.behoerde_id);
   const hasDatenkategorien =
     Array.isArray(step.datenkategorien) && step.datenkategorien.length > 0;
@@ -1036,10 +1193,47 @@ function TimelineRow({
     hasDatenkategorien;
   const detailsId = `vd-details-${step.id}`;
 
+  // Row-Wash: einmaliger Grün-Schleier NUR beim Live-Übergang → confirmed,
+  // nicht beim Laden eines bereits erledigten Dossiers.
+  const [washing, setWashing] = React.useState(false);
+  const prevDoneRef = React.useRef(done);
+  React.useEffect(() => {
+    if (!prevDoneRef.current && done && !reduce) setWashing(true);
+    prevDoneRef.current = done;
+  }, [done, reduce]);
+
   return (
     <li className={cn('vd-step', done && 'is-done')}>
+      {washing ? (
+        <motion.span
+          className="vd-step-wash"
+          aria-hidden="true"
+          initial={{ opacity: 0.12 }}
+          animate={{ opacity: 0 }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+          onAnimationComplete={() => setWashing(false)}
+        />
+      ) : null}
       <span className={cn('vd-step-node', done && 'is-done')} aria-hidden="true">
-        {done ? <Check /> : <span className="vd-step-num">{index + 1}</span>}
+        <AnimatePresence initial={false} mode="wait">
+          {done ? (
+            <motion.span
+              key="check"
+              style={{ display: 'inline-flex' }}
+              initial={reduce ? false : { scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={
+                reduce ? { duration: 0 } : { type: 'spring', stiffness: 380, damping: 26 }
+              }
+            >
+              <Check />
+            </motion.span>
+          ) : (
+            <motion.span key="num" className="vd-step-num">
+              {index + 1}
+            </motion.span>
+          )}
+        </AnimatePresence>
       </span>
       <div className="vd-step-body">
         <div className="vd-step-head">
@@ -1053,17 +1247,36 @@ function TimelineRow({
             name={behoerde?.name_de ?? step.behoerde_id}
             kategorie={behoerde?.kategorie}
           />
-          <span className={`badge ${chipTone} vd-step-chip`}>
-            <span className="sr-only">Status: </span>
-            {tRun(`status.${STATUS_KEY_MAP[step.status]}`)}
+          <span className="vd-step-chip-slot">
+            <AnimatePresence initial={false} mode="wait">
+              <motion.span
+                key={step.status}
+                className={`badge ${chipTone} vd-step-chip`}
+                initial={reduce ? false : { opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={reduce ? { opacity: 1 } : { opacity: 0 }}
+                transition={{ duration: 0.18, delay: reduce ? 0 : 0.06 }}
+              >
+                <span className="sr-only">Status: </span>
+                {tRun(`status.${STATUS_KEY_MAP[step.status]}`)}
+              </motion.span>
+            </AnimatePresence>
           </span>
         </div>
         <p className="vd-step-aktion">{primary}</p>
-        {uebermitteltLabel && done ? (
-          <p className="vd-step-meta">
-            {tv('uebermittelt_label')}: {uebermitteltLabel}
-          </p>
-        ) : null}
+        <AnimatePresence initial={false}>
+          {done && uebermitteltLabel ? (
+            <motion.p
+              key="done-line"
+              className="vd-step-meta"
+              initial={reduce ? false : { opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2, delay: reduce ? 0 : 0.12, ease: 'easeOut' }}
+            >
+              {abschlussLabel}: {uebermitteltLabel}
+            </motion.p>
+          ) : null}
+        </AnimatePresence>
 
         {hasDetails ? (
           <>

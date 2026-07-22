@@ -288,7 +288,7 @@
     "status": "in_pruefung",
     "beteiligte_behoerden_ids": [
       "standesamt-hamburg-eimsbuettel",
-      "familienkasse-berlin-brandenburg",
+      "elterngeldstelle-hamburg-eimsbuettel",
       "tk-hamburg"
     ],
     "schritte": [
@@ -304,11 +304,11 @@
         "letter_id": "letter-schmidt-standesamt-geburt"
       },
       {
-        "id": "step-mia-familienkasse",
-        "behoerde_id": "familienkasse-berlin-brandenburg",
-        "block": "C",
-        "aktion": "Kindergeld für Mia beantragen (Geburtsurkunde beifügen)",
-        "rechtsgrundlage": "§ 67 EStG",
+        "id": "step-mia-elterngeld",
+        "behoerde_id": "elterngeldstelle-hamburg-eimsbuettel",
+        "block": "D",
+        "aktion": "Elterngeld für Mia beantragen",
+        "rechtsgrundlage": "§ 7 BEEG",
         "status": "self_assigned",
         "started_at": "@now-1d"
       },

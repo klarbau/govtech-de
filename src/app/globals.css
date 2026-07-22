@@ -1712,3 +1712,55 @@ span.ll-oo-qualifier { white-space: nowrap; }
     font-size: 0.8125rem;
   }
 }
+
+/* ── Vorgang-Detail „Erledigt-Moment" (vorgang-detail-lebendig) ───────────────
+   Additive Motion-Helfer für das In-Place-Reconcile der generischen
+   Vorgang-Detailseite. Die vd-*-Basis lebt in der FROZEN prototype-v2.css;
+   hier nur, was nicht inline über framer-motion geht. Reduced-Motion killt alle
+   Transitions zentral (siehe @layer base) — keine eigenen Fallback-Regeln. */
+
+/* Node-Farbwechsel Nummer → Erledigt-Grün: der Klassenwechsel .is-done blendet
+   Fläche/Rand/Text weich um; der Check-Pop läuft inline via framer-motion. */
+.vd-step-node {
+  transition:
+    background-color 0.2s ease-out,
+    border-color 0.2s ease-out,
+    color 0.2s ease-out;
+}
+
+/* Row-Wash: einmaliger, dezenter Grün-Schleier hinter der erledigten Zeile.
+   Deckung animiert framer-motion (0.12 → 0); hier nur Fläche/Position. z-index
+   unter Node und Body (beide z 1) — reine Deko hinter dem Text. */
+.vd-step-wash {
+  position: absolute;
+  inset: -2px -8px;
+  z-index: 0;
+  border-radius: 12px;
+  pointer-events: none;
+  background: var(--green-500);
+}
+.vd-step-body {
+  position: relative;
+  z-index: 1;
+}
+
+/* Chip-Slot trägt die rechte Ausrichtung (statt margin-left:auto am Chip
+   selbst), damit der AnimatePresence-Crossfade an gewohnter Position sitzt. */
+.vd-step-chip-slot {
+  display: inline-flex;
+  margin-inline-start: auto;
+}
+@media (max-width: 540px) {
+  .vd-step-chip-slot {
+    margin-inline-start: 0;
+  }
+}
+
+/* Segment-Fill: logische Transform-Origin, damit der scaleX-Aufbau in RTL von
+   der rechten Kante läuft. */
+.vd-seg-fill {
+  transform-origin: left center;
+}
+[dir='rtl'] .vd-seg-fill {
+  transform-origin: right center;
+}

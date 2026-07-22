@@ -38,11 +38,11 @@
     "kategorie": "erinnerung"
   },
   {
-    "id": "reminder-schmidt-familienkasse-nachweis",
+    "id": "reminder-schmidt-elterngeld-antrag",
     "owner_persona_id": "markus-schmidt",
-    "behoerde_id": "familienkasse-berlin-brandenburg",
+    "behoerde_id": "elterngeldstelle-hamburg-eimsbuettel",
     "vorgang_id": "vg-schmidt-kindergeburt-mia-2026",
-    "titel": "Schulbescheinigung Felix einreichen",
+    "titel": "Elterngeld für Mia beantragen",
     "datum": "@now+14d",
     "kategorie": "frist",
     "frist_typ": "nachweis"

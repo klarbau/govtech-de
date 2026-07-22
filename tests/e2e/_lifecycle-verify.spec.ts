@@ -220,4 +220,79 @@ test.describe('Vorgang lifecycle — Akte statt Video', () => {
     expect(page.url()).toContain('/vorgaenge/vorgang-anna-kindergeld-aktualisierung-2026');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 15000 });
   });
+
+  test('9) Erledigt-Moment: In-Place-Reconcile ohne Skeleton, Banner rückt vor', async ({
+    page,
+  }) => {
+    test.setTimeout(60_000);
+    // Der Ziel-Vorgang ist persona-gebunden (markus-schmidt): active_persona_id
+    // setzen + persona-scoped Buckets einmalig reseeden. reliable_mode schaltet
+    // die 5%-Fehlerrate ab, damit der Erledigt-Klick deterministisch durchläuft.
+    const NS = 'govtech-de:v1:';
+    await page.addInitScript((ns) => {
+      try {
+        const sentinel = `${ns}__erledigt_seeded`;
+        if (window.localStorage.getItem(sentinel)) return;
+        window.localStorage.setItem(sentinel, '1');
+        window.localStorage.setItem(
+          `${ns}meta`,
+          JSON.stringify({
+            version: 1,
+            active_persona_id: 'markus-schmidt',
+            seeded_at: new Date().toISOString(),
+            reliable_mode: true,
+          }),
+        );
+        for (const key of ['profile', 'letters', 'vorgaenge', 'documents']) {
+          window.localStorage.removeItem(`${ns}${key}`);
+        }
+      } catch {
+        // non-browser env — ignore
+      }
+    }, NS);
+
+    await page.goto('/vorgaenge/vg-schmidt-kindergeburt-mia-2026', {
+      waitUntil: 'domcontentloaded',
+    });
+    await waitForOrRetry(
+      page,
+      () => page.getByRole('heading', { name: 'Ihr Vorgang im Überblick' }),
+      20000,
+    );
+
+    // Ruhezustand: Banner zeigt den ersten Bürger-Schritt (Elterngeld, self_assigned),
+    // CTA „Als erledigt markieren".
+    await expect(page.locator('.vd-next .vd-next-aktion')).toHaveText(
+      'Elterngeld für Mia beantragen',
+      { timeout: 15000 },
+    );
+    const cta = page.getByRole('button', { name: 'Als erledigt markieren' });
+    await cta.waitFor({ timeout: 15000 });
+    await page.screenshot({ path: `${SHOTS}/09a-ruhezustand.png` });
+
+    // (1) Klick → KEIN Ganzseiten-Skeleton (role=status/aria-busy); die
+    //     Schritte-Card bleibt durchgehend sichtbar.
+    await cta.click();
+    await expect(page.locator('[role="status"][aria-busy="true"]')).toHaveCount(0);
+    await expect(
+      page.getByRole('heading', { name: 'Ihr Vorgang im Überblick' }),
+    ).toBeVisible();
+
+    // (2) Banner rückt auf den nächsten Bürger-Schritt vor (Familienversicherung),
+    //     der Zähler springt auf „2 von 3".
+    await expect(page.locator('.vd-next .vd-next-aktion')).toHaveText(
+      'Familienversicherung Mia anmelden',
+      { timeout: 15000 },
+    );
+    await expect(page.getByText('2 von 3 Schritten').first()).toBeVisible({
+      timeout: 15000,
+    });
+    await page.screenshot({ path: `${SHOTS}/09b-nach-reconcile.png` });
+
+    // (3) aria-live-Region trägt die Ansage.
+    await expect(page.locator('p[aria-live="polite"]').first()).toContainText(
+      'Schritt erledigt',
+      { timeout: 10000 },
+    );
+  });
 });
