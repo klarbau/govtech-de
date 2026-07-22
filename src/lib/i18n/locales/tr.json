@@ -1399,7 +1399,6 @@
       "alle_anzeigen": "Tümünü göster",
       "slot_bis": "{datum} kadar",
       "slot_hinweis": "Bilgi",
-      "termin_video_hinweis": "Bağlantı 24 saat önce e-posta ile gelir",
       "slot_wohngeld_titel": "Olası konut yardımı (Wohngeld) hakkı: yaklaşık {min}–{max} € / ay",
       "slot_wohngeld_titel_risiko": "Konut yardımı (Wohngeld): planlanan yasa değişikliği sizi etkileyebilir",
       "slot_wohngeld_sub": "Ana verilerinizden tahmin · kontrol ettirin",
@@ -1431,7 +1430,31 @@
     "kennzahl": {
       "posteingang": "Okunmamış mesajlar",
       "vorgaenge": "İşlemdeki süreçler",
-      "fristen": "Önümüzdeki 14 gündeki son tarihler"
+      "fristen": "Önümüzdeki 14 gündeki son tarihler",
+      "termine": "Yaklaşan randevular",
+      "dokumente": "Kasadaki belgeler",
+      "leiste_aria": "Göstergelere genel bakış"
+    },
+    "module": {
+      "vorgaenge_titel": "İşlemlerim",
+      "vorgaenge_alle": "Tüm işlemler",
+      "vorgaenge_beteiligte": "{count, plural, one {# kurum} other {# kurum}}",
+      "vorgaenge_bewegung": "son güncelleme {zeit}",
+      "termine_titel": "Sonraki randevular",
+      "termine_alle": "Tüm randevular",
+      "termine_ort_praesenz": "Yüz yüze",
+      "termine_ort_video": "Görüntülü",
+      "termine_ort_telefon": "Telefon",
+      "termine_leer": "Planlanmış randevu yok",
+      "post_titel": "Gelen kutusu — yeni",
+      "post_alle": "Tüm mektuplar",
+      "post_leer": "Okunmamış mektup yok",
+      "steuer_titel": "Vergi durumu {jahr}",
+      "steuer_erstattung_label": "Beklenen iade",
+      "steuer_basis": "bilinen verilerinize göre",
+      "steuer_cta": "Vergi bölümüne git",
+      "uebermittelt_titel": "Son gönderilenler",
+      "uebermittelt_alle": "Tüm etkinlikler"
     },
     "autopilot_verfuegbar": {
       "titel": "Otomatik pilot şunlar için mevcut",
@@ -1441,11 +1464,6 @@
     "kontrolle_fuss": {
       "text": "Yasal dayanak veya açık rızanız olmadan hiçbir veri aktarımı yapılmaz.",
       "mehr": "Veri koruması hakkında daha fazlası"
-    },
-    "naechster_termin": {
-      "praesenz": "Yüz yüze",
-      "video": "Görüntülü randevu",
-      "telefon": "Telefon randevusu"
     },
     "achievement": {
       "jahr": "Bu yıl sizin için {count} işlem halledildi"

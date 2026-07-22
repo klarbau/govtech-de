@@ -1399,7 +1399,6 @@
       "alle_anzeigen": "Показати все",
       "slot_bis": "до {datum}",
       "slot_hinweis": "Примітка",
-      "termin_video_hinweis": "Посилання надійде за 24 год електронною поштою",
       "slot_wohngeld_titel": "Можливе право на житлову допомогу (Wohngeld): бл. {min}–{max} € / місяць",
       "slot_wohngeld_titel_risiko": "Житлова допомога (Wohngeld): запланована реформа може Вас стосуватися",
       "slot_wohngeld_sub": "Оцінка на основі Ваших основних даних · перевірити",
@@ -1431,7 +1430,31 @@
     "kennzahl": {
       "posteingang": "Непрочитані повідомлення",
       "vorgaenge": "Справи в опрацюванні",
-      "fristen": "Терміни в найближчі 14 днів"
+      "fristen": "Терміни в найближчі 14 днів",
+      "termine": "Майбутні записи",
+      "dokumente": "Документи у сховищі",
+      "leiste_aria": "Огляд ключових показників"
+    },
+    "module": {
+      "vorgaenge_titel": "Мої справи",
+      "vorgaenge_alle": "Усі справи",
+      "vorgaenge_beteiligte": "{count, plural, one {# інстанція} few {# інстанції} many {# інстанцій} other {# інстанцій}}",
+      "vorgaenge_bewegung": "останнє оновлення {zeit}",
+      "termine_titel": "Найближчі записи",
+      "termine_alle": "Усі записи",
+      "termine_ort_praesenz": "Особисто",
+      "termine_ort_video": "Відео",
+      "termine_ort_telefon": "Телефон",
+      "termine_leer": "Немає запланованих записів",
+      "post_titel": "Вхідні — нові",
+      "post_alle": "Усі листи",
+      "post_leer": "Немає непрочитаних листів",
+      "steuer_titel": "Податковий статус {jahr}",
+      "steuer_erstattung_label": "Очікуване повернення",
+      "steuer_basis": "на основі Ваших відомих даних",
+      "steuer_cta": "До розділу податків",
+      "uebermittelt_titel": "Нещодавно надіслано",
+      "uebermittelt_alle": "Уся активність"
     },
     "autopilot_verfuegbar": {
       "titel": "Автопілот доступний для",
@@ -1441,11 +1464,6 @@
     "kontrolle_fuss": {
       "text": "Жодної передачі даних без правової підстави або Вашої явної згоди.",
       "mehr": "Докладніше про захист даних"
-    },
-    "naechster_termin": {
-      "praesenz": "Особисто",
-      "video": "Відеоприйом",
-      "telefon": "Прийом телефоном"
     },
     "achievement": {
       "jahr": "{count} справ виконано за Вас цього року"

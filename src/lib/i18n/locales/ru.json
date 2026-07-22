@@ -1399,7 +1399,6 @@
       "alle_anzeigen": "Показать все",
       "slot_bis": "до {datum}",
       "slot_hinweis": "Примечание",
-      "termin_video_hinweis": "Ссылка придёт за 24 ч по эл. почте",
       "slot_wohngeld_titel": "Возможное право на жилищное пособие (Wohngeld): ок. {min}–{max} € / месяц",
       "slot_wohngeld_titel_risiko": "Жилищное пособие (Wohngeld): планируемая реформа может Вас затронуть",
       "slot_wohngeld_sub": "Оценка на основе Ваших основных данных · проверить",
@@ -1431,7 +1430,31 @@
     "kennzahl": {
       "posteingang": "Непрочитанные сообщения",
       "vorgaenge": "Процессы в обработке",
-      "fristen": "Сроки в ближайшие 14 дней"
+      "fristen": "Сроки в ближайшие 14 дней",
+      "termine": "Предстоящие записи",
+      "dokumente": "Документы в хранилище",
+      "leiste_aria": "Обзор ключевых показателей"
+    },
+    "module": {
+      "vorgaenge_titel": "Мои дела",
+      "vorgaenge_alle": "Все дела",
+      "vorgaenge_beteiligte": "{count, plural, one {# инстанция} few {# инстанции} many {# инстанций} other {# инстанций}}",
+      "vorgaenge_bewegung": "последнее обновление {zeit}",
+      "termine_titel": "Ближайшие записи",
+      "termine_alle": "Все записи",
+      "termine_ort_praesenz": "Очно",
+      "termine_ort_video": "Видео",
+      "termine_ort_telefon": "Телефон",
+      "termine_leer": "Нет запланированных записей",
+      "post_titel": "Входящие — новые",
+      "post_alle": "Все письма",
+      "post_leer": "Нет непрочитанных писем",
+      "steuer_titel": "Налоговый статус {jahr}",
+      "steuer_erstattung_label": "Ожидаемый возврат",
+      "steuer_basis": "на основе Ваших известных данных",
+      "steuer_cta": "В раздел налогов",
+      "uebermittelt_titel": "Недавно отправлено",
+      "uebermittelt_alle": "Все действия"
     },
     "autopilot_verfuegbar": {
       "titel": "Автопилот доступен для",
@@ -1441,11 +1464,6 @@
     "kontrolle_fuss": {
       "text": "Никакой передачи данных без правового основания или Вашего явного согласия.",
       "mehr": "Подробнее о защите данных"
-    },
-    "naechster_termin": {
-      "praesenz": "Очно",
-      "video": "Видеоприём",
-      "telefon": "Приём по телефону"
     },
     "achievement": {
       "jahr": "{count} процессов выполнено за Вас в этом году"

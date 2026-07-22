@@ -1399,7 +1399,6 @@
       "alle_anzeigen": "Alle anzeigen",
       "slot_bis": "bis {datum}",
       "slot_hinweis": "Hinweis",
-      "termin_video_hinweis": "Link kommt 24 h vorher per E-Mail",
       "slot_wohngeld_titel": "Möglicher Wohngeld-Anspruch: ca. {min}–{max} € / Monat",
       "slot_wohngeld_titel_risiko": "Wohngeld: geplante Novelle könnte Sie betreffen",
       "slot_wohngeld_sub": "Schätzung aus Ihren Stammdaten · prüfen lassen",
@@ -1431,7 +1430,31 @@
     "kennzahl": {
       "posteingang": "Ungelesene Nachrichten",
       "vorgaenge": "Vorgänge in Bearbeitung",
-      "fristen": "Fristen in den nächsten 14 Tagen"
+      "fristen": "Fristen in den nächsten 14 Tagen",
+      "termine": "Anstehende Termine",
+      "dokumente": "Dokumente im Tresor",
+      "leiste_aria": "Kennzahlen im Überblick"
+    },
+    "module": {
+      "vorgaenge_titel": "Meine Vorgänge",
+      "vorgaenge_alle": "Alle Vorgänge",
+      "vorgaenge_beteiligte": "{count, plural, one {# Stelle} other {# Stellen}}",
+      "vorgaenge_bewegung": "letzte Bewegung {zeit}",
+      "termine_titel": "Nächste Termine",
+      "termine_alle": "Alle Termine",
+      "termine_ort_praesenz": "Vor Ort",
+      "termine_ort_video": "Video",
+      "termine_ort_telefon": "Telefon",
+      "termine_leer": "Kein Termin geplant",
+      "post_titel": "Posteingang — neu",
+      "post_alle": "Alle Briefe",
+      "post_leer": "Keine ungelesenen Briefe",
+      "steuer_titel": "Steuer-Status {jahr}",
+      "steuer_erstattung_label": "Voraussichtliche Erstattung",
+      "steuer_basis": "auf Basis Ihrer bekannten Daten",
+      "steuer_cta": "Zum Steuerbereich",
+      "uebermittelt_titel": "Zuletzt übermittelt",
+      "uebermittelt_alle": "Alle Aktivitäten"
     },
     "autopilot_verfuegbar": {
       "titel": "Autopilot verfügbar für",
@@ -1441,11 +1464,6 @@
     "kontrolle_fuss": {
       "text": "Keine Übermittlung ohne Rechtsgrundlage oder Ihre ausdrückliche Einwilligung.",
       "mehr": "Mehr zum Datenschutz"
-    },
-    "naechster_termin": {
-      "praesenz": "Vor Ort",
-      "video": "Video-Termin",
-      "telefon": "Telefon-Termin"
     },
     "achievement": {
       "jahr": "{count} Vorgänge dieses Jahr für Sie erledigt"

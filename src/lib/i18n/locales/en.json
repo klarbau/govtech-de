@@ -1399,7 +1399,6 @@
       "alle_anzeigen": "Show all",
       "slot_bis": "by {datum}",
       "slot_hinweis": "Note",
-      "termin_video_hinweis": "Link arrives 24 h before by email",
       "slot_wohngeld_titel": "Possible housing benefit (Wohngeld) entitlement: approx. {min}–{max} € / month",
       "slot_wohngeld_titel_risiko": "Housing benefit (Wohngeld): a planned reform could affect you",
       "slot_wohngeld_sub": "Estimate based on your profile data · get it checked",
@@ -1431,7 +1430,31 @@
     "kennzahl": {
       "posteingang": "Unread messages",
       "vorgaenge": "Cases in progress",
-      "fristen": "Deadlines in the next 14 days"
+      "fristen": "Deadlines in the next 14 days",
+      "termine": "Upcoming appointments",
+      "dokumente": "Documents in the vault",
+      "leiste_aria": "Key figures at a glance"
+    },
+    "module": {
+      "vorgaenge_titel": "My cases",
+      "vorgaenge_alle": "All cases",
+      "vorgaenge_beteiligte": "{count, plural, one {# office} other {# offices}}",
+      "vorgaenge_bewegung": "last activity {zeit}",
+      "termine_titel": "Next appointments",
+      "termine_alle": "All appointments",
+      "termine_ort_praesenz": "In person",
+      "termine_ort_video": "Video",
+      "termine_ort_telefon": "Phone",
+      "termine_leer": "No appointment scheduled",
+      "post_titel": "Inbox — new",
+      "post_alle": "All letters",
+      "post_leer": "No unread letters",
+      "steuer_titel": "Tax status {jahr}",
+      "steuer_erstattung_label": "Expected refund",
+      "steuer_basis": "based on your known data",
+      "steuer_cta": "Go to tax section",
+      "uebermittelt_titel": "Recently submitted",
+      "uebermittelt_alle": "All activities"
     },
     "autopilot_verfuegbar": {
       "titel": "Autopilot available for",
@@ -1441,11 +1464,6 @@
     "kontrolle_fuss": {
       "text": "No transmission without a legal basis or your explicit consent.",
       "mehr": "More about data protection"
-    },
-    "naechster_termin": {
-      "praesenz": "In person",
-      "video": "Video appointment",
-      "telefon": "Phone appointment"
     },
     "achievement": {
       "jahr": "{count} cases handled for you this year"

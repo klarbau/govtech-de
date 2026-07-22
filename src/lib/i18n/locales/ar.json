@@ -1399,7 +1399,6 @@
       "alle_anzeigen": "عرض الكل",
       "slot_bis": "حتى {datum}",
       "slot_hinweis": "ملاحظة",
-      "termin_video_hinweis": "يصل الرابط قبل 24 ساعة عبر البريد الإلكتروني",
       "slot_wohngeld_titel": "استحقاق محتمل لبدل السكن (Wohngeld): نحو {min}–{max} € / شهرياً",
       "slot_wohngeld_titel_risiko": "بدل السكن (Wohngeld): تعديل مُخطَّط قد يخصّك",
       "slot_wohngeld_sub": "تقدير من بياناتك الأساسية · اطلب التحقّق",
@@ -1431,7 +1430,31 @@
     "kennzahl": {
       "posteingang": "رسائل غير مقروءة",
       "vorgaenge": "معاملات قيد المعالجة",
-      "fristen": "مواعيد نهائية خلال الـ 14 يوماً القادمة"
+      "fristen": "مواعيد نهائية خلال الـ 14 يوماً القادمة",
+      "termine": "المواعيد القادمة",
+      "dokumente": "المستندات في الخزنة",
+      "leiste_aria": "نظرة عامة على المؤشرات"
+    },
+    "module": {
+      "vorgaenge_titel": "معاملاتي",
+      "vorgaenge_alle": "كل المعاملات",
+      "vorgaenge_beteiligte": "{count, plural, one {جهة واحدة} two {جهتان} few {# جهات} many {# جهة} other {# جهة}}",
+      "vorgaenge_bewegung": "آخر تحديث {zeit}",
+      "termine_titel": "المواعيد التالية",
+      "termine_alle": "كل المواعيد",
+      "termine_ort_praesenz": "حضورياً",
+      "termine_ort_video": "فيديو",
+      "termine_ort_telefon": "هاتف",
+      "termine_leer": "لا مواعيد مجدولة",
+      "post_titel": "الوارد — جديد",
+      "post_alle": "كل الرسائل",
+      "post_leer": "لا رسائل غير مقروءة",
+      "steuer_titel": "حالة الضرائب {jahr}",
+      "steuer_erstattung_label": "الاسترداد المتوقَّع",
+      "steuer_basis": "بناءً على بياناتك المعروفة",
+      "steuer_cta": "إلى قسم الضرائب",
+      "uebermittelt_titel": "أُرسل مؤخراً",
+      "uebermittelt_alle": "كل الأنشطة"
     },
     "autopilot_verfuegbar": {
       "titel": "الطيار الآلي متاح لـ",
@@ -1441,11 +1464,6 @@
     "kontrolle_fuss": {
       "text": "لا نقل للبيانات دون أساس قانوني أو موافقتك الصريحة.",
       "mehr": "مزيد عن حماية البيانات"
-    },
-    "naechster_termin": {
-      "praesenz": "حضورياً",
-      "video": "موعد بالفيديو",
-      "telefon": "موعد هاتفي"
     },
     "achievement": {
       "jahr": "{count} معاملة أُنجزت نيابةً عنك هذا العام"
