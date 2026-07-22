@@ -14,6 +14,7 @@ import {
   Briefcase,
   Building2,
   Calendar,
+  CalendarClock,
   Car,
   Check,
   CheckCircle2,
@@ -27,6 +28,7 @@ import {
   Landmark,
   ListChecks,
   Loader2,
+  ShieldCheck,
   Tv,
 } from 'lucide-react';
 
@@ -39,6 +41,10 @@ import { DatenschutzCockpitLink } from '@/components/shared/DatenschutzCockpitLi
 import { PrototypeDisclaimer } from '@/components/shared/PrototypeDisclaimer';
 import { Skeleton } from '@/components/shared/Skeleton';
 import { TerminCard } from '@/components/shared/TerminCard';
+import {
+  VorgangSchrittAuthDialog,
+  type VorgangSchrittAuthMode,
+} from '@/components/vorgaenge/VorgangSchrittAuthDialog';
 import { api, MockBackendError } from '@/lib/mock-backend';
 import { cn } from '@/lib/utils';
 import type {
@@ -220,6 +226,20 @@ export function VorgangDetailLoader({ id }: VorgangDetailLoaderProps) {
     void load();
   }, [load]);
 
+  // Live-Vollzug: nach einer Autorisierung streamt `starteVorgangSchritt` die
+  // Übergänge `in_progress` → `letter_received` → `confirmed` über den
+  // In-Process-EventBus. Auf diesen Vorgang gefiltert, löst jedes Event einen
+  // stillen Reconcile aus (kein Skeleton) → die Timeline rendert live, dann die
+  // geshippte Erledigt-Choreo. Max. 3 Reconciles je Lauf (kein Debounce nötig).
+  React.useEffect(() => {
+    return api.subscribe((event) => {
+      const relevant =
+        (event.type === 'autopilot_step' && event.vorgangId === id) ||
+        (event.type === 'letter_received' && event.letter.vorgang_id === id);
+      if (relevant) void load({ silent: true });
+    });
+  }, [id, load]);
+
   if (state.kind === 'loading') {
     return <VorgangDetailSkeleton />;
   }
@@ -351,6 +371,18 @@ function VorgangDetail({
   const nextStep = pickNextStep(vorgang.schritte);
   const nextBehoerde = nextStep ? behoerdenById[nextStep.behoerde_id] : undefined;
 
+  // Confirm-Typ des nächsten Schritts — nur wenn der Bürger am Zug ist. Termin-
+  // Systemleistung vor Einwilligung vor eID (Default). Ein reiner Warte-Schritt
+  // (pending/in_progress) trägt keinen Autorisierungs-CTA.
+  const nextStepMode: VorgangSchrittAuthMode | undefined =
+    nextStep && CITIZEN_ACTION_STATUS.has(nextStep.status)
+      ? nextStep.requires_termin
+        ? 'termin'
+        : nextStep.requires_consent
+          ? 'consent'
+          : 'eid'
+      : undefined;
+
   const doneCount = vorgang.schritte.filter((s) => s.status === 'confirmed').length;
   const totalCount = vorgang.schritte.length;
   const activeStepIndex = vorgang.schritte.findIndex((s) => IN_PROGRESS_STATUS.has(s.status));
@@ -381,12 +413,47 @@ function VorgangDetail({
 
   // Erledigt-Moment: eine stabile aria-live-Region (überlebt das Unmounten des
   // Banners) + ein doneCount-Vergleich, der beim Schrittwechsel Ansage/Fokus
-  // steuert. `advanceFocusRef` wandert auf den neuen CTA, `justCompleted`
-  // schaltet den Check-Draw-in des Done-Banners nur beim Live-Übergang frei.
+  // steuert. `pendingFocusRef` merkt einen fälligen Fokus-Sprung vor, der erst
+  // NACH dem Dialog-Schluss ausgeführt wird; `justCompleted` schaltet den
+  // Check-Draw-in des Done-Banners nur beim Live-Übergang frei.
   const [announcement, setAnnouncement] = React.useState('');
   const [justCompleted, setJustCompleted] = React.useState(false);
   const prevDoneRef = React.useRef<number | null>(null);
-  const advanceFocusRef = React.useRef(false);
+  const pendingFocusRef = React.useRef(false);
+
+  // Autorisierungs-Dialog auf VorgangDetail-Ebene (überlebt den Banner-Wechsel,
+  // wenn der laufende Schritt in_progress wird): der CTA öffnet nur den Dialog,
+  // der Write sitzt im Dialog-Confirm.
+  const [authStep, setAuthStep] = React.useState<{
+    stepId: string;
+    mode: VorgangSchrittAuthMode;
+    behoerdeName: string;
+    datenkategorien: string[];
+    eidPreview?: string;
+  } | null>(null);
+
+  const openAuth = () => {
+    if (!nextStep || !nextStepMode) return;
+    setAuthStep({
+      stepId: nextStep.id,
+      mode: nextStepMode,
+      behoerdeName: nextBehoerde?.name_de ?? nextStep.behoerde_id,
+      datenkategorien: nextStep.datenkategorien ?? [],
+      eidPreview: nextStep.eid_preview,
+    });
+  };
+
+  const authorizeStep = async () => {
+    if (!authStep) return;
+    try {
+      await api.starteVorgangSchritt(vorgang.id, authStep.stepId);
+    } catch (error) {
+      toast.error(tv('step_done_error'));
+      throw error; // Dialog offen lassen (Retry) — der Schritt bleibt unangetastet.
+    }
+    toast.success(tv('step_authorized_toast'));
+    await reconcile();
+  };
 
   React.useEffect(() => {
     const prev = prevDoneRef.current;
@@ -394,12 +461,58 @@ function VorgangDetail({
     if (prev === null || doneCount <= prev) return;
     if (nextStep) {
       setAnnouncement(tv('step_done_live_next', { aktion: nextStep.aktion }));
-      advanceFocusRef.current = true;
     } else {
       setAnnouncement(tv('step_done_live_all'));
       setJustCompleted(true);
     }
+    // Fokus erst NACH dem Dialog-Schluss nachziehen (der Dialog ist beim
+    // confirmed-Reconcile noch offen + inert; ein Fokus jetzt wäre no-op).
+    pendingFocusRef.current = true;
   }, [doneCount, nextStep, tv]);
+
+  // WCAG 2.4.3: Nach dem Vollzug ruht der Fokus sonst auf <body> — der
+  // Dialog-Confirm-Button unmountet, und base-ui restauriert auf den ebenfalls
+  // unmounteten Öffner-Trigger. Sobald der Dialog wirklich geschlossen ist,
+  // setzen wir den Fokus explizit auf den neuen CTA (Kette) bzw. die Done-
+  // Section (letzter Schritt). Per rAF-Schleife: solange der Fokus noch im
+  // (mit Fade-out) schließenden Dialog hängt, warten wir; erst wenn er auf
+  // <body> fällt, ziehen wir ihn aufs Ziel — und halten ihn gegen ein etwaiges
+  // spätes base-ui-Restore. Ein echtes Element AUSSERHALB des Dialogs bedeutet,
+  // der Nutzer hat selbst weiterfokussiert → dann nicht stehlen.
+  React.useEffect(() => {
+    if (authStep !== null || !pendingFocusRef.current) return;
+    let raf = 0;
+    let attempts = 0;
+    const step = () => {
+      const active = document.activeElement as HTMLElement | null;
+      const target =
+        document.querySelector<HTMLElement>('[data-vd-cta]') ??
+        document.querySelector<HTMLElement>('.vd-next.is-done');
+      const inClosingDialog = Boolean(
+        active?.closest('[data-slot="dialog-content"], [role="dialog"]'),
+      );
+      if (target && active === target) {
+        pendingFocusRef.current = false; // Ziel erreicht
+        return;
+      }
+      // Nutzer hat selbst woanders hin fokussiert (echtes Element außerhalb des
+      // schließenden Dialogs, nicht unser Ziel) → nicht stehlen.
+      if (active && active !== document.body && !inClosingDialog) {
+        pendingFocusRef.current = false;
+        return;
+      }
+      // Erst fokussieren, wenn der Dialog den Fokus freigegeben hat (sonst wäre
+      // das Ziel noch inert bzw. base-ui restauriert danach zurück auf <body>).
+      if (target && !inClosingDialog) target.focus();
+      if (attempts++ < 40) {
+        raf = requestAnimationFrame(step);
+      } else {
+        pendingFocusRef.current = false;
+      }
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [authStep]);
 
   // Einmaliger, dezenter Seiten-Eintritts-Stagger (nur beim ersten Mount, nie
   // beim Reconcile — VorgangDetail bleibt gemountet). reduced-motion: instant.
@@ -442,17 +555,15 @@ function VorgangDetail({
               transition={{ duration: 0.22, ease: 'easeOut' }}
             >
               <NextStepBanner
-                vorgangId={vorgang.id}
-                stepId={nextStep.id}
-                status={nextStep.status}
                 behoerdeName={nextBehoerde?.name_de ?? nextStep.behoerde_id}
                 kategorie={nextBehoerde?.kategorie}
                 aktion={nextStep.aktion}
                 rechtsgrundlage={nextStep.rechtsgrundlage}
+                datenkategorien={nextStep.datenkategorien}
+                mode={nextStepMode}
                 letterId={nextStep.letter_id}
                 fristIso={naechsteFristIso}
-                reconcile={reconcile}
-                advanceFocusRef={advanceFocusRef}
+                onAuthorize={openAuth}
               />
             </motion.div>
           ) : vorgang.schritte.length > 0 && !receipt ? (
@@ -551,79 +662,77 @@ function VorgangDetail({
           <PrototypeDisclaimer />
         </motion.aside>
       </div>
+
+      <VorgangSchrittAuthDialog
+        open={authStep !== null}
+        onOpenChange={(o) => {
+          if (!o) setAuthStep(null);
+        }}
+        onConfirm={authorizeStep}
+        mode={authStep?.mode ?? 'eid'}
+        behoerdeName={authStep?.behoerdeName ?? ''}
+        datenkategorien={authStep?.datenkategorien ?? []}
+        eidPreview={authStep?.eidPreview}
+      />
     </>
   );
 }
 
+/* CTA-Glyph + Label-Key je Confirm-Modus. */
+const MODE_CTA: Record<
+  VorgangSchrittAuthMode,
+  {
+    Icon: typeof Fingerprint;
+    labelKey: 'next_step_cta_eid' | 'next_step_cta_consent' | 'next_step_cta_termin';
+  }
+> = {
+  eid: { Icon: Fingerprint, labelKey: 'next_step_cta_eid' },
+  consent: { Icon: ShieldCheck, labelKey: 'next_step_cta_consent' },
+  termin: { Icon: CalendarClock, labelKey: 'next_step_cta_termin' },
+};
+
 /* Full-width action band under the hero — the screen's single primary action.
- * Surface + CTA are token-driven (no inline --brand-50/--green-50, which don't
- * flip in dark and drowned the CTA green-on-green). */
+ * Der CTA öffnet NUR den Autorisierungs-Dialog (der Write sitzt im Dialog-
+ * Confirm); ein Schritt ohne Bürger-Aktion (pending/in_progress) rendert das
+ * Band ohne CTA. Surface + CTA sind token-getrieben. */
 function NextStepBanner({
-  vorgangId,
-  stepId,
-  status,
   behoerdeName,
   kategorie,
   aktion,
   rechtsgrundlage,
+  datenkategorien,
+  mode,
   letterId,
   fristIso,
-  reconcile,
-  advanceFocusRef,
+  onAuthorize,
 }: {
-  vorgangId: string;
-  stepId: string;
-  status: AutopilotStepStatus;
   behoerdeName: string;
   kategorie?: Behoerde['kategorie'];
   aktion: string;
   rechtsgrundlage?: string;
+  datenkategorien?: string[];
+  mode?: VorgangSchrittAuthMode;
   letterId?: string;
   fristIso?: string;
-  reconcile: () => Promise<void>;
-  advanceFocusRef: React.MutableRefObject<boolean>;
+  onAuthorize: () => void;
 }) {
   const tv = useTranslations('vorgang.detail');
-  const [busy, setBusy] = React.useState(false);
-  const sectionRef = React.useRef<HTMLElement>(null);
-  // `self_assigned` = Bürger-Eigenleistung: neutraler CTA + Hinweis, damit die
-  // Zeile nicht als Autopilot-Übermittlung gelesen wird.
-  const isSelf = status === 'self_assigned';
 
-  // Rückt der Banner nach dem Reconcile auf einen neuen Schritt vor, wandert der
-  // Fokus mit — sonst landete er nach dem Unmount des alten CTA auf <body>.
-  // Der neue Banner mountet erst nach dem Exit (mode="wait"), also nachdem das
-  // Eltern-doneCount-Flag gesetzt wurde.
-  React.useEffect(() => {
-    if (!advanceFocusRef.current) return;
-    advanceFocusRef.current = false;
-    sectionRef.current
-      ?.querySelector<HTMLButtonElement>('[data-vd-cta]')
-      ?.focus();
-  }, [advanceFocusRef]);
-
+  // Der Fokus-Advance nach dem Vollzug liegt bewusst in `VorgangDetail` (nach
+  // dem Dialog-Schluss, WCAG 2.4.3) statt in einem Mount-Effect hier: der neue
+  // Banner mountet schon beim in_progress-Reconcile, bevor der Sprung fällig ist.
   const fristLabel = fristIso
     ? format(parseISO(fristIso), 'd. MMMM yyyy', { locale: de })
     : null;
 
-  const handleErledigen = async () => {
-    if (busy) return;
-    setBusy(true);
-    try {
-      await api.erledigeVorgangSchritt(vorgangId, stepId);
-      toast.success(tv('step_done_toast'));
-      // In-Place-Reconcile (kein Skeleton): der frische Datenstand triggert die
-      // gestaffelte Erledigt-Choreografie. Kein setBusy(false) im Erfolgsfall —
-      // dieser Banner wird von der AnimatePresence ersetzt.
-      await reconcile();
-    } catch {
-      toast.error(tv('step_done_error'));
-      setBusy(false);
-    }
-  };
+  const cta = mode ? MODE_CTA[mode] : undefined;
+  const prep =
+    datenkategorien && datenkategorien.length > 0
+      ? datenkategorien.join(', ')
+      : null;
 
   return (
-    <section ref={sectionRef} aria-labelledby="next-step-title" className="vd-next">
+    <section aria-labelledby="next-step-title" className="vd-next">
       <div className="vd-next-body">
         <h2 id="next-step-title" className="vd-next-kicker">
           {tv('next_step_title')}
@@ -638,9 +747,11 @@ function NextStepBanner({
             </span>
           ) : null}
         </div>
-        {isSelf ? (
+        {/* Agent-Voice-Prep: „Aus Ihren Stammdaten vorbereitet: …" — der Schritt
+          * ist vom System vorbereitet, der Bürger autorisiert nur. */}
+        {prep ? (
           <p className="mt-1.5 text-[13px] text-muted-foreground">
-            {tv('next_step_self_hint')}
+            {tv('next_step_prepared', { kategorien: prep })}
           </p>
         ) : null}
       </div>
@@ -660,24 +771,12 @@ function NextStepBanner({
             {tv('next_step_brief_cta')}
           </Link>
         ) : null}
-        <Button
-          size="lg"
-          data-vd-cta
-          onClick={handleErledigen}
-          disabled={busy}
-          aria-busy={busy}
-        >
-          {busy ? (
-            <Loader2 className="animate-spin" aria-hidden="true" />
-          ) : (
-            <CheckCircle2 aria-hidden="true" />
-          )}
-          {busy
-            ? tv('step_done_busy')
-            : isSelf
-              ? tv('next_step_cta_self')
-              : tv('next_step_cta')}
-        </Button>
+        {cta ? (
+          <Button size="lg" data-vd-cta onClick={onAuthorize}>
+            <cta.Icon aria-hidden="true" />
+            {tv(cta.labelKey)}
+          </Button>
+        ) : null}
       </div>
     </section>
   );
@@ -1173,16 +1272,19 @@ function TimelineRow({
   const uebermitteltLabel = uebermitteltIso
     ? format(parseISO(uebermitteltIso), 'd. MMMM yyyy', { locale: de })
     : null;
-  // Echte Autopilot-Übermittlung (agent_label / Datenkategorien / eID) trägt
-  // „Übermittelt am"; eine Bürger-Eigenleistung neutral „Erledigt am".
+  // Termin-Systemleistung (§ 24a FeV u. a.) trägt „Termin vereinbart am"; eine
+  // echte Autopilot-Übermittlung (agent_label / Datenkategorien / eID) „Übermittelt
+  // am"; eine Bürger-Eigenleistung neutral „Erledigt am".
   const istUebermittlung = Boolean(
     step.agent_label ||
       (step.datenkategorien && step.datenkategorien.length > 0) ||
       step.eid_confirmed_at,
   );
-  const abschlussLabel = istUebermittlung
-    ? tv('uebermittelt_label')
-    : tv('erledigt_label');
+  const abschlussLabel = step.requires_termin
+    ? tv('termin_vereinbart_label')
+    : istUebermittlung
+      ? tv('uebermittelt_label')
+      : tv('erledigt_label');
   const StepTileIcon = behoerdeStepIcon(behoerde?.name_de ?? step.behoerde_id);
   const hasDatenkategorien =
     Array.isArray(step.datenkategorien) && step.datenkategorien.length > 0;

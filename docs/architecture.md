@@ -246,6 +246,10 @@ type AutopilotStep = {
   started_at?: string;
   completed_at?: string;
   letter_id?: string;
+  // Autorisierungs-Flags (additiv, source of truth src/types/vorgang.ts):
+  // requires_eid / requires_consent / requires_termin — steuern, welche Ein-Tap-
+  // Autorisierung ein Bürger-Schritt verlangt (eID / DSGVO-Einwilligung /
+  // Termin-Systemleistung, wenn physische Präsenz zwingend bleibt).
 };
 
 type Document = {

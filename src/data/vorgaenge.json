@@ -240,10 +240,12 @@
       {
         "id": "step-aufenthalt-vorbereitung",
         "behoerde_id": "abh-berlin-lea",
-        "block": "C",
-        "aktion": "Unterlagen zusammenstellen (Arbeitsvertrag, Gehaltsnachweise, Meldebestätigung)",
+        "block": "D",
+        "aktion": "Verlängerungsantrag vorbereiten und an die Ausländerbehörde übermitteln",
         "rechtsgrundlage": "§ 18g AufenthG",
-        "status": "self_assigned",
+        "status": "needs_eid",
+        "requires_eid": true,
+        "datenkategorien": ["Beschäftigungsnachweis", "Einkommensnachweis", "Meldebestätigung", "Aufenthaltsdaten"],
         "started_at": "@now-30d"
       }
     ],
@@ -264,10 +266,12 @@
       {
         "id": "step-kindergeld-2026-nachweis-schulbescheinigung",
         "behoerde_id": "familienkasse-berlin-brandenburg",
-        "block": "C",
-        "aktion": "Nachweis zur Fortzahlung einreichen (aktuelle Meldebestätigung Lev + Betreuungsnachweis Kita)",
+        "block": "D",
+        "aktion": "Nachweise zur Kindergeld-Fortzahlung übermitteln",
         "rechtsgrundlage": "§ 68 Abs. 1 EStG",
-        "status": "self_assigned",
+        "status": "needs_eid",
+        "requires_eid": true,
+        "datenkategorien": ["Meldebestätigung", "Kita-Betreuungsnachweis"],
         "started_at": "@now-2d"
       }
     ],
@@ -309,16 +313,20 @@
         "block": "D",
         "aktion": "Elterngeld für Mia beantragen",
         "rechtsgrundlage": "§ 7 BEEG",
-        "status": "self_assigned",
+        "status": "needs_eid",
+        "requires_eid": true,
+        "datenkategorien": ["Einkommensnachweise", "Geburtsdaten Mia", "Bankverbindung"],
         "started_at": "@now-1d"
       },
       {
         "id": "step-mia-krankenkasse",
         "behoerde_id": "tk-hamburg",
-        "block": "C",
+        "block": "B",
         "aktion": "Familienversicherung Mia anmelden",
         "rechtsgrundlage": "§ 10 SGB V",
         "status": "self_assigned",
+        "requires_consent": true,
+        "datenkategorien": ["Geburtsdaten Mia", "Versichertennummer", "Familienangehörigkeit"],
         "started_at": "@now-1d"
       }
     ],
@@ -403,10 +411,13 @@
       {
         "id": "step-mehmet-steuer-zahlung",
         "behoerde_id": "finanzamt-koeln-mitte",
-        "block": "C",
-        "aktion": "Nachzahlung leisten / Einspruch prüfen",
+        "block": "D",
+        "aktion": "Nachzahlung an das Finanzamt anweisen",
         "rechtsgrundlage": "§ 240 AO",
-        "status": "self_assigned",
+        "status": "needs_eid",
+        "requires_eid": true,
+        "datenkategorien": ["Bankverbindung", "Steuernummer", "Nachzahlungsbetrag"],
+        "eid_preview": "DE.. •••• 4711",
         "started_at": "@now-4d"
       }
     ],
@@ -606,9 +617,11 @@
         "id": "step-schmidt-fs-umtausch-unterlagen",
         "behoerde_id": "fe-hamburg-lbv",
         "block": "C",
-        "aktion": "Antrag stellen und alten Führerschein, aktuelles Lichtbild sowie Personalausweis einreichen",
+        "aktion": "Umtausch-Antrag vorbereiten und Termin bei der Führerscheinstelle vereinbaren",
         "rechtsgrundlage": "§ 24a FeV i.V.m. EU-RL 2006/126/EG",
         "status": "self_assigned",
+        "requires_termin": true,
+        "datenkategorien": ["Führerscheindaten", "Meldeadresse", "Antragsdaten"],
         "started_at": "@now-10d"
       }
     ],
@@ -785,10 +798,12 @@
       {
         "id": "step-mehmet-vorauszahlung-unterlagen",
         "behoerde_id": "finanzamt-koeln-mitte",
-        "block": "C",
-        "aktion": "Aktuelle betriebswirtschaftliche Auswertung (BWA) und Gewinnprognose einreichen",
+        "block": "D",
+        "aktion": "BWA und Gewinnprognose an das Finanzamt übermitteln",
         "rechtsgrundlage": "§ 90 AO",
-        "status": "self_assigned",
+        "status": "needs_eid",
+        "requires_eid": true,
+        "datenkategorien": ["BWA", "Gewinnprognose", "Steuernummer"],
         "started_at": "@now-3d"
       }
     ],

@@ -33,6 +33,14 @@ export interface AutopilotStep {
   requires_eid?: boolean;
   /** Erfordert ausdrückliche DSGVO-Einwilligung (nur Block B). */
   requires_consent?: boolean;
+  /**
+   * Erfordert eine Termin-Systemleistung statt eID/Einwilligung: der Schritt ist
+   * ehrlich nicht rein digital vollziehbar (physische Präsenz zwingend, z. B.
+   * Führerschein-Umtausch § 24a FeV) → das System bereitet den Antrag vor und
+   * vereinbart den Vorsprachetermin. Additiv/optional (wie `zukunft`/`eid_preview`);
+   * bricht keine Cascade-Konsumenten. Spec: vorgang-schritt-autopilot.md §2.1.
+   */
+  requires_termin?: boolean;
   consent_given_at?: string;
   eid_confirmed_at?: string;
   /** Bei status === 'failed' der Fehlergrund. */

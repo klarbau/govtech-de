@@ -22,7 +22,6 @@
  *   cancelUmzug(vorgangId: string): Promise<void>
  *   markiereLetterGelesen(id: string): Promise<void>
  *   bestaetigeAutopilotSchritt(vorgangId: string, schrittId: string): Promise<void>
- *   erledigeVorgangSchritt(vorgangId: string, schrittId: string): Promise<void>
  *
  *   subscribe(listener: (e: MockBackendEvent) => void): () => void
  *
@@ -183,7 +182,7 @@ import {
 } from './id';
 import { letzterSichererAnmeldungSlot } from './autopilot/termin-ranker';
 import { computeValueReceipt } from './value-receipt';
-import { withLatency } from './latency';
+import { wait, withLatency } from './latency';
 import { captureContext, runWithCapturedContext } from './store-context';
 import {
   resolveReplyBody as resolveReplyBodyImpl,
@@ -1113,14 +1112,16 @@ export interface MockBackendApi {
     schrittId: string,
   ): Promise<void>;
   /**
-   * Generischer Bürger:innen-Schritt-Abschluss (WoW-1, „Schritt erledigen").
-   * Markiert einen Vorgangs-Schritt als vom Bürger erledigt (`confirmed` +
-   * `completed_at`). KEIN Block-D-/eID-Gate (anders als
-   * `bestaetigeAutopilotSchritt`); idempotent bei bereits `confirmed` Schritt.
-   * Lässt den Gesamt-`vorgang.status` unverändert (Behörde prüft weiter).
-   * Emittiert `autopilot_step` für Live-Subscriber.
+   * Vollzieht einen geseedeten Bürger-Schritt SELBST (Spec vorgang-schritt-
+   * autopilot.md §2): Übergang `needs_eid`/`self_assigned` → `in_progress` →
+   * (1,2–1,6 s Ausführung) → Bestätigungsbrief in den Posteingang → `confirmed`.
+   * Wird NUR nach Ein-Tap-Autorisierung im Dialog aufgerufen (eID / Einwilligung /
+   * Termin). Gate-Stempel je Flag (`eid_confirmed_at`/`consent_given_at`).
+   * Idempotent (deterministische Letter-ID, kein Doppel-Brief); Boundary-Fehler
+   * lässt den Schritt unangetastet. Emittiert `autopilot_step` je Übergang +
+   * `letter_received`. Mint ist stets BESTÄTIGUNG, nie Bescheid.
    */
-  erledigeVorgangSchritt(vorgangId: string, schrittId: string): Promise<void>;
+  starteVorgangSchritt(vorgangId: string, stepId: string): Promise<void>;
 
   // ---------------------- Funktionale Lebenslagen (vorgaenge-functional.md §5.4) --
   /** Katalog-Einträge für das `/lebenslagen`-Grid (dünner Registry-Wrapper). */
@@ -2165,21 +2166,150 @@ setEngineHooks(engineHooks);
 // in tests + documents which Behörde carries the demo compensation).
 void COMPENSATION_TARGET_BEHOERDE;
 
+// ── Vorgang-Schritt-Autopilot (Spec vorgang-schritt-autopilot.md §2) ──────────
+//
+// Das System vollzieht einen geseedeten Bürger-Schritt SELBST (bereitet aus
+// Stammdaten vor, übermittelt, mintet die Bestätigung in den Posteingang). Der
+// Bürger autorisiert per Ein-Tap (eID / Einwilligung / Termin-Freigabe) — der
+// Dialog-Confirm IST der Tap, DIESE Funktion wird nur danach aufgerufen.
+
+const SCHRITT_LETTER_FOOTER = '[MOCK – Verwaltungsdemo, keine echten Daten]';
+
+/** Kind des Bestätigungsbriefs → steuert die Kern-Floskel. NIE Bescheid. */
+type SchrittLetterKind = 'eingang' | 'zahlung' | 'termin' | 'familienversicherung';
+
+interface SchrittLetterConfig {
+  kind: SchrittLetterKind;
+  betreff: string;
+  /** Synthetisches Az. mit `[MOCK]`-Präfix, Format je Behörde. */
+  aktenzeichen: string;
+}
+
 /**
- * Generischer Bürger:innen-Schritt-Abschluss (WoW-1). Markiert einen einzelnen
- * Vorgangs-Schritt als vom Bürger erledigt — z. B. „Nachweis zur Fortzahlung
- * einreichen" bei der Familienkasse.
- *
- * Abgrenzung zu `bestaetigeImpl`: KEIN Block-D-/eID-Gate. Dies ist ein vom
- * Bürger selbst abgeschlossener Schritt (typischerweise `block: 'C'`,
- * `status: 'self_assigned'`). Der Gesamt-`vorgang.status` bleibt UNVERÄNDERT:
- * der Bürger hat SEINEN Teil erledigt, die Behörde prüft weiterhin (ehrliche
- * Rahmung). Idempotent: ein bereits `confirmed` Schritt bleibt unverändert.
+ * Brief-Bauplan je geseedetem Schritt (§1-Tabelle). Betreff + Az. tragen die
+ * behördenspezifische Realistik; `kind` wählt die Kern-Floskel im generischen
+ * Bauer. Ausschließlich Eingangs-/Übermittlungs-/Zahlungs-/Termin- bzw.
+ * Familienversicherungs-BESTÄTIGUNG — niemals ein Bescheid.
  */
-async function erledigeVorgangSchrittImpl(
+const SCHRITT_LETTER: Record<string, SchrittLetterConfig> = {
+  'step-aufenthalt-vorbereitung': {
+    kind: 'eingang',
+    betreff: 'Eingangsbestätigung — Antrag auf Verlängerung des Aufenthaltstitels',
+    aktenzeichen: '[MOCK] LEA-2027-18g-114782',
+  },
+  'step-kindergeld-2026-nachweis-schulbescheinigung': {
+    kind: 'eingang',
+    betreff: 'Eingangsbestätigung — Nachweise zur Kindergeld-Fortzahlung',
+    aktenzeichen: '[MOCK] 115FK668412',
+  },
+  'step-mia-elterngeld': {
+    kind: 'eingang',
+    betreff: 'Eingangsbestätigung — Antrag auf Elterngeld',
+    aktenzeichen: '[MOCK] EG-HH-EIM-2026-04417',
+  },
+  'step-mia-krankenkasse': {
+    kind: 'familienversicherung',
+    betreff: 'Bestätigung der Familienversicherung',
+    aktenzeichen: '[MOCK] TK-FV-2026-88214',
+  },
+  'step-mehmet-steuer-zahlung': {
+    kind: 'zahlung',
+    betreff: 'Zahlungsbestätigung — Einkommensteuer-Nachzahlung',
+    aktenzeichen: '[MOCK] 217/5678/1234',
+  },
+  'step-schmidt-fs-umtausch-unterlagen': {
+    kind: 'termin',
+    betreff: 'Terminbestätigung — Umtausch Ihres Führerscheins',
+    aktenzeichen: '[MOCK] FS-HH-2026-07731',
+  },
+  'step-mehmet-vorauszahlung-unterlagen': {
+    kind: 'eingang',
+    betreff: 'Eingangsbestätigung — BWA und Gewinnprognose',
+    aktenzeichen: '[MOCK] 217/5678/1234',
+  },
+};
+
+/** Deterministische, idempotente Letter-ID pro Schritt-Vollzug. */
+function schrittLetterId(vorgangId: string, stepId: string): string {
+  return `letter-${vorgangId}-${stepId}-eingang`;
+}
+
+/** Kern-Floskel je Brief-Kind — jede endet als BESTÄTIGUNG, nicht als Bescheid. */
+function schrittLetterBody(kind: SchrittLetterKind): string {
+  switch (kind) {
+    case 'eingang':
+      return 'in oben genannter Angelegenheit bestätigen wir den Eingang Ihrer Unterlagen. Ihre Angaben wurden vollständig übermittelt und werden nun geprüft. Eine gesonderte Entscheidung ergeht nach Abschluss der Bearbeitung; dieses Schreiben ist eine Eingangsbestätigung und kein Bescheid.';
+    case 'zahlung':
+      return 'in oben genannter Angelegenheit bestätigen wir, dass Ihre Nachzahlung angewiesen wurde. Der Zahlungseingang auf dem Konto der Finanzkasse wird Ihnen nach Verbuchung avisiert. Dieses Schreiben ist eine Zahlungsbestätigung und kein Kontoauszug.';
+    case 'familienversicherung':
+      return 'in oben genannter Angelegenheit bestätigen wir die beitragsfreie Familienversicherung Ihres Kindes nach § 10 SGB V. Die Mitversicherung ist mit Wirkung zum Geburtsdatum eingerichtet.';
+    case 'termin':
+      return 'in oben genannter Angelegenheit haben wir für Sie einen Termin zum Umtausch Ihres Führerscheins bei der Fahrerlaubnisbehörde vereinbart. Ihren vorbereiteten Antrag haben wir bereits aufgenommen. Bitte bringen Sie zum Termin mit: Ihren alten Führerschein, ein aktuelles biometrisches Lichtbild und Ihren Personalausweis.';
+  }
+}
+
+/**
+ * Baut den Bestätigungsbrief zu einem vollzogenen Schritt (§1-Tabelle). Absender
+ * + Anschrift aus `behoerden.json` (single source), Anrede aus `persona.geschlecht`.
+ * Deterministische, idempotente ID via `schrittLetterId`.
+ */
+function buildVorgangSchrittConfirmation(
+  step: AutopilotStep,
+  vorgang: Vorgang,
+  persona: Persona,
+  cfg: SchrittLetterConfig,
+): Letter {
+  const behoerde = loadBehoerden().find((b) => b.id === step.behoerde_id);
+  const anschrift = behoerde
+    ? `${behoerde.name_de}\n${behoerde.adresse.strasse} ${behoerde.adresse.hausnummer}, ${behoerde.adresse.plz} ${behoerde.adresse.ort}`
+    : step.behoerde_id;
+  const anrede =
+    persona.geschlecht === 'w'
+      ? `Sehr geehrte Frau ${persona.nachname},`
+      : persona.geschlecht === 'm'
+        ? `Sehr geehrter Herr ${persona.nachname},`
+        : `Guten Tag ${persona.vorname} ${persona.nachname},`;
+  const az = cfg.aktenzeichen;
+  const body = [
+    SCHRITT_LETTER_FOOTER,
+    '',
+    anschrift,
+    '',
+    anrede,
+    '',
+    schrittLetterBody(cfg.kind),
+    '',
+    'Mit freundlichen Grüßen',
+    behoerde?.name_de ?? '',
+    `Az. ${az}`,
+    '',
+    SCHRITT_LETTER_FOOTER,
+  ].join('\n');
+  return {
+    id: schrittLetterId(vorgang.id, step.id),
+    absender_behoerde_id: step.behoerde_id,
+    empfaenger_persona_id: persona.id,
+    aktenzeichen: az,
+    betreff: cfg.betreff,
+    body_de: body,
+    status: 'ungelesen',
+    empfangen_am: new Date().toISOString(),
+    vorgang_id: vorgang.id,
+  };
+}
+
+/**
+ * Vollzieht einen geseedeten Bürger-Schritt selbst (Spec §2.2). Wird NUR nach
+ * erfolgreicher Autorisierung im Dialog aufgerufen. Der `withLatency`-Wrapper
+ * (300–800 ms + 5 % Fehler) feuert am ÄUSSEREN Rand VOR jeder Statusänderung →
+ * ein Boundary-Fehler lässt den Schritt unangetastet (kein halb-vollzogener
+ * Zustand). Der Gesamt-`vorgang.status` bleibt UNVERÄNDERT (Behörde prüft weiter).
+ */
+async function starteVorgangSchrittImpl(
   vorgangId: string,
-  schrittId: string,
+  stepId: string,
 ): Promise<void> {
+  const persona = loadProfile();
   const vorgang = loadVorgaenge().find((v) => v.id === vorgangId);
   if (!vorgang) {
     throw new MockBackendError(`Vorgang "${vorgangId}" nicht gefunden.`, {
@@ -2187,24 +2317,54 @@ async function erledigeVorgangSchrittImpl(
       retryable: false,
     });
   }
-  const step = vorgang.schritte.find((s) => s.id === schrittId);
+  const step = vorgang.schritte.find((s) => s.id === stepId);
   if (!step) {
-    throw new MockBackendError(`Schritt "${schrittId}" nicht gefunden.`, {
+    throw new MockBackendError(`Schritt "${stepId}" nicht gefunden.`, {
       code: 'STEP_NOT_FOUND',
       retryable: false,
     });
   }
 
-  // Idempotenz: bereits erledigte Schritte unverändert lassen.
-  if (step.status === 'confirmed') return;
+  // Idempotenz / Reload-Schutz: ein bereits abgeschlossener oder gerade
+  // laufender Schritt bleibt unangetastet (kein Doppel-Lauf, kein 2. Brief).
+  if (step.status === 'confirmed' || step.status === 'in_progress') return;
+  // Nur Bürger-Aktions-Schritte sind vollziehbar.
+  if (step.status !== 'needs_eid' && step.status !== 'self_assigned') return;
 
-  // Nur den einen Schritt bestätigen; `upsertStep` emittiert `autopilot_step`,
-  // sodass Live-Subscriber (Detail-Screen) refetchen können. Der Gesamt-Status
-  // des Vorgangs wird bewusst NICHT angefasst (Behörde prüft weiter).
+  // Stufe 1 — sichtbarer Ausführungs-Start. Gate-Stempel je Confirm-Typ
+  // (Termin: keiner). `upsertStep` emittiert `autopilot_step`.
+  const startStampIso = new Date().toISOString();
+  const gateStamps = {
+    ...(step.requires_eid ? { eid_confirmed_at: startStampIso } : {}),
+    ...(step.requires_consent ? { consent_given_at: startStampIso } : {}),
+  };
+  upsertStep(vorgangId, {
+    ...step,
+    status: 'in_progress',
+    started_at: step.started_at ?? startStampIso,
+    ...gateStamps,
+  });
+
+  // Stufe 2 — EINE sichtbare Ausführungs-Stufe (1200–1600 ms). Kein Fehler-
+  // Inject (interne `wait`) → ein gestarteter Lauf endet immer.
+  await wait(1200 + Math.random() * 400);
+
+  // Stufe 3 — Bestätigungsbrief minten. Deterministische ID + Skip-if-exists
+  // decken einen etwaigen zweiten Autorisierungs-Klick idempotent ab.
+  const cfg = SCHRITT_LETTER[stepId];
+  const letterId = schrittLetterId(vorgangId, stepId);
+  if (cfg && !loadLetters().some((l) => l.id === letterId)) {
+    appendLetter(buildVorgangSchrittConfirmation(step, vorgang, persona, cfg));
+  }
+
+  // Stufe 4 — Abschluss. Vorgang-Gesamtstatus bewusst NICHT anfassen.
   upsertStep(vorgangId, {
     ...step,
     status: 'confirmed',
+    started_at: step.started_at ?? startStampIso,
     completed_at: new Date().toISOString(),
+    letter_id: cfg ? letterId : step.letter_id,
+    ...gateStamps,
   });
 }
 
@@ -2631,8 +2791,8 @@ export const api: MockBackendApi & {
   bestätigeAutopilotSchritt: (vorgangId: string, schrittId: string) =>
     withLatency(() => bestaetigeImpl(vorgangId, schrittId)),
 
-  erledigeVorgangSchritt: (vorgangId: string, schrittId: string) =>
-    withLatency(() => erledigeVorgangSchrittImpl(vorgangId, schrittId)),
+  starteVorgangSchritt: (vorgangId: string, stepId: string) =>
+    withLatency(() => starteVorgangSchrittImpl(vorgangId, stepId)),
 
   // ---------- Funktionale Lebenslagen (vorgaenge-functional.md §5.4) ----------
   getLebenslagen: () =>
