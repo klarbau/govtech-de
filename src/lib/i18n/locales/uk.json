@@ -1409,18 +1409,13 @@
       "keine_fristen": "Немає термінів у найближчі 14 днів",
       "fristen": "{count, plural, one {<b>Один термін</b>} few {<b># терміни</b>} many {<b># термінів</b>} other {<b># термінів</b>}} у найближчі 14 днів, найближчий — <b>{datum}</b>",
       "fristen_ohne_datum": "{count, plural, one {<b>Один термін</b>} few {<b># терміни</b>} many {<b># термінів</b>} other {<b># термінів</b>}} у найближчі 14 днів",
-      "umzug": "Ваш переїзд: <b>{done} з {total} інстанцій</b> поінформовано"
+      "umzug": "Ваш переїзд: <b>повністю зареєстровано</b>"
     },
     "umzug_panel": {
       "titel": "Ваш переїзд до {ort}",
-      "state_laeuft": "виконується автоматично",
       "state_fertig": "повністю зареєстровано",
       "stellen": "{done} з {total} інстанцій поінформовано",
       "segbar_aria": "Виконано {done} з {total} кроків",
-      "naechster": "Ще не завершено: <b>{schritt}</b> — <due>до {datum}</due>. Після цього переїзд буде повністю зареєстровано.",
-      "naechster_ohne_frist": "Ще не завершено: <b>{schritt}</b>. Після цього переїзд буде повністю зареєстровано.",
-      "schritt_default": "Перевірте підтвердження у вхідних",
-      "cta_pruefen": "Перевірити підтвердження",
       "alle_schritte": "Показати всі кроки",
       "meta": "{aktion} — виконано {zeit}. Загалом заощаджено {ersparnis}.",
       "meta_ohne_eintrag": "Так Ви заощадили {ersparnis}.",

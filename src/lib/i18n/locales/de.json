@@ -1409,18 +1409,13 @@
       "keine_fristen": "Keine Fristen in den nächsten 14 Tagen",
       "fristen": "{count, plural, one {<b>Eine Frist</b>} other {<b># Fristen</b>}} in den nächsten 14 Tagen, die nächste am <b>{datum}</b>",
       "fristen_ohne_datum": "{count, plural, one {<b>Eine Frist</b>} other {<b># Fristen</b>}} in den nächsten 14 Tagen",
-      "umzug": "Ihr Umzug: <b>{done} von {total} Stellen</b> informiert"
+      "umzug": "Ihr Umzug: <b>vollständig gemeldet</b>"
     },
     "umzug_panel": {
       "titel": "Ihr Umzug nach {ort}",
-      "state_laeuft": "läuft automatisch",
       "state_fertig": "vollständig gemeldet",
       "stellen": "{done} von {total} Stellen informiert",
       "segbar_aria": "{done} von {total} Schritten abgeschlossen",
-      "naechster": "Noch offen: <b>{schritt}</b> — <due>bis {datum}</due>. Danach ist der Umzug vollständig gemeldet.",
-      "naechster_ohne_frist": "Noch offen: <b>{schritt}</b>. Danach ist der Umzug vollständig gemeldet.",
-      "schritt_default": "Bestätigungen im Posteingang prüfen",
-      "cta_pruefen": "Bestätigungen prüfen",
       "alle_schritte": "Alle Schritte ansehen",
       "meta": "{aktion} — erledigt {zeit}. Insgesamt {ersparnis} gespart.",
       "meta_ohne_eintrag": "Sie haben dadurch {ersparnis} gespart.",

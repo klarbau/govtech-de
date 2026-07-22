@@ -1409,18 +1409,13 @@
       "keine_fristen": "Нет сроков в ближайшие 14 дней",
       "fristen": "{count, plural, one {<b>Один срок</b>} few {<b># срока</b>} many {<b># сроков</b>} other {<b># сроков</b>}} в ближайшие 14 дней, ближайший — <b>{datum}</b>",
       "fristen_ohne_datum": "{count, plural, one {<b>Один срок</b>} few {<b># срока</b>} many {<b># сроков</b>} other {<b># сроков</b>}} в ближайшие 14 дней",
-      "umzug": "Ваш переезд: <b>{done} из {total} инстанций</b> уведомлены"
+      "umzug": "Ваш переезд: <b>полностью зарегистрирован</b>"
     },
     "umzug_panel": {
       "titel": "Ваш переезд в {ort}",
-      "state_laeuft": "выполняется автоматически",
       "state_fertig": "полностью зарегистрирован",
       "stellen": "{done} из {total} инстанций уведомлены",
       "segbar_aria": "Выполнено {done} из {total} шагов",
-      "naechster": "Ещё не завершено: <b>{schritt}</b> — <due>до {datum}</due>. После этого переезд будет полностью зарегистрирован.",
-      "naechster_ohne_frist": "Ещё не завершено: <b>{schritt}</b>. После этого переезд будет полностью зарегистрирован.",
-      "schritt_default": "Проверьте подтверждения во входящих",
-      "cta_pruefen": "Проверить подтверждения",
       "alle_schritte": "Показать все шаги",
       "meta": "{aktion} — выполнено {zeit}. Всего сэкономлено {ersparnis}.",
       "meta_ohne_eintrag": "Так Вы сэкономили {ersparnis}.",

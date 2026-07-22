@@ -1409,18 +1409,13 @@
       "keine_fristen": "No deadlines in the next 14 days",
       "fristen": "{count, plural, one {<b>One deadline</b>} other {<b># deadlines</b>}} in the next 14 days, the next on <b>{datum}</b>",
       "fristen_ohne_datum": "{count, plural, one {<b>One deadline</b>} other {<b># deadlines</b>}} in the next 14 days",
-      "umzug": "Your move: <b>{done} of {total} offices</b> informed"
+      "umzug": "Your move: <b>fully reported</b>"
     },
     "umzug_panel": {
       "titel": "Your move to {ort}",
-      "state_laeuft": "running automatically",
       "state_fertig": "fully reported",
       "stellen": "{done} of {total} offices informed",
       "segbar_aria": "{done} of {total} steps completed",
-      "naechster": "Still open: <b>{schritt}</b> — <due>by {datum}</due>. After that, the move is fully reported.",
-      "naechster_ohne_frist": "Still open: <b>{schritt}</b>. After that, the move is fully reported.",
-      "schritt_default": "Check confirmations in your inbox",
-      "cta_pruefen": "Check confirmations",
       "alle_schritte": "View all steps",
       "meta": "{aktion} — done {zeit}. {ersparnis} saved in total.",
       "meta_ohne_eintrag": "You saved {ersparnis} as a result.",

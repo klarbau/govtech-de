@@ -239,10 +239,11 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
   const anrede = greetingAnrede(snapshot, persona);
   const highlight = snapshot?.autopilot_highlight;
   const receipt = highlight?.value_receipt;
-  const umzugDone = receipt ? receipt.behoerden_count : 0;
-  const umzugTotal = receipt ? Math.max(umzugDone, receipt.klassische_schritte) : 0;
-  const umzugComplete = umzugTotal > 0 && umzugDone >= umzugTotal;
-  const umzugFristDate = nextUmzugFristDate(snapshot, nowIso);
+  // Das Highlight existiert nur für einen abgeschlossenen Umzug-Lauf
+  // (`autopilot_highlight` wird ausschließlich aus dem jüngsten `abgeschlossen`-
+  // Vorgang gebaut). Das Panel rendert daher immer den fertigen Zustand:
+  // `behoerden_count` Stellen wurden vollständig gemeldet.
+  const umzugCount = receipt ? receipt.behoerden_count : 0;
   const umzugOrt = persona?.adresse?.ort ?? '';
   const erledigtLatest = snapshot?.erledigt_feed?.[0];
 
@@ -332,14 +333,6 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
   const strong = (chunks: React.ReactNode) => (
     <strong className="font-semibold text-text-primary">{chunks}</strong>
   );
-  // Der „{done} von {total} Stellen"-Chunk darf nicht mitten in der Phrase
-  // umbrechen (Review-Nit a) — eigener nowrap-Strong nur für die TL;DR-Umzug-Zeile.
-  const strongNoWrap = (chunks: React.ReactNode) => (
-    <strong className="whitespace-nowrap font-semibold text-text-primary">{chunks}</strong>
-  );
-  const dueTag = (chunks: React.ReactNode) => (
-    <span className="font-semibold text-amber-700 dark:text-amber-400">{chunks}</span>
-  );
 
   const fristenNode =
     fristCount === 0
@@ -348,7 +341,7 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
         ? t.rich('tldr.fristen', { count: fristCount, datum: tldrDatum, b: strong })
         : t.rich('tldr.fristen_ohne_datum', { count: fristCount, b: strong });
   const umzugNode = highlight
-    ? t.rich('tldr.umzug', { done: umzugDone, total: umzugTotal, b: strongNoWrap })
+    ? t.rich('tldr.umzug', { b: strong })
     : null;
 
   const ersparnis = receipt
@@ -823,78 +816,38 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
                 >
                   {t('umzug_panel.titel', { ort: umzugOrt })}
                 </h2>
-                <span
-                  className={cn(
-                    'mt-1 block text-[13px] font-semibold',
-                    umzugComplete ? 'text-text-secondary' : 'text-primary',
-                  )}
-                >
-                  {umzugComplete
-                    ? t('umzug_panel.state_fertig')
-                    : t('umzug_panel.state_laeuft')}
+                <span className="mt-1 block text-[13px] font-semibold text-text-secondary">
+                  {t('umzug_panel.state_fertig')}
                 </span>
               </div>
 
               {/* Mitte: große Zahl + Segment-Balken */}
               <div>
                 <p className="font-heading text-2xl font-bold tracking-tight text-text-primary">
-                  {t('umzug_panel.stellen', { done: umzugDone, total: umzugTotal })}
+                  {t('umzug_panel.stellen', { done: umzugCount, total: umzugCount })}
                 </p>
                 <div
                   className="mt-3 flex gap-1.5"
                   role="img"
                   aria-label={t('umzug_panel.segbar_aria', {
-                    done: umzugDone,
-                    total: umzugTotal,
+                    done: umzugCount,
+                    total: umzugCount,
                   })}
                 >
-                  {Array.from({ length: umzugTotal }).map((_, i) => (
-                    <span
-                      key={i}
-                      className={cn(
-                        'h-1.5 flex-1 rounded-full',
-                        i < umzugDone
-                          ? 'bg-primary'
-                          : 'border-[1.5px] border-amber-600 dark:border-amber-400',
-                      )}
-                    />
+                  {Array.from({ length: umzugCount }).map((_, i) => (
+                    <span key={i} className="h-1.5 flex-1 rounded-full bg-primary" />
                   ))}
                 </div>
               </div>
 
-              {/* rechts: Noch offen + CTA + leiser Link */}
+              {/* rechts: ein leiser Link zur Vorgangs-Akte */}
               <div>
-                {!umzugComplete ? (
-                  <p className="text-sm leading-relaxed text-text-secondary">
-                    {umzugFristDate
-                      ? t.rich('umzug_panel.naechster', {
-                          schritt: t('umzug_panel.schritt_default'),
-                          datum: formatLongDate(umzugFristDate, locale),
-                          b: strong,
-                          due: dueTag,
-                        })
-                      : t.rich('umzug_panel.naechster_ohne_frist', {
-                          schritt: t('umzug_panel.schritt_default'),
-                          b: strong,
-                        })}
-                  </p>
-                ) : null}
-                <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2">
-                  {!umzugComplete ? (
-                    <Link
-                      href={`/vorgaenge/umzug/${highlight.vorgang_id}`}
-                      className="btn btn-primary"
-                    >
-                      {t('umzug_panel.cta_pruefen')}
-                    </Link>
-                  ) : null}
-                  <Link
-                    href={`/vorgaenge/umzug/${highlight.vorgang_id}`}
-                    className="text-[13.5px] text-text-secondary underline decoration-border underline-offset-[3px] transition-colors hover:text-text-primary"
-                  >
-                    {t('umzug_panel.alle_schritte')}
-                  </Link>
-                </div>
+                <Link
+                  href={`/vorgaenge/umzug/${highlight.vorgang_id}`}
+                  className="text-[13.5px] text-text-secondary underline decoration-border underline-offset-[3px] transition-colors hover:text-text-primary"
+                >
+                  {t('umzug_panel.alle_schritte')}
+                </Link>
               </div>
             </div>
 
@@ -1162,25 +1115,6 @@ function earliestFristDatum(
     .sort((a, b) => a - b);
   if (upcoming.length === 0) return undefined;
   return formatLongDate(new Date(upcoming[0]), locale);
-}
-
-/**
- * Nächstgelegene offene Frist der Umzug-Kacheln ab `nowIso` (für die
- * „Nächster Schritt"-Zeile des Panels), sonst undefined.
- */
-function nextUmzugFristDate(
-  snapshot: DashboardSnapshot | null,
-  nowIso: string,
-): Date | undefined {
-  const fristen = snapshot?.frist_tile ?? [];
-  const now = new Date(nowIso).getTime();
-  if (Number.isNaN(now)) return undefined;
-  const upcoming = fristen
-    .map((f) => new Date(f.frist_datum).getTime())
-    .filter((ts) => !Number.isNaN(ts) && ts >= now)
-    .sort((a, b) => a - b);
-  if (upcoming.length === 0) return undefined;
-  return new Date(upcoming[0]);
 }
 
 interface HeuteView {

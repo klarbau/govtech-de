@@ -1409,18 +1409,13 @@
       "keine_fristen": "لا مواعيد نهائية خلال الـ 14 يوماً القادمة",
       "fristen": "{count, plural, one {<b>موعد نهائي واحد</b>} two {<b>موعدان نهائيان</b>} few {<b># مواعيد نهائية</b>} many {<b># موعداً نهائياً</b>} other {<b># موعد نهائي</b>}} خلال الـ 14 يوماً القادمة، وأقربها في <b>{datum}</b>",
       "fristen_ohne_datum": "{count, plural, one {<b>موعد نهائي واحد</b>} two {<b>موعدان نهائيان</b>} few {<b># مواعيد نهائية</b>} many {<b># موعداً نهائياً</b>} other {<b># موعد نهائي</b>}} خلال الـ 14 يوماً القادمة",
-      "umzug": "انتقالك: تم إبلاغ <b>{done} من {total} جهات</b>"
+      "umzug": "انتقالك: <b>تم الإبلاغ بالكامل</b>"
     },
     "umzug_panel": {
       "titel": "انتقالك إلى {ort}",
-      "state_laeuft": "يجري تلقائياً",
       "state_fertig": "تم الإبلاغ بالكامل",
       "stellen": "تم إبلاغ {done} من {total} جهات",
       "segbar_aria": "اكتمل {done} من {total} خطوات",
-      "naechster": "لا يزال مفتوحاً: <b>{schritt}</b> — <due>حتى {datum}</due>. بعد ذلك يكون قد اكتمل الإبلاغ عن الانتقال.",
-      "naechster_ohne_frist": "لا يزال مفتوحاً: <b>{schritt}</b>. بعد ذلك يكون قد اكتمل الإبلاغ عن الانتقال.",
-      "schritt_default": "تحقق من التأكيدات في صندوق الوارد",
-      "cta_pruefen": "التحقّق من التأكيدات",
       "alle_schritte": "عرض جميع الخطوات",
       "meta": "{aktion} — أُنجز {zeit}. إجمالاً تم توفير {ersparnis}.",
       "meta_ohne_eintrag": "وبذلك وفّرت {ersparnis}.",

@@ -1409,18 +1409,13 @@
       "keine_fristen": "Önümüzdeki 14 günde son tarih yok",
       "fristen": "Önümüzdeki 14 günde <b>{count} son tarih</b>, en yakını <b>{datum}</b>",
       "fristen_ohne_datum": "Önümüzdeki 14 günde <b>{count} son tarih</b>",
-      "umzug": "Taşınmanız: <b>{total} kurumdan {done} tanesi</b> bilgilendirildi"
+      "umzug": "Taşınmanız: <b>tamamen bildirildi</b>"
     },
     "umzug_panel": {
       "titel": "{ort} şehrine taşınmanız",
-      "state_laeuft": "otomatik olarak çalışıyor",
       "state_fertig": "tamamen bildirildi",
       "stellen": "{total} kurumdan {done} tanesi bilgilendirildi",
       "segbar_aria": "{total} adımdan {done} tanesi tamamlandı",
-      "naechster": "Hâlâ açık: <b>{schritt}</b> — <due>{datum} tarihine kadar</due>. Ardından taşınma tamamen bildirilmiş olur.",
-      "naechster_ohne_frist": "Hâlâ açık: <b>{schritt}</b>. Ardından taşınma tamamen bildirilmiş olur.",
-      "schritt_default": "Gelen kutusundaki onayları kontrol edin",
-      "cta_pruefen": "Onayları kontrol et",
       "alle_schritte": "Tüm adımları gör",
       "meta": "{aktion} — {zeit} tamamlandı. Toplamda {ersparnis} tasarruf edildi.",
       "meta_ohne_eintrag": "Böylece {ersparnis} tasarruf ettiniz.",
