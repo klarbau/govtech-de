@@ -1,88 +1,51 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   Termine — Liquid Glass (agenda-first rework)
+   Termine — Liquid Glass (Übergaben-Redesign, termine-uebergaben.md § 15)
    ---------------------------------------------------------------------------
    Screen-scoped rules on top of liquid-glass-core.css. Every rule is gated
    under `html[data-lg][data-lg-screen='termine']` (the screen attribute set by
-   <LiquidGlassScreen name="termine"> on /termine) and targets termine class
-   names, so the sheet is inert elsewhere. Surfaces only (background · border ·
-   shadow · backdrop-filter · radius) — never text colours, so the Waldgrün
-   tokens keep their light/dark contrast. Structural layout lives in Tailwind
-   utilities on semantic tokens; prototype-v2.css is FROZEN.
+   <LiquidGlassScreen name="termine"> on /termine). Several class names here are
+   SHARED with routes rendered by parallel agents — `.vr-card` (assistant
+   Value-Receipt + Dashboard WohngeldFolgeCard) especially — so a bare
+   `html[data-lg]` gate would leak onto them; every rule stays confined to the
+   Termine screen. Surfaces only (background · border · shadow · backdrop-filter
+   · radius) — never text colours, so the Waldgrün tokens keep their light/dark
+   contrast. Structural layout + typography live in Tailwind utilities on
+   semantic tokens; prototype-v2.css is FROZEN.
 
-   Why the deeper screen gate (Posteingang/Vorgänge precedent): several class
-   names here are SHARED with routes rendered by parallel agents — `.vr-card`
-   (assistant Value-Receipt + Dashboard WohngeldFolgeCard), `.vg-search-input`
-   (/vorgaenge), `.tab-chips`/`.chip` (app-wide filter tabs). A bare
-   `html[data-lg]` gate would leak onto them, so every rule is confined to the
-   Termine screen.
-
-   backdrop-filter budget: the shell already spends its two blur layers on
-   .app-topnav + .app-sidenav. The ONE remaining static hero-frost of this
-   screen is the „Wartet auf Sie"-Band card (.tm-wartet .tm-detail). Everything
-   else — the rail calendar card, the inline agenda accordion detail, all rows —
-   stays blur-free (near-opaque glass gradient + edge + shadow carries them).
+   backdrop-filter budget (termine-uebergaben.md § 15): the shell already spends
+   its two blur layers on .app-topnav + .app-sidenav. The ONE remaining static
+   hero-frost of this screen is the nearest/next Dossier (.tm-detail.tm-frost).
+   Everything else — the other Dossiers, the Frist-Karten, the Zusammenlegen-
+   Fußsektion, all Quiet-Rows — stays blur-free (near-opaque glass gradient +
+   edge + shadow carries them).
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* The KPI row is a boxless editorial summary strip (Tailwind hairlines) — no
-   glass surface here (see docs/research/ai-design-tells.md §1). */
-
-/* ── „Wartet auf Sie"-Band hero — the ONE frosted „jetzt handeln"-surface ───── */
-html[data-lg][data-lg-screen='termine'] .tm-wartet .tm-detail {
+/* ── Der EINE Frost: das nächste/erste Dossier ──────────────────────────────── */
+html[data-lg][data-lg-screen='termine'] .tm-detail.tm-frost {
   background: var(--lg-glass);
   -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
   backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
   border: 1px solid var(--lg-edge);
   box-shadow: var(--lg-shadow-panel), inset 0 1px 0 var(--lg-edge-strong);
 }
-html[data-lg][data-lg-screen='termine'].dark .tm-wartet .tm-detail {
+html[data-lg][data-lg-screen='termine'].dark .tm-detail.tm-frost {
   border-color: var(--lg-hairline);
 }
 
-/* ── Rail calendar card + mobile disclosure — raised glass, NO blur (secondary) ── */
-html[data-lg][data-lg-screen='termine'] .tm-rail-card,
-html[data-lg][data-lg-screen='termine'] .tm-rail-details {
+/* ── Alle anderen Panels — solide raised, KEIN Blur ─────────────────────────── */
+html[data-lg][data-lg-screen='termine'] .tm-detail:not(.tm-frost),
+html[data-lg][data-lg-screen='termine'] .tm-frist {
   background: var(--lg-glass-raised);
   border: 1px solid var(--lg-edge);
   box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
 }
-html[data-lg][data-lg-screen='termine'].dark .tm-rail-card,
-html[data-lg][data-lg-screen='termine'].dark .tm-rail-details {
+html[data-lg][data-lg-screen='termine'].dark .tm-detail:not(.tm-frost),
+html[data-lg][data-lg-screen='termine'].dark .tm-frist {
   border-color: var(--lg-hairline);
 }
 
-/* ── Inline agenda accordion detail — raised glass card, NO blur. A soft inset
-   wash melted into the list (user: „элементы потухают"); the expanded surface
-   must SEPARATE (figure-ground), same recipe as the rail card. ─────────────── */
-html[data-lg][data-lg-screen='termine'] .tm-agenda .tm-detail {
-  background: var(--lg-glass-raised);
-  border: 1px solid var(--lg-edge);
-  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
-}
-html[data-lg][data-lg-screen='termine'].dark .tm-agenda .tm-detail {
-  border-color: var(--lg-hairline);
-}
-
-/* ── Agenda rows — soft glass hover/open wash (base bg-surface-muted is
-   swallowed by the ambient glass field, so lift it onto the --lg-* vocabulary) ── */
-html[data-lg][data-lg-screen='termine'] .tm-agenda-row {
-  transition: background 0.2s ease;
-}
-html[data-lg][data-lg-screen='termine'] .tm-agenda-row:hover,
-html[data-lg][data-lg-screen='termine'] .tm-agenda-row.is-open {
-  background: var(--lg-glass-soft);
-}
-
-/* ── Sub-surfaces inside the detail — softer frosted insets ─────────────────── */
-/* Vorbereitung checklist card. */
-html[data-lg][data-lg-screen='termine'] .prep-card {
-  background: var(--lg-glass-soft);
-  border: 1px solid var(--lg-hairline);
-  box-shadow: inset 0 1px 0 var(--lg-edge);
-}
-
-/* Datenminimierungs-Quittung after the §17 confirm — mint success sub-surface.
-   Screen-gated, so the assistant/Dashboard `.vr-card.lg-value-receipt` (styled
-   in assistent-liquid-glass.css) stays untouched. */
+/* ── Datenminimierungs-Quittung nach dem §17-Confirm — Mint-Sub-Surface.
+   Screen-gated, sodass die Assistent-/Dashboard-`.vr-card` unberührt bleibt. ── */
 html[data-lg][data-lg-screen='termine'] .vr-card {
   background: var(--lg-mint);
   border: 1px solid var(--lg-mint-border);
@@ -92,80 +55,18 @@ html[data-lg][data-lg-screen='termine'].dark .vr-card {
   box-shadow: var(--lg-shadow-card);
 }
 
-/* ── In-toolbar search — inset frosted pill (shared `.vg-search-input`, matches
-   the core input recipe + the /vorgaenge treatment; focus ring left intact) ── */
-html[data-lg][data-lg-screen='termine'] .vg-search-input {
-  border: 1px solid transparent;
-  background: linear-gradient(180deg, rgba(15, 61, 46, 0.05), rgba(15, 61, 46, 0.03));
-  box-shadow: inset 0 1.5px 3px rgba(15, 61, 46, 0.08), inset 0 0 0 1px rgba(15, 61, 46, 0.05);
-}
-html[data-lg][data-lg-screen='termine'].dark .vg-search-input {
-  background: rgba(255, 255, 255, 0.05);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-}
-
-/* ── Mobile preamble collapse (mobile-comfort Zone B) ────────────────────────
-   Pull the KPI strip into one compact scrollable hairline row, the filter tabs
-   into a single horizontally scrollable line (hidden scrollbar, still keyboard-
-   reachable — chips are focusable buttons the browser scrolls into view), and
-   shrink the head so the first Termin clears the fold on a phone. Layout only,
-   no text colours; nothing below 768px leaks into the desktop layout. */
-@media (max-width: 767px) {
-  html[data-lg][data-lg-screen='termine'] .gt-page-head {
-    margin-bottom: 12px;
-  }
-  html[data-lg][data-lg-screen='termine'] .gt-page-head h1 {
-    font-size: 23px;
-  }
-  html[data-lg][data-lg-screen='termine'] .gt-page-head .sub {
-    font-size: 13px;
-  }
-
-  html[data-lg][data-lg-screen='termine'] [data-testid='termine-kennzahl-strip'] {
-    flex-direction: row;
-    flex-wrap: nowrap;
-    gap: 0;
-    overflow-x: auto;
-    margin-bottom: 14px;
-    scrollbar-width: none;
-  }
-  html[data-lg][data-lg-screen='termine']
-    [data-testid='termine-kennzahl-strip']::-webkit-scrollbar {
-    display: none;
-  }
-  html[data-lg][data-lg-screen='termine']
-    [data-testid='termine-kennzahl-strip']
-    > div {
-    flex: 0 0 auto;
-    justify-content: center;
-    padding: 8px 16px 8px 0;
-    border-top: 0;
-  }
-  html[data-lg][data-lg-screen='termine']
-    [data-testid='termine-kennzahl-strip']
-    > div
-    + div {
-    border-top: 0;
-    border-left: 1px solid var(--border);
-    padding-left: 16px;
-  }
-
-  html[data-lg][data-lg-screen='termine'] .tm-toolbar {
-    gap: 10px;
-  }
-  html[data-lg][data-lg-screen='termine'] .tm-toolbar .tab-chips {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    scrollbar-width: none;
-    padding-block: 4px;
-    margin-block: -4px;
-  }
-  html[data-lg][data-lg-screen='termine']
-    .tm-toolbar
-    .tab-chips::-webkit-scrollbar {
-    display: none;
-  }
-  html[data-lg][data-lg-screen='termine'] .tm-toolbar .tab-chips .chip {
-    flex: 0 0 auto;
+/* ── Reflow bei schmalen Breiten (WCAG 1.4.10): die langen primären CTA-Labels
+   („In einem Besuch erledigen" / „Prüfen und einreichen") brechen sonst nicht um
+   (`.btn` trägt `white-space: nowrap` aus der FROZEN prototype-v2.css) und
+   sprengen bei 320px die schmale Inhaltsspalte (60px Datum + 18px Rail + Gaps).
+   Screen-gescoped umbrechen lassen, Höhe auto, Tap-Target ≥44px erhalten. `.btn`
+   bleibt app-weit unverändert. ─────────────────────────────────────────────── */
+@media (max-width: 540px) {
+  html[data-lg][data-lg-screen='termine'] .tm-detail .btn,
+  html[data-lg][data-lg-screen='termine'] .tm-frist .btn {
+    white-space: normal;
+    height: auto;
+    min-height: 44px;
+    padding-block: 9px;
   }
 }

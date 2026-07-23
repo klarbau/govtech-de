@@ -4167,44 +4167,15 @@
   },
   "termine": {
     "title": "المواعيد",
-    "subtitle": "مواعيد يتولّى النظام الاهتمام بها.",
-    "wartet": {
-      "titel": "بانتظار إجرائك",
-      "hint": "تحتاج هذه العناصر الآن إلى تأكيدك."
-    },
     "agenda": {
-      "titel": "القادم",
       "heute": "اليوم",
-      "morgen": "غداً",
-      "leer": "لا شيء قادم — أنت على اطّلاع بكل شيء."
+      "morgen": "غداً"
     },
     "rail": {
-      "titel": "التقويم",
       "vergangen_link": "عرض المواعيد السابقة"
     },
-    "kpi": {
-      "naechster_termin": "الموعد التالي",
-      "strip_label": "مؤشرات المواعيد",
-      "offene_fristen": "مواعيد نهائية مفتوحة",
-      "bestaetigte": "مواعيد مؤكَّدة",
-      "warten": "في انتظار الرد",
-      "kein_termin": "لا يوجد موعد",
-      "offene_fristen_sub": "يلزم اتخاذ إجراء",
-      "bestaetigte_sub": "خلال الثلاثين يومًا القادمة",
-      "warten_sub": "مواعيد قيد التوضيح"
-    },
-    "tabs": {
-      "alle": "الكل",
-      "termine": "المواعيد",
-      "fristen": "المواعيد النهائية",
-      "erinnerungen": "التذكيرات",
-      "vergangen": "الماضية"
-    },
     "toolbar": {
-      "suche_placeholder": "ابحث في المواعيد أو الجهات",
-      "suche_label": "البحث في المواعيد",
-      "export": "تصدير التقويم",
-      "filter": "تصفية"
+      "export": "تصدير إلى التقويم"
     },
     "hero": {
       "tag": "محجوز لك",
@@ -4239,46 +4210,6 @@
     "bestaetigen": {
       "toast_error": "فشل التأكيد — يُرجى المحاولة مرة أخرى."
     },
-    "calendar": {
-      "prev": "الشهر السابق",
-      "next": "الشهر التالي",
-      "label": "تقويم شهري",
-      "weekday_long": {
-        "mo": "الإثنين",
-        "di": "الثلاثاء",
-        "mi": "الأربعاء",
-        "do": "الخميس",
-        "fr": "الجمعة",
-        "sa": "السبت",
-        "so": "الأحد"
-      },
-      "weekday_short": {
-        "mo": "إثنين",
-        "di": "ثلاثاء",
-        "mi": "أربعاء",
-        "do": "خميس",
-        "fr": "جمعة",
-        "sa": "سبت",
-        "so": "أحد"
-      },
-      "day_aria": "{datum}{events}",
-      "day_events_suffix": " — {count, plural, zero {لا مواعيد} one {موعد واحد} two {موعدان} few {# مواعيد} many {# موعدًا} other {# موعد}}",
-      "day_events_breakdown": {
-        "termine": "{count, plural, zero {لا مواعيد} one {موعد واحد} two {موعدان} few {# مواعيد} many {# موعدًا} other {# موعد}}",
-        "fristen": "{count, plural, zero {لا مواعيد نهائية} one {موعد نهائي واحد} two {موعدان نهائيان} few {# مواعيد نهائية} many {# موعدًا نهائيًا} other {# موعد نهائي}}",
-        "erinnerungen": "{count, plural, zero {لا تذكيرات} one {تذكير واحد} two {تذكيران} few {# تذكيرات} many {# تذكيرًا} other {# تذكير}}"
-      },
-      "quittung_hint": "مواعيدك في لمحة"
-    },
-    "filter": {
-      "title": "تصفية",
-      "behoerdentermine": "مواعيد الجهات الرسمية",
-      "erinnerungen": "التذكيرات والمواعيد النهائية",
-      "buchungen": "الحجوزات",
-      "abgeschlossen": "مكتملة",
-      "vergangene_zeigen": "عرض الماضية والملغاة",
-      "vergangene_ausblenden": "إخفاء الماضية والملغاة"
-    },
     "row": {
       "details_cta": "التفاصيل",
       "zum_vorgang_cta": "إلى المعاملة",
@@ -4299,17 +4230,6 @@
       "abgesagt": "مُلغى",
       "erledigt": "منجز",
       "wartet": "في انتظار التأكيد"
-    },
-    "marker": {
-      "erinnerung": "تذكير"
-    },
-    "auswahl": {
-      "label": "محدَّد: {datum}",
-      "aufheben": "إلغاء التحديد"
-    },
-    "alle_anzeigen": {
-      "show": "عرض المواعيد المكتملة",
-      "hide": "إخفاء المواعيد المكتملة"
     },
     "detail": {
       "status_label": "الحالة: {status}",
@@ -4333,15 +4253,6 @@
       "toast_error": "تعذّر تأجيل الموعد — يُرجى المحاولة مرة أخرى.",
       "confirm": "إعادة الجدولة إلى هذا الموعد"
     },
-    "naechster_schritt": {
-      "title": "الخطوة التالية",
-      "untertitel": "كيف تستعد لموعدك.",
-      "kein_termin": "لا يوجد موعد مفتوح",
-      "vorerinnerung_titel": "خصّص وقتًا كافيًا",
-      "vorerinnerung_text": "يُرجى الحضور قبل موعدك بـ 10–15 دقيقة.",
-      "storno_titel": "لا يمكنك الحضور؟",
-      "storno_text": "يمكنك إلغاء موعدك أو إعادة جدولته عبر الإنترنت حتى 48 ساعة قبله."
-    },
     "vorbereitung": {
       "reisepass": "أحضر جواز السفر",
       "title": "استعد جيدًا لموعدك",
@@ -4351,7 +4262,9 @@
       "meldung": "أحضر تأكيد المؤجّر (Wohnungsgeberbestätigung)",
       "versicherungskarte": "جهّز بطاقة التأمين الصحي",
       "unterlagen_pruefen": "تحقّق من المستندات ذات الصلة",
-      "fragen_notieren": "دوّن أسئلتك"
+      "fragen_notieren": "دوّن أسئلتك",
+      "antrag_vorausgefuellt": "الطلب معبَّأ مسبقًا من بياناتك الأساسية (Stammdaten)",
+      "checkin_vorbereitet": "تجهيز تسجيل الوصول (رقم الحجز)"
     },
     "fristen": {
       "title": "المواعيد النهائية باختصار",
@@ -4377,7 +4290,6 @@
     },
     "error": "تعذّر تحميل المواعيد.",
     "retry": "إعادة المحاولة",
-    "uhr_dauer": "{zeit} ({dauer} دقيقة)",
     "zeit_range": "{range}",
     "action": {
       "bestaetigen": "تأكيد",
@@ -4390,33 +4302,68 @@
       "abgesagt": "مُلغى",
       "vorschlag": "مُقترَح"
     },
-    "cal": {
-      "legend": {
-        "titel": "مفتاح الرموز",
-        "termine": "المواعيد",
-        "fristen": "المواعيد النهائية",
-        "erinnerungen": "التذكيرات",
-        "mehrere": "إدخالات متعددة"
-      }
+    "these": {
+      "kontakte": "{count, plural, zero {لا مواعيد} one {موعد واحد} two {موعدان} few {# مواعيد} many {# موعدًا} other {# موعد}} خلال الأسبوعين القادمين.",
+      "behoerdengaenge": "{count, plural, zero {لا شيء منها زيارة إلى جهة رسمية.} one {واحد منها زيارة إلى جهة رسمية.} two {كلاهما زيارة إلى جهة رسمية.} other {# منها زيارات إلى جهات رسمية.}}",
+      "keine_kontakte": "لا توجد زيارة إلى جهة رسمية خلال الأسبوعين القادمين.",
+      "buendelung": "يمكن إنجاز كلتا الزيارتين الرسميتين في زيارة واحدة.",
+      "frist_einklick": "يُنجَز موعد نهائي واحد بنقرة واحدة.",
+      "naechster": "الموعد التالي: {betreff} في {datum}."
     },
-    "spur": {
-      "termine_titel": "مواعيد يتولّى النظام الاهتمام بها",
-      "termine_leer": "لا توجد مواعيد قادمة حاليًا.",
-      "fristen_titel": "مواعيد نهائية عليك متابعتها",
-      "fristen_leer": "لا توجد مواعيد نهائية مفتوحة."
+    "ansicht": {
+      "anstehend": "القادمة",
+      "vergangen": "الماضية",
+      "aria": "الفترة الزمنية"
     },
-    "liste": {
-      "anstehende_titel": "المواعيد القادمة",
-      "alle_termine": "عرض كل المواعيد",
-      "alle_fristen": "عرض كل المواعيد النهائية",
-      "erinnerungen_titel": "التذكيرات"
+    "dossier": {
+      "warum_persoenlich_lead": "لماذا حضوريًا:",
+      "ohne_anfahrt_lead": "دون تنقّل:",
+      "ohne_anfahrt_video": "موعد عبر الفيديو من المنزل. يصلك رابط الانضمام عبر البريد الإلكتروني قبل 24 ساعة.",
+      "ohne_anfahrt_telefon": "موعد عبر الهاتف. سيتم الاتصال بك في الوقت المتفق عليه.",
+      "prep_system": "جهّزه النظام",
+      "prep_buerger": "تُحضِر معك"
     },
-    "weitere": {
-      "title": "مواعيد وتذكيرات أخرى"
+    "meta": {
+      "bestaetigt": "مؤكَّد",
+      "wartet_bestaetigung": "بانتظار تأكيدك",
+      "privat": "خاص",
+      "laeuft_ohne_sie": "يجري دون تدخّلك",
+      "vorbereitung_auto": "يبدأ التحضير تلقائيًا"
     },
-    "fristen_offen": "{count, plural, zero {لا مواعيد نهائية مفتوحة} one {موعد نهائي مفتوح واحد} two {موعدان نهائيان مفتوحان} few {# مواعيد نهائية مفتوحة} many {# موعدًا نهائيًا مفتوحًا} other {# موعد نهائي مفتوح}}",
-    "frist_praefix": "الموعد النهائي: {datum}",
-    "faellig_praefix": "مستحق في: {datum}"
+    "quiet": {
+      "privat_note": "{ort} — حجز خاص، لا جهة رسمية معنية.",
+      "laeuft_ohne_sie_note": "{behoerde} — يُخصَم تلقائيًا بالخصم المباشر عبر SEPA، للعلم فقط.",
+      "vorbereitung_note": "قبل نحو ثمانية أسابيع، يذكّرك النظام ويجهّز المستندات التي يُرجَّح أن تحتاجها. أما المستندات المطلوبة نهائيًا فتقرّرها الجهة الرسمية في كل حالة على حدة.",
+      "wartet_note": "{behoerde} — يسقط إذا أنجزت كلا الأمرين في زيارة واحدة."
+    },
+    "warum": {
+      "lea_aufenthaltstitel": "لإصدار تصريح الإقامة الإلكتروني الجديد (elektronischer Aufenthaltstitel) تُؤخذ بصماتك في المكان (§ 78 Abs. 3 AufenthG)."
+    },
+    "buendelung": {
+      "lead": "يقترح النظام:",
+      "text": "موعدك «{spaeter_betreff}» في {spaeter_datum} يقع في المبنى نفسه ({wartebereich}). يمكن إنجاز الأمرين في زيارة واحدة في {frueher_datum}.",
+      "cta_zusammenlegen": "إنجازهما في زيارة واحدة",
+      "cta_getrennt": "الإبقاء عليهما منفصلين",
+      "fineprint": "[MOCK] سيُنقَل موعدك اللاحق إلى {frueher_datum}، {zeit} ويُؤكَّد. في هذا العرض التوضيحي لا تُبلَّغ الجهة الرسمية تلقائيًا.",
+      "toast_success": "كلا الأمرين في زيارة واحدة في {datum}.",
+      "toast_error": "فشل الدمج — يُرجى المحاولة مرة أخرى.",
+      "aria_done": "تم تحديد الموعدين في {datum}.",
+      "aria_getrennt": "تم رفض الاقتراح — يبقى الموعدان منفصلين."
+    },
+    "frist": {
+      "lead": "مستحق خلال {tage} أيام. تحتاج {behoerde} إلى {kategorien}. تُصرّح بالإرسال عبر eID الخاص بك — وقبل ذلك ترى بدقّة أيّ البيانات ستُرسَل.",
+      "cta_pruefen_einreichen": "المراجعة والإرسال",
+      "zum_vorgang": "إلى المعاملة",
+      "toast_success": "تم إرسال المستند — التأكيد موجود في صندوق الوارد لديك.",
+      "toast_error": "فشل الإرسال — يُرجى المحاولة مرة أخرى.",
+      "aria_done": "تم إرسال المستند."
+    },
+    "gap_ruhig": "{wochen, plural, zero {أسابيع هادئة} one {أسبوع هادئ واحد} two {أسبوعان هادئان} few {# أسابيع هادئة} many {# أسبوعًا هادئًا} other {# أسبوع هادئ}} — لا شيء لتفعله. إذا تغيّر شيء، سنُعلمك.",
+    "spine_end": "لا شيء مُخطَّط بعد ذلك.",
+    "leer": {
+      "titel": "لا شيء قادم",
+      "text": "أنت على اطّلاع بكل شيء. إذا تغيّر شيء، سنُعلمك."
+    }
   },
   "steuer": {
     "title": "الضرائب",

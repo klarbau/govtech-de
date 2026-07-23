@@ -12,11 +12,13 @@
     "status": "bestaetigt",
     "betreff": "Aufenthaltstitel verlängern",
     "buchungsreferenz": "[MOCK] LEA-2026-04412",
+    "warum_persoenlich_i18n_key": "termine.warum.lea_aufenthaltstitel",
     "kategorie": "behoerdentermin",
     "vorbereitung": [
+      { "label_i18n_key": "termine.vorbereitung.antrag_vorausgefuellt", "done": true, "wer": "system" },
+      { "label_i18n_key": "termine.vorbereitung.checkin_vorbereitet", "done": true, "wer": "system" },
       { "label_i18n_key": "termine.vorbereitung.reisepass" },
       { "label_i18n_key": "termine.vorbereitung.alter_titel" },
-      { "label_i18n_key": "termine.vorbereitung.biometrie" },
       { "label_i18n_key": "termine.vorbereitung.gebuehr" }
     ]
   },

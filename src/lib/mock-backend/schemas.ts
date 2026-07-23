@@ -626,6 +626,16 @@ export const vorgangSchema = z
   })
   .passthrough();
 
+/** Vorbereitungs-Checklisten-Item (`termine-uebergaben.md` § 9.1). Passthrough
+ *  für vorwärtskompatible Zusatzfelder. */
+export const terminVorbereitungItemSchema = z
+  .object({
+    label_i18n_key: z.string(),
+    done: z.boolean().optional(),
+    wer: z.enum(['system', 'buerger']).optional(),
+  })
+  .passthrough();
+
 export const terminSchema = z
   .object({
     id: z.string(),
@@ -638,6 +648,9 @@ export const terminSchema = z
     }),
     status: z.enum(['vorgeschlagen', 'gebucht', 'bestaetigt', 'abgesagt', 'verschoben']),
     betreff: z.string(),
+    // termine-uebergaben.md § 9.1 — additive optionale Felder.
+    vorbereitung: z.array(terminVorbereitungItemSchema).optional(),
+    warum_persoenlich_i18n_key: z.string().optional(),
   })
   .passthrough();
 
@@ -1223,6 +1236,8 @@ export const reminderSchema = z
     // Convenience-Pass-1 (§A3 Owner-Filter / §A1 overdue-handled).
     owner_persona_id: z.string().optional(),
     erledigt: z.boolean().optional(),
+    // termine-uebergaben.md § 9.1 — ruhige Zeitstrahl-Einordnung.
+    autopilot_hinweis: z.enum(['automatisch', 'vorbereitung']).optional(),
   })
   .passthrough();
 
@@ -1370,6 +1385,14 @@ export const aufenthaltFristNudgeDismissedBucketSchema = z.record(z.string());
 
 /** Bucket `govtech-de:v1:aufenthalt-frist-nudge:snoozed-until` — Record<PersonaId, ISO-Datum>. */
 export const aufenthaltFristNudgeSnoozedBucketSchema = z.record(z.string());
+
+/**
+ * Bucket `govtech-de:v1:termin-bundling:dismissed` (`termine-uebergaben.md`
+ * § 7.4/§ 9.3) — `Record<PersonaId, string[]>`: Liste dismisster später-Termin-IDs
+ * je Persona (persona-boolean wäre falsch — es würde jeden künftigen Vorschlag
+ * unterdrücken).
+ */
+export const terminBundlingDismissedBucketSchema = z.record(z.array(z.string()));
 
 // Compile-time guard: zod-Enum und TS-Union (`DashboardSortMode`) identisch.
 import type { DashboardSortMode as _DashboardSortModeTs } from '@/types/dashboard';

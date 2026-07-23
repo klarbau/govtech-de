@@ -4167,44 +4167,15 @@
   },
   "termine": {
     "title": "Appointments",
-    "subtitle": "Appointments the system takes care of for you.",
-    "wartet": {
-      "titel": "Waiting on you",
-      "hint": "These items now need your confirmation."
-    },
     "agenda": {
-      "titel": "Upcoming",
       "heute": "Today",
-      "morgen": "Tomorrow",
-      "leer": "Nothing upcoming — you're all caught up."
+      "morgen": "Tomorrow"
     },
     "rail": {
-      "titel": "Calendar",
       "vergangen_link": "View past appointments"
     },
-    "kpi": {
-      "naechster_termin": "Next appointment",
-      "strip_label": "Appointment statistics",
-      "offene_fristen": "Open deadlines",
-      "bestaetigte": "Confirmed appointments",
-      "warten": "Awaiting response",
-      "kein_termin": "No appointment",
-      "offene_fristen_sub": "Action needed",
-      "bestaetigte_sub": "In the next 30 days",
-      "warten_sub": "Appointments being clarified"
-    },
-    "tabs": {
-      "alle": "All",
-      "termine": "Appointments",
-      "fristen": "Deadlines",
-      "erinnerungen": "Reminders",
-      "vergangen": "Past"
-    },
     "toolbar": {
-      "suche_placeholder": "Search appointments or authorities",
-      "suche_label": "Search appointments",
-      "export": "Export calendar",
-      "filter": "Filter"
+      "export": "Export to calendar"
     },
     "hero": {
       "tag": "Reserved for you",
@@ -4239,46 +4210,6 @@
     "bestaetigen": {
       "toast_error": "Confirmation failed — please try again."
     },
-    "calendar": {
-      "prev": "Previous month",
-      "next": "Next month",
-      "label": "Monthly calendar",
-      "weekday_long": {
-        "mo": "Monday",
-        "di": "Tuesday",
-        "mi": "Wednesday",
-        "do": "Thursday",
-        "fr": "Friday",
-        "sa": "Saturday",
-        "so": "Sunday"
-      },
-      "weekday_short": {
-        "mo": "Mon",
-        "di": "Tue",
-        "mi": "Wed",
-        "do": "Thu",
-        "fr": "Fri",
-        "sa": "Sat",
-        "so": "Sun"
-      },
-      "day_aria": "{datum}{events}",
-      "day_events_suffix": " — {count, plural, =1 {1 appointment} other {# appointments}}",
-      "day_events_breakdown": {
-        "termine": "{count, plural, =1 {1 appointment} other {# appointments}}",
-        "fristen": "{count, plural, =1 {1 deadline} other {# deadlines}}",
-        "erinnerungen": "{count, plural, =1 {1 reminder} other {# reminders}}"
-      },
-      "quittung_hint": "Your appointments at a glance"
-    },
-    "filter": {
-      "title": "Filter",
-      "behoerdentermine": "Authority appointments",
-      "erinnerungen": "Reminders & deadlines",
-      "buchungen": "Bookings",
-      "abgeschlossen": "Completed",
-      "vergangene_zeigen": "Show past & cancelled",
-      "vergangene_ausblenden": "Hide past & cancelled"
-    },
     "row": {
       "details_cta": "Details",
       "zum_vorgang_cta": "Go to case",
@@ -4299,17 +4230,6 @@
       "abgesagt": "Cancelled",
       "erledigt": "Done",
       "wartet": "Awaiting confirmation"
-    },
-    "marker": {
-      "erinnerung": "Reminder"
-    },
-    "auswahl": {
-      "label": "Selected: {datum}",
-      "aufheben": "Clear selection"
-    },
-    "alle_anzeigen": {
-      "show": "Show completed appointments",
-      "hide": "Hide completed appointments"
     },
     "detail": {
       "status_label": "Status: {status}",
@@ -4333,15 +4253,6 @@
       "toast_error": "The appointment could not be rescheduled — please try again.",
       "confirm": "Reschedule to this appointment"
     },
-    "naechster_schritt": {
-      "title": "Next step",
-      "untertitel": "How to prepare for your appointment.",
-      "kein_termin": "No open appointment",
-      "vorerinnerung_titel": "Allow enough time",
-      "vorerinnerung_text": "Please arrive 10–15 minutes before your appointment.",
-      "storno_titel": "Cannot attend?",
-      "storno_text": "You can cancel or reschedule your appointment online up to 48 hours in advance."
-    },
     "vorbereitung": {
       "reisepass": "Bring your passport",
       "title": "Well prepared for your appointment",
@@ -4351,7 +4262,9 @@
       "meldung": "Bring the landlord confirmation (Wohnungsgeberbestätigung)",
       "versicherungskarte": "Have your insurance card ready",
       "unterlagen_pruefen": "Check the relevant documents",
-      "fragen_notieren": "Note down your questions"
+      "fragen_notieren": "Note down your questions",
+      "antrag_vorausgefuellt": "Application pre-filled from your master data (Stammdaten)",
+      "checkin_vorbereitet": "Check-in prepared (booking reference)"
     },
     "fristen": {
       "title": "Deadlines at a glance",
@@ -4377,7 +4290,6 @@
     },
     "error": "Appointments could not be loaded.",
     "retry": "Try again",
-    "uhr_dauer": "{zeit} ({dauer} min)",
     "zeit_range": "{range}",
     "action": {
       "bestaetigen": "Confirm",
@@ -4390,33 +4302,68 @@
       "abgesagt": "Cancelled",
       "vorschlag": "Proposed"
     },
-    "cal": {
-      "legend": {
-        "titel": "Legend",
-        "termine": "Appointments",
-        "fristen": "Deadlines",
-        "erinnerungen": "Reminders",
-        "mehrere": "Multiple entries"
-      }
+    "these": {
+      "kontakte": "{count, plural, =1 {One appointment} other {# appointments}} in the next two weeks.",
+      "behoerdengaenge": "{count, plural, =0 {None of them is an authority visit.} =1 {One of them is an authority visit.} other {# of them are authority visits.}}",
+      "keine_kontakte": "No authority visit is due in the next two weeks.",
+      "buendelung": "Both authority visits can be handled in a single visit.",
+      "frist_einklick": "One deadline can be handled with a single click.",
+      "naechster": "Next appointment: {betreff} on {datum}."
     },
-    "spur": {
-      "termine_titel": "Appointments the system takes care of for you",
-      "termine_leer": "No upcoming appointments right now.",
-      "fristen_titel": "Deadlines you need to keep an eye on",
-      "fristen_leer": "No open deadlines."
+    "ansicht": {
+      "anstehend": "Upcoming",
+      "vergangen": "Past",
+      "aria": "Time range"
     },
-    "liste": {
-      "anstehende_titel": "Upcoming appointments",
-      "alle_termine": "Show all appointments",
-      "alle_fristen": "Show all deadlines",
-      "erinnerungen_titel": "Reminders"
+    "dossier": {
+      "warum_persoenlich_lead": "Why in person:",
+      "ohne_anfahrt_lead": "No travel needed:",
+      "ohne_anfahrt_video": "Video appointment from home. The join link arrives by email 24 hours in advance.",
+      "ohne_anfahrt_telefon": "Phone appointment. You will be called at the agreed time.",
+      "prep_system": "Prepared by the system",
+      "prep_buerger": "You bring"
     },
-    "weitere": {
-      "title": "More appointments & reminders"
+    "meta": {
+      "bestaetigt": "Confirmed",
+      "wartet_bestaetigung": "Awaiting your confirmation",
+      "privat": "Private",
+      "laeuft_ohne_sie": "Runs without you",
+      "vorbereitung_auto": "Preparation starts automatically"
     },
-    "fristen_offen": "{count, plural, =0 {No open deadlines} =1 {1 open deadline} other {# open deadlines}}",
-    "frist_praefix": "Deadline: {datum}",
-    "faellig_praefix": "Due: {datum}"
+    "quiet": {
+      "privat_note": "{ort} — private booking, no authority involved.",
+      "laeuft_ohne_sie_note": "{behoerde} — collected automatically by SEPA direct debit, for your information only.",
+      "vorbereitung_note": "About eight weeks in advance, the system reminds you and prepares the documents likely to be needed. The authority decides case by case which proofs are ultimately required.",
+      "wartet_note": "{behoerde} — not needed if you handle both matters in a single visit."
+    },
+    "warum": {
+      "lea_aufenthaltstitel": "For the new electronic residence permit (elektronischer Aufenthaltstitel), your fingerprints are taken on site (§ 78 Abs. 3 AufenthG)."
+    },
+    "buendelung": {
+      "lead": "The system suggests:",
+      "text": "Your appointment “{spaeter_betreff}” on {spaeter_datum} takes place in the same building ({wartebereich}). Both matters can be handled in a single visit on {frueher_datum}.",
+      "cta_zusammenlegen": "Handle in one visit",
+      "cta_getrennt": "Keep separate",
+      "fineprint": "[MOCK] Your later appointment will be moved to {frueher_datum}, {zeit} and confirmed. In this demo, the authority is not notified automatically.",
+      "toast_success": "Both matters in a single visit on {datum}.",
+      "toast_error": "Combining failed — please try again.",
+      "aria_done": "Both appointments moved to {datum}.",
+      "aria_getrennt": "Suggestion dismissed — appointments remain separate."
+    },
+    "frist": {
+      "lead": "Due in {tage} days. {behoerde} needs {kategorien}. You authorise the transfer with your eID — beforehand you see exactly which data is transmitted.",
+      "cta_pruefen_einreichen": "Review and submit",
+      "zum_vorgang": "Go to case",
+      "toast_success": "Proof submitted — the confirmation is in your inbox.",
+      "toast_error": "Transmission failed — please try again.",
+      "aria_done": "Proof submitted."
+    },
+    "gap_ruhig": "{wochen, plural, =1 {One quiet week} other {# quiet weeks}} — nothing to do. If anything changes, we'll let you know.",
+    "spine_end": "Nothing is scheduled after that.",
+    "leer": {
+      "titel": "Nothing upcoming",
+      "text": "You're all caught up. If anything changes, we'll let you know."
+    }
   },
   "steuer": {
     "title": "Taxes",

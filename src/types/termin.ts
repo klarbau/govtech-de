@@ -34,6 +34,12 @@ export interface TerminVorbereitungItem {
    * Toggle-Zustand ist danach rein clientseitig (`redesign termine-green § 5`).
    */
   done?: boolean;
+  /**
+   * Wer stellt das Item bereit? (`termine-uebergaben.md` § 9.1). `'system'` =
+   * vom Autopilot vorbereitet (nur wo ehrlich belegt), `'buerger'` = vom Bürger
+   * mitzubringen. Fehlt das Feld, gilt Default `'buerger'` (Bestandsdaten).
+   */
+  wer?: 'system' | 'buerger';
 }
 
 export interface Termin {
@@ -84,6 +90,13 @@ export interface Termin {
    * 'bmg_17'). Steuert, welcher i18n-Reasoning-String gerendert wird.
    */
   reasoning_typ?: 'bmg_17';
+
+  /**
+   * i18n-Key der „Warum persönlich:"-Zeile (`termine-uebergaben.md` § 9.1,
+   * analog `vorbereitung[].label_i18n_key`). Nur setzen, wo begründbar; fehlt
+   * es, entfällt die Zeile ersatzlos.
+   */
+  warum_persoenlich_i18n_key?: string;
 }
 
 /** Kategorie eines Reminders (Redesign-Termine). */
@@ -113,4 +126,11 @@ export interface Reminder {
    * `true`, gilt die Frist als bereits abgearbeitet — überfällig aber gehandhabt.
    */
   erledigt?: boolean;
+  /**
+   * Ruhige Einordnung im Zeitstrahl (`termine-uebergaben.md` § 5.3).
+   * `'automatisch'` = läuft ohne Zutun (z. B. SEPA-Lastschrift, setzt
+   * bestehendes Mandat voraus), `'vorbereitung'` = System bereitet vor.
+   * Fehlt → normale Erinnerung.
+   */
+  autopilot_hinweis?: 'automatisch' | 'vorbereitung';
 }

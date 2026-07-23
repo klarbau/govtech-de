@@ -369,6 +369,16 @@ RegisterPort        → mock only, permanently            | (sovereign — NOOTS
 
 **Honesty (structural, enforced in review vs. plan §2).** `mockDestination: true` (FIT-Connect) and `sandbox: true` (VP) are emitted markers — the code cannot produce a "real Behörde"/"production trust anchor" path. TEST ≠ prod everywhere; failures are framed as the TEST sandbox / our own destination, never a real authority; no eIDAS/production-RP claim. Register reads / Bringschuld stay simulated permanently (sovereign).
 
+### Termine „Übergaben" — data-model deltas (2026-07-22)
+
+Supporting-track additions (Spec `docs/specs/termine-uebergaben.md` § 9/§ 10). Three additive **optional** type fields (no break): `TerminVorbereitungItem.wer?: 'system' | 'buerger'` (default `'buerger'` for legacy items), `Termin.warum_persoenlich_i18n_key?` (i18n key of the „Warum persönlich"-line), `Reminder.autopilot_hinweis?: 'automatisch' | 'vorbereitung'` (quiet timeline framing). Zod: `terminSchema`/`reminderSchema` extended (`terminVorbereitungItemSchema` added); both stay `.passthrough()`. `SEED_CONTENT_VERSION` 8 → 9.
+
+New persistence key `termin-bundling:dismissed` = `Record<PersonaId, string[]>` (list of dismissed later-appointment ids for the „Getrennt lassen" bundling flow). deviceLocal, persona-scoped **inside** the record — `seedForPersona` does **not** reset it (Wohngeld-Dismiss semantics; each persona only ever sees its own ids). Gate lives in `src/lib/mock-backend/termine/bundling-dismiss.ts`.
+
+New `api` methods (both `withLatency` + `ensureBooted`): `dismissTerminBundling(personaId, spaeterTerminId): Promise<void>` (additive, de-duped), `getTerminBundlingDismissed(personaId): Promise<string[]>`.
+
+Behavior change — reminder resolution: on a successful `starteVorgangSchritt` (`starteVorgangSchrittImpl` Stufe 4), every still-open reminder with the same `vorgang_id` and `frist_typ === 'nachweis'` is set `erledigt: true` (direct `write`, no throw if none, no event — the Termine view reconciles via `getReminders()`). The proof step *is* the deadline fulfilment. Generic; in the current seed only Anna-Kindergeld + Markus-Elterngeld qualify.
+
 ## Update protocol
 
 When any of the following change, this file must be updated by the responsible agent in the same review pass:

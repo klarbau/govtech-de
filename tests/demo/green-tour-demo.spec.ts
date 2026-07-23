@@ -658,22 +658,22 @@ test('DEMO - Green-Tour: Das neue grüne Design, funktional (Anna)', async ({
   await expect(
     page.getByRole('heading', { name: 'Termine', level: 1 }),
   ).toBeVisible({ timeout: 30_000 });
-  // Wait for the KPI tiles + Termindetails panel to populate.
+  // Wait for the computed thesis subline + Dossier to populate.
   await page
-    .locator('[data-testid="termine-kennzahl-strip"] > *')
+    .locator('[data-testid="termine-thesis"]')
     .first()
     .waitFor({ timeout: 12_000 })
     .catch(() => {});
   await revealPage(page);
   await page.mouse.move(cursor.x, cursor.y);
-  await beat(page, 800); // let auto-select land on the Termindetails panel
+  await beat(page, 800); // let the nearest Dossier settle into view
   await caption(
     page,
     'Termin-Autopilot',
     'Frist-gerecht gefunden und vorgemerkt — Sie bestätigen. Nie automatisch gebucht.',
   );
-  // Pan across the 4-KPI row, then push into the Termindetails panel.
-  await zoomTo(page, page.locator('[data-testid="termine-kennzahl-strip"]'), {
+  // Pan across the computed thesis subline, then push into the Dossier detail.
+  await zoomTo(page, page.locator('[data-testid="termine-thesis"]'), {
     scale: 1.24,
     ms: 1000,
     ease: EASE_PUNCH,

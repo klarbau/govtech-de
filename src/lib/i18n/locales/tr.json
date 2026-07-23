@@ -4167,44 +4167,15 @@
   },
   "termine": {
     "title": "Randevular",
-    "subtitle": "Sistemin sizin için takip ettiği randevular.",
-    "wartet": {
-      "titel": "Sizi bekliyor",
-      "hint": "Bu kayıtların şimdi onayınıza ihtiyacı var."
-    },
     "agenda": {
-      "titel": "Yaklaşan",
       "heute": "Bugün",
-      "morgen": "Yarın",
-      "leer": "Yaklaşan bir şey yok — her şey güncel."
+      "morgen": "Yarın"
     },
     "rail": {
-      "titel": "Takvim",
       "vergangen_link": "Geçmiş randevuları görüntüle"
     },
-    "kpi": {
-      "naechster_termin": "Sonraki randevu",
-      "strip_label": "Randevu göstergeleri",
-      "offene_fristen": "Açık süreler",
-      "bestaetigte": "Onaylı randevular",
-      "warten": "Yanıt bekleniyor",
-      "kein_termin": "Randevu yok",
-      "offene_fristen_sub": "İşlem gerekli",
-      "bestaetigte_sub": "Önümüzdeki 30 gün içinde",
-      "warten_sub": "Açıklığa kavuşturulacak randevular"
-    },
-    "tabs": {
-      "alle": "Tümü",
-      "termine": "Randevular",
-      "fristen": "Süreler",
-      "erinnerungen": "Hatırlatmalar",
-      "vergangen": "Geçmiş"
-    },
     "toolbar": {
-      "suche_placeholder": "Randevu veya kurum ara",
-      "suche_label": "Randevularda ara",
-      "export": "Takvimi dışa aktar",
-      "filter": "Filtre"
+      "export": "Takvime aktar"
     },
     "hero": {
       "tag": "Sizin için ayrıldı",
@@ -4239,46 +4210,6 @@
     "bestaetigen": {
       "toast_error": "Onaylama başarısız oldu — lütfen tekrar deneyin."
     },
-    "calendar": {
-      "prev": "Önceki ay",
-      "next": "Sonraki ay",
-      "label": "Aylık takvim",
-      "weekday_long": {
-        "mo": "Pazartesi",
-        "di": "Salı",
-        "mi": "Çarşamba",
-        "do": "Perşembe",
-        "fr": "Cuma",
-        "sa": "Cumartesi",
-        "so": "Pazar"
-      },
-      "weekday_short": {
-        "mo": "Pzt",
-        "di": "Sal",
-        "mi": "Çar",
-        "do": "Per",
-        "fr": "Cum",
-        "sa": "Cmt",
-        "so": "Paz"
-      },
-      "day_aria": "{datum}{events}",
-      "day_events_suffix": " — {count, plural, =1 {1 randevu} other {# randevu}}",
-      "day_events_breakdown": {
-        "termine": "{count, plural, =1 {1 randevu} other {# randevu}}",
-        "fristen": "{count, plural, =1 {1 süre} other {# süre}}",
-        "erinnerungen": "{count, plural, =1 {1 hatırlatma} other {# hatırlatma}}"
-      },
-      "quittung_hint": "Randevularınıza genel bakış"
-    },
-    "filter": {
-      "title": "Filtre",
-      "behoerdentermine": "Kurum randevuları",
-      "erinnerungen": "Hatırlatmalar ve süreler",
-      "buchungen": "Rezervasyonlar",
-      "abgeschlossen": "Tamamlanan",
-      "vergangene_zeigen": "Geçmiş ve iptal edilenleri göster",
-      "vergangene_ausblenden": "Geçmiş ve iptal edilenleri gizle"
-    },
     "row": {
       "details_cta": "Ayrıntılar",
       "zum_vorgang_cta": "İşleme git",
@@ -4299,17 +4230,6 @@
       "abgesagt": "İptal edildi",
       "erledigt": "Tamamlandı",
       "wartet": "Onay bekliyor"
-    },
-    "marker": {
-      "erinnerung": "Hatırlatma"
-    },
-    "auswahl": {
-      "label": "Seçildi: {datum}",
-      "aufheben": "Seçimi kaldır"
-    },
-    "alle_anzeigen": {
-      "show": "Tamamlanan randevuları göster",
-      "hide": "Tamamlanan randevuları gizle"
     },
     "detail": {
       "status_label": "Durum: {status}",
@@ -4333,15 +4253,6 @@
       "toast_error": "Randevu ertelenemedi — lütfen tekrar deneyin.",
       "confirm": "Bu randevuya ertele"
     },
-    "naechster_schritt": {
-      "title": "Sonraki adım",
-      "untertitel": "Randevunuza nasıl hazırlanırsınız.",
-      "kein_termin": "Açık randevu yok",
-      "vorerinnerung_titel": "Yeterince zaman ayırın",
-      "vorerinnerung_text": "Lütfen randevunuzdan 10–15 dakika önce gelin.",
-      "storno_titel": "Katılamıyor musunuz?",
-      "storno_text": "Randevunuzu 48 saat öncesine kadar çevrimiçi iptal edebilir veya erteleyebilirsiniz."
-    },
     "vorbereitung": {
       "reisepass": "Pasaportunuzu getirin",
       "title": "Randevunuza iyi hazırlanın",
@@ -4351,7 +4262,9 @@
       "meldung": "Kiraya veren onayını (Wohnungsgeberbestätigung) getirin",
       "versicherungskarte": "Sigorta kartını hazır bulundurun",
       "unterlagen_pruefen": "İlgili belgeleri kontrol edin",
-      "fragen_notieren": "Sorularınızı not edin"
+      "fragen_notieren": "Sorularınızı not edin",
+      "antrag_vorausgefuellt": "Başvuru, temel verilerinizden (Stammdaten) önceden dolduruldu",
+      "checkin_vorbereitet": "Giriş işlemi hazırlandı (rezervasyon numarası)"
     },
     "fristen": {
       "title": "Süreler özeti",
@@ -4377,7 +4290,6 @@
     },
     "error": "Randevular yüklenemedi.",
     "retry": "Tekrar dene",
-    "uhr_dauer": "{zeit} ({dauer} dk.)",
     "zeit_range": "{range}",
     "action": {
       "bestaetigen": "Onayla",
@@ -4390,33 +4302,68 @@
       "abgesagt": "İptal edildi",
       "vorschlag": "Önerildi"
     },
-    "cal": {
-      "legend": {
-        "titel": "Açıklama",
-        "termine": "Randevular",
-        "fristen": "Süreler",
-        "erinnerungen": "Hatırlatmalar",
-        "mehrere": "Birden fazla kayıt"
-      }
+    "these": {
+      "kontakte": "Önümüzdeki iki hafta içinde {count, plural, =1 {bir randevu} other {# randevu}}.",
+      "behoerdengaenge": "{count, plural, =0 {Bunların hiçbiri kurum ziyareti değil.} =1 {Bunlardan biri kurum ziyareti.} other {Bunlardan # tanesi kurum ziyareti.}}",
+      "keine_kontakte": "Önümüzdeki iki hafta içinde kurum ziyareti yok.",
+      "buendelung": "Her iki kurum ziyareti tek bir ziyarette halledilebilir.",
+      "frist_einklick": "Bir süre tek tıklamayla halledilir.",
+      "naechster": "Sonraki randevu: {betreff} — {datum}."
     },
-    "spur": {
-      "termine_titel": "Sistemin sizin için takip ettiği randevular",
-      "termine_leer": "Şu anda yaklaşan randevu yok.",
-      "fristen_titel": "Takip etmeniz gereken süreler",
-      "fristen_leer": "Açık süre yok."
+    "ansicht": {
+      "anstehend": "Yaklaşan",
+      "vergangen": "Geçmiş",
+      "aria": "Zaman aralığı"
     },
-    "liste": {
-      "anstehende_titel": "Yaklaşan randevular",
-      "alle_termine": "Tüm randevuları göster",
-      "alle_fristen": "Tüm süreleri göster",
-      "erinnerungen_titel": "Hatırlatmalar"
+    "dossier": {
+      "warum_persoenlich_lead": "Neden yüz yüze:",
+      "ohne_anfahrt_lead": "Yol gerekmez:",
+      "ohne_anfahrt_video": "Evden görüntülü randevu. Katılım bağlantısı 24 saat önce e-posta ile gelir.",
+      "ohne_anfahrt_telefon": "Telefonla randevu. Kararlaştırılan saatte aranacaksınız.",
+      "prep_system": "Sistem tarafından hazırlandı",
+      "prep_buerger": "Getirecekleriniz"
     },
-    "weitere": {
-      "title": "Diğer randevular ve hatırlatmalar"
+    "meta": {
+      "bestaetigt": "Onaylandı",
+      "wartet_bestaetigung": "Onayınız bekleniyor",
+      "privat": "Özel",
+      "laeuft_ohne_sie": "Sizsiz yürüyor",
+      "vorbereitung_auto": "Hazırlık otomatik başlar"
     },
-    "fristen_offen": "{count, plural, =0 {Açık süre yok} =1 {1 açık süre} other {# açık süre}}",
-    "frist_praefix": "Süre: {datum}",
-    "faellig_praefix": "Son tarih: {datum}"
+    "quiet": {
+      "privat_note": "{ort} — özel rezervasyon, kurum söz konusu değil.",
+      "laeuft_ohne_sie_note": "{behoerde} — SEPA otomatik ödeme talimatıyla otomatik tahsil edilir, yalnızca bilginize.",
+      "vorbereitung_note": "Yaklaşık sekiz hafta önce sistem size hatırlatır ve muhtemelen gerekecek belgeleri hazırlar. Sonunda hangi belgelerin gerektiğine kurum her durumda ayrı ayrı karar verir.",
+      "wartet_note": "{behoerde} — her iki işi tek ziyarette hallederseniz gerekmez."
+    },
+    "warum": {
+      "lea_aufenthaltstitel": "Yeni elektronik oturma izni (elektronischer Aufenthaltstitel) için parmak izleriniz yerinde alınır (§ 78 Abs. 3 AufenthG)."
+    },
+    "buendelung": {
+      "lead": "Sistem öneriyor:",
+      "text": "{spaeter_datum} tarihindeki “{spaeter_betreff}” randevunuz aynı binada ({wartebereich}). Her iki iş {frueher_datum} tarihinde tek ziyarette halledilebilir.",
+      "cta_zusammenlegen": "Tek ziyarette hallet",
+      "cta_getrennt": "Ayrı tut",
+      "fineprint": "[MOCK] Sonraki randevunuz {frueher_datum}, {zeit} saatine alınır ve onaylanır. Bu demoda kurum otomatik olarak bilgilendirilmez.",
+      "toast_success": "Her iki iş {datum} tarihinde tek ziyarette.",
+      "toast_error": "Birleştirme başarısız oldu — lütfen tekrar deneyin.",
+      "aria_done": "Her iki randevu {datum} tarihine alındı.",
+      "aria_getrennt": "Öneri reddedildi — randevular ayrı kalır."
+    },
+    "frist": {
+      "lead": "{tage} gün içinde. {behoerde} şunu gerektiriyor: {kategorien}. Aktarımı eID'nizle onaylarsınız — öncesinde hangi verilerin aktarılacağını tam olarak görürsünüz.",
+      "cta_pruefen_einreichen": "İncele ve gönder",
+      "zum_vorgang": "İşleme git",
+      "toast_success": "Belge iletildi — onay, gelen kutunuzda.",
+      "toast_error": "İletim başarısız oldu — lütfen tekrar deneyin.",
+      "aria_done": "Belge iletildi."
+    },
+    "gap_ruhig": "{wochen, plural, =1 {Bir sakin hafta} other {# sakin hafta}} — yapılacak bir şey yok. Bir şey değişirse haber veririz.",
+    "spine_end": "Bundan sonrası için bir şey planlanmadı.",
+    "leer": {
+      "titel": "Yaklaşan bir şey yok",
+      "text": "Her şey güncel. Bir şey değişirse haber veririz."
+    }
   },
   "steuer": {
     "title": "Vergi",

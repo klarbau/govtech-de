@@ -388,13 +388,13 @@ test('CLEAN - Green-Tour raw capture (Anna)', async ({ page }) => {
     page.getByRole('heading', { name: 'Termine', level: 1 }),
   ).toBeVisible({ timeout: 30_000 });
   await page
-    .locator('[data-testid="termine-kennzahl-strip"] > *')
+    .locator('[data-testid="termine-thesis"]')
     .first()
     .waitFor({ timeout: 12_000 })
     .catch(() => {});
   await revealPage(page);
   await beat(page, 1000);
-  await panIf(page, page.locator('[data-testid="termine-kennzahl-strip"]'), 1300);
+  await panIf(page, page.locator('[data-testid="termine-thesis"]'), 1300);
   await panIf(page, page.locator('.tm-detail'), 1800);
 
   /* ── Szene 7 — Vorgänge: green command-center, „Nächster Schritt" ───────── */

@@ -27,7 +27,8 @@
     "vorgang_id": "vorgang-anna-aufenthaltstitel-2027-stub",
     "titel": "Unterlagen Aufenthaltstitel-Verlängerung vorbereiten",
     "datum": "@now+120d",
-    "kategorie": "erinnerung"
+    "kategorie": "erinnerung",
+    "autopilot_hinweis": "vorbereitung"
   },
   {
     "id": "reminder-anna-rundfunkbeitrag",
@@ -35,7 +36,8 @@
     "behoerde_id": "beitragsservice-koeln",
     "titel": "Rundfunkbeitrag — Abbuchung Q2",
     "datum": "@now+48d",
-    "kategorie": "erinnerung"
+    "kategorie": "erinnerung",
+    "autopilot_hinweis": "automatisch"
   },
   {
     "id": "reminder-schmidt-elterngeld-antrag",

@@ -346,6 +346,148 @@ describe('starteVorgangSchritt — Steuer-Zahlung #5 (eid_preview): Mehmet', () 
 });
 
 // ==========================================================================
+// Reminder-Resolution (termine-uebergaben.md § 10) — der Nachweis-Schritt IST
+// die Fristerfüllung → verknüpfte Nachweis-Frist wird erledigt.
+// ==========================================================================
+
+describe('starteVorgangSchritt — Reminder-Resolution (§10): Anna Kindergeld-Nachweis', () => {
+  const VG = 'vorgang-anna-kindergeld-aktualisierung-2026';
+  const STEP = 'step-kindergeld-2026-nachweis-schulbescheinigung';
+  const NACHWEIS_REMINDER = 'reminder-anna-kindergeld-nachweis'; // frist_typ 'nachweis', gleicher Vorgang
+  const FREMD_REMINDER = 'reminder-anna-aufenthaltstitel-unterlagen'; // anderer Vorgang
+
+  beforeEach(() => reseedForActivePersona('anna-petrov'));
+
+  test(
+    'verknüpfte Nachweis-Frist wird erledigt; Schritt confirmed; genau 1 Bestätigungsbrief',
+    async () => {
+      const before = (await api.getReminders()).find(
+        (r) => r.id === NACHWEIS_REMINDER,
+      );
+      expect(before).toBeDefined();
+      expect(before?.erledigt).toBeFalsy();
+
+      await api.starteVorgangSchritt(VG, STEP);
+
+      const rem = (await api.getReminders()).find((r) => r.id === NACHWEIS_REMINDER);
+      expect(rem?.erledigt).toBe(true);
+      const step = (await api.getVorgang(VG)).schritte.find((s) => s.id === STEP);
+      expect(step?.status).toBe('confirmed');
+      expect(
+        (await api.getLetters()).filter((l) => l.id === letterId(VG, STEP)).length,
+      ).toBe(1);
+    },
+    RUN_TIMEOUT,
+  );
+
+  test(
+    'idempotent: Doppel-Confirm hält die Frist erledigt und mintet keinen 2. Brief',
+    async () => {
+      await api.starteVorgangSchritt(VG, STEP);
+      await api.starteVorgangSchritt(VG, STEP);
+
+      const rem = (await api.getReminders()).find((r) => r.id === NACHWEIS_REMINDER);
+      expect(rem?.erledigt).toBe(true);
+      expect(
+        (await api.getLetters()).filter((l) => l.id === letterId(VG, STEP)).length,
+      ).toBe(1);
+    },
+    RUN_TIMEOUT,
+  );
+
+  test(
+    'Reminder mit fremder vorgang_id bleibt unberührt',
+    async () => {
+      await api.starteVorgangSchritt(VG, STEP);
+      const fremd = (await api.getReminders()).find((r) => r.id === FREMD_REMINDER);
+      expect(fremd).toBeDefined();
+      expect(fremd?.erledigt).toBeFalsy();
+    },
+    RUN_TIMEOUT,
+  );
+});
+
+describe('starteVorgangSchritt — Reminder-Resolution (§10): zahlung-Frist bleibt unberührt (Mehmet)', () => {
+  const VG = 'vg-mehmet-steuererklaerung-2024';
+  const STEP = 'step-mehmet-steuer-zahlung';
+  const ZAHLUNG_REMINDER = 'reminder-mehmet-steuer-zahlung'; // gleicher Vorgang, aber frist_typ 'zahlung'
+
+  beforeEach(() => reseedForActivePersona('mehmet-yildiz'));
+
+  test(
+    'gleicher Vorgang, aber frist_typ zahlung → NICHT erledigt (nur Nachweis-Fristen)',
+    async () => {
+      await api.starteVorgangSchritt(VG, STEP);
+
+      const rem = (await api.getReminders()).find((r) => r.id === ZAHLUNG_REMINDER);
+      expect(rem).toBeDefined();
+      expect(rem?.erledigt).toBeFalsy();
+      // Der Schritt selbst ist trotzdem vollzogen.
+      const step = (await api.getVorgang(VG)).schritte.find((s) => s.id === STEP);
+      expect(step?.status).toBe('confirmed');
+    },
+    RUN_TIMEOUT,
+  );
+});
+
+// ==========================================================================
+// Bündelungs-Dismiss (termine-uebergaben.md § 7.4/§ 9.3) — deviceLocal,
+// persona-scoped Liste dismisster später-Termin-IDs (mirror Wohngeld-Muster).
+// ==========================================================================
+
+describe('dismissTerminBundling / getTerminBundlingDismissed (§7.4/§9.3)', () => {
+  // Booted-Store; synthetische Persona-IDs (PersonaId = string) isolieren die
+  // Buckets ohne Reset-API (der Bucket wird beim Reseed bewusst NICHT geleert).
+  beforeEach(() => reseedForActivePersona('anna-petrov'));
+
+  test(
+    'persistiert + persona-scoped',
+    async () => {
+      const persona = 'bundle-persona-a';
+      expect(await api.getTerminBundlingDismissed(persona)).toEqual([]);
+
+      await api.dismissTerminBundling(persona, 'termin-spaeter-1');
+
+      expect(await api.getTerminBundlingDismissed(persona)).toEqual([
+        'termin-spaeter-1',
+      ]);
+      // Andere Persona bleibt unberührt (persona-scoped im Record).
+      expect(await api.getTerminBundlingDismissed('bundle-persona-b')).toEqual([]);
+    },
+    RUN_TIMEOUT,
+  );
+
+  test(
+    'additive Liste, de-dupliziert',
+    async () => {
+      const persona = 'bundle-persona-c';
+      await api.dismissTerminBundling(persona, 't-1');
+      await api.dismissTerminBundling(persona, 't-2');
+      expect(await api.getTerminBundlingDismissed(persona)).toEqual(['t-1', 't-2']);
+
+      // Gleiche ID erneut → kein Duplikat.
+      await api.dismissTerminBundling(persona, 't-1');
+      expect(await api.getTerminBundlingDismissed(persona)).toEqual(['t-1', 't-2']);
+    },
+    RUN_TIMEOUT,
+  );
+
+  test(
+    'überlebt Persona-Wechsel (deviceLocal, seedForPersona setzt nicht zurück)',
+    async () => {
+      const persona = 'bundle-persona-d';
+      await api.dismissTerminBundling(persona, 't-x');
+
+      reseedForActivePersona('markus-schmidt');
+      reseedForActivePersona('anna-petrov');
+
+      expect(await api.getTerminBundlingDismissed(persona)).toEqual(['t-x']);
+    },
+    RUN_TIMEOUT,
+  );
+});
+
+// ==========================================================================
 // Fehlerpfad
 // ==========================================================================
 

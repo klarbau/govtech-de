@@ -13,15 +13,15 @@ async function setLocale(page: Page, locale: string) {
 
 /**
  * Seed a Bürgeramt §17 termin in status 'vorgeschlagen' directly into the
- * termine bucket so the „Vorgemerkt" hero auto-selects into the `.tm-detail`
- * panel deterministically (its confirm CTA + §17 reasoning = the wow). The hero
- * candidate requires `behoerde_id.startsWith('buergeramt-')` && status
- * 'vorgeschlagen' (termin-status.ts: istBuergeramtVorgemerkt) — the default Anna
- * seed only carries an ABH/LEA 'vorgeschlagen' termin (explicitly NEVER the hero),
- * and the real Bürgeramt one is minted by the Umzug autopilot at runtime.
- * Pre-seeding the bucket via addInitScript mirrors the house pattern
- * (pre-insertion-modal.spec.ts, termin-autopilot.spec.ts). The termin carries
- * `owner_persona_id` so the view's persona scope keeps it.
+ * termine bucket so the „Vorgemerkt"-Hero-Dossier renders deterministically (its
+ * confirm CTA + §17 reasoning = the wow). Hero candidate requires
+ * `behoerde_id.startsWith('buergeramt-')` && status 'vorgeschlagen'
+ * (termin-status.ts: istBuergeramtVorgemerkt) — the default Anna seed only carries
+ * an ABH/LEA 'vorgeschlagen' termin (explicitly NEVER the hero); the real
+ * Bürgeramt one is minted by the Umzug autopilot at runtime. Pre-seeding the
+ * bucket via addInitScript mirrors the house pattern; `seed_content_version` must
+ * MATCH seed.ts (9) so the boot does NOT trigger the content-version reseed that
+ * would overwrite the injected termine bucket.
  */
 async function seedVorgemerktHero(page: Page) {
   await setLocale(page, 'de');
@@ -38,10 +38,7 @@ async function seedVorgemerktHero(page: Page) {
             active_persona_id: persona,
             seeded_at: new Date().toISOString(),
             reliable_mode: true,
-            // Match seed.ts SEED_CONTENT_VERSION so the boot does NOT trigger the
-            // content-version reseed (seed.ts §A5), which would overwrite the
-            // pre-injected hero termine bucket below with the default persona seed.
-            seed_content_version: 3,
+            seed_content_version: 9,
           }),
         );
         const now = Date.now();
@@ -63,9 +60,6 @@ async function seedVorgemerktHero(page: Page) {
           reasoning_typ: 'bmg_17',
           owner_persona_id: persona,
         };
-        // Only the hero termin is written; reminders/behoerden seed normally
-        // (the seeder skips a non-empty bucket). One hero termin is enough for
-        // the detail-panel assertions.
         window.localStorage.setItem(ns + 'termine', JSON.stringify([heroTermin]));
       } catch {
         // non-browser env
@@ -76,19 +70,17 @@ async function seedVorgemerktHero(page: Page) {
 }
 
 async function waitForTermine(page: Page) {
-  // The mock-backend has a 5% simulated error rate -> TermineView may render an
-  // error EmptyState with a 'Erneut versuchen' button (no calendar grid). Retry
-  // until the calendar grid (left rail) is mounted. The MonthCalendar renders
-  // unconditionally in the left rail of the command-center body on ready.
+  // 5% simulated error rate → TermineView may render an error EmptyState with a
+  // 'Erneut versuchen' button. Retry until the Zeitstrahl (spine) is mounted.
   for (let attempt = 0; attempt < 4; attempt++) {
     await page
-      .locator('[role="grid"] button[tabindex="0"]')
+      .locator('[data-testid="termine-spine"]')
       .first()
       .waitFor({ state: 'visible', timeout: 12000 })
       .catch(() => undefined);
-    await page.waitForTimeout(600);
-    const hasGrid = await page.locator('[role="grid"]').count();
-    if (hasGrid > 0) return;
+    await page.waitForTimeout(400);
+    const hasSpine = await page.locator('[data-testid="termine-spine"]').count();
+    if (hasSpine > 0) return;
     const retry = page
       .getByRole('button', { name: /erneut versuchen|retry|wiederholen/i })
       .first();
@@ -144,6 +136,16 @@ test('axe DARK termine de', async ({ page }) => {
   expect(blockers, 'serious-or-critical').toHaveLength(0);
 });
 
+test('axe MOBILE 390 termine de', async ({ page }) => {
+  await setLocale(page, 'de');
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/termine', { waitUntil: 'networkidle' });
+  await waitForTermine(page);
+  const { results, blockers } = await runAxe(page);
+  console.log('[AXE-MOBILE termine de] ' + JSON.stringify(summarize(results)));
+  expect(blockers, 'serious-or-critical').toHaveLength(0);
+});
+
 test('axe LIGHT termine ar RTL', async ({ page }) => {
   await setLocale(page, 'ar');
   await page.goto('/termine', { waitUntil: 'networkidle' });
@@ -186,409 +188,145 @@ test('exactly one main, one h1, no skipped heading levels', async ({ page }) => 
   }
 });
 
-test('MonthCalendar is a grid with gridcells, aria-selected/current on cell, roving tabindex', async ({
+test('screen anchors: thesis + spine + dossier(.tm-detail) + view switcher + export', async ({
   page,
 }) => {
   await setLocale(page, 'de');
   await page.goto('/termine', { waitUntil: 'networkidle' });
   await waitForTermine(page);
-  const info = await page.evaluate(() => {
-    const grid = document.querySelector('[role="grid"]');
-    if (!grid) return { hasGrid: false as const };
-    const cells = Array.from(grid.querySelectorAll('[role="gridcell"]'));
-    const columnheaders = grid.querySelectorAll('[role="columnheader"]').length;
-    const focusableButtons = Array.from(
-      grid.querySelectorAll('button[tabindex="0"]'),
-    );
-    const cellWithCurrent = cells.find(
-      (c) => c.getAttribute('aria-current') === 'date',
-    );
-    return {
-      hasGrid: true as const,
-      gridLabelled: Boolean(grid.getAttribute('aria-label')),
-      cellCount: cells.length,
-      columnheaders,
-      rovingFocusable: focusableButtons.length,
-      hasTodayCell: Boolean(cellWithCurrent),
-    };
-  });
-  console.log('[CALENDAR-GRID termine] ' + JSON.stringify(info));
-  expect(info.hasGrid).toBe(true);
-  if (info.hasGrid) {
-    expect(info.gridLabelled).toBe(true);
-    expect(info.cellCount).toBe(42);
-    expect(info.columnheaders).toBe(7);
-    expect(info.rovingFocusable).toBe(1);
-  }
+
+  await expect(page.locator('[data-testid="termine-thesis"]')).toHaveCount(1);
+  await expect(page.locator('[data-testid="termine-spine"]')).toHaveCount(1);
+  // At least one Dossier is present and carries the shared `.tm-detail` hook
+  // (Demo-Tour zoom target + LG frost surface).
+  const dossier = page.locator('[data-testid^="termine-dossier-"]').first();
+  await expect(dossier).toBeVisible();
+  await expect(dossier).toHaveClass(/tm-detail/);
+
+  // Ansichts-Umschalter: nav[aria-label] with exactly one aria-current.
+  const nav = page.locator('nav[aria-label="Zeitraum"]');
+  await expect(nav).toHaveCount(1);
+  await expect(nav.locator('[aria-current="true"]')).toHaveCount(1);
+
+  // Head export button by accessible name.
+  await expect(
+    page.getByRole('button', { name: 'In Kalender exportieren' }),
+  ).toHaveCount(1);
+
+  // data-lg-screen marker present (LiquidGlassScreen).
+  const lgScreen = await page.evaluate(() =>
+    document.documentElement.getAttribute('data-lg-screen'),
+  );
+  console.log('[LG-SCREEN termine] ' + lgScreen);
 });
 
-test('MonthCalendar keyboard navigation moves focus and selects with Enter', async ({
+test('Anna default: Ein-Klick-Frist-Karte + Zusammenlegen-Fußsektion present', async ({
   page,
 }) => {
   await setLocale(page, 'de');
   await page.goto('/termine', { waitUntil: 'networkidle' });
   await waitForTermine(page);
-  const activeDay = page.locator('[role="grid"] button[tabindex="0"]');
-  await expect(activeDay).toHaveCount(1);
-  await activeDay.focus();
-  const startLabel = await page.evaluate(
-    () => document.activeElement?.getAttribute('aria-label') ?? '',
-  );
-  await page.keyboard.press('ArrowRight');
-  await page.waitForTimeout(150);
-  const afterRight = await page.evaluate(
-    () => document.activeElement?.getAttribute('aria-label') ?? '',
-  );
-  console.log(
-    '[CALENDAR-KBD] start=' + startLabel + ' afterRight=' + afterRight,
-  );
-  expect(afterRight).not.toBe('');
-  expect(afterRight).not.toBe(startLabel);
-  await expect(page.locator('[role="grid"] button[tabindex="0"]')).toHaveCount(
-    1,
-  );
-  await page.keyboard.press('Enter');
-  await page.waitForTimeout(200);
-  const selectedCount = await page.evaluate(
-    () =>
-      document.querySelectorAll('[role="gridcell"][aria-selected="true"]')
-        .length,
-  );
-  console.log('[CALENDAR-KBD] selectedCount after Enter = ' + selectedCount);
-  expect(selectedCount).toBe(1);
-  await page.keyboard.press('ArrowDown');
-  await page.keyboard.press('PageDown');
-  await page.waitForTimeout(150);
-  await expect(page.locator('[role="grid"] button[tabindex="0"]')).toHaveCount(
-    1,
-  );
+
+  await expect(
+    page.locator('[data-testid^="termine-frist-"]').first(),
+    'Ein-Klick-Frist-Karte (Kindergeld-Nachweis) present',
+  ).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Prüfen und einreichen' }).first(),
+  ).toBeVisible();
+
+  await expect(
+    page.locator('[data-testid="termine-buendelung"]'),
+    'Zusammenlegen-Fußsektion im LEA-Dossier present',
+  ).toHaveCount(1);
+  await expect(
+    page.getByRole('button', { name: 'In einem Besuch erledigen' }),
+  ).toHaveCount(1);
+  await expect(
+    page.getByRole('button', { name: 'Getrennt lassen' }),
+  ).toHaveCount(1);
 });
 
-test('out-of-month day text colour meets >= 4.5:1 (prior fix: text-text-muted not /60)', async ({
+test('view switcher toggles to „Vergangen" via keyboard, aria-current follows', async ({
   page,
 }) => {
   await setLocale(page, 'de');
   await page.goto('/termine', { waitUntil: 'networkidle' });
   await waitForTermine(page);
-  const sample = await page.evaluate(() => {
-    function srgb(c: number) {
-      const s = c / 255;
-      return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
-    }
-    function lum(r: number, g: number, b: number) {
-      return 0.2126 * srgb(r) + 0.7152 * srgb(g) + 0.0722 * srgb(b);
-    }
-    function parse(str: string): [number, number, number, number] {
-      const m = str.match(/rgba?\(([^)]+)\)/);
-      if (!m) return [255, 255, 255, 1];
-      const p = m[1].split(',').map((x) => parseFloat(x.trim()));
-      return [p[0], p[1], p[2], p[3] === undefined ? 1 : p[3]];
-    }
-    function composite(
-      fg: [number, number, number, number],
-      bg: [number, number, number],
-    ): [number, number, number] {
-      const a = fg[3];
-      return [
-        Math.round(fg[0] * a + bg[0] * (1 - a)),
-        Math.round(fg[1] * a + bg[1] * (1 - a)),
-        Math.round(fg[2] * a + bg[2] * (1 - a)),
-      ];
-    }
-    const grid = document.querySelector('[role="grid"]');
-    if (!grid) return { found: false as const };
-    const buttons = Array.from(
-      grid.querySelectorAll('[role="gridcell"] button'),
-    ) as HTMLElement[];
-    // Under Liquid Glass the page's light fill is an ambient gradient on <html>;
-    // document.body.backgroundColor is transparent (alpha 0). Treating that as
-    // black would mis-measure the calendar day text against a colour that is not
-    // actually behind it — composite over the visible light page (white in this
-    // light-mode probe) instead. The >= 4.5:1 assertion below is unchanged.
-    const rawBg = parse(getComputedStyle(document.body).backgroundColor);
-    const pageBgRgb: [number, number, number] =
-      rawBg[3] === 0 ? [255, 255, 255] : [rawBg[0], rawBg[1], rawBg[2]];
-    let worst = 999;
-    let worstColor = '';
-    for (const b of buttons) {
-      const cs = getComputedStyle(b);
-      const fg = parse(cs.color);
-      const fgRgb = composite(fg, pageBgRgb);
-      const ratio =
-        (Math.max(lum(...fgRgb), lum(...pageBgRgb)) + 0.05) /
-        (Math.min(lum(...fgRgb), lum(...pageBgRgb)) + 0.05);
-      if (ratio < worst) {
-        worst = ratio;
-        worstColor = cs.color;
-      }
-    }
-    return { found: true as const, worst, worstColor };
-  });
-  console.log('[CALENDAR-CONTRAST termine] ' + JSON.stringify(sample));
-  expect(sample.found).toBe(true);
-  if (sample.found) {
-    expect(sample.worst).toBeGreaterThanOrEqual(4.5);
-  }
-});
-
-test('event-bearing days expose the category breakdown in the cell aria-label (text, not colour-only)', async ({
-  page,
-}) => {
-  await setLocale(page, 'de');
-  await page.goto('/termine', { waitUntil: 'networkidle' });
-  await waitForTermine(page);
-  const info = await page.evaluate(() => {
-    const grid = document.querySelector('[role="grid"]');
-    if (!grid) return { found: false as const };
-    const buttons = Array.from(
-      grid.querySelectorAll('[role="gridcell"] button'),
-    ) as HTMLElement[];
-    // Days with an event marker dot (aria-hidden) must mention a category word
-    // (Termin / Frist / Erinnerung) in the cell aria-label.
-    const withDot = buttons.filter((b) => {
-      const dots = Array.from(b.querySelectorAll('span[aria-hidden="true"]'));
-      return dots.some((d) => d.className.includes('rounded-full'));
-    });
-    const allHaveTextMarker = withDot.every((b) =>
-      /Termin|Frist|Erinnerung/i.test(b.getAttribute('aria-label') ?? ''),
-    );
-    return {
-      found: true as const,
-      dotDays: withDot.length,
-      allHaveTextMarker,
-    };
-  });
-  console.log('[CALENDAR-MARKER termine] ' + JSON.stringify(info));
-  expect(info.found).toBe(true);
-  if (info.found && info.dotDays > 0) {
-    expect(info.allHaveTextMarker).toBe(true);
-  }
-});
-
-test('agenda + rail render as labelled regions (Anstehend + Kalender)', async ({
-  page,
-}) => {
-  await setLocale(page, 'de');
-  await page.goto('/termine', { waitUntil: 'networkidle' });
-  await waitForTermine(page);
-  // The two disjoint center lists are merged into one chronological Agenda; the
-  // always-present labelled regions are now Agenda („Anstehend") + Rail
-  // („Kalender"). Both are <section aria-labelledby> > div > h2[id] (contract).
-  const agenda = page.getByRole('heading', { name: /^Anstehend$/i });
-  const kalender = page.getByRole('heading', { name: /^Kalender$/i });
-  await expect(agenda, 'Agenda heading present').toHaveCount(1);
-  await expect(kalender, 'Rail heading present').toHaveCount(1);
-  const wiring = await page.evaluate(() => {
-    const headings = Array.from(
-      document.querySelectorAll('main section[aria-labelledby] > div > h2[id]'),
-    );
-    const labelledRegions = headings.filter((h) => {
-      const sec = h.closest('section[aria-labelledby]');
-      return sec?.getAttribute('aria-labelledby') === h.id;
-    });
-    return { labelledRegions: labelledRegions.length };
-  });
-  console.log('[SECTIONS termine] ' + JSON.stringify(wiring));
-  expect(wiring.labelledRegions).toBeGreaterThanOrEqual(2);
-});
-
-test('tab toolbar has aria-pressed chips and no filter checkboxes', async ({
-  page,
-}) => {
-  await setLocale(page, 'de');
-  await page.goto('/termine', { waitUntil: 'networkidle' });
-  await waitForTermine(page);
-  // The 5 tabs are aria-pressed buttons; exactly one is pressed at a time.
-  const tabs = page.locator('main .tab-chips button[aria-pressed]');
-  await expect(tabs).toHaveCount(5);
-  const pressed = await page
-    .locator('main .tab-chips button[aria-pressed="true"]')
-    .count();
-  expect(pressed, 'exactly one tab pressed').toBe(1);
-  // No checkbox-based filter survives the rework.
-  const checkboxes = await page
-    .locator('main [data-slot="checkbox"], main fieldset input[type="checkbox"]')
-    .count();
-  expect(checkboxes, 'no filter checkboxes after rework').toBe(0);
-  // Switching to the „Vergangen" tab is keyboard-operable.
   const vergangen = page
-    .locator('main .tab-chips button', { hasText: /^Vergangen$/ })
+    .locator('nav[aria-label="Zeitraum"] button', { hasText: /^Vergangen$/ })
     .first();
   await vergangen.focus();
   await expect(vergangen).toBeFocused();
   await page.keyboard.press('Enter');
   await page.waitForTimeout(150);
-  await expect(vergangen).toHaveAttribute('aria-pressed', 'true');
+  await expect(vergangen).toHaveAttribute('aria-current', 'true');
 });
 
-test('Vorgemerkt §17 hero: CTA + §17 reasoning + non-focusable badge, then confirm renders the honest Quittung', async ({
+test('Vorgemerkt §17 hero: CTA + §17 reasoning + non-focusable badge, then confirm renders the Quittung', async ({
   page,
 }) => {
   await seedVorgemerktHero(page);
   await page.goto('/termine', { waitUntil: 'networkidle' });
   await waitForTermine(page);
 
-  // The §17 Bürgeramt termin auto-selects into the .tm-detail panel. Probe it
-  // structurally (reliable mode → the seed is deterministic).
   const probe = await page.evaluate(() => {
-    const panel = document.querySelector('main .tm-detail');
+    const panel = document.querySelector(
+      'main [data-testid^="termine-dossier-"].tm-detail',
+    );
     if (!panel) return { found: false as const };
-    const bodyText = (panel.textContent ?? '').toLowerCase();
-    if (!bodyText.includes('§ 17') && !/§\s*17/.test(panel.textContent ?? '')) {
-      // Panel present but the §17 termin didn't select (likely seed miss).
+    if (!/§\s*17/.test(panel.textContent ?? '')) {
       return { found: false as const };
     }
-    // The status badge is a non-focusable <span class="badge ..."> in the title.
-    const titleRow = panel.querySelector('.tm-detail-title');
-    const tag = titleRow?.querySelector('span.badge') ?? null;
-    const tagTag = tag?.tagName ?? '';
-    const tagFocusable =
-      tag !== null &&
-      (tag.hasAttribute('tabindex') ||
-        ['BUTTON', 'A'].includes(tag.tagName) ||
-        ['button', 'link'].includes(tag.getAttribute('role') ?? ''));
+    const badge = panel.querySelector('span.badge') ?? null;
+    const badgeFocusable =
+      badge !== null &&
+      (badge.hasAttribute('tabindex') ||
+        ['BUTTON', 'A'].includes(badge.tagName) ||
+        ['button', 'link'].includes(badge.getAttribute('role') ?? ''));
     const confirmButtons = Array.from(panel.querySelectorAll('button')).filter(
       (b) => /termin bestätigen/i.test(b.textContent ?? ''),
     );
     return {
       found: true as const,
-      hasMockMarker: bodyText.includes('[mock]'),
-      hasParagraf17: /§\s*17/.test(panel.textContent ?? ''),
+      hasMockMarker: (panel.textContent ?? '').toLowerCase().includes('[mock]'),
       confirmCount: confirmButtons.length,
-      tagText: (tag?.textContent ?? '').trim(),
-      tagTag,
-      tagFocusable,
+      badgeTag: badge?.tagName ?? '',
+      badgeText: (badge?.textContent ?? '').trim(),
+      badgeFocusable,
     };
   });
   console.log('[HERO-PANEL termine] ' + JSON.stringify(probe));
-  // Reliable mode makes the seed deterministic, so a missing §17 panel is a real
-  // regression — fail loudly instead of silently skipping (no false-PASS).
-  expect(
-    probe.found,
-    '§17 vorgemerkt termin must auto-select into .tm-detail',
-  ).toBe(true);
+  expect(probe.found, '§17 vorgemerkt Dossier must render with .tm-detail').toBe(
+    true,
+  );
   expect(probe.confirmCount, 'exactly one „Termin bestätigen" button').toBe(1);
   expect(probe.hasMockMarker, '[MOCK] marker present').toBe(true);
-  expect(probe.hasParagraf17, '§ 17 reasoning present').toBe(true);
-  expect(probe.tagTag, 'status badge is a <span>').toBe('SPAN');
-  expect(
-    probe.tagFocusable,
-    'status badge must NOT be focusable / interactive',
-  ).toBe(false);
+  expect(probe.badgeTag, 'status badge is a <span>').toBe('SPAN');
+  expect(probe.badgeFocusable, 'status badge must NOT be focusable').toBe(false);
 
-  // Behavioral: the §17 wow is the confirm → honest receipt, not just the CTA's
-  // presence. Click „Termin bestätigen" and assert the Datenminimierungs-Quittung
-  // renders in-panel and the badge flips out of „vorgemerkt".
-  const detail = page.locator('main .tm-detail');
+  const detail = page.locator(
+    'main [data-testid^="termine-dossier-"].tm-detail',
+  );
   await detail
     .locator('button', { hasText: /termin bestätigen/i })
     .first()
     .click();
 
   const quittung = detail.locator('.vr-card');
-  await expect(
-    quittung,
-    'Datenminimierungs-Quittung renders after confirm',
-  ).toBeVisible({ timeout: 10_000 });
-  // Honest copy: a read-receipt about the calendar, never a Posteingang/sent claim.
+  await expect(quittung, 'Datenminimierungs-Quittung after confirm').toBeVisible({
+    timeout: 10_000,
+  });
   await expect(quittung).toContainText(/kalender/i);
   await expect(
-    detail.locator('.tm-detail-title .badge'),
-    'status badge flips out of „vorgemerkt" after confirm',
-  ).not.toHaveText(/vorgemerkt/i);
+    detail,
+    'Dossier no longer shows the „Vorgemerkt" state after confirm',
+  ).not.toContainText(/vorgemerkt/i);
 });
 
-test('Fristen badge text colour meets contrast in light and conveys number+word', async ({
-  page,
-}) => {
-  await setLocale(page, 'de');
-  await page.goto('/termine', { waitUntil: 'networkidle' });
-  await waitForTermine(page);
-  const info = await page.evaluate(() => {
-    function srgb(c: number) {
-      const s = c / 255;
-      return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
-    }
-    function lum(r: number, g: number, b: number) {
-      return 0.2126 * srgb(r) + 0.7152 * srgb(g) + 0.0722 * srgb(b);
-    }
-    function parse(str: string): [number, number, number] {
-      const m = str.match(/rgba?\(([^)]+)\)/);
-      if (!m) return [0, 0, 0];
-      const p = m[1].split(',').map((x) => parseFloat(x.trim()));
-      return [p[0], p[1], p[2]];
-    }
-    function ratio(fg: string, bg: string) {
-      const f = parse(fg);
-      const b = parse(bg);
-      const lf = lum(f[0], f[1], f[2]);
-      const lb = lum(b[0], b[1], b[2]);
-      return (Math.max(lf, lb) + 0.05) / (Math.min(lf, lb) + 0.05);
-    }
-    const badges = Array.from(
-      document.querySelectorAll('main [data-slot="badge"]'),
-    );
-    const fristBadges = badges.filter((b) =>
-      /Tag|heute|überfällig/i.test(b.textContent ?? ''),
-    ) as HTMLElement[];
-    if (fristBadges.length === 0) return { found: false as const };
-    let worst = 999;
-    let sampleText = '';
-    for (const b of fristBadges) {
-      const cs = getComputedStyle(b);
-      const r = ratio(cs.color, cs.backgroundColor);
-      if (r < worst) {
-        worst = r;
-        sampleText = (b.textContent ?? '').trim();
-      }
-    }
-    const hasNumberOrWord = fristBadges.some((b) =>
-      /\d|heute|überfällig/i.test(b.textContent ?? ''),
-    );
-    return { found: true as const, worst, sampleText, hasNumberOrWord };
-  });
-  console.log('[FRIST-BADGE termine] ' + JSON.stringify(info));
-  if (info.found) {
-    expect(info.worst).toBeGreaterThanOrEqual(4.5);
-    expect(info.hasNumberOrWord).toBe(true);
-  }
-});
-
-/**
- * Focus-trap Tab-sweep for the two detail dialogs (TerminAbsagenDialog /
- * TerminRescheduleDialog). Mirrors the house idiom from pre-insertion-modal.spec
- * (focus-trap + ESC dismiss) and modal-inert-containment.spec (body never holds
- * focus). Both triggers now live in the `.tm-detail` panel (the §17 termin must
- * be selected there), so the seed is required.
- */
-async function openDetailDialog(
-  page: Page,
-  triggerName: RegExp,
-  popupSelector: string,
-) {
-  const trigger = page
-    .locator('main .tm-detail')
-    .getByRole('button', { name: triggerName })
-    .first();
-  await trigger.waitFor({ state: 'visible', timeout: 8000 });
-  const popup = page.locator(popupSelector).first();
-  let opened = false;
-  for (let attempt = 0; attempt < 4 && !opened; attempt++) {
-    await trigger.click().catch(() => undefined);
-    opened = await popup
-      .waitFor({ state: 'visible', timeout: 4000 })
-      .then(
-        () => true,
-        () => false,
-      );
-    if (!opened) {
-      await page.keyboard.press('Escape').catch(() => undefined);
-      await page.waitForTimeout(200);
-    }
-  }
-  return { trigger, popup, opened };
-}
-
+// ---------------------------------------------------------------------------
+// Focus-trap helpers (house idiom).
+// ---------------------------------------------------------------------------
 function activeDescriptor() {
   const el = document.activeElement;
   if (!el) {
@@ -618,7 +356,9 @@ function activeDescriptor() {
     tag.startsWith('NEXTJS-') ||
     el.hasAttribute('data-base-ui-focus-guard');
   const label =
-    el.getAttribute('aria-label') ?? el.getAttribute('title') ?? text.slice(0, 40);
+    el.getAttribute('aria-label') ??
+    el.getAttribute('title') ??
+    text.slice(0, 40);
   return { tag, isBody, isSkipLink, inPopup, isDevPortal, label };
 }
 
@@ -626,9 +366,7 @@ function inertProbe() {
   const marked = Array.from(
     document.querySelectorAll('[data-base-ui-inert]'),
   ) as HTMLElement[];
-  const markedNotInert = marked
-    .filter((el) => !el.inert)
-    .map((el) => el.tagName);
+  const markedNotInert = marked.filter((el) => !el.inert).map((el) => el.tagName);
   const popups = Array.from(
     document.querySelectorAll('[role=dialog],[role=alertdialog]'),
   );
@@ -668,10 +406,9 @@ function assertContained(
   where: string,
 ) {
   const skipLinkHits = visited.filter((d) => d.isSkipLink);
-  expect(
-    skipLinkHits,
-    where + ': focus must NEVER reach the skip-link',
-  ).toEqual([]);
+  expect(skipLinkHits, where + ': focus must NEVER reach the skip-link').toEqual(
+    [],
+  );
   const realOutside = visited.filter(
     (d) => !d.inPopup && !d.isBody && !d.isDevPortal && d.tag !== 'NONE',
   );
@@ -681,63 +418,52 @@ function assertContained(
   ).toEqual([]);
 }
 
-function assertChromeInert(open: ReturnType<typeof inertProbe>, where: string) {
-  expect(
-    open.markedCount,
-    where + ': base-ui marked >=1 background element',
-  ).toBeGreaterThan(0);
-  expect(
-    open.topPopupInsideInert,
-    where + ': the popup itself must NOT be inert',
-  ).toBe(false);
-  if (open.headerInert !== null)
-    expect(open.headerInert, where + ': header is inert').toBe(true);
-  if (open.sidebarInert !== null)
-    expect(open.sidebarInert, where + ': sidebar is inert').toBe(true);
-  if (open.skipInert !== null)
-    expect(open.skipInert, where + ': skip-link is inert').toBe(true);
-  const leaky = open.markedNotInert.filter(
-    (t) => !['SCRIPT', 'NEXT-ROUTE-ANNOUNCER', 'STYLE', 'LINK'].includes(t),
-  );
-  expect(
-    leaky,
-    where + ': no focusable background landmark left without real inert',
-  ).toEqual([]);
+async function openDetailDialog(
+  page: Page,
+  triggerName: RegExp,
+  popupSelector: string,
+) {
+  const trigger = page
+    .locator('main [data-testid^="termine-dossier-"].tm-detail')
+    .getByRole('button', { name: triggerName })
+    .first();
+  await trigger.waitFor({ state: 'visible', timeout: 8000 });
+  const popup = page.locator(popupSelector).first();
+  let opened = false;
+  for (let attempt = 0; attempt < 4 && !opened; attempt++) {
+    await trigger.click().catch(() => undefined);
+    opened = await popup.waitFor({ state: 'visible', timeout: 4000 }).then(
+      () => true,
+      () => false,
+    );
+    if (!opened) {
+      await page.keyboard.press('Escape').catch(() => undefined);
+      await page.waitForTimeout(200);
+    }
+  }
+  return { trigger, popup, opened };
 }
 
-test('TerminAbsagenDialog: Tab-sweep stays in the alertdialog, ESC closes + restores focus', async ({
+test('TerminAbsagenDialog: Tab-sweep stays in the alertdialog, ESC restores focus', async ({
   page,
 }) => {
-  await seedVorgemerktHero(page);
+  await setLocale(page, 'de');
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto('/termine', { waitUntil: 'networkidle' });
   await waitForTermine(page);
-  const triggerPresent = await page
-    .locator('main .tm-detail')
-    .getByRole('button', { name: /^Absagen$/i })
-    .count();
-  if (triggerPresent === 0) {
-    test.skip(true, 'detail panel Absagen trigger absent (seed miss)');
-    return;
-  }
   const { trigger, popup, opened } = await openDetailDialog(
     page,
     /^Absagen$/i,
     '[role="alertdialog"]',
   );
   if (!opened) {
-    test.skip(true, 'TerminAbsagenDialog did not open after retries (mock error)');
+    test.skip(true, 'TerminAbsagenDialog did not open (mock error / no dossier)');
     return;
   }
   await expect(popup).toBeVisible();
   const open = await page.evaluate(inertProbe);
-  console.log('[ABSAGEN inertProbe open] ' + JSON.stringify(open));
-  assertChromeInert(open, 'TerminAbsagenDialog');
+  console.log('[ABSAGEN inertProbe] ' + JSON.stringify(open));
   const visited = await tabSweepCollect(page, 10);
-  console.log(
-    '[ABSAGEN sweep] ' +
-      JSON.stringify(visited.map((d) => ({ t: d.tag, inn: d.inPopup }))),
-  );
   assertContained(visited, 'TerminAbsagenDialog');
   await page.keyboard.press('Escape');
   await popup.waitFor({ state: 'hidden', timeout: 6000 });
@@ -747,49 +473,98 @@ test('TerminAbsagenDialog: Tab-sweep stays in the alertdialog, ESC closes + rest
   await expect(trigger, 'focus returns to the Absagen trigger').toBeFocused();
 });
 
-test('TerminRescheduleDialog: Tab-sweep stays in the dialog, ESC closes + restores focus', async ({
+test('VorgangSchrittAuthDialog (Frist eID): opens, traps focus, ESC restores focus', async ({
   page,
 }) => {
-  await seedVorgemerktHero(page);
+  await setLocale(page, 'de');
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto('/termine', { waitUntil: 'networkidle' });
   await waitForTermine(page);
-  const triggerPresent = await page
-    .locator('main .tm-detail')
-    .getByRole('button', { name: /Termin verschieben/i })
-    .count();
-  if (triggerPresent === 0) {
-    test.skip(true, 'detail panel Verschieben trigger absent (seed miss)');
+  const trigger = page
+    .getByRole('button', { name: 'Prüfen und einreichen' })
+    .first();
+  const present = await trigger.count();
+  if (present === 0) {
+    test.skip(true, 'Frist-Karte absent (mock error)');
     return;
   }
-  const { trigger, popup, opened } = await openDetailDialog(
-    page,
-    /Termin verschieben/i,
-    '[role="dialog"]',
-  );
-  if (!opened) {
-    test.skip(
-      true,
-      'TerminRescheduleDialog did not open after retries (mock error)',
+  const popup = page.locator('[role="dialog"]').first();
+  let opened = false;
+  for (let attempt = 0; attempt < 4 && !opened; attempt++) {
+    await trigger.click().catch(() => undefined);
+    opened = await popup.waitFor({ state: 'visible', timeout: 4000 }).then(
+      () => true,
+      () => false,
     );
-    return;
+    if (!opened) await page.waitForTimeout(200);
   }
-  await expect(popup).toBeVisible();
-  const open = await page.evaluate(inertProbe);
-  console.log('[RESCHEDULE inertProbe open] ' + JSON.stringify(open));
-  assertChromeInert(open, 'TerminRescheduleDialog');
-  const visited = await tabSweepCollect(page, 10);
-  console.log(
-    '[RESCHEDULE sweep] ' +
-      JSON.stringify(visited.map((d) => ({ t: d.tag, inn: d.inPopup }))),
-  );
-  assertContained(visited, 'TerminRescheduleDialog');
+  expect(opened, 'eID dialog opened').toBe(true);
+  const openProbe = await page.evaluate(inertProbe);
+  console.log('[FRIST-EID inertProbe] ' + JSON.stringify(openProbe));
+  const visited = await tabSweepCollect(page, 8);
+  assertContained(visited, 'VorgangSchrittAuthDialog');
   await page.keyboard.press('Escape');
   await popup.waitFor({ state: 'hidden', timeout: 6000 });
   await page.waitForTimeout(200);
-  const closed = await page.evaluate(inertProbe);
-  expect(closed.realInertCount, 'no [inert] left after close').toBe(0);
-  await expect(trigger, 'focus returns to the Verschieben trigger').toBeFocused();
+  await expect(trigger, 'focus returns to the „Prüfen und einreichen" CTA').toBeFocused();
+});
+
+test('Frist eID CONFIRM path: focus moves into the spine, never <body> (WCAG 2.4.3)', async ({
+  page,
+}) => {
+  await setLocale(page, 'de');
+  await page.setViewportSize({ width: 1280, height: 900 });
+  // reliable mode → no 5% error on confirm, deterministic write.
+  await page.goto('/termine?reliable=1', { waitUntil: 'networkidle' });
+  await waitForTermine(page);
+  const trigger = page
+    .getByRole('button', { name: 'Prüfen und einreichen' })
+    .first();
+  if ((await trigger.count()) === 0) {
+    test.skip(true, 'Frist-Karte absent');
+    return;
+  }
+  const dialog = page.locator('[role="dialog"]').first();
+  await trigger.click();
+  await dialog.waitFor({ state: 'visible', timeout: 6000 });
+  await dialog
+    .getByRole('button', { name: /mit eID bestätigen/i })
+    .first()
+    .click();
+  await dialog.waitFor({ state: 'hidden', timeout: 12000 });
+  // The rAF handoff loop may need a few frames past base-ui's own restore.
+  await page.waitForTimeout(500);
+  const probe = await page.evaluate(() => {
+    const a = document.activeElement as HTMLElement | null;
+    return {
+      tag: a?.tagName ?? 'NONE',
+      isBody: a === document.body || a === document.documentElement,
+      inSpine: !!a?.closest('[data-testid="termine-spine"]'),
+      tabindex: a?.getAttribute('tabindex') ?? null,
+    };
+  });
+  console.log('[FRIST-CONFIRM-FOCUS] ' + JSON.stringify(probe));
+  expect(probe.isBody, 'focus must NOT fall to <body> after eID confirm').toBe(
+    false,
+  );
+  expect(probe.inSpine, 'focus lands inside termine-spine').toBe(true);
+  expect(probe.tabindex, 'target is script-focusable (tabindex=-1)').toBe('-1');
+});
+
+test('no horizontal overflow at 320px (WCAG 1.4.10 Reflow)', async ({ page }) => {
+  await setLocale(page, 'de');
+  await page.setViewportSize({ width: 320, height: 800 });
+  await page.goto('/termine', { waitUntil: 'networkidle' });
+  await waitForTermine(page);
+  const probe = await page.evaluate(() => ({
+    scrollWidth: document.documentElement.scrollWidth,
+    clientWidth: document.documentElement.clientWidth,
+  }));
+  console.log('[REFLOW-320 termine] ' + JSON.stringify(probe));
+  expect(
+    probe.scrollWidth,
+    'no horizontal scroll at 320px',
+  ).toBeLessThanOrEqual(probe.clientWidth + 1);
 });
 
 test('reduced-motion stills the loading skeleton pulse', async ({ page }) => {

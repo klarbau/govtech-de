@@ -166,6 +166,10 @@ import {
 import { datenschutzApi } from './datenschutz/api';
 import { familieApi } from './familie/api';
 import { remindersApi } from './reminders/api';
+import {
+  getTerminBundlingDismissed,
+  persistTerminBundlingDismiss,
+} from './termine/bundling-dismiss';
 import { steuerApi } from './steuer/api';
 import { stammdatenV11Api } from './stammdaten/v1-1-api';
 import { stammdatenV12Api } from './stammdaten/v1-2-api';
@@ -789,6 +793,33 @@ function mutateReminder(
   }
   reminders[idx] = mutator(reminders[idx]);
   write('reminders' as CollectionKey, reminders);
+}
+
+/**
+ * Termine „Übergaben" § 10 — Reminder-Resolution bei Schritt-Abschluss.
+ *
+ * Der Nachweis-Schritt („Nachweise … übermitteln") IST die Fristerfüllung →
+ * jede noch offene Nachweis-Frist desselben Vorgangs gilt damit als erledigt.
+ * Generisch (im aktuellen Seed nur für Anna-Kindergeld + Markus-Elterngeld
+ * wirksam). Direkter `write`, KEIN throw wenn keiner existiert (anders als
+ * `mutateReminder`); KEIN Event — die Frist-View reconciled über
+ * `api.getReminders()` nach Erfolg.
+ */
+function resolveNachweisFristen(vorgangId: string): void {
+  const reminders = readOrInit(
+    'reminders' as CollectionKey,
+    remindersArraySchema as unknown as import('zod').ZodType<Reminder[]>,
+    [] as Reminder[],
+  ) as Reminder[];
+  let touched = false;
+  const next = reminders.map((r) => {
+    if (r.vorgang_id === vorgangId && r.frist_typ === 'nachweis' && !r.erledigt) {
+      touched = true;
+      return { ...r, erledigt: true };
+    }
+    return r;
+  });
+  if (touched) write('reminders' as CollectionKey, next);
 }
 
 /**
@@ -1605,6 +1636,18 @@ export interface MockBackendApi {
   /** Erinnerungen/Fristen der aktiven Persona (Seed + abgeleitet aus Vorgang.fristen[]). */
   getReminders(): Promise<Reminder[]>;
 
+  // ---------------------- Termine „Übergaben" — Bündelungs-Dismiss --------------
+  // `termine-uebergaben.md` § 7.4/§ 9.3. deviceLocal, persona-scoped Liste
+  // dismisster später-Termin-IDs (mirror Wohngeld-Dismiss-Muster).
+
+  /** „Getrennt lassen": hängt die später-Termin-ID an die Dismiss-Liste der Persona. */
+  dismissTerminBundling(
+    personaId: PersonaId,
+    spaeterTerminId: string,
+  ): Promise<void>;
+  /** Liste der für die Persona „getrennt gelassenen" später-Termin-IDs. */
+  getTerminBundlingDismissed(personaId: PersonaId): Promise<string[]>;
+
   // ---------------------- Convenience-Pass-1 (§B1 / §A5 / §A-katalog / §C3) ----------------------
   /**
    * §B1 — Wertquittung eines Umzug-Laufs. `null` bis ≥ 1 Schritt bestätigt ist.
@@ -2366,6 +2409,9 @@ async function starteVorgangSchrittImpl(
     letter_id: cfg ? letterId : step.letter_id,
     ...gateStamps,
   });
+
+  // Termine „Übergaben" § 10 — verknüpfte Nachweis-Frist(en) erledigen.
+  resolveNachweisFristen(vorgangId);
 }
 
 async function runAutopilotInBackground(ctx: {
@@ -3587,6 +3633,20 @@ export const api: MockBackendApi & {
     ensureBooted();
     return remindersApi.getReminders();
   },
+
+  // ---------- Termine „Übergaben" — Bündelungs-Dismiss (§ 7.4/§ 9.3) ----------
+  // Gate lebt in `termine/bundling-dismiss.ts` (deviceLocal, persona-scoped
+  // Liste); Persona-Wechsel setzt den Bucket nicht zurück (Wohngeld-Semantik).
+  dismissTerminBundling: (personaId, spaeterTerminId) =>
+    withLatency<void>(() => {
+      ensureBooted();
+      persistTerminBundlingDismiss(personaId, spaeterTerminId);
+    }),
+  getTerminBundlingDismissed: (personaId) =>
+    withLatency<string[]>(() => {
+      ensureBooted();
+      return getTerminBundlingDismissed(personaId);
+    }),
 
   // ---------- Convenience-Pass-1 (§B1 / §A5 / §A-katalog / §C3) ----------
   getValueReceipt: (vorgangId: string) =>

@@ -41,20 +41,6 @@ export function displayStatus(
   return 'bestaetigt';
 }
 
-/** CSS-`.badge`-Tönung für den abgeleiteten Anzeige-Status. */
-export function displayStatusBadgeTone(status: TerminDisplayStatus): string {
-  switch (status) {
-    case 'vorgemerkt':
-      return 'amber';
-    case 'bestaetigt':
-      return 'green';
-    case 'abgesagt':
-      return 'red';
-    case 'erledigt':
-      return 'outline';
-  }
-}
-
 /** i18n-Key des Status-Labels (Namespace `termine.status`). */
 export function displayStatusLabelKey(status: TerminDisplayStatus): string {
   switch (status) {

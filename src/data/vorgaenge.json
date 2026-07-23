@@ -268,10 +268,10 @@
         "behoerde_id": "familienkasse-berlin-brandenburg",
         "block": "D",
         "aktion": "Nachweise zur Kindergeld-Fortzahlung übermitteln",
-        "rechtsgrundlage": "§ 68 Abs. 1 EStG",
+        "rechtsgrundlage": "§ 68 EStG",
         "status": "needs_eid",
         "requires_eid": true,
-        "datenkategorien": ["Meldebestätigung", "Kita-Betreuungsnachweis"],
+        "datenkategorien": ["Meldebestätigung"],
         "started_at": "@now-2d"
       }
     ],

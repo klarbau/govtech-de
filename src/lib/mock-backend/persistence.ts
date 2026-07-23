@@ -87,6 +87,12 @@ export type CollectionKey =
   // versteckt ihn bis zum Datum. Bei zod-Fehler reseedet `read()` nur diese Buckets.
   | 'aufenthalt-frist-nudge:dismissed'
   | 'aufenthalt-frist-nudge:snoozed-until'
+  // Termine „Übergaben" — Bündelungs-Vorschlag „Getrennt lassen" (`termine-
+  // uebergaben.md` § 7.4/§ 9.3). deviceLocal, `Record<PersonaId, string[]>` (Liste
+  // dismisster später-Termin-IDs). Kein globaler Namespace-Bump; bei zod-Fehler
+  // reseedet `read()` nur diesen Bucket. Persona-Wechsel setzt ihn NICHT zurück
+  // (persona-scoped im Record, deviceLocal wie `wohngeld-hinweis:*`).
+  | 'termin-bundling:dismissed'
   // Resilient Orchestration Engine (`resilient-orchestration-engine.md` § 2.5).
   // Eigener Schema-Version-Marker (`orchestration:schema-version`, start `1`) —
   // bleibt im bestehenden `v1`-Namespace; KEIN globaler v1→v2-Bump (der würde

@@ -4398,44 +4398,15 @@
   },
   "termine": {
     "title": "Termine",
-    "subtitle": "Alle Termine, Fristen und Erinnerungen an einem Ort.",
-    "wartet": {
-      "titel": "Wartet auf Sie",
-      "hint": "Diese Einträge brauchen jetzt Ihre Bestätigung."
-    },
     "agenda": {
-      "titel": "Anstehend",
       "heute": "Heute",
-      "morgen": "Morgen",
-      "leer": "Nichts Anstehendes — Sie sind auf dem Laufenden."
+      "morgen": "Morgen"
     },
     "rail": {
-      "titel": "Kalender",
       "vergangen_link": "Vergangene Termine ansehen"
     },
-    "kpi": {
-      "naechster_termin": "Nächster Termin",
-      "strip_label": "Termin-Kennzahlen",
-      "offene_fristen": "Offene Fristen",
-      "bestaetigte": "Bestätigte Termine",
-      "warten": "Warten auf Rückmeldung",
-      "kein_termin": "Kein Termin",
-      "offene_fristen_sub": "Handlungsbedarf",
-      "bestaetigte_sub": "In den nächsten 30 Tagen",
-      "warten_sub": "Termine in Klärung"
-    },
-    "tabs": {
-      "alle": "Alle",
-      "termine": "Termine",
-      "fristen": "Fristen",
-      "erinnerungen": "Erinnerungen",
-      "vergangen": "Vergangen"
-    },
     "toolbar": {
-      "suche_placeholder": "Termine oder Behörden suchen",
-      "suche_label": "Termine durchsuchen",
-      "export": "Kalender exportieren",
-      "filter": "Filter"
+      "export": "In Kalender exportieren"
     },
     "hero": {
       "tag": "Vorgemerkt",
@@ -4470,46 +4441,6 @@
     "bestaetigen": {
       "toast_error": "Bestätigung fehlgeschlagen — bitte erneut versuchen."
     },
-    "calendar": {
-      "prev": "Vorheriger Monat",
-      "next": "Nächster Monat",
-      "label": "Monatskalender",
-      "weekday_long": {
-        "mo": "Montag",
-        "di": "Dienstag",
-        "mi": "Mittwoch",
-        "do": "Donnerstag",
-        "fr": "Freitag",
-        "sa": "Samstag",
-        "so": "Sonntag"
-      },
-      "weekday_short": {
-        "mo": "Mo",
-        "di": "Di",
-        "mi": "Mi",
-        "do": "Do",
-        "fr": "Fr",
-        "sa": "Sa",
-        "so": "So"
-      },
-      "day_aria": "{datum}{events}",
-      "day_events_suffix": " — {count, plural, =1 {1 Termin} other {# Termine}}",
-      "day_events_breakdown": {
-        "termine": "{count, plural, =1 {1 Termin} other {# Termine}}",
-        "fristen": "{count, plural, =1 {1 Frist} other {# Fristen}}",
-        "erinnerungen": "{count, plural, =1 {1 Erinnerung} other {# Erinnerungen}}"
-      },
-      "quittung_hint": "Ihre Termine im Überblick"
-    },
-    "filter": {
-      "title": "Filter",
-      "behoerdentermine": "Behördentermine",
-      "erinnerungen": "Erinnerungen & Fristen",
-      "buchungen": "Buchungen",
-      "abgeschlossen": "Abgeschlossen",
-      "vergangene_zeigen": "Vergangene & abgesagte anzeigen",
-      "vergangene_ausblenden": "Vergangene & abgesagte ausblenden"
-    },
     "row": {
       "details_cta": "Details",
       "zum_vorgang_cta": "Zum Vorgang",
@@ -4530,17 +4461,6 @@
       "abgesagt": "Abgesagt",
       "erledigt": "Erledigt",
       "wartet": "Wartet auf Bestätigung"
-    },
-    "marker": {
-      "erinnerung": "Erinnerung"
-    },
-    "auswahl": {
-      "label": "Ausgewählt: {datum}",
-      "aufheben": "Auswahl aufheben"
-    },
-    "alle_anzeigen": {
-      "show": "Abgeschlossene Termine anzeigen",
-      "hide": "Abgeschlossene Termine ausblenden"
     },
     "detail": {
       "status_label": "Status: {status}",
@@ -4564,15 +4484,6 @@
       "toast_error": "Termin konnte nicht verschoben werden — bitte erneut versuchen.",
       "confirm": "Auf diesen Termin verschieben"
     },
-    "naechster_schritt": {
-      "title": "Nächster Schritt",
-      "untertitel": "So bereiten Sie sich auf Ihren Termin vor.",
-      "kein_termin": "Kein offener Termin",
-      "vorerinnerung_titel": "Planen Sie genug Zeit ein",
-      "vorerinnerung_text": "Bitte erscheinen Sie 10–15 Minuten vor Ihrem Termin.",
-      "storno_titel": "Nicht wahrnehmen?",
-      "storno_text": "Sie können Ihren Termin bis 48 Stunden vorher online stornieren oder verschieben."
-    },
     "vorbereitung": {
       "reisepass": "Reisepass mitbringen",
       "title": "Gut vorbereitet zum Termin",
@@ -4582,7 +4493,9 @@
       "meldung": "Wohnungsgeberbestätigung mitbringen",
       "versicherungskarte": "Versicherungskarte bereithalten",
       "unterlagen_pruefen": "Relevante Unterlagen prüfen",
-      "fragen_notieren": "Fragen notieren"
+      "fragen_notieren": "Fragen notieren",
+      "antrag_vorausgefuellt": "Antrag vorausgefüllt aus Ihren Stammdaten",
+      "checkin_vorbereitet": "Check-in vorbereitet (Buchungsreferenz)"
     },
     "fristen": {
       "title": "Fristen im Überblick",
@@ -4608,7 +4521,6 @@
     },
     "error": "Termine konnten nicht geladen werden.",
     "retry": "Erneut versuchen",
-    "uhr_dauer": "{zeit} Uhr ({dauer} Min.)",
     "zeit_range": "{range} Uhr",
     "action": {
       "bestaetigen": "Bestätigen",
@@ -4621,33 +4533,68 @@
       "abgesagt": "Abgesagt",
       "vorschlag": "Vorgeschlagen"
     },
-    "cal": {
-      "legend": {
-        "titel": "Legende",
-        "termine": "Termine",
-        "fristen": "Fristen",
-        "erinnerungen": "Erinnerungen",
-        "mehrere": "Mehrere Einträge"
-      }
+    "these": {
+      "kontakte": "{count, plural, =1 {Ein Kontakt} other {# Kontakte}} in den nächsten zwei Wochen.",
+      "behoerdengaenge": "{count, plural, =0 {Keiner davon ist ein Behördengang.} =1 {Einer davon ist ein Behördengang.} other {# davon sind Behördengänge.}}",
+      "keine_kontakte": "In den nächsten zwei Wochen steht kein Behördengang an.",
+      "buendelung": "Die beiden Behördengänge lassen sich in einem Besuch erledigen.",
+      "frist_einklick": "Eine Frist ist mit einem Klick erledigt.",
+      "naechster": "Nächster Kontakt: {betreff} am {datum}."
     },
-    "spur": {
-      "termine_titel": "Termine, um die sich das System kümmert",
-      "termine_leer": "Aktuell keine anstehenden Termine.",
-      "fristen_titel": "Fristen, die Sie im Blick behalten müssen",
-      "fristen_leer": "Keine offenen Fristen."
+    "ansicht": {
+      "anstehend": "Anstehend",
+      "vergangen": "Vergangen",
+      "aria": "Zeitraum"
     },
-    "liste": {
-      "anstehende_titel": "Anstehende Termine",
-      "alle_termine": "Alle Termine anzeigen",
-      "alle_fristen": "Alle Fristen anzeigen",
-      "erinnerungen_titel": "Erinnerungen"
+    "dossier": {
+      "warum_persoenlich_lead": "Warum persönlich:",
+      "ohne_anfahrt_lead": "Ohne Anfahrt:",
+      "ohne_anfahrt_video": "Videotermin von zu Hause. Der Teilnahme-Link kommt 24 Stunden vorher per E-Mail.",
+      "ohne_anfahrt_telefon": "Telefontermin. Sie werden zur vereinbarten Zeit angerufen.",
+      "prep_system": "Vom System vorbereitet",
+      "prep_buerger": "Sie bringen mit"
     },
-    "weitere": {
-      "title": "Weitere Termine & Erinnerungen"
+    "meta": {
+      "bestaetigt": "Bestätigt",
+      "wartet_bestaetigung": "Wartet auf Ihre Bestätigung",
+      "privat": "Privat",
+      "laeuft_ohne_sie": "Läuft ohne Sie",
+      "vorbereitung_auto": "Vorbereitung startet automatisch"
     },
-    "fristen_offen": "{count, plural, =0 {Keine offenen Fristen} =1 {1 offene Frist} other {# offene Fristen}}",
-    "frist_praefix": "Frist: {datum}",
-    "faellig_praefix": "Fällig: {datum}"
+    "quiet": {
+      "privat_note": "{ort} — private Buchung, keine Behörde beteiligt.",
+      "laeuft_ohne_sie_note": "{behoerde} — wird per SEPA-Lastschrift automatisch eingezogen, nur zur Kenntnis.",
+      "vorbereitung_note": "Rund acht Wochen vorher erinnert Sie das System und legt voraussichtlich benötigte Unterlagen bereit. Welche Nachweise final nötig sind, entscheidet die Behörde im Einzelfall.",
+      "wartet_note": "{behoerde} — entfällt, wenn Sie beide Anliegen in einem Besuch erledigen."
+    },
+    "warum": {
+      "lea_aufenthaltstitel": "Für den neuen elektronischen Aufenthaltstitel werden Ihre Fingerabdrücke vor Ort aufgenommen (§ 78 Abs. 3 AufenthG)."
+    },
+    "buendelung": {
+      "lead": "Das System schlägt vor:",
+      "text": "Ihr Termin „{spaeter_betreff}“ am {spaeter_datum} findet im selben Gebäude statt ({wartebereich}). Beide Anliegen lassen sich am {frueher_datum} in einem Besuch erledigen.",
+      "cta_zusammenlegen": "In einem Besuch erledigen",
+      "cta_getrennt": "Getrennt lassen",
+      "fineprint": "[MOCK] Ihr späterer Termin wird auf {frueher_datum}, {zeit} gelegt und bestätigt. Die Behörde wird in dieser Demo nicht automatisch benachrichtigt.",
+      "toast_success": "Beide Anliegen am {datum} in einem Besuch.",
+      "toast_error": "Zusammenlegen fehlgeschlagen — bitte erneut versuchen.",
+      "aria_done": "Beide Termine auf {datum} gelegt.",
+      "aria_getrennt": "Vorschlag verworfen — Termine bleiben getrennt."
+    },
+    "frist": {
+      "lead": "Fällig in {tage} Tagen. Die {behoerde} benötigt {kategorien}. Sie geben die Übermittlung mit Ihrer eID frei — vorher sehen Sie genau, welche Daten übermittelt werden.",
+      "cta_pruefen_einreichen": "Prüfen und einreichen",
+      "zum_vorgang": "Zum Vorgang",
+      "toast_success": "Nachweis übermittelt — die Bestätigung liegt in Ihrem Posteingang.",
+      "toast_error": "Übermittlung fehlgeschlagen — bitte erneut versuchen.",
+      "aria_done": "Nachweis übermittelt."
+    },
+    "gap_ruhig": "{wochen, plural, =1 {Eine ruhige Woche} other {# ruhige Wochen}} — nichts zu tun. Ändert sich etwas, melden wir uns.",
+    "spine_end": "Danach ist nichts geplant.",
+    "leer": {
+      "titel": "Nichts Anstehendes",
+      "text": "Sie sind auf dem Laufenden. Ändert sich etwas, melden wir uns."
+    }
   },
   "steuer": {
     "title": "Steuer",

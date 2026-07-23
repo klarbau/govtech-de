@@ -78,7 +78,7 @@ const DEFAULT_PERSONA_ID = 'anna-petrov';
 // älter/fehlt, werden die Persona-Buckets gegen einen frischen Anker neu geseedet
 // (statt den alten Stand zu zeigen). Kein globaler `v1→v2`-Namespace-Bump — der
 // würde ALLE Buckets (inkl. Orchestrierungs-State) purgen.
-const SEED_CONTENT_VERSION = 8;
+const SEED_CONTENT_VERSION = 9;
 
 // ---------------------------------------------------------------------------
 // §A1 — Relative-Zeit-Anker / Sentinel-Resolver
