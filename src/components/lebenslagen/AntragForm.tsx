@@ -4,9 +4,10 @@ import * as React from 'react';
 import { notFound, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { ArrowLeft, Euro, Fingerprint, Info, Landmark, Lock, UploadCloud } from 'lucide-react';
+import { ArrowLeft, Fingerprint, Info, Lock, UploadCloud } from 'lucide-react';
 
 import { EidConfirmDialog } from '@/components/umzug/EidConfirmDialog';
+import { MobileStickyCta } from '@/components/shared/MobileStickyCta';
 import { api } from '@/lib/mock-backend';
 import type {
   CascadeStepConfig,
@@ -205,9 +206,7 @@ function AntragFormReady({
     return (async () => {
       try {
         const { vorgangId } = await api.starteLebenslage(config.slug, formValues, grantedConsentIds);
-        router.push(
-          `/lebenslagen/${config.slug}/cascade?vorgangId=${encodeURIComponent(vorgangId)}`,
-        );
+        router.push(`/vorgaenge/${encodeURIComponent(vorgangId)}`);
       } catch (e) {
         setError(e instanceof Error ? e.message : td('submit_error'));
       }
@@ -391,42 +390,34 @@ function AntragFormReady({
           ) : null}
 
           {config.gebuehr.gibt_es ? (
-            <section className="gt-card ll-gebuehr-card" aria-labelledby="ll-geb-form-title">
-              <span className="icon-circle" aria-hidden="true">
-                <Euro />
-              </span>
-              <div>
-                <h2 id="ll-geb-form-title" className="gt-card-title">
-                  {td('section.gebuehr')}
-                </h2>
-                <p className="ll-geb-betrag">
-                  {config.gebuehr.betrag_key ? t(config.gebuehr.betrag_key) : ''}
-                  <span className="ll-mock-rail">{td('mock_payment')}</span>
-                </p>
-              </div>
+            <section className="ll-geb-line" aria-labelledby="ll-geb-form-title">
+              <h2 id="ll-geb-form-title" className="ll-geb-label">
+                {td('section.gebuehr')}
+              </h2>
+              <p className="ll-geb-betrag">
+                {config.gebuehr.betrag_key ? t(config.gebuehr.betrag_key) : ''}
+                <span className="ll-mock-rail">{td('mock_payment')}</span>
+              </p>
             </section>
           ) : null}
 
           <div className="ll-cta-row">
-            <button type="submit" className="btn btn-primary btn-lg lg-iridescent">
-              <Fingerprint aria-hidden="true" />
-              {td('cta_eid_submit')}
-            </button>
+            <MobileStickyCta>
+              <button type="submit" className="btn btn-primary btn-lg lg-iridescent">
+                <Fingerprint aria-hidden="true" />
+                {td('cta_eid_submit')}
+              </button>
+            </MobileStickyCta>
           </div>
         </div>
 
         <aside className="lk-rail" aria-label={td('datenminimierung_title')}>
           <section className="gt-card ll-dm-panel" tabIndex={0} aria-labelledby="ll-dm-title">
-            <div className="ll-dm-head">
-              <span className="icon-circle" aria-hidden="true">
-                <Landmark />
-              </span>
-              <div>
-                <h2 id="ll-dm-title" className="ll-dm-title">
-                  {td('datenminimierung_title')}
-                </h2>
-                <p className="ll-dm-sub">{td('datenminimierung_sub')}</p>
-              </div>
+            <div>
+              <h2 id="ll-dm-title" className="ll-dm-title">
+                {td('datenminimierung_title')}
+              </h2>
+              <p className="ll-dm-sub">{td('datenminimierung_sub')}</p>
             </div>
             <ul className="ll-dm-list">
               {recipientGroups.map((r) => (
@@ -450,13 +441,16 @@ function AntragFormReady({
             </ul>
           </section>
 
-          <section className="gt-card lk-secure">
-            <span className="icon-circle green" aria-hidden="true">
-              <Lock />
-            </span>
-            <h2 className="lk-secure-title">{td('datenschutz_title')}</h2>
-            <p className="lk-secure-body">{td('datenschutz_body')}</p>
-          </section>
+          {/* Datenschutz-Zeile — statt Karte: Kurzfassung + Textlink (wie /lebenslagen/[slug]). */}
+          <div className="ll-datenschutz">
+            <p className="ll-datenschutz-body">
+              <Lock className="ll-datenschutz-icon" aria-hidden="true" />
+              {td('datenschutz_body')}
+            </p>
+            <Link href="/datenschutz" className="ll-datenschutz-link">
+              {td('datenschutz_link')}
+            </Link>
+          </div>
         </aside>
       </form>
 

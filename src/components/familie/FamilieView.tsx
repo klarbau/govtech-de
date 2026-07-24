@@ -126,7 +126,7 @@ export function FamilieView() {
           <div className="fm-card fm-hero">
             <div className="hh-head">
               <div>
-                <div className="ttl">{t('haushalt.title')}</div>
+                <div className="ttl" id="fm-haushalt-title">{t('haushalt.title')}</div>
                 <div className="sub">
                   {t('haushalt.count', { count: view?.mitglieder.length ?? 0 })}
                 </div>
@@ -140,7 +140,7 @@ export function FamilieView() {
                 {t('cta.haushalt_verwalten')}
               </button>
             </div>
-            <div className="hh-people">
+            <div className="hh-people m-shelf" role="group" tabIndex={0} aria-labelledby="fm-haushalt-title">
               {view.mitglieder.map((m) => {
                 const name = `${m.vorname} ${m.nachname}`.trim();
                 return (
@@ -183,9 +183,10 @@ export function FamilieView() {
           <div className="row-pair" style={{ marginTop: 18 }}>
             <div className="fm-card fm-list">
               <div style={{ marginBottom: 16 }}>
-                <div className="text-md fw-600">{t('vorgaenge.title')}</div>
+                <div className="text-md fw-600" id="fm-vorg-title">{t('vorgaenge.title')}</div>
                 <div className="muted text-xs">{t('vorgaenge.subtitle')}</div>
               </div>
+              <div className="m-shelf m-shelf-top fm-vorg-shelf" role="group" tabIndex={0} aria-labelledby="fm-vorg-title">
               {(view?.gemeinsame_vorgaenge ?? []).length === 0 ? (
                 <div className="muted text-sm">{t('vorgaenge.empty')}</div>
               ) : (
@@ -218,6 +219,7 @@ export function FamilieView() {
                   },
                 )
               )}
+              </div>
               <Link className="all-link" href="/vorgaenge">
                 {t('vorgaenge.show_all')}{' '}
                 <ChevronRight style={{ width: 14, height: 14 }} />

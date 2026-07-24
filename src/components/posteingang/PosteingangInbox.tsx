@@ -13,6 +13,7 @@ import {
   ChevronDown,
   ChevronRight,
   ChevronUp,
+  ClipboardCheck,
   Clock,
   Download,
   Euro,
@@ -45,12 +46,12 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
-import { api } from '@/lib/mock-backend';
+import { api, MockBackendError } from '@/lib/mock-backend';
 import { usePosteingangSearch } from '@/components/posteingang/posteingang-search-store';
 import { useMockEvents } from '@/components/providers/LiveBackendProvider';
 import { bridgeTargetForArchetype } from '@/lib/mock-backend/brief-bridge';
 import { useMediaQuery } from '@/lib/hooks/use-media-query';
-import { Skeleton } from '@/components/shared/Skeleton';
+import { Skeleton, SkeletonText } from '@/components/shared/Skeleton';
 import { isLocale, type Locale } from '@/i18n/routing';
 import type {
   Behoerde,
@@ -58,9 +59,11 @@ import type {
   Letter,
   LetterAnhang,
   LetterFrist,
+  LetterFristTyp,
   Vorgang,
 } from '@/types';
 
+import { deriveErklaererSlots } from './erklaerer-slots';
 import { ErkannteAufgabePanel } from './ErkannteAufgabePanel';
 import { ErklaererBulletList } from './ErklaererBulletList';
 import { ErklaererLangToggle } from './ErklaererLangToggle';
@@ -1067,6 +1070,8 @@ function PostItemRow({
 
 // ── PostDetail ──────────────────────────────────────────────────────────────
 
+type ReaderPage = 'brief' | 'verstehen' | 'handeln';
+
 function PostDetail({
   letter,
   absender,
@@ -1090,14 +1095,111 @@ function PostDetail({
   const tWas = useTranslations('posteingang.was_kann_ich_tun');
   const tPost = useTranslations('posteingang');
   const tErkl = useTranslations('posteingang.erklaerer');
+  const tCommon = useTranslations('common');
   // prefers-reduced-motion: Slide-Offsets kollabieren auf reine Opacity-Fades.
   const reduceMotion = useReducedMotion();
-  const [docTab, setDocTab] = React.useState<'original' | 'anhaenge' | 'verlauf'>(
-    'original',
-  );
-  // Bei Briefwechsel: zurück auf den Default-Tab + Originaltext eingeklappt.
+  // Brief-Spread: horizontale Seiten „Brief · Verstehen · Handeln" statt der
+  // vertikalen Tab-Stapel. `page` folgt dem Pager UND dem Swipe (bidirektional).
+  const [page, setPage] = React.useState<ReaderPage>('brief');
+  // Bei Briefwechsel: zurück auf die „Brief"-Seite.
   React.useEffect(() => {
-    setDocTab('original');
+    setPage('brief');
+  }, [letter.id]);
+
+  const pagesRef = React.useRef<HTMLDivElement>(null);
+  const briefPageRef = React.useRef<HTMLDivElement>(null);
+  const verstehenPageRef = React.useRef<HTMLDivElement>(null);
+  const handelnPageRef = React.useRef<HTMLDivElement>(null);
+
+  // Kanten-Maske: an der Seite, hinter der weitere Seiten liegen, blendet eine
+  // Maske den harten Textschnitt aus. 'l'/'r' sind VISUELLE Seiten — für AR-RTL
+  // über die computed direction normalisiert (Blink/Gecko: scrollLeft -max..0).
+  const [edgeFade, setEdgeFade] = React.useState<'none' | 'l' | 'r' | 'lr'>('none');
+  const updateEdgeFade = React.useCallback(() => {
+    const el = pagesRef.current;
+    if (!el) return;
+    const max = el.scrollWidth - el.clientWidth;
+    if (max <= 8) {
+      setEdgeFade('none');
+      return;
+    }
+    const rtl = getComputedStyle(el).direction === 'rtl';
+    const x = el.scrollLeft;
+    const l = x > (rtl ? -max : 0) + 8;
+    const r = x < (rtl ? 0 : max) - 8;
+    setEdgeFade(l && r ? 'lr' : l ? 'l' : r ? 'r' : 'none');
+  }, []);
+  React.useEffect(() => {
+    updateEdgeFade();
+  }, [letter.id, updateEdgeFade]);
+  React.useEffect(() => {
+    window.addEventListener('resize', updateEdgeFade);
+    return () => window.removeEventListener('resize', updateEdgeFade);
+  }, [updateEdgeFade]);
+
+  // Pager-Klick pinnt die Zielseite: auf dem Zwei-Seiten-Spread sind mehrere
+  // Seiten gleichzeitig VOLL sichtbar — der Observer darf die explizite Wahl
+  // nicht mit „erste gewinnt" überschreiben, solange die Zielseite sichtbar ist.
+  const pinnedPageRef = React.useRef<ReaderPage | null>(null);
+
+  // Pager-Klick: State setzen UND die Polosa zur Seite scrollen. Bei
+  // prefers-reduced-motion ohne Smooth-Scroll (§2.2).
+  const goToPage = React.useCallback(
+    (target: ReaderPage) => {
+      pinnedPageRef.current = target;
+      setPage(target);
+      const ref =
+        target === 'brief'
+          ? briefPageRef
+          : target === 'verstehen'
+            ? verstehenPageRef
+            : handelnPageRef;
+      const reduce =
+        reduceMotion ||
+        document.documentElement.classList.contains('a11y-reduce-motion');
+      ref.current?.scrollIntoView({
+        behavior: reduce ? 'auto' : 'smooth',
+        inline: 'start',
+        block: 'nearest',
+      });
+    },
+    [reduceMotion],
+  );
+
+  // Aktiv-Zustand beim Swipen/Scrollen nachziehen: der Observer setzt NUR den
+  // State, scrollt nie selbst (kein Re-Snap-Loop). Neu attachen bei Briefwechsel,
+  // da die Polosa via key=letter.id remountet.
+  React.useEffect(() => {
+    const root = pagesRef.current;
+    if (!root) return;
+    pinnedPageRef.current = null;
+    // Ratio-Stand ALLER Seiten (der Observer liefert nur Deltas): daraus die
+    // erste Seite in Lesereihenfolge ≥0.6 als aktiven Pager-Zustand ableiten —
+    // entspricht „visuell führend" in LTR wie RTL. Der Observer setzt NUR den
+    // State, scrollt nie selbst (kein Re-Snap-Loop).
+    const ratios: Partial<Record<ReaderPage, number>> = {};
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          ratios[e.target.getAttribute('data-page') as ReaderPage] =
+            e.intersectionRatio;
+        }
+        // Explizit gewählte Seite bleibt aktiv, solange sie sichtbar ist
+        // (Spread: zwei Seiten voll sichtbar); erst beim Wegscrollen entpinnen.
+        const pinned = pinnedPageRef.current;
+        if (pinned && (ratios[pinned] ?? 0) >= 0.6) return;
+        pinnedPageRef.current = null;
+        const lead = (['brief', 'verstehen', 'handeln'] as const).find(
+          (p) => (ratios[p] ?? 0) >= 0.6,
+        );
+        if (lead) setPage(lead);
+      },
+      { root, threshold: 0.6 },
+    );
+    for (const el of root.querySelectorAll<HTMLElement>('[data-page]')) {
+      observer.observe(el);
+    }
+    return () => observer.disconnect();
   }, [letter.id]);
 
   // „Der Brief, der handelt" — Bridge-Ziel + Originaltext-Handle (scrollToZitat).
@@ -1109,6 +1211,9 @@ function PostDetail({
   // nach Mount zum Zitat scrollen + hervorheben (RAF nach dem State-Flip).
   const handleScrollToZitat = React.useCallback(
     (zitat: string) => {
+      // „Im Original prüfen" wohnt auf der „Brief"-Seite — erst dorthin
+      // navigieren, dann aufklappen + zum Zitat scrollen (§2.1).
+      goToPage('brief');
       if (originaltextOpen) {
         originalRef.current?.scrollToZitat(zitat);
       } else {
@@ -1116,7 +1221,7 @@ function PostDetail({
         onOriginaltextToggle();
       }
     },
-    [originaltextOpen, onOriginaltextToggle],
+    [originaltextOpen, onOriginaltextToggle, goToPage],
   );
 
   React.useEffect(() => {
@@ -1160,10 +1265,64 @@ function PostDetail({
     }
   }, [letter.id, t3]);
 
+  // KI-Erklärer-Zusammenfassung lazy laden (§6.2): 28/29 Seed-Briefe tragen ihre
+  // hand-geprüften `post_open`-Bullets NUR in der Summaries-Map, nicht direkt am
+  // Brief. Trägt der Prop-Brief bereits `post_open`, kein Fetch; sonst
+  // `extrahiereAktion` → Re-Fetch (`getLetter`, hängt auch `translations` an) in
+  // lokalen `loadedLetter`, der die Prop für Erklärer/Bedeutung überschreibt.
+  // `SUMMARY_NOT_FOUND` (statische umzug2026-Bestätigungen, Laufzeit-Eingangs-
+  // bestätigungen) → still degradieren auf abgeleitete Antworten, kein Fehler-UI.
+  const hasPostOpen = Boolean(letter.ai_summary?.post_open);
+  const [loadedLetter, setLoadedLetter] = React.useState<Letter | null>(null);
+  const [summaryLoading, setSummaryLoading] = React.useState(false);
+  const [summaryError, setSummaryError] = React.useState(false);
+  const [summaryRetry, setSummaryRetry] = React.useState(0);
+  React.useEffect(() => {
+    setLoadedLetter(null);
+    setSummaryError(false);
+    if (hasPostOpen) {
+      setSummaryLoading(false);
+      return;
+    }
+    let cancelled = false;
+    setSummaryLoading(true);
+    void api
+      .extrahiereAktion(letter.id)
+      .then(() => api.getLetter(letter.id))
+      .then((fresh) => {
+        if (!cancelled) setLoadedLetter(fresh);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        // Kein Seed → keine authored Zusammenfassung, still degradieren.
+        if (
+          err instanceof MockBackendError &&
+          err.code === 'SUMMARY_NOT_FOUND'
+        ) {
+          return;
+        }
+        setSummaryError(true);
+      })
+      .finally(() => {
+        if (!cancelled) setSummaryLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [letter.id, hasPostOpen, summaryRetry]);
+
+  // Frisch geladener Brief überschreibt die Prop für Erklärer/Bedeutung; der Rest
+  // von PostDetail (Fristen, Betrag, Auszug) wartet NICHT auf diesen Fetch.
+  // id-Guard: die Instanz überlebt Briefwechsel (statisches key="reader"), der
+  // Reset in den Effect läuft erst nach dem Paint — ohne Guard wäre für einen
+  // Frame die Summary des vorigen Briefs sichtbar.
+  const effectiveLetter =
+    loadedLetter?.id === letter.id ? loadedLetter : letter;
+
   // Mehrsprachiger Brief-Erklärer (Spec §4.2): locale-bewusste Bullet-Auswahl.
   // Die brief-lokale Sprachwahl folgt initial der UI-Locale (sofern geseedet),
   // ändert sie aber NICHT. `activeSummary` = übersetzte `post_open` ODER DE-Fallback.
-  const dePostOpen = letter.ai_summary?.post_open;
+  const dePostOpen = effectiveLetter.ai_summary?.post_open;
   const {
     activeLang,
     setActiveLang,
@@ -1171,11 +1330,19 @@ function PostDetail({
     activeSummary,
     isTranslated,
     isFallbackDe,
-  } = useErklaererLang(letter.ai_summary, dePostOpen);
+  } = useErklaererLang(effectiveLetter.ai_summary, dePostOpen);
 
   const ai = activeSummary;
-  const bullets = ai?.bullets?.slice(0, 3).map((b) => b.text) ?? [];
-  const worum = bullets[0] ?? t3('erklaerer.worum_fallback');
+  // „Worum geht es?" — Fallback-Kette: übersetzter/DE-Bullet[0] → strukturelle
+  // Pre-Open-Zeile → Betreff. Nie ein generischer „bitte Original prüfen"-Füller.
+  const worum =
+    ai?.bullets?.[0]?.text ??
+    effectiveLetter.ai_summary?.pre_open?.text ??
+    effectiveLetter.betreff;
+
+  // Fakten-Slots des Erklärers — brief-spezifisch (Betrag / Frist / Handeln)
+  // statt starrer Zahlungs-Archetyp. Summary-unabhängig, wartet nicht auf Fetch.
+  const factSlots = deriveErklaererSlots(letter);
 
   const earliestFrist = (letter.fristen ?? [])
     .map((f) => f.datum)
@@ -1202,14 +1369,6 @@ function PostDetail({
   const excerptStart = greetIdx >= 0 ? greetIdx : Math.min(2, bodyLines.length - 1);
   const excerptAbsaetze = bodyLines.slice(excerptStart, excerptStart + 3);
   const anhaenge = letter.anhaenge ?? [];
-
-  // HONESTY-GUARDRAIL: Betrag/Frist sind deutsch-abgeleitete €/Datums-Werte und
-  // werden NIE lokalisiert/neu gerendert — nur der deskriptive Bullet-Text wechselt
-  // die Sprache (Spec §4.2.3 / §10).
-  const betragText = formatBetragErklaerung(letter, t3);
-  const bisWannText = fristLabel
-    ? t3('erklaerer.bis_wann_template', { datum: fristLabel })
-    : t3('erklaerer.bis_wann_keine');
 
   const bedeutung = formatBedeutung(letter, tWas, t3);
   // „Was bedeutet das" — Bullets ab Index 1 (Bullet 0 ist die „Worum"-Kurzfassung
@@ -1321,115 +1480,122 @@ function PostDetail({
         </button>
       </div>
 
-      {/* Brief-Wechsel: Remount (key=letter.id) mit sanftem Fade — setzt
-          zugleich die Scroll-Position des Readers auf oben zurück. */}
-      <motion.div
-        key={letter.id}
-        className="lg-reader-scroll"
-        initial={{ opacity: 0, y: reduceMotion ? 0 : 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: reduceMotion ? 0.01 : 0.2, ease: 'easeOut' }}
-      >
-      <div className="post-detail-head">
-        <span className="av">
-          <Landmark />
-        </span>
-        <div className="grow">
-          <div className="who">{absender?.name_de ?? 'Behörde'}</div>
-          {absender && (
-            <div className="lg-reader-adresse">
-              {absender.adresse.strasse} {absender.adresse.hausnummer},{' '}
-              {absender.adresse.plz} {absender.adresse.ort}
-            </div>
-          )}
-          <div className="verify lg-reader-verify">
+      {/* Kompakte Brief-Identität (§2.3): gepinnt über dem Pager, ein Textband
+          statt 54px-Avatar + Adresse + 4-Zellen-Grid. Adresse steht im
+          Originaltext. */}
+      <div className="lg-reader-idbar">
+        <div className="lg-idbar-line">
+          <span className="av">
+            <Landmark />
+          </span>
+          <span className="lg-idbar-who">{absender?.name_de ?? 'Behörde'}</span>
+          <span className="verify lg-idbar-verify">
             <ShieldCheck aria-hidden="true" />
             {t3('detail.verifiziert')}
-            {letter.vorgang_id && (
-              <span
-                data-testid="post-detail-linked-badge"
-                className="ml-1.5 inline-flex items-center gap-1 rounded-full border border-border bg-muted px-2 py-0.5 align-middle text-[11px] font-medium text-muted-foreground"
-              >
-                <Link2 className="size-3" aria-hidden="true" />
-                {tPost('linkedBadge')}
-              </span>
+          </span>
+          {letter.vorgang_id && (
+            <span
+              data-testid="post-detail-linked-badge"
+              className="ml-1.5 inline-flex items-center gap-1 rounded-full border border-border bg-muted px-2 py-0.5 align-middle text-[11px] font-medium text-muted-foreground"
+            >
+              <Link2 className="size-3" aria-hidden="true" />
+              {tPost('linkedBadge')}
+            </span>
+          )}
+        </div>
+        <h2 className="lg-idbar-betreff">
+          {betreffOhneAz(letter)}
+          <span className="lg-reader-az tabular-nums"> · {letter.aktenzeichen}</span>
+        </h2>
+        <p className="lg-reader-metaline">
+          <span>
+            <span className="k">{t3('detail.meta_eingegangen')}</span>{' '}
+            <span className="tabular-nums">{empfangenMitZeit}</span>
+          </span>
+          <span className="sep" aria-hidden="true">·</span>
+          <span>
+            <span className="k">{t3('detail.meta_kategorie')}</span> {kategorieLabel}
+          </span>
+          <span className="sep" aria-hidden="true">·</span>
+          <span className={fristLabel ? 'has-frist' : undefined}>
+            {fristLabel ? (
+              <>
+                <span className="k">{t3('detail.meta_frist')}</span> {fristLabel}
+                {fristRelativ && (
+                  <span className="lg-frist-relativ"> {fristRelativ}</span>
+                )}
+              </>
+            ) : (
+              // Ohne k-Label: „Frist Keine Frist" läse doppelt.
+              t3('detail.meta_frist_keine')
             )}
-          </div>
-        </div>
-      </div>
-
-      <h2>{betreffOhneAz(letter)}</h2>
-      <div className="lg-reader-az tabular-nums">{letter.aktenzeichen}</div>
-      <dl className="post-meta-grid">
-        <div className="post-meta-cell">
-          <dt>{t3('detail.meta_eingegangen')}</dt>
-          <dd className="tabular-nums">{empfangenMitZeit}</dd>
-        </div>
-        <div className="post-meta-cell">
-          <dt>{t3('detail.meta_kategorie')}</dt>
-          <dd>{kategorieLabel}</dd>
-        </div>
-        <div className="post-meta-cell">
-          <dt>{t3('detail.meta_frist')}</dt>
-          <dd className={fristLabel ? 'has-frist' : undefined}>
-            {fristLabel ?? t3('detail.meta_frist_keine')}
-            {fristRelativ && (
-              <span className="lg-frist-relativ"> {fristRelativ}</span>
-            )}
-          </dd>
-        </div>
-        <div className="post-meta-cell">
-          <dt>{t3('detail.meta_status')}</dt>
-          <dd className={letter.status === 'ungelesen' ? 'lg-status-neu' : undefined}>
+          </span>
+          <span className="sep" aria-hidden="true">·</span>
+          <span className={letter.status === 'ungelesen' ? 'lg-status-neu' : undefined}>
+            <span className="k">{t3('detail.meta_status')}</span>{' '}
             {t3(`detail.status_${letter.status}` as 'detail.status_ungelesen')}
-          </dd>
-        </div>
-      </dl>
-
-      {/* Leichte-Sprache-Erläuterung (Spec §4.1, HERO): erste Aktion nach dem
-          Brief-Kopf, opt-in; der Originaltext bleibt darunter führend. */}
-      <div className="mt-4">
-        <LeichteSpracheReveal letter={letter} />
+          </span>
+        </p>
       </div>
 
-      <div className="post-doc-tabs" role="tablist" aria-label={t3('detail.tabs_aria')}>
+      {/* Pager aus .post-doc-tabs: Brief · Verstehen · Handeln. Kein
+          role=tablist — alle Seiten leben gleichzeitig im A11y-Tree (§4);
+          aria-current markiert die aktive Pille, der Anhänge-Zähler wandert auf
+          „Brief". */}
+      <div
+        className="post-doc-tabs lg-reader-pager"
+        role="group"
+        aria-label={t3('detail.pager_aria')}
+      >
         <button
           type="button"
-          role="tab"
-          aria-selected={docTab === 'original'}
-          className={`post-doc-tab${docTab === 'original' ? ' active' : ''}`}
-          onClick={() => setDocTab('original')}
+          aria-current={page === 'brief' ? 'true' : undefined}
+          className={`post-doc-tab${page === 'brief' ? ' active' : ''}`}
+          onClick={() => goToPage('brief')}
         >
-          {t3('detail.tab_original')}
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={docTab === 'anhaenge'}
-          className={`post-doc-tab${docTab === 'anhaenge' ? ' active' : ''}`}
-          onClick={() => setDocTab('anhaenge')}
-        >
-          {t3('detail.tab_anhaenge')}
+          {t3('detail.page_brief')}
           {anhaenge.length > 0 && (
             <span className="count tabular-nums">{anhaenge.length}</span>
           )}
         </button>
         <button
           type="button"
-          role="tab"
-          aria-selected={docTab === 'verlauf'}
-          className={`post-doc-tab${docTab === 'verlauf' ? ' active' : ''}`}
-          onClick={() => setDocTab('verlauf')}
+          aria-current={page === 'verstehen' ? 'true' : undefined}
+          className={`post-doc-tab${page === 'verstehen' ? ' active' : ''}`}
+          onClick={() => goToPage('verstehen')}
         >
-          {t3('detail.tab_verlauf')}
+          {t3('detail.page_verstehen')}
+        </button>
+        <button
+          type="button"
+          aria-current={page === 'handeln' ? 'true' : undefined}
+          className={`post-doc-tab${page === 'handeln' ? ' active' : ''}`}
+          onClick={() => goToPage('handeln')}
+        >
+          {t3('detail.page_handeln')}
         </button>
       </div>
 
-      {docTab === 'original' && (
-        <>
-          {/* Archive-Reihenfolge: der Brief öffnet sich zuerst als BRIEF —
-              Textauszug-Card mit „Mehr anzeigen" unten rechts; die KI- und
-              Aufgaben-Schichten folgen darunter. */}
+      {/* Horizontale Scroll-Snap-Polosa (§2.2): 3 Seiten, jede vertikal
+          scrollbar. Remount key=letter.id setzt beide Achsen zurück + Fade wie
+          bisher. */}
+      <motion.div
+        key={letter.id}
+        ref={pagesRef}
+        className="lg-reader-pages"
+        role="region"
+        aria-label={t3('detail.pages_aria')}
+        tabIndex={0}
+        data-fade={edgeFade === 'none' ? undefined : edgeFade}
+        onScroll={updateEdgeFade}
+        initial={{ opacity: 0, y: reduceMotion ? 0 : 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: reduceMotion ? 0.01 : 0.2, ease: 'easeOut' }}
+      >
+        {/* Seite „Brief": Auszug/Originaltext → Anhänge → Verlauf. */}
+        <div className="lg-reader-page" data-page="brief" ref={briefPageRef}>
+          {/* Der Brief öffnet zuerst als BRIEF — Textauszug-Card mit „Mehr
+              anzeigen"; Anhänge + Verlauf folgen darunter. */}
           {!originaltextOpen ? (
             <div className="auszug">
               {excerptAbsaetze.map((absatz, i) => (
@@ -1473,6 +1639,26 @@ function PostDetail({
             </div>
           )}
 
+          <ol className="post-verlauf">
+            <li>
+              <span className="post-verlauf-dot" aria-hidden="true" />
+              <span>{t3('detail.verlauf_empfangen_template', { datum: empfangenLabel })}</span>
+            </li>
+            <li>
+              <span className="post-verlauf-dot" aria-hidden="true" />
+              <span>{t3('detail.verlauf_verifiziert_template', { datum: empfangenLabel })}</span>
+            </li>
+          </ol>
+        </div>
+
+        {/* Seite „Verstehen": Leichte Sprache → KI-Erklärer → Bedeutung. */}
+        <div className="lg-reader-page" data-page="verstehen" ref={verstehenPageRef}>
+          {/* Leichte-Sprache-Erläuterung (Spec §4.1): opt-in, der Originaltext
+              auf der „Brief"-Seite bleibt führend. */}
+          <div className="lg-ls-reveal">
+            <LeichteSpracheReveal letter={letter} />
+          </div>
+
           <div className="ai-card">
             <span className="icon-circle">
               <Sparkles />
@@ -1506,35 +1692,93 @@ function PostDetail({
                   <TranslationDisclaimerBadge activeLang={activeLang} />
                 </div>
               )}
-              <div className="ai-blocks">
-                <div className="ai-block">
-                  <div className="ai-block-q">
-                    <Info aria-hidden="true" />
-                    {t3('erklaerer.worum_label')}
+              {summaryLoading ? (
+                <div role="status" aria-busy="true" className="mt-1">
+                  <span className="sr-only">{tCommon('loading')}</span>
+                  <SkeletonText lines={3} />
+                </div>
+              ) : (
+                <div className="ai-blocks">
+                  <div className="ai-block">
+                    <div className="ai-block-q">
+                      <Info aria-hidden="true" />
+                      {t3('erklaerer.worum_label')}
+                    </div>
+                    <p
+                      className="ai-block-a"
+                      lang={isTranslated ? activeLang : undefined}
+                      dir={isTranslated && activeLang === 'ar' ? 'rtl' : undefined}
+                    >
+                      {worum}
+                    </p>
                   </div>
-                  <p
-                    className="ai-block-a"
-                    lang={isTranslated ? activeLang : undefined}
-                    dir={isTranslated && activeLang === 'ar' ? 'rtl' : undefined}
+                  {factSlots.map((slot) => {
+                    if (slot.kind === 'betrag') {
+                      const betrag = formatBetragEuro(slot.betrag_cent);
+                      const answer =
+                        slot.richtung === 'erstattung'
+                          ? t3('erklaerer.betrag_erstattung_template', { betrag })
+                          : t3('erklaerer.betrag_nachzahlung_template', { betrag });
+                      return (
+                        <div className="ai-block" key="betrag">
+                          <div className="ai-block-q">
+                            <Euro aria-hidden="true" />
+                            {t3('erklaerer.betrag_label')}
+                          </div>
+                          <p className="ai-block-a">{answer}</p>
+                        </div>
+                      );
+                    }
+                    if (slot.kind === 'frist') {
+                      return (
+                        <div className="ai-block" key="frist">
+                          <div className="ai-block-q">
+                            <Clock aria-hidden="true" />
+                            {t3(
+                              ERKLAERER_FRIST_FRAGE[slot.typ] as 'erklaerer.bis_wann_label',
+                            )}
+                          </div>
+                          <p className="ai-block-a">
+                            {t3('erklaerer.bis_wann_template', {
+                              datum: formatFristLabel(slot.datum),
+                            })}
+                          </p>
+                        </div>
+                      );
+                    }
+                    const answer =
+                      slot.antwort === 'cta'
+                        ? t3('erklaerer.handeln_ja_template', { cta: slot.cta ?? '' })
+                        : slot.antwort === 'bestaetigung'
+                          ? t3('erklaerer.handeln_bestaetigung')
+                          : t3('erklaerer.handeln_information');
+                    return (
+                      <div className="ai-block" key="handeln">
+                        <div className="ai-block-q">
+                          <ClipboardCheck aria-hidden="true" />
+                          {t3('erklaerer.handeln_label')}
+                        </div>
+                        <p className="ai-block-a">{answer}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+              {summaryError && (
+                <p
+                  role="status"
+                  className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs leading-relaxed text-muted-foreground"
+                >
+                  {tPost('reader.summary_error')}
+                  <button
+                    type="button"
+                    className="font-medium text-primary underline underline-offset-2 focus-visible:outline-solid"
+                    onClick={() => setSummaryRetry((n) => n + 1)}
                   >
-                    {worum}
-                  </p>
-                </div>
-                <div className="ai-block">
-                  <div className="ai-block-q">
-                    <Euro aria-hidden="true" />
-                    {t3('erklaerer.betrag_label')}
-                  </div>
-                  <p className="ai-block-a">{betragText}</p>
-                </div>
-                <div className="ai-block">
-                  <div className="ai-block-q">
-                    <Clock aria-hidden="true" />
-                    {t3('erklaerer.bis_wann_label')}
-                  </div>
-                  <p className="ai-block-a">{bisWannText}</p>
-                </div>
-              </div>
+                    {tPost('reader.summary_error_retry')}
+                  </button>
+                </p>
+              )}
               <div className="ai-foot">
                 <p className="ai-disclaimer">{t3('erklaerer.disclaimer')}</p>
                 <button
@@ -1549,27 +1793,6 @@ function PostDetail({
               </div>
             </div>
           </div>
-
-          <ErkannteAufgabePanel
-            letter={letter}
-            bridge={bridge}
-            fristen={letter.fristen ?? []}
-            provenanceLabel={archetypeText(letter)}
-            onScrollToZitat={handleScrollToZitat}
-            onAddToCalendar={handleAddToCalendar}
-            embedded
-            variant="post-panel"
-          />
-
-          {fristLabel && (
-            <div className="frist-row">
-              <Clock style={{ color: 'var(--ink-3)', width: '16px', height: '16px' }} />
-              <span>
-                Frist: {fristTyp.charAt(0).toUpperCase() + fristTyp.slice(1)} bis{' '}
-              </span>
-              <span className="frist-pill">{fristLabel}</span>
-            </div>
-          )}
 
           <section className="post-panel" aria-label={t3('bedeutung.title')}>
             <div className="post-panel-head">
@@ -1600,6 +1823,31 @@ function PostDetail({
               <p>{bedeutung}</p>
             )}
           </section>
+        </div>
+
+        {/* Seite „Handeln": Erkannte Aufgabe → Frist → Nächste Schritte →
+            Fragen. */}
+        <div className="lg-reader-page" data-page="handeln" ref={handelnPageRef}>
+          <ErkannteAufgabePanel
+            letter={letter}
+            bridge={bridge}
+            fristen={letter.fristen ?? []}
+            provenanceLabel={archetypeText(letter)}
+            onScrollToZitat={handleScrollToZitat}
+            onAddToCalendar={handleAddToCalendar}
+            embedded
+            variant="post-panel"
+          />
+
+          {fristLabel && (
+            <div className="frist-row">
+              <Clock style={{ color: 'var(--ink-3)', width: '16px', height: '16px' }} />
+              <span>
+                Frist: {fristTyp.charAt(0).toUpperCase() + fristTyp.slice(1)} bis{' '}
+              </span>
+              <span className="frist-pill">{fristLabel}</span>
+            </div>
+          )}
 
           <section className="post-panel" aria-label={t3('naechste_schritte.title')}>
             <div className="post-panel-head">
@@ -1691,43 +1939,7 @@ function PostDetail({
               <ChevronRight aria-hidden="true" />
             </span>
           </Link>
-        </>
-      )}
-
-      {docTab === 'anhaenge' &&
-        (anhaenge.length > 0 ? (
-          <div className="lg-docs-rows lg-docs-rows--tab">
-            {anhaenge.map((anhang) => (
-              <AnhangRow
-                key={anhang.name}
-                anhang={anhang}
-                downloadLabel={t3('detail.herunterladen')}
-                metaLabel={t3('detail.anhang_meta_template', {
-                  typ: anhangTyp(anhang),
-                  kb: anhang.size_kb,
-                })}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="post-doc-empty">
-            <FileIcon aria-hidden="true" />
-            <p>{t3('detail.anhaenge_empty')}</p>
-          </div>
-        ))}
-
-      {docTab === 'verlauf' && (
-        <ol className="post-verlauf">
-          <li>
-            <span className="post-verlauf-dot" aria-hidden="true" />
-            <span>{t3('detail.verlauf_empfangen_template', { datum: empfangenLabel })}</span>
-          </li>
-          <li>
-            <span className="post-verlauf-dot" aria-hidden="true" />
-            <span>{t3('detail.verlauf_verifiziert_template', { datum: empfangenLabel })}</span>
-          </li>
-        </ol>
-      )}
+        </div>
       </motion.div>
 
       {/* Archive footer CTAs — unten am Glas-Panel gepinnt: irisierendes
@@ -1773,10 +1985,13 @@ function PostDetail({
  */
 function betreffOhneAz(letter: Letter): string {
   const azRaw = letter.aktenzeichen.replace(/^\[MOCK\]\s*/, '');
-  if (azRaw && letter.betreff.endsWith(azRaw)) {
-    return letter.betreff.slice(0, -azRaw.length).trimEnd();
+  let betreff = letter.betreff;
+  if (azRaw && betreff.endsWith(azRaw)) {
+    betreff = betreff.slice(0, -azRaw.length).trimEnd();
   }
-  return letter.betreff;
+  // Rest-Floskel „— Aktenzeichen [MOCK]" ohne die Nummer dahinter: seit das AZ
+  // inline hinter dem Betreff steht, läse sie doppelt.
+  return betreff.replace(/[—–-]?\s*Aktenzeichen\s*(\[MOCK\])?$/, '').trimEnd();
 }
 
 /** Datei-Typ-Label aus dem Anhang-Namen („PDF" aus „….pdf"). */
@@ -1840,19 +2055,20 @@ function formatBetragEuro(cent: number): string {
   }).format(cent / 100);
 }
 
-function formatBetragErklaerung(
-  letter: Letter,
-  t3: ReturnType<typeof useTranslations>,
-): string {
-  if (typeof letter.betrag_cent !== 'number' || letter.betrag_cent <= 0) {
-    return t3('erklaerer.betrag_keiner');
-  }
-  const betrag = formatBetragEuro(letter.betrag_cent);
-  if (letter.betrag_richtung === 'erstattung') {
-    return t3('erklaerer.betrag_erstattung_template', { betrag });
-  }
-  return t3('erklaerer.betrag_nachzahlung_template', { betrag });
-}
+/**
+ * Erklärer-Frage je Fristtyp — die „Bis wann …?"-Frage folgt dem Fristtyp, damit
+ * eine Einspruchs-/Nachweis-Frist nie unter der Zahlungs-Frage steht (Rechts-
+ * Ehrlichkeit). `zahlung` teilt die bestehende `bis_wann_label`-Frage.
+ */
+const ERKLAERER_FRIST_FRAGE: Record<LetterFristTyp, string> = {
+  zahlung: 'erklaerer.bis_wann_label',
+  einspruch: 'erklaerer.frist_einspruch_label',
+  widerspruch: 'erklaerer.frist_widerspruch_label',
+  klage: 'erklaerer.frist_klage_label',
+  nachweis: 'erklaerer.frist_nachweis_label',
+  antragstellung: 'erklaerer.frist_antragstellung_label',
+  sonstige: 'erklaerer.frist_sonstige_label',
+};
 
 function formatBedeutung(
   letter: Letter,

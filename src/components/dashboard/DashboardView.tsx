@@ -7,6 +7,7 @@ import { ArrowRight, Check, Circle, Clock3 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { AnspruchLane } from '@/components/dashboard/AnspruchLane';
+import { AutopilotAmbient } from '@/components/dashboard/AutopilotAmbient';
 import {
   AufenthaltFristNudge,
   resolveAufenthaltFristNudge,
@@ -60,10 +61,12 @@ const VORGANG_STATUS_VARIANT: Record<VorgangStatus, StatusVariant> = {
 
 /**
  * `<DashboardView>` — „Dicht, aber ruhig" (Spec `dashboard-dense.md`). Ein
- * verdichtetes Modul-Grid: boxlose Kennzahlen-Leiste, Umzug-Glas-Hero (der EINE
- * Frost), „Ihnen steht zu"-Lane und ein 2×3-Grid ruhiger Karten (Heute, Meine
- * Vorgänge, Nächste Termine, Posteingang-neu, Steuer-Status, Zuletzt
- * übermittelt), darunter die boxlose Autopilot-Fußzeile. Daten via
+ * verdichtetes Modul-Grid: boxlose Kennzahlen-Leiste, kompakte Umzug-Erfolgs-
+ * Zeile (der EINE Frost), „Ihnen steht zu"-Lane, die boxlose „Als Nächstes"-
+ * Fokus-Zeile (das ranghöchste To-do, groß — der Anker des Screens) und ein
+ * Grid ruhiger Karten mit je eigener Textur (Heute-Rest, Meine Vorgänge,
+ * Nächste Termine, Posteingang-neu, Steuer-Status, Zuletzt übermittelt),
+ * darunter die boxlose Autopilot-Fußzeile. Daten via
  * `api.getProfile()` + `api.getDashboard()` plus parallele, je fehlertolerante
  * Modul-Fetches; Behörden-Namen synchron via `resolveBehoerdeName`.
  */
@@ -245,11 +248,21 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
   // `behoerden_count` Stellen wurden vollständig gemeldet.
   const umzugCount = receipt ? receipt.behoerden_count : 0;
   const umzugOrt = persona?.adresse?.ort ?? '';
-  const erledigtLatest = snapshot?.erledigt_feed?.[0];
 
   const visibleTodos = sortByRank(
     (snapshot?.top_actions ?? []).filter((a) => !dismissed.has(a.id)),
   ).slice(0, 3);
+
+  // „Als Nächstes": das ranghöchste To-do wird zur EINEN Fokus-Zeile über dem
+  // Modul-Grid promoviert; die Heute-Karte trägt nur noch den Rest.
+  const primaryTodo =
+    visibleTodos.length > 0 ? mapToHeuteItem(visibleTodos[0]) : null;
+  const restTodos = visibleTodos.slice(1);
+  // „alles andere hat noch Zeit" nur, wenn es stimmt: keine weitere Frist in
+  // den nächsten FRIST_NAH_TAGE Tagen.
+  const restHatNaheFrist = restTodos.some(
+    (a) => a.frist_datum && daysUntil(a.frist_datum, nowIso) <= FRIST_NAH_TAGE,
+  );
 
   const wohngeldHinweis = snapshot?.wohngeld_hinweis ?? null;
   const showWohngeld = wohngeldHinweis !== null && !wohngeldHidden;
@@ -267,7 +280,7 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
   const tldrDatum = earliestFristDatum(snapshot?.top_actions ?? [], nowIso, locale);
 
   const heuteEmpty =
-    visibleTodos.length === 0 && !showWohngeld && !showAufenthalt;
+    restTodos.length === 0 && !showWohngeld && !showAufenthalt;
 
   // Modul-abgeleitete Sichten.
   const nowMs = new Date(nowIso).getTime();
@@ -357,7 +370,9 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
   // Zonen; „Heute" ist mit Abstand die höchste Karte und trägt daher ihre Spalte
   // fast allein). Quell-/DOM-Reihenfolge der Spalten = Mobile-Stapelung §5:
   // Heute zuerst, Posteingang in der oberen Hälfte.
-  const heuteCard = (
+  // Ist das einzige To-do bereits die „Als Nächstes"-Zeile, entfällt die
+  // Heute-Karte ganz — eine leere Hülle unter der Fokus-Zeile wäre Rauschen.
+  const heuteCard = heuteEmpty && primaryTodo ? null : (
     <ModuleCard
       title={t('heute.titel')}
       allLabel={t('heute.alle_anzeigen')}
@@ -383,7 +398,7 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
         </div>
       ) : (
         <ol className="border-t border-border">
-          {visibleTodos.map((item) => {
+          {restTodos.map((item) => {
             const view = mapToHeuteItem(item);
             const behoerde = resolveBehoerdeName(view.behoerdeId);
             const reason = reasonSubline(view.reasonToken, t);
@@ -420,7 +435,7 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
                       : ''}
                   </span>
                   <span className="min-w-0">
-                    <span className="block font-semibold leading-snug text-text-primary">
+                    <span className="line-clamp-2 font-semibold leading-snug text-text-primary">
                       {view.titel}
                     </span>
                     {sub ? (
@@ -563,23 +578,30 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
             return (
               <li key={v.vorgang_id} className="py-2.5">
                 <Link
-                  href={`/vorgaenge/${v.vorgang_id}`}
-                  className="group flex flex-col items-start gap-1 no-underline"
+                  href={`/vorgaenge/${encodeURIComponent(v.vorgang_id)}`}
+                  className="flex flex-col gap-0.5 no-underline"
                 >
-                  <StatusBadge variant={variant}>
-                    {tCommon(`status.${variant}`)}
-                  </StatusBadge>
-                  <span className="line-clamp-2 font-medium leading-snug text-text-primary">
+                  {/* Titel führt in voller Breite; der Status rückt klein in
+                      die Metazeile — drei identische Badges übereinander lasen
+                      sich als Tapete. */}
+                  <span className="line-clamp-1 font-medium leading-snug text-text-primary">
                     {v.titel}
                   </span>
-                  <span className="line-clamp-2 text-[12.5px] leading-snug text-text-muted">
-                    {t('module.vorgaenge_beteiligte', {
-                      count: v.beteiligte_anzahl,
-                    })}
-                    {' · '}
-                    {t('module.vorgaenge_bewegung', {
-                      zeit: formatRelative(v.letzte_bewegung_iso, nowIso, locale),
-                    })}
+                  <span className="flex items-center justify-between gap-2">
+                    <span className="line-clamp-1 min-w-0 text-[12.5px] leading-snug text-text-muted">
+                      {t('module.vorgaenge_beteiligte', {
+                        count: v.beteiligte_anzahl,
+                      })}
+                      {' · '}
+                      {t('module.vorgaenge_bewegung', {
+                        zeit: formatRelative(v.letzte_bewegung_iso, nowIso, locale),
+                      })}
+                    </span>
+                    <span className="shrink-0">
+                      <StatusBadge variant={variant}>
+                        {tCommon(`status.${variant}`)}
+                      </StatusBadge>
+                    </span>
                   </span>
                 </Link>
               </li>
@@ -651,15 +673,17 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
                   aria-hidden="true"
                 />
                 <span className="min-w-0 flex-1">
-                  <span className="flex items-start justify-between gap-2">
-                    <span className="line-clamp-2 min-w-0 flex-1 font-semibold leading-snug text-text-primary">
+                  <span className="flex items-baseline justify-between gap-2">
+                    <span className="min-w-0 flex-1 truncate font-semibold leading-snug text-text-primary">
                       {resolveBehoerdeName(l.absender_behoerde_id)}
                     </span>
                     <span className="shrink-0 text-[12px] tabular-nums text-text-muted">
                       {formatRelative(l.empfangen_am, nowIso, locale)}
                     </span>
                   </span>
-                  <span className="mt-0.5 line-clamp-2 block text-[13px] leading-snug text-text-muted">
+                  {/* Eine Zeile pro Brief: der volle Betreff (inkl. Aktenzeichen)
+                      gehört auf den Brief selbst, nicht in die Übersicht. */}
+                  <span className="mt-0.5 block truncate text-[13px] leading-snug text-text-muted">
                     {l.betreff}
                   </span>
                 </span>
@@ -721,13 +745,18 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
       allHref="/datenschutz"
     >
       {uebermitteltTop.length > 0 ? (
-        <ul className="-my-1 divide-y divide-border">
+        // Bewusst die leiseste Textur des Grids: einzeilige Log-Zeilen mit
+        // Datumsspalte, ohne Hairlines — ein Protokoll, keine Aufgabenliste.
+        <ul className="-my-0.5 flex flex-col">
           {uebermitteltTop.map((e) => (
-            <li key={e.id} className="py-2 text-[13px] leading-snug">
+            <li
+              key={e.id}
+              className="grid grid-cols-[auto_minmax(0,1fr)] items-baseline gap-x-2.5 py-1.5 text-[13px] leading-snug"
+            >
               <span className="tabular-nums text-text-muted">
                 {shortDMY(formatDDMMYYYY(new Date(e.timestamp)))}
-              </span>{' '}
-              <span className="text-text-secondary">
+              </span>
+              <span className="line-clamp-1 text-text-secondary">
                 {tRoot(e.zweck_i18n_key)}
                 {e.empfaenger_id ? (
                   <>
@@ -772,7 +801,7 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
       <div className="flex flex-col gap-6">
         {/* ── Kennzahlen-Leiste (boxlos, 5 Links, Hairline-getrennt) ─────────── */}
         <nav aria-label={t('kennzahl.leiste_aria')}>
-          <ul className="grid grid-cols-2 border-t border-border sm:grid-cols-3 lg:grid-cols-5 lg:border-b">
+          <ul className="m-shelf m-shelf-auto dash-kennzahlen-shelf grid grid-cols-2 border-t border-border sm:grid-cols-3 lg:grid-cols-5 lg:border-b">
             {kennzahlen.map(({ href, num, label }, i) => (
               <li key={label} className="border-b border-border lg:border-b-0">
                 <Link
@@ -801,67 +830,34 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
           </ul>
         </nav>
 
-        {/* ── Hero — Umzug (der EINE Frost des Screens) ──────────────────────── */}
+        {/* ── Umzug — kompakte Erfolgs-Zeile (der EINE Frost des Screens): der
+            Vorgang ist abgeschlossen und verdient keinen Hero-Platz mehr. ───── */}
         {highlight ? (
           <section
             aria-labelledby="dash-umzug-title"
-            className="dash-umzug-panel rounded-2xl border border-border bg-card p-6 shadow-sm"
+            className="dash-umzug-panel flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-2xl border border-border bg-card px-5 py-3.5 shadow-sm"
           >
-            <div className="grid gap-x-8 gap-y-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)_minmax(0,1fr)] lg:items-center">
-              {/* links: Titel + Status */}
-              <div>
-                <h2
-                  id="dash-umzug-title"
-                  className="text-[17px] font-semibold text-text-primary"
-                >
-                  {t('umzug_panel.titel', { ort: umzugOrt })}
-                </h2>
-                <span className="mt-1 block text-[13px] font-semibold text-text-secondary">
-                  {t('umzug_panel.state_fertig')}
-                </span>
-              </div>
-
-              {/* Mitte: große Zahl + Segment-Balken */}
-              <div>
-                <p className="font-heading text-2xl font-bold tracking-tight text-text-primary">
-                  {t('umzug_panel.stellen', { done: umzugCount, total: umzugCount })}
-                </p>
-                <div
-                  className="mt-3 flex gap-1.5"
-                  role="img"
-                  aria-label={t('umzug_panel.segbar_aria', {
+            <h2
+              id="dash-umzug-title"
+              className="text-[15px] font-semibold text-text-primary"
+            >
+              {t('umzug_panel.titel', { ort: umzugOrt })}
+            </h2>
+            <p className="min-w-0 text-[13px] text-text-secondary">
+              {receipt
+                ? t('umzug_panel.kompakt_sub', {
                     done: umzugCount,
                     total: umzugCount,
-                  })}
-                >
-                  {Array.from({ length: umzugCount }).map((_, i) => (
-                    <span key={i} className="h-1.5 flex-1 rounded-full bg-primary" />
-                  ))}
-                </div>
-              </div>
-
-              {/* rechts: ein leiser Link zur Vorgangs-Akte */}
-              <div>
-                <Link
-                  href={`/vorgaenge/umzug/${highlight.vorgang_id}`}
-                  className="text-[13.5px] text-text-secondary underline decoration-border underline-offset-[3px] transition-colors hover:text-text-primary"
-                >
-                  {t('umzug_panel.alle_schritte')}
-                </Link>
-              </div>
-            </div>
-
-            {receipt ? (
-              <p className="mt-5 border-t border-border pt-3 text-[12.5px] leading-relaxed text-text-muted">
-                {erledigtLatest
-                  ? t('umzug_panel.meta', {
-                      aktion: erledigtLatest.agent_label,
-                      zeit: formatRelative(erledigtLatest.erledigt_at, nowIso, locale),
-                      ersparnis,
-                    })
-                  : t('umzug_panel.meta_ohne_eintrag', { ersparnis })}
-              </p>
-            ) : null}
+                    ersparnis,
+                  })
+                : t('umzug_panel.state_fertig')}
+            </p>
+            <Link
+              href={`/vorgaenge/${encodeURIComponent(highlight.vorgang_id)}`}
+              className="ml-auto whitespace-nowrap text-[13px] text-text-secondary underline decoration-border underline-offset-[3px] transition-colors hover:text-text-primary"
+            >
+              {t('umzug_panel.alle_schritte')}
+            </Link>
           </section>
         ) : null}
 
@@ -874,22 +870,100 @@ export function DashboardView({ nowIso }: DashboardViewProps) {
           />
         ) : null}
 
+        {/* ── „Als Nächstes" — die EINE Fokus-Zeile des Screens: boxless und
+            groß, damit der Blick irgendwo landen kann; alles darunter bleibt
+            bewusst leiser. Erledigt/Später wie in den Heute-Zeilen. ────────── */}
+        {primaryTodo ? (
+          <section
+            aria-labelledby="dash-next-title"
+            className="group relative flex items-start justify-between gap-4"
+          >
+            <div className="min-w-0">
+              <p className="text-[13px] text-text-muted">{t('next_up.label')}</p>
+              <h2
+                id="dash-next-title"
+                className="mt-1 font-heading text-[21px] font-bold leading-tight tracking-tight"
+              >
+                <Link
+                  href={primaryTodo.href}
+                  className="text-text-primary no-underline transition-colors hover:text-primary"
+                >
+                  {primaryTodo.titel}
+                </Link>
+              </h2>
+              <p className="mt-1 text-[13.5px] leading-snug text-text-secondary">
+                {primaryTodo.fristIso ? (
+                  <>
+                    <span
+                      className={cn(
+                        'font-medium',
+                        daysUntil(primaryTodo.fristIso, nowIso) <= FRIST_NAH_TAGE
+                          ? 'text-amber-700 dark:text-amber-400'
+                          : 'text-text-primary',
+                      )}
+                    >
+                      {t('heute.slot_bis', {
+                        datum: formatWeekdayDate(primaryTodo.fristIso, locale),
+                      })}
+                    </span>
+                    {' · '}
+                  </>
+                ) : null}
+                {resolveBehoerdeName(primaryTodo.behoerdeId)}
+                {!restHatNaheFrist ? (
+                  <span className="text-text-muted">
+                    {' — '}
+                    {t('next_up.rest_ok')}
+                  </span>
+                ) : null}
+              </p>
+            </div>
+            <div
+              className="pointer-events-none mt-1 flex shrink-0 gap-1 rounded-lg bg-surface-muted p-0.5 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100 [&_button:focus-visible]:opacity-100"
+              role="group"
+              aria-label={t('heute.actions_label', { titel: primaryTodo.titel })}
+            >
+              <button
+                type="button"
+                aria-label={t('heute.done')}
+                title={t('heute.done')}
+                onClick={() => handleDone(primaryTodo.sourceId)}
+                className="grid size-9 place-items-center rounded-md border border-border bg-surface text-text-secondary transition-colors hover:bg-surface-muted hover:text-text-primary [&>svg]:size-4"
+              >
+                <Check />
+              </button>
+              <button
+                type="button"
+                aria-label={t('heute.snooze')}
+                title={t('heute.snooze')}
+                onClick={() => handleSnooze(primaryTodo.sourceId)}
+                className="grid size-9 place-items-center rounded-md border border-border bg-surface text-text-secondary transition-colors hover:bg-surface-muted hover:text-text-primary [&>svg]:size-4"
+              >
+                <Clock3 />
+              </button>
+            </div>
+          </section>
+        ) : null}
+
         {/* ── Modul-Grid — 3 handverteilte Flex-Spalten (unabhängige Höhen →
             keine toten Zonen; „Heute“ ist mit Abstand die höchste Karte und
             trägt daher ihre Spalte fast allein). Spalten-DOM-Reihenfolge =
             Mobile-Stapelung §5: Heute zuerst, Posteingang in der oberen Hälfte. */}
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
-          <div className="flex flex-1 flex-col gap-4">
-            {heuteCard}
-            {steuerCard}
-          </div>
-          <div className="flex flex-1 flex-col gap-4">
-            {postCard}
-            {vorgaengeCard}
-          </div>
-          <div className="flex flex-1 flex-col gap-4">
-            {termineCard}
-            {uebermitteltCard}
+        <div className="dash-modules-zone">
+          <AutopilotAmbient />
+          <div className="m-shelf m-shelf-top dash-modules-shelf flex flex-col gap-4 lg:flex-row lg:items-start">
+            <div className="flex min-w-0 flex-1 flex-col gap-4">
+              {heuteCard}
+              {steuerCard}
+            </div>
+            <div className="flex min-w-0 flex-1 flex-col gap-4">
+              {postCard}
+              {vorgaengeCard}
+            </div>
+            <div className="flex min-w-0 flex-1 flex-col gap-4">
+              {termineCard}
+              {uebermitteltCard}
+            </div>
           </div>
         </div>
 
@@ -1050,6 +1124,17 @@ function daysUntil(iso: string, nowIso: string): number {
   const now = new Date(nowIso).getTime();
   if (Number.isNaN(then) || Number.isNaN(now)) return Number.POSITIVE_INFINITY;
   return Math.ceil((then - now) / 86_400_000);
+}
+
+/** Wochentag + langes Datum ohne Jahr für „Als Nächstes" („Montag, 28. Juli"). */
+function formatWeekdayDate(iso: string, locale: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  return new Intl.DateTimeFormat(locale, {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  }).format(d);
 }
 
 /** Langes DE-Datum ohne Jahr für die TL;DR-/Panel-Zeile („24. Juli"). */

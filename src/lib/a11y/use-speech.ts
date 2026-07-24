@@ -4,6 +4,7 @@ import * as React from 'react';
 import { usePathname } from 'next/navigation';
 import { useLocale } from 'next-intl';
 
+import { pickVoiceForLang, resolveSpeechLang } from '@/lib/a11y/speech-lang';
 import { useA11yPreferences } from '@/lib/a11y/use-a11y-preferences';
 
 export type SpeechStatus = 'idle' | 'playing' | 'paused';
@@ -31,7 +32,7 @@ function isSupported(): boolean {
 function chunkBySentence(text: string): string[] {
   const normalised = text.replace(/\s+/g, ' ').trim();
   if (!normalised) return [];
-  const sentences = normalised.match(/[^.!?…]+[.!?…]+|\S[^.!?…]*$/g);
+  const sentences = normalised.match(/[^.!?…؟]+[.!?…؟]+|\S[^.!?…؟]*$/g);
   if (!sentences) return [normalised];
 
   // Coalesce very short fragments so we don't fire dozens of utterances.
@@ -52,11 +53,14 @@ function chunkBySentence(text: string): string[] {
 }
 
 /**
- * On-device Web Speech (`speechSynthesis`) hook, `de-DE`. Play/pause/resume/
- * stop, sentence-chunked long text, async `voiceschanged` voice selection, and
- * cleanup on unmount + route/locale change (otherwise it keeps speaking after
- * navigation). Word-highlight via `boundary` is intentionally NOT implemented
- * for v1 — it is enhancement-only and must never gate playback (spec §7).
+ * On-device Web Speech (`speechSynthesis`) hook. Speaks in the language the
+ * text actually is in — resolved per `play()` from the active UI locale plus a
+ * script heuristic (`resolveSpeechLang`), so German Behörden-Briefe stay
+ * German-voiced under a ru/uk/ar UI. Play/pause/resume/stop, sentence-chunked
+ * long text, async `voiceschanged` voice list, and cleanup on unmount +
+ * route/locale change (otherwise it keeps speaking after navigation).
+ * Word-highlight via `boundary` is intentionally NOT implemented for v1 — it
+ * is enhancement-only and must never gate playback (spec §7).
  */
 export function useSpeech(): UseSpeech {
   const [supported] = React.useState(isSupported);
@@ -73,28 +77,29 @@ export function useSpeech(): UseSpeech {
   const rateRef = React.useRef(readAloudRate);
   rateRef.current = readAloudRate;
 
-  const voiceRef = React.useRef<SpeechSynthesisVoice | null>(null);
+  // The locale in a ref so play() picks up a language switch without being
+  // recreated (same pattern as rateRef above).
+  const localeRef = React.useRef(locale);
+  localeRef.current = locale;
+
+  const voicesRef = React.useRef<readonly SpeechSynthesisVoice[]>([]);
+  const langRef = React.useRef('de-DE');
   const queueRef = React.useRef<string[]>([]);
   const indexRef = React.useRef(0);
 
-  // Resolve a German voice as soon as the (async) voice list populates.
+  // Keep the (async) voice list current; the concrete voice is picked per
+  // chunk from the language resolved at play() time.
   React.useEffect(() => {
     if (!supported) return;
     const synth = window.speechSynthesis;
 
-    const pickVoice = () => {
-      const voices = synth.getVoices();
-      const german = voices.filter((v) => v.lang.toLowerCase().startsWith('de'));
-      voiceRef.current =
-        german.find((v) => v.lang.toLowerCase() === 'de-de' && v.localService) ??
-        german.find((v) => v.lang.toLowerCase() === 'de-de') ??
-        german[0] ??
-        null;
+    const loadVoices = () => {
+      voicesRef.current = synth.getVoices();
     };
 
-    pickVoice();
-    synth.addEventListener('voiceschanged', pickVoice);
-    return () => synth.removeEventListener('voiceschanged', pickVoice);
+    loadVoices();
+    synth.addEventListener('voiceschanged', loadVoices);
+    return () => synth.removeEventListener('voiceschanged', loadVoices);
   }, [supported]);
 
   const speakNext = React.useCallback(() => {
@@ -106,9 +111,10 @@ export function useSpeech(): UseSpeech {
       return;
     }
     const utterance = new SpeechSynthesisUtterance(chunk);
-    utterance.lang = 'de-DE';
+    utterance.lang = langRef.current;
     utterance.rate = rateRef.current;
-    if (voiceRef.current) utterance.voice = voiceRef.current;
+    const voice = pickVoiceForLang(voicesRef.current, langRef.current);
+    if (voice) utterance.voice = voice;
     utterance.onend = () => {
       indexRef.current += 1;
       if (indexRef.current < queueRef.current.length) {
@@ -137,6 +143,7 @@ export function useSpeech(): UseSpeech {
       window.speechSynthesis.cancel();
       const chunks = chunkBySentence(text);
       if (chunks.length === 0) return;
+      langRef.current = resolveSpeechLang(text, localeRef.current);
       queueRef.current = chunks;
       indexRef.current = 0;
       setStatus('playing');

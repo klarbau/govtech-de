@@ -11,11 +11,11 @@ const ROUTES = [
   { name: 'umzug-preview', path: '/vorgaenge/umzug/preview' },
   {
     name: 'umzug-run',
-    path: '/vorgaenge/umzug/run?vorgangId=vg-anna-umzug-2026-completed',
+    path: '/vorgaenge/vg-anna-umzug-2026-completed',
   },
   {
     name: 'umzug-detail',
-    path: `/vorgaenge/umzug/${LAUFENDER_VORGANG_ID}`,
+    path: `/vorgaenge/${LAUFENDER_VORGANG_ID}`,
   },
 ];
 

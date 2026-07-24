@@ -18,7 +18,7 @@ export function Providers({ children }: ProvidersProps) {
   // Provider umschließt alle Routen via RootLayout). Erst `seedIfEmpty` (legt
   // bei Bedarf den `meta`-Bucket an), DANN `syncReliableModeFromUrl` — so kann
   // ein Reseed das aus `?reliable=1` persistierte Sticky-Flag nicht abräumen,
-  // und das Flag steht bereit, bevor die Kaskade /vorgaenge/umzug/run erreicht.
+  // und das Flag steht bereit, bevor die Kaskade die /vorgaenge/<id>-Akte erreicht.
   useEffect(() => {
     try {
       seedIfEmpty();

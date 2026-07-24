@@ -85,7 +85,7 @@ export default function UmzugPreviewPage() {
       void api
         .startUmzug(input)
         .then(({ vorgangId }) => {
-          router.push(`/vorgaenge/umzug/run?vorgangId=${encodeURIComponent(vorgangId)}`);
+          router.push(`/vorgaenge/${encodeURIComponent(vorgangId)}`);
         })
         .catch((err) => {
           setError(err instanceof Error ? err.message : t('error'));

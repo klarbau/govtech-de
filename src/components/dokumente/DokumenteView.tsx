@@ -725,6 +725,7 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
         <aside className="rail" aria-label={t('rail.aside_label')}>
           <div className="card">
             <h2>{t('schnellzugriff.title')}</h2>
+            <div className="m-shelf dk-quick-shelf">
             <QuickAction
               Icon={Upload}
               title={t('schnellzugriff.upload')}
@@ -765,10 +766,12 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
                 })
               }
             />
+            </div>
           </div>
 
           <div className="card">
-            <h2>{t('zuletzt.title')}</h2>
+            <h2 id="dk-zuletzt-title">{t('zuletzt.title')}</h2>
+            <div className="m-shelf dk-zuletzt-shelf" role="group" tabIndex={0} aria-labelledby="dk-zuletzt-title">
             {recentlyAdded.map((doc) => {
               const av = avatarFor(doc.typ);
               const recCls =
@@ -789,6 +792,7 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
                 </div>
               );
             })}
+            </div>
             <Link
               className="link"
               href="/dokumente"

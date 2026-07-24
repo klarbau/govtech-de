@@ -1,19 +1,39 @@
-import { LebenslageCascade } from '@/components/lebenslagen/LebenslageCascade';
-import { LiquidGlassScreen } from '@/components/layout/LiquidGlassScreen';
+'use client';
 
-export const dynamic = 'force-dynamic';
+import { Suspense, useEffect } from 'react';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 
 /**
- * Server-Shell für die Submission-Kaskade. Reicht nur den `slug`; der Client-View
- * lädt (oder startet bei antragslos) den Vorgang gegen das localStorage-Mock-
- * Backend und abonniert den `autopilot_step`-Tick-Stream.
+ * Redirect-Shim. Die frühere Kaskaden-Ansicht ist entfallen — engine-gelaufene
+ * Lebenslagen werden auf der kanonischen Akte `/vorgaenge/[id]` gezeigt. Alt-URLs
+ * leiten hierher weiter: mit `?vorgangId` auf die Akte (`?reliable=1`
+ * durchgereicht), ohne auf die Leistungsseite. Kein UI.
  */
-export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
+function CascadeRedirect() {
+  const router = useRouter();
+  const params = useParams<{ slug: string }>();
+  const searchParams = useSearchParams();
+  const slug = params?.slug ?? '';
+  const vorgangId = searchParams?.get('vorgangId') ?? null;
+  const reliable = searchParams?.get('reliable') === '1';
+
+  useEffect(() => {
+    if (vorgangId) {
+      router.replace(
+        `/vorgaenge/${encodeURIComponent(vorgangId)}${reliable ? '?reliable=1' : ''}`,
+      );
+    } else {
+      router.replace(`/lebenslagen/${encodeURIComponent(slug)}`);
+    }
+  }, [vorgangId, reliable, slug, router]);
+
+  return null;
+}
+
+export default function CascadeRedirectPage() {
   return (
-    <>
-      <LiquidGlassScreen name="lebenslagen" />
-      <LebenslageCascade slug={slug} />
-    </>
+    <Suspense fallback={null}>
+      <CascadeRedirect />
+    </Suspense>
   );
 }

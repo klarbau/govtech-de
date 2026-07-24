@@ -185,7 +185,10 @@ export function StammdatenView({ nowIso }: StammdatenViewProps) {
             letzteAktualisierungIso={letzteAktualisierungIso}
           />
           <div className="pt-1">
-            <h1 className="text-[30px] font-bold tracking-tight text-text-primary">
+            <h1
+              id="sd-page-title"
+              className="text-[30px] font-bold tracking-tight text-text-primary"
+            >
               {t('page.title')}
             </h1>
             <p className="mt-1 max-w-xl text-sm text-text-secondary">
@@ -214,6 +217,8 @@ export function StammdatenView({ nowIso }: StammdatenViewProps) {
         walletVerbunden={walletVerbunden}
         aufenthaltGueltig={aufenthaltGueltig}
         kontaktVerifiziert={kontaktVerifiziert}
+        className="m-shelf m-shelf-auto sd-chip-shelf"
+        groupLabelledBy="sd-page-title"
       />
 
       {/* Card region — three independent flex columns (identity · records ·

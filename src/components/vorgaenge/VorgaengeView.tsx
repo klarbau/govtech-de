@@ -300,7 +300,7 @@ export function VorgaengeView() {
       doneCount,
       totalCount: steps.length,
       angelegtAm: formatDateShort(featuredUmzug.angelegt_am),
-      href: `/vorgaenge/umzug/run?vorgangId=${encodeURIComponent(featuredUmzug.id)}`,
+      href: `/vorgaenge/${encodeURIComponent(featuredUmzug.id)}`,
     };
   }, [featuredUmzug, behoerdeName]);
 
@@ -528,12 +528,15 @@ export function VorgaengeView() {
 
               <div className="fortschritt-card">
                 <div className="fortschritt-head">
-                  <div className="lbl">Fortschritt</div>
+                  <div className="lbl" id="vg-fortschritt-lbl">
+                    Fortschritt
+                  </div>
                   <div>
                     {bigVorgang.doneCount} von {bigVorgang.totalCount} abgeschlossen
                   </div>
                 </div>
-                <div className="steps">
+                {/* ≤767px: horizontaler m-shelf (#3d) — als Scroll-Region fokussierbar. */}
+                <div className="steps m-shelf vg-steps-shelf" role="group" tabIndex={0} aria-labelledby="vg-fortschritt-lbl">
                   {bigVorgang.steps.map((s, i) => (
                     <div
                       key={s.id}
@@ -576,7 +579,7 @@ export function VorgaengeView() {
           ) : null}
 
           {smallVorgaenge.length > 0 ? (
-            <ul data-testid="vorgaenge-list" className="mt-6 border-t border-border">
+            <ul data-testid="vorgaenge-list" className="m-shelf m-shelf-top vg-list-shelf mt-6 border-t border-border">
               {smallVorgaenge.map((u) => {
                 const Icon = typIcon(u.typ);
                 return (
@@ -659,6 +662,7 @@ export function VorgaengeView() {
         <aside className="vg-rail" aria-label="Was ist jetzt wichtig?">
           <h2 className="vg-rail-title">Was ist jetzt wichtig?</h2>
 
+          <div className="m-shelf m-shelf-top vg-wichtig-shelf">
           <section className="rail-card">
             <h3>Priorisierte Aufgaben</h3>
             <ul className="rail-list">
@@ -737,10 +741,11 @@ export function VorgaengeView() {
               Alle offenen Rückmeldungen ansehen <ChevronRight aria-hidden="true" />
             </Link>
           </section>
+          </div>
 
           <section className="rail-card">
             <h3>Schnellzugriff</h3>
-            <ul>
+            <ul className="m-shelf m-shelf-auto vg-quick-shelf">
               {QUICK_LINKS.map(({ href, icon: Icon, label }) => (
                 <li key={label} className="border-t border-border first:border-t-0">
                   <Link

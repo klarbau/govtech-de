@@ -112,3 +112,189 @@ html[data-lg][data-lg-screen='datenschutz'].dark .app-content .ds2-footer {
     padding-left: 16px;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Datenschutz-Spread (S27) — horizontale Polosa statt vertikalem Polotno
+   ---------------------------------------------------------------------------
+   Transcribed 1:1 from the Posteingang Brief-Spread (posteingang-liquid-glass
+   .css 665-738) — bewusste lokale Duplikation, kein shared Extract (Karpathy).
+   Bounded-height Flex-Spalte: gepinnter Kopf + Pager, scroll-snap Polosa,
+   gepinnte CTA-Fußzeile. Nur unter data-lg aktiv — ohne data-lg erben die
+   Elemente KEINE dieser Regeln und fallen in normalen vertikalen Block-Fluss
+   zurück (Kill-Switch NEXT_PUBLIC_LG=0).
+
+   Blur-Budget: die Polosa-Seiten sind Content-Karten (blur-frei, vom Core
+   getragen); die CTA-Fußzeile trägt nur eine flache Glass-soft-Fläche + Top-
+   Hairline, KEIN backdrop-filter — die zwei Shell-Blur-Ebenen bleiben das
+   Budget dieses ruhigen Screens.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Die Seite scrollt nicht mehr — die Polosa scrollt intern. Der Content-Bereich
+   wird an den Viewport gepinnt; die Breadcrumb darüber ist ein flex:none-
+   Geschwister, dessen Höhe automatisch absorbiert wird (keine Topnav-Magie
+   über die 68px hinaus, die --lg-topnav-h app-weit spiegelt). */
+html[data-lg][data-lg-screen='datenschutz'] .app-content:has(.ds-spread) {
+  height: calc(100dvh - 68px);
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 0;
+  /* Atemraum unter der CTA-Zeile: die Seite bekommt ~36px Scroll-Spielraum
+     (User-Auflage „она должна немного скроллиться") statt hart am
+     Viewport-Boden zu kleben. Margin statt Padding: liegt AUSSERHALB der
+     gepinnten Höhe, die Polosa verliert nichts. */
+  margin-bottom: 36px;
+}
+
+html[data-lg][data-lg-screen='datenschutz'] .ds-spread {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  container: ds-spread / inline-size;
+}
+
+html[data-lg][data-lg-screen='datenschutz'] .ds-spread-head,
+html[data-lg][data-lg-screen='datenschutz'] .ds-spread-pager,
+html[data-lg][data-lg-screen='datenschutz'] .ds-spread-cta {
+  flex: none;
+}
+
+/* Kopf kompakt halten: H1 + Kennzahlen tragen eigene Innenabstände. */
+html[data-lg][data-lg-screen='datenschutz'] .ds-spread-head .gt-page-head {
+  margin-bottom: 6px;
+}
+html[data-lg][data-lg-screen='datenschutz'] .ds-spread-head .ds2-kennzahlen {
+  margin-top: 12px;
+}
+
+/* Pager (aus .lg-reader-pager): gepinnt; Aktiv via aria-current + .active.
+   overflow-x als Sicherheitsnetz — drei kurze Pillen brechen nie um (gepinnte
+   Höhe), scrollen im Extremfall statt zu clippen (WCAG 1.4.10, Lektion S26). */
+html[data-lg][data-lg-screen='datenschutz'] .ds-spread-pager {
+  margin: 12px 0 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  border-bottom-color: var(--lg-hairline);
+}
+html[data-lg][data-lg-screen='datenschutz'] .ds-spread-pager::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* Horizontale Scroll-Snap-Polosa (§2.2): flex:1, Seiten mit Peek/Spread. */
+html[data-lg][data-lg-screen='datenschutz'] .ds-spread-pages {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: 20px;
+  padding-top: 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline-start: 0;
+  scrollbar-width: none;
+}
+html[data-lg][data-lg-screen='datenschutz'] .ds-spread-pages::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+html[data-lg][data-lg-screen='datenschutz'] .ds-spread-page {
+  flex: 0 0 min(680px, 92%);
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  scrollbar-width: none;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-bottom: 20px;
+}
+html[data-lg][data-lg-screen='datenschutz'] .ds-spread-page::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+/* Karten stapeln über den Flex-gap; eigene Block-Margen der Karten würden ihn
+   verdoppeln. */
+html[data-lg][data-lg-screen='datenschutz'] .ds-spread-page > * {
+  margin-block: 0;
+}
+
+/* Breite Panes: ZWEI volle Seiten als Spread nebeneinander statt einer Seite +
+   zerschnittenem Peek. Container = .ds-spread (extrinsisch dimensioniert). */
+@container ds-spread (min-width: 940px) {
+  html[data-lg][data-lg-screen='datenschutz'] .ds-spread-page {
+    flex-basis: calc(50% - 10px);
+  }
+}
+
+/* Kanten-Maske (aus .lg-reader-pages[data-fade]): die Kante, hinter der weitere
+   Seiten liegen, blendet aus, statt Karten hart zu kappen. data-fade setzt die
+   Komponente scrollpositions- und dir-bewusst (l/r = visuelle Seiten, RTL über
+   die computed direction normalisiert). */
+html[data-lg][data-lg-screen='datenschutz'] .ds-spread-pages[data-fade='r'] {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 56px), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 56px), transparent);
+}
+html[data-lg][data-lg-screen='datenschutz'] .ds-spread-pages[data-fade='l'] {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 56px);
+  mask-image: linear-gradient(to right, transparent, #000 56px);
+}
+html[data-lg][data-lg-screen='datenschutz'] .ds-spread-pages[data-fade='lr'] {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 56px, #000 calc(100% - 56px), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 56px, #000 calc(100% - 56px), transparent);
+}
+
+/* Gepinnte CTA-Fußzeile (§2.4): flache Glass-soft-Fläche + Top-Hairline, KEIN
+   Blur (Content-Blur-Budget bleibt null). Inhalt scrollt optisch darunter. */
+html[data-lg][data-lg-screen='datenschutz'] .ds-spread-cta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 12px 0 14px;
+  border-top: 1px solid var(--lg-hairline);
+  background: var(--lg-glass-soft);
+}
+/* Kompakte Pillen natürlicher Breite (Reader-CTA-Parität) — die frühere
+   flex:1-Streckung malte zwei viewportbreite Rechtecke (User: „уродство
+   квадратное"). */
+html[data-lg][data-lg-screen='datenschutz'] .ds-spread-cta .btn {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  padding-inline: 20px;
+}
+
+/* ── Mobile (≤767px): eine Seite pro Viewport; CTA über der Bottom-Tab-Bar ──── */
+@media (max-width: 767px) {
+  /* Höhe zusätzlich um die Bottom-Tab-Bar kürzen, damit die gepinnte CTA über
+     ihr sitzt (Vertrag --mobile-tabbar-h, src/app/mobile-nav.css). Ohne dies
+     schöbe die fixe Bar sonst die CTA hinter sich. */
+  html[data-lg][data-lg-screen='datenschutz'] .app-content:has(.ds-spread) {
+    height: calc(
+      100dvh - 68px - var(--mobile-tabbar-h) - env(safe-area-inset-bottom)
+    );
+    /* Der Dokumentfluss endet hier schon eine Tab-Bar-Höhe über dem
+       Viewport-Boden — die 36px Scroll-Spielraum müssen das Defizit erst
+       überwinden, sonst scrollt mobil nichts. */
+    margin-bottom: calc(
+      var(--mobile-tabbar-h) + env(safe-area-inset-bottom) + 36px
+    );
+  }
+  html[data-lg][data-lg-screen='datenschutz'] .ds-spread-page {
+    flex-basis: 100%;
+  }
+  /* Zwei lange deutsche CTA-Labels passen @320 nicht nebeneinander — stapeln
+     (voll sichtbar, kein Clip außerhalb der Polosa, WCAG 1.4.10). */
+  @media (max-width: 480px) {
+    html[data-lg][data-lg-screen='datenschutz'] .ds-spread-cta {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+}

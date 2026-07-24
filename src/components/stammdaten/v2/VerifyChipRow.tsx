@@ -13,6 +13,12 @@ interface VerifyChipRowProps {
    *  for a sensible alternative ("Personalausweis hinterlegt" or
    *  "Reisepass hinterlegt"). Caller decides the label. */
   fallbackChip?: string;
+  /** Additive utility classes from the call site (e.g. the mobile-shelf
+   *  utility on /stammdaten — kept caller-scoped so shared usages are untouched). */
+  className?: string;
+  /** When set, the chip row is exposed as a focusable, labelled group so the
+   *  horizontal mobile-shelf satisfies scrollable-region-focusable (WCAG 2.1.1). */
+  groupLabelledBy?: string;
 }
 
 /**
@@ -29,13 +35,18 @@ export function VerifyChipRow({
   aufenthaltGueltig,
   kontaktVerifiziert,
   fallbackChip,
+  className,
+  groupLabelledBy,
 }: VerifyChipRowProps) {
   const t = useTranslations('stammdaten.chip');
 
   return (
     <div
-      className="mt-3 flex flex-wrap gap-2"
+      className={`mt-3 flex flex-wrap gap-2${className ? ` ${className}` : ''}`}
       data-testid="v2-verify-chips"
+      {...(groupLabelledBy
+        ? { role: 'group', tabIndex: 0, 'aria-labelledby': groupLabelledBy }
+        : {})}
     >
       {adresseBestaetigt ? <Chip label={t('adresse_bestaetigt')} /> : null}
       {walletVerbunden ? <Chip label={t('wallet_verbunden')} /> : null}

@@ -339,7 +339,7 @@ export function LebenslagenView() {
             </div>
 
             {!loaded ? (
-              <div className="llh-beliebte-grid" aria-hidden="true">
+              <div className="llh-beliebte-grid m-shelf" aria-hidden="true">
                 <Skeleton className="h-40 rounded-2xl" />
                 <Skeleton className="h-40 rounded-2xl" />
                 <Skeleton className="h-40 rounded-2xl" />
@@ -350,7 +350,7 @@ export function LebenslagenView() {
             ) : filteredBeliebte.length === 0 ? (
               <p className="llh-empty">{t('results_none_category')}</p>
             ) : (
-              <ul className="llh-beliebte-grid">
+              <ul className="llh-beliebte-grid m-shelf">
                 {filteredBeliebte.map((b) => {
                   const Icon = b.icon;
                   const schritte = b.entry?.schritte ?? 0;
@@ -403,7 +403,7 @@ export function LebenslagenView() {
                 {t('nach_lebensphase_title')}
               </h2>
             </div>
-            <div className="llh-phasen">
+            <div className="llh-phasen m-shelf">
               {PHASEN.map((phase) => {
                 const Icon = phase.icon;
                 return (

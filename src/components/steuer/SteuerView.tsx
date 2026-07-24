@@ -405,7 +405,8 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
           </div>
 
           <div className="st-card nachweise" id="nachweise">
-            <h3 style={{ margin: '0 0 14px', fontSize: 16, fontWeight: 600 }}>{t('steuer.nachweise.title')}</h3>
+            <h3 id="st-nachweise-title" style={{ margin: '0 0 14px', fontSize: 16, fontWeight: 600 }}>{t('steuer.nachweise.title')}</h3>
+            <div className="m-shelf st-nachweise-shelf" role="group" tabIndex={0} aria-labelledby="st-nachweise-title">
             {verwendeteNachweise.map((n) => (
               <div key={n.id} className="item">
                 <span className="av">
@@ -422,6 +423,7 @@ export function SteuerView({ nowIso, steuerjahr }: SteuerViewProps) {
                 <span className="badge green">{t('steuer.nachweise.verwendet')}</span>
               </div>
             ))}
+            </div>
             <Link
               className="right-link"
               href="/dokumente"

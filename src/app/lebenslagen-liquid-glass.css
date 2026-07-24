@@ -89,17 +89,18 @@ html[data-lg][data-lg-screen='lebenslagen'].dark .app-content .ll-stepper {
   border-color: var(--lg-hairline);
 }
 
-/* Frosted-Hero — die EINE frostende Fläche der Familie: die „Was in diesem
-   Vorgang enthalten ist"-Intro-Karte (Dossier-Kopf). Blur hier erlaubt (eine
-   statische Fläche, keine Animation), out-spezifiziert die Core-`.gt-card`. */
-html[data-lg][data-lg-screen='lebenslagen'] .app-content [aria-labelledby='ll-intro-title'] {
+/* Frosted-Hero — die EINE frostende Fläche der Familie: das „Nächster Schritt"-
+   CTA-Panel (der Aktions-Anker, seit dem Dossier-De-Templating). Blur hier
+   erlaubt (eine statische Fläche, keine Animation), out-spezifiziert die
+   Core-`.gt-card`. Budget bleibt 1 statischer Frost/Screen. */
+html[data-lg][data-lg-screen='lebenslagen'] .app-content [aria-labelledby='ll-next-title'] {
   background: var(--lg-glass);
   -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
   backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
   border: 1px solid var(--lg-edge);
   box-shadow: var(--lg-shadow-panel), inset 0 1px 0 var(--lg-edge-strong);
 }
-html[data-lg][data-lg-screen='lebenslagen'].dark .app-content [aria-labelledby='ll-intro-title'] {
+html[data-lg][data-lg-screen='lebenslagen'].dark .app-content [aria-labelledby='ll-next-title'] {
   border-color: var(--lg-hairline);
 }
 

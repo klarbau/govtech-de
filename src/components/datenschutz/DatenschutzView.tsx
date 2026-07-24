@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import {
   ArrowRight,
   Briefcase,
@@ -16,7 +17,6 @@ import {
   MapPin,
   RefreshCw,
   ScrollText,
-  Settings,
   Shield,
   ShieldCheck,
   User,
@@ -49,6 +49,10 @@ import type {
 interface DatenschutzViewProps {
   nowIso: string;
 }
+
+// Brief-Spread analogue (S27): die drei horizontalen Seiten der Polosa in
+// DOM- = Lesereihenfolge.
+type DsPage = 'freigaben' | 'aktivitaet' | 'prinzipien';
 
 function formatActivityWhen(iso: string): string {
   const d = new Date(iso);
@@ -121,6 +125,55 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
   const weitergabeRef = React.useRef<HTMLElement | null>(null);
   const consentHeadingRef = React.useRef<HTMLHeadingElement | null>(null);
 
+  // Horizontale Polosa (§2.2) — Mechanik 1:1 aus PostDetail dupliziert (kein
+  // shared Extract, Karpathy): page-State, Pager-Pin, IntersectionObserver
+  // (setzt NUR State, scrollt nie) + RTL-normalisierter Edge-Fade.
+  const reduceMotion = useReducedMotion();
+  const [page, setPage] = React.useState<DsPage>('freigaben');
+  const pagesRef = React.useRef<HTMLDivElement>(null);
+  const freigabenPageRef = React.useRef<HTMLDivElement>(null);
+  const aktivitaetPageRef = React.useRef<HTMLDivElement>(null);
+  const prinzipienPageRef = React.useRef<HTMLDivElement>(null);
+  const pinnedPageRef = React.useRef<DsPage | null>(null);
+
+  const [edgeFade, setEdgeFade] = React.useState<'none' | 'l' | 'r' | 'lr'>('none');
+  const updateEdgeFade = React.useCallback(() => {
+    const el = pagesRef.current;
+    if (!el) return;
+    const max = el.scrollWidth - el.clientWidth;
+    if (max <= 8) {
+      setEdgeFade('none');
+      return;
+    }
+    const rtl = getComputedStyle(el).direction === 'rtl';
+    const x = el.scrollLeft;
+    const l = x > (rtl ? -max : 0) + 8;
+    const r = x < (rtl ? 0 : max) - 8;
+    setEdgeFade(l && r ? 'lr' : l ? 'l' : r ? 'r' : 'none');
+  }, []);
+
+  const goToPage = React.useCallback(
+    (target: DsPage) => {
+      pinnedPageRef.current = target;
+      setPage(target);
+      const ref =
+        target === 'freigaben'
+          ? freigabenPageRef
+          : target === 'aktivitaet'
+            ? aktivitaetPageRef
+            : prinzipienPageRef;
+      const reduce =
+        reduceMotion ||
+        document.documentElement.classList.contains('a11y-reduce-motion');
+      ref.current?.scrollIntoView({
+        behavior: reduce ? 'auto' : 'smooth',
+        inline: 'start',
+        block: 'nearest',
+      });
+    },
+    [reduceMotion],
+  );
+
   void nowIso;
 
   React.useEffect(() => {
@@ -158,6 +211,44 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
       cancelled = true;
     };
   }, []);
+
+  // Aktiv-Zustand beim Scrollen nachziehen: der Observer setzt NUR den State,
+  // scrollt nie (kein Re-Snap-Loop). Erst nach dem Skeleton→Content-Swap
+  // attachen (`loaded` in den Deps + pagesRef-Guard) — vorher existiert die
+  // Polosa-DOM noch nicht (§2.2).
+  React.useEffect(() => {
+    const root = pagesRef.current;
+    if (!loaded || !root) return;
+    pinnedPageRef.current = null;
+    const ratios: Partial<Record<DsPage, number>> = {};
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          ratios[e.target.getAttribute('data-page') as DsPage] =
+            e.intersectionRatio;
+        }
+        const pinned = pinnedPageRef.current;
+        if (pinned && (ratios[pinned] ?? 0) >= 0.6) return;
+        pinnedPageRef.current = null;
+        const lead = (['freigaben', 'aktivitaet', 'prinzipien'] as const).find(
+          (p) => (ratios[p] ?? 0) >= 0.6,
+        );
+        if (lead) setPage(lead);
+      },
+      { root, threshold: 0.6 },
+    );
+    for (const el of root.querySelectorAll<HTMLElement>('[data-page]')) {
+      observer.observe(el);
+    }
+    return () => observer.disconnect();
+  }, [loaded]);
+
+  React.useEffect(() => {
+    if (!loaded) return;
+    updateEdgeFade();
+    window.addEventListener('resize', updateEdgeFade);
+    return () => window.removeEventListener('resize', updateEdgeFade);
+  }, [loaded, updateEdgeFade]);
 
   const handleToggle = React.useCallback(
     async (empfaenger: EinwilligungEmpfaenger, next: boolean) => {
@@ -208,13 +299,14 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
     })();
   }, [fullLog, personaId]);
 
-  const scrollToWeitergabe = React.useCallback(() => {
-    const node = weitergabeRef.current;
-    if (!node) return;
-    node.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    const firstToggle = node.querySelector<HTMLElement>('[role="switch"]');
+  // „Zu den Freigaben" (früher scrollToWeitergabe): auf die Default-Seite
+  // navigieren + Fokus auf den ersten Consent-Toggle. Aufrufer: Prinzip 1/2.
+  const goToFreigaben = React.useCallback(() => {
+    goToPage('freigaben');
+    const firstToggle =
+      weitergabeRef.current?.querySelector<HTMLElement>('[role="switch"]');
     firstToggle?.focus({ preventScroll: true });
-  }, []);
+  }, [goToPage]);
 
   const handleExport = React.useCallback(() => {
     if (!personaId) return;
@@ -343,452 +435,510 @@ export function DatenschutzView({ nowIso }: DatenschutzViewProps) {
 
   return (
     <>
-      <div className="gt-page-head ds2-head">
-        <h1>{t('datenschutz.page.title')}</h1>
-        <div className="sub">{t('datenschutz.page.subtitle')}</div>
-        <span className="gt-page-tag">{t('datenschutz.page.tag')}</span>
-      </div>
+      <div className="ds-spread">
+        {/* Gepinnter Kopf (§2.3): Titel + Live-Region + Kennzahlen-Leiste. */}
+        <div className="ds-spread-head">
+          <div className="gt-page-head ds2-head">
+            <h1>{t('datenschutz.page.title')}</h1>
+            <div className="sub">{t('datenschutz.page.subtitle')}</div>
+            <span className="gt-page-tag">{t('datenschutz.page.tag')}</span>
+          </div>
 
-      <div aria-live="polite" role="status" className="sr-only">
-        {liveAnnouncement}
-      </div>
+          <div aria-live="polite" role="status" className="sr-only">
+            {liveAnnouncement}
+          </div>
 
-      {/* Kennzahlen — editorial rows: value + label on one line, hairline
-          separators, no boxes, no icons (docs/research/ai-design-tells.md §1). */}
-      <div
-        className="ds2-kennzahlen mt-[18px] flex flex-col divide-y divide-border border-y border-border sm:flex-row sm:divide-x sm:divide-y-0"
-        role="group"
-        aria-label={t('datenschutz.stats.strip_label')}
-        tabIndex={0}
-      >
-        <div className="flex flex-col justify-center gap-1 py-4 sm:flex-1 sm:py-3 sm:pr-6">
-          <p className="flex flex-wrap items-baseline gap-x-2">
-            <span className="text-2xl font-semibold leading-tight tabular-nums text-text-primary">
-              {t('datenschutz.stats.aktiv_value', {
-                active: activeCount,
-                total: totalCount,
-              })}
-            </span>
-            <span className="text-sm font-medium text-text-secondary">
-              {t('datenschutz.stats.aktiv_title')}
-            </span>
-          </p>
-          <p className="text-xs leading-relaxed text-text-secondary">
-            {t('datenschutz.stats.aktiv_sub')}
-          </p>
-        </div>
-        <div className="flex flex-col justify-center gap-1 py-4 sm:flex-1 sm:px-6 sm:py-3">
-          <p className="flex flex-wrap items-baseline gap-x-2">
-            <span className="text-2xl font-semibold leading-tight tabular-nums text-text-primary">
-              {anfragenCount}
-            </span>
-            <span className="text-sm font-medium text-text-secondary">
-              {t('datenschutz.stats.anfragen_title')}
-            </span>
-          </p>
-          <p className="text-xs leading-relaxed text-text-secondary">
-            {t('datenschutz.stats.anfragen_sub')}
-          </p>
-        </div>
-        <div className="flex flex-col justify-center gap-1 py-4 sm:flex-1 sm:px-6 sm:py-3">
-          <p className="flex flex-wrap items-baseline gap-x-2">
-            <span className="text-2xl font-semibold leading-tight tabular-nums text-text-primary">
-              {letzteAktivitaet}
-            </span>
-            <span className="text-sm font-medium text-text-secondary">
-              {t('datenschutz.stats.letzte_title')}
-            </span>
-          </p>
-          <p className="text-xs leading-relaxed text-text-secondary">
-            {t('datenschutz.stats.letzte_sub')}
-          </p>
-        </div>
-      </div>
-
-      <div className="ds2-layout">
-        <div className="ds2-main">
-          {/* Einwilligungen für Datenweitergabe */}
-          <section className="gt-card ds2-consent" ref={weitergabeRef}>
-            <div className="ds2-section-head">
-              <h2 ref={consentHeadingRef} tabIndex={-1} className="ds2-heading-focus">
-                <Shield aria-hidden="true" />
-                {t('datenschutz.weitergabe.title')}
-              </h2>
-              <p className="sub">{t('datenschutz.weitergabe.subtitle')}</p>
-            </div>
-
-            <div className="ds2-consent-scroll" role="region" tabIndex={0} aria-label={t('datenschutz.weitergabe.title')}>
-              <table className="ds2-consent-table">
-                <thead>
-                  <tr>
-                    <th scope="col">{t('datenschutz.weitergabe.col_empfaenger')}</th>
-                    <th scope="col">{t('datenschutz.weitergabe.col_zweck')}</th>
-                    <th scope="col">{t('datenschutz.weitergabe.col_kategorien')}</th>
-                    <th scope="col">{t('datenschutz.weitergabe.col_status')}</th>
-                    <th scope="col">{t('datenschutz.weitergabe.col_einwilligung')}</th>
-                    <th scope="col">
-                      <span className="sr-only">{t('datenschutz.weitergabe.col_details')}</span>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {sortedEinw.map((e) => {
-                    const empfLabel = t(`datenschutz.einwilligungen.${e.empfaenger}`);
-                    const empfKat = t(`datenschutz.einwilligungen.${e.empfaenger}_sub`);
-                    const EmpfIcon = EMPFAENGER_ICON[e.empfaenger] ?? Shield;
-                    return (
-                      <tr key={e.empfaenger}>
-                        <td>
-                          <div className="ds2-empf">
-                            <span className="icon-circle">
-                              <EmpfIcon aria-hidden="true" />
-                            </span>
-                            <div className="ds2-empf-text">
-                              <span className="ds2-empf-name">{empfLabel}</span>
-                              <span className="ds2-empf-kat">{empfKat}</span>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="ds2-zweck">
-                          {t(`datenschutz.weitergabe.${e.empfaenger}_zweck`)}
-                        </td>
-                        <td className="ds2-kat">
-                          {t(`datenschutz.weitergabe.${e.empfaenger}_kategorien`)}
-                        </td>
-                        <td>
-                          <span className={`badge ${e.erteilt ? 'green' : 'outline'}`}>
-                            <span className="dot" aria-hidden="true" />
-                            {e.erteilt
-                              ? t('datenschutz.weitergabe.status_aktiv')
-                              : t('datenschutz.weitergabe.status_inaktiv')}
-                          </span>
-                        </td>
-                        <td>
-                          <button
-                            type="button"
-                            className={`toggle${e.erteilt ? ' on' : ''}`}
-                            role="switch"
-                            aria-checked={e.erteilt}
-                            aria-label={t(
-                              e.erteilt
-                                ? 'datenschutz.einwilligungen.toggle_aus'
-                                : 'datenschutz.einwilligungen.toggle_ein',
-                              { empfaenger: empfLabel },
-                            )}
-                            onClick={() => void handleToggle(e.empfaenger, !e.erteilt)}
-                          />
-                        </td>
-                        <td>
-                          <ChevronRight className="ds2-chev" aria-hidden="true" />
-                        </td>
-                      </tr>
-                    );
+          {/* Kennzahlen — editorial rows: value + label on one line, hairline
+              separators, no boxes, no icons (docs/research/ai-design-tells.md §1). */}
+          <div
+            className="ds2-kennzahlen mt-[18px] flex flex-col divide-y divide-border border-y border-border sm:flex-row sm:divide-x sm:divide-y-0"
+            role="group"
+            aria-label={t('datenschutz.stats.strip_label')}
+            tabIndex={0}
+          >
+            <div className="flex flex-col justify-center gap-1 py-4 sm:flex-1 sm:py-3 sm:pr-6">
+              <p className="flex flex-wrap items-baseline gap-x-2">
+                <span className="text-2xl font-semibold leading-tight tabular-nums text-text-primary">
+                  {t('datenschutz.stats.aktiv_value', {
+                    active: activeCount,
+                    total: totalCount,
                   })}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="ds2-consent-foot">
-              <p className="ds2-note">
-                <Info aria-hidden="true" />
-                {t('datenschutz.weitergabe.widerruf_note')}
+                </span>
+                <span className="text-sm font-medium text-text-secondary">
+                  {t('datenschutz.stats.aktiv_title')}
+                </span>
               </p>
-              <button type="button" className="ds2-link" onClick={() => setHistDialogOpen(true)}>
-                {t('datenschutz.einwilligungen.historie_anzeigen')}
-                <ChevronRight aria-hidden="true" />
-              </button>
+              <p className="text-xs leading-relaxed text-text-secondary">
+                {t('datenschutz.stats.aktiv_sub')}
+              </p>
             </div>
-          </section>
+            <div className="flex flex-col justify-center gap-1 py-4 sm:flex-1 sm:px-6 sm:py-3">
+              <p className="flex flex-wrap items-baseline gap-x-2">
+                <span className="text-2xl font-semibold leading-tight tabular-nums text-text-primary">
+                  {anfragenCount}
+                </span>
+                <span className="text-sm font-medium text-text-secondary">
+                  {t('datenschutz.stats.anfragen_title')}
+                </span>
+              </p>
+              <p className="text-xs leading-relaxed text-text-secondary">
+                {t('datenschutz.stats.anfragen_sub')}
+              </p>
+            </div>
+            <div className="flex flex-col justify-center gap-1 py-4 sm:flex-1 sm:px-6 sm:py-3">
+              <p className="flex flex-wrap items-baseline gap-x-2">
+                <span className="text-2xl font-semibold leading-tight tabular-nums text-text-primary">
+                  {letzteAktivitaet}
+                </span>
+                <span className="text-sm font-medium text-text-secondary">
+                  {t('datenschutz.stats.letzte_title')}
+                </span>
+              </p>
+              <p className="text-xs leading-relaxed text-text-secondary">
+                {t('datenschutz.stats.letzte_sub')}
+              </p>
+            </div>
+          </div>
+        </div>
 
-          {/* [ZUKUNFT 2027] Aktualität der Datenquellen — Fold-in. Rendert nur,
-              wenn aus der eigenen Vorgangs-Historie ein abgeschlossener Umzug
-              ableitbar ist (kein Live-Registerabgleich, keine fremde „alte
-              Adresse"). Amtswegige Selbstkorrektur (§ 6 BMG / § 6 IDNrG); die
-              eID-gegatete Ausländerbehörde (§ 18 PAuswG) ist der ehrliche
-              Anker — sie wird bewusst NICHT auto-gepusht. */}
-          {letzteUmmeldung && (
-            <section
-              className="gt-card"
-              aria-labelledby="ds-aktualitaet-heading"
-            >
-              <div className="flex flex-col gap-3">
-                <div className="flex flex-wrap items-center gap-2">
-                  <RefreshCw
-                    className="size-4 shrink-0 text-muted-foreground"
-                    aria-hidden="true"
-                  />
-                  <h2
-                    id="ds-aktualitaet-heading"
-                    className="text-sm font-semibold tracking-tight text-foreground"
-                  >
-                    {t('datenschutz.quellen.aktualitaet_note.title')}
-                  </h2>
-                  <ZukunftChip
-                    label={t('datenschutz.quellen.aktualitaet_note.zukunft_chip')}
-                  />
-                </div>
-                <p className="text-[13px] leading-relaxed text-muted-foreground">
-                  {t('datenschutz.quellen.aktualitaet_note.amtswegig')}
-                </p>
-                <p className="text-[13px] leading-relaxed text-muted-foreground">
-                  {t('datenschutz.quellen.aktualitaet_note.detektion', {
-                    datum: formatDateDe(letzteUmmeldung),
-                  })}
-                </p>
-                {hatAufenthaltstitel && (
-                  <p className="text-[13px] leading-relaxed text-muted-foreground">
-                    {t('datenschutz.quellen.aktualitaet_note.abh')}
-                  </p>
-                )}
-                <p className="border-t border-dashed border-border pt-2 text-[11px] leading-relaxed text-muted-foreground">
-                  {t('datenschutz.quellen.aktualitaet_note.rechtsgrundlage')}
-                </p>
-                <Link
-                  href="/stammdaten"
-                  className="inline-flex w-fit items-center gap-1 text-[13px] font-medium text-primary underline-offset-2 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-                >
-                  {t('datenschutz.quellen.aktualitaet_note.korrekturweg_link')}
-                  <ChevronRight className="size-4" aria-hidden="true" />
-                </Link>
+        {/* Pager (§2.3): kein role=tablist — alle Seiten leben gleichzeitig im
+            A11y-Tree; aria-current markiert die aktive Pille. */}
+        <div
+          className="post-doc-tabs ds-spread-pager"
+          role="group"
+          aria-label={t('datenschutz.spread.pager_aria')}
+        >
+          <button
+            type="button"
+            aria-current={page === 'freigaben' ? 'true' : undefined}
+            className={`post-doc-tab${page === 'freigaben' ? ' active' : ''}`}
+            onClick={() => goToPage('freigaben')}
+          >
+            {t('datenschutz.spread.page_freigaben')}
+          </button>
+          <button
+            type="button"
+            aria-current={page === 'aktivitaet' ? 'true' : undefined}
+            className={`post-doc-tab${page === 'aktivitaet' ? ' active' : ''}`}
+            onClick={() => goToPage('aktivitaet')}
+          >
+            {t('datenschutz.spread.page_aktivitaet')}
+          </button>
+          <button
+            type="button"
+            aria-current={page === 'prinzipien' ? 'true' : undefined}
+            className={`post-doc-tab${page === 'prinzipien' ? ' active' : ''}`}
+            onClick={() => goToPage('prinzipien')}
+          >
+            {t('datenschutz.spread.page_prinzipien')}
+          </button>
+        </div>
+
+        {/* Horizontale Scroll-Snap-Polosa (§2.2): drei Seiten, jede vertikal
+            scrollbar; alle bleiben im DOM/A11y-Tree (nur weggescrollt). */}
+        <motion.div
+          ref={pagesRef}
+          className="ds-spread-pages"
+          role="region"
+          aria-label={t('datenschutz.spread.pages_aria')}
+          tabIndex={0}
+          data-fade={edgeFade === 'none' ? undefined : edgeFade}
+          onScroll={updateEdgeFade}
+          initial={{ opacity: 0, y: reduceMotion ? 0 : 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: reduceMotion ? 0.01 : 0.2, ease: 'easeOut' }}
+        >
+          {/* Seite „Freigaben": Einwilligungen + [ZUKUNFT 2027] Aktualität. */}
+          <div className="ds-spread-page" data-page="freigaben" ref={freigabenPageRef}>
+            {/* Einwilligungen für Datenweitergabe */}
+            <section className="gt-card ds2-consent" ref={weitergabeRef}>
+              <div className="ds2-section-head">
+                <h2 ref={consentHeadingRef} tabIndex={-1} className="ds2-heading-focus">
+                  <Shield aria-hidden="true" />
+                  {t('datenschutz.weitergabe.title')}
+                </h2>
+                <p className="sub">{t('datenschutz.weitergabe.subtitle')}</p>
               </div>
-            </section>
-          )}
 
-          {/* Compact recent-activity timeline. The heading + <ul> must share
-              their nearest div/section/article container (a11y spec asserts the
-              timeline card holds a `ul > li`), so no inner wrapper here. */}
-          <section className="gt-card ds2-recent act">
-            <h2 className="ds2-recent-heading">
-              <Clock aria-hidden="true" />
-              {t('datenschutz.aktivitaet.title')}
-            </h2>
-            {activityRows.length === 0 ? (
-              <p className="ds2-empty">{t('datenschutz.aktivitaet.empty')}</p>
-            ) : (
-              <ul className="act-list">
-                {activityRows.map((row) => (
-                  <li key={row.id} className="item">
-                    <span className="icon-circle">
-                      <Shield aria-hidden="true" />
-                    </span>
-                    <div>
-                      <div className="t">{row.title}</div>
-                      <div className="s">{row.sub}</div>
-                    </div>
-                    <div className="meta">
-                      <div className="when">{row.when}</div>
-                      <span className={`badge ${row.badge.cls}`}>
-                        {t(`datenschutz.activity.typ.${row.badge.labelKey}`)}
-                      </span>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-            <button type="button" className="ds2-link" onClick={openLogDialog}>
-              {t('datenschutz.aktivitaet.show_all')}
-              <ChevronRight aria-hidden="true" />
-            </button>
-          </section>
-
-          {/* Audit-Log table */}
-          <section className="gt-card ds2-audit">
-            <div className="ds2-section-head">
-              <h2>
-                <ScrollText aria-hidden="true" />
-                {t('datenschutz.audit.title')}
-              </h2>
-              <p className="sub">{t('datenschutz.audit.subtitle')}</p>
-            </div>
-            <div className="ds2-audit-scroll" role="region" tabIndex={0} aria-label={t('datenschutz.audit.title')}>
-              <table className="ds2-audit-table">
-                <thead>
-                  <tr>
-                    <th scope="col">{t('datenschutz.audit.col_zeitpunkt')}</th>
-                    <th scope="col">{t('datenschutz.audit.col_ereignis')}</th>
-                    <th scope="col">{t('datenschutz.audit.col_empfaenger')}</th>
-                    <th scope="col">{t('datenschutz.audit.col_rechtsgrundlage')}</th>
-                    <th scope="col">{t('datenschutz.audit.col_details')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {auditRows.length === 0 ? (
+              <div className="ds2-consent-scroll" role="region" tabIndex={0} aria-label={t('datenschutz.weitergabe.title')}>
+                <table className="ds2-consent-table">
+                  <thead>
                     <tr>
-                      <td colSpan={5} className="ds2-empty">
-                        {t('datenschutz.audit.empty')}
-                      </td>
+                      <th scope="col">{t('datenschutz.weitergabe.col_empfaenger')}</th>
+                      <th scope="col">{t('datenschutz.weitergabe.col_zweck')}</th>
+                      <th scope="col">{t('datenschutz.weitergabe.col_kategorien')}</th>
+                      <th scope="col">{t('datenschutz.weitergabe.col_status')}</th>
+                      <th scope="col">{t('datenschutz.weitergabe.col_einwilligung')}</th>
+                      <th scope="col">
+                        <span className="sr-only">{t('datenschutz.weitergabe.col_details')}</span>
+                      </th>
                     </tr>
-                  ) : (
-                    auditRows.map((entry) => {
-                      const title = activityTitle(entry);
+                  </thead>
+                  <tbody>
+                    {sortedEinw.map((e) => {
+                      const empfLabel = t(`datenschutz.einwilligungen.${e.empfaenger}`);
+                      const empfKat = t(`datenschutz.einwilligungen.${e.empfaenger}_sub`);
+                      const EmpfIcon = EMPFAENGER_ICON[e.empfaenger] ?? Shield;
                       return (
-                        <tr key={entry.id}>
-                          <td className="ds2-when">{formatActivityWhen(entry.timestamp)}</td>
-                          <td className="ds2-ereignis">{title}</td>
-                          <td className="ds2-empf-col">
-                            {activityEmpfaenger(entry) ??
-                              t('datenschutz.audit.empfaenger_fallback')}
+                        <tr key={e.empfaenger}>
+                          <td>
+                            <div className="ds2-empf">
+                              <span className="icon-circle">
+                                <EmpfIcon aria-hidden="true" />
+                              </span>
+                              <div className="ds2-empf-text">
+                                <span className="ds2-empf-name">{empfLabel}</span>
+                                <span className="ds2-empf-kat">{empfKat}</span>
+                              </div>
+                            </div>
                           </td>
-                          <td className="ds2-grund">{entry.rechtsgrundlage}</td>
+                          <td className="ds2-zweck">
+                            {t(`datenschutz.weitergabe.${e.empfaenger}_zweck`)}
+                          </td>
+                          <td className="ds2-kat">
+                            {t(`datenschutz.weitergabe.${e.empfaenger}_kategorien`)}
+                          </td>
+                          <td>
+                            <span className={`badge ${e.erteilt ? 'green' : 'outline'}`}>
+                              <span className="dot" aria-hidden="true" />
+                              {e.erteilt
+                                ? t('datenschutz.weitergabe.status_aktiv')
+                                : t('datenschutz.weitergabe.status_inaktiv')}
+                            </span>
+                          </td>
                           <td>
                             <button
                               type="button"
-                              className="ds2-detail-link"
-                              onClick={openLogDialog}
-                              aria-label={t('datenschutz.audit.details_aria', {
-                                ereignis: title,
-                              })}
-                            >
-                              <FileText aria-hidden="true" />
-                              {t('datenschutz.audit.details_ansehen')}
-                            </button>
+                              className={`toggle${e.erteilt ? ' on' : ''}`}
+                              role="switch"
+                              aria-checked={e.erteilt}
+                              aria-label={t(
+                                e.erteilt
+                                  ? 'datenschutz.einwilligungen.toggle_aus'
+                                  : 'datenschutz.einwilligungen.toggle_ein',
+                                { empfaenger: empfLabel },
+                              )}
+                              onClick={() => void handleToggle(e.empfaenger, !e.erteilt)}
+                            />
+                          </td>
+                          <td>
+                            <ChevronRight className="ds2-chev" aria-hidden="true" />
                           </td>
                         </tr>
                       );
-                    })
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="ds2-consent-foot">
+                <p className="ds2-note">
+                  <Info aria-hidden="true" />
+                  {t('datenschutz.weitergabe.widerruf_note')}
+                </p>
+                <button type="button" className="ds2-link" onClick={() => setHistDialogOpen(true)}>
+                  {t('datenschutz.einwilligungen.historie_anzeigen')}
+                  <ChevronRight aria-hidden="true" />
+                </button>
+              </div>
+            </section>
+
+            {/* [ZUKUNFT 2027] Aktualität der Datenquellen — Fold-in. Rendert nur,
+                wenn aus der eigenen Vorgangs-Historie ein abgeschlossener Umzug
+                ableitbar ist (kein Live-Registerabgleich, keine fremde „alte
+                Adresse"). Amtswegige Selbstkorrektur (§ 6 BMG / § 6 IDNrG); die
+                eID-gegatete Ausländerbehörde (§ 18 PAuswG) ist der ehrliche
+                Anker — sie wird bewusst NICHT auto-gepusht. */}
+            {letzteUmmeldung && (
+              <section
+                className="gt-card"
+                aria-labelledby="ds-aktualitaet-heading"
+              >
+                <div className="flex flex-col gap-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <RefreshCw
+                      className="size-4 shrink-0 text-muted-foreground"
+                      aria-hidden="true"
+                    />
+                    <h2
+                      id="ds-aktualitaet-heading"
+                      className="text-sm font-semibold tracking-tight text-foreground"
+                    >
+                      {t('datenschutz.quellen.aktualitaet_note.title')}
+                    </h2>
+                    <ZukunftChip
+                      label={t('datenschutz.quellen.aktualitaet_note.zukunft_chip')}
+                    />
+                  </div>
+                  <p className="text-[13px] leading-relaxed text-muted-foreground">
+                    {t('datenschutz.quellen.aktualitaet_note.amtswegig')}
+                  </p>
+                  <p className="text-[13px] leading-relaxed text-muted-foreground">
+                    {t('datenschutz.quellen.aktualitaet_note.detektion', {
+                      datum: formatDateDe(letzteUmmeldung),
+                    })}
+                  </p>
+                  {hatAufenthaltstitel && (
+                    <p className="text-[13px] leading-relaxed text-muted-foreground">
+                      {t('datenschutz.quellen.aktualitaet_note.abh')}
+                    </p>
                   )}
-                </tbody>
-              </table>
-            </div>
-            <div className="ds2-audit-foot">
-              <button
-                type="button"
-                className="btn btn-secondary btn-sm"
-                onClick={handleExport}
-                disabled={!personaId || exportState === 'busy'}
-                aria-disabled={!personaId || exportState === 'busy'}
-              >
-                <Download aria-hidden="true" />
-                {exportState === 'done'
-                  ? t('datenschutz.kontrolle.export_bereit')
-                  : t('datenschutz.kontrolle.datenexport')}
-              </button>
-              <button
-                type="button"
-                className="btn btn-secondary btn-sm"
-                onClick={scrollToWeitergabe}
-              >
-                <Settings aria-hidden="true" />
-                {t('datenschutz.kontrolle.einstellungen')}
-              </button>
-            </div>
-          </section>
-        </div>
+                  <p className="border-t border-dashed border-border pt-2 text-[11px] leading-relaxed text-muted-foreground">
+                    {t('datenschutz.quellen.aktualitaet_note.rechtsgrundlage')}
+                  </p>
+                  <Link
+                    href="/stammdaten"
+                    className="inline-flex w-fit items-center gap-1 text-[13px] font-medium text-primary underline-offset-2 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                  >
+                    {t('datenschutz.quellen.aktualitaet_note.korrekturweg_link')}
+                    <ChevronRight className="size-4" aria-hidden="true" />
+                  </Link>
+                </div>
+              </section>
+            )}
+          </div>
 
-        {/* Right rail — Vertrauen durch Prinzipien */}
-        <aside className="ds2-rail" aria-label={t('datenschutz.rail.title')}>
-          <section className="gt-card ds2-rail-card">
-            <h2 className="ds2-rail-title">{t('datenschutz.rail.title')}</h2>
-            <p className="ds2-rail-sub">{t('datenschutz.rail.subtitle')}</p>
-            <ul className="ds2-principles">
-              <li>
-                <span className="icon-circle green">
+          {/* Seite „Aktivität": Timeline + Audit-Log. */}
+          <div className="ds-spread-page" data-page="aktivitaet" ref={aktivitaetPageRef}>
+            {/* Compact recent-activity timeline. The heading + <ul> must share
+                their nearest div/section/article container (a11y spec asserts the
+                timeline card holds a `ul > li`), so no inner wrapper here. */}
+            <section className="gt-card ds2-recent act">
+              <h2 className="ds2-recent-heading">
+                <Clock aria-hidden="true" />
+                {t('datenschutz.aktivitaet.title')}
+              </h2>
+              {activityRows.length === 0 ? (
+                <p className="ds2-empty">{t('datenschutz.aktivitaet.empty')}</p>
+              ) : (
+                <ul className="act-list">
+                  {activityRows.map((row) => (
+                    <li key={row.id} className="item">
+                      <span className="icon-circle">
+                        <Shield aria-hidden="true" />
+                      </span>
+                      <div>
+                        <div className="t">{row.title}</div>
+                        <div className="s">{row.sub}</div>
+                      </div>
+                      <div className="meta">
+                        <div className="when">{row.when}</div>
+                        <span className={`badge ${row.badge.cls}`}>
+                          {t(`datenschutz.activity.typ.${row.badge.labelKey}`)}
+                        </span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <button type="button" className="ds2-link" onClick={openLogDialog}>
+                {t('datenschutz.aktivitaet.show_all')}
+                <ChevronRight aria-hidden="true" />
+              </button>
+            </section>
+
+            {/* Audit-Log table */}
+            <section className="gt-card ds2-audit">
+              <div className="ds2-section-head">
+                <h2>
+                  <ScrollText aria-hidden="true" />
+                  {t('datenschutz.audit.title')}
+                </h2>
+                <p className="sub">{t('datenschutz.audit.subtitle')}</p>
+              </div>
+              <div className="ds2-audit-scroll" role="region" tabIndex={0} aria-label={t('datenschutz.audit.title')}>
+                <table className="ds2-audit-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">{t('datenschutz.audit.col_zeitpunkt')}</th>
+                      <th scope="col">{t('datenschutz.audit.col_ereignis')}</th>
+                      <th scope="col">{t('datenschutz.audit.col_empfaenger')}</th>
+                      <th scope="col">{t('datenschutz.audit.col_rechtsgrundlage')}</th>
+                      <th scope="col">{t('datenschutz.audit.col_details')}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {auditRows.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} className="ds2-empty">
+                          {t('datenschutz.audit.empty')}
+                        </td>
+                      </tr>
+                    ) : (
+                      auditRows.map((entry) => {
+                        const title = activityTitle(entry);
+                        return (
+                          <tr key={entry.id}>
+                            <td className="ds2-when">{formatActivityWhen(entry.timestamp)}</td>
+                            <td className="ds2-ereignis">{title}</td>
+                            <td className="ds2-empf-col">
+                              {activityEmpfaenger(entry) ??
+                                t('datenschutz.audit.empfaenger_fallback')}
+                            </td>
+                            <td className="ds2-grund">{entry.rechtsgrundlage}</td>
+                            <td>
+                              <button
+                                type="button"
+                                className="ds2-detail-link"
+                                onClick={openLogDialog}
+                                aria-label={t('datenschutz.audit.details_aria', {
+                                  ereignis: title,
+                                })}
+                              >
+                                <FileText aria-hidden="true" />
+                                {t('datenschutz.audit.details_ansehen')}
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+
+          {/* Seite „Prinzipien": Vertrauen + FAQ + Trust-Badges. */}
+          <div className="ds-spread-page" data-page="prinzipien" ref={prinzipienPageRef}>
+            <section className="gt-card ds2-rail-card">
+              <h2 className="ds2-rail-title">{t('datenschutz.rail.title')}</h2>
+              <p className="ds2-rail-sub">{t('datenschutz.rail.subtitle')}</p>
+              <ul className="ds2-principles m-shelf m-shelf-top">
+                <li>
+                  <span className="icon-circle green">
+                    <ShieldCheck aria-hidden="true" />
+                  </span>
+                  <div>
+                    <div className="ds2-principle-title">
+                      {t('datenschutz.rail.principle_1_title')}
+                    </div>
+                    <p className="ds2-principle-body">
+                      {t('datenschutz.rail.principle_1_body')}
+                    </p>
+                    <button
+                      type="button"
+                      className="ds2-principle-link"
+                      onClick={goToFreigaben}
+                    >
+                      {t('datenschutz.rail.principle_1_link')}
+                      <ArrowRight aria-hidden="true" />
+                    </button>
+                  </div>
+                </li>
+                <li>
+                  <span className="icon-circle">
+                    <Lock aria-hidden="true" />
+                  </span>
+                  <div>
+                    <div className="ds2-principle-title">
+                      {t('datenschutz.rail.principle_2_title')}
+                    </div>
+                    <p className="ds2-principle-body">
+                      {t('datenschutz.rail.principle_2_body')}
+                    </p>
+                    <button
+                      type="button"
+                      className="ds2-principle-link"
+                      onClick={goToFreigaben}
+                    >
+                      {t('datenschutz.rail.principle_2_link')}
+                      <ArrowRight aria-hidden="true" />
+                    </button>
+                  </div>
+                </li>
+                <li>
+                  <span className="icon-circle">
+                    <Eye aria-hidden="true" />
+                  </span>
+                  <div>
+                    <div className="ds2-principle-title">
+                      {t('datenschutz.rail.principle_3_title')}
+                    </div>
+                    <p className="ds2-principle-body">
+                      {t('datenschutz.rail.principle_3_body')}
+                    </p>
+                    <button
+                      type="button"
+                      className="ds2-principle-link"
+                      onClick={openLogDialog}
+                    >
+                      {t('datenschutz.rail.principle_3_link')}
+                      <ArrowRight aria-hidden="true" />
+                    </button>
+                  </div>
+                </li>
+              </ul>
+            </section>
+
+            <section className="gt-card ds2-faq">
+              <span className="icon-circle">
+                <HelpCircle aria-hidden="true" />
+              </span>
+              <div>
+                <h2 className="ds2-faq-title">{t('datenschutz.faq.title')}</h2>
+                <p className="ds2-faq-body">{t('datenschutz.faq.body')}</p>
+                <button type="button" className="ds2-principle-link" onClick={openLogDialog}>
+                  {t('datenschutz.faq.link')}
+                  <ArrowRight aria-hidden="true" />
+                </button>
+              </div>
+            </section>
+
+            {/* Footer trust line + security badges */}
+            <div className="ds2-footer">
+              <p className="ds2-footer-title">
+                <Lock aria-hidden="true" />
+                {t('datenschutz.footer.title')}
+              </p>
+              <ul className="ds2-badges">
+                <li>
                   <ShieldCheck aria-hidden="true" />
-                </span>
-                <div>
-                  <div className="ds2-principle-title">
-                    {t('datenschutz.rail.principle_1_title')}
-                  </div>
-                  <p className="ds2-principle-body">
-                    {t('datenschutz.rail.principle_1_body')}
-                  </p>
-                  <button
-                    type="button"
-                    className="ds2-principle-link"
-                    onClick={scrollToWeitergabe}
-                  >
-                    {t('datenschutz.rail.principle_1_link')}
-                    <ArrowRight aria-hidden="true" />
-                  </button>
-                </div>
-              </li>
-              <li>
-                <span className="icon-circle">
-                  <Lock aria-hidden="true" />
-                </span>
-                <div>
-                  <div className="ds2-principle-title">
-                    {t('datenschutz.rail.principle_2_title')}
-                  </div>
-                  <p className="ds2-principle-body">
-                    {t('datenschutz.rail.principle_2_body')}
-                  </p>
-                  <button
-                    type="button"
-                    className="ds2-principle-link"
-                    onClick={scrollToWeitergabe}
-                  >
-                    {t('datenschutz.rail.principle_2_link')}
-                    <ArrowRight aria-hidden="true" />
-                  </button>
-                </div>
-              </li>
-              <li>
-                <span className="icon-circle">
-                  <Eye aria-hidden="true" />
-                </span>
-                <div>
-                  <div className="ds2-principle-title">
-                    {t('datenschutz.rail.principle_3_title')}
-                  </div>
-                  <p className="ds2-principle-body">
-                    {t('datenschutz.rail.principle_3_body')}
-                  </p>
-                  <button
-                    type="button"
-                    className="ds2-principle-link"
-                    onClick={openLogDialog}
-                  >
-                    {t('datenschutz.rail.principle_3_link')}
-                    <ArrowRight aria-hidden="true" />
-                  </button>
-                </div>
-              </li>
-            </ul>
-          </section>
-
-          <section className="gt-card ds2-faq">
-            <span className="icon-circle">
-              <HelpCircle aria-hidden="true" />
-            </span>
-            <div>
-              <h2 className="ds2-faq-title">{t('datenschutz.faq.title')}</h2>
-              <p className="ds2-faq-body">{t('datenschutz.faq.body')}</p>
-              <button type="button" className="ds2-principle-link" onClick={openLogDialog}>
-                {t('datenschutz.faq.link')}
-                <ArrowRight aria-hidden="true" />
-              </button>
+                  {t('datenschutz.footer.badge_encrypted')}
+                </li>
+                <li>
+                  <MapPin aria-hidden="true" />
+                  {t('datenschutz.footer.badge_germany')}
+                </li>
+                <li>
+                  <Landmark aria-hidden="true" />
+                  {t('datenschutz.footer.badge_iso')}
+                </li>
+                <li>
+                  <FileText aria-hidden="true" />
+                  {t('datenschutz.footer.badge_dsgvo')}
+                </li>
+              </ul>
+              <p className="ds2-footer-basis">{t('datenschutz.footer.rechtsgrundlage')}</p>
+              <p className="ds2-footer-basis">{t('datenschutz.footer.noots')}</p>
             </div>
-          </section>
-        </aside>
-      </div>
+          </div>
+        </motion.div>
 
-      {/* Footer trust line + security badges */}
-      <div className="ds2-footer">
-        <p className="ds2-footer-title">
-          <Lock aria-hidden="true" />
-          {t('datenschutz.footer.title')}
-        </p>
-        <ul className="ds2-badges">
-          <li>
-            <ShieldCheck aria-hidden="true" />
-            {t('datenschutz.footer.badge_encrypted')}
-          </li>
-          <li>
-            <MapPin aria-hidden="true" />
-            {t('datenschutz.footer.badge_germany')}
-          </li>
-          <li>
-            <Landmark aria-hidden="true" />
-            {t('datenschutz.footer.badge_iso')}
-          </li>
-          <li>
-            <FileText aria-hidden="true" />
-            {t('datenschutz.footer.badge_dsgvo')}
-          </li>
-        </ul>
-        <p className="ds2-footer-basis">{t('datenschutz.footer.rechtsgrundlage')}</p>
-        <p className="ds2-footer-basis">{t('datenschutz.footer.noots')}</p>
+        {/* Gepinnte CTA-Fußzeile (§2.4): zwei globale Aktionen, immer sichtbar —
+            Datenexport (Art. 20 DSGVO) + Zugriffsprotokoll. */}
+        <div className="ds-spread-cta">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={handleExport}
+            disabled={!personaId || exportState === 'busy'}
+            aria-disabled={!personaId || exportState === 'busy'}
+          >
+            <Download aria-hidden="true" />
+            {exportState === 'done'
+              ? t('datenschutz.kontrolle.export_bereit')
+              : t('datenschutz.kontrolle.datenexport')}
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={openLogDialog}
+          >
+            <ScrollText aria-hidden="true" />
+            {t('datenschutz.kontrolle.zugriffsprotokoll')}
+          </button>
+        </div>
       </div>
 
       <Dialog open={logDialogOpen} onOpenChange={setLogDialogOpen}>

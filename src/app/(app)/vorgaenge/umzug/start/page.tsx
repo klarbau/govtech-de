@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PrototypeDisclaimer } from '@/components/shared/PrototypeDisclaimer';
+import { MobileStickyCta } from '@/components/shared/MobileStickyCta';
 import {
   AdresseInput,
   PLZ_REGEX,
@@ -137,10 +138,12 @@ export default function UmzugStartPage() {
       ) : null}
 
       <div className="flex justify-end">
-        <Button type="submit" size="lg">
-          <span>{t('cta_weiter')}</span>
-          <ArrowRight aria-hidden="true" />
-        </Button>
+        <MobileStickyCta>
+          <Button type="submit" size="lg">
+            <span>{t('cta_weiter')}</span>
+            <ArrowRight aria-hidden="true" />
+          </Button>
+        </MobileStickyCta>
       </div>
 
       <PrototypeDisclaimer />

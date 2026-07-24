@@ -171,10 +171,12 @@ async function readSagaId(page: Page): Promise<string> {
   const kaskadeLink = page.getByRole('link', { name: 'Kaskade ansehen' });
   await expect(kaskadeLink).toBeVisible({ timeout: 20_000 });
   const href = await kaskadeLink.getAttribute('href');
-  expect(href).toContain('/vorgaenge/umzug/run?vorgangId=');
-  const sagaId = new URL(href!, 'http://localhost').searchParams.get('vorgangId');
+  // The link now points at the canonical Akte `/vorgaenge/<id>` — sagaId === the
+  // last path segment (no more `?vorgangId=` query).
+  expect(href).toContain('/vorgaenge/vorgang-');
+  const sagaId = new URL(href!, 'http://localhost').pathname.split('/').pop() ?? null;
   expect(sagaId).toBeTruthy();
-  return sagaId!;
+  return decodeURIComponent(sagaId!);
 }
 
 /**
@@ -340,7 +342,7 @@ test.describe('RESILIENCE — the six engine proofs at the UI level', () => {
     // recovery-rehydrated engine context — the SAME singleton `startUmzug` drives
     // there). A re-drive of already-delivered steps must be a pure no-op
     // (idempotent: at-least-once transport, exactly-once effect).
-    await page.goto(`/vorgaenge/umzug/run?vorgangId=${sagaId}&reliable=1`, {
+    await page.goto(`/vorgaenge/${sagaId}?reliable=1`, {
       waitUntil: 'domcontentloaded',
     });
     await waitForBridge(page);
@@ -527,7 +529,7 @@ test.describe('RESILIENCE — the six engine proofs at the UI level', () => {
     const kaskadeLink = page.getByRole('link', { name: 'Kaskade ansehen' });
     await expect(kaskadeLink).toBeVisible({ timeout: 20_000 });
     const href = await kaskadeLink.getAttribute('href');
-    expect(href).toContain('/vorgaenge/umzug/run?vorgangId=');
+    expect(href).toContain('/vorgaenge/vorgang-');
 
     // Capture the autopilot Bundesdruckerei letter count BEFORE reload.
     await page.goto('/posteingang?reliable=1', { waitUntil: 'domcontentloaded' });
@@ -536,9 +538,9 @@ test.describe('RESILIENCE — the six engine proofs at the UI level', () => {
     ).toBeVisible({ timeout: 20_000 });
     const beforeCount = await page.getByText(AUTOPILOT_BUNDESDRUCKEREI).count();
 
-    // Navigate to the run page (saga persisted to localStorage), then reload →
+    // Navigate to the Akte (saga persisted to localStorage), then reload →
     // the engine's recoverOnBoot replays the in-flight saga.
-    await page.goto(`${href}&reliable=1`, { waitUntil: 'domcontentloaded' });
+    await page.goto(`${href}?reliable=1`, { waitUntil: 'domcontentloaded' });
     await page.reload({ waitUntil: 'domcontentloaded' });
 
     // The recovery banner appears (recovered ≥ 1) — the durable DR signal.

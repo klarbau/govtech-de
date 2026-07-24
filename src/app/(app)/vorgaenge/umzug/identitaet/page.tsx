@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ArrowLeft, ArrowRight, ShieldCheck, Wallet } from 'lucide-react';
 
 import { PageHeader } from '@/components/shared/PageHeader';
+import { MobileStickyCta } from '@/components/shared/MobileStickyCta';
 import { Button } from '@/components/ui/button';
 import { IdentitaetDatenCard } from '@/components/umzug/IdentitaetDatenCard';
 import { IdentitaetFreigabenCard } from '@/components/umzug/IdentitaetFreigabenCard';
@@ -57,21 +58,23 @@ export default function UmzugIdentitaetPage() {
 
       <IdentitaetSpekulativeNote />
 
-      <div className="sticky bottom-0 -mx-4 mt-2 flex items-center justify-between gap-3 border-t border-border bg-surface-page px-4 py-3 md:static md:mx-0 md:border-0 md:bg-transparent md:p-0">
+      <div className="mt-2 flex items-center justify-between gap-3">
         <Button
           variant="outline"
           onClick={() => router.push('/dashboard')}
         >
           Abbrechen
         </Button>
-        <Button
-          variant="default"
-          size="lg"
-          onClick={() => router.push('/vorgaenge/umzug/preview')}
-        >
-          <span>Mit eID bestätigen und Autopilot vorbereiten</span>
-          <ArrowRight aria-hidden="true" />
-        </Button>
+        <MobileStickyCta>
+          <Button
+            variant="default"
+            size="lg"
+            onClick={() => router.push('/vorgaenge/umzug/preview')}
+          >
+            <span>Mit eID bestätigen und Autopilot vorbereiten</span>
+            <ArrowRight aria-hidden="true" />
+          </Button>
+        </MobileStickyCta>
       </div>
     </div>
   );

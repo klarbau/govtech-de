@@ -1449,9 +1449,21 @@ html[data-lg] .app-topnav .lg-top-search {
 }
 
 /* Steuer „Übersicht der Steuerbereiche" (4 cols: Bereich · Betrag · Status ·
-   Aktion): the amounts clipped after the thousands separator inside the scroll
-   wrapper. Phone card: row 1 = Bereich + Betrag, row 2 = Status + Aktion. */
-@media (max-width: 700px) {
+   Aktion): the 4-col table needs ~560px of card width. The card is narrow not
+   only on phones but also on desktop (left st-layout track at mid viewports),
+   where the old 700px viewport media query never fired — the Aktion column
+   clipped to "A…" inside the x-scroll wrapper. The card now measures ITSELF:
+   container query, stacked rows below 560px card width (row 1 = Bereich +
+   Betrag, row 2 = Status + Aktion; the category glyph is dropped so title,
+   badge and hairlines share one flush-left edge). */
+.st-card.uberblick { container: st-uberblick / inline-size; }
+.uberblick :is(th, td):first-child { padding-inline-start: 0; }
+.uberblick :is(th, td):last-child { padding-inline-end: 0; }
+.uberblick td.mono,
+.uberblick td .badge { white-space: nowrap; }
+.uberblick td .right-link { font: inherit; font-weight: 500; white-space: nowrap; }
+
+@container st-uberblick (max-width: 559px) {
   div.st-table-scroll { overflow-x: visible; }
   div.st-table-scroll > table,
   div.st-table-scroll > table > tbody { display: block; }
@@ -1459,8 +1471,9 @@ html[data-lg] .app-topnav .lg-top-search {
   div.st-table-scroll > table tr {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    row-gap: 6px;
+    align-items: start;
+    column-gap: 16px;
+    row-gap: 8px;
     padding: 12px 0;
     border-bottom: 1px solid var(--border);
   }
@@ -1472,8 +1485,31 @@ html[data-lg] .app-topnav .lg-top-search {
   }
   div.st-table-scroll > table td:nth-child(1) { grid-row: 1; grid-column: 1; }
   div.st-table-scroll > table td:nth-child(2) { grid-row: 1; grid-column: 2; }
-  div.st-table-scroll > table td:nth-child(3) { grid-row: 2; grid-column: 1; }
-  div.st-table-scroll > table td:nth-child(4) { grid-row: 2; grid-column: 2; }
+  /* Row 2 centers both cells: ≤767px the action button grows to the 44px
+     tap-target minimum — without centering, the badge rides ~10px high. */
+  div.st-table-scroll > table td:nth-child(3) { grid-row: 2; grid-column: 1; align-self: center; }
+  div.st-table-scroll > table td:nth-child(4) { grid-row: 2; grid-column: 2; align-self: center; }
+  div.st-table-scroll > table .bereich .icon-square { display: none; }
+}
+
+/* Steuer „Ihr Fortschritt": the prototype's absolute dot-to-dot connector
+   (top:14px, left:40px) drew its dashed line straight THROUGH the step titles
+   — mid-cap-height, read as a strikethrough. Replaced by a flex leader that
+   starts AFTER the title text and fills the remaining column width. Locale-
+   length-proof and RTL-safe (logical margin, flex direction flips). */
+.progress-row .pr-step::after { display: none; }
+.progress-row .pr-step .t { display: flex; align-items: center; }
+.progress-row .pr-step .t::after {
+  content: '';
+  flex: 1;
+  border-top: 1.5px dashed var(--border-strong);
+  margin-inline-start: 10px;
+}
+.progress-row .pr-step:last-child .t::after { display: none; }
+/* ≤640px the steps stack vertically (prototype already hid its connector
+   there) — a trailing leader after the title would be pure noise. */
+@media (max-width: 640px) {
+  .progress-row .pr-step .t::after { display: none; }
 }
 
 /* Steuer „Wichtige Fristen": the day-count badge squeezed titles into
@@ -1546,8 +1582,7 @@ html[data-lg] .app-topnav .lg-top-search {
    the full first row, badge + action follow underneath. */
 @media (max-width: 560px) {
   ul.ll-doklist li { flex-wrap: wrap; row-gap: 8px; }
-  ul.ll-doklist .ll-dok-name { flex: 1 1 calc(100% - 29px); }
-  ul.ll-doklist .ll-dok-status { margin-left: 29px; }
+  ul.ll-doklist .ll-dok-name { flex: 1 1 100%; }
   ul.ll-doklist .ll-dok-action { margin-left: auto; }
 }
 
@@ -1667,6 +1702,14 @@ span.ll-oo-qualifier { white-space: nowrap; }
   [data-slot='input'],
   input:not([type='checkbox']):not([type='radio']),
   textarea {
+    min-height: 44px;
+  }
+
+  /* Standalone action anchor (not inline in flowing text) → full tap target
+     (a11y-report leistung-detail-deslop-2026-07-23, Befund #1). */
+  a.ll-datenschutz-link {
+    display: inline-flex;
+    align-items: center;
     min-height: 44px;
   }
 

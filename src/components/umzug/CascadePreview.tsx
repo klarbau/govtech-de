@@ -7,6 +7,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 
 import { Button } from '@/components/ui/button';
 import { ConsentToggle } from '@/components/shared/ConsentToggle';
+import { MobileStickyCta } from '@/components/shared/MobileStickyCta';
 import type {
   AutopilotStepDraft,
   Behoerde,
@@ -222,16 +223,18 @@ export function CascadePreview({
       </CascadeBlock>
 
       <div className="flex justify-end gap-3">
-        <Button
-          type="button"
-          variant="default"
-          size="lg"
-          className="lg-iridescent"
-          onClick={handleStart}
-          disabled={isStarting}
-        >
-          {t('cta_start_autopilot')}
-        </Button>
+        <MobileStickyCta>
+          <Button
+            type="button"
+            variant="default"
+            size="lg"
+            className="lg-iridescent"
+            onClick={handleStart}
+            disabled={isStarting}
+          >
+            {t('cta_start_autopilot')}
+          </Button>
+        </MobileStickyCta>
       </div>
     </motion.div>
   );

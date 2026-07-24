@@ -1,10 +1,11 @@
 /**
- * Vorgang-Lifecycle-Semantik — "Akte statt Video" (Rework 2026-07-10).
- * Diagnose-/Verifikationsspec (underscore = kein Gate): bare-Route-Redirects,
- * statisches Abgeschlossen-Dossier ohne Replay, Once-only-Reveal-Marker,
- * kein Duplikat-Vorgang bei Reload. NICHT mit ?reliable=1 fahren — der
- * reliable-Modus deaktiviert das Fresh-Run-Staging, dessen Once-Semantik
- * Test 3 gerade nachweist. Screenshots landen im Session-Scratchpad.
+ * Vorgang-Lifecycle-Semantik — "Akte statt Video", jetzt EINE kanonische Akte
+ * `/vorgaenge/[id]` (das alte Run-/Kaskaden-Interface ist entfernt).
+ * Diagnose-/Verifikationsspec (underscore = kein Gate): Shim-Redirects der
+ * Alt-Routen, statisches Abgeschlossen-Dossier ohne Replay, Live-Vollzug aus
+ * echten Events (kein Reveal-Pacer mehr), kein Duplikat-Vorgang bei Reload.
+ * Test 3 fährt `?reliable=1` (deterministische eID-Autorisierungen); die
+ * Routing-Tests 2/4/5/6/7 bleiben ohne reliable. Screenshots im Scratchpad.
  */
 import { test, expect, type Page } from '@playwright/test';
 
@@ -51,26 +52,28 @@ test.describe('Vorgang lifecycle — Akte statt Video', () => {
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   });
 
-  test('2) completed Vorgang is a static record — no play button', async ({ page }) => {
-    await page.goto(
-      '/vorgaenge/umzug/run?vorgangId=vg-anna-umzug-2026-completed',
-      { waitUntil: 'domcontentloaded' },
-    );
-    await waitForOrRetry(page, () => page.locator('.vab-layout'), 20000);
+  test('2) completed Vorgang Akte is a static record — no play button', async ({ page }) => {
+    await page.goto('/vorgaenge/vg-anna-umzug-2026-completed', {
+      waitUntil: 'domcontentloaded',
+    });
+    await waitForOrRetry(page, () => page.locator('.vd-timeline'), 20000);
     await settle(page, 1200);
-    // no replay affordances anywhere
+    // no replay affordances anywhere (the run-page demo player is gone)
     await expect(page.locator('.vab-demo-btn')).toHaveCount(0);
     await expect(page.getByRole('button', { name: /abspielen/i })).toHaveCount(0);
     await expect(page.getByText('Live-Demo')).toHaveCount(0);
-    // static done state: progress 100%, done pill
-    await expect(page.locator('.vab-overview-pill')).toBeVisible();
+    // static done state: the completed value receipt + the abgeschlossen badge
+    await expect(page.locator('.vr-card')).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     await page.screenshot({ path: `${SHOTS}/02-completed-record.png`, fullPage: false });
   });
 
-  test('3) wizard → new Vorgang → cascade runs once → reload = snapshot', async ({ page }) => {
+  test('3) wizard → new Vorgang → live cascade on the Akte → complete → record', async ({ page }) => {
     test.setTimeout(180_000);
-    // -- wizard step 1: address + stichtag + wohnungsgeber demo file
-    await page.goto('/vorgaenge/umzug/start', { waitUntil: 'domcontentloaded' });
+    // -- wizard step 1: address + stichtag + wohnungsgeber demo file.
+    //    `?reliable=1` macht die spätere eID-Autorisierungskette deterministisch
+    //    (Sticky-Flag persistiert über die Navigation zur Akte).
+    await page.goto('/vorgaenge/umzug/start?reliable=1', { waitUntil: 'domcontentloaded' });
     await waitForOrRetry(page, () => page.getByLabel(/Straße/i), 20000);
     await page.getByLabel(/Straße/i).first().fill('Waldstraße');
     await page.getByLabel(/Hausnummer/i).first().fill('12');
@@ -98,34 +101,29 @@ test.describe('Vorgang lifecycle — Akte statt Video', () => {
     await page.screenshot({ path: `${SHOTS}/03b-wizard-preview.png` });
     await startBtn.click();
 
-    // -- run page: live cascade (staged reveal plays exactly now)
-    await page.waitForURL('**/vorgaenge/umzug/run?vorgangId=**', { timeout: 20000 });
-    const runUrl = page.url();
-    await settle(page, 1500);
+    // -- lands on the canonical Akte; the cascade streams LIVE from real events
+    //    (no reveal pacer, no staging marker anymore).
+    await page.waitForURL('**/vorgaenge/vorgang-**', { timeout: 20000 });
+    const akteUrl = page.url();
+    await waitForOrRetry(page, () => page.locator('.vd-timeline .vd-step'), 30000);
+    await settle(page, 1200);
     await page.screenshot({ path: `${SHOTS}/03c-cascade-live.png` });
 
-    // sessionStorage marker set → reveal is one-shot
-    const marker = await page.evaluate(() =>
-      Object.keys(window.sessionStorage).find((k) => k.startsWith('gt-umzug-reveal:')),
-    );
-    expect(marker, 'reveal marker set after staging').toBeTruthy();
-
-    // wait for eID gates (Umzug pauses at sensitive authorities)
+    // eID gate surfaces as the full-width NextStepBanner CTA (Block-D, needs_eid).
     const eidBtn = page.getByRole('button', { name: 'Mit eID bestätigen' }).first();
     await eidBtn.waitFor({ timeout: 40000 });
     await page.screenshot({ path: `${SHOTS}/03d-eid-gate.png` });
 
-    // -- reload mid-run: must show the authoritative snapshot, not re-animate.
+    // -- reload mid-run: the Akte re-fetches the authoritative snapshot →
+    //    confirmed Block-A steps are already `is-done`, no re-animation.
     await page.reload({ waitUntil: 'domcontentloaded' });
-    // sample early: confirmed checkmarks must already be visible (staged replay
-    // would show them pending for the first ~1-2s of beats)
-    await waitForOrRetry(page, () => page.locator('.vlf-eid, [class*="vlf"], .vab-layout'), 30000);
-    await settle(page, 400);
-    const confirmedEarly = await page.getByText('Erledigt', { exact: false }).count();
+    await waitForOrRetry(page, () => page.locator('.vd-timeline .vd-step'), 30000);
+    await settle(page, 500);
+    const doneEarly = await page.locator('.vd-step.is-done').count();
     await page.screenshot({ path: `${SHOTS}/03e-after-reload-snapshot.png` });
-    expect(confirmedEarly, 'confirmed steps visible immediately after reload').toBeGreaterThan(0);
+    expect(doneEarly, 'confirmed steps visible immediately after reload').toBeGreaterThan(0);
 
-    // -- confirm all eID gates → Vorgang completes → record, no play button
+    // -- authorise every eID gate via the confirm dialog → Vorgang completes.
     for (let i = 0; i < 4; i++) {
       const gate = page.getByRole('button', { name: 'Mit eID bestätigen' }).first();
       if ((await gate.count()) === 0) break;
@@ -141,26 +139,28 @@ test.describe('Vorgang lifecycle — Akte statt Video', () => {
       }
       await settle(page, 2500);
     }
-    await waitForOrRetry(page, () => page.locator('.vab-layout'), 60000);
-    await settle(page, 1500);
+
+    // -- completed record: the value receipt renders, no replay affordances.
+    await waitForOrRetry(page, () => page.locator('.vr-card'), 60000);
+    await settle(page, 1000);
     await expect(page.locator('.vab-demo-btn')).toHaveCount(0);
     await expect(page.getByRole('button', { name: /abspielen/i })).toHaveCount(0);
     await page.screenshot({ path: `${SHOTS}/03f-new-vorgang-record.png` });
 
-    // -- revisit the same URL later: still the static record
-    await page.goto(runUrl, { waitUntil: 'domcontentloaded' });
-    await waitForOrRetry(page, () => page.locator('.vab-layout'), 20000);
+    // -- revisit the same Akte URL later: still the static record.
+    await page.goto(akteUrl, { waitUntil: 'domcontentloaded' });
+    await waitForOrRetry(page, () => page.locator('.vr-card'), 20000);
     await expect(page.getByRole('button', { name: /abspielen/i })).toHaveCount(0);
   });
 
-  test('4) antragslos CTA click-starts once; reload mints no duplicate', async ({ page }) => {
+  test('4) antragslos CTA click-starts once; lands on the Akte; reload mints no duplicate', async ({ page }) => {
     test.setTimeout(120_000);
     await page.goto('/lebenslagen/kindergeld', { waitUntil: 'domcontentloaded' });
     const cta = page.getByRole('button', { name: 'Automatische Bearbeitung starten' });
     await cta.waitFor({ timeout: 20000 });
     await page.screenshot({ path: `${SHOTS}/04a-kindergeld-cta.png` });
     await cta.click();
-    await page.waitForURL(/\/lebenslagen\/kindergeld\/cascade\?vorgangId=/, { timeout: 20000 });
+    await page.waitForURL('**/vorgaenge/vorgang-**', { timeout: 20000 });
     const url1 = page.url();
 
     const countVorgaenge = () =>
@@ -189,27 +189,25 @@ test.describe('Vorgang lifecycle — Akte statt Video', () => {
     await page.waitForURL(/\/lebenslagen\/kindergeld(?!\/cascade)/, { timeout: 15000 });
   });
 
-  test('6) /vorgaenge/[id] dispatcht Umzug auf das kanonische Dossier', async ({ page }) => {
-    await page.goto('/vorgaenge/vg-anna-umzug-2026-completed', { waitUntil: 'domcontentloaded' });
-    await page.waitForURL('**/vorgaenge/umzug/run?vorgangId=vg-anna-umzug-2026-completed', {
-      timeout: 15000,
+  test('6) legacy run URL redirects to the canonical Akte', async ({ page }) => {
+    await page.goto('/vorgaenge/umzug/run?vorgangId=vg-anna-umzug-2026-completed', {
+      waitUntil: 'domcontentloaded',
     });
-    await waitForOrRetry(page, () => page.locator('.vab-layout'), 20000);
+    await page.waitForURL('**/vorgaenge/vg-anna-umzug-2026-completed', { timeout: 15000 });
+    await waitForOrRetry(page, () => page.locator('.vd-timeline'), 20000);
     await expect(page.getByRole('button', { name: /abspielen/i })).toHaveCount(0);
   });
 
-  test('7) /vorgaenge/[id] dispatcht engine-gelaufene Lebenslage aufs Kaskaden-Dossier', async ({ page }) => {
+  test('7) antragslos-Start landet auf der Akte und rendert das Kaskaden-Dossier', async ({ page }) => {
     test.setTimeout(120_000);
     await page.goto('/lebenslagen/kindergeld', { waitUntil: 'domcontentloaded' });
     await page.getByRole('button', { name: 'Automatische Bearbeitung starten' }).click();
-    await page.waitForURL(/\/lebenslagen\/kindergeld\/cascade\?vorgangId=/, { timeout: 20000 });
-    const vorgangId = new URL(page.url()).searchParams.get('vorgangId')!;
+    await page.waitForURL('**/vorgaenge/vorgang-**', { timeout: 20000 });
+    const akteUrl = page.url();
     await settle(page, 1500);
-    await page.goto(`/vorgaenge/${vorgangId}`, { waitUntil: 'domcontentloaded' });
-    await page.waitForURL(
-      (u) => u.pathname === '/lebenslagen/kindergeld/cascade' && u.searchParams.get('vorgangId') === vorgangId,
-      { timeout: 15000 },
-    );
+    // stays on the Akte (no redirect back to a cascade route); the dossier renders
+    expect(page.url()).toBe(akteUrl);
+    await waitForOrRetry(page, () => page.locator('.vd-timeline'), 20000);
   });
 
   test('8) Stub-Vorgang ohne Dossier bleibt auf der Detailseite', async ({ page }) => {

@@ -487,7 +487,7 @@ export function getActivePersonaId(): string {
  * Macht den Reliable-Mode session-sticky: Steht `?reliable=1` in der URL,
  * wird das Flag EINMAL in den `meta`-Bucket geschrieben — danach überlebt es
  * die Navigation weg von `?reliable=1` (z. B. /assistent?reliable=1 →
- * /vorgaenge/umzug/run), während die Kaskade im Browser noch tickt.
+ * /vorgaenge/<id>-Akte), während die Kaskade im Browser noch tickt.
  *
  * Hintergrund: Seit das Mock-Backend in-process im Browser läuft, lösen die
  * drei Resolver (latency.ts / client.ts / autopilot/umzug.ts) das Flag bei

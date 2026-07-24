@@ -8,18 +8,10 @@ import {
   ArrowRight,
   Bookmark,
   Check,
+  ChevronDown,
   ChevronRight,
-  Clock,
-  Eye,
-  FileText,
   Info,
-  Landmark,
-  ListChecks,
   Lock,
-  MapPin,
-  Rocket,
-  Scale,
-  ShieldCheck,
   UploadCloud,
 } from 'lucide-react';
 
@@ -27,7 +19,8 @@ import { api } from '@/lib/mock-backend';
 import type { LebenslageConfig } from '@/lib/mock-backend/lebenslagen/types';
 import type { Behoerde, Persona } from '@/types';
 import { formatDateDe } from '@/lib/utils';
-import { iconForConfig, isGenuineNotFound, loadWithRetry } from './lebenslagen-shared';
+import { MobileStickyCta } from '@/components/shared/MobileStickyCta';
+import { isGenuineNotFound, loadWithRetry } from './lebenslagen-shared';
 
 interface LeistungDetailViewProps {
   slug: string;
@@ -154,13 +147,14 @@ function DetailSkeleton() {
       <div className="gt-page-head">
         <h1>…</h1>
       </div>
-      <div className="lk-layout">
+      <div className="ll-stepper" style={{ height: 64 }} aria-hidden="true" />
+      <div className="lk-layout" style={{ marginTop: 20 }}>
         <div className="ll-main">
-          <div className="gt-card" style={{ height: 160 }} />
-          <div className="gt-card" style={{ height: 200 }} />
+          <div style={{ height: 120 }} aria-hidden="true" />
+          <div style={{ height: 180 }} aria-hidden="true" />
         </div>
         <aside className="lk-rail" aria-hidden="true">
-          <div className="gt-card" style={{ height: 180 }} />
+          <div className="gt-card ll-next" style={{ height: 180 }} />
         </aside>
       </div>
     </div>
@@ -179,7 +173,6 @@ function DetailReady({
   const t = useTranslations();
   const td = useTranslations('lebenslagen.detail');
   const router = useRouter();
-  const Icon = iconForConfig(config.icon);
 
   // Antragsloser Start: der Klick LEGT den Vorgang an (Write-on-Click) und
   // öffnet dann dessen Live-Kaskade. Die Kaskadenseite selbst startet nie.
@@ -191,9 +184,7 @@ function DetailReady({
     setStartError(false);
     try {
       const { vorgangId } = await api.starteLebenslage(config.slug, {}, []);
-      router.push(
-        `/lebenslagen/${config.slug}/cascade?vorgangId=${encodeURIComponent(vorgangId)}`,
-      );
+      router.push(`/vorgaenge/${encodeURIComponent(vorgangId)}`);
     } catch {
       setStartError(true);
       setIsStarting(false);
@@ -250,8 +241,20 @@ function DetailReady({
   const istAntragslos = config.mode === 'antragslos';
   const antragHref = `/lebenslagen/${config.slug}/antrag`;
   const phaseLabel = td(`phase.${PHASE_LABEL_KEY[config.kategorie]}`);
-  const dauer = config.dauer_geschaetzt_key ? t(config.dauer_geschaetzt_key) : '—';
+  const dauer = config.dauer_geschaetzt_key ? t(config.dauer_geschaetzt_key) : null;
   const docCount = config.benoetigte_dokumente_keys.length;
+
+  /** Redaktionelle Meta-Zeile unter dem Lead: primäre Stelle · Schritte ·
+   *  Behörden · Dauer. Fehlende Stelle / 0-Werte fallen weg (kein leeres Segment). */
+  const metaSegments: string[] = [];
+  if (primaryBehoerde) metaSegments.push(primaryBehoerde.name_de);
+  if (config.cascade.length > 0) {
+    metaSegments.push(t('lebenslagen.meta_schritte', { count: config.cascade.length }));
+  }
+  if (config.zustaendige_behoerden.length > 0) {
+    metaSegments.push(t('lebenslagen.meta_behoerden', { count: config.zustaendige_behoerden.length }));
+  }
+  if (dauer) metaSegments.push(dauer);
 
   return (
     <div>
@@ -264,22 +267,66 @@ function DetailReady({
       <div className="gt-page-head">
         <h1>{t(`lebenslagen.${config.slug}.title`)}</h1>
         <div className="sub">{t(`lebenslagen.${config.slug}.lead`)}</div>
+        {metaSegments.length > 0 ? (
+          <p className="ll-meta">
+            {metaSegments.map((seg, idx) => (
+              <React.Fragment key={seg}>
+                {idx > 0 ? (
+                  <span className="ll-meta-sep" aria-hidden="true">
+                    ·
+                  </span>
+                ) : null}
+                <span>{seg}</span>
+              </React.Fragment>
+            ))}
+          </p>
+        ) : null}
       </div>
 
-      {/* Stepper — config.cascade order */}
+      {/* Zukunft-Hinweis (Kopf) — Ehrlichkeits-Markierung IMMER sichtbar (Badge +
+          erster Satz); der erklärende Rest (inkl. antragslos-Note für hybride
+          Slugs) kollabiert hinter <details>, damit der Kopf keine Textwand ist. */}
+      {config.zukunft ? (
+        <div className="ll-note" role="note">
+          <p className="ll-note-body">
+            <strong className="ll-note-badge">{td('zukunft_banner_badge')}</strong>{' '}
+            {td('zukunft_banner_lead')}
+          </p>
+          <details className="ll-disclosure ll-note-disclosure">
+            <summary className="ll-disclosure-summary">
+              <span>{td('zukunft_disclosure_summary')}</span>
+              <ChevronDown className="ll-disclosure-chevron" aria-hidden="true" />
+            </summary>
+            <div className="ll-disclosure-body">
+              <p className="ll-note-body">{td('zukunft_banner_rest')}</p>
+              {config.antragslos_note_key && !istAntragslos ? (
+                <p className="ll-note-body ll-note-body-extra">
+                  {t(config.antragslos_note_key)}
+                </p>
+              ) : null}
+            </div>
+          </details>
+        </div>
+      ) : null}
+
+      {/* Fristen-Rescue (wow-#12) — ehrlicher „ohne Antrag verfällt Geld"-Beat;
+          Datum aus Persona-Seed, €-Wert „geschätzt ca.". */}
+      {rescue ? (
+        <div className="ll-note" role="note" aria-labelledby="ll-fr-title">
+          <h2 id="ll-fr-title" className="ll-note-title">
+            {rescue.titel}
+          </h2>
+          <p className="ll-note-body">{rescue.body}</p>
+          <p className="ll-note-status">{rescue.status}</p>
+        </div>
+      ) : null}
+
+      {/* Stepper — config.cascade order (die eine Glas-Fläche der Route). */}
       {config.cascade.length > 0 ? (
-        <div
-          className="ll-stepper"
-          role="group"
-          aria-label={td('stepper_label')}
-          tabIndex={0}
-        >
+        <div className="ll-stepper" role="group" aria-label={td('stepper_label')} tabIndex={0}>
           <ol className="ll-stepper-track">
             {config.cascade.map((step, idx) => (
-              <li
-                key={step.id}
-                className={`ll-step${idx === 0 ? ' is-current' : ''}`}
-              >
+              <li key={step.id} className={`ll-step${idx === 0 ? ' is-current' : ''}`}>
                 <span className="ll-step-num" aria-hidden="true">
                   {idx + 1}
                 </span>
@@ -298,124 +345,67 @@ function DetailReady({
         </div>
       ) : null}
 
-      {config.zukunft ? (
-        <div className="gt-banner amber ll-zukunft-banner" role="note">
-          <Info aria-hidden="true" />
-          <div>
-            <strong>{td('zukunft_banner_badge')}</strong> {td('zukunft_banner_body')}
-            {/* antragslos configs already surface this note in the `ll-next`
-               card below — only render it here for non-antragslos (hybrid)
-               configs like `geburt`, else `kindergeld` would show it twice. */}
-            {config.antragslos_note_key && !istAntragslos ? (
-              <> {t(config.antragslos_note_key)}</>
-            ) : null}
-          </div>
-        </div>
-      ) : null}
-
       <div className="lk-layout" style={{ marginTop: 20 }}>
         <div className="ll-main">
-          {/* L0 — Fristen-Rescue (wow-#12): ehrlicher „ohne Antrag verfällt
-              Geld"-Beat; Datum aus Persona-Seed, €-Wert „geschätzt ca.". */}
-          {rescue ? (
-            <section className="gt-card" aria-labelledby="ll-fr-title" role="note">
-              <div className="ll-intro-head">
-                <span className="icon-circle lg" aria-hidden="true">
-                  <Clock />
-                </span>
-                <div>
-                  <h2 id="ll-fr-title" className="gt-card-title">
-                    {rescue.titel}
-                  </h2>
-                  <p className="ll-intro-lead">{rescue.body}</p>
-                  <div style={{ marginTop: 10 }}>
-                    <span className="badge amber">{rescue.status}</span>
-                  </div>
-                </div>
-              </div>
-            </section>
-          ) : null}
-
-          {/* L1 — Was enthalten ist */}
-          <section className="gt-card" aria-labelledby="ll-intro-title">
-            <div className="ll-intro-head">
-              <span className="icon-circle lg" aria-hidden="true">
-                <Icon />
-              </span>
-              <div>
-                <h2 id="ll-intro-title" className="gt-card-title">
-                  {td('section.enthalten')}
-                </h2>
-                <p className="ll-intro-lead">{t(`lebenslagen.${config.slug}.lead`)}</p>
-              </div>
-            </div>
-
+          {/* Zuständige Stellen — löst die Intro-Karte ab (ohne Lead-Doppelung). */}
+          <section className="ll-sec" aria-labelledby="ll-stellen-title">
+            <h2 id="ll-stellen-title" className="ll-h2">
+              {td('section.zustaendige_stellen')}
+            </h2>
             <div className="ll-stellen">
-              <div className="ll-stellen-block">
-                <span className="ll-stellen-label">{td('zustaendige_behoerde')}</span>
-                <div className="ll-stellen-primary">
-                  <span className="ll-behoerde-name">
-                    {primaryBehoerde?.name_de ?? config.zustaendige_behoerden[0]}
-                  </span>
-                  {primaryBehoerde ? (
-                    <span className="badge outline ll-kat-badge">
-                      {td(`kategorie.${primaryBehoerde.kategorie}`)}
-                    </span>
-                  ) : null}
-                </div>
+              <p className="ll-stellen-name">
+                {primaryBehoerde?.name_de ?? config.zustaendige_behoerden[0]}
                 {primaryBehoerde ? (
-                  <p className="ll-stellen-addr">
-                    <MapPin aria-hidden="true" />
-                    <span>
-                      {primaryBehoerde.adresse.strasse} {primaryBehoerde.adresse.hausnummer}
-                      {', '}
-                      {primaryBehoerde.adresse.plz} {primaryBehoerde.adresse.ort}
-                    </span>
-                  </p>
+                  <span className="ll-stellen-kat">
+                    {' '}
+                    ({td(`kategorie.${primaryBehoerde.kategorie}`)})
+                  </span>
                 ) : null}
-              </div>
-
+              </p>
+              {primaryBehoerde ? (
+                <p className="ll-stellen-addr">
+                  {primaryBehoerde.adresse.strasse} {primaryBehoerde.adresse.hausnummer}
+                  {', '}
+                  {primaryBehoerde.adresse.plz} {primaryBehoerde.adresse.ort}
+                </p>
+              ) : null}
               {weitereBehoerden.length > 0 ? (
-                <div className="ll-stellen-block">
-                  <span className="ll-stellen-label">{td('beteiligte_stellen')}</span>
-                  <div className="ll-stellen-chips">
+                <details className="ll-disclosure ll-stellen-disclosure">
+                  <summary className="ll-disclosure-summary">
+                    <span>
+                      {td('stellen_disclosure', { count: weitereBehoerden.length })}
+                    </span>
+                    <ChevronDown className="ll-disclosure-chevron" aria-hidden="true" />
+                  </summary>
+                  <ul className="ll-stellen-list">
                     {weitereBehoerden.map((name) => (
-                      <span key={name} className="badge outline">
-                        {name}
-                      </span>
+                      <li key={name}>{name}</li>
                     ))}
-                  </div>
-                </div>
+                  </ul>
+                </details>
               ) : null}
             </div>
           </section>
 
-          {/* L2 — Voraussetzungen */}
+          {/* Voraussetzungen — schlichte Liste mit hängenden Markern. */}
           {config.voraussetzungen_keys.length > 0 ? (
-            <section className="gt-card" aria-labelledby="ll-vor-title">
-              <div className="gt-card-head">
-                <h2 id="ll-vor-title" className="gt-card-title">
-                  <Check aria-hidden="true" />
-                  {td('section.voraussetzungen')}
-                </h2>
-              </div>
-              <ul className="ll-checklist">
+            <section className="ll-sec" aria-labelledby="ll-vor-title">
+              <h2 id="ll-vor-title" className="ll-h2">
+                {td('section.voraussetzungen')}
+              </h2>
+              <ul className="ll-reqlist">
                 {config.voraussetzungen_keys.map((key) => (
-                  <li key={key}>
-                    <Check aria-hidden="true" />
-                    <span>{t(key)}</span>
-                  </li>
+                  <li key={key}>{t(key)}</li>
                 ))}
               </ul>
             </section>
           ) : null}
 
-          {/* L3 — Benötigte Nachweise (presentational [MOCK] status) */}
+          {/* Benötigte Nachweise — interaktiv; [MOCK] einmal auf Sektionsebene. */}
           {docCount > 0 ? (
-            <section className="gt-card" aria-labelledby="ll-dok-title">
-              <div className="gt-card-head">
-                <h2 id="ll-dok-title" className="gt-card-title">
-                  <FileText aria-hidden="true" />
+            <section className="ll-sec" aria-labelledby="ll-dok-title">
+              <div className="ll-sec-head">
+                <h2 id="ll-dok-title" className="ll-h2">
                   {td('section.dokumente')}
                 </h2>
                 <span className="ll-mock-rail">{td('mock_marker')}</span>
@@ -425,7 +415,6 @@ function DetailReady({
                   const ausstehend = idx === docCount - 1;
                   return (
                     <li key={key}>
-                      <FileText aria-hidden="true" />
                       <span className="ll-dok-name">{t(key)}</span>
                       {ausstehend ? (
                         <span className="badge amber ll-dok-status">
@@ -447,153 +436,95 @@ function DetailReady({
               <button type="button" className="ll-dropzone ll-dok-dropzone">
                 <UploadCloud aria-hidden="true" />
                 <span>{td('nachweis_dropzone')}</span>
-                <span className="ll-mock-rail">{td('mock_marker')}</span>
               </button>
             </section>
           ) : null}
 
-          {/* L4 — Once-Only auto-prepared fields */}
+          {/* Once-Only — Produkt-Kernbotschaft: die EINZIGE Content-Fläche mit
+              weichem Hintergrund-Shift (Box-Eskalationsstufe 2). */}
           {autoFields.length > 0 ? (
-            <section className="gt-card" aria-labelledby="ll-oo-auto-title">
-              <div className="gt-card-head ll-oo-head">
-                <h2 id="ll-oo-auto-title" className="gt-card-title">
-                  {td('section.once_only_auto')}
-                  <span className="ll-oo-qualifier">{td('once_only_qualifier')}</span>
-                </h2>
-                <span className="badge green ll-oo-badge">
-                  <ShieldCheck aria-hidden="true" />
-                  {td('datensparsam')}
-                </span>
-              </div>
+            <section className="ll-oo-panel" aria-labelledby="ll-oo-auto-title">
+              <h2 id="ll-oo-auto-title" className="ll-h2 ll-oo-title">
+                {td('section.once_only_auto')}
+                <span className="ll-oo-qualifier">{td('once_only_qualifier')}</span>
+              </h2>
               <p className="ll-oo-intro">{td('once_only_intro')}</p>
+              <p className="ll-oo-datensparsam">{td('datensparsam')}</p>
               <ul className="ll-oo-grid">
                 {autoFields.map((field) => (
                   <li key={field.key}>
-                    <Check aria-hidden="true" />
-                    <span>{t(`lebenslagen.${config.slug}.fields.${field.key}.label`)}</span>
+                    {t(`lebenslagen.${config.slug}.fields.${field.key}.label`)}
                   </li>
                 ))}
               </ul>
             </section>
           ) : null}
 
-          {/* L5 — Rechtsgrundlagen + Fristen & Gebühren */}
-          <div className="ll-bottom-row">
-            <section className="gt-card" aria-labelledby="ll-recht-title">
-              <div className="gt-card-head">
-                <h2 id="ll-recht-title" className="gt-card-title">
-                  <Scale aria-hidden="true" />
-                  {td('section.rechtsgrundlagen')}
-                </h2>
-              </div>
-              <dl className="ll-recht-list">
-                {config.rechtsgrundlagen.map((rg) => (
-                  <div key={rg.norm} className="ll-recht-row">
-                    <dt className="ll-recht-norm">{rg.norm}</dt>
-                    <dd className="ll-recht-bedeutung">{t(rg.bedeutung_key)}</dd>
-                  </div>
-                ))}
-              </dl>
+          {/* Rechtsgrundlagen — die längste Referenz-Wand kollabiert (closed by
+              default, alle Viewports); Frist bleibt darunter immer sichtbar. */}
+          {config.rechtsgrundlagen.length > 0 ? (
+            <section className="ll-sec" aria-labelledby="ll-recht-title">
+              <details className="ll-disclosure">
+                <summary className="ll-disclosure-summary">
+                  <h2 id="ll-recht-title" className="ll-h2 ll-disclosure-h2">
+                    {td('section.rechtsgrundlagen')}
+                  </h2>
+                  <ChevronDown className="ll-disclosure-chevron" aria-hidden="true" />
+                </summary>
+                <dl className="ll-recht-list ll-disclosure-body">
+                  {config.rechtsgrundlagen.map((rg) => (
+                    <div key={rg.norm} className="ll-recht-row">
+                      <dt className="ll-recht-norm">{rg.norm}</dt>
+                      <dd className="ll-recht-bedeutung">{t(rg.bedeutung_key)}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </details>
             </section>
+          ) : null}
 
-            <section className="gt-card" aria-labelledby="ll-fg-title">
-              <div className="gt-card-head">
-                <h2 id="ll-fg-title" className="gt-card-title">
-                  <Clock aria-hidden="true" />
-                  {td('section.fristen_gebuehren')}
-                </h2>
-              </div>
-              <dl className="ll-fg-list">
-                <div className="ll-fg-row">
-                  <dt>{td('frist_label')}</dt>
-                  <dd>
-                    {config.frist ? t(config.frist.beschreibung_key) : td('keine_frist')}
-                  </dd>
-                </div>
-                <div className="ll-fg-row">
-                  <dt>{td('dauer_geschaetzt')}</dt>
-                  <dd>{dauer}</dd>
-                </div>
-                <div className="ll-fg-row">
-                  <dt>{td('gebuehren_label')}</dt>
-                  <dd>
-                    {config.gebuehr.gibt_es ? (
-                      <span className="ll-fg-geb">
-                        <span className="ll-fg-betrag">
-                          {config.gebuehr.betrag_key ? t(config.gebuehr.betrag_key) : ''}
-                        </span>
-                        <span className="ll-mock-rail">{td('mock_payment')}</span>
-                        {config.gebuehr.hinweis_key ? (
-                          <span className="ll-fg-hinweis">{t(config.gebuehr.hinweis_key)}</span>
-                        ) : null}
-                      </span>
-                    ) : config.gebuehr.hinweis_key ? (
-                      t(config.gebuehr.hinweis_key)
-                    ) : (
-                      td('keine_gebuehr')
-                    )}
-                  </dd>
-                </div>
-              </dl>
-            </section>
-          </div>
-        </div>
-
-        <aside className="lk-rail" aria-label={td('rail_label')}>
-          {/* R1 — Auf einen Blick */}
-          <section className="gt-card" aria-labelledby="ll-blick-title">
-            <h2 id="ll-blick-title" className="gt-card-title llh-rail-title">
-              <Eye aria-hidden="true" />
-              {td('auf_einen_blick')}
+          {/* Fristen & Gebühren — bleibt AUSGEKLAPPT (kurz, trägt die rechtlich
+              wichtige Frist). */}
+          <section className="ll-sec" aria-labelledby="ll-fg-title">
+            <h2 id="ll-fg-title" className="ll-h2">
+              {td('section.fristen_gebuehren')}
             </h2>
-            <dl className="ll-blick-list">
-              <div className="ll-blick-row">
-                <dt>
-                  <Clock aria-hidden="true" />
-                  {td('gesamtdauer')}
-                </dt>
-                <dd>{dauer}</dd>
+            <dl className="ll-fg-list">
+              <div className="ll-fg-row">
+                <dt>{td('frist_label')}</dt>
+                <dd>{config.frist ? t(config.frist.beschreibung_key) : td('keine_frist')}</dd>
               </div>
-              <div className="ll-blick-row">
-                <dt>
-                  <ListChecks aria-hidden="true" />
-                  {td('schritte_insgesamt')}
-                </dt>
-                <dd>{config.cascade.length}</dd>
-              </div>
-              <div className="ll-blick-row">
-                <dt>
-                  <Landmark aria-hidden="true" />
-                  {td('beteiligte_behoerden_count')}
-                </dt>
-                <dd>{config.zustaendige_behoerden.length}</dd>
+              <div className="ll-fg-row">
+                <dt>{td('gebuehren_label')}</dt>
+                <dd>
+                  {config.gebuehr.gibt_es ? (
+                    <span className="ll-fg-geb">
+                      <span className="ll-fg-betrag">
+                        {config.gebuehr.betrag_key ? t(config.gebuehr.betrag_key) : ''}
+                      </span>
+                      <span className="ll-mock-rail">{td('mock_payment')}</span>
+                      {config.gebuehr.hinweis_key ? (
+                        <span className="ll-fg-hinweis">{t(config.gebuehr.hinweis_key)}</span>
+                      ) : null}
+                    </span>
+                  ) : config.gebuehr.hinweis_key ? (
+                    t(config.gebuehr.hinweis_key)
+                  ) : (
+                    td('keine_gebuehr')
+                  )}
+                </dd>
               </div>
             </dl>
           </section>
+        </div>
 
-          {/* R2 — Ihre Daten sind geschützt */}
-          <section className="gt-card lk-secure">
-            <span className="icon-circle green" aria-hidden="true">
-              <Lock />
-            </span>
-            <h2 className="lk-secure-title">{td('datenschutz_title')}</h2>
-            <p className="lk-secure-body">{td('datenschutz_body')}</p>
-            <Link href="/datenschutz" className="btn btn-secondary lk-secure-link">
-              <ShieldCheck aria-hidden="true" />
-              {td('datenschutz_link')}
-            </Link>
-          </section>
-
-          {/* R3 — Nächster Schritt (CTA) */}
+        <aside className="lk-rail" aria-label={td('rail_label')}>
+          {/* Nächster Schritt (CTA-Panel) — das EINE Panel der Seite; trägt die
+              eine Frost-Fläche der Familie (via lebenslagen-liquid-glass.css). */}
           <section className="gt-card ll-next" aria-labelledby="ll-next-title">
-            <div className="ll-next-head">
-              <span className="icon-circle green" aria-hidden="true">
-                <Rocket />
-              </span>
-              <h2 id="ll-next-title" className="gt-card-title">
-                {istAntragslos ? td('antragslos.kein_antrag_title') : td('naechster_schritt')}
-              </h2>
-            </div>
+            <h2 id="ll-next-title" className="gt-card-title ll-next-title">
+              {istAntragslos ? td('antragslos.kein_antrag_title') : td('naechster_schritt')}
+            </h2>
             <p className="ll-next-body">
               {istAntragslos
                 ? config.antragslos_note_key
@@ -602,22 +533,24 @@ function DetailReady({
                 : td('naechster_schritt_body')}
             </p>
             <div className="ll-next-actions">
-              {istAntragslos ? (
-                <button
-                  type="button"
-                  className="btn btn-primary ll-next-primary"
-                  onClick={startCascade}
-                  disabled={isStarting}
-                >
-                  <ArrowRight aria-hidden="true" />
-                  {td('cta_cascade_start')}
-                </button>
-              ) : (
-                <Link href={antragHref} className="btn btn-primary ll-next-primary">
-                  {td('cta_beantragen')}
-                  <ArrowRight aria-hidden="true" />
-                </Link>
-              )}
+              <MobileStickyCta>
+                {istAntragslos ? (
+                  <button
+                    type="button"
+                    className="btn btn-primary ll-next-primary"
+                    onClick={startCascade}
+                    disabled={isStarting}
+                  >
+                    <ArrowRight aria-hidden="true" />
+                    {td('cta_cascade_start')}
+                  </button>
+                ) : (
+                  <Link href={antragHref} className="btn btn-primary ll-next-primary">
+                    {td('cta_beantragen')}
+                    <ArrowRight aria-hidden="true" />
+                  </Link>
+                )}
+              </MobileStickyCta>
               <button type="button" className="btn btn-secondary ll-next-save">
                 <Bookmark aria-hidden="true" />
                 {td('vorgang_speichern')}
@@ -630,6 +563,17 @@ function DetailReady({
             ) : null}
             <p className="ll-next-foot">{td('vorgang_fortsetzen')}</p>
           </section>
+
+          {/* Datenschutz-Zeile — statt Karte: Kurzfassung + Textlink. */}
+          <div className="ll-datenschutz">
+            <p className="ll-datenschutz-body">
+              <Lock className="ll-datenschutz-icon" aria-hidden="true" />
+              {td('datenschutz_body')}
+            </p>
+            <Link href="/datenschutz" className="ll-datenschutz-link">
+              {td('datenschutz_link')}
+            </Link>
+          </div>
         </aside>
       </div>
     </div>

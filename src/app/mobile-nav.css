@@ -182,3 +182,43 @@ html[data-lg].dark .mobile-tabbar {
     display: none;
   }
 }
+
+/* ── Mobile Sticky-CTA (≤767px) ──────────────────────────────────────────────
+   Pinnt den primären Seiten-CTA über der Bottom-Tab-Bar, damit „Jetzt
+   beantragen" & Co. beim Anlegen eines Vorgangs nie unter dem Fold liegen.
+   ≥768px ist der Wrapper display:contents (layoutneutral, Desktop unberührt).
+   Bewusst solid + blur-frei (Blur-Budget wie die gepinnte Assistent-Composer);
+   ungated, damit der Kill-Switch NEXT_PUBLIC_LG=0 identisch funktioniert.
+   z-index 40 wie die Composer: über Content, unter Topnav (50) und Sheet (50). */
+.mobile-sticky-cta {
+  display: contents;
+}
+
+@media (max-width: 767px) {
+  .mobile-sticky-cta {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--mobile-tabbar-h) + env(safe-area-inset-bottom));
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 16px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+  }
+
+  .mobile-sticky-cta > * {
+    width: 100%;
+    justify-content: center;
+    min-height: 48px;
+  }
+
+  /* Freiraum: letzte Inhalte (Disclaimer, Fußnoten) dürfen nicht hinter der
+     fixen CTA-Leiste verschwinden. 76px ≈ Leistenhöhe (48px CTA + 20px
+     Padding + Haarlinie) plus Luft. */
+  .app-content:has(.mobile-sticky-cta) {
+    padding-bottom: calc(var(--mobile-tabbar-h) + env(safe-area-inset-bottom) + 76px);
+  }
+}

@@ -241,7 +241,7 @@ test.describe('SPINE — assistant → autopilot → posteingang (demo-shipped g
     const kaskadeLink = page.getByRole('link', { name: 'Kaskade ansehen' });
     await expect(kaskadeLink).toBeVisible({ timeout: 20_000 });
     const kaskadeHref = await kaskadeLink.getAttribute('href');
-    expect(kaskadeHref).toContain('/vorgaenge/umzug/run?vorgangId=vorgang-');
+    expect(kaskadeHref).toContain('/vorgaenge/vorgang-');
 
     /* ── Step 4b: the cascade ALSO plays INLINE in the chat (wow #1, additive) ──
      * Proves the continuous "I spoke → it acted → I watched" beat happens in the
@@ -256,47 +256,40 @@ test.describe('SPINE — assistant → autopilot → posteingang (demo-shipped g
 
     /* ── Step 5: cascade renders + progresses (Block A → confirmed) ─────── */
     await kaskadeLink.click();
-    await page.waitForURL('**/vorgaenge/umzug/run**');
+    await page.waitForURL('**/vorgaenge/vorgang-**');
 
-    // The run page now renders the shared dossier (`VorgangInBearbeitung`, the
-    // same component the 7 Lebenslagen use): a vertical step timeline
-    // `.vlf-timeline` → one `.vlf-tl-item` per step (A→D→B sorted, block-C
-    // filtered, NOT sliced). The page hydrates `getVorgang(vorgangId)` from
-    // localStorage, which already holds the cascade steps persisted by the
-    // in-process autopilot. A reload clears a dev cold-compile of this route
-    // without losing persisted state.
-    const timelineItems = page.locator('.vlf-timeline .vlf-tl-item');
+    // The link now points at the canonical Akte `/vorgaenge/[id]`
+    // (`VorgangDetail`), which renders the vertical step timeline `.vd-timeline`
+    // → one `.vd-step` per step (block-C filtered for the Umzug). The Akte
+    // hydrates `getVorgang(id)` from localStorage — already holding the cascade
+    // steps persisted by the in-process autopilot — and reconciles live from the
+    // event stream. A reload clears a dev cold-compile without losing state.
+    const timelineSteps = page.locator('.vd-timeline .vd-step');
     try {
-      await expect(timelineItems.first().locator('.vlf-tl-title')).toBeVisible({
+      await expect(timelineSteps.first().locator('.vd-step-aktion')).toBeVisible({
         timeout: 20_000,
       });
     } catch {
       await page.reload({ waitUntil: 'domcontentloaded' });
-      await expect(timelineItems.first().locator('.vlf-tl-title')).toBeVisible({
+      await expect(timelineSteps.first().locator('.vd-step-aktion')).toBeVisible({
         timeout: 20_000,
       });
     }
 
-    // The five Block-A Behörden timeline rows progress to "Erledigt" — the
-    // dossier's `status_confirmed` label (lebenslagen.detail.laufend), the
-    // equivalent of the old run page's "Abgeschlossen". Reliable mode guarantees
-    // no random failure, so all five resolve. (Block-A gained the § 33 BMG
-    // MB↔MB-Rückmeldung row in feat/fit-connect-cascade-realism, taking the
-    // auto-confirmed count 4 → 5.) Scope strictly to `.vlf-timeline .vlf-tl-item
-    // .badge`: "Erledigt" ALSO appears in the Beteiligte-Stellen list + the
-    // Live-Aktivitäten feed, so a page-wide matcher would over-count. The
-    // Block-D rows gate on eID (confirmed inline, not on /run) so they stay
-    // pending here → we assert exactly 5 "Erledigt" in the timeline.
-    await expect(
-      page.locator('.vlf-timeline .vlf-tl-item .badge', {
-        hasText: 'Erledigt',
-      }),
-    ).toHaveCount(5, { timeout: 30_000 });
+    // The five Block-A Behörden steps progress to done (`.vd-step.is-done` — the
+    // green check node). Reliable mode guarantees no random failure, so all five
+    // resolve. (Block-A gained the § 33 BMG MB↔MB-Rückmeldung row in
+    // feat/fit-connect-cascade-realism, taking the auto-confirmed count 4 → 5.)
+    // The Block-D rows gate on eID (confirmed inline, not on the Akte) so they
+    // stay pending here → exactly 5 done steps in the timeline.
+    await expect(page.locator('.vd-timeline .vd-step.is-done')).toHaveCount(5, {
+      timeout: 30_000,
+    });
 
-    // The Finanzamt + Beitragsservice rows render (scoped to the timeline so the
-    // Beteiligte-Stellen list / Live-feed copies don't satisfy the assertion).
-    await expect(timelineItems.getByText(/Finanzamt/i).first()).toBeVisible();
-    await expect(timelineItems.getByText(/Beitragsservice/i).first()).toBeVisible();
+    // The Finanzamt + Beitragsservice rows render in the timeline (scoped so the
+    // rail / footer copies don't satisfy the assertion).
+    await expect(timelineSteps.getByText(/Finanzamt/i).first()).toBeVisible();
+    await expect(timelineSteps.getByText(/Beitragsservice/i).first()).toBeVisible();
 
     /* ── Step 6: confirmations land in the Posteingang ──────────────────── */
     const letterLinks = page.locator('a[href^="/posteingang/letter-"]');

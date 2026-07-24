@@ -140,7 +140,7 @@ test('toggling a consent switch flips aria-checked, announces, and emits a timel
   await page.goto(ROUTE + '?reliable=1', { waitUntil: 'networkidle' });
   await waitForReady(page);
 
-  const liveRegion = page.locator('[aria-live="polite"].sr-only').first();
+  const liveRegion = page.locator('main [aria-live="polite"].sr-only').first();
   const timeline = page
     .getByRole('heading', { name: /Letzte Aktivit/i })
     .locator('xpath=following::ul[1]');

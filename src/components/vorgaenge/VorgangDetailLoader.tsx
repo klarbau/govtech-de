@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { format, parseISO } from 'date-fns';
 import { de } from 'date-fns/locale';
@@ -32,12 +31,22 @@ import {
   Tv,
 } from 'lucide-react';
 
+import { HerkunftBadge } from '@/components/autopilot/HerkunftBadge';
+import { ProtokollInspector } from '@/components/autopilot/ProtokollInspector';
 import { UebermittlungsReceipt } from '@/components/autopilot/UebermittlungsReceipt';
+import { UnterDerHaubeLeiste } from '@/components/autopilot/UnterDerHaubeLeiste';
 import { ValueReceiptCard } from '@/components/autopilot/ValueReceiptCard';
+import { WohngeldFolgeCard } from '@/components/dashboard/WohngeldFolgeCard';
+import {
+  LaufzettelPanel,
+  OrchestrationTestBridge,
+  RecoveryBanner,
+} from '@/components/orchestration';
 import { LetterCard } from '@/components/posteingang/LetterCard';
 import { BehoerdenBadge } from '@/components/shared/BehoerdenBadge';
 import { Button } from '@/components/ui/button';
 import { DatenschutzCockpitLink } from '@/components/shared/DatenschutzCockpitLink';
+import { FristDetailModal } from '@/components/shared/FristDetailModal';
 import { PrototypeDisclaimer } from '@/components/shared/PrototypeDisclaimer';
 import { Skeleton } from '@/components/shared/Skeleton';
 import { TerminCard } from '@/components/shared/TerminCard';
@@ -114,36 +123,7 @@ function formatAdresse(a: Adresse): string {
   return `${line1}, ${line2}`;
 }
 
-/**
- * Kanonische Akten-Route eines Vorgangs mit eigenem Dossier — /vorgaenge/[id]
- * dispatcht dorthin statt eine zweite, abweichende Ansicht derselben Akte zu
- * rendern (Lifecycle-Modell „Akte statt Video": EINE Seite pro Vorgang).
- * Umzug-Saga → Run-/Dossier-Seite; engine-gelaufene Lebenslagen (Cascade-
- * Step-IDs tragen das `<vorgangId>:`-Präfix, siehe engine.stepIdFor) → ihr
- * Kaskaden-Dossier. Seeded-/Stub-Vorgänge mit Bürger-Schritten (z. B.
- * Aufenthaltstitel-Stub, Kindergeld-Aktualisierung) haben kein Dossier und
- * bleiben auf dieser Detailseite. Fehlt der Katalog transient, rendert die
- * Detailseite als Fallback weiter.
- */
-async function canonicalDossierHref(vorgang: Vorgang): Promise<string | null> {
-  if (vorgang.typ === 'umzug') {
-    return `/vorgaenge/umzug/run?vorgangId=${encodeURIComponent(vorgang.id)}`;
-  }
-  const engineRun = vorgang.schritte.some((s) => s.id.startsWith(`${vorgang.id}:`));
-  if (!engineRun) return null;
-  try {
-    const catalog = await api.getLebenslagen();
-    const slug = catalog.find((e) => e.vorgangTyp === vorgang.typ)?.slug;
-    return slug
-      ? `/lebenslagen/${encodeURIComponent(slug)}/cascade?vorgangId=${encodeURIComponent(vorgang.id)}`
-      : null;
-  } catch {
-    return null;
-  }
-}
-
 export function VorgangDetailLoader({ id }: VorgangDetailLoaderProps) {
-  const router = useRouter();
   const [state, setState] = React.useState<
     | { kind: 'loading' }
     | { kind: 'ready'; data: LoadedState }
@@ -153,7 +133,7 @@ export function VorgangDetailLoader({ id }: VorgangDetailLoaderProps) {
   const load = React.useCallback(async (opts?: { silent?: boolean }) => {
     // `silent` = In-Place-Reconcile nach einer Aktion: kein Skeleton, die Seite
     // bleibt gemountet, nur der frische Datenstand wird eingespielt. Sonst
-    // identischer Rumpf (inkl. Transient-Retry + Dossier-Dispatch).
+    // identischer Rumpf (inkl. Transient-Retry).
     if (!opts?.silent) setState({ kind: 'loading' });
     let vorgang: Vorgang | undefined;
     let letters: Letter[] = [];
@@ -178,12 +158,6 @@ export function VorgangDetailLoader({ id }: VorgangDetailLoaderProps) {
     if (!vorgang) {
       setState({ kind: 'not-found' });
       return;
-    }
-
-    const dossierHref = await canonicalDossierHref(vorgang);
-    if (dossierHref) {
-      router.replace(dossierHref);
-      return; // Skeleton bleibt stehen, bis die kanonische Seite übernimmt.
     }
 
     // One retry: a transient mock error here degrades every Behörden-Name on
@@ -218,7 +192,7 @@ export function VorgangDetailLoader({ id }: VorgangDetailLoaderProps) {
       kind: 'ready',
       data: { vorgang, letters, termine, behoerden, relatedDocuments, receipt },
     });
-  }, [id, router]);
+  }, [id]);
 
   const reconcile = React.useCallback(() => load({ silent: true }), [load]);
 
@@ -235,7 +209,8 @@ export function VorgangDetailLoader({ id }: VorgangDetailLoaderProps) {
     return api.subscribe((event) => {
       const relevant =
         (event.type === 'autopilot_step' && event.vorgangId === id) ||
-        (event.type === 'letter_received' && event.letter.vorgang_id === id);
+        (event.type === 'letter_received' && event.letter.vorgang_id === id) ||
+        (event.type === 'vorgang_status_changed' && event.vorgangId === id);
       if (relevant) void load({ silent: true });
     });
   }, [id, load]);
@@ -368,7 +343,17 @@ function VorgangDetail({
   const adresseNeu = readAdresseFromContext(vorgang.context, 'neue_adresse');
   const stichtag = readStichtagFromContext(vorgang.context);
 
-  const nextStep = pickNextStep(vorgang.schritte);
+  // Block-C-Schritte des Umzugs sind private Selbst-Erinnerungen (PA-Aufkleber,
+  // Wohnungsgeberbestätigung u. a.) mit Status `self_assigned` — kein Behörden-
+  // Vollzug. Sie gehören nicht in Timeline/Fortschritt und dürften nie einen
+  // Bürger-CTA tragen. Nur für den Umzug herausfiltern (Seed-Vorgänge wie der
+  // Führerschein-Umtausch tragen einen legitimen Block-C-Schritt, der bleibt).
+  const steps =
+    vorgang.typ === 'umzug'
+      ? vorgang.schritte.filter((s) => s.block !== 'C')
+      : vorgang.schritte;
+
+  const nextStep = pickNextStep(steps);
   const nextBehoerde = nextStep ? behoerdenById[nextStep.behoerde_id] : undefined;
 
   // Confirm-Typ des nächsten Schritts — nur wenn der Bürger am Zug ist. Termin-
@@ -383,11 +368,11 @@ function VorgangDetail({
           : 'eid'
       : undefined;
 
-  const doneCount = vorgang.schritte.filter((s) => s.status === 'confirmed').length;
-  const totalCount = vorgang.schritte.length;
-  const activeStepIndex = vorgang.schritte.findIndex((s) => IN_PROGRESS_STATUS.has(s.status));
+  const doneCount = steps.filter((s) => s.status === 'confirmed').length;
+  const totalCount = steps.length;
+  const activeStepIndex = steps.findIndex((s) => IN_PROGRESS_STATUS.has(s.status));
   const primaryRechtsgrundlage =
-    vorgang.schritte.find((s) => s.rechtsgrundlage)?.rechtsgrundlage ??
+    steps.find((s) => s.rechtsgrundlage)?.rechtsgrundlage ??
     (vorgang.typ === 'umzug' ? '§ 17 BMG' : undefined);
 
   // State-aware Kopfdaten: eine Frist gilt nur, solange noch etwas aussteht —
@@ -426,6 +411,7 @@ function VorgangDetail({
   // der Write sitzt im Dialog-Confirm.
   const [authStep, setAuthStep] = React.useState<{
     stepId: string;
+    status: AutopilotStepStatus;
     mode: VorgangSchrittAuthMode;
     behoerdeName: string;
     datenkategorien: string[];
@@ -436,6 +422,7 @@ function VorgangDetail({
     if (!nextStep || !nextStepMode) return;
     setAuthStep({
       stepId: nextStep.id,
+      status: nextStep.status,
       mode: nextStepMode,
       behoerdeName: nextBehoerde?.name_de ?? nextStep.behoerde_id,
       datenkategorien: nextStep.datenkategorien ?? [],
@@ -445,8 +432,25 @@ function VorgangDetail({
 
   const authorizeStep = async () => {
     if (!authStep) return;
+    const { stepId, status } = authStep;
     try {
-      await api.starteVorgangSchritt(vorgang.id, authStep.stepId);
+      // Welcher Write vollzieht den Schritt? Ein laufender Umzug ist eine
+      // Engine-Saga: seine eID-Gates (Block D) laufen über
+      // `bestaetigeAutopilotSchritt` (dessen Saga-Schritt-IDs tragen ebenfalls
+      // das `<vorgangId>:`-Präfix — deshalb VOR dem Lebenslagen-Zweig prüfen).
+      // Eine engine-gelaufene Lebenslage confirmt ihre eID-Gates über
+      // `bestaetigeLebenslageSchritt`. Alles andere sind Seed-Schritte, die das
+      // System über `starteVorgangSchritt` vollzieht.
+      if (
+        vorgang.typ === 'umzug' &&
+        (status === 'needs_eid' || status === 'pending_eid_confirmation')
+      ) {
+        await api.bestaetigeAutopilotSchritt(vorgang.id, stepId);
+      } else if (stepId.startsWith(`${vorgang.id}:`)) {
+        await api.bestaetigeLebenslageSchritt(vorgang.id, stepId);
+      } else {
+        await api.starteVorgangSchritt(vorgang.id, stepId);
+      }
     } catch (error) {
       toast.error(tv('step_done_error'));
       throw error; // Dialog offen lassen (Retry) — der Schritt bleibt unangetastet.
@@ -540,6 +544,19 @@ function VorgangDetail({
         status={vorgang.status}
       />
 
+      {/* Umzug-Saga-Resilienz (Spec § 5.1/§ 6.1): der Test-Seam
+        * (`window.__orchestrationTest`) + das Recovery-Banner (DR-Signal, replayt
+        * eine unterbrochene Saga). Umzug-only — geseedete/Lebenslagen-Vorgänge
+        * haben keine Saga. Die e2e-Resilienz-Suite hängt an diesen Mounts. */}
+      {vorgang.typ === 'umzug' ? (
+        <>
+          <OrchestrationTestBridge />
+          <div className="mb-4">
+            <RecoveryBanner sagaId={id} />
+          </div>
+        </>
+      ) : null}
+
       {/* The one thing the citizen must do sits full-width right under the
         * header — never buried in the rail below the fold. On erledigen the
         * banner morphs in place (AnimatePresence) to the next citizen step or
@@ -566,7 +583,7 @@ function VorgangDetail({
                 onAuthorize={openAuth}
               />
             </motion.div>
-          ) : vorgang.schritte.length > 0 && !receipt ? (
+          ) : steps.length > 0 && !receipt ? (
             <motion.div
               key="done"
               initial={reduce ? false : { opacity: 0, y: 6 }}
@@ -584,10 +601,18 @@ function VorgangDetail({
         <motion.div className="flex flex-col gap-6" {...entrance(0.06)}>
           {receipt ? <ValueReceiptCard receipt={receipt} variant="static" /> : null}
 
+          {/* Wohngeld-Folge-Beat (anspruch-arc.md § 4.1, Beat a): direkt unter
+            * der Umzug-Value-Receipt — nur beim abgeschlossenen Umzug + quali-
+            * fizierter Persona. Self-fetching; rendert `null`, wenn nicht quali-
+            * fiziert / dismissed / consent widerrufen. */}
+          {receipt && vorgang.typ === 'umzug' && vorgang.persona_id ? (
+            <WohngeldFolgeCard personaId={vorgang.persona_id} />
+          ) : null}
+
           {adresseNeu ? <AdresseDiffClient alt={adresseAlt} neu={adresseNeu} /> : null}
 
           <BehoerdenStatusListClient
-            steps={vorgang.schritte}
+            steps={steps}
             behoerdenById={behoerdenById}
             lettersById={lettersById}
             done={doneCount}
@@ -651,7 +676,7 @@ function VorgangDetail({
           <VorgangDetailsRail
             angelegtIso={vorgang.angelegt_am}
             stichtagIso={stichtag}
-            behoerdenCount={vorgang.schritte.length}
+            behoerdenCount={steps.length}
             naechsteFristIso={naechsteFristIso}
             fertigLabel={fertigLabel}
             fertigValue={fertigValue}
@@ -662,6 +687,26 @@ function VorgangDetail({
           <PrototypeDisclaimer />
         </motion.aside>
       </div>
+
+      {/* Umzug-Transparenz-Footer (Feature-Erhalt der Run-Seite, Review-Auflagen):
+        * ruhiger Datenschutz-/Protokoll-Boden — Engine-Laufzettel (Inspector),
+        * Herkunft, „Unter der Haube"-Leiste, der §-17-BMG-Fristerklärer (dessen
+        * Bußgeld-Copy AUSSCHLIESSLICH im FristDetailModal lebt — Spec § 8) und der
+        * capability-gated Protokoll-Inspektor. Umzug-only; die Resilienz-e2e hängt
+        * an diesen Mounts. */}
+      {vorgang.typ === 'umzug' ? (
+        <div className="mt-8 flex flex-col gap-5">
+          <LaufzettelPanel sagaId={id} variant="inspector" behoerdenById={behoerdenById} />
+          <div className="flex flex-col gap-2">
+            <HerkunftBadge />
+            <UnterDerHaubeLeiste vorgangId={id} inspectorPointer />
+            <FristDetailModal />
+          </div>
+          <ProtokollInspector
+            behoerdeName={behoerdenById['kfz-berlin-labo']?.name_de ?? ''}
+          />
+        </div>
+      ) : null}
 
       <VorgangSchrittAuthDialog
         open={authStep !== null}

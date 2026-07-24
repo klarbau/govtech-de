@@ -1,12 +1,11 @@
 import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-// Committed a11y coverage for the SHARED Lebenslagen dossier surfaces — the
-// `VorgangInBearbeitung` running-dossier eID gate (.vlf-eid) and the
-// `VorgangAbgeschlossen` completed dossier (.vab-layout). These were previously
-// only covered by untracked scratch specs (tests/e2e/_v{ab,lf}-axe.spec.ts) that
-// vanished on a clean checkout; promoted here so the new shared components have
-// real, durable axe coverage (light + dark + mobile + the recolored eID band).
+// Committed a11y coverage for the Lebenslagen dossier — now the canonical Akte
+// `/vorgaenge/[id]` (`VorgangDetail`), reached after an Antrag is submitted.
+// Covers the running eID-gate band (the `.vd-next` NextStepBanner, mode eID)
+// and the completed non-Umzug dossier (`.vd-next.is-done` + the all-done
+// `.vd-timeline`). light + dark + mobile.
 
 const NS = 'govtech-de:v1:';
 const PERSONA = 'anna-petrov';
@@ -39,26 +38,6 @@ async function confirmDialog(page: Page) {
   await dialog.waitFor({ state: 'hidden', timeout: 10000 }).catch(() => undefined);
 }
 
-async function fillRequiredEmpty(page: Page) {
-  const inputs = page.locator('form input');
-  const n = await inputs.count();
-  for (let i = 0; i < n; i++) {
-    const el = inputs.nth(i);
-    if (!(await el.isVisible().catch(() => false))) continue;
-    const type = (await el.getAttribute('type')) ?? 'text';
-    if (type === 'checkbox') continue;
-    const val = await el.inputValue().catch(() => '');
-    const req = await el.evaluate(
-      (e: HTMLInputElement) =>
-        e.required || e.getAttribute('aria-required') === 'true',
-    );
-    if (req && !val) {
-      if (type === 'date') await el.fill('2027-01-01').catch(() => undefined);
-      else await el.fill('Testangabe').catch(() => undefined);
-    }
-  }
-}
-
 async function runAxe(page: Page, label: string, include?: string) {
   const builder = new AxeBuilder({ page }).withTags(axeTags);
   if (include) builder.include(include);
@@ -76,31 +55,39 @@ async function runAxe(page: Page, label: string, include?: string) {
   expect(blockers, `serious/critical: ${label}`).toHaveLength(0);
 }
 
-/* ── VorgangInBearbeitung: the inline eID gate band (.vlf-eid) ──────────── */
+/* ── Running dossier: the eID gate band (NextStepBanner `.vd-next`) ──────── */
+
+// Antragslos-Start (kindergeld: a single Stufe-1 eID gate, then a clean
+// completion — no consent-skip steps) → lands on the Akte; the cascade pauses
+// at the eID gate, surfaced full-width as the NextStepBanner CTA.
+async function startKindergeldOnAkte(page: Page) {
+  await page.goto('/lebenslagen/kindergeld', { waitUntil: 'networkidle' });
+  const cta = page.getByRole('button', {
+    name: 'Automatische Bearbeitung starten',
+  });
+  await cta.waitFor({ state: 'visible', timeout: 20000 });
+  await cta.click();
+  await page.waitForURL(/\/vorgaenge\//, { timeout: 20000 });
+}
 
 async function driveToEidGate(page: Page) {
-  await page.goto('/lebenslagen/geburt/antrag', { waitUntil: 'networkidle' });
-  const submit = page.getByRole('button', {
-    name: /mit eid bestätigen & absenden/i,
-  });
-  await submit.waitFor({ state: 'visible', timeout: 20000 });
-  await fillRequiredEmpty(page);
-  await submit.click();
-  await confirmDialog(page);
-  await page.waitForURL(/\/cascade/, { timeout: 20000 });
-  await page.locator('.vlf-eid').first().waitFor({ state: 'visible', timeout: 40000 });
+  await startKindergeldOnAkte(page);
+  await page
+    .getByRole('button', { name: /^mit eid bestätigen$/i })
+    .first()
+    .waitFor({ state: 'visible', timeout: 40000 });
   await page.waitForTimeout(600);
 }
 
-test('dossier eID gate (.vlf-eid) — axe light', async ({ page }) => {
+test('dossier eID gate (.vd-next) — axe light', async ({ page }) => {
   test.setTimeout(120_000);
   await boot(page);
   await page.setViewportSize({ width: 1440, height: 1000 });
   await driveToEidGate(page);
-  await runAxe(page, 'eid-gate LIGHT', '.vlf-eid');
+  await runAxe(page, 'eid-gate LIGHT', '.vd-next');
 });
 
-test('dossier eID gate (.vlf-eid) — axe dark', async ({ page }) => {
+test('dossier eID gate (.vd-next) — axe dark', async ({ page }) => {
   test.setTimeout(120_000);
   await boot(page);
   await page.emulateMedia({ colorScheme: 'dark' });
@@ -108,37 +95,31 @@ test('dossier eID gate (.vlf-eid) — axe dark', async ({ page }) => {
   await driveToEidGate(page);
   await page.evaluate(() => document.documentElement.classList.add('dark'));
   await page.waitForTimeout(400);
-  await runAxe(page, 'eid-gate DARK', '.vlf-eid');
+  await runAxe(page, 'eid-gate DARK', '.vd-next');
 });
 
-/* ── VorgangAbgeschlossen: the completed dossier (.vab-layout) ──────────── */
+/* ── Completed dossier: `.vd-next.is-done` + the all-done timeline ───────── */
 
 async function driveToDone(page: Page) {
-  await page.goto('/lebenslagen/pflegegrad/antrag', { waitUntil: 'networkidle' });
-  const submit = page.getByRole('button', {
-    name: /mit eid bestätigen & absenden/i,
-  });
-  await submit.waitFor({ state: 'visible', timeout: 20000 });
-  await fillRequiredEmpty(page);
-  await submit.click();
-  await confirmDialog(page);
-  await page.waitForURL(/\/cascade/, { timeout: 20000 });
+  await startKindergeldOnAkte(page);
+  // Authorise every eID gate via the NextStepBanner CTA → the cascade runs to
+  // completion (`.vd-next.is-done`).
   for (let i = 0; i < 16; i++) {
-    if (await page.locator('.vab-layout').count()) break;
-    const inline = page
+    if (await page.locator('.vd-next.is-done').count()) break;
+    const gate = page
       .getByRole('button', { name: /^mit eid bestätigen$/i })
       .first();
-    if (await inline.isVisible().catch(() => false)) {
-      await inline.click().catch(() => undefined);
+    if (await gate.isVisible().catch(() => false)) {
+      await gate.click().catch(() => undefined);
       await confirmDialog(page);
     }
     await page.waitForTimeout(2500);
   }
-  await page.locator('.vab-layout').waitFor({ state: 'visible', timeout: 30000 });
+  await page.locator('.vd-next.is-done').waitFor({ state: 'visible', timeout: 30000 });
   await page.waitForTimeout(1200);
 }
 
-test('completed dossier (.vab-layout) — axe light', async ({ page }) => {
+test('completed dossier (.vd-next.is-done) — axe light', async ({ page }) => {
   test.setTimeout(120_000);
   await boot(page);
   await page.setViewportSize({ width: 1440, height: 1000 });
@@ -146,7 +127,7 @@ test('completed dossier (.vab-layout) — axe light', async ({ page }) => {
   await runAxe(page, 'dossier LIGHT');
 });
 
-test('completed dossier (.vab-layout) — axe dark', async ({ page }) => {
+test('completed dossier (.vd-next.is-done) — axe dark', async ({ page }) => {
   test.setTimeout(120_000);
   await boot(page);
   await page.emulateMedia({ colorScheme: 'dark' });
@@ -157,7 +138,7 @@ test('completed dossier (.vab-layout) — axe dark', async ({ page }) => {
   await runAxe(page, 'dossier DARK');
 });
 
-test('completed dossier (.vab-layout) — axe mobile 420 + no main overflow', async ({
+test('completed dossier — axe mobile 420 + no main overflow', async ({
   page,
 }) => {
   test.setTimeout(120_000);

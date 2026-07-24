@@ -116,16 +116,16 @@ export function ToolCallCard({ call }: ToolCallCardProps) {
               variant="live"
             />
             {/* Resilient Orchestration Engine (Spec § 6.1): the Laufzettel + the
-                recovery banner + the run-page link are Umzug-saga machinery and
+                recovery banner + the Akten-link are Umzug-saga machinery and
                 stay Umzug-only (Spec § 5.6). A kindergeld cascade has neither a
-                saga nor a /vorgaenge/umzug/run page. */}
+                saga nor a dedicated dossier. */}
             {isUmzugStart ? (
               <>
                 <OrchestrationTestBridge />
                 <RecoveryBanner sagaId={call.vorgangId} />
                 <LaufzettelPanel sagaId={call.vorgangId} variant="inline" />
                 <Link
-                  href={`/vorgaenge/umzug/run?vorgangId=${encodeURIComponent(call.vorgangId)}`}
+                  href={`/vorgaenge/${encodeURIComponent(call.vorgangId)}`}
                   className="inline-flex items-center gap-1 self-start text-sm font-medium text-primary hover:text-primary-hover"
                 >
                   {t('cta_kaskade')}

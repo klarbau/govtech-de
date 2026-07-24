@@ -546,7 +546,7 @@ const isReliable = (): boolean => {
       const params = new URLSearchParams(window.location.search);
       if (params.get('reliable') === '1') return true;
       // Sticky-Flag aus dem Meta-Bucket: bleibt über Navigation hinweg gesetzt
-      // (z. B. /assistent?reliable=1 → /vorgaenge/umzug/run ohne Query), damit
+      // (z. B. /assistent?reliable=1 → /vorgaenge/<id>-Akte ohne Query), damit
       // die Fehler-Injektion nicht mitten in der Kaskade wieder anspringt.
       const meta = window.localStorage.getItem('govtech-de:v1:meta');
       if (meta) {
@@ -576,7 +576,7 @@ export async function* umzugAutopilot(
   // Reliabilität EINMAL beim Kaskaden-Start fixieren (auf /assistent?reliable=1),
   // statt pro Schritt live aufzulösen. Der Browser-Pfad kann den Request-Kontext
   // nicht über die deferred Ticks tragen (NoopAsyncStore), und ein Soft-Navigieren
-  // zur /vorgaenge/umzug/run-Seite (ohne ?reliable=1) würde sonst die
+  // zur /vorgaenge/<id>-Akte (ohne ?reliable=1) würde sonst die
   // Fehler-Injektion mitten im Lauf wieder anschalten und einen Block-A/B-Schritt
   // zufällig ausfallen lassen (flaky Spine-e2e + fragile Loom).
   const reliable = isReliable();
