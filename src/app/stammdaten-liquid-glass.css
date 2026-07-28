@@ -1,67 +1,38 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   Stammdaten — Liquid Glass (Welle 2)
+   Stammdaten — Liquid Glass (Datenblatt-Redesign, stammdaten-datenblatt.md § 8)
    ---------------------------------------------------------------------------
-   Screen-scoped rules on top of liquid-glass-core.css for the live „Green
-   Bento" /stammdaten view (the wired-in `v2/*` section cards). Surfaces only
-   (background · border · shadow · backdrop-filter · radius) — never text
-   colours, so the Waldgrün tokens keep their light/dark contrast.
+   Screen-scoped rules on top of liquid-glass-core.css for /stammdaten.
+   Surfaces only (background · border · shadow · radius) — never text colours,
+   so the Waldgrün tokens keep their light/dark contrast.
 
-   Hooks: every rule is gated under `html[data-lg]` and targets the cards'
-   `aria-labelledby="v2-*-title"` anchors (the Vorgänge `[aria-labelledby=…]`
-   precedent). Each anchor was grep-verified globally unique to a single
-   `src/components/stammdaten/v2/*` card — all rendered ONLY by StammdatenView —
-   so a bare `html[data-lg]` gate cannot leak onto another route. No screen gate
-   / LiquidGlassScreen is needed (nothing shared to disambiguate). The orphaned
-   v2 components are NOT edited — these selectors reskin their live surfaces from
-   the sheet alone.
+   Ab 768px hat dieser Screen KEINE Glasfläche mehr: das Datenblatt ist boxless
+   (Minimalismus-Pass 2026-07-25 — Charakter aus Typografie, Proportion und
+   Rhythmus statt aus Panels). Die einzige starke Fläche bleibt die dunkle
+   eID-Credential-Karte des Identitätsbands; Blatt, Registerzone und Protokoll
+   stehen typografisch auf dem Ambient. Damit gilt hier auch weiterhin: 0
+   backdrop-filter (das Blur-Budget verbrauchen .app-topnav + .app-sidenav) und
+   keine irisierende CTA — der einzige Button des Screens öffnet einen
+   Read-only-SSoT-Erklärer, keinen Autopilot-Moment.
 
-   Budget: the shell already spends its 2 blur layers (TopNav + SideNav). The
-   bento cards therefore carry glass via gradient + border + shadow with NO
-   backdrop-filter. There is NO frosted hero here: the page header (completeness
-   ring + H1 + action buttons) is a transparent header with no card surface, so
-   the screen legitimately spends 0 of its 1 allowed hero-frost. No iridescent
-   CTA either — the only primary button („Bearbeiten") opens a read-only-SSoT
-   info dialog, not an autopilot/commit moment.
+   Übrig bleibt die ≤767-Regel: dort ist das Blatt ein Karten-Karussell
+   (`.sd-blatt-shelf > * > *`, prototype-v2.css #9 — die Enkel, weil die beiden
+   Desktop-Spalten dort display:contents sind), und ein Wisch braucht begrenzte
+   Karten. Deren Glas-Chrome liegt hier; Hook ist `.sd-blatt-shelf`, gerendert
+   von genau einer Komponente (`stammdaten/datenblatt/Datenblatt.tsx`) auf genau
+   einer Route, also kann das bare `html[data-lg]`-Gate nicht leaken.
+
+   Kill-switch: mit NEXT_PUBLIC_LG=0 fallen die Slides auf ihr Basis-Chrome aus
+   prototype-v2.css #9 zurück (surface · border · shadow-1); Desktop ist boxless
+   und damit ohnehin schalterunabhängig.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ── Neutral section cards — floating raised glass (no backdrop-filter) ─────────
-   Person, Kontakt, Anschrift, Dokumente, Familie, Versicherung/Vorsorge (Renten/
-   KV), Weitere Verifizierungen, and the full-height Änderungsprotokoll rail. */
-html[data-lg] [aria-labelledby='v2-profil-title'],
-html[data-lg] [aria-labelledby='v2-kontakt-title'],
-html[data-lg] [aria-labelledby='v2-anschrift-title'],
-html[data-lg] [aria-labelledby='v2-dokumente-title'],
-html[data-lg] [aria-labelledby='v2-familie-title'],
-html[data-lg] [aria-labelledby='v2-versicherung-title'],
-html[data-lg] [aria-labelledby='v2-weitere-title'],
-html[data-lg] [aria-labelledby='v2-protokoll-title'] {
-  background: var(--lg-glass-raised);
-  border: 1px solid var(--lg-edge);
-  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
-  transition: box-shadow 0.25s ease, transform 0.18s ease;
-}
-html[data-lg].dark [aria-labelledby='v2-profil-title'],
-html[data-lg].dark [aria-labelledby='v2-kontakt-title'],
-html[data-lg].dark [aria-labelledby='v2-anschrift-title'],
-html[data-lg].dark [aria-labelledby='v2-dokumente-title'],
-html[data-lg].dark [aria-labelledby='v2-familie-title'],
-html[data-lg].dark [aria-labelledby='v2-versicherung-title'],
-html[data-lg].dark [aria-labelledby='v2-weitere-title'],
-html[data-lg].dark [aria-labelledby='v2-protokoll-title'] {
-  border-color: var(--lg-hairline);
-}
-
-/* ── Semantic-tinted cards — frosted mint glass (keep the green accent) ─────────
-   „Verbundene Nachweise" (was border-success/30 · bg-success-soft) and the
-   „Datenhoheit" footer banner (was border-brand-100 · bg-brand-50). The mint
-   tokens preserve the trust-green accent on the glass field. */
-html[data-lg] [aria-labelledby='v2-nachweise-title'],
-html[data-lg] [aria-labelledby='v2-datenhoheit-title'] {
-  background: var(--lg-mint);
-  border: 1px solid var(--lg-mint-border);
-  box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
-}
-html[data-lg].dark [aria-labelledby='v2-nachweise-title'],
-html[data-lg].dark [aria-labelledby='v2-datenhoheit-title'] {
-  box-shadow: var(--lg-shadow-card);
+@media (max-width: 767px) {
+  html[data-lg] .sd-blatt-shelf > * > * {
+    background: var(--lg-glass-raised);
+    border: 1px solid var(--lg-edge);
+    box-shadow: var(--lg-shadow-card), inset 0 1px 0 var(--lg-edge-strong);
+  }
+  html[data-lg].dark .sd-blatt-shelf > * > * {
+    border-color: var(--lg-hairline);
+  }
 }

@@ -1,13 +1,12 @@
 /**
  * Stammdaten a11y — Edit-Dialog (Spec § 12.3).
  *
- * Rewritten 2026-07-17. The old surface exposed four data-collecting modals
- * (ReligionConsent / SperrenAktivieren / IbanSpeculativePush /
- * WalletAttestationPreview). The „Green Bento" StammdatenView dropped the
- * sperren / religion / iban / wallet-sub-tab sections entirely, so those four
- * modals have no live equivalent. The single dialog that remains is the
- * read-only edit hint (opened from the header „Bearbeiten" / „Adresse ändern"),
- * which stands in as the page's representative modal.
+ * Rewritten 2026-07-17, re-scoped 2026-07-24 for the „Datenblatt" redesign
+ * (`stammdaten-datenblatt.md` § 10). The old surface exposed four
+ * data-collecting modals (ReligionConsent / SperrenAktivieren /
+ * IbanSpeculativePush / WalletAttestationPreview); none of them has a live
+ * equivalent any more. The page now has exactly ONE dialog: the „Daten
+ * korrigieren" explainer behind the single header button.
  *
  * Intention preserved: any dialog on this page is axe-clean on
  * `[role="dialog"]` × 2 viewports, and it traps + restores focus.
@@ -72,28 +71,25 @@ const VIEWPORTS = [
   { width: 1280, height: 900, label: 'desktop' },
 ];
 
-// The two header buttons both open the same shared edit dialog with different
-// copy (profile vs. address). `nth` matches the render order in sd-header-actions.
-const TRIGGERS = [
-  { label: 'Profil-Bearbeiten', nth: 0 },
-  { label: 'Adresse-ändern', nth: 1 },
-];
+test.describe('Stammdaten a11y — „Daten korrigieren"-Dialog', () => {
+  test('the header exposes exactly one dialog trigger', async ({ page }) => {
+    await page.setViewportSize(VIEWPORTS[1]);
+    await setupPersona(page, 'anna-petrov');
+    await warm(page);
+    await expect(
+      page.locator('[data-testid="sd-header-actions"] button'),
+    ).toHaveCount(1);
+  });
 
-test.describe('Stammdaten a11y — Edit-Dialog', () => {
   for (const vp of VIEWPORTS) {
-    for (const trigger of TRIGGERS) {
-      test(`${trigger.label} dialog axe-clean @${vp.label}`, async ({ page }) => {
-        await page.setViewportSize(vp);
-        await setupPersona(page, 'anna-petrov');
-        await warm(page);
-        await page
-          .locator('[data-testid="sd-header-actions"] button')
-          .nth(trigger.nth)
-          .click();
-        await page.locator('[role="dialog"]').waitFor({ state: 'visible' });
-        await expectAxeClean(page, '[role="dialog"]');
-      });
-    }
+    test(`dialog axe-clean @${vp.label}`, async ({ page }) => {
+      await page.setViewportSize(vp);
+      await setupPersona(page, 'anna-petrov');
+      await warm(page);
+      await page.locator('[data-testid="sd-header-actions"] button').click();
+      await page.locator('[role="dialog"]').waitFor({ state: 'visible' });
+      await expectAxeClean(page, '[role="dialog"]');
+    });
   }
 
   test('edit dialog traps focus and restores it to the trigger on close', async ({

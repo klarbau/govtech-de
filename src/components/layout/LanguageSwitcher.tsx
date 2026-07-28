@@ -47,7 +47,12 @@ export function LanguageSwitcher() {
         aria-label={t('language_label')}
         title={t('language_label')}
         // Override the shadcn defaults: wear `.gt-header-btn` only.
-        className="gt-header-btn !min-h-0 !border-0 !bg-transparent !p-0 !text-[13px]"
+        // `!bg-none !shadow-none`: the LG frosted-input skin (liquid-glass-core
+        // „Inputs / selects") paints a background-image gradient + inset
+        // box-shadow ring on every select-trigger — neither is cleared by
+        // `!bg-transparent`/`!border-0`, which left this header pill looking
+        // like a boxed form field.
+        className="gt-header-btn !min-h-0 !border-0 !bg-transparent !bg-none !shadow-none !p-0 !text-[13px]"
       >
         <Globe aria-hidden="true" />
         <SelectValue>{(value) => (value as string).toUpperCase()}</SelectValue>

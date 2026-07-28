@@ -618,11 +618,17 @@ html[data-lg] .app-content table tbody tr {
   border-bottom-color: var(--lg-hairline);
   transition: background 0.2s ease;
 }
-html[data-lg] .app-content table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.5);
-}
-html[data-lg].dark .app-content table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.06);
+/* Nur auf Zeigergeräten: auf dem Telefon bleibt `:hover` nach einem Tap kleben
+   (sticky hover) — die Zeile behielt einen hart abgeschnittenen Hell-Block
+   mitten in der runden Glaskarte, ohne dass irgendetwas ausgewählt wäre.
+   Konvention wie `.lebenslage-row` (prototype-v2.css). */
+@media (hover: hover) and (pointer: fine) {
+  html[data-lg] .app-content table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.5);
+  }
+  html[data-lg].dark .app-content table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
 }
 
 /* ── App-wide search — anchored dropdown (v1.1, non-modal combobox) ──────────

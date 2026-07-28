@@ -1164,7 +1164,16 @@
     "eid_card": {
       "label": "الهوية الرقمية (eID)",
       "footer": "بطاقة eID توضيحية",
-      "mock": "MOCK"
+      "mock": "MOCK",
+      "nationality_birth": "{nationality} · مواليد {datum}",
+      "doc_kind_label": "الوثيقة",
+      "doc_issuer_label": "جهة الإصدار",
+      "doc_funktion_label": "الهوية الإلكترونية",
+      "doc_funktion_value": "مُفعّلة · {norm}",
+      "doc_personalausweis": "بطاقة الهوية الألمانية (Personalausweis)",
+      "doc_personalausweis_norm": "§ 18 PAuswG",
+      "doc_eat": "تصريح الإقامة الإلكتروني (eAT)",
+      "doc_eat_norm": "§ 78 AufenthG"
     },
     "transparency": {
       "demo_banner": "وضع العرض التوضيحي: لا تُستخدم أي بيانات حقيقية.",
@@ -3506,18 +3515,103 @@
       "aufenthalt_ablauf_bald": "تصريح الإقامة على وشك الانتهاء",
       "kontakt_verifiziert": "تم توثيق بيانات الاتصال"
     },
-    "hero_v3": {
-      "region_label": "هوية موثّقة",
-      "status_badge": "موثّقة",
-      "kv_geburtsdatum": "تاريخ الميلاد",
-      "kv_staatsangehoerigkeit": "الجنسية",
-      "kv_quelle": "المصدر الرسمي",
-      "quelle_fallback": "مكتب المواطنين (سلطة التسجيل)",
-      "fallback_chip_ausweis": "بطاقة الهوية محفوظة"
+    "datenblatt": {
+      "subline": "{angaben, plural, zero {# بيانات} one {بيان واحد} two {بيانان} few {# بيانات} many {# بياناً} other {# بيان}} من {register, plural, zero {# سجلات} one {سجل واحد} two {سجلين} few {# سجلات} many {# سجلاً} other {# سجل}}.",
+      "subline_update": "آخر تحديث: {datum}، {zeit} — {behoerde}.",
+      "subline_update_ohne_absender": "آخر تحديث: {datum}، {zeit}.",
+      "cta_korrigieren": "تصحيح البيانات",
+      "title": "بياناتك",
+      "anschrift_link": "تغيير العنوان",
+      "dialog": {
+        "title": "تصحيح البيانات",
+        "body": "تحتفظ الجهات المختصة ببياناتك الأساسية: الاسم وتاريخ الميلاد والحالة الاجتماعية لدى دائرة الأحوال المدنية (Standesamt) أو مكتب المواطنين (Bürgeramt)، وعنوان التسجيل لدى مكتب المواطنين (Bürgeramt) في سجل السكان (Melderegister).",
+        "hinweis": "في هذا العرض التوضيحي تُعرض البيانات الأساسية للقراءة فقط كمصدر وحيد موثوق: لا تُجري التعديلات هنا، بل لدى الجهة المختصة — ثم تعود البيانات المحدَّثة تلقائياً إلى ملفك الشخصي."
+      },
+      "identitaet": {
+        "region_label": "هوية موثّقة",
+        "status": "تم تأكيد الهوية · مستوى الثقة eIDAS: عالٍ",
+        "geburtsdatum": "تاريخ الميلاد",
+        "staatsangehoerigkeit": "الجنسية",
+        "familienstand": "الحالة الاجتماعية",
+        "quelle": "المصدر الرسمي",
+        "quelle_fallback": "مكتب المواطنين (Bürgeramt)"
+      },
+      "familienstand": {
+        "ledig": "أعزب/عزباء",
+        "verheiratet": "متزوج/ة",
+        "geschieden": "مطلق/ة",
+        "verwitwet": "أرمل/ة",
+        "eingetragene_lebenspartnerschaft": "شراكة مدنية مسجَّلة"
+      },
+      "nationality": {
+        "deutsch": "ألمانية",
+        "russisch": "روسية",
+        "tuerkisch": "تركية"
+      },
+      "sektion": {
+        "kontakt": "بيانات الاتصال",
+        "anschrift": "العنوان",
+        "familie": "العائلة",
+        "dokumente": "الوثائق",
+        "dokumente_aufenthalt": "الوثائق والإقامة",
+        "versicherung": "التأمين والادّخار",
+        "kennungen": "أرقام التعريف"
+      },
+      "label": {
+        "email": "عنوان البريد الإلكتروني",
+        "mobil": "رقم الهاتف المحمول",
+        "hauptanschrift": "العنوان الرئيسي",
+        "partner": "الزوج/الزوجة أو الشريك المسجَّل",
+        "partner_unverheiratet": "الشريك/ة",
+        "kinder": "الأطفال",
+        "personalausweis": "بطاقة الهوية (Personalausweis)",
+        "reisepass": "جواز السفر",
+        "aufenthaltstitel": "تصريح الإقامة (Aufenthaltstitel)",
+        "krankenkasse": "صندوق التأمين الصحي (Krankenkasse)",
+        "altersvorsorge": "المعاش التقاعدي",
+        "steuer_id": "رقم التعريف الضريبي (Steuer-ID)",
+        "sozialversicherungsnummer": "رقم التأمين الاجتماعي",
+        "kvnr": "رقم التأمين الصحي"
+      },
+      "value": {
+        "verifiziert": "موثَّق",
+        "gueltig_bis": "صالح حتى {datum}",
+        "norm_gueltig_bis": "{norm} · صالح حتى {datum}",
+        "gesetzliche_rente": "التأمين القانوني للمعاشات",
+        "kind_geboren": "مواليد {datum}"
+      },
+      "quelle": {
+        "bundid": "حساب BundID",
+        "melderegister": "سجل السكان (Melderegister) · تم التأكيد في {datum}",
+        "melderegister_ohne_datum": "سجل السكان (Melderegister)",
+        "bzst": "المكتب الاتحادي المركزي للضرائب (Bundeszentralamt für Steuern)",
+        "drv": "التأمين الألماني للمعاشات (Deutsche Rentenversicherung)",
+        "traeger": "{traeger}"
+      },
+      "wallet": {
+        "title": "الإثباتات والمحفظة (Wallet)",
+        "line": "{count, plural, zero {# إثباتات} one {إثبات واحد} two {إثباتان} few {# إثباتات} many {# إثباتاً} other {# إثبات}} في محفظة EUDI الخاصة بك · خدمة الثقة: BVA – Bundesverwaltungsamt · المراجعة التالية في {datum}",
+        "empty": "لا توجد إثباتات في محفظة EUDI الخاصة بك بعد.",
+        "link": "عرض الإثباتات"
+      },
+      "protokoll": {
+        "title": "سجل التغييرات",
+        "subtitle": "آخر عمليات الإرسال من سجلاتك",
+        "row": "{absender} ← {empfaenger}",
+        "row_mit_sektion": "{sektion} · {absender} ← {empfaenger}",
+        "row_zweck": "{sektion} · {zweck}",
+        "empfaenger_buerger": "أنت",
+        "empty": "لم تُسجَّل أي عمليات إرسال بعد.",
+        "show_all": "عرض السجل الكامل"
+      },
+      "datenhoheit": {
+        "text": "لا تُشارَك بياناتك الأساسية مع الجهات الحكومية والخدمات إلا بموافقتك — أنت تقرّر من يمكنه الاطلاع على كل بيان.",
+        "link": "إدارة استخدام البيانات"
+      }
     },
     "once_only": {
-      "region_title": "مبدأ المرة الواحدة",
-      "summary": "تعيش بياناتك في {count} سجلات وتتزامن تلقائيًا — تقدّمها مرة واحدة فقط.",
+      "region_title": "السجلات التي تحفظ بياناتك",
+      "summary": "{count, plural, zero {# سجلات تحفظ} one {سجل واحد يحفظ} two {سجلان يحفظان} few {# سجلات تحفظ} many {# سجلاً يحفظ} other {# سجل يحفظ}} بياناتك — تقدّمها مرة واحدة فقط.",
       "node_melderegister": "سجل السكان",
       "node_kba": "سجل المركبات (KBA)",
       "node_drv": "حساب التقاعد (DRV)",
@@ -3528,143 +3622,11 @@
       "status_angebunden": "متصل",
       "status_in_anbindung": "قيد الربط (رؤية 2027)",
       "node_aria": "{register} — {status}",
-      "feed_title": "آخر مزامنة",
-      "feed_route": "{absender} ← {empfaenger}",
-      "feed_empty": "لا توجد عمليات إرسال إلى السجلات في الفترة المرئية.",
-      "show_all": "عرض السجل الكامل",
       "pilot_note": "حالة ربط السجلات: مرحلة تجريبية — يجري توسيع التغطية باستمرار."
     },
     "hoheit": {
       "title": "أنت من يتحكم في بياناتك",
       "cta": "إدارة الإعدادات"
-    },
-    "card": {
-      "persoenliches_profil": "الملف الشخصي",
-      "versicherung_vorsorge": "التأمين والادّخار",
-      "identitaetsdokumente": "وثائق إثبات الهوية",
-      "familie_bezugspersonen": "العائلة والمقرَّبون"
-    },
-    "v2": {
-      "profil": {
-        "card_title": "الملف الشخصي",
-        "kv": {
-          "name": "الاسم",
-          "geburtsdatum": "تاريخ الميلاد",
-          "staatsangehoerigkeit": "الجنسية",
-          "familienstand": "الحالة الاجتماعية"
-        },
-        "familienstand": {
-          "verheiratet": "متزوج/ة",
-          "ledig": "أعزب/عزباء",
-          "geschieden": "مطلق/ة",
-          "verwitwet": "أرمل/ة"
-        },
-        "nationality": {
-          "deutsch": "ألمانية",
-          "russisch": "روسية",
-          "tuerkisch": "تركية"
-        }
-      },
-      "kontakt": {
-        "card_title": "الاتصال",
-        "email": "البريد الإلكتروني",
-        "telefon": "رقم الهاتف",
-        "verifiziert": "موثَّق",
-        "email_keine": "لا يوجد بريد إلكتروني مسجل",
-        "telefon_keine": "لا يوجد رقم هاتف مسجل"
-      },
-      "familie": {
-        "card_title": "العائلة والمعالون",
-        "kinder_eyebrow": "الأطفال",
-        "partner_eyebrow": "الشريك/ة",
-        "row_geburtsdatum": "تاريخ الميلاد",
-        "row_verwandtschaft": "صلة القرابة",
-        "kind": "ابن/ابنة",
-        "partner_label": "الشريك/ة",
-        "add_link": "إضافة شخص آخر"
-      },
-      "anschrift": {
-        "title": "العنوان",
-        "aktuell_label": "العنوان الحالي",
-        "aendern": "تغيير",
-        "zuletzt_bestaetigt": "آخر تأكيد بتاريخ {datum}",
-        "zuletzt_bestaetigt_unbekannt": "لم يُؤكَّد بعد",
-        "bestaetigt": "مؤكَّد"
-      },
-      "dokumente": {
-        "title": "وثائق الهوية",
-        "verwalten": "إدارة",
-        "reisepass": "جواز السفر",
-        "personalausweis": "بطاقة الهوية",
-        "aufenthaltstitel": "تصريح الإقامة",
-        "eat_can": "eAT-CAN",
-        "gueltig": "صالح",
-        "nummer_template": "رقم {nummer} · صالح حتى {gueltig_bis}",
-        "aufenthaltstitel_template": "{norm} · صالح حتى {gueltig_bis}",
-        "eat_can_template": "CAN {can}",
-        "add_link": "إضافة وثيقة",
-        "empty": "لا توجد وثائق مسجلة."
-      },
-      "versicherung": {
-        "title": "التأمين والمعاش",
-        "krankenkasse": "التأمين الصحي",
-        "altersvorsorge": "المعاش التقاعدي",
-        "aktiv": "نشط",
-        "versichertennummer": "رقم المؤمَّن {nr}",
-        "versichert_seit": "مؤمَّن منذ {datum}",
-        "add_link": "إضافة تأمين آخر",
-        "empty": "لا توجد بيانات تأمين مرتبطة."
-      },
-      "protokoll": {
-        "title": "سجل التغييرات",
-        "subtitle": "آخر التغييرات على بياناتك الأساسية",
-        "show_all": "عرض السجل الكامل",
-        "empty": "لا توجد تغييرات مسجلة بعد.",
-        "alle_anzeigen": "عرض الكل"
-      },
-      "datenhoheit": {
-        "title": "بياناتك بين يديك",
-        "body_before_link": "تُشارَك بياناتك الأساسية مع الجهات والخدمات بموافقتك فقط. أنت تقرر مَن يطلع على ماذا.",
-        "body_link": "اعرف المزيد عن حقوقك واستخدام بياناتك.",
-        "cta": "إدارة استخدام البيانات"
-      },
-      "nachweise": {
-        "title": "الإثباتات المرتبطة والمحفظة (Wallet)",
-        "body": "إثباتاتك الرقمية مرتبطة بأمان في المحفظة (Wallet) وقابلة للتحقق عند الحاجة.",
-        "check1": "تم التحقق منها تشفيريًا",
-        "check2": "توقيع eIDAS عند الإصدار صالح",
-        "check3": "مستوى الثقة: عالٍ (eIDAS)",
-        "quelle_label": "المصدر / خدمة الثقة",
-        "quelle_value": "BVA – Bundesverwaltungsamt",
-        "naechste_label": "المراجعة التالية",
-        "naechste_value": "14.06.2027",
-        "seal_aria": "تم التحقق من الإثباتات تشفيريًا"
-      },
-      "weitere": {
-        "title": "عمليات توثيق إضافية",
-        "steuer_id": "الرقم الضريبي (Steuer-ID)",
-        "sozialversicherungsnummer": "رقم التأمين الاجتماعي (Sozialversicherungsnummer)",
-        "verifiziert_am": "تم التوثيق بتاريخ: {datum}",
-        "verifiziert_badge": "موثَّق",
-        "alle_anzeigen": "عرض جميع عمليات التوثيق"
-      },
-      "secondary": {
-        "heading": "مجالات أخرى",
-        "subtitle": "المعاش، التأمين الصحي، التنقل، تفضيلات الإشعارات والحجوبات — طبقة مساعدة أسفل الشبكة الرئيسية."
-      }
-    },
-    "header": {
-      "subtitle": "البيانات الشخصية وبيانات الاتصال والإثباتات والهويات المرتبطة في مكان واحد.",
-      "actions": {
-        "dokument_hinzufuegen": "إضافة وثيقة",
-        "adresse_aendern": "تغيير العنوان",
-        "verknuepfung_verwalten": "إدارة الربط"
-      }
-    },
-    "ring": {
-      "label": "اكتمال الملف الشخصي",
-      "aria": "اكتمال الملف الشخصي بنسبة {percent} بالمئة",
-      "letzte_aktualisierung": "آخر تحديث: {datum}"
     },
     "format": {
       "uhrzeit": "{zeit}"

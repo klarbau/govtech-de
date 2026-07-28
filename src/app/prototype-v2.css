@@ -6221,7 +6221,8 @@ a.vlf-rail-link { background: var(--green-50); border-color: var(--green-100); }
 .st-nachweise-shelf,
 .fm-vorg-shelf,
 .dk-quick-shelf,
-.dk-zuletzt-shelf { display: contents; }
+.dk-zuletzt-shelf,
+.sd-blatt-shelf { display: contents; }
 
 /* Desktop-Trennlinien-Restore: durch das Einwickeln wird die erste Zeile zum
    :first-child/:first-of-type ihres Wrappers und verloere sonst ihre obere
@@ -6318,8 +6319,54 @@ a.vlf-rail-link { background: var(--green-50); border-color: var(--green-100); }
   /* #6b Dokumente — Zuletzt hinzugefügt. */
   .dk-zuletzt-shelf { --shelf-slide: min(78%, 300px); --shelf-bleed: 22px; }
 
-  /* #7 Stammdaten — Status-Chips im Hero (Chips; Bleed = App-Content-Padding). */
-  .sd-chip-shelf { --shelf-bleed: 20px; }
+  /* #9 Stammdaten — die Sektionen des Datenblatts (Kontakt, Anschrift, …)
+     als KARTEN-Karussell (Regel aus S33: .m-shelf traegt Karten, keine
+     Textzeilen). Das aeussere Blatt verliert sein Karten-Chrome — sonst
+     spannt EINE Karte die Hoehe der laengsten Sektion auf und kurze Slides
+     schwimmen in Leerflaeche (Telefon-Verdikt 2026-07-25); stattdessen ist
+     jeder Slide eine eigene Karte, die dort endet, wo ihr Inhalt endet
+     (m-shelf-top), und der Nachbar-Peek zeigt eine Kartenkante statt
+     abgerissener Textfetzen. Seiten-Ebene → Bleed = .app-content-Padding. */
+  [data-testid='sd-datenblatt'] {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0;
+  }
+  .sd-blatt-shelf { --shelf-slide: min(86%, 320px); --shelf-bleed: 20px; margin-top: 12px; }
+  /* Die beiden Desktop-Spalten (.sd-blatt-col, ab 1280) verschwinden hier,
+     damit die 6 Sektionen Geschwister-Slides der Regal-Zeile werden — Muster
+     .dash-modules-shelf (#2b): Slide-Sizing und Karten-Chrome greifen auf die
+     Enkel (> * > *). */
+  .sd-blatt-shelf > * { display: contents; }
+  .sd-blatt-shelf > * > * {
+    flex: 0 0 var(--shelf-slide, min(78%, 300px));
+    scroll-snap-align: start;
+    min-width: 0;
+    margin-top: 0;
+    border-top: 0;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-1);
+    padding: 16px 18px;
+  }
+
+  /* #10 Stammdaten — die vier Identitaetsfakten als kompaktes 2-Spalten-
+     Raster statt vier gestapelter Zeilen (dichter, aber KEIN Wisch: ein
+     Textzeilen-Streifen kappte „Fuehrende Quelle" mitten im Wort an der
+     Viewport-Kante). Die lange Quelle-Zeile spannt beide Spalten. Die
+     Zeilen-Haarlinie ist ein vertikaler Rhythmus — im Raster faellt sie weg,
+     Naehe gruppiert stattdessen (Label 12px ueber Wert). */
+  .sd-ident-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 16px;
+  }
+  .sd-ident-grid > * { border-top: 0; padding-block: 0; }
+  .sd-ident-grid > *:last-child { grid-column: 1 / -1; }
+  .sd-ident-grid dt { font-size: 12px; }
 
   /* #8 Datenschutz — Prinzipien (Basis-Regel ist flex-direction:column → hier
      auf row drehen, sonst bliebe der Stapel vertikal). */
@@ -6336,7 +6383,7 @@ a.vlf-rail-link { background: var(--green-50); border-color: var(--green-100); }
   .dash-modules-shelf,
   .vg-list-shelf,
   .vg-wichtig-shelf,
-  .sd-chip-shelf { --shelf-bleed: 14px; }
+  .sd-blatt-shelf { --shelf-bleed: 14px; }
 }
 
 /* ==========================================================================
@@ -6426,4 +6473,50 @@ a.vlf-rail-link { background: var(--green-50); border-color: var(--green-100); }
   .apx-comet { display: none; }
   .apx-aura,
   .apx-node { animation: none; }
+}
+
+/* ==========================================================================
+   #11 Stammdaten — Blatt-Komposition Desktop (stammdaten-blatt-dense.md § 3).
+   Greift NUR ab 1280px; darunter bleibt jedes Modul in seiner heutigen Form.
+   Basis-Layer (kein LG-Gate) — die Zweispaltigkeit muss auch mit
+   NEXT_PUBLIC_LG=0 stehen. Am Dateiende, damit die Regeln die frueheren
+   gleichspezifischen (.sd-blatt-shelf display:contents, Tailwind-Utilities)
+   per Quellreihenfolge gewinnen.
+   ========================================================================== */
+@media (min-width: 1280px) {
+  /* Identitaetsband: die vier Fakten als 2x2-Mikrofeld-Raster im Idiom der
+     Credential-Karte (Label UEBER Wert) statt vier hoher dl-Zeilen — die Zone
+     endete sonst ~230px ueber der Kartenunterkante. Die lange Quelle-Zeile
+     spannt beide Spalten. Uppercase-Mikrolabels bleiben auf dieses Band
+     begrenzt (Zitat der Karte, kein Sektions-Kicker). */
+  .sd-ident-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 24px;
+  }
+  .sd-ident-grid > * {
+    display: block;
+    border-top: 0;
+    padding-block: 0;
+  }
+  .sd-ident-grid > *:last-child { grid-column: 1 / -1; }
+  .sd-ident-grid dt {
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .sd-ident-grid dd { font-size: 15px; }
+
+  /* Das Blatt: zwei handbalancierte Spalten (Zuordnung im TSX), getrennt allein
+     durch den 80px-Gutter. Die frueher hier liegende Mittel-Haarlinie ist raus
+     (Minimalismus-Pass 2026-07-25): eine Linie zwischen Label-ueber-Wert-Feldern
+     liest wieder als Tabellen-Chrome — Weissraum trennt, Naehe gruppiert. */
+  .sd-blatt-shelf {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+  .sd-blatt-col { min-width: 0; }
+  .sd-blatt-col:first-child { padding-inline-end: 40px; }
+  .sd-blatt-col:last-child { padding-inline-start: 40px; }
 }

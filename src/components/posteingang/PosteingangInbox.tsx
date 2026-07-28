@@ -1101,9 +1101,31 @@ function PostDetail({
   // Brief-Spread: horizontale Seiten „Brief · Verstehen · Handeln" statt der
   // vertikalen Tab-Stapel. `page` folgt dem Pager UND dem Swipe (bidirektional).
   const [page, setPage] = React.useState<ReaderPage>('brief');
+  // Spread-Spotlight: beantwortet Navigation auf eine bereits voll sichtbare
+  // Zielseite (Polosa am Anschlag — es gibt keinen Scrollweg mehr) mit einer
+  // kurzen Aufmerksamkeits-Choreo auf der Zielspalte statt eines toten Klicks.
+  const [spotlight, setSpotlight] = React.useState<ReaderPage | null>(null);
+  const spotlightTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
+  const triggerSpotlight = React.useCallback((target: ReaderPage) => {
+    if (spotlightTimerRef.current) clearTimeout(spotlightTimerRef.current);
+    // Attribut erst im nächsten Frame setzen, damit ein wiederholter Klick die
+    // CSS-Animation neu startet statt still weiterzulaufen.
+    setSpotlight(null);
+    requestAnimationFrame(() => setSpotlight(target));
+    spotlightTimerRef.current = setTimeout(() => setSpotlight(null), 720);
+  }, []);
+  React.useEffect(
+    () => () => {
+      if (spotlightTimerRef.current) clearTimeout(spotlightTimerRef.current);
+    },
+    [],
+  );
   // Bei Briefwechsel: zurück auf die „Brief"-Seite.
   React.useEffect(() => {
     setPage('brief');
+    setSpotlight(null);
   }, [letter.id]);
 
   const pagesRef = React.useRef<HTMLDivElement>(null);
@@ -1143,27 +1165,45 @@ function PostDetail({
   const pinnedPageRef = React.useRef<ReaderPage | null>(null);
 
   // Pager-Klick: State setzen UND die Polosa zur Seite scrollen. Bei
-  // prefers-reduced-motion ohne Smooth-Scroll (§2.2).
+  // prefers-reduced-motion ohne Smooth-Scroll (§2.2). Ist die Zielseite auf dem
+  // Zwei-Seiten-Spread bereits voll sichtbar und die Polosa vorwärts am
+  // Anschlag, wäre scrollIntoView ein No-op — dann antwortet stattdessen die
+  // Spotlight-Choreo auf der Zielspalte.
   const goToPage = React.useCallback(
     (target: ReaderPage) => {
       pinnedPageRef.current = target;
       setPage(target);
-      const ref =
+      const el = (
         target === 'brief'
           ? briefPageRef
           : target === 'verstehen'
             ? verstehenPageRef
-            : handelnPageRef;
+            : handelnPageRef
+      ).current;
+      const root = pagesRef.current;
+      if (!el || !root) return;
+      const cRect = root.getBoundingClientRect();
+      const eRect = el.getBoundingClientRect();
+      const fullyVisible =
+        eRect.left >= cRect.left - 6 && eRect.right <= cRect.right + 6;
+      const max = root.scrollWidth - root.clientWidth;
+      // Vorwärts-Restweg dir-normalisiert (Blink/Gecko RTL: scrollLeft -max..0).
+      const rtl = getComputedStyle(root).direction === 'rtl';
+      const forwardCap = rtl ? max + root.scrollLeft : max - root.scrollLeft;
+      if (fullyVisible && forwardCap < 12) {
+        triggerSpotlight(target);
+        return;
+      }
       const reduce =
         reduceMotion ||
         document.documentElement.classList.contains('a11y-reduce-motion');
-      ref.current?.scrollIntoView({
+      el.scrollIntoView({
         behavior: reduce ? 'auto' : 'smooth',
         inline: 'start',
         block: 'nearest',
       });
     },
-    [reduceMotion],
+    [reduceMotion, triggerSpotlight],
   );
 
   // Aktiv-Zustand beim Swipen/Scrollen nachziehen: der Observer setzt NUR den
@@ -1201,6 +1241,68 @@ function PostDetail({
     }
     return () => observer.disconnect();
   }, [letter.id]);
+
+  // Swipe/Pfeiltaste am Anschlag: die Snap-Polosa kann den Spread
+  // [Verstehen | Handeln] nicht weiter scrollen — eine weitere Vorwärts-Geste
+  // schaltet stattdessen die aktive Seite weiter und beantwortet sie mit der
+  // Spotlight-Choreo (sonst verpufft die Geste unsichtbar).
+  const lastScrollTsRef = React.useRef(0);
+  const lastAdvanceTsRef = React.useRef(0);
+  const handlePagesScroll = React.useCallback(() => {
+    lastScrollTsRef.current = performance.now();
+    updateEdgeFade();
+  }, [updateEdgeFade]);
+  const advancePageAtClamp = React.useCallback(() => {
+    const order = ['brief', 'verstehen', 'handeln'] as const;
+    const next = order[order.indexOf(page) + 1];
+    if (!next) return;
+    pinnedPageRef.current = next;
+    setPage(next);
+    triggerSpotlight(next);
+  }, [page, triggerSpotlight]);
+  const handlePagesWheel = React.useCallback(
+    (e: React.WheelEvent<HTMLDivElement>) => {
+      const root = pagesRef.current;
+      if (!root) return;
+      // Nur klar horizontale Gesten; vertikales Scrollen der Seiten bleibt unberührt.
+      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY) || Math.abs(e.deltaX) < 24)
+        return;
+      const max = root.scrollWidth - root.clientWidth;
+      if (max <= 8) return;
+      const rtl = getComputedStyle(root).direction === 'rtl';
+      const forward = rtl ? -e.deltaX : e.deltaX;
+      const forwardCap = rtl ? max + root.scrollLeft : max - root.scrollLeft;
+      if (forward < 24 || forwardCap > 8) return;
+      const now = performance.now();
+      // Momentum-Ausläufer des gerade gelandeten Snap-Scrolls schlucken; danach
+      // max. ein Weiterschalten pro Geste.
+      if (now - lastScrollTsRef.current < 400) return;
+      if (now - lastAdvanceTsRef.current < 700) return;
+      lastAdvanceTsRef.current = now;
+      advancePageAtClamp();
+    },
+    [advancePageAtClamp],
+  );
+  const handlePagesKeyDown = React.useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      // Nur wenn die Polosa-Region selbst fokussiert ist — Pfeiltasten in
+      // Karten-Inhalten bleiben deren Sache.
+      if (e.target !== e.currentTarget) return;
+      const root = pagesRef.current;
+      if (!root) return;
+      const rtl = getComputedStyle(root).direction === 'rtl';
+      if (e.key !== (rtl ? 'ArrowLeft' : 'ArrowRight')) return;
+      const max = root.scrollWidth - root.clientWidth;
+      if (max <= 8) return;
+      const forwardCap = rtl ? max + root.scrollLeft : max - root.scrollLeft;
+      if (forwardCap > 8) return;
+      const now = performance.now();
+      if (now - lastAdvanceTsRef.current < 700) return;
+      lastAdvanceTsRef.current = now;
+      advancePageAtClamp();
+    },
+    [advancePageAtClamp],
+  );
 
   // „Der Brief, der handelt" — Bridge-Ziel + Originaltext-Handle (scrollToZitat).
   const bridge = bridgeTargetForArchetype(letter.archetype);
@@ -1587,13 +1689,21 @@ function PostDetail({
         aria-label={t3('detail.pages_aria')}
         tabIndex={0}
         data-fade={edgeFade === 'none' ? undefined : edgeFade}
-        onScroll={updateEdgeFade}
+        data-spotlight-active={spotlight ? 'true' : undefined}
+        onScroll={handlePagesScroll}
+        onWheel={handlePagesWheel}
+        onKeyDown={handlePagesKeyDown}
         initial={{ opacity: 0, y: reduceMotion ? 0 : 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: reduceMotion ? 0.01 : 0.2, ease: 'easeOut' }}
       >
         {/* Seite „Brief": Auszug/Originaltext → Anhänge → Verlauf. */}
-        <div className="lg-reader-page" data-page="brief" ref={briefPageRef}>
+        <div
+          className="lg-reader-page"
+          data-page="brief"
+          ref={briefPageRef}
+          data-spotlight={spotlight === 'brief' ? 'true' : undefined}
+        >
           {/* Der Brief öffnet zuerst als BRIEF — Textauszug-Card mit „Mehr
               anzeigen"; Anhänge + Verlauf folgen darunter. */}
           {!originaltextOpen ? (
@@ -1652,7 +1762,12 @@ function PostDetail({
         </div>
 
         {/* Seite „Verstehen": Leichte Sprache → KI-Erklärer → Bedeutung. */}
-        <div className="lg-reader-page" data-page="verstehen" ref={verstehenPageRef}>
+        <div
+          className="lg-reader-page"
+          data-page="verstehen"
+          ref={verstehenPageRef}
+          data-spotlight={spotlight === 'verstehen' ? 'true' : undefined}
+        >
           {/* Leichte-Sprache-Erläuterung (Spec §4.1): opt-in, der Originaltext
               auf der „Brief"-Seite bleibt führend. */}
           <div className="lg-ls-reveal">
@@ -1827,7 +1942,12 @@ function PostDetail({
 
         {/* Seite „Handeln": Erkannte Aufgabe → Frist → Nächste Schritte →
             Fragen. */}
-        <div className="lg-reader-page" data-page="handeln" ref={handelnPageRef}>
+        <div
+          className="lg-reader-page"
+          data-page="handeln"
+          ref={handelnPageRef}
+          data-spotlight={spotlight === 'handeln' ? 'true' : undefined}
+        >
           <ErkannteAufgabePanel
             letter={letter}
             bridge={bridge}

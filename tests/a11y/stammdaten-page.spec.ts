@@ -2,12 +2,12 @@
  * Stammdaten a11y — full-page axe (Spec § 12.3).
  * 0 critical, 0 serious violations × 2 viewports.
  *
- * Rewritten 2026-07-17 against the live „Green Bento" StammdatenView: the old
- * hero+tabs surface (`stammdaten-hero`, `tab-wallet`, `wallet-subtab`) was
- * replaced by a flat v2 card grid. The wallet sub-tab no longer exists as a
- * separate surface — its card (`v2-nachweise-card` „Verbundene Nachweise &
- * Wallet") is one of the cards scanned by this full-page pass — so the former
- * per-tab split collapses into a single full-page scan per viewport.
+ * Anchors updated 2026-07-24 for the „Datenblatt" redesign
+ * (`stammdaten-datenblatt.md` § 10), re-described 2026-07-25 for the band
+ * composition (`stammdaten-blatt-dense.md` § 2): the page is three full-width
+ * bands — identity, the data sheet (`sd-datenblatt`) and the change log as the
+ * foot band (`sd-protokoll`), which is still the last module to render. Waiting
+ * for both keeps the scan on the fully hydrated page, not a mid-mount snapshot.
  */
 import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
@@ -52,12 +52,12 @@ async function setupPersona(page: Page, personaId: string) {
 async function warm(page: Page) {
   await page.goto('/stammdaten', { waitUntil: 'networkidle' });
   await page
-    .locator('[data-testid="v2-profil-card"]')
+    .locator('[data-testid="sd-datenblatt"]')
     .waitFor({ state: 'visible', timeout: 15_000 });
-  // Right-rail „Änderungsprotokoll" is the last card to hydrate; wait for it so
-  // the axe pass covers the whole grid, not a mid-mount snapshot.
+  // The foot band's „Änderungsprotokoll" is the last module to render; wait for
+  // it so the axe pass covers the whole page, not a mid-mount snapshot.
   await page
-    .locator('[data-testid="v2-protokoll-card"]')
+    .locator('[data-testid="sd-protokoll"]')
     .waitFor({ state: 'visible', timeout: 15_000 });
 }
 

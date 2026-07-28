@@ -1164,7 +1164,16 @@
     "eid_card": {
       "label": "Цифровая идентичность (eID)",
       "footer": "Демо-карта eID",
-      "mock": "MOCK"
+      "mock": "MOCK",
+      "nationality_birth": "{nationality} · род. {datum}",
+      "doc_kind_label": "Документ",
+      "doc_issuer_label": "Кем выдан",
+      "doc_funktion_label": "Онлайн-функция",
+      "doc_funktion_value": "активна · {norm}",
+      "doc_personalausweis": "Удостоверение личности (Personalausweis)",
+      "doc_personalausweis_norm": "§ 18 PAuswG",
+      "doc_eat": "Электронный вид на жительство (eAT)",
+      "doc_eat_norm": "§ 78 AufenthG"
     },
     "transparency": {
       "demo_banner": "Демо-режим: реальные данные не используются.",
@@ -3506,18 +3515,103 @@
       "aufenthalt_ablauf_bald": "Срок ВНЖ скоро истекает",
       "kontakt_verifiziert": "Контакт подтверждён"
     },
-    "hero_v3": {
-      "region_label": "Подтверждённая личность",
-      "status_badge": "Подтверждено",
-      "kv_geburtsdatum": "Дата рождения",
-      "kv_staatsangehoerigkeit": "Гражданство",
-      "kv_quelle": "Ведущий источник",
-      "quelle_fallback": "Бюро по делам граждан (орган регистрации)",
-      "fallback_chip_ausweis": "Удостоверение личности сохранено"
+    "datenblatt": {
+      "subline": "{angaben, plural, one {# запись} few {# записи} many {# записей} other {# записи}} из {register, plural, one {# реестра} few {# реестров} many {# реестров} other {# реестров}}.",
+      "subline_update": "Последнее обновление: {datum}, {zeit} — {behoerde}.",
+      "subline_update_ohne_absender": "Последнее обновление: {datum}, {zeit}.",
+      "cta_korrigieren": "Исправить данные",
+      "title": "Ваши данные",
+      "anschrift_link": "Изменить адрес",
+      "dialog": {
+        "title": "Исправить данные",
+        "body": "Ваши основные данные ведут компетентные ведомства: имя, дату рождения и семейное положение — ЗАГС (Standesamt) или бюро по делам граждан (Bürgeramt), адрес регистрации — Bürgeramt в реестре жителей (Melderegister).",
+        "hinweis": "В этой демоверсии основные данные доступны только для чтения — это единый источник истины: изменения Вы вносите не здесь, а в компетентном ведомстве; обновлённые данные затем автоматически возвращаются в Ваш профиль."
+      },
+      "identitaet": {
+        "region_label": "Подтверждённая личность",
+        "status": "Личность подтверждена · уровень доверия eIDAS: высокий",
+        "geburtsdatum": "Дата рождения",
+        "staatsangehoerigkeit": "Гражданство",
+        "familienstand": "Семейное положение",
+        "quelle": "Ведущий источник",
+        "quelle_fallback": "Бюро по делам граждан (Bürgeramt)"
+      },
+      "familienstand": {
+        "ledig": "не в браке",
+        "verheiratet": "в браке",
+        "geschieden": "в разводе",
+        "verwitwet": "вдовец / вдова",
+        "eingetragene_lebenspartnerschaft": "зарегистрированное партнёрство"
+      },
+      "nationality": {
+        "deutsch": "Немецкое",
+        "russisch": "Российское",
+        "tuerkisch": "Турецкое"
+      },
+      "sektion": {
+        "kontakt": "Контакты",
+        "anschrift": "Адрес",
+        "familie": "Семья",
+        "dokumente": "Документы",
+        "dokumente_aufenthalt": "Документы и пребывание",
+        "versicherung": "Страхование и обеспечение",
+        "kennungen": "Идентификаторы"
+      },
+      "label": {
+        "email": "Адрес эл. почты",
+        "mobil": "Номер мобильного телефона",
+        "hauptanschrift": "Основной адрес",
+        "partner": "Супруг(а) / зарегистрированный партнёр",
+        "partner_unverheiratet": "Партнёр",
+        "kinder": "Дети",
+        "personalausweis": "Удостоверение личности (Personalausweis)",
+        "reisepass": "Загранпаспорт",
+        "aufenthaltstitel": "Вид на жительство (Aufenthaltstitel)",
+        "krankenkasse": "Больничная касса (Krankenkasse)",
+        "altersvorsorge": "Пенсионное обеспечение",
+        "steuer_id": "Налоговый идентификационный номер (Steuer-ID)",
+        "sozialversicherungsnummer": "Номер социального страхования",
+        "kvnr": "Номер медицинского страхования"
+      },
+      "value": {
+        "verifiziert": "подтверждено",
+        "gueltig_bis": "действителен до {datum}",
+        "norm_gueltig_bis": "{norm} · действителен до {datum}",
+        "gesetzliche_rente": "Государственное пенсионное страхование",
+        "kind_geboren": "род. {datum}"
+      },
+      "quelle": {
+        "bundid": "Аккаунт BundID",
+        "melderegister": "Реестр жителей (Melderegister) · подтверждено {datum}",
+        "melderegister_ohne_datum": "Реестр жителей (Melderegister)",
+        "bzst": "Федеральное центральное налоговое ведомство (Bundeszentralamt für Steuern)",
+        "drv": "Немецкое пенсионное страхование (Deutsche Rentenversicherung)",
+        "traeger": "{traeger}"
+      },
+      "wallet": {
+        "title": "Подтверждения и Wallet",
+        "line": "{count, plural, one {# подтверждение} few {# подтверждения} many {# подтверждений} other {# подтверждения}} в Вашем EUDI-Wallet · доверенный сервис: BVA – Bundesverwaltungsamt · следующая проверка {datum}",
+        "empty": "В Вашем EUDI-Wallet пока нет подтверждений.",
+        "link": "Посмотреть подтверждения"
+      },
+      "protokoll": {
+        "title": "Журнал изменений",
+        "subtitle": "Последние передачи данных из Ваших реестров",
+        "row": "{absender} → {empfaenger}",
+        "row_mit_sektion": "{sektion} · {absender} → {empfaenger}",
+        "row_zweck": "{sektion} · {zweck}",
+        "empfaenger_buerger": "Вы",
+        "empty": "Передачи данных пока не зафиксированы.",
+        "show_all": "Показать полный журнал"
+      },
+      "datenhoheit": {
+        "text": "Ваши основные данные передаются ведомствам и сервисам только с Вашего согласия — Вы решаете, кто какие сведения может видеть.",
+        "link": "Управление данными"
+      }
     },
     "once_only": {
-      "region_title": "Принцип однократного ввода",
-      "summary": "Ваши данные хранятся в {count} реестрах и синхронизируются автоматически — вы предоставляете их только один раз.",
+      "region_title": "Реестры, в которых хранятся Ваши данные",
+      "summary": "{count, plural, one {# реестр хранит} few {# реестра хранят} many {# реестров хранят} other {# реестра хранят}} Ваши данные — Вы указываете их только один раз.",
       "node_melderegister": "Реестр жителей",
       "node_kba": "Реестр транспортных средств (KBA)",
       "node_drv": "Пенсионный счёт (DRV)",
@@ -3528,143 +3622,11 @@
       "status_angebunden": "подключено",
       "status_in_anbindung": "в процессе подключения (концепция 2027)",
       "node_aria": "{register} — {status}",
-      "feed_title": "Последняя синхронизация",
-      "feed_route": "{absender} → {empfaenger}",
-      "feed_empty": "Нет передач в реестры за видимый период.",
-      "show_all": "Показать полный журнал",
       "pilot_note": "Статус подключения реестров: пилотная фаза — охват постоянно расширяется."
     },
     "hoheit": {
       "title": "Вы распоряжаетесь своими данными",
       "cta": "Управлять настройками"
-    },
-    "card": {
-      "persoenliches_profil": "Личный профиль",
-      "versicherung_vorsorge": "Страхование и обеспечение",
-      "identitaetsdokumente": "Документы, удостоверяющие личность",
-      "familie_bezugspersonen": "Семья и близкие"
-    },
-    "v2": {
-      "profil": {
-        "card_title": "Личный профиль",
-        "kv": {
-          "name": "Имя",
-          "geburtsdatum": "Дата рождения",
-          "staatsangehoerigkeit": "Гражданство",
-          "familienstand": "Семейное положение"
-        },
-        "familienstand": {
-          "verheiratet": "В браке",
-          "ledig": "Не в браке",
-          "geschieden": "В разводе",
-          "verwitwet": "Вдовец/вдова"
-        },
-        "nationality": {
-          "deutsch": "Немецкое",
-          "russisch": "Российское",
-          "tuerkisch": "Турецкое"
-        }
-      },
-      "kontakt": {
-        "card_title": "Контакты",
-        "email": "Эл. почта",
-        "telefon": "Номер телефона",
-        "verifiziert": "Подтверждено",
-        "email_keine": "Эл. почта не указана",
-        "telefon_keine": "Номер телефона не указан"
-      },
-      "familie": {
-        "card_title": "Семья и близкие",
-        "kinder_eyebrow": "Дети",
-        "partner_eyebrow": "Партнёр",
-        "row_geburtsdatum": "Дата рождения",
-        "row_verwandtschaft": "Родство",
-        "kind": "Ребёнок",
-        "partner_label": "Партнёр",
-        "add_link": "Добавить человека"
-      },
-      "anschrift": {
-        "title": "Адрес",
-        "aktuell_label": "Текущий адрес",
-        "aendern": "Изменить",
-        "zuletzt_bestaetigt": "подтверждён {datum}",
-        "zuletzt_bestaetigt_unbekannt": "ещё не подтверждён",
-        "bestaetigt": "Подтверждён"
-      },
-      "dokumente": {
-        "title": "Документы",
-        "verwalten": "Управлять",
-        "reisepass": "Загранпаспорт",
-        "personalausweis": "Удостоверение личности",
-        "aufenthaltstitel": "Вид на жительство",
-        "eat_can": "eAT-CAN",
-        "gueltig": "Действителен",
-        "nummer_template": "№ {nummer} · действителен до {gueltig_bis}",
-        "aufenthaltstitel_template": "{norm} · действителен до {gueltig_bis}",
-        "eat_can_template": "CAN {can}",
-        "add_link": "Добавить документ",
-        "empty": "Документы не зарегистрированы."
-      },
-      "versicherung": {
-        "title": "Страхование и пенсия",
-        "krankenkasse": "Медицинская страховка",
-        "altersvorsorge": "Пенсионное обеспечение",
-        "aktiv": "Активно",
-        "versichertennummer": "№ застрахованного {nr}",
-        "versichert_seit": "Застрахован(а) с {datum}",
-        "add_link": "Добавить вид страхования",
-        "empty": "Данные о страховании отсутствуют."
-      },
-      "protokoll": {
-        "title": "Журнал изменений",
-        "subtitle": "Последние изменения ваших персональных данных",
-        "show_all": "Полный журнал",
-        "empty": "Записей пока нет.",
-        "alle_anzeigen": "Показать все"
-      },
-      "datenhoheit": {
-        "title": "Вашими данными управляете вы",
-        "body_before_link": "Ваши персональные данные передаются ведомствам и сервисам только с вашего согласия. Вы решаете, кто что видит.",
-        "body_link": "Подробнее о ваших правах и использовании данных.",
-        "cta": "Управление данными"
-      },
-      "nachweise": {
-        "title": "Подключённые подтверждения и Wallet",
-        "body": "Ваши цифровые подтверждения надёжно подключены в Wallet и при необходимости поддаются проверке.",
-        "check1": "Криптографически проверено",
-        "check2": "Подпись eIDAS при выдаче действительна",
-        "check3": "Уровень доверия: высокий (eIDAS)",
-        "quelle_label": "Источник / доверенный сервис",
-        "quelle_value": "BVA – Bundesverwaltungsamt",
-        "naechste_label": "Следующая проверка",
-        "naechste_value": "14.06.2027",
-        "seal_aria": "Подтверждения криптографически проверены"
-      },
-      "weitere": {
-        "title": "Дополнительные подтверждения",
-        "steuer_id": "Налоговый номер (Steuer-ID)",
-        "sozialversicherungsnummer": "Номер социального страхования (Sozialversicherungsnummer)",
-        "verifiziert_am": "Проверено: {datum}",
-        "verifiziert_badge": "Проверено",
-        "alle_anzeigen": "Показать все подтверждения"
-      },
-      "secondary": {
-        "heading": "Другие разделы",
-        "subtitle": "Пенсия, медстрахование, мобильность, настройки уведомлений и блокировки — вспомогательный слой под основной сеткой."
-      }
-    },
-    "header": {
-      "subtitle": "Персональные данные, контакты, подтверждения и связанные удостоверения личности в одном месте.",
-      "actions": {
-        "dokument_hinzufuegen": "Добавить документ",
-        "adresse_aendern": "Изменить адрес",
-        "verknuepfung_verwalten": "Управлять связями"
-      }
-    },
-    "ring": {
-      "label": "Профиль заполнен",
-      "aria": "Профиль заполнен на {percent} процентов",
-      "letzte_aktualisierung": "Последнее обновление: {datum}"
     },
     "format": {
       "uhrzeit": "{zeit}"

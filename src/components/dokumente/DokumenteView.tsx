@@ -586,15 +586,24 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
                             </span>
                           )}
                         </td>
-                        <td>
-                          <div>
-                            {t('daten.ausgestellt_label')} &nbsp;&nbsp;{' '}
-                            {formatDe(doc.ausgestellt_am)}
+                        {/* Label/Wert als eigene Spans statt &nbsp;-Kette: die
+                            Desktop-Ausrichtung übernimmt eine Label-Spalte,
+                            auf dem Telefon fließen beide Daten in EINE
+                            Metazeile (die nbsp-Lücken lasen sich dort wie ein
+                            Layout-Fehler). */}
+                        <td className="dk-dates">
+                          <div className="dk-date">
+                            <span className="dk-date-lbl">
+                              {t('daten.ausgestellt_label')}
+                            </span>
+                            <span>{formatDe(doc.ausgestellt_am)}</span>
                           </div>
                           {doc.gueltig_bis ? (
-                            <div>
-                              {t('daten.gueltig_bis_label')} &nbsp;&nbsp;&nbsp;&nbsp;{' '}
-                              {formatDe(doc.gueltig_bis)}
+                            <div className="dk-date">
+                              <span className="dk-date-lbl">
+                                {t('daten.gueltig_bis_label')}
+                              </span>
+                              <span>{formatDe(doc.gueltig_bis)}</span>
                             </div>
                           ) : null}
                         </td>
@@ -725,7 +734,12 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
         <aside className="rail" aria-label={t('rail.aside_label')}>
           <div className="card">
             <h2>{t('schnellzugriff.title')}</h2>
-            <div className="m-shelf dk-quick-shelf">
+            {/* Bewusst KEIN `m-shelf`: die beiden Rail-Regale bestehen aus
+                Textzeilen, nicht aus Karten — der angeschnittene Nachbar-Slide
+                zeigte auf dem Telefon halbe Wörter („Neuer O…") und las sich
+                als Layout-Fehler statt als Karussell. Untereinander bleibt
+                jede Zeile vollständig lesbar. */}
+            <div className="dk-quick-shelf">
             <QuickAction
               Icon={Upload}
               title={t('schnellzugriff.upload')}
@@ -770,8 +784,11 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
           </div>
 
           <div className="card">
-            <h2 id="dk-zuletzt-title">{t('zuletzt.title')}</h2>
-            <div className="m-shelf dk-zuletzt-shelf" role="group" tabIndex={0} aria-labelledby="dk-zuletzt-title">
+            <h2>{t('zuletzt.title')}</h2>
+            {/* Kein `m-shelf` (siehe Schnellzugriff) — und damit auch kein
+                `role="group"`/`tabIndex` mehr: der Tab-Stop existierte nur, um
+                den horizontalen Scroller per Tastatur bedienbar zu machen. */}
+            <div className="dk-zuletzt-shelf">
             {recentlyAdded.map((doc) => {
               const av = avatarFor(doc.typ);
               const recCls =

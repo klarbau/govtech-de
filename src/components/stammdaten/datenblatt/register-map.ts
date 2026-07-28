@@ -2,8 +2,8 @@ import type { Behoerde } from '@/types';
 import type { UebermittlungsLogEntry } from '@/types/stammdaten';
 
 /**
- * Pure, client-side register derivation for the Once-Only panel
- * (`<OnceOnlyRegisterPanel>`). No `api`, no `localStorage`, no server state —
+ * Pure, client-side register derivation for the Datenblatt rail
+ * (`<RegisterAuszug>`). No `api`, no `localStorage`, no server state —
  * the list, count and per-node status are all derived from the already-loaded
  * `getBehoerden()` array + the `Übermittlungslog`, so it stays
  * Vercel-serverless-safe and offline-graceful.

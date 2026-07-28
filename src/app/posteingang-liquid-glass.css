@@ -733,6 +733,47 @@ html[data-lg][data-lg-screen='posteingang'] .lg-reader-pages[data-fade='lr'] {
   -webkit-mask-image: linear-gradient(to right, transparent, #000 56px, #000 calc(100% - 56px), transparent);
   mask-image: linear-gradient(to right, transparent, #000 56px, #000 calc(100% - 56px), transparent);
 }
+/* Spread-Spotlight: Navigation auf eine bereits voll sichtbare Zielseite
+   (Polosa vorwärts am Anschlag, scrollIntoView wäre ein No-op) bekommt statt
+   eines toten Klicks eine kurze Theater-Antwort: die Zielspalte hebt sich mit
+   einem Waldgrün-Ring, die Nachbarspalten dimmen einen Atemzug lang ab. Unter
+   reduced-motion kollabiert beides über die globale 0.01ms-Regel. */
+html[data-lg][data-lg-screen='posteingang'] .lg-reader-page[data-spotlight] {
+  border-radius: 18px;
+  animation: lg-page-spotlight 640ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+html[data-lg][data-lg-screen='posteingang']
+  .lg-reader-pages[data-spotlight-active]
+  .lg-reader-page:not([data-spotlight]) {
+  animation: lg-page-spotlight-dim 640ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes lg-page-spotlight {
+  0% {
+    transform: translateY(0);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  }
+  28% {
+    transform: translateY(-5px);
+    box-shadow:
+      0 0 0 1.5px color-mix(in srgb, var(--color-primary) 60%, transparent),
+      0 22px 44px -22px color-mix(in srgb, var(--color-primary) 60%, transparent);
+  }
+  100% {
+    transform: translateY(0);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  }
+}
+@keyframes lg-page-spotlight-dim {
+  0% {
+    opacity: 1;
+  }
+  28% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 1;
+  }
+}
 /* WCAG 1.4.10: der Erklärer-Kopf (Sprach-Toggle + KI-Pill) muss in der schmalen
    Seiten-Spalte umbrechen, statt am overflow-x:hidden der Seite zu clippen.
    `.ai-card-top` selbst ist FROZEN (prototype-v2.css) → Override hier gescoped. */

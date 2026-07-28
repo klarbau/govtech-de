@@ -1519,20 +1519,31 @@ html[data-lg] .app-topnav .lg-top-search {
   .frist-card div.item > .badge { grid-column: 2; justify-self: start; }
 }
 
-/* Dokumente table (5 cols: Dokument · Kategorie · Status · Daten · Aktionen):
-   Kategorie/Status clipped inside the x-scroll card. Phone card: row 1 =
-   Dokument + Aktionen, row 2 = Kategorie ↔ Status, row 3 = Daten. Sort headers
-   disappear with the thead — the tabs + search above stay the mobile filter. */
+/* Dokumente „Daten"-Spalte: Label und Wert richten sich über eine echte
+   Label-Spalte aus statt über eine &nbsp;-Kette (die je Sprache anders lang
+   ausfällt und auf dem Telefon wie eine Layout-Lücke aussah). */
+.dk-dates .dk-date { display: flex; gap: 8px; }
+.dk-dates .dk-date-lbl { min-width: 76px; }
+
+/* Dokumente table (5 cols: Dokument · Kategorie · Status · Daten · Aktionen)
+   auf dem Telefon. Die frühere Fassung teilte Zeile 1 zwischen Titel und dem
+   Aktions-Cluster (3–4 × 44px ≈ 132px) — deutsche Komposita blieben ~150px
+   Titelspalte und zerfielen in getrennte Silben-Leitern („Wohnungsgeberbe- /
+   stätigung"), darunter je eine eigene Zeile für Kategorie, Status und Daten:
+   ~230px pro Dokument, ohne Scanbarkeit. Jetzt eine flex-wrap-Zeile:
+   Dokument über die volle Breite, danach Kategorie · Status · Daten als EINE
+   Metazeile, die Aktionen als rechtsbündige Leiste — was nicht mehr passt,
+   rutscht selbständig eine Zeile tiefer statt zu klemmen. */
 @media (max-width: 700px) {
   div.dk-table { overflow-x: visible; padding: 4px 16px 8px; }
   div.dk-table > table,
   div.dk-table > table > tbody { display: block; }
   div.dk-table > table > thead { display: none; }
   div.dk-table > table tr {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: start;
-    row-gap: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 10px;
     padding: 14px 0;
     border-bottom: 1px solid var(--border);
   }
@@ -1542,19 +1553,42 @@ html[data-lg] .app-topnav .lg-top-search {
     padding: 0;
     border-bottom: 0;
   }
-  div.dk-table > table td:nth-child(1) { grid-row: 1; grid-column: 1; }
-  div.dk-table > table td:nth-child(5) { grid-row: 1; grid-column: 2; justify-self: end; }
-  div.dk-table > table td:nth-child(2) { grid-row: 2; grid-column: 1; }
-  div.dk-table > table td:nth-child(3) { grid-row: 2; grid-column: 2; justify-self: end; }
+  div.dk-table > table td:nth-child(1) { flex: 1 1 100%; }
+  div.dk-table > table td:nth-child(2),
+  div.dk-table > table td:nth-child(3) { flex: 0 0 auto; }
+  /* Aktionen sitzen am Zeilenende. Bewusst über `flex-grow` + `text-align`
+     statt `margin-inline-start: auto`: lightningcss (Turbopack) faltet die
+     Regel sonst mit den `flex: none`-Geschwistern oben zusammen und wirft die
+     Margin dabei weg — die Knöpfe standen dann links. */
+  div.dk-table > table td:nth-child(5) {
+    flex: 1 0 auto;
+    text-align: end;
+  }
+  /* Die Datumszeile rutscht ans Zeilenende (order), damit jede Karte gleich
+     gebaut ist: Titel · Kategorie+Status+Aktionen · Daten. Ohne das entscheidet
+     die Badge-Breite je Dokument, was umbricht — die Liste wirkte ausgefranst.
+     Verschoben wird nur Fließtext; die Reihenfolge der fokussierbaren Elemente
+     (Vorgangs-Chip im Titel, Aktionsknöpfe) bleibt DOM-gleich (WCAG 1.3.2). */
   div.dk-table > table td:nth-child(4) {
-    grid-row: 3;
-    grid-column: 1 / -1;
+    order: 1;
+    flex: 1 1 100%;
     color: var(--ink-3);
     font-size: 12.5px;
   }
+  /* Das Symbol steht am Titelanfang, nicht mittig neben dem Textblock. */
+  div.dk-doc { align-items: flex-start; gap: 12px; }
   /* The document cell's nr/[MOCK]/chip row wraps instead of forcing width. */
   .dk-doc div.s { flex-wrap: wrap; }
+  /* „Ausgestellt 24.07.2026 · Gültig bis 31.12.2027" in einer Zeile. */
+  td.dk-dates { display: flex; flex-wrap: wrap; gap: 2px 14px; }
+  td.dk-dates .dk-date-lbl { min-width: 0; }
   div.dk-actions { margin: 0; }
+
+  /* Seitenwechsel: Zähler auf eigener Zeile, darunter Blätterknöpfe links und
+     die Seitengröße rechts (space-between der Basisregel) statt drei linksbündig
+     gestapelter Blöcke mit toter Fläche daneben. */
+  div.dk-table > .pagination { padding: 14px 0; row-gap: 10px; }
+  div.dk-table > .pagination > .muted { flex: 1 1 100%; }
 }
 
 /* Shared card head (title ↔ sub/action, space-between): on phones the
@@ -1646,12 +1680,53 @@ span.ll-oo-qualifier { white-space: nowrap; }
   .vg-big-head div.vg-big-meta > .muted { margin-top: 0 !important; }
 }
 
-/* Dokumente filter bar: the chip strip (flex:1) got pinched to ~208px beside
-   the Filter button, stacking every chip on its own row inside the narrow
-   column. Phones: Filter takes its own top row, chips flow full-width. */
-@media (max-width: 560px) {
-  div.dk-filterbar .tab-chips { flex: 1 1 100%; order: 2; }
-  div.dk-filterbar > .dk-filter { order: 1; margin-left: auto; }
+/* Dieselbe Sticky-Hover-Falle auf den Aktionsknöpfen der Dokumentzeile: nach
+   einem Tap auf „Herunterladen" blieb der graue Knopf-Block stehen. Die
+   Basisregel steht in der eingefrorenen `prototype-v2.css` (lädt NACH globals)
+   → Überschreiben braucht die höhere Spezifität von `div.dk-actions`. */
+@media (hover: none) {
+  div.dk-actions button:hover {
+    background: none;
+    color: var(--ink-3);
+  }
+}
+
+/* Dokumente Suchleiste auf dem Telefon: der Filter-Knopf stand allein auf einer
+   eigenen Zeile (breites Leerband links daneben), die Kategorie-Chips liefen
+   dahinter als horizontaler Scroller und wurden am Kartenrand mitten im Wort
+   gekappt („Bescheide" → „Besche"). Jetzt sitzt Filter neben dem Suchfeld und
+   die Chips bekommen die volle Breite und umbrechen — alle Kategorien sichtbar,
+   nichts abgeschnitten, eine Zeile weniger über der Liste. */
+@media (max-width: 767px) {
+  div.dk-search {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 10px;
+    row-gap: 12px;
+    align-items: center;
+  }
+  div.dk-search > .input-icon { grid-column: 1; grid-row: 1; margin-bottom: 0; }
+  /* Der Filterbar-Wrapper verschwindet, damit Knopf und Chips direkte
+     Rasterkinder werden (Knopf oben rechts, Chips volle zweite Zeile). */
+  div.dk-search > .dk-filterbar { display: contents; }
+  div.dk-filterbar > .dk-filter { grid-column: 2; grid-row: 1; }
+  div.dk-filterbar > .tab-chips {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  /* Kompakter (Höhe bleibt der 44px-Tap-Target-Boden): schmalere Innenabstände
+     und die Anzahl als schlichte Ziffer statt als zweite Pille im Chip — so
+     stehen die fünf Kategorien in zwei Zeilen statt in dreien. */
+  div.dk-filterbar > .tab-chips .chip { padding: 0 10px; gap: 5px; }
+  div.dk-filterbar > .tab-chips .chip .count {
+    background: none;
+    padding: 0;
+  }
+  /* Das Filter-Panel hängt rechtsbündig am Knopf — auf 320px wäre es sonst
+     breiter als die Karte (WCAG 1.4.10). */
+  div.dk-filter-panel { width: min(280px, calc(100vw - 40px)); }
 }
 
 /* Vorgang-Detail „nichts zu tun"-Banner: the ≤760px column layout (meant for

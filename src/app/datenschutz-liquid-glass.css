@@ -259,7 +259,9 @@ html[data-lg][data-lg-screen='datenschutz'] .ds-spread-cta {
   align-items: center;
   padding: 12px 0 14px;
   border-top: 1px solid var(--lg-hairline);
-  background: var(--lg-glass-soft);
+  /* Bewusst KEIN Flächen-Background: anders als die ~680px-Reader-Pane des
+     Posteingangs spannt diese Zeile die volle Content-Breite — eine Füllung
+     las sich auf Desktop als riesiges leeres Rechteck (User-Befund S31). */
 }
 /* Kompakte Pillen natürlicher Breite (Reader-CTA-Parität) — die frühere
    flex:1-Streckung malte zwei viewportbreite Rechtecke (User: „уродство

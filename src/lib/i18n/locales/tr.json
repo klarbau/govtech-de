@@ -1164,7 +1164,16 @@
     "eid_card": {
       "label": "Dijital kimlik (eID)",
       "footer": "Demo eID kartı",
-      "mock": "MOCK"
+      "mock": "MOCK",
+      "nationality_birth": "{nationality} · doğum {datum}",
+      "doc_kind_label": "Belge",
+      "doc_issuer_label": "Veren makam",
+      "doc_funktion_label": "Çevrimiçi kimlik",
+      "doc_funktion_value": "etkin · {norm}",
+      "doc_personalausweis": "Alman kimlik kartı (Personalausweis)",
+      "doc_personalausweis_norm": "§ 18 PAuswG",
+      "doc_eat": "Elektronik oturma izni (eAT)",
+      "doc_eat_norm": "§ 78 AufenthG"
     },
     "transparency": {
       "demo_banner": "Demo modu: gerçek veri kullanılmaz.",
@@ -3506,18 +3515,103 @@
       "aufenthalt_ablauf_bald": "Oturum izni yakında doluyor",
       "kontakt_verifiziert": "İletişim doğrulandı"
     },
-    "hero_v3": {
-      "region_label": "Doğrulanmış kimlik",
-      "status_badge": "Doğrulandı",
-      "kv_geburtsdatum": "Doğum tarihi",
-      "kv_staatsangehoerigkeit": "Vatandaşlık",
-      "kv_quelle": "Yetkili kaynak",
-      "quelle_fallback": "Vatandaşlık dairesi (kayıt makamı)",
-      "fallback_chip_ausweis": "Kimlik kartı kayıtlı"
+    "datenblatt": {
+      "subline": "{angaben, plural, other {# bilgi}}, {register, plural, other {# sicilde}} tutuluyor.",
+      "subline_update": "Son güncelleme: {datum}, {zeit} — {behoerde}.",
+      "subline_update_ohne_absender": "Son güncelleme: {datum}, {zeit}.",
+      "cta_korrigieren": "Verileri düzelt",
+      "title": "Bilgileriniz",
+      "anschrift_link": "Adresi değiştir",
+      "dialog": {
+        "title": "Verileri düzelt",
+        "body": "Ana verileriniz yetkili makamlarca tutulur: ad, doğum tarihi ve medeni durum nüfus dairesi (Standesamt) ya da vatandaş ofisi (Bürgeramt) tarafından, kayıtlı adresiniz ise vatandaş ofisi (Bürgeramt) tarafından nüfus sicilinde (Melderegister) tutulur.",
+        "hinweis": "Bu demoda ana veriler salt okunur tek doğru kaynaktır: değişiklikleri burada değil, yetkili makamda yaparsınız – güncellenen veriler ardından otomatik olarak profilinize geri akar."
+      },
+      "identitaet": {
+        "region_label": "Doğrulanmış kimlik",
+        "status": "Kimlik doğrulandı · eIDAS güven düzeyi: yüksek",
+        "geburtsdatum": "Doğum tarihi",
+        "staatsangehoerigkeit": "Vatandaşlık",
+        "familienstand": "Medeni durum",
+        "quelle": "Yetkili kaynak",
+        "quelle_fallback": "Vatandaş ofisi (Bürgeramt)"
+      },
+      "familienstand": {
+        "ledig": "bekâr",
+        "verheiratet": "evli",
+        "geschieden": "boşanmış",
+        "verwitwet": "dul",
+        "eingetragene_lebenspartnerschaft": "kayıtlı hayat ortaklığı"
+      },
+      "nationality": {
+        "deutsch": "Alman",
+        "russisch": "Rus",
+        "tuerkisch": "Türk"
+      },
+      "sektion": {
+        "kontakt": "İletişim",
+        "anschrift": "Adres",
+        "familie": "Aile",
+        "dokumente": "Belgeler",
+        "dokumente_aufenthalt": "Belgeler ve oturum",
+        "versicherung": "Sigorta ve güvence",
+        "kennungen": "Kimlik numaraları"
+      },
+      "label": {
+        "email": "E-posta adresi",
+        "mobil": "Cep telefonu numarası",
+        "hauptanschrift": "Ana adres",
+        "partner": "Eş / kayıtlı hayat ortağı",
+        "partner_unverheiratet": "Hayat arkadaşı",
+        "kinder": "Çocuklar",
+        "personalausweis": "Kimlik kartı (Personalausweis)",
+        "reisepass": "Pasaport",
+        "aufenthaltstitel": "Oturum izni (Aufenthaltstitel)",
+        "krankenkasse": "Sağlık sigortası (Krankenkasse)",
+        "altersvorsorge": "Emeklilik",
+        "steuer_id": "Vergi kimlik numarası (Steuer-ID)",
+        "sozialversicherungsnummer": "Sosyal güvenlik numarası",
+        "kvnr": "Sağlık sigortası numarası"
+      },
+      "value": {
+        "verifiziert": "doğrulandı",
+        "gueltig_bis": "{datum} tarihine kadar geçerli",
+        "norm_gueltig_bis": "{norm} · {datum} tarihine kadar geçerli",
+        "gesetzliche_rente": "Yasal emeklilik sigortası",
+        "kind_geboren": "doğ. {datum}"
+      },
+      "quelle": {
+        "bundid": "BundID hesabı",
+        "melderegister": "Nüfus sicili (Melderegister) · {datum} tarihinde onaylandı",
+        "melderegister_ohne_datum": "Nüfus sicili (Melderegister)",
+        "bzst": "Federal Merkezi Vergi Dairesi (Bundeszentralamt für Steuern)",
+        "drv": "Alman Emeklilik Sigortası (Deutsche Rentenversicherung)",
+        "traeger": "{traeger}"
+      },
+      "wallet": {
+        "title": "Kanıtlar ve Wallet",
+        "line": "EUDI Wallet'ınızda {count, plural, other {# kanıt}} · güven hizmeti: BVA – Bundesverwaltungsamt · sonraki kontrol: {datum}",
+        "empty": "EUDI Wallet'ınızda henüz kanıt yok.",
+        "link": "Kanıtları görüntüle"
+      },
+      "protokoll": {
+        "title": "Değişiklik günlüğü",
+        "subtitle": "Sicillerinizden son aktarımlar",
+        "row": "{absender} → {empfaenger}",
+        "row_mit_sektion": "{sektion} · {absender} → {empfaenger}",
+        "row_zweck": "{sektion} · {zweck}",
+        "empfaenger_buerger": "Siz",
+        "empty": "Henüz kayıtlı aktarım yok.",
+        "show_all": "Tüm günlüğü göster"
+      },
+      "datenhoheit": {
+        "text": "Ana verileriniz yalnızca onayınızla makamlara ve hizmetlere iletilir — hangi bilgiyi kimin görebileceğine siz karar verirsiniz.",
+        "link": "Veri kullanımını yönet"
+      }
     },
     "once_only": {
-      "region_title": "Bir kez ilkesi",
-      "summary": "Verileriniz {count} sicilde tutulur ve otomatik olarak senkronize olur — onları yalnızca bir kez verirsiniz.",
+      "region_title": "Verilerinizi tutan siciller",
+      "summary": "{count, plural, other {# sicil}} verilerinizi tutar — bunları yalnızca bir kez verirsiniz.",
       "node_melderegister": "Nüfus sicili",
       "node_kba": "Araç sicili (KBA)",
       "node_drv": "Emeklilik hesabı (DRV)",
@@ -3528,143 +3622,11 @@
       "status_angebunden": "bağlı",
       "status_in_anbindung": "bağlanıyor (2027 vizyonu)",
       "node_aria": "{register} — {status}",
-      "feed_title": "Son senkronizasyon",
-      "feed_route": "{absender} → {empfaenger}",
-      "feed_empty": "Görünür dönemde sicil aktarımı yok.",
-      "show_all": "Tüm günlüğü göster",
       "pilot_note": "Sicil bağlantı durumu: pilot aşama — kapsam sürekli genişletiliyor."
     },
     "hoheit": {
       "title": "Verileriniz üzerindeki söz sizin",
       "cta": "Ayarları yönet"
-    },
-    "card": {
-      "persoenliches_profil": "Kişisel profil",
-      "versicherung_vorsorge": "Sigorta ve güvence",
-      "identitaetsdokumente": "Kimlik belgeleri",
-      "familie_bezugspersonen": "Aile ve yakınlar"
-    },
-    "v2": {
-      "profil": {
-        "card_title": "Kişisel profil",
-        "kv": {
-          "name": "Ad",
-          "geburtsdatum": "Doğum tarihi",
-          "staatsangehoerigkeit": "Uyruk",
-          "familienstand": "Medeni durum"
-        },
-        "familienstand": {
-          "verheiratet": "Evli",
-          "ledig": "Bekâr",
-          "geschieden": "Boşanmış",
-          "verwitwet": "Dul"
-        },
-        "nationality": {
-          "deutsch": "Alman",
-          "russisch": "Rus",
-          "tuerkisch": "Türk"
-        }
-      },
-      "kontakt": {
-        "card_title": "İletişim",
-        "email": "E-posta",
-        "telefon": "Telefon numarası",
-        "verifiziert": "Doğrulandı",
-        "email_keine": "Kayıtlı e-posta yok",
-        "telefon_keine": "Kayıtlı telefon numarası yok"
-      },
-      "familie": {
-        "card_title": "Aile ve yakınlar",
-        "kinder_eyebrow": "Çocuklar",
-        "partner_eyebrow": "Eş",
-        "row_geburtsdatum": "Doğum tarihi",
-        "row_verwandtschaft": "Yakınlık",
-        "kind": "Çocuk",
-        "partner_label": "Eş",
-        "add_link": "Başka kişi ekle"
-      },
-      "anschrift": {
-        "title": "Adres",
-        "aktuell_label": "Güncel adres",
-        "aendern": "Değiştir",
-        "zuletzt_bestaetigt": "son onay {datum}",
-        "zuletzt_bestaetigt_unbekannt": "henüz onaylanmadı",
-        "bestaetigt": "Onaylandı"
-      },
-      "dokumente": {
-        "title": "Kimlik belgeleri",
-        "verwalten": "Yönet",
-        "reisepass": "Pasaport",
-        "personalausweis": "Kimlik kartı",
-        "aufenthaltstitel": "Oturum izni",
-        "eat_can": "eAT-CAN",
-        "gueltig": "Geçerli",
-        "nummer_template": "Numara {nummer} · {gueltig_bis} tarihine kadar geçerli",
-        "aufenthaltstitel_template": "{norm} · {gueltig_bis} tarihine kadar geçerli",
-        "eat_can_template": "CAN {can}",
-        "add_link": "Belge ekle",
-        "empty": "Kayıtlı belge yok."
-      },
-      "versicherung": {
-        "title": "Sigorta ve emeklilik",
-        "krankenkasse": "Sağlık sigortası",
-        "altersvorsorge": "Emeklilik",
-        "aktiv": "Aktif",
-        "versichertennummer": "Sigorta numarası {nr}",
-        "versichert_seit": "{datum} tarihinden beri sigortalı",
-        "add_link": "Başka sigorta ekle",
-        "empty": "Bağlı sigorta verisi yok."
-      },
-      "protokoll": {
-        "title": "Değişiklik günlüğü",
-        "subtitle": "Ana verilerinizdeki son değişiklikler",
-        "show_all": "Tam günlüğü göster",
-        "empty": "Henüz kayıtlı değişiklik yok.",
-        "alle_anzeigen": "Tümünü göster"
-      },
-      "datenhoheit": {
-        "title": "Verileriniz sizin kontrolünüzde",
-        "body_before_link": "Ana verileriniz yalnızca onayınızla makamlara ve hizmetlere iletilir. Kimin neyi göreceğine siz karar verirsiniz.",
-        "body_link": "Haklarınız ve veri kullanımı hakkında daha fazlası.",
-        "cta": "Veri kullanımını yönet"
-      },
-      "nachweise": {
-        "title": "Bağlı kanıtlar ve Wallet",
-        "body": "Dijital kanıtlarınız Wallet içinde güvenle bağlıdır ve gerektiğinde doğrulanabilir.",
-        "check1": "Kriptografik olarak doğrulandı",
-        "check2": "Düzenleme anındaki eIDAS imzası geçerli",
-        "check3": "Güven düzeyi: Yüksek (eIDAS)",
-        "quelle_label": "Kaynak / güven hizmeti",
-        "quelle_value": "BVA – Bundesverwaltungsamt",
-        "naechste_label": "Sonraki kontrol",
-        "naechste_value": "14.06.2027",
-        "seal_aria": "Kanıtlar kriptografik olarak doğrulandı"
-      },
-      "weitere": {
-        "title": "Diğer doğrulamalar",
-        "steuer_id": "Vergi numarası (Steuer-ID)",
-        "sozialversicherungsnummer": "Sosyal güvenlik numarası (Sozialversicherungsnummer)",
-        "verifiziert_am": "Doğrulama tarihi: {datum}",
-        "verifiziert_badge": "Doğrulandı",
-        "alle_anzeigen": "Tüm doğrulamaları göster"
-      },
-      "secondary": {
-        "heading": "Diğer alanlar",
-        "subtitle": "Emeklilik, sağlık sigortası, ulaşım, bildirim tercihleri ve bloklar — ana ızgaranın altındaki yardımcı katman."
-      }
-    },
-    "header": {
-      "subtitle": "Kişisel veriler, iletişim, kanıtlar ve bağlı kimlikler tek bir yerde.",
-      "actions": {
-        "dokument_hinzufuegen": "Belge ekle",
-        "adresse_aendern": "Adresi değiştir",
-        "verknuepfung_verwalten": "Bağlantıyı yönet"
-      }
-    },
-    "ring": {
-      "label": "Profil tamamlandı",
-      "aria": "Profil yüzde {percent} oranında tamamlandı",
-      "letzte_aktualisierung": "Son güncelleme: {datum}"
     },
     "format": {
       "uhrzeit": "{zeit}"

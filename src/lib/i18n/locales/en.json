@@ -1164,7 +1164,16 @@
     "eid_card": {
       "label": "Digital identity (eID)",
       "footer": "Mock eID card",
-      "mock": "MOCK"
+      "mock": "MOCK",
+      "nationality_birth": "{nationality} · born {datum}",
+      "doc_kind_label": "Document",
+      "doc_issuer_label": "Issued by",
+      "doc_funktion_label": "Online ID",
+      "doc_funktion_value": "active · {norm}",
+      "doc_personalausweis": "German ID card (Personalausweis)",
+      "doc_personalausweis_norm": "§ 18 PAuswG",
+      "doc_eat": "Electronic residence permit (eAT)",
+      "doc_eat_norm": "§ 78 AufenthG"
     },
     "transparency": {
       "demo_banner": "Demo mode: no real data is used.",
@@ -3506,18 +3515,103 @@
       "aufenthalt_ablauf_bald": "Residence permit expiring soon",
       "kontakt_verifiziert": "Contact verified"
     },
-    "hero_v3": {
-      "region_label": "Verified identity",
-      "status_badge": "Verified",
-      "kv_geburtsdatum": "Date of birth",
-      "kv_staatsangehoerigkeit": "Nationality",
-      "kv_quelle": "Authoritative source",
-      "quelle_fallback": "Citizens' office (registration authority)",
-      "fallback_chip_ausweis": "ID card on file"
+    "datenblatt": {
+      "subline": "{angaben, plural, =1 {1 detail} other {# details}}, maintained by {register, plural, =1 {1 register} other {# registers}}.",
+      "subline_update": "Last updated on {datum} at {zeit} by {behoerde}.",
+      "subline_update_ohne_absender": "Last updated on {datum} at {zeit}.",
+      "cta_korrigieren": "Correct data",
+      "title": "Your details",
+      "anschrift_link": "Change address",
+      "dialog": {
+        "title": "Correct data",
+        "body": "Your master data is maintained by the responsible authorities: name, date of birth and marital status by the registry office (Standesamt) or the citizens' office (Bürgeramt), your registered address by the Bürgeramt in the population register (Melderegister).",
+        "hinweis": "In this demo, master data is a read-only single source of truth: you do not make changes here but at the responsible authority – the updated data then flows back into your profile automatically."
+      },
+      "identitaet": {
+        "region_label": "Verified identity",
+        "status": "Identity confirmed · eIDAS level of assurance: high",
+        "geburtsdatum": "Date of birth",
+        "staatsangehoerigkeit": "Nationality",
+        "familienstand": "Marital status",
+        "quelle": "Authoritative source",
+        "quelle_fallback": "Citizens' office (Bürgeramt)"
+      },
+      "familienstand": {
+        "ledig": "single",
+        "verheiratet": "married",
+        "geschieden": "divorced",
+        "verwitwet": "widowed",
+        "eingetragene_lebenspartnerschaft": "registered civil partnership"
+      },
+      "nationality": {
+        "deutsch": "German",
+        "russisch": "Russian",
+        "tuerkisch": "Turkish"
+      },
+      "sektion": {
+        "kontakt": "Contact",
+        "anschrift": "Address",
+        "familie": "Family",
+        "dokumente": "Documents",
+        "dokumente_aufenthalt": "Documents & residence",
+        "versicherung": "Insurance & pension",
+        "kennungen": "Identifiers"
+      },
+      "label": {
+        "email": "Email address",
+        "mobil": "Mobile number",
+        "hauptanschrift": "Main address",
+        "partner": "Spouse / registered partner",
+        "partner_unverheiratet": "Partner",
+        "kinder": "Children",
+        "personalausweis": "ID card (Personalausweis)",
+        "reisepass": "Passport",
+        "aufenthaltstitel": "Residence permit (Aufenthaltstitel)",
+        "krankenkasse": "Health insurance (Krankenkasse)",
+        "altersvorsorge": "Pension provision",
+        "steuer_id": "Tax identification number (Steuer-ID)",
+        "sozialversicherungsnummer": "Social insurance number",
+        "kvnr": "Health insurance number"
+      },
+      "value": {
+        "verifiziert": "verified",
+        "gueltig_bis": "valid until {datum}",
+        "norm_gueltig_bis": "{norm} · valid until {datum}",
+        "gesetzliche_rente": "Statutory pension insurance",
+        "kind_geboren": "born {datum}"
+      },
+      "quelle": {
+        "bundid": "BundID account",
+        "melderegister": "Population register (Melderegister) · confirmed on {datum}",
+        "melderegister_ohne_datum": "Population register (Melderegister)",
+        "bzst": "Federal Central Tax Office (Bundeszentralamt für Steuern)",
+        "drv": "German Pension Insurance (Deutsche Rentenversicherung)",
+        "traeger": "{traeger}"
+      },
+      "wallet": {
+        "title": "Proofs & wallet",
+        "line": "{count, plural, =1 {1 proof} other {# proofs}} in your EUDI Wallet · trust service: BVA – Bundesverwaltungsamt · next review on {datum}",
+        "empty": "No proofs in your EUDI Wallet yet.",
+        "link": "View proofs"
+      },
+      "protokoll": {
+        "title": "Change log",
+        "subtitle": "Latest transmissions from your registers",
+        "row": "{absender} → {empfaenger}",
+        "row_mit_sektion": "{sektion} · {absender} → {empfaenger}",
+        "row_zweck": "{sektion} · {zweck}",
+        "empfaenger_buerger": "You",
+        "empty": "No transmissions recorded yet.",
+        "show_all": "Show full log"
+      },
+      "datenhoheit": {
+        "text": "Your master data is shared with authorities and services only with your consent — you decide who may see which detail.",
+        "link": "Manage data use"
+      }
     },
     "once_only": {
-      "region_title": "Once-only principle",
-      "summary": "Your data live across {count} registers and sync automatically — you only provide them once.",
+      "region_title": "Registers that hold your data",
+      "summary": "{count, plural, =1 {1 register holds} other {# registers hold}} your details — you provide them only once.",
       "node_melderegister": "Population register",
       "node_kba": "Vehicle register (KBA)",
       "node_drv": "Pension account (DRV)",
@@ -3528,143 +3622,11 @@
       "status_angebunden": "connected",
       "status_in_anbindung": "being connected (2027 vision)",
       "node_aria": "{register} — {status}",
-      "feed_title": "Latest synchronisation",
-      "feed_route": "{absender} → {empfaenger}",
-      "feed_empty": "No register transmissions in the visible period.",
-      "show_all": "Show full log",
       "pilot_note": "Register connection status: pilot phase — coverage is being expanded continuously."
     },
     "hoheit": {
       "title": "You are in control of your data",
       "cta": "Manage settings"
-    },
-    "card": {
-      "persoenliches_profil": "Personal profile",
-      "versicherung_vorsorge": "Insurance & provision",
-      "identitaetsdokumente": "Identity documents",
-      "familie_bezugspersonen": "Family & dependants"
-    },
-    "v2": {
-      "profil": {
-        "card_title": "Personal profile",
-        "kv": {
-          "name": "Name",
-          "geburtsdatum": "Date of birth",
-          "staatsangehoerigkeit": "Nationality",
-          "familienstand": "Marital status"
-        },
-        "familienstand": {
-          "verheiratet": "Married",
-          "ledig": "Single",
-          "geschieden": "Divorced",
-          "verwitwet": "Widowed"
-        },
-        "nationality": {
-          "deutsch": "German",
-          "russisch": "Russian",
-          "tuerkisch": "Turkish"
-        }
-      },
-      "kontakt": {
-        "card_title": "Contact",
-        "email": "Email",
-        "telefon": "Phone number",
-        "verifiziert": "Verified",
-        "email_keine": "No email on file",
-        "telefon_keine": "No phone number on file"
-      },
-      "familie": {
-        "card_title": "Family & dependents",
-        "kinder_eyebrow": "Children",
-        "partner_eyebrow": "Partner",
-        "row_geburtsdatum": "Date of birth",
-        "row_verwandtschaft": "Relation",
-        "kind": "Child",
-        "partner_label": "Partner",
-        "add_link": "Add another person"
-      },
-      "anschrift": {
-        "title": "Address",
-        "aktuell_label": "Current address",
-        "aendern": "Change",
-        "zuletzt_bestaetigt": "last confirmed on {datum}",
-        "zuletzt_bestaetigt_unbekannt": "not yet confirmed",
-        "bestaetigt": "Confirmed"
-      },
-      "dokumente": {
-        "title": "Identity documents",
-        "verwalten": "Manage",
-        "reisepass": "Passport",
-        "personalausweis": "National ID",
-        "aufenthaltstitel": "Residence permit",
-        "eat_can": "eAT CAN",
-        "gueltig": "Valid",
-        "nummer_template": "Number {nummer} · Valid until {gueltig_bis}",
-        "aufenthaltstitel_template": "{norm} · Valid until {gueltig_bis}",
-        "eat_can_template": "CAN {can}",
-        "add_link": "Add document",
-        "empty": "No documents registered."
-      },
-      "versicherung": {
-        "title": "Insurance & pension",
-        "krankenkasse": "Health insurance",
-        "altersvorsorge": "Pension",
-        "aktiv": "Active",
-        "versichertennummer": "Insurance number {nr}",
-        "versichert_seit": "Insured since {datum}",
-        "add_link": "Add another plan",
-        "empty": "No insurance data linked."
-      },
-      "protokoll": {
-        "title": "Change log",
-        "subtitle": "Recent changes to your master data",
-        "show_all": "Show full log",
-        "empty": "No changes recorded yet.",
-        "alle_anzeigen": "Show all"
-      },
-      "datenhoheit": {
-        "title": "You are in control of your data",
-        "body_before_link": "Your master data is shared with authorities and services only with your consent. You decide who sees what.",
-        "body_link": "Learn more about your rights and how your data is used.",
-        "cta": "Manage data use"
-      },
-      "nachweise": {
-        "title": "Connected proofs & wallet",
-        "body": "Your digital proofs are securely connected in the wallet and verifiable when needed.",
-        "check1": "Cryptographically verified",
-        "check2": "eIDAS signature of issuance valid",
-        "check3": "Level of assurance: High (eIDAS)",
-        "quelle_label": "Source / trust service",
-        "quelle_value": "BVA – Bundesverwaltungsamt",
-        "naechste_label": "Next review",
-        "naechste_value": "14.06.2027",
-        "seal_aria": "Proofs cryptographically verified"
-      },
-      "weitere": {
-        "title": "Further verifications",
-        "steuer_id": "Steuer-ID (tax ID)",
-        "sozialversicherungsnummer": "Social insurance number (Sozialversicherungsnummer)",
-        "verifiziert_am": "Verified on: {datum}",
-        "verifiziert_badge": "Verified",
-        "alle_anzeigen": "Show all verifications"
-      },
-      "secondary": {
-        "heading": "Other areas",
-        "subtitle": "Pension, health insurance, mobility, notification preferences and blocks — secondary layer below the main grid."
-      }
-    },
-    "header": {
-      "subtitle": "Personal data, contact, proofs and connected identities in one place.",
-      "actions": {
-        "dokument_hinzufuegen": "Add document",
-        "adresse_aendern": "Change address",
-        "verknuepfung_verwalten": "Manage connection"
-      }
-    },
-    "ring": {
-      "label": "Profile complete",
-      "aria": "Profile {percent} percent complete",
-      "letzte_aktualisierung": "Last updated: {datum}"
     },
     "format": {
       "uhrzeit": "{zeit}"

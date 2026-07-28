@@ -1164,7 +1164,16 @@
     "eid_card": {
       "label": "Цифрова ідентичність (eID)",
       "footer": "Демо-картка eID",
-      "mock": "MOCK"
+      "mock": "MOCK",
+      "nationality_birth": "{nationality} · нар. {datum}",
+      "doc_kind_label": "Документ",
+      "doc_issuer_label": "Ким видано",
+      "doc_funktion_label": "Онлайн-функція",
+      "doc_funktion_value": "активна · {norm}",
+      "doc_personalausweis": "Посвідчення особи (Personalausweis)",
+      "doc_personalausweis_norm": "§ 18 PAuswG",
+      "doc_eat": "Електронний дозвіл на проживання (eAT)",
+      "doc_eat_norm": "§ 78 AufenthG"
     },
     "transparency": {
       "demo_banner": "Демо-режим: реальні дані не використовуються.",
@@ -3506,18 +3515,103 @@
       "aufenthalt_ablauf_bald": "Термін посвідки скоро спливає",
       "kontakt_verifiziert": "Контакт підтверджено"
     },
-    "hero_v3": {
-      "region_label": "Підтверджена особа",
-      "status_badge": "Підтверджено",
-      "kv_geburtsdatum": "Дата народження",
-      "kv_staatsangehoerigkeit": "Громадянство",
-      "kv_quelle": "Провідне джерело",
-      "quelle_fallback": "Бюро у справах громадян (орган реєстрації)",
-      "fallback_chip_ausweis": "Посвідчення особи збережено"
+    "datenblatt": {
+      "subline": "{angaben, plural, one {# запис} few {# записи} many {# записів} other {# записи}} з {register, plural, one {# реєстру} few {# реєстрів} many {# реєстрів} other {# реєстрів}}.",
+      "subline_update": "Останнє оновлення: {datum}, {zeit} — {behoerde}.",
+      "subline_update_ohne_absender": "Останнє оновлення: {datum}, {zeit}.",
+      "cta_korrigieren": "Виправити дані",
+      "title": "Ваші дані",
+      "anschrift_link": "Змінити адресу",
+      "dialog": {
+        "title": "Виправити дані",
+        "body": "Ваші основні дані ведуть компетентні відомства: імʼя, дату народження та сімейний стан — РАЦС (Standesamt) або бюро у справах громадян (Bürgeramt), адресу реєстрації — Bürgeramt у реєстрі мешканців (Melderegister).",
+        "hinweis": "У цій демоверсії основні дані доступні лише для читання — це єдине джерело істини: зміни Ви вносите не тут, а в компетентному відомстві; оновлені дані потім автоматично повертаються до Вашого профілю."
+      },
+      "identitaet": {
+        "region_label": "Підтверджена особа",
+        "status": "Особу підтверджено · рівень довіри eIDAS: високий",
+        "geburtsdatum": "Дата народження",
+        "staatsangehoerigkeit": "Громадянство",
+        "familienstand": "Сімейний стан",
+        "quelle": "Провідне джерело",
+        "quelle_fallback": "Бюро у справах громадян (Bürgeramt)"
+      },
+      "familienstand": {
+        "ledig": "не у шлюбі",
+        "verheiratet": "у шлюбі",
+        "geschieden": "у розлученні",
+        "verwitwet": "вдівець / вдова",
+        "eingetragene_lebenspartnerschaft": "зареєстроване партнерство"
+      },
+      "nationality": {
+        "deutsch": "Німецьке",
+        "russisch": "Російське",
+        "tuerkisch": "Турецьке"
+      },
+      "sektion": {
+        "kontakt": "Контакти",
+        "anschrift": "Адреса",
+        "familie": "Родина",
+        "dokumente": "Документи",
+        "dokumente_aufenthalt": "Документи та перебування",
+        "versicherung": "Страхування та забезпечення",
+        "kennungen": "Ідентифікатори"
+      },
+      "label": {
+        "email": "Адреса електронної пошти",
+        "mobil": "Номер мобільного телефону",
+        "hauptanschrift": "Основна адреса",
+        "partner": "Чоловік/дружина / зареєстрований партнер",
+        "partner_unverheiratet": "Партнер",
+        "kinder": "Діти",
+        "personalausweis": "Посвідчення особи (Personalausweis)",
+        "reisepass": "Закордонний паспорт",
+        "aufenthaltstitel": "Посвідка на проживання (Aufenthaltstitel)",
+        "krankenkasse": "Лікарняна каса (Krankenkasse)",
+        "altersvorsorge": "Пенсійне забезпечення",
+        "steuer_id": "Податковий ідентифікаційний номер (Steuer-ID)",
+        "sozialversicherungsnummer": "Номер соціального страхування",
+        "kvnr": "Номер медичного страхування"
+      },
+      "value": {
+        "verifiziert": "підтверджено",
+        "gueltig_bis": "дійсний до {datum}",
+        "norm_gueltig_bis": "{norm} · дійсний до {datum}",
+        "gesetzliche_rente": "Державне пенсійне страхування",
+        "kind_geboren": "нар. {datum}"
+      },
+      "quelle": {
+        "bundid": "Обліковий запис BundID",
+        "melderegister": "Реєстр мешканців (Melderegister) · підтверджено {datum}",
+        "melderegister_ohne_datum": "Реєстр мешканців (Melderegister)",
+        "bzst": "Федеральне центральне податкове відомство (Bundeszentralamt für Steuern)",
+        "drv": "Німецьке пенсійне страхування (Deutsche Rentenversicherung)",
+        "traeger": "{traeger}"
+      },
+      "wallet": {
+        "title": "Підтвердження та Wallet",
+        "line": "{count, plural, one {# підтвердження} few {# підтвердження} many {# підтверджень} other {# підтвердження}} у Вашому EUDI-Wallet · довірча служба: BVA – Bundesverwaltungsamt · наступна перевірка {datum}",
+        "empty": "У Вашому EUDI-Wallet поки немає підтверджень.",
+        "link": "Переглянути підтвердження"
+      },
+      "protokoll": {
+        "title": "Журнал змін",
+        "subtitle": "Останні передачі даних із Ваших реєстрів",
+        "row": "{absender} → {empfaenger}",
+        "row_mit_sektion": "{sektion} · {absender} → {empfaenger}",
+        "row_zweck": "{sektion} · {zweck}",
+        "empfaenger_buerger": "Ви",
+        "empty": "Передачі даних поки не зафіксовано.",
+        "show_all": "Показати повний журнал"
+      },
+      "datenhoheit": {
+        "text": "Ваші основні дані передаються відомствам і службам лише за Вашою згодою — Ви вирішуєте, хто які відомості може бачити.",
+        "link": "Керування даними"
+      }
     },
     "once_only": {
-      "region_title": "Принцип однократного введення",
-      "summary": "Ваші дані зберігаються в {count} реєстрах і синхронізуються автоматично — ви надаєте їх лише один раз.",
+      "region_title": "Реєстри, у яких зберігаються Ваші дані",
+      "summary": "{count, plural, one {# реєстр зберігає} few {# реєстри зберігають} many {# реєстрів зберігають} other {# реєстру зберігають}} Ваші дані — Ви надаєте їх лише один раз.",
       "node_melderegister": "Реєстр мешканців",
       "node_kba": "Реєстр транспортних засобів (KBA)",
       "node_drv": "Пенсійний рахунок (DRV)",
@@ -3528,143 +3622,11 @@
       "status_angebunden": "підключено",
       "status_in_anbindung": "у процесі підключення (бачення 2027)",
       "node_aria": "{register} — {status}",
-      "feed_title": "Остання синхронізація",
-      "feed_route": "{absender} → {empfaenger}",
-      "feed_empty": "Немає передач до реєстрів за видимий період.",
-      "show_all": "Показати повний журнал",
       "pilot_note": "Статус підключення реєстрів: пілотна фаза — охоплення постійно розширюється."
     },
     "hoheit": {
       "title": "Ви розпоряджаєтесь своїми даними",
       "cta": "Керувати налаштуваннями"
-    },
-    "card": {
-      "persoenliches_profil": "Особистий профіль",
-      "versicherung_vorsorge": "Страхування та забезпечення",
-      "identitaetsdokumente": "Документи, що посвідчують особу",
-      "familie_bezugspersonen": "Сім’я та близькі"
-    },
-    "v2": {
-      "profil": {
-        "card_title": "Особистий профіль",
-        "kv": {
-          "name": "Імʼя",
-          "geburtsdatum": "Дата народження",
-          "staatsangehoerigkeit": "Громадянство",
-          "familienstand": "Сімейний стан"
-        },
-        "familienstand": {
-          "verheiratet": "У шлюбі",
-          "ledig": "Не у шлюбі",
-          "geschieden": "У розлученні",
-          "verwitwet": "Удівець/вдова"
-        },
-        "nationality": {
-          "deutsch": "Німецьке",
-          "russisch": "Російське",
-          "tuerkisch": "Турецьке"
-        }
-      },
-      "kontakt": {
-        "card_title": "Контакти",
-        "email": "Електронна пошта",
-        "telefon": "Номер телефону",
-        "verifiziert": "Підтверджено",
-        "email_keine": "Електронну пошту не вказано",
-        "telefon_keine": "Номер телефону не вказано"
-      },
-      "familie": {
-        "card_title": "Родина та близькі",
-        "kinder_eyebrow": "Діти",
-        "partner_eyebrow": "Партнер",
-        "row_geburtsdatum": "Дата народження",
-        "row_verwandtschaft": "Спорідненість",
-        "kind": "Дитина",
-        "partner_label": "Партнер",
-        "add_link": "Додати людину"
-      },
-      "anschrift": {
-        "title": "Адреса",
-        "aktuell_label": "Поточна адреса",
-        "aendern": "Змінити",
-        "zuletzt_bestaetigt": "підтверджено {datum}",
-        "zuletzt_bestaetigt_unbekannt": "ще не підтверджено",
-        "bestaetigt": "Підтверджено"
-      },
-      "dokumente": {
-        "title": "Документи",
-        "verwalten": "Керувати",
-        "reisepass": "Закордонний паспорт",
-        "personalausweis": "Посвідчення особи",
-        "aufenthaltstitel": "Дозвіл на проживання",
-        "eat_can": "eAT-CAN",
-        "gueltig": "Дійсний",
-        "nummer_template": "№ {nummer} · дійсний до {gueltig_bis}",
-        "aufenthaltstitel_template": "{norm} · дійсний до {gueltig_bis}",
-        "eat_can_template": "CAN {can}",
-        "add_link": "Додати документ",
-        "empty": "Документи не зареєстровано."
-      },
-      "versicherung": {
-        "title": "Страхування та пенсія",
-        "krankenkasse": "Медичне страхування",
-        "altersvorsorge": "Пенсійне забезпечення",
-        "aktiv": "Активно",
-        "versichertennummer": "№ застрахованого {nr}",
-        "versichert_seit": "Застрахований(а) з {datum}",
-        "add_link": "Додати ще одну страховку",
-        "empty": "Дані про страхування відсутні."
-      },
-      "protokoll": {
-        "title": "Журнал змін",
-        "subtitle": "Останні зміни ваших персональних даних",
-        "show_all": "Повний журнал",
-        "empty": "Записів поки немає.",
-        "alle_anzeigen": "Показати всі"
-      },
-      "datenhoheit": {
-        "title": "Ви керуєте своїми даними",
-        "body_before_link": "Ваші персональні дані передаються відомствам і службам лише за вашою згодою. Ви вирішуєте, хто що бачить.",
-        "body_link": "Докладніше про ваші права та використання даних.",
-        "cta": "Керування даними"
-      },
-      "nachweise": {
-        "title": "Підключені підтвердження та Wallet",
-        "body": "Ваші цифрові підтвердження надійно підключені у Wallet і за потреби піддаються перевірці.",
-        "check1": "Криптографічно перевірено",
-        "check2": "Підпис eIDAS під час видачі дійсний",
-        "check3": "Рівень довіри: високий (eIDAS)",
-        "quelle_label": "Джерело / довірча служба",
-        "quelle_value": "BVA – Bundesverwaltungsamt",
-        "naechste_label": "Наступна перевірка",
-        "naechste_value": "14.06.2027",
-        "seal_aria": "Підтвердження криптографічно перевірені"
-      },
-      "weitere": {
-        "title": "Додаткові підтвердження",
-        "steuer_id": "Податковий номер (Steuer-ID)",
-        "sozialversicherungsnummer": "Номер соціального страхування (Sozialversicherungsnummer)",
-        "verifiziert_am": "Перевірено: {datum}",
-        "verifiziert_badge": "Перевірено",
-        "alle_anzeigen": "Показати всі підтвердження"
-      },
-      "secondary": {
-        "heading": "Інші розділи",
-        "subtitle": "Пенсія, медстрахування, мобільність, налаштування сповіщень і блокування — допоміжний шар під основною сіткою."
-      }
-    },
-    "header": {
-      "subtitle": "Персональні дані, контакти, підтвердження та пов’язані ідентичності в одному місці.",
-      "actions": {
-        "dokument_hinzufuegen": "Додати документ",
-        "adresse_aendern": "Змінити адресу",
-        "verknuepfung_verwalten": "Керувати зв’язками"
-      }
-    },
-    "ring": {
-      "label": "Профіль заповнено",
-      "aria": "Профіль заповнено на {percent} відсотків",
-      "letzte_aktualisierung": "Останнє оновлення: {datum}"
     },
     "format": {
       "uhrzeit": "{zeit}"

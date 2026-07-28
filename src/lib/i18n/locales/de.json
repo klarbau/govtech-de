@@ -1164,7 +1164,16 @@
     "eid_card": {
       "label": "Digitale Identität (eID)",
       "footer": "Mock eID-Karte",
-      "mock": "MOCK"
+      "mock": "MOCK",
+      "nationality_birth": "{nationality} · geb. {datum}",
+      "doc_kind_label": "Dokument",
+      "doc_issuer_label": "Ausgestellt von",
+      "doc_funktion_label": "Online-Ausweis",
+      "doc_funktion_value": "aktiviert · {norm}",
+      "doc_personalausweis": "Personalausweis",
+      "doc_personalausweis_norm": "§ 18 PAuswG",
+      "doc_eat": "Elektronischer Aufenthaltstitel (eAT)",
+      "doc_eat_norm": "§ 78 AufenthG"
     },
     "transparency": {
       "demo_banner": "Demo-Modus: Es werden keine echten Daten verwendet.",
@@ -3736,18 +3745,103 @@
       "aufenthalt_ablauf_bald": "Aufenthalt läuft bald ab",
       "kontakt_verifiziert": "Kontakt verifiziert"
     },
-    "hero_v3": {
-      "region_label": "Verifizierte Identität",
-      "status_badge": "Verifiziert",
-      "kv_geburtsdatum": "Geburtsdatum",
-      "kv_staatsangehoerigkeit": "Staatsangehörigkeit",
-      "kv_quelle": "Führende Quelle",
-      "quelle_fallback": "Bürgeramt (Meldebehörde)",
-      "fallback_chip_ausweis": "Personalausweis hinterlegt"
+    "datenblatt": {
+      "subline": "{angaben, plural, =1 {1 Angabe} other {# Angaben}}, geführt von {register, plural, =1 {1 Register} other {# Registern}}.",
+      "subline_update": "Zuletzt aktualisiert am {datum} um {zeit} durch {behoerde}.",
+      "subline_update_ohne_absender": "Zuletzt aktualisiert am {datum} um {zeit}.",
+      "cta_korrigieren": "Daten korrigieren",
+      "title": "Ihre Angaben",
+      "anschrift_link": "Adresse ändern",
+      "dialog": {
+        "title": "Daten korrigieren",
+        "body": "Ihre Stammdaten werden von den zuständigen Behörden geführt: Name, Geburtsdatum und Familienstand vom Standesamt bzw. Bürgeramt, die Meldeanschrift vom Bürgeramt im Melderegister.",
+        "hinweis": "In dieser Demo sind Stammdaten ein read-only Single-Source-of-Truth: Änderungen nehmen Sie nicht hier vor, sondern bei der zuständigen Behörde – die aktualisierten Daten fließen anschließend automatisch in Ihr Profil zurück."
+      },
+      "identitaet": {
+        "region_label": "Verifizierte Identität",
+        "status": "Identität bestätigt · eIDAS-Vertrauensniveau hoch",
+        "geburtsdatum": "Geburtsdatum",
+        "staatsangehoerigkeit": "Staatsangehörigkeit",
+        "familienstand": "Familienstand",
+        "quelle": "Führende Quelle",
+        "quelle_fallback": "Bürgeramt (Meldebehörde)"
+      },
+      "familienstand": {
+        "ledig": "ledig",
+        "verheiratet": "verheiratet",
+        "geschieden": "geschieden",
+        "verwitwet": "verwitwet",
+        "eingetragene_lebenspartnerschaft": "eingetragene Lebenspartnerschaft"
+      },
+      "nationality": {
+        "deutsch": "Deutsch",
+        "russisch": "Russisch",
+        "tuerkisch": "Türkisch"
+      },
+      "sektion": {
+        "kontakt": "Kontakt",
+        "anschrift": "Anschrift",
+        "familie": "Familie",
+        "dokumente": "Dokumente",
+        "dokumente_aufenthalt": "Dokumente & Aufenthalt",
+        "versicherung": "Versicherung & Vorsorge",
+        "kennungen": "Kennungen"
+      },
+      "label": {
+        "email": "E-Mail-Adresse",
+        "mobil": "Mobilnummer",
+        "hauptanschrift": "Hauptanschrift",
+        "partner": "Ehegatte / Lebenspartner:in",
+        "partner_unverheiratet": "Partner:in",
+        "kinder": "Kinder",
+        "personalausweis": "Personalausweis",
+        "reisepass": "Reisepass",
+        "aufenthaltstitel": "Aufenthaltstitel",
+        "krankenkasse": "Krankenkasse",
+        "altersvorsorge": "Altersvorsorge",
+        "steuer_id": "Steuer-Identifikationsnummer",
+        "sozialversicherungsnummer": "Sozialversicherungsnummer",
+        "kvnr": "Krankenversichertennummer"
+      },
+      "value": {
+        "verifiziert": "verifiziert",
+        "gueltig_bis": "gültig bis {datum}",
+        "norm_gueltig_bis": "{norm} · gültig bis {datum}",
+        "gesetzliche_rente": "Gesetzliche Rentenversicherung",
+        "kind_geboren": "geb. {datum}"
+      },
+      "quelle": {
+        "bundid": "BundID-Konto",
+        "melderegister": "Melderegister · bestätigt am {datum}",
+        "melderegister_ohne_datum": "Melderegister",
+        "bzst": "Bundeszentralamt für Steuern",
+        "drv": "Deutsche Rentenversicherung",
+        "traeger": "{traeger}"
+      },
+      "wallet": {
+        "title": "Nachweise & Wallet",
+        "line": "{count, plural, =1 {1 Nachweis} other {# Nachweise}} in Ihrer EUDI-Wallet · Vertrauensdienst: BVA – Bundesverwaltungsamt · nächste Überprüfung am {datum}",
+        "empty": "Noch keine Nachweise in Ihrer EUDI-Wallet.",
+        "link": "Nachweise ansehen"
+      },
+      "protokoll": {
+        "title": "Änderungsprotokoll",
+        "subtitle": "Letzte Übermittlungen aus Ihren Registern",
+        "row": "{absender} → {empfaenger}",
+        "row_mit_sektion": "{sektion} · {absender} → {empfaenger}",
+        "row_zweck": "{sektion} · {zweck}",
+        "empfaenger_buerger": "Sie",
+        "empty": "Noch keine Übermittlungen erfasst.",
+        "show_all": "Vollständiges Protokoll anzeigen"
+      },
+      "datenhoheit": {
+        "text": "Ihre Stammdaten werden nur mit Ihrer Zustimmung an Behörden und Dienste weitergegeben — Sie entscheiden, wer welche Angabe einsehen darf.",
+        "link": "Datennutzung verwalten"
+      }
     },
     "once_only": {
-      "region_title": "Once-Only-Prinzip",
-      "summary": "Ihre Daten leben in {count} Registern und synchronisieren automatisch — Sie geben sie nur einmal an.",
+      "region_title": "Register, die Ihre Daten führen",
+      "summary": "{count, plural, =1 {1 Register führt} other {# Register führen}} Ihre Angaben — Sie geben sie nur einmal an.",
       "node_melderegister": "Melderegister",
       "node_kba": "Fahrzeugregister (KBA)",
       "node_drv": "Rentenkonto (DRV)",
@@ -3758,143 +3852,11 @@
       "status_angebunden": "angebunden",
       "status_in_anbindung": "in Anbindung (2027-Vision)",
       "node_aria": "{register} — {status}",
-      "feed_title": "Letzte Synchronisation",
-      "feed_route": "{absender} → {empfaenger}",
-      "feed_empty": "Keine Register-Übermittlungen im sichtbaren Zeitraum.",
-      "show_all": "Vollständiges Protokoll anzeigen",
       "pilot_note": "Stand der Register-Anbindung: Pilot-Phase — die Abdeckung wird laufend erweitert."
     },
     "hoheit": {
       "title": "Sie haben die Hoheit über Ihre Daten",
       "cta": "Einstellungen verwalten"
-    },
-    "card": {
-      "persoenliches_profil": "Persönliches Profil",
-      "versicherung_vorsorge": "Versicherung & Vorsorge",
-      "identitaetsdokumente": "Identitätsdokumente",
-      "familie_bezugspersonen": "Familie & Bezugspersonen"
-    },
-    "v2": {
-      "profil": {
-        "card_title": "Persönliches Profil",
-        "kv": {
-          "name": "Name",
-          "geburtsdatum": "Geburtsdatum",
-          "staatsangehoerigkeit": "Staatsangehörigkeit",
-          "familienstand": "Familienstand"
-        },
-        "familienstand": {
-          "verheiratet": "verheiratet",
-          "ledig": "ledig",
-          "geschieden": "geschieden",
-          "verwitwet": "verwitwet"
-        },
-        "nationality": {
-          "deutsch": "Deutsch",
-          "russisch": "Russisch",
-          "tuerkisch": "Türkisch"
-        }
-      },
-      "kontakt": {
-        "card_title": "Kontakt",
-        "email": "E-Mail",
-        "telefon": "Telefonnummer",
-        "verifiziert": "Verifiziert",
-        "email_keine": "Keine E-Mail hinterlegt",
-        "telefon_keine": "Keine Telefonnummer hinterlegt"
-      },
-      "familie": {
-        "card_title": "Familie & Bezugspersonen",
-        "kinder_eyebrow": "Kinder",
-        "partner_eyebrow": "Partner:in",
-        "row_geburtsdatum": "Geburtsdatum",
-        "row_verwandtschaft": "Verwandtschaft",
-        "kind": "Kind",
-        "partner_label": "Partner:in",
-        "add_link": "Weitere Person hinzufügen"
-      },
-      "anschrift": {
-        "title": "Anschrift",
-        "aktuell_label": "Aktuelle Anschrift",
-        "aendern": "Ändern",
-        "zuletzt_bestaetigt": "zuletzt bestätigt am {datum}",
-        "zuletzt_bestaetigt_unbekannt": "noch nicht bestätigt",
-        "bestaetigt": "Bestätigt"
-      },
-      "dokumente": {
-        "title": "Identitätsdokumente",
-        "verwalten": "Verwalten",
-        "reisepass": "Reisepass",
-        "personalausweis": "Personalausweis",
-        "aufenthaltstitel": "Aufenthaltstitel",
-        "eat_can": "eAT-CAN",
-        "gueltig": "Gültig",
-        "nummer_template": "Nummer {nummer} · Gültig bis {gueltig_bis}",
-        "aufenthaltstitel_template": "{norm} · Gültig bis {gueltig_bis}",
-        "eat_can_template": "CAN {can}",
-        "add_link": "Dokument hinzufügen",
-        "empty": "Keine Dokumente registriert."
-      },
-      "versicherung": {
-        "title": "Versicherung & Vorsorge",
-        "krankenkasse": "Krankenkasse",
-        "altersvorsorge": "Altersvorsorge",
-        "aktiv": "Aktiv",
-        "versichertennummer": "Versichertennummer {nr}",
-        "versichert_seit": "Versichert seit {datum}",
-        "add_link": "Weitere Vorsorge hinzufügen",
-        "empty": "Keine Versicherungsdaten verknüpft."
-      },
-      "protokoll": {
-        "title": "Änderungsprotokoll",
-        "subtitle": "Letzte Änderungen an Ihren Stammdaten",
-        "show_all": "Vollständiges Protokoll anzeigen",
-        "empty": "Noch keine Änderungen erfasst.",
-        "alle_anzeigen": "Alle anzeigen"
-      },
-      "datenhoheit": {
-        "title": "Sie haben die Hoheit über Ihre Daten",
-        "body_before_link": "Ihre Stammdaten werden nur mit Ihrer Zustimmung an Behörden und Dienste weitergegeben. Sie entscheiden, wer welche Informationen einsehen darf.",
-        "body_link": "Mehr zu Ihren Rechten und zur Datenverwendung.",
-        "cta": "Datennutzung verwalten"
-      },
-      "nachweise": {
-        "title": "Verbundene Nachweise & Wallet",
-        "body": "Ihre digitalen Nachweise sind sicher in der Wallet verbunden und bei Bedarf verifizierbar.",
-        "check1": "Kryptografisch verifiziert",
-        "check2": "eIDAS-Signatur der Ausstellung gültig",
-        "check3": "Vertrauensniveau: Hoch (eIDAS)",
-        "quelle_label": "Quelle / Vertrauensdienst",
-        "quelle_value": "BVA – Bundesverwaltungsamt",
-        "naechste_label": "Nächste Überprüfung",
-        "naechste_value": "14.06.2027",
-        "seal_aria": "Nachweise kryptografisch verifiziert"
-      },
-      "weitere": {
-        "title": "Weitere Verifizierungen",
-        "steuer_id": "Steuer-ID",
-        "sozialversicherungsnummer": "Sozialversicherungsnummer",
-        "verifiziert_am": "Verifiziert am: {datum}",
-        "verifiziert_badge": "Verifiziert",
-        "alle_anzeigen": "Alle Verifizierungen anzeigen"
-      },
-      "secondary": {
-        "heading": "Weitere Bereiche",
-        "subtitle": "Renten, Krankenversicherung, Mobilität, Notification-Präferenzen und Sperren — als sekundäre Schicht unter dem Hauptraster."
-      }
-    },
-    "header": {
-      "subtitle": "Persönliche Daten, Kontakt, Nachweise und verbundene Identitäten an einem Ort.",
-      "actions": {
-        "dokument_hinzufuegen": "Dokument hinzufügen",
-        "adresse_aendern": "Adresse ändern",
-        "verknuepfung_verwalten": "Verknüpfung verwalten"
-      }
-    },
-    "ring": {
-      "label": "Profil vollständig",
-      "aria": "Profil zu {percent} Prozent vollständig",
-      "letzte_aktualisierung": "Letzte Aktualisierung: {datum}"
     },
     "format": {
       "uhrzeit": "{zeit} Uhr"
