@@ -28,13 +28,7 @@
     "typecheck": "tsc --noEmit",
     "test:unit": "vitest run",
     "test:e2e": "playwright test",
-    "test:a11y": "playwright test --project=a11y",
-    "demo:record": "playwright test --config=playwright.demo.config.ts",
-    "demo:record:update": "playwright test --config=playwright.update-demo.config.ts",
-    "demo:record:update:clean": "playwright test --config=playwright.update-clean.config.ts",
-    "demo:record:green": "playwright test --config=playwright.green-demo.config.ts",
-    "demo:record:green:clean": "playwright test --config=playwright.green-clean.config.ts",
-    "demo:render": "node scripts/render-demo.mjs"
+    "test:a11y": "playwright test --project=a11y"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",

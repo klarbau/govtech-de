@@ -50,13 +50,39 @@ shots/
 demo-recording/
 
 # Internal working material — local pipeline only, NOT part of the public artefact.
-# docs/design-prototype/ (README screenshots) stays tracked; everything else under docs/ is local.
+# docs/design-prototype/ (README screenshots) + docs/architecture.md (README-verlinkt)
+# stay tracked; everything else under docs/ is local.
 /docs/*
 !/docs/design-prototype
 !/docs/design-prototype/**
+!/docs/architecture.md
 /CLAUDE.md
 /.claude/
 /src/lib/i18n/_status.json
+/BACKLOG.md
+/routine-backlog-scout.md
+/update-log.md
+/.mcp.json
+/design-handoff/
+/remotion/
+
+# Demo-video capture pipeline + one-off probe/shot tooling — local only.
+# (Protocol scripts scripts/eudi-*, fc-*, once-only-* stay tracked — README documents them.)
+/tests/demo/
+/tests/e2e/_geburt-shot.spec.ts
+/tests/e2e/_spread-spotlight-probe.spec.ts
+playwright.*.config.ts
+/scripts/capture-lg-reflow-smooth.mjs
+/scripts/dark-shot-one.mjs
+/scripts/dark-shots.mjs
+/scripts/generate-teaser.mjs
+/scripts/render-demo.mjs
+/scripts/screenshot-all.mjs
+/scripts/shot-familie.mjs
+/scripts/shot-vg.mjs
+/scripts/teaser-test.mjs
+/scripts/warm-dev-routes.sh
+/scripts/install_pkgs.sh
 
 # One-off local probe/screenshot scripts + their image output
 tmp-*
@@ -64,9 +90,7 @@ tmp-*
 .dark-shots/
 .ds-sync/
 ds-bundle/
-.design-sync/.cache/
-.design-sync/learnings/
-.design-sync/node_modules
+/.design-sync/
 
 # FIT-Connect local private keys (Protokoll-Modus)
 .secrets/

@@ -180,7 +180,7 @@ Beide Flows brauchen **eigene, kostenlose TEST-Zugänge** — es liegt bewusst k
 - **FIT-Connect:** TEST-Client selbst registrieren unter `portal.auth-testing.fit-connect.fitko.dev` (Login via GitHub / GitLab / openCode) → OAuth2 `client_id`/`client_secret`. Eigenen Zustellpunkt + lokale Schlüssel anlegen mit `node scripts/fc-provision-destination.mjs`. Dann `FIT_CONNECT_LIVE=1`, Umzug-Run-Seite öffnen, „Live-Übermittlung auslösen".
 - **EUDI-Verifier:** öffentliche URL bereitstellen (Dev-Tunnel genügt) → in `EUDI_VP_EXTERNAL_URL`, `EUDI_VP_LIVE=1`. QR im Vorzeige-Dialog scannen — oder `node scripts/eudi-present-pid.mjs --persona anna-petrov` als Wallet.
 
-Private Schlüssel bleiben außerhalb des Repos (`.secrets/`, gitignored) und erreichen nie den Client-Bundle. Volle Architektur- und Ehrlichkeits-Notizen: [`docs/architecture.md`](docs/architecture.md) (ADR „Protokoll-Modus") · [`docs/specs/protokoll-modus.md`](docs/specs/protokoll-modus.md) · [`docs/specs/protocol-real-integration-plan.md`](docs/specs/protocol-real-integration-plan.md).
+Private Schlüssel bleiben außerhalb des Repos (`.secrets/`, gitignored) und erreichen nie den Client-Bundle. Volle Architektur- und Ehrlichkeits-Notizen: [`docs/architecture.md`](docs/architecture.md) (ADR „Protokoll-Modus").
 
 ## Tech-Stack
 
