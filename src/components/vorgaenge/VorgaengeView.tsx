@@ -123,6 +123,8 @@ interface BigStep {
 
 interface BigVorgang {
   id: string;
+  typ: string;
+  titel: string;
   steps: BigStep[];
   doneCount: number;
   totalCount: number;
@@ -184,6 +186,7 @@ const TYP_ICON: Record<string, typeof Home> = {
   anmeldung: Home,
   'aufenthaltstitel-verlaengerung': IdCard,
   familienkasse: Users,
+  kindergeld: Users,
   kindergeburt: Baby,
   eheschliessung: Heart,
   gewerbeanmeldung: Briefcase,
@@ -260,21 +263,31 @@ export function VorgaengeView() {
     });
   }, [vorgaenge, activeTab, query, behoerdeName]);
 
-  /* Pick the featured (umzug) Vorgang from the visible set — null if no umzug matches. */
-  const featuredUmzug = React.useMemo(() => {
+  /* Pick the featured Vorgang from the visible set: ein laufender Umzug, sonst
+     irgendein Umzug, sonst der jüngste ABGESCHLOSSENE Mehr-Stationen-Vorgang
+     (≥3 Schritte — Familie Schmidt: das antragslose Kindergeld). Personas ohne
+     passende Akte (Mehmet) bekommen weiterhin keine Big-Card. */
+  const featured = React.useMemo(() => {
     const running = visibleVorgaenge.find((v) => v.typ === 'umzug' && v.status !== 'abgeschlossen');
-    return running ?? visibleVorgaenge.find((v) => v.typ === 'umzug') ?? null;
+    if (running) return running;
+    const umzug = visibleVorgaenge.find((v) => v.typ === 'umzug');
+    if (umzug) return umzug;
+    const completedChains = visibleVorgaenge
+      .filter((v) => isAbgeschlossen(v) && (v.schritte?.length ?? 0) >= 3)
+      .sort((a, b) => (abschlussDatum(b) ?? '').localeCompare(abschlussDatum(a) ?? ''));
+    return completedChains[0] ?? null;
   }, [visibleVorgaenge]);
 
   const bigVorgang: BigVorgang | null = React.useMemo(() => {
-    if (!featuredUmzug) return null;
-    const seenBehoerden = new Set<string>();
-    const realSteps: BigStep[] = [];
-    for (const step of featuredUmzug.schritte) {
+    if (!featured) return null;
+    /* Eine Station pro Behörde: der SPÄTESTE Schritt gewinnt (Position der
+       Erst-Nennung bleibt) — beim Kindergeld zeigt die Familienkasse so die
+       Festsetzung statt der früheren Konto-Bestätigung. */
+    const stepByBehoerde = new Map<string, BigStep>();
+    const behoerdenOrder: string[] = [];
+    for (const step of featured.schritte) {
       if (step.block === 'C') continue;
       const name = behoerdeName(step.behoerde_id);
-      if (seenBehoerden.has(name)) continue;
-      seenBehoerden.add(name);
       let state: BigStep['state'] = 'pending';
       if (step.status === 'confirmed') state = 'done';
       else if (
@@ -284,7 +297,8 @@ export function VorgaengeView() {
       ) {
         state = 'current';
       }
-      realSteps.push({
+      if (!stepByBehoerde.has(name)) behoerdenOrder.push(name);
+      stepByBehoerde.set(name, {
         id: step.id,
         behoerde: name,
         aktion: step.aktion,
@@ -292,29 +306,33 @@ export function VorgaengeView() {
         state,
       });
     }
-    const steps = realSteps.slice(0, 5);
+    const steps = behoerdenOrder
+      .map((name) => stepByBehoerde.get(name)!)
+      .slice(0, 5);
     const doneCount = steps.filter((s) => s.state === 'done').length;
     return {
-      id: featuredUmzug.id,
+      id: featured.id,
+      typ: featured.typ,
+      titel: featured.typ === 'umzug' ? 'Umzug' : featured.titel,
       steps,
       doneCount,
       totalCount: steps.length,
-      angelegtAm: formatDateShort(featuredUmzug.angelegt_am),
-      href: `/vorgaenge/${encodeURIComponent(featuredUmzug.id)}`,
+      angelegtAm: formatDateShort(featured.angelegt_am),
+      href: `/vorgaenge/${encodeURIComponent(featured.id)}`,
     };
-  }, [featuredUmzug, behoerdeName]);
+  }, [featured, behoerdeName]);
 
-  /* Badge state for the featured Umzug big card, derived from its actual status. */
+  /* Badge state for the featured big card, derived from its actual status. */
   const featuredState: 'abgeschlossen' | 'warten' | 'laufend' | null = React.useMemo(() => {
-    if (!featuredUmzug) return null;
-    if (isAbgeschlossen(featuredUmzug)) return 'abgeschlossen';
-    if (isWarten(featuredUmzug)) return 'warten';
+    if (!featured) return null;
+    if (isAbgeschlossen(featured)) return 'abgeschlossen';
+    if (isWarten(featured)) return 'warten';
     return 'laufend';
-  }, [featuredUmzug]);
+  }, [featured]);
 
-  /* Small cards: up to 6 visible Vorgänge (excluding the featured Umzug). */
+  /* Small cards: up to 6 visible Vorgänge (excluding the featured one). */
   const smallVorgaenge: SmallVorgang[] = React.useMemo(() => {
-    const filtered = visibleVorgaenge.filter((v) => v.id !== featuredUmzug?.id);
+    const filtered = visibleVorgaenge.filter((v) => v.id !== featured?.id);
     return filtered.slice(0, 6).map<SmallVorgang>((v) => {
       const frist = naechsteFrist(v, nowIso);
       const done = isAbgeschlossen(v);
@@ -332,7 +350,7 @@ export function VorgaengeView() {
         href: `/vorgaenge/${encodeURIComponent(v.id)}`,
       };
     });
-  }, [visibleVorgaenge, featuredUmzug, nowIso, behoerdeName]);
+  }, [visibleVorgaenge, featured, nowIso, behoerdeName]);
 
   /* Rail numbers — derived purely from the API response. */
   const rail = React.useMemo(() => {
@@ -494,10 +512,12 @@ export function VorgaengeView() {
             <div className="vg-big">
               <div className="vg-big-head">
                 <span className="icon-circle">
-                  <Home aria-hidden="true" />
+                  {React.createElement(typIcon(bigVorgang.typ), {
+                    'aria-hidden': true,
+                  })}
                 </span>
                 <div className="grow">
-                  <div className="title">Umzug</div>
+                  <div className="title">{bigVorgang.titel}</div>
                   <div className="sub">Ihre Behörden werden automatisch informiert.</div>
                 </div>
                 <div className="vg-big-meta">
@@ -536,7 +556,16 @@ export function VorgaengeView() {
                   </div>
                 </div>
                 {/* ≤767px: horizontaler m-shelf (#3d) — als Scroll-Region fokussierbar. */}
-                <div className="steps m-shelf vg-steps-shelf" role="group" tabIndex={0} aria-labelledby="vg-fortschritt-lbl">
+                <div
+                  className="steps m-shelf vg-steps-shelf"
+                  role="group"
+                  tabIndex={0}
+                  aria-labelledby="vg-fortschritt-lbl"
+                  /* Spaltenzahl == Stationenzahl (globals.css-Override) — die
+                     frozen repeat(5,1fr)-Regel ließe bei 3 Stationen (Schmidt-
+                     Kindergeld) zwei Leerspalten rechts stehen. */
+                  style={{ '--vg-steps': bigVorgang.steps.length } as React.CSSProperties}
+                >
                   {bigVorgang.steps.map((s, i) => (
                     <div
                       key={s.id}

@@ -15,6 +15,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { CascadePreview } from '@/components/umzug/CascadePreview';
 import { WizardProgress } from '@/components/umzug/WizardProgress';
 import { api } from '@/lib/mock-backend';
+import { markVorgangFresh } from '@/lib/vorgang-fresh';
 import { useUmzugDraft } from '@/stores/umzugDraft';
 import type {
   Behoerde,
@@ -85,6 +86,7 @@ export default function UmzugPreviewPage() {
       void api
         .startUmzug(input)
         .then(({ vorgangId }) => {
+          markVorgangFresh(vorgangId);
           router.push(`/vorgaenge/${encodeURIComponent(vorgangId)}`);
         })
         .catch((err) => {

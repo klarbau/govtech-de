@@ -15,11 +15,25 @@
     "warum_persoenlich_i18n_key": "termine.warum.lea_aufenthaltstitel",
     "kategorie": "behoerdentermin",
     "vorbereitung": [
-      { "label_i18n_key": "termine.vorbereitung.antrag_vorausgefuellt", "done": true, "wer": "system" },
-      { "label_i18n_key": "termine.vorbereitung.checkin_vorbereitet", "done": true, "wer": "system" },
-      { "label_i18n_key": "termine.vorbereitung.reisepass" },
-      { "label_i18n_key": "termine.vorbereitung.alter_titel" },
-      { "label_i18n_key": "termine.vorbereitung.gebuehr" }
+      {
+        "label_i18n_key": "termine.vorbereitung.antrag_vorausgefuellt",
+        "done": true,
+        "wer": "system"
+      },
+      {
+        "label_i18n_key": "termine.vorbereitung.checkin_vorbereitet",
+        "done": true,
+        "wer": "system"
+      },
+      {
+        "label_i18n_key": "termine.vorbereitung.reisepass"
+      },
+      {
+        "label_i18n_key": "termine.vorbereitung.alter_titel"
+      },
+      {
+        "label_i18n_key": "termine.vorbereitung.gebuehr"
+      }
     ]
   },
   {
@@ -37,8 +51,12 @@
     "buchungsreferenz": "[MOCK] LEA-2026-05518",
     "kategorie": "behoerdentermin",
     "vorbereitung": [
-      { "label_i18n_key": "termine.vorbereitung.alter_titel" },
-      { "label_i18n_key": "termine.vorbereitung.meldung" }
+      {
+        "label_i18n_key": "termine.vorbereitung.alter_titel"
+      },
+      {
+        "label_i18n_key": "termine.vorbereitung.meldung"
+      }
     ]
   },
   {
@@ -53,9 +71,17 @@
     "status": "bestaetigt",
     "betreff": "Beratung Vorsorge-Untersuchungen",
     "vorbereitung": [
-      { "label_i18n_key": "termine.vorbereitung.versicherungskarte", "done": true },
-      { "label_i18n_key": "termine.vorbereitung.unterlagen_pruefen", "done": true },
-      { "label_i18n_key": "termine.vorbereitung.fragen_notieren" }
+      {
+        "label_i18n_key": "termine.vorbereitung.versicherungskarte",
+        "done": true
+      },
+      {
+        "label_i18n_key": "termine.vorbereitung.unterlagen_pruefen",
+        "done": true
+      },
+      {
+        "label_i18n_key": "termine.vorbereitung.fragen_notieren"
+      }
     ]
   },
   {
@@ -73,27 +99,29 @@
     "kategorie": "buchung"
   },
   {
-    "id": "termin-schmidt-standesamt-geburt",
+    "id": "termin-schmidt-reisepass-felix-abholung",
     "owner_persona_id": "markus-schmidt",
-    "behoerde_id": "standesamt-hamburg-eimsbuettel",
-    "vorgang_id": "vg-schmidt-kindergeburt-mia-2026",
-    "datum": "@now+6d@09:15",
+    "behoerde_id": "bezirksamt-hamburg-eimsbuettel",
+    "vorgang_id": "vg-schmidt-reisepass-felix-2026",
+    "datum": "@now+14d@09:15",
     "ort": {
       "typ": "praesenz",
-      "details": "Standesamt Hamburg-Eimsbüttel, Grindelberg 66, 20144 Hamburg, Zimmer 4"
+      "details": "Bezirksamt Hamburg-Eimsbüttel — Kundenzentrum, Grindelberg 62-66, 20144 Hamburg"
     },
     "status": "bestaetigt",
-    "betreff": "Abholung Geburtsurkunde Mia",
-    "buchungsreferenz": "[MOCK] HH-STA-2026-08841",
+    "betreff": "Abholung Reisepass Felix",
+    "buchungsreferenz": "[MOCK] HH-KDZ-2026-08841",
     "kategorie": "behoerdentermin",
     "vorbereitung": [
-      { "label_i18n_key": "termine.vorbereitung.reisepass" }
+      {
+        "label_i18n_key": "termine.vorbereitung.unterlagen_pruefen"
+      }
     ]
   },
   {
     "id": "termin-schmidt-kinderarzt-u3",
     "owner_persona_id": "markus-schmidt",
-    "behoerde_id": "kinderarzt-prenzlauer-berg",
+    "behoerde_id": "kinderarzt-eppendorf",
     "datum": "@now+13d@15:30",
     "ort": {
       "typ": "praesenz",

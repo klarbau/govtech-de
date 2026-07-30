@@ -325,11 +325,13 @@ describe('letters.json — JSON.parse validity', () => {
     expect(() => JSON.parse(fs.readFileSync(file, 'utf8'))).not.toThrow();
   });
 
-  test('letters.json contains 11 letters with bescheid_dated_at (V1.5.1 § 5.3 + V1.1 renteninfo)', async () => {
+  test('letters.json contains 13 letters with bescheid_dated_at (V1.5.1 § 5.3 + V1.1 renteninfo)', async () => {
     // V1.5.1: 10 V1.5.1-Briefe (steuer / KK-Beitrag / BG-Beitrag / IHK-Beitrag /
     // Beitragsservice / Familienkasse-Aufhebung / …).
     // V1.1: + 1 renteninfo-Brief (`letter-renteninfo-anna-2026-05` mit
     // `bescheid_dated_at: '2026-05-04'`).
+    // Schmidt-Content-Welle 2026-07-30: + `letter-schmidt-kindergeldbescheid-mia`
+    // + `letter-renteninfo-schmidt-2026` → 13.
     const fs = await import('node:fs');
     const path = await import('node:path');
     const file = path.resolve(
@@ -341,7 +343,7 @@ describe('letters.json — JSON.parse validity', () => {
     const withBescheid = letters.filter(
       (l) => typeof l.bescheid_dated_at === 'string',
     );
-    expect(withBescheid).toHaveLength(11);
+    expect(withBescheid).toHaveLength(13);
   });
 
   test('all bescheid_dated_at values are ISO-8601 YYYY-MM-DD or a relative-date sentinel', async () => {

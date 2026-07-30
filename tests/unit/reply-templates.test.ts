@@ -97,10 +97,11 @@ const ANCHORS = {
   schmidt: {
     personaId: 'markus-schmidt',
     nachname: 'Schmidt',
-    // Familienkasse-Nachweis: hat Frist 15.06.2026, Aktenzeichen.
+    // Familienkasse-Nachweis: hat Nachweis-Frist (@now+16d) + Aktenzeichen.
+    // Absender seit der Schmidt-Content-Welle: örtlich zuständige FK Nord.
     letterId: 'letter-schmidt-familienkasse-nachweis',
     aktenzeichen: '[MOCK] 234FK892017',
-    behoerdenName: 'Familienkasse Berlin-Brandenburg',
+    behoerdenName: 'Familienkasse Nord der Bundesagentur für Arbeit',
   },
   mehmet: {
     personaId: 'mehmet-yildiz',

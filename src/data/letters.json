@@ -4,7 +4,9 @@
     "absender_behoerde_id": "finanzamt-koerperschaften-i-berlin",
     "empfaenger_persona_id": "anna-petrov",
     "aktenzeichen": "[MOCK] 11/123/45678",
-    "aktenzeichen_weitere": ["[MOCK] 47 113 815 421"],
+    "aktenzeichen_weitere": [
+      "[MOCK] 47 113 815 421"
+    ],
     "betreff": "Bescheid für 2024 über Einkommensteuer, Solidaritätszuschlag und Kirchensteuer — Steuernummer [MOCK] 11/123/45678",
     "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nFinanzamt Berlin Mitte/Tiergarten\nNeue Jakobstraße 6-7, 10179 Berlin\n\nSehr geehrte Frau Petrov,\n\nin oben genannter Angelegenheit übersenden wir Ihnen den Einkommensteuerbescheid für das Kalenderjahr 2024.\n\nFestgesetzte Einkommensteuer: 6.842,00 €\nAnzurechnende Lohnsteuer: 7.213,00 €\nErstattung: 371,00 €\n\nDer Erstattungsbetrag wird in den nächsten 14 Tagen auf das uns vorliegende Konto überwiesen.\n\nDieser Bescheid ist maschinell erstellt und auch ohne Unterschrift gültig.\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Einspruch eingelegt werden. Der Einspruch ist bei dem oben bezeichneten Finanzamt schriftlich einzureichen, zur Niederschrift zu erklären oder elektronisch zu übermitteln. [MOCK]\n\nMit freundlichen Grüßen\nIm Auftrag\nM. Hartwig, Sachbearbeiterin\nAz. [MOCK] 11/123/45678",
     "ai_summary": {
@@ -95,7 +97,9 @@
     "absender_behoerde_id": "abh-berlin-lea",
     "empfaenger_persona_id": "anna-petrov",
     "aktenzeichen": "[MOCK] ABH-B-2024/IV-A-1782",
-    "aktenzeichen_weitere": ["[MOCK] T0123456X"],
+    "aktenzeichen_weitere": [
+      "[MOCK] T0123456X"
+    ],
     "betreff": "Ihr Aufenthaltstitel nach § 18g AufenthG — Erinnerung Verlängerungsfrist",
     "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nLandesamt für Einwanderung Berlin (LEA)\nFriedrich-Krause-Ufer 24, 13353 Berlin\n\nSehr geehrte Frau Petrov,\n\nin oben genannter Angelegenheit weisen wir Sie darauf hin, dass Ihr Aufenthaltstitel nach § 18g AufenthG (Blue Card EU) am 14.09.2027 abläuft. Wir empfehlen, mindestens vier Monate vorher einen Termin zur Verlängerung über unser Online-Terminbuchungssystem zu vereinbaren.\n\nWir bitten Sie, folgende Unterlagen bis zum Termin bereitzuhalten: aktueller Reisepass, Arbeitsvertrag, Gehaltsnachweise der letzten sechs Monate, aktuelle Meldebestätigung, Krankenversicherungsnachweis.\n\nBeachten Sie Ihre Mitwirkungspflichten nach § 82 AufenthG.\n\nMit freundlichen Grüßen\nIm Auftrag\nS. Wegener, Sachbearbeiter:in\nAz. [MOCK] ABH-B-2024/IV-A-1782",
     "ai_summary": {
@@ -663,9 +667,9 @@
     "empfaenger_persona_id": "markus-schmidt",
     "aktenzeichen": "[MOCK] HH-G-04711/2026",
     "betreff": "Geburtsurkunde Ihrer Tochter [MOCK] Mia Schmidt — Az [MOCK] HH-G-04711/2026",
-    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nStandesamt Hamburg-Eimsbüttel\nGrindelberg 66, 20144 Hamburg\n\nSehr geehrte Familie Schmidt,\n\nin oben genannter Angelegenheit übersenden wir Ihnen die Geburtsurkunde Ihrer Tochter Mia Schmidt, geboren am 02.05.2026 in Hamburg.\n\nDie Urkunde gilt als Nachweis für die Krankenkasse, die Familienkasse sowie die Steuer-IdNr.-Vergabe nach § 139b AO. Die Steuer-IdNr. wird Ihnen vom Bundeszentralamt für Steuern (BZSt) automatisch zugeschickt.\n\nMit freundlichen Grüßen\nStandesamt Hamburg-Eimsbüttel\nAz. [MOCK] HH-G-04711/2026",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nStandesamt Hamburg-Eimsbüttel\nGrindelberg 66, 20144 Hamburg\n\nSehr geehrte Familie Schmidt,\n\nin oben genannter Angelegenheit übersenden wir Ihnen die Geburtsurkunde Ihrer Tochter Mia Schmidt, geboren am 16.07.2026 in Hamburg.\n\nDie Urkunde gilt als Nachweis für die Krankenkasse, die Familienkasse sowie die Steuer-IdNr.-Vergabe nach § 139b AO. Die Steuer-IdNr. wird Ihnen vom Bundeszentralamt für Steuern (BZSt) automatisch zugeschickt.\n\nMit freundlichen Grüßen\nStandesamt Hamburg-Eimsbüttel\nAz. [MOCK] HH-G-04711/2026",
     "ai_summary": {
-      "de": "Geburtsurkunde Ihrer Tochter Mia (geb. 02.05.2026) — Nachweis für Krankenkasse, Familienkasse, Steuer-IdNr."
+      "de": "Geburtsurkunde Ihrer Tochter Mia (geb. 16.07.2026) — Nachweis für Krankenkasse, Familienkasse, Steuer-IdNr."
     },
     "archetype": "standesamt-urkunde",
     "auth_channel": "briefpost",
@@ -677,26 +681,27 @@
       "standesamt-urkunde.folge_steueridnr"
     ],
     "status": "ungelesen",
-    "empfangen_am": "2026-05-04T09:30:00.000Z"
+    "empfangen_am": "@now-2d",
+    "vorgang_id": "vg-schmidt-kindergeburt-mia-2026"
   },
   {
     "id": "letter-schmidt-familienkasse-nachweis",
-    "absender_behoerde_id": "familienkasse-berlin-brandenburg",
+    "absender_behoerde_id": "familienkasse-nord-hamburg",
     "empfaenger_persona_id": "markus-schmidt",
     "aktenzeichen": "[MOCK] 234FK892017",
     "betreff": "Ihr Kindergeld — Kindergeldnummer [MOCK] 234FK892017",
-    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nFamilienkasse Berlin-Brandenburg, 14460 Potsdam\n\nSehr geehrter Herr Schmidt,\n\nin oben genannter Angelegenheit bitten wir um Mitwirkung. Zur weiteren Prüfung Ihres Kindergeldanspruchs für Felix Schmidt bitten wir um Vorlage einer aktuellen Schulbescheinigung für das Schuljahr 2026/27.\n\nBitte reichen Sie die Unterlagen bis zum 15.06.2026 ein.\n\nSollten Sie nicht innerhalb der Frist antworten, können wir Ihren Anspruch nach § 67 Abs. 1 EStG i.V.m. § 68 Abs. 1 EStG ggf. ab dem 01.07.2026 vorläufig einstellen.\n\nMit freundlichen Grüßen\nFamilienkasse Berlin-Brandenburg\nAz. [MOCK] 234FK892017",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nFamilienkasse Nord der Bundesagentur für Arbeit\nNagelsweg 9, 20097 Hamburg\n\nSehr geehrter Herr Schmidt,\n\nin oben genannter Angelegenheit bitten wir um Mitwirkung. Zur weiteren Prüfung Ihres Kindergeldanspruchs für Felix Schmidt bitten wir um Vorlage einer aktuellen Schulbescheinigung für das Schuljahr 2026/27.\n\nBitte reichen Sie die Unterlagen innerhalb von drei Wochen nach Zugang dieses Schreibens ein.\n\nSollten Sie nicht innerhalb der Frist antworten, können wir Ihren Anspruch nach § 67 Abs. 1 EStG i.V.m. § 68 Abs. 1 EStG ggf. vorläufig einstellen.\n\nMit freundlichen Grüßen\nFamilienkasse Nord\nAz. [MOCK] 234FK892017",
     "ai_summary": {
-      "de": "Familienkasse fordert eine Schulbescheinigung für Felix bis 15.06.2026 — sonst droht vorläufige Einstellung des Kindergelds."
+      "de": "Familienkasse fordert eine Schulbescheinigung für Felix — Frist drei Wochen, sonst droht vorläufige Einstellung des Kindergelds."
     },
     "archetype": "familienkasse-nachweis",
     "auth_channel": "briefpost",
     "fristen": [
       {
         "typ": "nachweis",
-        "datum": "2026-06-15",
-        "original_zitat": "Bitte reichen Sie die Unterlagen bis zum 15.06.2026 ein.",
-        "citation_match": true,
+        "datum": "@now+16d",
+        "original_zitat": "Bitte reichen Sie die Unterlagen innerhalb von drei Wochen nach Zugang dieses Schreibens ein.",
+        "citation_match": false,
         "rechtsgrundlage": "§ 68 EStG",
         "cta_label": "Nachweis einreichen"
       }
@@ -706,7 +711,7 @@
       "familienkasse-nachweis.fristverlaengerung_pruefen"
     ],
     "status": "ungelesen",
-    "empfangen_am": "2026-05-02T08:00:00.000Z"
+    "empfangen_am": "@now-6d"
   },
   {
     "id": "letter-schmidt-krankenkasse-beitrag",
@@ -714,24 +719,24 @@
     "empfaenger_persona_id": "markus-schmidt",
     "aktenzeichen": "[MOCK] M845192036",
     "betreff": "Festsetzung des Beitrags zur Kranken- und Pflegeversicherung — Versicherungsnummer [MOCK] M845192036",
-    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nTechniker Krankenkasse — Hauptverwaltung\nBramfelder Straße 140, 22305 Hamburg\n\nSehr geehrter Herr Schmidt,\n\nin oben genannter Angelegenheit setzen wir Ihren Beitrag zur Kranken- und Pflegeversicherung ab dem 01.06.2026 wie folgt fest:\n\nKV-Beitrag: 421,17 €/Monat\nPV-Beitrag: 76,12 €/Monat\nGesamt: 497,29 €/Monat\n\nFällig zum 15.06.2026; danach jeweils zum 15. des Folgemonats.\n\nBitte beachten Sie, dass die Beiträge auch dann zu zahlen sind, wenn Sie Widerspruch eingelegt haben (aufschiebende Wirkung gemäß § 86a SGG entfällt insoweit).\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden. Der Widerspruch ist schriftlich oder zur Niederschrift bei der Techniker Krankenkasse, Bramfelder Straße 140, 22305 Hamburg einzulegen.\n\nMit freundlichen Grüßen\nTechniker Krankenkasse\nAz. [MOCK] M845192036",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nTechniker Krankenkasse — Hauptverwaltung\nBramfelder Straße 140, 22305 Hamburg\n\nSehr geehrter Herr Schmidt,\n\nin oben genannter Angelegenheit setzen wir Ihren Beitrag zur Kranken- und Pflegeversicherung ab dem kommenden Kalendermonat wie folgt fest:\n\nKV-Beitrag: 421,17 €/Monat\nPV-Beitrag: 76,12 €/Monat\nGesamt: 497,29 €/Monat\n\nFällig jeweils zum 15. des Monats.\n\nBitte beachten Sie, dass die Beiträge auch dann zu zahlen sind, wenn Sie Widerspruch eingelegt haben (aufschiebende Wirkung gemäß § 86a SGG entfällt insoweit).\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden. Der Widerspruch ist schriftlich oder zur Niederschrift bei der Techniker Krankenkasse, Bramfelder Straße 140, 22305 Hamburg einzulegen.\n\nMit freundlichen Grüßen\nTechniker Krankenkasse\nAz. [MOCK] M845192036",
     "ai_summary": {
-      "de": "TK setzt Ihren Beitrag ab 01.06.2026 auf 497,29 €/Monat fest. Widerspruchsfrist 1 Monat — Beiträge bleiben trotzdem fällig."
+      "de": "TK setzt Ihren Beitrag ab dem kommenden Monat auf 497,29 €/Monat fest. Widerspruchsfrist 1 Monat — Beiträge bleiben trotzdem fällig."
     },
     "archetype": "krankenkasse-beitrag",
     "auth_channel": "krankenkassen-portal",
     "fristen": [
       {
         "typ": "zahlung",
-        "datum": "2026-06-15",
-        "original_zitat": "Fällig zum 15.06.2026; danach jeweils zum 15. des Folgemonats.",
-        "citation_match": true,
+        "datum": "@now+16d",
+        "original_zitat": "Fällig jeweils zum 15. des Monats.",
+        "citation_match": false,
         "rechtsgrundlage": "§ 23 Abs. 1 SGB IV",
         "cta_label": "Beitrag zahlen"
       },
       {
         "typ": "widerspruch",
-        "datum": "2026-06-15",
+        "datum": "@now+27d",
         "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden.",
         "citation_match": false,
         "rechtsgrundlage": "§ 84 SGG"
@@ -743,34 +748,36 @@
       "krankenkasse-beitrag.befreiung_pruefen"
     ],
     "status": "ungelesen",
-    "empfangen_am": "2026-05-15T10:00:00.000Z",
-    "bescheid_dated_at": "2026-05-12"
+    "empfangen_am": "@now-3d",
+    "bescheid_dated_at": "@now-6d"
   },
   {
     "id": "letter-schmidt-fa-steuerbescheid-2024",
     "absender_behoerde_id": "finanzamt-hamburg-eimsbuettel",
     "empfaenger_persona_id": "markus-schmidt",
     "aktenzeichen": "[MOCK] 22/345/12345",
-    "aktenzeichen_weitere": ["[MOCK] 86 295 102 749"],
+    "aktenzeichen_weitere": [
+      "[MOCK] 86 295 102 749"
+    ],
     "betreff": "Bescheid für 2024 über Einkommensteuer, Solidaritätszuschlag und Kirchensteuer — Steuernummer [MOCK] 22/345/12345",
-    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nFinanzamt Hamburg-Eimsbüttel\nBei der Apostelkirche 1, 20257 Hamburg\n\nSehr geehrter Herr Schmidt,\n\nin oben genannter Angelegenheit übersenden wir Ihnen den Einkommensteuerbescheid für das Kalenderjahr 2024.\n\nFestgesetzte Einkommensteuer: 8.471,00 €\nAnzurechnende Lohnsteuer: 7.224,00 €\nSie haben noch 1.247,00 € zu zahlen.\n\nBitte zahlen Sie bis zum 12.06.2026 auf das untenstehende Konto.\n\nDieser Bescheid ist maschinell erstellt und auch ohne Unterschrift gültig.\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Einspruch eingelegt werden. Der Einspruch ist bei dem oben bezeichneten Finanzamt schriftlich einzureichen, zur Niederschrift zu erklären oder elektronisch zu übermitteln.\n\nMit freundlichen Grüßen\nIm Auftrag\nM. Hartwig, Sachbearbeiterin\nAz. [MOCK] 22/345/12345",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nFinanzamt Hamburg-Eimsbüttel\nBei der Apostelkirche 1, 20257 Hamburg\n\nSehr geehrter Herr Schmidt,\n\nin oben genannter Angelegenheit übersenden wir Ihnen den Einkommensteuerbescheid für das Kalenderjahr 2024.\n\nFestgesetzte Einkommensteuer: 8.471,00 €\nAnzurechnende Lohnsteuer: 7.224,00 €\nSie haben noch 1.247,00 € zu zahlen.\n\nBitte zahlen Sie innerhalb eines Monats nach Bekanntgabe auf das untenstehende Konto.\n\nDieser Bescheid ist maschinell erstellt und auch ohne Unterschrift gültig.\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Einspruch eingelegt werden. Der Einspruch ist bei dem oben bezeichneten Finanzamt schriftlich einzureichen, zur Niederschrift zu erklären oder elektronisch zu übermitteln.\n\nMit freundlichen Grüßen\nIm Auftrag\nM. Hartwig, Sachbearbeiterin\nAz. [MOCK] 22/345/12345",
     "ai_summary": {
-      "de": "Steuerbescheid 2024: Sie haben noch 1.247,00 € zu zahlen, Frist 12.06.2026. Einspruchsfrist 1 Monat ab Bekanntgabe."
+      "de": "Steuerbescheid 2024: Sie haben noch 1.247,00 € zu zahlen — fällig einen Monat nach Bekanntgabe. Einspruchsfrist 1 Monat."
     },
     "archetype": "steuerbescheid",
     "auth_channel": "briefpost",
     "fristen": [
       {
         "typ": "zahlung",
-        "datum": "2026-06-12",
-        "original_zitat": "Bitte zahlen Sie bis zum 12.06.2026 auf das untenstehende Konto.",
-        "citation_match": true,
+        "datum": "@now+27d",
+        "original_zitat": "Bitte zahlen Sie innerhalb eines Monats nach Bekanntgabe auf das untenstehende Konto.",
+        "citation_match": false,
         "rechtsgrundlage": "§ 240 AO",
         "cta_label": "Zahlung leisten"
       },
       {
         "typ": "einspruch",
-        "datum": "2026-06-08",
+        "datum": "@now+24d",
         "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Einspruch eingelegt werden.",
         "citation_match": false,
         "rechtsgrundlage": "§ 355 AO"
@@ -783,9 +790,9 @@
       "steuerbescheid.saeumniszuschlag_info"
     ],
     "status": "ungelesen",
-    "empfangen_am": "2026-05-13T07:45:00.000Z",
-    "bescheid_dated_at": "2026-05-08",
-    "leichte_sprache": "Das ist Ihr Steuer-Bescheid für das Jahr 2024.\nEin Steuer-Bescheid ist ein Brief vom Finanz-Amt.\nDas Finanz-Amt kümmert sich um Ihre Steuern.\n\nSie müssen Geld zahlen.\nSie müssen 1247 Euro zahlen.\nSie zahlen das Geld an das Finanz-Amt.\nSie haben Zeit bis zum 12. Juni 2026.\n\nBitte zahlen Sie das Geld pünktlich.\n\nSie finden den Bescheid falsch?\nDann können Sie Einspruch machen.\nEinspruch heißt: Sie sagen dem Finanz-Amt Ihre Meinung.\nDafür haben Sie 1 Monat Zeit.\n\nWichtig:\nDieser einfache Text ist nur eine Hilfe.\nEs gilt der Brief vom Finanz-Amt."
+    "empfangen_am": "@now-5d",
+    "bescheid_dated_at": "@now-9d",
+    "leichte_sprache": "Das ist Ihr Steuer-Bescheid für das Jahr 2024.\nEin Steuer-Bescheid ist ein Brief vom Finanz-Amt.\nDas Finanz-Amt kümmert sich um Ihre Steuern.\n\nSie müssen Geld zahlen.\nSie müssen 1247 Euro zahlen.\nSie zahlen das Geld an das Finanz-Amt.\nSie haben dafür etwa 1 Monat Zeit.\n\nBitte zahlen Sie das Geld pünktlich.\n\nSie finden den Bescheid falsch?\nDann können Sie Einspruch machen.\nEinspruch heißt: Sie sagen dem Finanz-Amt Ihre Meinung.\nDafür haben Sie 1 Monat Zeit.\n\nWichtig:\nDieser einfache Text ist nur eine Hilfe.\nEs gilt der Brief vom Finanz-Amt."
   },
   {
     "id": "letter-schmidt-beitragsservice-festsetzung",
@@ -793,7 +800,7 @@
     "empfaenger_persona_id": "markus-schmidt",
     "aktenzeichen": "[MOCK] 624 188 905",
     "betreff": "Festsetzungsbescheid Rundfunkbeitrag — Beitragsnummer [MOCK] 624 188 905",
-    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nARD ZDF Deutschlandradio Beitragsservice, 50656 Köln\n\nSehr geehrter Herr Schmidt,\n\nin oben genannter Angelegenheit setzen wir den Rundfunkbeitrag für den Zeitraum 01.04.2026–30.06.2026 wie folgt fest:\n\nRückständiger Beitrag: 55,08 €\nSäumniszuschlag (§ 9 RBStV): 8,00 €\nGesamt: 63,08 €\n\nTrotz mehrfacher Aufforderung haben Sie den Rundfunkbeitrag in Höhe von 55,08 € bislang nicht entrichtet. Wir setzen den rückständigen Beitrag hiermit förmlich fest.\n\nDer Gesamtbetrag von 63,08 € ist sofort fällig, spätestens zahlbar bis zum 26.05.2026.\n\nDieser Bescheid ist ein vollstreckbarer Titel iSv § 9 RBStV i.V.m. dem jeweiligen Landesvollstreckungsgesetz.\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch eingelegt werden. Der Widerspruch ist schriftlich oder elektronisch beim ARD ZDF Deutschlandradio Beitragsservice einzureichen.\n\nMit freundlichen Grüßen\nBeitragsservice\nAz. [MOCK] 624 188 905",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nARD ZDF Deutschlandradio Beitragsservice, 50656 Köln\n\nSehr geehrter Herr Schmidt,\n\nin oben genannter Angelegenheit setzen wir den Rundfunkbeitrag für den Zeitraum 01.04.2026–30.06.2026 wie folgt fest:\n\nRückständiger Beitrag: 55,08 €\nSäumniszuschlag (§ 9 RBStV): 8,00 €\nGesamt: 63,08 €\n\nTrotz mehrfacher Aufforderung haben Sie den Rundfunkbeitrag in Höhe von 55,08 € bislang nicht entrichtet. Wir setzen den rückständigen Beitrag hiermit förmlich fest.\n\nDer Gesamtbetrag von 63,08 € ist sofort fällig, spätestens zahlbar innerhalb von zwei Wochen nach Bekanntgabe.\n\nDieser Bescheid ist ein vollstreckbarer Titel iSv § 9 RBStV i.V.m. dem jeweiligen Landesvollstreckungsgesetz.\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch eingelegt werden. Der Widerspruch ist schriftlich oder elektronisch beim ARD ZDF Deutschlandradio Beitragsservice einzureichen.\n\nMit freundlichen Grüßen\nBeitragsservice\nAz. [MOCK] 624 188 905",
     "ai_summary": {
       "de": "Beitragsservice fordert 63,08 € Rückstand inkl. Säumniszuschlag. Widerspruchsfrist 1 Monat — Bescheid ist vollstreckbar."
     },
@@ -802,15 +809,15 @@
     "fristen": [
       {
         "typ": "zahlung",
-        "datum": "2026-05-26",
-        "original_zitat": "Der Gesamtbetrag von 63,08 € ist sofort fällig, spätestens zahlbar bis zum 26.05.2026.",
-        "citation_match": true,
+        "datum": "@now+8d",
+        "original_zitat": "Der Gesamtbetrag von 63,08 € ist sofort fällig, spätestens zahlbar innerhalb von zwei Wochen nach Bekanntgabe.",
+        "citation_match": false,
         "rechtsgrundlage": "§ 7 Abs. 3 RBStV",
         "cta_label": "Rundfunkbeitrag zahlen"
       },
       {
         "typ": "widerspruch",
-        "datum": "2026-06-12",
+        "datum": "@now+23d",
         "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch eingelegt werden.",
         "citation_match": false,
         "rechtsgrundlage": "§ 70 VwGO"
@@ -822,34 +829,36 @@
       "beitragsservice-mahnung.befreiung_pruefen"
     ],
     "status": "ungelesen",
-    "empfangen_am": "2026-05-12T09:20:00.000Z",
-    "bescheid_dated_at": "2026-05-08"
+    "empfangen_am": "@now-4d",
+    "bescheid_dated_at": "@now-7d"
   },
   {
     "id": "letter-mehmet-fa-steuerbescheid-2024",
     "absender_behoerde_id": "finanzamt-koeln-mitte",
     "empfaenger_persona_id": "mehmet-yildiz",
     "aktenzeichen": "[MOCK] 217/5732/00088",
-    "aktenzeichen_weitere": ["[MOCK] 47 982 113 660"],
+    "aktenzeichen_weitere": [
+      "[MOCK] 47 982 113 660"
+    ],
     "betreff": "Bescheid für 2024 über Einkommensteuer und Solidaritätszuschlag — Steuernummer [MOCK] 217/5732/00088",
-    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nFinanzamt Köln-Mitte\nHohenzollernring 85, 50672 Köln\n\nSehr geehrter Herr Yıldız,\n\nin oben genannter Angelegenheit übersenden wir Ihnen den Einkommensteuerbescheid für das Kalenderjahr 2024 (Einkünfte aus selbstständiger Tätigkeit § 18 EStG).\n\nFestgesetzte Einkommensteuer: 12.518,00 €\nVorauszahlungen: 7.706,00 €\nSie haben noch 4.812,00 € zu zahlen.\n\nBitte zahlen Sie bis zum 12.06.2026 auf das untenstehende Konto.\n\nDieser Bescheid wird Ihnen zum Datenabruf in Mein ELSTER bereitgestellt. Er gilt am vierten Tag nach Bereitstellung als bekannt gegeben (§ 122a Abs. 4 AO).\n\nDieser Bescheid ist maschinell erstellt und auch ohne Unterschrift gültig.\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Einspruch eingelegt werden.\n\nMit freundlichen Grüßen\nIm Auftrag\nB. Schneider, Sachbearbeiter:in\nAz. [MOCK] 217/5732/00088",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nFinanzamt Köln-Mitte\nHohenzollernring 85, 50672 Köln\n\nSehr geehrter Herr Yıldız,\n\nin oben genannter Angelegenheit übersenden wir Ihnen den Einkommensteuerbescheid für das Kalenderjahr 2024 (Einkünfte aus selbstständiger Tätigkeit § 18 EStG).\n\nFestgesetzte Einkommensteuer: 12.518,00 €\nVorauszahlungen: 7.706,00 €\nSie haben noch 4.812,00 € zu zahlen.\n\nBitte zahlen Sie innerhalb eines Monats nach Bekanntgabe auf das untenstehende Konto.\n\nDieser Bescheid wird Ihnen zum Datenabruf in Mein ELSTER bereitgestellt. Er gilt am vierten Tag nach Bereitstellung als bekannt gegeben (§ 122a Abs. 4 AO).\n\nDieser Bescheid ist maschinell erstellt und auch ohne Unterschrift gültig.\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Einspruch eingelegt werden.\n\nMit freundlichen Grüßen\nIm Auftrag\nB. Schneider, Sachbearbeiter:in\nAz. [MOCK] 217/5732/00088",
     "ai_summary": {
-      "de": "Steuerbescheid 2024 (selbstständig): Nachzahlung 4.812 €, Frist 12.06.2026. Bekanntgabe über Mein ELSTER."
+      "de": "Steuerbescheid 2024 (selbstständig): Nachzahlung 4.812 € — fällig einen Monat nach Bekanntgabe. Bekanntgabe über Mein ELSTER."
     },
     "archetype": "steuerbescheid",
     "auth_channel": "mein-elster",
     "fristen": [
       {
         "typ": "zahlung",
-        "datum": "2026-06-12",
-        "original_zitat": "Bitte zahlen Sie bis zum 12.06.2026 auf das untenstehende Konto.",
-        "citation_match": true,
+        "datum": "@now+25d",
+        "original_zitat": "Bitte zahlen Sie innerhalb eines Monats nach Bekanntgabe auf das untenstehende Konto.",
+        "citation_match": false,
         "rechtsgrundlage": "§ 240 AO",
         "cta_label": "Zahlung leisten"
       },
       {
         "typ": "einspruch",
-        "datum": "2026-06-04",
+        "datum": "@now+22d",
         "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Einspruch eingelegt werden.",
         "citation_match": false,
         "rechtsgrundlage": "§ 355 AO"
@@ -862,8 +871,8 @@
       "steuerbescheid.saeumniszuschlag_info"
     ],
     "status": "ungelesen",
-    "empfangen_am": "2026-05-08T06:30:00.000Z",
-    "bescheid_dated_at": "2026-05-04"
+    "empfangen_am": "@now-6d",
+    "bescheid_dated_at": "@now-10d"
   },
   {
     "id": "letter-mehmet-ihk-beitrag",
@@ -1142,15 +1151,15 @@
     "fristen": [
       {
         "typ": "zahlung",
-        "datum": "2026-06-08",
+        "datum": "@now+24d",
         "original_zitat": "Fälligkeit: 30 Tage nach Bekanntgabe.",
-        "citation_match": true,
+        "citation_match": false,
         "rechtsgrundlage": "§ 3 Abs. 7 IHKG i.V.m. Beitragsordnung",
         "cta_label": "Beitrag zahlen"
       },
       {
         "typ": "widerspruch",
-        "datum": "2026-06-12",
+        "datum": "@now+25d",
         "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden.",
         "citation_match": false,
         "rechtsgrundlage": "§ 70 VwGO"
@@ -1162,8 +1171,8 @@
       "ihk-beitrag.abweichende_festsetzung_pruefen"
     ],
     "status": "ungelesen",
-    "empfangen_am": "2026-05-13T08:45:00.000Z",
-    "bescheid_dated_at": "2026-05-09"
+    "empfangen_am": "@now-5d",
+    "bescheid_dated_at": "@now-9d"
   },
   {
     "id": "letter-mehmet-bgw-beitrag",
@@ -1171,23 +1180,23 @@
     "empfaenger_persona_id": "mehmet-yildiz",
     "aktenzeichen": "[MOCK] BG-VBG-2026-MITGLIED-04711",
     "betreff": "Beitragsbescheid VBG 2025 — Mitgliedsnummer [MOCK] BG-VBG-2026-MITGLIED-04711",
-    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nVerwaltungs-Berufsgenossenschaft (VBG)\nDeelbögenkamp 4, 22297 Hamburg\n\nSehr geehrter Herr Yıldız,\n\nin oben genannter Angelegenheit setzen wir Ihren Beitrag zur gesetzlichen Unfallversicherung für das Umlagejahr 2025 wie folgt fest:\n\nLohnsumme 2025: 0,00 € (Selbstständig ohne Beschäftigte)\nMindestbeitrag (§ 153 Abs. 1 SGB VII): 142,00 €\n\nFälligkeit: 15.06.2026.\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden. Der Widerspruch ist schriftlich oder zur Niederschrift bei der VBG, Deelbögenkamp 4, 22297 Hamburg einzulegen.\n\nMit freundlichen Grüßen\nVerwaltungs-Berufsgenossenschaft\nAz. [MOCK] BG-VBG-2026-MITGLIED-04711",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nVerwaltungs-Berufsgenossenschaft (VBG)\nDeelbögenkamp 4, 22297 Hamburg\n\nSehr geehrter Herr Yıldız,\n\nin oben genannter Angelegenheit setzen wir Ihren Beitrag zur gesetzlichen Unfallversicherung für das Umlagejahr 2025 wie folgt fest:\n\nLohnsumme 2025: 0,00 € (Selbstständig ohne Beschäftigte)\nMindestbeitrag (§ 153 Abs. 1 SGB VII): 142,00 €\n\nFälligkeit: ein Monat nach Bekanntgabe.\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden. Der Widerspruch ist schriftlich oder zur Niederschrift bei der VBG, Deelbögenkamp 4, 22297 Hamburg einzulegen.\n\nMit freundlichen Grüßen\nVerwaltungs-Berufsgenossenschaft\nAz. [MOCK] BG-VBG-2026-MITGLIED-04711",
     "ai_summary": {
-      "de": "VBG setzt Mindestbeitrag 142 € für 2025 fest. Fälligkeit 15.06.2026, Widerspruchsfrist 1 Monat."
+      "de": "VBG setzt Mindestbeitrag 142 € für 2025 fest. Fälligkeit ein Monat nach Bekanntgabe, Widerspruchsfrist 1 Monat."
     },
     "archetype": "berufsgenossenschaft-beitrag",
     "auth_channel": "briefpost",
     "fristen": [
       {
         "typ": "zahlung",
-        "datum": "2026-06-15",
-        "original_zitat": "Fälligkeit: 15.06.2026.",
-        "citation_match": true,
+        "datum": "@now+23d",
+        "original_zitat": "Fälligkeit: ein Monat nach Bekanntgabe.",
+        "citation_match": false,
         "cta_label": "Beitrag zahlen"
       },
       {
         "typ": "widerspruch",
-        "datum": "2026-06-13",
+        "datum": "@now+24d",
         "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden.",
         "citation_match": false,
         "rechtsgrundlage": "§ 84 SGG"
@@ -1198,8 +1207,8 @@
       "berufsgenossenschaft-beitrag.widerspruch"
     ],
     "status": "ungelesen",
-    "empfangen_am": "2026-05-13T11:10:00.000Z",
-    "bescheid_dated_at": "2026-05-09"
+    "empfangen_am": "@now-5d",
+    "bescheid_dated_at": "@now-9d"
   },
   {
     "id": "letter-mehmet-krankenkasse-freiwillig",
@@ -1207,24 +1216,24 @@
     "empfaenger_persona_id": "mehmet-yildiz",
     "aktenzeichen": "[MOCK] Q672013485",
     "betreff": "Festsetzung des freiwilligen Beitrags zur Kranken- und Pflegeversicherung — Versicherungsnummer [MOCK] Q672013485",
-    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nAOK Rheinland/Hamburg — Die Gesundheitskasse\nKasernenstraße 61, 40213 Düsseldorf\n\nSehr geehrter Herr Yıldız,\n\nin oben genannter Angelegenheit setzen wir Ihren freiwilligen Beitrag zur Kranken- und Pflegeversicherung ab dem 01.06.2026 wie folgt fest:\n\nKV-Beitrag: 421,17 €/Monat\nPV-Beitrag: 76,12 €/Monat\nGesamt: 497,29 €/Monat\n\nFällig zum 15.06.2026; danach jeweils zum 15. des Folgemonats.\n\nBitte beachten Sie, dass die Beiträge auch dann zu zahlen sind, wenn Sie Widerspruch eingelegt haben (aufschiebende Wirkung gemäß § 86a SGG entfällt insoweit).\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden. Der Widerspruch ist schriftlich oder zur Niederschrift bei der AOK Rheinland/Hamburg, Kasernenstraße 61, 40213 Düsseldorf einzulegen.\n\nMit freundlichen Grüßen\nAOK Rheinland/Hamburg\nAz. [MOCK] Q672013485",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nAOK Rheinland/Hamburg — Die Gesundheitskasse\nKasernenstraße 61, 40213 Düsseldorf\n\nSehr geehrter Herr Yıldız,\n\nin oben genannter Angelegenheit setzen wir Ihren freiwilligen Beitrag zur Kranken- und Pflegeversicherung ab dem kommenden Kalendermonat wie folgt fest:\n\nKV-Beitrag: 421,17 €/Monat\nPV-Beitrag: 76,12 €/Monat\nGesamt: 497,29 €/Monat\n\nFällig jeweils zum 15. des Monats.\n\nBitte beachten Sie, dass die Beiträge auch dann zu zahlen sind, wenn Sie Widerspruch eingelegt haben (aufschiebende Wirkung gemäß § 86a SGG entfällt insoweit).\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden. Der Widerspruch ist schriftlich oder zur Niederschrift bei der AOK Rheinland/Hamburg, Kasernenstraße 61, 40213 Düsseldorf einzulegen.\n\nMit freundlichen Grüßen\nAOK Rheinland/Hamburg\nAz. [MOCK] Q672013485",
     "ai_summary": {
-      "de": "AOK setzt Ihren freiwilligen Beitrag ab 01.06.2026 auf 497,29 €/Monat fest. Widerspruch möglich, aber Beiträge bleiben fällig."
+      "de": "AOK setzt Ihren freiwilligen Beitrag ab dem kommenden Monat auf 497,29 €/Monat fest. Widerspruch möglich, aber Beiträge bleiben fällig."
     },
     "archetype": "krankenkasse-beitrag",
     "auth_channel": "briefpost",
     "fristen": [
       {
         "typ": "zahlung",
-        "datum": "2026-06-15",
-        "original_zitat": "Fällig zum 15.06.2026; danach jeweils zum 15. des Folgemonats.",
-        "citation_match": true,
+        "datum": "@now+16d",
+        "original_zitat": "Fällig jeweils zum 15. des Monats.",
+        "citation_match": false,
         "rechtsgrundlage": "§ 23 Abs. 1 SGB IV",
         "cta_label": "Beitrag zahlen"
       },
       {
         "typ": "widerspruch",
-        "datum": "2026-06-13",
+        "datum": "@now+27d",
         "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden.",
         "citation_match": false,
         "rechtsgrundlage": "§ 84 SGG"
@@ -1236,8 +1245,8 @@
       "krankenkasse-beitrag.befreiung_pruefen"
     ],
     "status": "ungelesen",
-    "empfangen_am": "2026-05-13T13:00:00.000Z",
-    "bescheid_dated_at": "2026-05-10"
+    "empfangen_am": "@now-4d",
+    "bescheid_dated_at": "@now-8d"
   },
   {
     "id": "letter-mehmet-beitragsservice-mahnung",
@@ -1245,7 +1254,7 @@
     "empfaenger_persona_id": "mehmet-yildiz",
     "aktenzeichen": "[MOCK] 088 314 502",
     "betreff": "Festsetzungsbescheid Rundfunkbeitrag — Beitragsnummer [MOCK] 088 314 502",
-    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nARD ZDF Deutschlandradio Beitragsservice, 50656 Köln\n\nSehr geehrter Herr Yıldız,\n\nin oben genannter Angelegenheit setzen wir den Rundfunkbeitrag für den Zeitraum 01.01.2026–31.03.2026 förmlich fest:\n\nRückständiger Beitrag: 55,08 €\nSäumniszuschlag (§ 9 RBStV): 8,00 €\nGesamt: 63,08 €\n\nTrotz mehrfacher Aufforderung haben Sie den Rundfunkbeitrag in Höhe von 55,08 € bislang nicht entrichtet. Wir setzen den rückständigen Beitrag hiermit förmlich fest.\n\nDer Gesamtbetrag von 63,08 € ist sofort fällig, spätestens zahlbar bis zum 26.05.2026.\n\nDieser Bescheid ist ein vollstreckbarer Titel iSv § 9 RBStV i.V.m. dem jeweiligen Landesvollstreckungsgesetz.\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch eingelegt werden. Der Widerspruch ist schriftlich oder elektronisch beim ARD ZDF Deutschlandradio Beitragsservice einzureichen.\n\nMit freundlichen Grüßen\nBeitragsservice\nAz. [MOCK] 088 314 502",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nARD ZDF Deutschlandradio Beitragsservice, 50656 Köln\n\nSehr geehrter Herr Yıldız,\n\nin oben genannter Angelegenheit setzen wir den Rundfunkbeitrag für den Zeitraum 01.01.2026–31.03.2026 förmlich fest:\n\nRückständiger Beitrag: 55,08 €\nSäumniszuschlag (§ 9 RBStV): 8,00 €\nGesamt: 63,08 €\n\nTrotz mehrfacher Aufforderung haben Sie den Rundfunkbeitrag in Höhe von 55,08 € bislang nicht entrichtet. Wir setzen den rückständigen Beitrag hiermit förmlich fest.\n\nDer Gesamtbetrag von 63,08 € ist sofort fällig, spätestens zahlbar innerhalb von zwei Wochen nach Bekanntgabe.\n\nDieser Bescheid ist ein vollstreckbarer Titel iSv § 9 RBStV i.V.m. dem jeweiligen Landesvollstreckungsgesetz.\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch eingelegt werden. Der Widerspruch ist schriftlich oder elektronisch beim ARD ZDF Deutschlandradio Beitragsservice einzureichen.\n\nMit freundlichen Grüßen\nBeitragsservice\nAz. [MOCK] 088 314 502",
     "ai_summary": {
       "de": "Beitragsservice fordert 63,08 € (inkl. Säumniszuschlag) — Widerspruchsfrist 1 Monat, Bescheid ist vollstreckbar."
     },
@@ -1254,15 +1263,15 @@
     "fristen": [
       {
         "typ": "zahlung",
-        "datum": "2026-05-26",
-        "original_zitat": "Der Gesamtbetrag von 63,08 € ist sofort fällig, spätestens zahlbar bis zum 26.05.2026.",
-        "citation_match": true,
+        "datum": "@now+7d",
+        "original_zitat": "Der Gesamtbetrag von 63,08 € ist sofort fällig, spätestens zahlbar innerhalb von zwei Wochen nach Bekanntgabe.",
+        "citation_match": false,
         "rechtsgrundlage": "§ 7 Abs. 3 RBStV",
         "cta_label": "Rundfunkbeitrag zahlen"
       },
       {
         "typ": "widerspruch",
-        "datum": "2026-06-12",
+        "datum": "@now+22d",
         "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch eingelegt werden.",
         "citation_match": false,
         "rechtsgrundlage": "§ 70 VwGO"
@@ -1274,8 +1283,8 @@
       "beitragsservice-mahnung.befreiung_pruefen"
     ],
     "status": "ungelesen",
-    "empfangen_am": "2026-05-12T07:00:00.000Z",
-    "bescheid_dated_at": "2026-05-08"
+    "empfangen_am": "@now-3d",
+    "bescheid_dated_at": "@now-6d"
   },
   {
     "id": "letter-anna-standesamt-eheschliessung-termin",
@@ -1312,7 +1321,9 @@
     "absender_behoerde_id": "drv-berlin-brandenburg",
     "empfaenger_persona_id": "anna-petrov",
     "aktenzeichen": "[MOCK] 65 170395 P 042 / RI-2026",
-    "aktenzeichen_weitere": ["[MOCK] 65 170395 P 042"],
+    "aktenzeichen_weitere": [
+      "[MOCK] 65 170395 P 042"
+    ],
     "betreff": "Ihre Renteninformation 2026 (§ 109 Abs. 1 SGB VI)",
     "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nDeutsche Rentenversicherung Berlin-Brandenburg\nFriedrich-Ebert-Str. 34, 14469 Potsdam\n\nSehr geehrte Frau Petrov,\n\ndiese Renteninformation gibt Ihnen einen Überblick über Ihre bisher erworbenen Anwartschaften aus der gesetzlichen Rentenversicherung sowie eine Prognose Ihrer voraussichtlichen Regelaltersrente. Sie wird Ihnen gemäß § 109 Sozialgesetzbuch Sechstes Buch (SGB VI) jährlich übersandt.\n\n1. Grundlage der Berechnung: Beitragszeiten 01/2018 – 12/2025 (8,1 Jahre); 6,8 Entgeltpunkte erworben.\n2. Bei sofortiger voller Erwerbsminderung: 312,21 €/Monat.\n3. Prognose Regelaltersrente bei Erreichen Regelaltersgrenze 67 (ohne weitere Beiträge): 743,99 €/Monat.\n4. Wirkung künftiger Anpassungen: bei jährlicher Anpassung von durchschn. 2 % steigt der prognostizierte Wert um ca. 1.100 €/Monat bis zum Renteneintritt.\n5. Beitragsübersicht 2025: 8.414,52 € gesamt (davon Sie: 4.207,26 €; Arbeitgeber: 4.207,26 €).\n\nVoraussetzung dieser Prognose: Mindestversicherungszeit nach § 50 SGB VI ist erfüllt.\n\nDiese Mitteilung ist maschinell erstellt und auch ohne Unterschrift gültig. Bei Fragen zu Ihrer Rente nutzen Sie bitte unser Online-Kundenportal eservice-drv.de oder vereinbaren einen Termin in einer unserer Beratungsstellen.\n\nMit freundlichen Grüßen\nDeutsche Rentenversicherung Berlin-Brandenburg\nAz. [MOCK] 65 170395 P 042 / RI-2026",
     "ai_summary": {
@@ -1323,18 +1334,43 @@
       },
       "post_open": {
         "bullets": [
-          { "text": "Grundlage der Berechnung: 01/2018 – 12/2025 (8,1 Jahre Beitragszeit); 6,8 Entgeltpunkte erworben." },
-          { "text": "Bei sofortiger voller Erwerbsminderung: 312,21 €/Monat." },
-          { "text": "Prognose Regelaltersrente (67, ohne weitere Beiträge): 743,99 €/Monat." },
-          { "text": "Wirkung künftiger Anpassungen: ca. +1.100 €/Monat bis Renteneintritt bei 2 % p.a." },
-          { "text": "Beitragsübersicht 2025: 8.414,52 € gesamt (Sie/Arbeitgeber je 4.207,26 €)." }
+          {
+            "text": "Grundlage der Berechnung: 01/2018 – 12/2025 (8,1 Jahre Beitragszeit); 6,8 Entgeltpunkte erworben."
+          },
+          {
+            "text": "Bei sofortiger voller Erwerbsminderung: 312,21 €/Monat."
+          },
+          {
+            "text": "Prognose Regelaltersrente (67, ohne weitere Beiträge): 743,99 €/Monat."
+          },
+          {
+            "text": "Wirkung künftiger Anpassungen: ca. +1.100 €/Monat bis Renteneintritt bei 2 % p.a."
+          },
+          {
+            "text": "Beitragsübersicht 2025: 8.414,52 € gesamt (Sie/Arbeitgeber je 4.207,26 €)."
+          }
         ],
         "citations": [
-          { "bullet_index": 0, "original_zitat": "Grundlage der Berechnung: Beitragszeiten 01/2018 – 12/2025 (8,1 Jahre); 6,8 Entgeltpunkte erworben." },
-          { "bullet_index": 1, "original_zitat": "Bei sofortiger voller Erwerbsminderung: 312,21 €/Monat." },
-          { "bullet_index": 2, "original_zitat": "Prognose Regelaltersrente bei Erreichen Regelaltersgrenze 67 (ohne weitere Beiträge): 743,99 €/Monat." },
-          { "bullet_index": 3, "original_zitat": "Wirkung künftiger Anpassungen: bei jährlicher Anpassung von durchschn. 2 % steigt der prognostizierte Wert um ca. 1.100 €/Monat bis zum Renteneintritt." },
-          { "bullet_index": 4, "original_zitat": "Beitragsübersicht 2025: 8.414,52 € gesamt (davon Sie: 4.207,26 €; Arbeitgeber: 4.207,26 €)." }
+          {
+            "bullet_index": 0,
+            "original_zitat": "Grundlage der Berechnung: Beitragszeiten 01/2018 – 12/2025 (8,1 Jahre); 6,8 Entgeltpunkte erworben."
+          },
+          {
+            "bullet_index": 1,
+            "original_zitat": "Bei sofortiger voller Erwerbsminderung: 312,21 €/Monat."
+          },
+          {
+            "bullet_index": 2,
+            "original_zitat": "Prognose Regelaltersrente bei Erreichen Regelaltersgrenze 67 (ohne weitere Beiträge): 743,99 €/Monat."
+          },
+          {
+            "bullet_index": 3,
+            "original_zitat": "Wirkung künftiger Anpassungen: bei jährlicher Anpassung von durchschn. 2 % steigt der prognostizierte Wert um ca. 1.100 €/Monat bis zum Renteneintritt."
+          },
+          {
+            "bullet_index": 4,
+            "original_zitat": "Beitragsübersicht 2025: 8.414,52 € gesamt (davon Sie: 4.207,26 €; Arbeitgeber: 4.207,26 €)."
+          }
         ],
         "generated_at": "2026-05-08T10:14:00.000Z",
         "model": "claude-haiku-4-5-20251001"
@@ -1428,8 +1464,14 @@
     "status": "ungelesen",
     "empfangen_am": "@now-1d",
     "anhaenge": [
-      { "name": "Anmeldebestätigung.pdf", "size_kb": 245 },
-      { "name": "Merkblatt Anmeldung.pdf", "size_kb": 129 }
+      {
+        "name": "Anmeldebestätigung.pdf",
+        "size_kb": 245
+      },
+      {
+        "name": "Merkblatt Anmeldung.pdf",
+        "size_kb": 129
+      }
     ]
   },
   {
@@ -1437,7 +1479,9 @@
     "absender_behoerde_id": "finanzamt-berlin-mitte-tiergarten",
     "empfaenger_persona_id": "anna-petrov",
     "aktenzeichen": "[MOCK] 11/345/67890 // 2026",
-    "aktenzeichen_weitere": ["[MOCK] 47 113 815 421"],
+    "aktenzeichen_weitere": [
+      "[MOCK] 47 113 815 421"
+    ],
     "vorgang_id": "vg-anna-umzug-2026-completed",
     "betreff": "Mitteilung über die örtliche Zuständigkeit nach 19 AO",
     "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nFinanzamt Berlin Mitte/Tiergarten\nNeue Jakobstraße 6-7, 10179 Berlin\n\nSehr geehrte Frau Petrov,\n\nin oben genannter Angelegenheit teilen wir Ihnen mit, dass sich die örtliche Zuständigkeit für Ihre Einkommensteuer nach Ihrem Wohnsitz richtet (§ 19 AO). Ihre Steuerakte wurde an unser Finanzamt abgegeben.\n\nIhre steuerliche Identifikationsnummer (§ 139b AO) bleibt unverändert; lediglich Ihre örtliche Steuernummer ändert sich durch den Zuständigkeitswechsel.\n\nDiese Mitteilung ergeht maschinell und ist auch ohne Unterschrift gültig.\n\nMit freundlichen Grüßen\nFinanzamt Berlin Mitte/Tiergarten\nAz. [MOCK] 11/345/67890 // 2026",
@@ -1510,7 +1554,9 @@
     "absender_behoerde_id": "abh-berlin-lea",
     "empfaenger_persona_id": "anna-petrov",
     "aktenzeichen": "[MOCK] ABH-B-2026/IV-A-5518",
-    "aktenzeichen_weitere": ["[MOCK] T0123456X"],
+    "aktenzeichen_weitere": [
+      "[MOCK] T0123456X"
+    ],
     "vorgang_id": "vg-anna-umzug-2026-completed",
     "betreff": "Ihr Aufenthaltstitel — Adressaktualisierung, Az [MOCK] ABH-B-2026/IV-A-5518",
     "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nLandesamt für Einwanderung Berlin (LEA)\nFriedrich-Krause-Ufer 24, 13353 Berlin\n\nSehr geehrte Frau Petrov,\n\nin oben genannter Angelegenheit bestätigen wir den Eingang Ihrer Adressmeldung. Die Aktualisierung der auf der elektronischen Aufenthaltskarte hinterlegten Anschrift erfolgt nutzergesteuert über die eID-Funktion (§ 18 PAuswG); hierzu haben wir Ihnen einen Termin angeboten. Es findet kein automatischer Melderegister→Ausländerbehörde-Abgleich statt — bitte nehmen Sie den angebotenen Termin wahr.\n\nMit freundlichen Grüßen\nIm Auftrag\nS. Wegener, Sachbearbeiter:in\nAz. [MOCK] ABH-B-2026/IV-A-5518",
@@ -1523,5 +1569,139 @@
     "was_kann_ich_tun_options": [],
     "status": "ungelesen",
     "empfangen_am": "@now-1d"
+  },
+  {
+    "id": "letter-schmidt-kindergeldbescheid-mia",
+    "absender_behoerde_id": "familienkasse-nord-hamburg",
+    "empfaenger_persona_id": "markus-schmidt",
+    "aktenzeichen": "[MOCK] 234FK892017",
+    "betreff": "Kindergeldbescheid für Mia Schmidt — Kindergeldnummer [MOCK] 234FK892017",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nFamilienkasse Nord der Bundesagentur für Arbeit\nNagelsweg 9, 20097 Hamburg\n\nSehr geehrter Herr Schmidt,\n\nin oben genannter Angelegenheit setzen wir für Ihre Tochter Mia Schmidt Kindergeld ab dem Geburtsmonat fest (§ 66, § 70 EStG).\n\nMonatlicher Betrag: 259,00 €\nAuszahlung: auf die von Ihnen mit eID bestätigte Bankverbindung. Der Auszahlungstermin richtet sich nach der Endziffer Ihrer Kindergeldnummer.\n\nDie Festsetzung erfolgte ohne gesonderten Antrag auf Grundlage der elektronischen Geburtsmitteilung des Standesamts ([MOCK] Demo-Annahme „antragsloses Kindergeld\" — Regierungsentwurf, gestufte Einführung ab 2027).\n\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Einspruch eingelegt werden.\n\nMit freundlichen Grüßen\nFamilienkasse Nord\nAz. [MOCK] 234FK892017",
+    "ai_summary": {
+      "de": "Kindergeld für Mia ist ohne Antrag eingerichtet — 259 €/Monat ab Geburtsmonat auf Ihr bestätigtes Konto."
+    },
+    "archetype": "familienkasse-nachweis",
+    "auth_channel": "briefpost",
+    "fristen": [
+      {
+        "typ": "einspruch",
+        "datum": "@now+26d",
+        "original_zitat": "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Einspruch eingelegt werden.",
+        "citation_match": false,
+        "rechtsgrundlage": "§ 355 AO"
+      }
+    ],
+    "was_kann_ich_tun_options": [
+      "familienkasse-nachweis.fristverlaengerung_pruefen"
+    ],
+    "status": "ungelesen",
+    "empfangen_am": "@now-1d",
+    "bescheid_dated_at": "@now-1d",
+    "vorgang_id": "vg-schmidt-kindergeld-mia-2026"
+  },
+  {
+    "id": "letter-schmidt-bzst-steueridnr-mia",
+    "absender_behoerde_id": "bzst",
+    "empfaenger_persona_id": "markus-schmidt",
+    "aktenzeichen": "[MOCK] IdNr 65 187 429 301",
+    "betreff": "Zuteilung der steuerlichen Identifikationsnummer für Mia Schmidt (§ 139b AO)",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nBundeszentralamt für Steuern\nAn der Küppe 1, 53225 Bonn\n\nSehr geehrter Herr Schmidt,\n\nfür Ihre Tochter Mia Schmidt, geboren am 16.07.2026, wurde die folgende steuerliche Identifikationsnummer nach § 139b Abgabenordnung zugeteilt:\n\nIdNr: [MOCK] 65 187 429 301\n\nDie Identifikationsnummer gilt lebenslang und ändert sich auch bei Umzug oder Namensänderung nicht. Bitte geben Sie sie bei allen steuerlichen Angelegenheiten Ihres Kindes an.\n\nDie Familienkasse hat die Identifikationsnummer im Rahmen der automatisierten Kindergeld-Einrichtung bereits erhalten; Sie müssen nichts weiter veranlassen.\n\nMit freundlichen Grüßen\nBundeszentralamt für Steuern\nAz. [MOCK] IdNr 65 187 429 301",
+    "ai_summary": {
+      "de": "Steuer-ID für Mia zugeteilt — automatisch nach der Geburtsbeurkundung. Die Familienkasse hat sie bereits, nichts zu tun."
+    },
+    "archetype": "sonstiges",
+    "auth_channel": "briefpost",
+    "fristen": [],
+    "was_kann_ich_tun_options": [],
+    "status": "ungelesen",
+    "empfangen_am": "@now-1d",
+    "vorgang_id": "vg-schmidt-kindergeld-mia-2026"
+  },
+  {
+    "id": "letter-schmidt-elterngeld-hinweis",
+    "absender_behoerde_id": "elterngeldstelle-hamburg-eimsbuettel",
+    "empfaenger_persona_id": "markus-schmidt",
+    "aktenzeichen": "[MOCK] EG-HH-2026-114532",
+    "betreff": "Elterngeld für Mia — Ihr vorbereiteter Antrag wartet auf Ihre Bestätigung",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nBezirksamt Hamburg-Eimsbüttel — Elterngeldstelle\nGrindelberg 66, 20144 Hamburg\n\nSehr geehrte Frau Schmidt, sehr geehrter Herr Schmidt,\n\nanlässlich der Geburt Ihrer Tochter Mia haben wir auf Grundlage der elektronischen Geburtsmitteilung des Standesamts einen Elterngeld-Antrag für Sie vorbereitet ([MOCK] Demo-Annahme: proaktive Verwaltungsleistung). Einkommens- und Geburtsdaten sind bereits eingetragen; es fehlt nur Ihre Bestätigung mit der eID.\n\nWichtiger Hinweis zur Frist: Elterngeld wird rückwirkend nur für die letzten drei Lebensmonate vor Antragstellung gezahlt (§ 7 Abs. 1 Satz 2 BEEG). Für die volle Leistung ab Geburt muss Ihr Antrag innerhalb der ersten drei Lebensmonate Ihrer Tochter eingehen.\n\nMit freundlichen Grüßen\nElterngeldstelle Hamburg-Eimsbüttel\nAz. [MOCK] EG-HH-2026-114532",
+    "ai_summary": {
+      "de": "Ihr Elterngeld-Antrag für Mia ist vorbereitet — nur noch mit eID bestätigen. Volle Leistung ab Geburt nur bei Antrag in den ersten drei Lebensmonaten."
+    },
+    "archetype": "sonstiges",
+    "auth_channel": "briefpost",
+    "fristen": [
+      {
+        "typ": "antragstellung",
+        "datum": "@now+76d",
+        "original_zitat": "Elterngeld wird rückwirkend nur für die letzten drei Lebensmonate vor Antragstellung gezahlt (§ 7 Abs. 1 Satz 2 BEEG).",
+        "citation_match": false,
+        "rechtsgrundlage": "§ 7 Abs. 1 Satz 2 BEEG",
+        "cta_label": "Antrag mit eID bestätigen"
+      }
+    ],
+    "was_kann_ich_tun_options": [],
+    "status": "ungelesen",
+    "empfangen_am": "@now-1d",
+    "vorgang_id": "vg-schmidt-kindergeburt-mia-2026"
+  },
+  {
+    "id": "letter-schmidt-kita-eingangsbestaetigung",
+    "absender_behoerde_id": "bezirksamt-hamburg-eimsbuettel",
+    "empfaenger_persona_id": "markus-schmidt",
+    "aktenzeichen": "[MOCK] E-KITA-2026-08841",
+    "betreff": "Eingangsbestätigung: Kita-Gutschein für Felix Schmidt",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nBezirksamt Hamburg-Eimsbüttel\nGrindelberg 62-66, 20144 Hamburg\n\nSehr geehrte Frau Schmidt, sehr geehrter Herr Schmidt,\n\nwir bestätigen den Eingang Ihres Antrags auf einen Kita-Gutschein für Ihren Sohn Felix (Elementarbereich, § 6 KibeG). Der beantragte Betreuungsumfang wurde geprüft.\n\nÜber die Bewilligung erhalten Sie einen gesonderten Bescheid. Eine weitere Mitwirkung ist derzeit nicht erforderlich.\n\nMit freundlichen Grüßen\nBezirksamt Hamburg-Eimsbüttel — Abteilung Kindertagesbetreuung\nAz. [MOCK] E-KITA-2026-08841",
+    "ai_summary": {
+      "de": "Kita-Gutschein-Antrag für Felix ist eingegangen und geprüft — der Bescheid folgt, nichts zu tun."
+    },
+    "archetype": "sonstiges",
+    "auth_channel": "briefpost",
+    "fristen": [],
+    "was_kann_ich_tun_options": [],
+    "status": "gelesen",
+    "empfangen_am": "@now-4d",
+    "vorgang_id": "vg-schmidt-kita-gutschein-felix-2026"
+  },
+  {
+    "id": "letter-schmidt-reisepass-felix-status",
+    "absender_behoerde_id": "bezirksamt-hamburg-eimsbuettel",
+    "empfaenger_persona_id": "markus-schmidt",
+    "aktenzeichen": "[MOCK] E-PASS-2026-05527",
+    "betreff": "Reisepass für Felix Schmidt — Antrag in Produktion",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nBezirksamt Hamburg-Eimsbüttel\nGrindelberg 62-66, 20144 Hamburg\n\nSehr geehrte Frau Schmidt, sehr geehrter Herr Schmidt,\n\nIhr Antrag auf einen Reisepass für Ihren Sohn Felix (§ 6 PassG; die Zustimmung beider Sorgeberechtigten liegt vor) wurde an die Bundesdruckerei übermittelt. Die Produktion dauert erfahrungsgemäß etwa drei Wochen.\n\nSobald der Reisepass im Kundenzentrum Eimsbüttel abholbereit ist, werden Sie benachrichtigt. Zur Abholung bringen Sie bitte die Geburtsurkunde Ihres Sohnes mit.\n\nMit freundlichen Grüßen\nBezirksamt Hamburg-Eimsbüttel — Kundenzentrum\nAz. [MOCK] E-PASS-2026-05527",
+    "ai_summary": {
+      "de": "Reisepass für Felix ist in Produktion (ca. drei Wochen) — Sie werden zur Abholung benachrichtigt."
+    },
+    "archetype": "sonstiges",
+    "auth_channel": "briefpost",
+    "fristen": [],
+    "was_kann_ich_tun_options": [],
+    "status": "gelesen",
+    "empfangen_am": "@now-5d",
+    "vorgang_id": "vg-schmidt-reisepass-felix-2026"
+  },
+  {
+    "id": "letter-renteninfo-schmidt-2026",
+    "absender_behoerde_id": "drv-nord",
+    "empfaenger_persona_id": "markus-schmidt",
+    "aktenzeichen": "[MOCK] 33 140288 S 087 / RI-2026",
+    "aktenzeichen_weitere": [
+      "[MOCK] 33 140288 S 087"
+    ],
+    "betreff": "Ihre Renteninformation 2026 (§ 109 Abs. 1 SGB VI)",
+    "body_de": "[MOCK – Verwaltungsdemo, keine echten Daten]\n\nDeutsche Rentenversicherung Nord\nZiegelstraße 150, 23556 Lübeck\n\nSehr geehrter Herr Schmidt,\n\ndiese Renteninformation gibt Ihnen einen Überblick über Ihre bisher erworbenen Anwartschaften aus der gesetzlichen Rentenversicherung sowie eine Prognose Ihrer voraussichtlichen Regelaltersrente. Sie wird Ihnen gemäß § 109 Sozialgesetzbuch Sechstes Buch (SGB VI) jährlich übersandt.\n\n1. Grundlage der Berechnung: Beitragszeiten 09/2010 – 12/2025 (15,3 Jahre); 22,4 Entgeltpunkte erworben.\n2. Bei sofortiger voller Erwerbsminderung: 988,55 €/Monat.\n3. Prognose Regelaltersrente bei Erreichen Regelaltersgrenze 67 (ohne weitere Beiträge): 1.842,30 €/Monat.\n4. Wirkung künftiger Anpassungen: bei jährlicher Anpassung von durchschn. 2 % steigt der prognostizierte Wert um ca. 1.480 €/Monat bis zum Renteneintritt.\n5. Beitragsübersicht 2025: 11.820,00 € gesamt (davon Sie: 5.910,00 €; Arbeitgeber: 5.910,00 €).\n\nVoraussetzung dieser Prognose: Mindestversicherungszeit nach § 50 SGB VI ist erfüllt.\n\nDiese Mitteilung ist maschinell erstellt und auch ohne Unterschrift gültig. Bei Fragen zu Ihrer Rente nutzen Sie bitte unser Online-Kundenportal eservice-drv.de oder vereinbaren einen Termin in einer unserer Beratungsstellen.\n\nMit freundlichen Grüßen\nDeutsche Rentenversicherung Nord\nAz. [MOCK] 33 140288 S 087 / RI-2026",
+    "ai_summary": {
+      "de": "Renteninformation 2026 — fünf Pflicht-Inhalte (§ 109 Abs. 3 SGB VI): 22,4 Entgeltpunkte; EM-Renten-Prognose 989 €/Monat; Regelalter-Prognose 1.842 €/Monat; Anpassungs-Plus ~1.480 €/Monat; Beiträge 2025 = 11.820 €."
+    },
+    "archetype": "renteninfo",
+    "auth_channel": "briefpost",
+    "fristen": [],
+    "was_kann_ich_tun_options": [
+      "renteninfo.in_stammdaten_ablegen",
+      "renteninfo.drv_kundenportal_oeffnen"
+    ],
+    "status": "gelesen",
+    "empfangen_am": "2026-04-12T08:00:00.000Z",
+    "bescheid_dated_at": "2026-04-12"
   }
 ]

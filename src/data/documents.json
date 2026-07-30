@@ -444,5 +444,58 @@
     "qr_payload": "[MOCK-QR] gewerbeanmeldung://stadt-koeln/2018-04-01/mehmet-yildiz [MOCK – Verwaltungsdemo, keine echten Daten]",
     "eudi_compatible": false,
     "watermark": "[MOCK]"
+  },
+  {
+    "id": "doc-schmidt-kindergeldbescheid-mia",
+    "owner_persona_id": "markus-schmidt",
+    "typ": "kindergeldbescheid",
+    "titel": "Kindergeldbescheid Mia Schmidt",
+    "ausstellende_behoerde_id": "familienkasse-nord-hamburg",
+    "ausgestellt_am": "@now-1d",
+    "kategorie": "bescheide",
+    "dokument_nr": "[MOCK] FK 234892 / 0017",
+    "qr_payload": "[MOCK-QR] kindergeld://fk-nord-hamburg/FK-234892-0017/mia-schmidt [MOCK – Verwaltungsdemo, keine echten Daten]",
+    "eudi_compatible": true,
+    "watermark": "[MOCK]",
+    "vorgang_id": "vg-schmidt-kindergeld-mia-2026"
+  },
+  {
+    "id": "doc-schmidt-kindergeldbescheid-felix",
+    "owner_persona_id": "markus-schmidt",
+    "typ": "kindergeldbescheid",
+    "titel": "Kindergeldbescheid Felix Schmidt",
+    "ausstellende_behoerde_id": "familienkasse-nord-hamburg",
+    "ausgestellt_am": "2022-02-11",
+    "kategorie": "bescheide",
+    "dokument_nr": "[MOCK] FK 234892 / 0009",
+    "qr_payload": "[MOCK-QR] kindergeld://fk-nord-hamburg/FK-234892-0009/felix-schmidt [MOCK – Verwaltungsdemo, keine echten Daten]",
+    "eudi_compatible": true,
+    "watermark": "[MOCK]"
+  },
+  {
+    "id": "doc-schmidt-lohnsteuerbescheinigung-2025",
+    "owner_persona_id": "markus-schmidt",
+    "typ": "lohnsteuerbescheinigung",
+    "titel": "Lohnsteuerbescheinigung 2025",
+    "ausstellende_behoerde_id": "arbeitgeber-hamburg-port-authority",
+    "ausgestellt_am": "2026-02-06",
+    "kategorie": "bescheide",
+    "dokument_nr": "[MOCK] LSTB-2025-HPA-0117",
+    "qr_payload": "[MOCK-QR] lstb://hamburg-port-authority/2025/markus-schmidt [MOCK – Verwaltungsdemo, keine echten Daten]",
+    "eudi_compatible": false,
+    "watermark": "[MOCK]"
+  },
+  {
+    "id": "doc-schmidt-kv-beitragsbescheinigung-2025",
+    "owner_persona_id": "markus-schmidt",
+    "typ": "krankenversicherungskarte",
+    "titel": "Beitragsbescheinigung Krankenversicherung 2025 (§ 10 EStG)",
+    "ausstellende_behoerde_id": "tk-hamburg",
+    "ausgestellt_am": "2026-02-18",
+    "kategorie": "bescheide",
+    "dokument_nr": "[MOCK] TK-BB-2025-88231574",
+    "qr_payload": "[MOCK-QR] kv-beitrag://tk-hamburg/2025/markus-schmidt?nr=88231574 [MOCK – Verwaltungsdemo, keine echten Daten]",
+    "eudi_compatible": false,
+    "watermark": "[MOCK]"
   }
 ]

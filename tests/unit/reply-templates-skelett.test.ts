@@ -17,6 +17,7 @@
  * Setup mirrors `tests/unit/reply-templates.test.ts`.
  */
 import { afterEach, beforeAll, beforeEach, describe, expect, test } from 'vitest';
+import { formatDateDe } from '@/lib/utils';
 
 class MemoryStorage implements Storage {
   private map = new Map<string, string>();
@@ -89,9 +90,6 @@ const ANCHORS = {
     letterId: 'letter-fa-steuerbescheid-2025',
     aktenzeichen: '[MOCK] 11/123/45678',
     behoerdenName: 'Finanzamt für Körperschaften I Berlin',
-    bescheidDatedAt: '2026-03-09',
-    bescheidDatedAtDe: '09.03.2026',
-    empfangenAmDe: '12.03.2026',
   },
   schmidt: {
     personaId: 'markus-schmidt',
@@ -100,9 +98,6 @@ const ANCHORS = {
     letterId: 'letter-schmidt-fa-steuerbescheid-2024',
     aktenzeichen: '[MOCK] 22/345/12345',
     behoerdenName: 'Finanzamt Hamburg-Eimsbüttel',
-    bescheidDatedAt: '2026-05-08',
-    bescheidDatedAtDe: '08.05.2026',
-    empfangenAmDe: '13.05.2026',
   },
   mehmet: {
     personaId: 'mehmet-yildiz',
@@ -111,10 +106,12 @@ const ANCHORS = {
     letterId: 'letter-mehmet-fa-steuerbescheid-2024',
     aktenzeichen: '[MOCK] 217/5732/00088',
     behoerdenName: 'Finanzamt Köln-Mitte',
-    bescheidDatedAt: '2026-05-04',
-    bescheidDatedAtDe: '04.05.2026',
-    empfangenAmDe: '08.05.2026',
   },
+  // Die Empfangs-/Bescheid-Daten werden NICHT mehr gepinnt: die Schmidt-/
+  // Mehmet-Bescheid-Briefe tragen seit der Schmidt-Content-Welle (2026-07-30)
+  // @now-Sentinels und lösen Seed-Anker-relativ auf — die Tests leiten die
+  // erwarteten DE-Strings zur Laufzeit aus dem geseedeten Brief ab (derselbe
+  // `formatDateDe`-Pfad, den der Resolver nutzt).
 } as const;
 
 const LEFTOVER_TOKEN_RE = /\{[a-zA-Z_][a-zA-Z0-9_]*\}/;
@@ -142,6 +139,15 @@ describe('V1.5.1 Skelett-Templates — Resolver-Round-Trip × 3 Personas', () =>
 
       for (const templateId of SKELETT_TEMPLATES) {
         test(`${templateId} resolves Stammdaten + Aktenzeichen + Behörde + datum_bescheid`, async () => {
+          // Erwartete Daten aus dem GESEEDETEN Brief ableiten (Sentinel-Briefe
+          // lösen Seed-Anker-relativ auf, siehe ANCHORS-Kommentar).
+          const letter = await api.getLetterById(anchor.letterId);
+          if (!letter?.bescheid_dated_at) {
+            throw new Error(`Anchor-Letter ${anchor.letterId} ohne bescheid_dated_at`);
+          }
+          const bescheidDatedAtDe = formatDateDe(letter.bescheid_dated_at);
+          const empfangenAmDe = formatDateDe(letter.empfangen_am);
+
           const body = await api.resolveReplyBody({
             personaId: anchor.personaId,
             letterId: anchor.letterId,
@@ -155,8 +161,8 @@ describe('V1.5.1 Skelett-Templates — Resolver-Round-Trip × 3 Personas', () =>
 
           // {datum_bescheid} muss aus letter.bescheid_dated_at resolven, NICHT
           // aus letter.empfangen_am — das ist die V1.5.1-Hard-Line § 11.9.
-          expect(body).toContain(anchor.bescheidDatedAtDe);
-          expect(body).not.toContain(anchor.empfangenAmDe);
+          expect(body).toContain(bescheidDatedAtDe);
+          expect(body).not.toContain(empfangenAmDe);
 
           // Keine offenen `{token}`-Patterns:
           expect(body).not.toMatch(LEFTOVER_TOKEN_RE);
@@ -250,17 +256,19 @@ describe('V1.5.1 Skelett-Templates — Fallback bei fehlendem bescheid_dated_at'
 describe('V1.5.0 Resolver — Spec § 11.9 Hard-Line: {datum_letter} unverändert', () => {
   test('informative_rueckmeldung resolves {datum_letter} aus empfangen_am, nicht bescheid_dated_at', async () => {
     switchToPersona('mehmet-yildiz');
-    // letter-mehmet-fa-steuerbescheid-2024 hat
-    //   empfangen_am 2026-05-08 (08.05.2026)
-    //   bescheid_dated_at 2026-05-04 (04.05.2026)
-    // V1.5.0-Templates verweisen auf {datum_letter} = empfangen_am.
+    // letter-mehmet-fa-steuerbescheid-2024 trägt @now-Sentinels (empfangen_am
+    // @now-6d, bescheid_dated_at @now-10d) — erwartete DE-Strings aus dem
+    // geseedeten Brief ableiten. V1.5.0-Templates verweisen auf
+    // {datum_letter} = empfangen_am.
+    const letter = await api.getLetterById('letter-mehmet-fa-steuerbescheid-2024');
+    if (!letter?.bescheid_dated_at) throw new Error('Anchor-Letter ohne bescheid_dated_at');
     const body = await api.resolveReplyBody({
       personaId: 'mehmet-yildiz',
       letterId: 'letter-mehmet-fa-steuerbescheid-2024',
       templateId: 'informative_rueckmeldung',
       userInput: { rueckmeldung_text: 'Sanity-check.' },
     });
-    expect(body).toContain('08.05.2026'); // empfangen_am-DE
-    expect(body).not.toContain('04.05.2026'); // NICHT bescheid_dated_at
+    expect(body).toContain(formatDateDe(letter.empfangen_am)); // empfangen_am-DE
+    expect(body).not.toContain(formatDateDe(letter.bescheid_dated_at)); // NICHT bescheid_dated_at
   });
 });

@@ -1498,6 +1498,8 @@
   },
   "kinderzuschlagRadar": {
     "title": "You are entitled to child supplement (Kinderzuschlag)",
+    "collapsed_title": "Possible child-supplement (Kinderzuschlag) entitlement detected",
+    "collapse": "Collapse notice",
     "lead": "You are entitled to {range} in child supplement (Kinderzuschlag) that you are not currently receiving.",
     "betrag_range": "estimated approx. {min} – {max} € / month",
     "warum_title": "Why we suspect this:",

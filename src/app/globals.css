@@ -1823,3 +1823,30 @@ span.ll-oo-qualifier { white-space: nowrap; }
     font-size: 0.8125rem;
   }
 }
+
+/* ── whx-Disclosure-Zeile (Wohngeld + Kinderzuschlag): Dark-Hover-Fix ─────────
+   prototype-v2.css (FROZEN) hovert die eingeklappte Zeile mit --green-50 —
+   der Token flippt im Dark-Theme NICHT, der helle Mint-Grund löscht die helle
+   Ink-Schrift aus. --surface-soft ist der designierte Dark-Hover-Fill (flippt
+   im .dark-Block); der Chevron wechselt auf --color-primary statt des dunklen
+   --green-700. Unlayered + 3-Klassen-Spezifität → gewinnt gegen die Quelle. */
+.dark .whx-collapsed:hover {
+  background: var(--surface-soft);
+}
+.dark .whx-collapsed:hover .whx-chev {
+  color: var(--color-primary);
+}
+
+/* ── Vorgänge-Big-Card: Stepper-Spaltenzahl == Stationenzahl ─────────────────
+   prototype-v2.css (FROZEN) rastert .steps hart auf repeat(5, 1fr) — die
+   generalisierte Featured-Card (Schmidt: 3 Kindergeld-Stationen) ließe damit
+   zwei Leerspalten rechts stehen („выглядит неполно"). Die View setzt
+   --vg-steps inline; .vg-big .steps (0,2,0) schlägt die frozen (0,1,0)-Regel.
+   Bewusst im selben @container-Fenster wie die Quelle: unter 540px greift
+   weiterhin deren vertikale Ein-Spalten-Liste, ≤767px macht .m-shelf die
+   Zeile ohnehin zum Flex-Scroller (grid-template inert). */
+@container fortschritt (min-width: 540px) {
+  .vg-big .steps {
+    grid-template-columns: repeat(var(--vg-steps, 5), minmax(0, 1fr));
+  }
+}

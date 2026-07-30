@@ -78,7 +78,24 @@ const FORMAT_RULES: FormatRule[] = [
   {
     name: 'Familienkasse — Kindergeldnummer NNNFKNNNNNN',
     regex: new RegExp(`^${MOCK}\\d{3}FK\\d{6}$`),
-    behoerdeIds: ['familienkasse-berlin-brandenburg'],
+    // Die Kindergeldnummer ist kassenübergreifend gleich formatiert — Familie
+    // Schmidt läuft über die örtlich zuständige Familienkasse Nord (Hamburg).
+    behoerdeIds: ['familienkasse-berlin-brandenburg', 'familienkasse-nord-hamburg'],
+  },
+  {
+    name: 'BZSt — IdNr-Mitteilung „IdNr NN NNN NNN NNN" (§ 139b AO)',
+    regex: new RegExp(`^${MOCK}IdNr \\d{2} \\d{3} \\d{3} \\d{3}$`),
+    behoerdeIds: ['bzst'],
+  },
+  {
+    name: 'Bezirksamt Hamburg (Kundenzentrum) — E-<BEREICH>-YYYY-NNNNN',
+    regex: new RegExp(`^${MOCK}E-[A-Z]{2,5}-\\d{4}-\\d{5}$`),
+    behoerdeIds: ['bezirksamt-hamburg-eimsbuettel'],
+  },
+  {
+    name: 'Elterngeldstelle Hamburg — EG-HH-YYYY-NNNNNN',
+    regex: new RegExp(`^${MOCK}EG-HH-\\d{4}-\\d{6}$`),
+    behoerdeIds: ['elterngeldstelle-hamburg-eimsbuettel'],
   },
   {
     name: 'Beitragsservice — Beitragsnummer NNN NNN NNN (mit Leerzeichen)',

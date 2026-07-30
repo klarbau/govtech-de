@@ -46,7 +46,7 @@ export const kindergeldConfig: LebenslageConfig = {
   // antragslos: das einzige nutzerberührte Feld ist die IBAN-Bestätigung (eID).
   //
   // Kind-Invariante: `familie.kinder[0]` = das JÜNGSTE Kind (das neu geborene,
-  // für das die Erstauszahlung läuft — Familie Schmidt: Mia, *2026-06-18), NICHT
+  // für das die Erstauszahlung läuft — Familie Schmidt: Mia, *2026-07-16), NICHT
   // das ältere Geschwisterkind (Felix, *2022-01-15). Der positionale `[0]`-Zugriff
   // ist bewusst (Frontend-`resolvePath` kann nur numerische Indizes); die
   // „jüngstes zuerst"-Garantie erzwingt `withNewestChildFirst()` in

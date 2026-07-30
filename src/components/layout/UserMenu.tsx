@@ -1,15 +1,17 @@
 'use client';
 
+import * as React from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { Menu as MenuPrimitive } from '@base-ui/react/menu';
 import { ChevronDown, LogOut, Shield, User, UserRound, Users } from 'lucide-react';
 
+import { api } from '@/lib/mock-backend/api';
 import { cn } from '@/lib/utils';
 import { useStripBaseUiFocusGuardAriaHidden } from '@/components/ui/use-strip-base-ui-focus-guard-aria-hidden';
 
 interface UserMenuProps {
-  /** Active persona name. Falls back to the i18n demo name. */
+  /** Active persona name. Falls back to the aktive Persona / i18n demo name. */
   personaName?: string;
 }
 
@@ -17,10 +19,33 @@ interface UserMenuProps {
  * Literal `.gt-user-pill` from the HTML prototype: an outlined pill holding
  * the avatar circle (`.av`), the persona name, and a chevron. Opens the
  * existing profile / switch-persona / logout menu on click.
+ *
+ * Ohne `personaName`-Prop lädt die Pille den Namen der AKTIVEN Persona aus dem
+ * Mock-Backend (der Server-TopNav kennt die localStorage-Persona nicht) — der
+ * frühere statische i18n-Fallback zeigte für Markus/Mehmet fälschlich „Anna
+ * Petrov" an. Bis zur Hydration bleibt der i18n-Demo-Name als Platzhalter.
  */
 export function UserMenu({ personaName }: UserMenuProps) {
   const t = useTranslations('shell.user');
-  const name = personaName ?? t('demo_name');
+  const [profileName, setProfileName] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (personaName) return;
+    let cancelled = false;
+    void api
+      .getProfile()
+      .then((p) => {
+        if (!cancelled) setProfileName(`${p.vorname} ${p.nachname}`);
+      })
+      .catch(() => {
+        // Mock-Backend nicht gebootet (z. B. Landing) — i18n-Fallback bleibt.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [personaName]);
+
+  const name = personaName ?? profileName ?? t('demo_name');
 
   return (
     <MenuPrimitive.Root>

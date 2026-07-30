@@ -9,6 +9,7 @@ import { ArrowLeft, FileText, Fingerprint, Info, ShieldCheck, UploadCloud } from
 import { EidConfirmDialog } from '@/components/umzug/EidConfirmDialog';
 import { MobileStickyCta } from '@/components/shared/MobileStickyCta';
 import { api } from '@/lib/mock-backend';
+import { markVorgangFresh } from '@/lib/vorgang-fresh';
 import type {
   CascadeStepConfig,
   LebenslageConfig,
@@ -218,6 +219,7 @@ function AntragFormReady({
         const { vorgangId } = await api.starteLebenslage(config.slug, formValues, grantedConsentIds, {
           eidAuthorizedAt: new Date().toISOString(),
         });
+        markVorgangFresh(vorgangId);
         router.push(`/vorgaenge/${encodeURIComponent(vorgangId)}`);
       } catch (e) {
         setError(e instanceof Error ? e.message : td('submit_error'));

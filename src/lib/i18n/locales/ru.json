@@ -1498,6 +1498,8 @@
   },
   "kinderzuschlagRadar": {
     "title": "Вам полагается детская надбавка (Kinderzuschlag)",
+    "collapsed_title": "Обнаружено возможное право на детскую надбавку (Kinderzuschlag)",
+    "collapse": "Свернуть уведомление",
     "lead": "Вам полагается {range} детской надбавки (Kinderzuschlag), которую Вы сейчас не получаете.",
     "betrag_range": "ориентировочно ок. {min} – {max} € / месяц",
     "warum_title": "Почему мы это предполагаем:",

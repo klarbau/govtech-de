@@ -164,6 +164,9 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
   const [profile, setProfile] = React.useState<Persona | null>(null);
   const [newDocIds, setNewDocIds] = React.useState<Set<string>>(() => new Set());
   const [loaded, setLoaded] = React.useState(false);
+  const [vorgangTitelById, setVorgangTitelById] = React.useState<
+    Record<string, string>
+  >({});
 
   const now = React.useMemo(() => new Date(nowIso), [nowIso]);
 
@@ -171,16 +174,20 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
     let cancelled = false;
     void (async () => {
       try {
-        const [data, behoerden, prof] = await Promise.all([
+        const [data, behoerden, prof, vorgaenge] = await Promise.all([
           api.getDocuments(),
           api.getBehoerden(),
           api.getProfile().catch(() => null),
+          api.getVorgaenge().catch(() => []),
         ]);
         if (cancelled) return;
         setDocs(data);
         setProfile(prof);
         setBehoerdenById(
           Object.fromEntries(behoerden.map((b) => [b.id, b])),
+        );
+        setVorgangTitelById(
+          Object.fromEntries(vorgaenge.map((v) => [v.id, v.titel])),
         );
       } catch {
         if (!cancelled) setDocs([]);
@@ -543,12 +550,17 @@ export function DokumenteView({ nowIso }: { nowIso: string }) {
                                     {doc.watermark}
                                   </span>
                                 )}
-                                {doc.vorgang_id ? (
+                                {doc.vorgang_id && vorgangTitelById[doc.vorgang_id] ? (
+                                  /* Kanonische Akte-URL + echter Vorgangs-Titel —
+                                     das frühere hardcodierte „Umzug"-Label griff
+                                     bei Kindergeld-/Geburts-Dokumenten falsch. */
                                   <Link
-                                    href={`/vorgaenge/umzug/${doc.vorgang_id}`}
+                                    href={`/vorgaenge/${doc.vorgang_id}`}
                                     className="gehoert-zu-chip"
                                   >
-                                    {tShared('gehoert_zu', { vorgang: 'Umzug' })}
+                                    {tShared('gehoert_zu', {
+                                      vorgang: vorgangTitelById[doc.vorgang_id],
+                                    })}
                                   </Link>
                                 ) : null}
                               </div>

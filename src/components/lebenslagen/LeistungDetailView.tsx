@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 
 import { api } from '@/lib/mock-backend';
+import { markVorgangFresh } from '@/lib/vorgang-fresh';
 import type { LebenslageConfig } from '@/lib/mock-backend/lebenslagen/types';
 import type { Behoerde, Persona } from '@/types';
 import { formatDateDe } from '@/lib/utils';
@@ -212,6 +213,7 @@ function DetailReady({
     setStartError(false);
     try {
       const { vorgangId } = await api.starteLebenslage(config.slug, {}, []);
+      markVorgangFresh(vorgangId);
       router.push(`/vorgaenge/${encodeURIComponent(vorgangId)}`);
     } catch {
       setStartError(true);

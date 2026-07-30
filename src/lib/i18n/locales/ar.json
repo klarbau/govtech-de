@@ -1498,6 +1498,8 @@
   },
   "kinderzuschlagRadar": {
     "title": "يحقّ لك الحصول على علاوة الأطفال (Kinderzuschlag)",
+    "collapsed_title": "تم اكتشاف استحقاق محتمل لعلاوة الأطفال (Kinderzuschlag)",
+    "collapse": "طيّ الإشعار",
     "lead": "يحقّ لك {range} من علاوة الأطفال (Kinderzuschlag) لا تتلقّاها حالياً.",
     "betrag_range": "بتقدير نحو {min} – {max} € / شهرياً",
     "warum_title": "لماذا نرجّح ذلك:",

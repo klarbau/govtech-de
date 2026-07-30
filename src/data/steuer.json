@@ -94,5 +94,101 @@
       },
       "watermark": "[MOCK]"
     }
+  },
+  "markus-schmidt": {
+    "2025": {
+      "steuerjahr": 2025,
+      "status": "entwurf",
+      "voraussichtliche_erstattung_cent": 68400,
+      "fortschritt_aktiver_schritt": 1,
+      "datenquellen": [
+        {
+          "id": "quelle-lohnsteuer",
+          "label_i18n_key": "steuer.quelle.lohnsteuer",
+          "herkunft": "Hamburg Port Authority",
+          "document_id": "doc-schmidt-lohnsteuerbescheinigung-2025"
+        },
+        {
+          "id": "quelle-kind",
+          "label_i18n_key": "steuer.quelle.kind",
+          "herkunft": "familienkasse-nord-hamburg",
+          "document_id": "doc-schmidt-kindergeldbescheid-felix"
+        },
+        {
+          "id": "quelle-krankenkasse",
+          "label_i18n_key": "steuer.quelle.krankenkasse",
+          "herkunft": "tk-hamburg",
+          "document_id": "doc-schmidt-kv-beitragsbescheinigung-2025"
+        },
+        {
+          "id": "quelle-bekannt",
+          "label_i18n_key": "steuer.quelle.bekannt",
+          "herkunft": "finanzamt-hamburg-eimsbuettel"
+        }
+      ],
+      "bereiche": [
+        {
+          "id": "bereich-einkommen",
+          "name_i18n_key": "steuer.bereich.einkommen",
+          "betrag_cent": 5480000,
+          "status": "geprueft"
+        },
+        {
+          "id": "bereich-werbungskosten",
+          "name_i18n_key": "steuer.bereich.werbungskosten",
+          "betrag_cent": 174000,
+          "status": "ergaenzen"
+        },
+        {
+          "id": "bereich-vorsorge",
+          "name_i18n_key": "steuer.bereich.vorsorge",
+          "betrag_cent": 512000,
+          "status": "geprueft"
+        },
+        {
+          "id": "bereich-kinder",
+          "name_i18n_key": "steuer.bereich.kinder",
+          "betrag_cent": 250200,
+          "status": "geprueft"
+        },
+        {
+          "id": "bereich-aussergewoehnlich",
+          "name_i18n_key": "steuer.bereich.aussergewoehnlich",
+          "status": "nicht_vorhanden"
+        },
+        {
+          "id": "bereich-sonderausgaben",
+          "name_i18n_key": "steuer.bereich.sonderausgaben",
+          "betrag_cent": 42000,
+          "status": "geprueft"
+        }
+      ],
+      "fristen": [
+        {
+          "label_i18n_key": "steuer.frist.abgabe",
+          "datum": "@now+62d"
+        },
+        {
+          "label_i18n_key": "steuer.frist.einspruch",
+          "datum": "@now+24d"
+        }
+      ],
+      "verwendete_nachweise_document_ids": [
+        "doc-schmidt-lohnsteuerbescheinigung-2025",
+        "doc-schmidt-kindergeldbescheid-felix",
+        "doc-schmidt-kv-beitragsbescheinigung-2025",
+        "doc-felix-geburtsurkunde"
+      ],
+      "datenschutz": {
+        "verarbeitete_daten_i18n_keys": [
+          "steuer.datenschutz.daten.lohn",
+          "steuer.datenschutz.daten.kv",
+          "steuer.datenschutz.daten.kind"
+        ],
+        "rechtsgrundlage": "§ 150 AO i.V.m. § 31 EStG",
+        "empfaenger_behoerde_id": "finanzamt-hamburg-eimsbuettel"
+      },
+      "watermark": "[MOCK]"
+    }
   }
 }

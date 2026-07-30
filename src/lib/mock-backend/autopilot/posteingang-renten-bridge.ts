@@ -134,12 +134,42 @@ const ANNA_RENTENINFO_DEFAULT: Omit<
 };
 
 /**
+ * Eckdaten-Set für den Schmidt-Mock-Letter `letter-renteninfo-schmidt-2026`.
+ * Werte spiegeln 1:1 die fünf Pflicht-Inhalte aus dem Brief-Body UND den
+ * Persona-Default `markus-schmidt.renten_eckdaten_v1_1` (gleiche Quelle —
+ * der Brief IST die Renteninformation, aus der der Seed-Bestand stammt).
+ */
+const MARKUS_RENTENINFO_DEFAULT: Omit<
+  RentenEckdaten,
+  'quelle_letter_id' | 'abgelegt_am'
+> = {
+  grundlage_kurzauszug: {
+    beitragszeit_von: '2010-09',
+    beitragszeit_bis: '2025-12',
+    entgeltpunkte_aktuell: 22.4,
+  },
+  em_rente_prognose_eur_monat: 988.55,
+  regelalter_prognose_eur_monat: 1842.3,
+  anpassungs_wirkung: {
+    beispiel_prozent_p_a: 2.0,
+    plus_eur_monat: 1480,
+  },
+  beitragsuebersicht: {
+    jahr: '2025',
+    gesamt_eur: 11820,
+    versicherter_anteil_eur: 5910,
+    arbeitgeber_anteil_eur: 5910,
+  },
+  stichtag: '2026-04-12',
+};
+
+/**
  * Resolved `RentenEckdaten` aus einem Letter.
  *
  * V1.1 nutzt einen statischen Lookup auf die `letter.id`, weil die Werte
  * im Brief-Body als deutscher Fließtext stehen — eine echte LLM-Extraktion
- * wäre aufwendig und über die Demo-Scope hinaus. Der Mock-Letter
- * `letter-renteninfo-anna-2026-05` ist die einzige V1.1-Quelle.
+ * wäre aufwendig und über die Demo-Scope hinaus. Quellen: die Mock-Letters
+ * `letter-renteninfo-anna-2026-05` und `letter-renteninfo-schmidt-2026`.
  *
  * Bei unbekannter Letter-ID: deterministische Sentinel-Werte (`0`-Eckdaten
  * mit `quelle_letter_id` aus dem Letter), damit das Frontend trotzdem
@@ -151,6 +181,9 @@ function resolveEckdatenFromLetter(letter: Letter): Omit<
 > {
   if (letter.id === 'letter-renteninfo-anna-2026-05') {
     return ANNA_RENTENINFO_DEFAULT;
+  }
+  if (letter.id === 'letter-renteninfo-schmidt-2026') {
+    return MARKUS_RENTENINFO_DEFAULT;
   }
   // Fallback — sollte für V1.1 nicht aufgerufen werden, weil keine weiteren
   // renteninfo-Letters geseedet sind. Domain-Doc Correction 3 verlangt 5

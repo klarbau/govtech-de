@@ -15,6 +15,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { api } from '@/lib/mock-backend';
+import { markVorgangFresh } from '@/lib/vorgang-fresh';
 import type { ErstelleVorgangAusBriefTyp } from '@/lib/mock-backend/api';
 import type { Letter } from '@/types';
 
@@ -82,6 +83,7 @@ export function NeuerVorgangAusBriefModal({
       toast.success(t('toast_success'));
       onOpenChange(false);
       onCreated?.(result.vorgangId);
+      markVorgangFresh(result.vorgangId);
       router.push(`/vorgaenge/${result.vorgangId}`);
     } catch {
       toast.error(t('toast_error'));

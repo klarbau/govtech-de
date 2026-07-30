@@ -279,7 +279,7 @@
           "id": "mia-schmidt",
           "vorname": "Mia",
           "nachname": "Schmidt",
-          "geburtsdatum": "2026-06-18",
+          "geburtsdatum": "2026-07-16",
           "staatsangehoerigkeit": "deutsch",
           "adresse": {
             "strasse": "Eppendorfer Weg",
@@ -374,7 +374,7 @@
         "arbeitgeber_anteil_eur": 5910
       },
       "stichtag": "2026-04-12",
-      "quelle_letter_id": "letter-renteninfo-schmidt-seed-default",
+      "quelle_letter_id": "letter-renteninfo-schmidt-2026",
       "abgelegt_am": "2026-04-12T08:00:00.000Z"
     },
     "pflegegrad_v1_1": {
@@ -573,7 +573,9 @@
             "klasse": "C1",
             "erteilt_am": "2015-06-08",
             "gueltig_bis": "2030-01-19",
-            "schluesselzahlen": ["95"]
+            "schluesselzahlen": [
+              "95"
+            ]
           },
           {
             "klasse": "BE",

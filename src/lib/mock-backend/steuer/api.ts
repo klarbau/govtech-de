@@ -37,12 +37,20 @@ export const steuerApi: SteuerApi = {
       const bucket = loadSteuerBucket();
       const perPersona = bucket[personaId];
       const eintrag = perPersona?.[String(steuerjahr)];
-      if (!eintrag) {
+      if (eintrag) return eintrag;
+      // Personas führen unterschiedliche Entwurfs-Jahre (Anna: 2024 offen;
+      // Markus: 2024 beschieden → Entwurf 2025). Die Page kennt die Persona
+      // nicht (localStorage erst nach Hydration) und fragt ein Default-Jahr an
+      // — fehlt es, liefern wir das NEUESTE vorhandene Jahr der Persona statt
+      // eines Fehlers; die Anzeige nutzt `uebersicht.steuerjahr`.
+      const jahre = Object.keys(perPersona ?? {}).sort((a, b) => Number(b) - Number(a));
+      const neuestes = jahre[0] ? perPersona?.[jahre[0]] : undefined;
+      if (!neuestes) {
         throw new MockBackendError(
           `Kein Steuer-Entwurf für Persona "${personaId}", Jahr ${steuerjahr}.`,
           { code: 'STEUER_JAHR_NOT_FOUND', retryable: false },
         );
       }
-      return eintrag;
+      return neuestes;
     }),
 };

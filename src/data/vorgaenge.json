@@ -56,7 +56,10 @@
       }
     ],
     "fristen": [
-      { "typ": "bmg_17", "datum": "2024-09-29" }
+      {
+        "typ": "bmg_17",
+        "datum": "2024-09-29"
+      }
     ],
     "angelegt_am": "2024-09-15T19:00:00.000Z",
     "abgeschlossen_am": "2024-10-30T11:15:00.000Z",
@@ -101,7 +104,11 @@
         "aktion": "Anmeldung neuer Wohnort nach § 17 BMG",
         "rechtsgrundlage": "§ 17 Abs. 1 BMG (Voraussetzung: § 19 BMG erfüllt)",
         "agent_label": "Wir melden Sie beim Einwohnermeldeamt an",
-        "datenkategorien": ["neue_anschrift", "einzugsdatum", "familienstand"],
+        "datenkategorien": [
+          "neue_anschrift",
+          "einzugsdatum",
+          "familienstand"
+        ],
         "status": "confirmed",
         "started_at": "@now-1d",
         "completed_at": "@now-1d",
@@ -114,7 +121,10 @@
         "aktion": "Mitteilung örtliche Zuständigkeit nach § 19 AO",
         "rechtsgrundlage": "§ 19 AO i.V.m. § 36 BMG",
         "agent_label": "Wir melden Ihre neue Anschrift an Ihr Wohnsitz-Finanzamt",
-        "datenkategorien": ["neue_anschrift", "steuer_id"],
+        "datenkategorien": [
+          "neue_anschrift",
+          "steuer_id"
+        ],
         "status": "confirmed",
         "started_at": "@now-1d",
         "completed_at": "@now-1d",
@@ -127,7 +137,10 @@
         "aktion": "Adressänderung Fahrzeugschein nach § 15 FZV",
         "rechtsgrundlage": "§ 15 FZV + § 18 PAuswG eID",
         "agent_label": "Wir aktualisieren die Anschrift in Ihren Fahrzeugpapieren",
-        "datenkategorien": ["neue_anschrift", "kennzeichen"],
+        "datenkategorien": [
+          "neue_anschrift",
+          "kennzeichen"
+        ],
         "status": "confirmed",
         "started_at": "@now-1d",
         "completed_at": "@now-1d",
@@ -141,7 +154,11 @@
         "aktion": "Adressänderung Versichertenkonto",
         "rechtsgrundlage": "Art. 6 Abs. 1 lit. a DSGVO i.V.m. § 206 SGB V",
         "agent_label": "Wir aktualisieren Ihre Adresse bei Ihrer Krankenkasse",
-        "datenkategorien": ["neue_anschrift", "einzugsdatum", "versichertennummer"],
+        "datenkategorien": [
+          "neue_anschrift",
+          "einzugsdatum",
+          "versichertennummer"
+        ],
         "status": "confirmed",
         "started_at": "@now-1d",
         "completed_at": "@now-1d",
@@ -155,7 +172,11 @@
         "aktion": "Adressänderung Beitragskonto nach § 11 Abs. 4 RBStV",
         "rechtsgrundlage": "§ 11 Abs. 4 RBStV i.V.m. § 36 BMG",
         "agent_label": "Wir melden Ihre neue Anschrift dem Beitragsservice",
-        "datenkategorien": ["neue_anschrift", "einzugsdatum", "beitragsnummer"],
+        "datenkategorien": [
+          "neue_anschrift",
+          "einzugsdatum",
+          "beitragsnummer"
+        ],
         "status": "confirmed",
         "started_at": "@now-1d",
         "completed_at": "@now-1d",
@@ -168,7 +189,10 @@
         "aktion": "Adressänderung Personalstammdaten / Lohnabrechnung",
         "rechtsgrundlage": "Art. 6 Abs. 1 lit. b DSGVO — Durchführung des Arbeitsverhältnisses",
         "agent_label": "Wir informieren Ihren Arbeitgeber über Ihre neue Anschrift",
-        "datenkategorien": ["neue_anschrift", "einzugsdatum"],
+        "datenkategorien": [
+          "neue_anschrift",
+          "einzugsdatum"
+        ],
         "status": "confirmed",
         "started_at": "@now-1d",
         "completed_at": "@now-1d",
@@ -183,7 +207,10 @@
         "aktion": "Veränderungsmitteilung Adresse / Zuständigkeitswechsel",
         "rechtsgrundlage": "§§ 67/68 EStG + § 18 PAuswG eID",
         "agent_label": "Wir melden Ihre neue Anschrift der Familienkasse",
-        "datenkategorien": ["neue_anschrift", "kindergeldnummer"],
+        "datenkategorien": [
+          "neue_anschrift",
+          "kindergeldnummer"
+        ],
         "status": "confirmed",
         "started_at": "@now-1d",
         "completed_at": "@now-1d",
@@ -196,7 +223,10 @@
         "aktion": "Adressaktualisierung Aufenthaltstitel (Termin angeboten)",
         "rechtsgrundlage": "§ 18 PAuswG",
         "agent_label": "Wir bereiten die Adressaktualisierung Ihres Aufenthaltstitels vor und bieten einen Termin an",
-        "datenkategorien": ["neue_anschrift", "dokumentennummer"],
+        "datenkategorien": [
+          "neue_anschrift",
+          "dokumentennummer"
+        ],
         "status": "confirmed",
         "started_at": "@now-1d",
         "completed_at": "@now-1d",
@@ -205,7 +235,10 @@
       }
     ],
     "fristen": [
-      { "typ": "bmg_17", "datum": "@now-3d" }
+      {
+        "typ": "bmg_17",
+        "datum": "@now-3d"
+      }
     ],
     "angelegt_am": "@now-1d",
     "abgeschlossen_am": "@now-1d",
@@ -235,7 +268,9 @@
     "typ": "aufenthaltstitel-verlaengerung",
     "titel": "Verlängerung Aufenthaltstitel § 18g AufenthG",
     "status": "angelegt",
-    "beteiligte_behoerden_ids": ["abh-berlin-lea"],
+    "beteiligte_behoerden_ids": [
+      "abh-berlin-lea"
+    ],
     "schritte": [
       {
         "id": "step-aufenthalt-vorbereitung",
@@ -245,13 +280,24 @@
         "rechtsgrundlage": "§ 18g AufenthG",
         "status": "needs_eid",
         "requires_eid": true,
-        "datenkategorien": ["Beschäftigungsnachweis", "Einkommensnachweis", "Meldebestätigung", "Aufenthaltsdaten"],
+        "datenkategorien": [
+          "Beschäftigungsnachweis",
+          "Einkommensnachweis",
+          "Meldebestätigung",
+          "Aufenthaltsdaten"
+        ],
         "started_at": "@now-30d"
       }
     ],
     "fristen": [
-      { "typ": "abh_termin_empfehlung", "datum": "2027-05-14" },
-      { "typ": "ablauf_aufenthaltstitel", "datum": "2027-09-14" }
+      {
+        "typ": "abh_termin_empfehlung",
+        "datum": "2027-05-14"
+      },
+      {
+        "typ": "ablauf_aufenthaltstitel",
+        "datum": "2027-09-14"
+      }
     ],
     "angelegt_am": "@now-30d",
     "persona_id": "anna-petrov"
@@ -261,7 +307,9 @@
     "typ": "familienkasse",
     "titel": "Kindergeld aktualisieren",
     "status": "in_pruefung",
-    "beteiligte_behoerden_ids": ["familienkasse-berlin-brandenburg"],
+    "beteiligte_behoerden_ids": [
+      "familienkasse-berlin-brandenburg"
+    ],
     "schritte": [
       {
         "id": "step-kindergeld-2026-nachweis-schulbescheinigung",
@@ -271,11 +319,18 @@
         "rechtsgrundlage": "§ 68 EStG",
         "status": "needs_eid",
         "requires_eid": true,
-        "datenkategorien": ["Meldebestätigung"],
+        "datenkategorien": [
+          "Meldebestätigung"
+        ],
         "started_at": "@now-2d"
       }
     ],
-    "fristen": [{ "typ": "nachweis", "datum": "@now+5d" }],
+    "fristen": [
+      {
+        "typ": "nachweis",
+        "datum": "@now+5d"
+      }
+    ],
     "angelegt_am": "@now-2d",
     "persona_id": "anna-petrov",
     "context": {
@@ -315,7 +370,11 @@
         "rechtsgrundlage": "§ 7 BEEG",
         "status": "needs_eid",
         "requires_eid": true,
-        "datenkategorien": ["Einkommensnachweise", "Geburtsdaten Mia", "Bankverbindung"],
+        "datenkategorien": [
+          "Einkommensnachweise",
+          "Geburtsdaten Mia",
+          "Bankverbindung"
+        ],
         "started_at": "@now-1d"
       },
       {
@@ -326,11 +385,20 @@
         "rechtsgrundlage": "§ 10 SGB V",
         "status": "self_assigned",
         "requires_consent": true,
-        "datenkategorien": ["Geburtsdaten Mia", "Versichertennummer", "Familienangehörigkeit"],
+        "datenkategorien": [
+          "Geburtsdaten Mia",
+          "Versichertennummer",
+          "Familienangehörigkeit"
+        ],
         "started_at": "@now-1d"
       }
     ],
-    "fristen": [{ "typ": "nachweis", "datum": "@now+14d" }],
+    "fristen": [
+      {
+        "typ": "nachweis",
+        "datum": "@now+14d"
+      }
+    ],
     "angelegt_am": "@now-2d",
     "persona_id": "markus-schmidt",
     "context": {
@@ -364,6 +432,21 @@
         "completed_at": "@now-2d"
       },
       {
+        "id": "step-mia-kg-bzst",
+        "behoerde_id": "bzst",
+        "block": "A",
+        "aktion": "Steuerliche Identifikationsnummer für Mia zuteilen",
+        "rechtsgrundlage": "§ 139b AO",
+        "agent_label": "Das BZSt teilt die Steuer-ID automatisch zu — Grundlage für die Familienkasse",
+        "datenkategorien": [
+          "identitaet"
+        ],
+        "status": "confirmed",
+        "started_at": "@now-2d",
+        "completed_at": "@now-1d",
+        "letter_id": "letter-schmidt-bzst-steueridnr-mia"
+      },
+      {
         "id": "step-mia-kg-familienkasse",
         "behoerde_id": "familienkasse-nord-hamburg",
         "block": "D",
@@ -378,11 +461,28 @@
         "completed_at": "@now-2d",
         "eid_confirmed_at": "@now-2d",
         "zukunft": true
+      },
+      {
+        "id": "step-mia-kg-bescheid",
+        "behoerde_id": "familienkasse-nord-hamburg",
+        "block": "A",
+        "aktion": "Kindergeld festsetzen — Bescheid in Ihrem Posteingang",
+        "rechtsgrundlage": "§ 66, § 70 EStG",
+        "agent_label": "Die Familienkasse setzt das Kindergeld fest — der Bescheid landet in Ihrem Posteingang",
+        "datenkategorien": [
+          "identitaet",
+          "bankverbindung"
+        ],
+        "status": "confirmed",
+        "started_at": "@now-1d",
+        "completed_at": "@now-1d",
+        "letter_id": "letter-schmidt-kindergeldbescheid-mia",
+        "zukunft": true
       }
     ],
     "fristen": [],
     "angelegt_am": "@now-2d",
-    "abgeschlossen_am": "@now-2d",
+    "abgeschlossen_am": "@now-1d",
     "persona_id": "markus-schmidt",
     "context": {
       "slug": "kindergeld",
@@ -395,7 +495,9 @@
     "typ": "steuer-jahr",
     "titel": "Steuererklärung 2024",
     "status": "in_pruefung",
-    "beteiligte_behoerden_ids": ["finanzamt-koeln-mitte"],
+    "beteiligte_behoerden_ids": [
+      "finanzamt-koeln-mitte"
+    ],
     "schritte": [
       {
         "id": "step-mehmet-steuer-bescheid",
@@ -416,12 +518,21 @@
         "rechtsgrundlage": "§ 240 AO",
         "status": "needs_eid",
         "requires_eid": true,
-        "datenkategorien": ["Bankverbindung", "Steuernummer", "Nachzahlungsbetrag"],
+        "datenkategorien": [
+          "Bankverbindung",
+          "Steuernummer",
+          "Nachzahlungsbetrag"
+        ],
         "eid_preview": "DE.. •••• 4711",
         "started_at": "@now-4d"
       }
     ],
-    "fristen": [{ "typ": "zahlung", "datum": "@now+12d" }],
+    "fristen": [
+      {
+        "typ": "zahlung",
+        "datum": "@now+12d"
+      }
+    ],
     "angelegt_am": "@now-4d",
     "persona_id": "mehmet-yildiz",
     "context": {
@@ -434,7 +545,9 @@
     "typ": "bewohnerparkausweis",
     "titel": "Bewohnerparkausweis (Mitte)",
     "status": "in_pruefung",
-    "beteiligte_behoerden_ids": ["buergeramt-berlin-mitte"],
+    "beteiligte_behoerden_ids": [
+      "buergeramt-berlin-mitte"
+    ],
     "schritte": [
       {
         "id": "step-anna-parkausweis-antrag",
@@ -456,7 +569,12 @@
         "started_at": "@now-2d"
       }
     ],
-    "fristen": [{ "typ": "ausstellung", "datum": "@now+9d" }],
+    "fristen": [
+      {
+        "typ": "ausstellung",
+        "datum": "@now+9d"
+      }
+    ],
     "angelegt_am": "@now-4d",
     "persona_id": "anna-petrov",
     "context": {
@@ -469,7 +587,9 @@
     "typ": "steuer-lohnsteuerermaessigung",
     "titel": "Lohnsteuer-Ermäßigung 2026 (Freibetrag)",
     "status": "in_pruefung",
-    "beteiligte_behoerden_ids": ["finanzamt-berlin-mitte-tiergarten"],
+    "beteiligte_behoerden_ids": [
+      "finanzamt-berlin-mitte-tiergarten"
+    ],
     "schritte": [
       {
         "id": "step-anna-lstermaessigung-antrag",
@@ -491,7 +611,12 @@
         "started_at": "@now-3d"
       }
     ],
-    "fristen": [{ "typ": "bescheid", "datum": "@now+12d" }],
+    "fristen": [
+      {
+        "typ": "bescheid",
+        "datum": "@now+12d"
+      }
+    ],
     "angelegt_am": "@now-6d",
     "persona_id": "anna-petrov",
     "context": {
@@ -504,7 +629,9 @@
     "typ": "steuer-jahr",
     "titel": "Einkommensteuererklärung 2024 (Zusammenveranlagung)",
     "status": "abgeschlossen",
-    "beteiligte_behoerden_ids": ["finanzamt-hamburg-eimsbuettel"],
+    "beteiligte_behoerden_ids": [
+      "finanzamt-hamburg-eimsbuettel"
+    ],
     "schritte": [
       {
         "id": "step-schmidt-steuer24-abgabe",
@@ -541,7 +668,9 @@
     "typ": "kita-gutschein",
     "titel": "Kita-Gutschein Felix (Elementarbereich)",
     "status": "in_pruefung",
-    "beteiligte_behoerden_ids": ["bezirksamt-hamburg-eimsbuettel"],
+    "beteiligte_behoerden_ids": [
+      "bezirksamt-hamburg-eimsbuettel"
+    ],
     "schritte": [
       {
         "id": "step-schmidt-kita-antrag",
@@ -563,7 +692,12 @@
         "started_at": "@now-2d"
       }
     ],
-    "fristen": [{ "typ": "bescheid", "datum": "@now+8d" }],
+    "fristen": [
+      {
+        "typ": "bescheid",
+        "datum": "@now+8d"
+      }
+    ],
     "angelegt_am": "@now-5d",
     "persona_id": "markus-schmidt",
     "context": {
@@ -576,7 +710,10 @@
     "typ": "reisepass",
     "titel": "Reisepass für Felix",
     "status": "in_pruefung",
-    "beteiligte_behoerden_ids": ["bezirksamt-hamburg-eimsbuettel", "bundesdruckerei"],
+    "beteiligte_behoerden_ids": [
+      "bezirksamt-hamburg-eimsbuettel",
+      "bundesdruckerei"
+    ],
     "schritte": [
       {
         "id": "step-schmidt-reisepass-antrag",
@@ -598,7 +735,12 @@
         "started_at": "@now-5d"
       }
     ],
-    "fristen": [{ "typ": "abholung", "datum": "@now+13d" }],
+    "fristen": [
+      {
+        "typ": "abholung",
+        "datum": "@now+13d"
+      }
+    ],
     "angelegt_am": "@now-6d",
     "persona_id": "markus-schmidt",
     "context": {
@@ -611,7 +753,9 @@
     "typ": "fuehrerschein-umtausch",
     "titel": "Führerschein-Pflichtumtausch (EU-Kartenführerschein)",
     "status": "angelegt",
-    "beteiligte_behoerden_ids": ["fe-hamburg-lbv"],
+    "beteiligte_behoerden_ids": [
+      "fe-hamburg-lbv"
+    ],
     "schritte": [
       {
         "id": "step-schmidt-fs-umtausch-unterlagen",
@@ -621,11 +765,20 @@
         "rechtsgrundlage": "§ 24a FeV i.V.m. EU-RL 2006/126/EG",
         "status": "self_assigned",
         "requires_termin": true,
-        "datenkategorien": ["Führerscheindaten", "Meldeadresse", "Antragsdaten"],
+        "datenkategorien": [
+          "Führerscheindaten",
+          "Meldeadresse",
+          "Antragsdaten"
+        ],
         "started_at": "@now-10d"
       }
     ],
-    "fristen": [{ "typ": "pflichtumtausch", "datum": "2027-01-19" }],
+    "fristen": [
+      {
+        "typ": "pflichtumtausch",
+        "datum": "2027-01-19"
+      }
+    ],
     "angelegt_am": "@now-10d",
     "persona_id": "markus-schmidt",
     "context": {
@@ -639,7 +792,9 @@
     "typ": "steuerliche-erfassung",
     "titel": "Fragebogen zur steuerlichen Erfassung (Aufnahme freiberuflicher Tätigkeit)",
     "status": "abgeschlossen",
-    "beteiligte_behoerden_ids": ["finanzamt-koeln-mitte"],
+    "beteiligte_behoerden_ids": [
+      "finanzamt-koeln-mitte"
+    ],
     "schritte": [
       {
         "id": "step-mehmet-erfassung-fragebogen",
@@ -676,7 +831,9 @@
     "typ": "kfz-zulassung",
     "titel": "KFZ-Zulassung Mercedes Sprinter (K-MY 4711)",
     "status": "abgeschlossen",
-    "beteiligte_behoerden_ids": ["kfz-koeln-stadt"],
+    "beteiligte_behoerden_ids": [
+      "kfz-koeln-stadt"
+    ],
     "schritte": [
       {
         "id": "step-mehmet-kfz-sprinter-zulassung",
@@ -713,7 +870,9 @@
     "typ": "steuer-umsatzsteuer",
     "titel": "Umsatzsteuer-Jahreserklärung 2025",
     "status": "in_pruefung",
-    "beteiligte_behoerden_ids": ["finanzamt-koeln-mitte"],
+    "beteiligte_behoerden_ids": [
+      "finanzamt-koeln-mitte"
+    ],
     "schritte": [
       {
         "id": "step-mehmet-ust25-abgabe",
@@ -735,7 +894,12 @@
         "started_at": "@now-3d"
       }
     ],
-    "fristen": [{ "typ": "zahlung", "datum": "@now+13d" }],
+    "fristen": [
+      {
+        "typ": "zahlung",
+        "datum": "@now+13d"
+      }
+    ],
     "angelegt_am": "@now-7d",
     "persona_id": "mehmet-yildiz",
     "context": {
@@ -748,7 +912,9 @@
     "typ": "kv-beitragsfestsetzung",
     "titel": "Beitragseinstufung freiwillige Krankenversicherung 2026",
     "status": "in_pruefung",
-    "beteiligte_behoerden_ids": ["barmer-koeln"],
+    "beteiligte_behoerden_ids": [
+      "barmer-koeln"
+    ],
     "schritte": [
       {
         "id": "step-mehmet-barmer-nachweis",
@@ -770,7 +936,12 @@
         "started_at": "@now-2d"
       }
     ],
-    "fristen": [{ "typ": "bescheid", "datum": "@now+10d" }],
+    "fristen": [
+      {
+        "typ": "bescheid",
+        "datum": "@now+10d"
+      }
+    ],
     "angelegt_am": "@now-6d",
     "persona_id": "mehmet-yildiz",
     "context": {
@@ -783,7 +954,9 @@
     "typ": "steuer-vorauszahlung",
     "titel": "Anpassung der Einkommensteuer-Vorauszahlungen 2026",
     "status": "in_pruefung",
-    "beteiligte_behoerden_ids": ["finanzamt-koeln-mitte"],
+    "beteiligte_behoerden_ids": [
+      "finanzamt-koeln-mitte"
+    ],
     "schritte": [
       {
         "id": "step-mehmet-vorauszahlung-antrag",
@@ -803,11 +976,20 @@
         "rechtsgrundlage": "§ 90 AO",
         "status": "needs_eid",
         "requires_eid": true,
-        "datenkategorien": ["BWA", "Gewinnprognose", "Steuernummer"],
+        "datenkategorien": [
+          "BWA",
+          "Gewinnprognose",
+          "Steuernummer"
+        ],
         "started_at": "@now-3d"
       }
     ],
-    "fristen": [{ "typ": "unterlagen", "datum": "@now+6d" }],
+    "fristen": [
+      {
+        "typ": "unterlagen",
+        "datum": "@now+6d"
+      }
+    ],
     "angelegt_am": "@now-5d",
     "persona_id": "mehmet-yildiz",
     "context": {

@@ -370,10 +370,20 @@
     animation: pgvShelfIn 0.38s cubic-bezier(0.65, 0, 0.35, 1) both;
     animation-delay: calc(min(var(--pgv-i, 0), 8) * 45ms);
   }
+  /* Anlege-Moment (`is-fresh`, gesetzt nur beim Besuch direkt nach dem
+     Erstellen): der Plan wird sichtbar Karte für Karte angelegt — ruhiger
+     Anstieg mit deutlichem Stagger statt des knappen Revisit-Slides. */
+  .pgv-steps-shelf.is-fresh > li {
+    animation: pgvStepReveal 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(180ms + min(var(--pgv-i, 0), 8) * 110ms);
+  }
 }
 /* Der manuelle Bedienhilfen-Schalter setzt global nur die Dauer auf 0.01ms —
-   mit `both` + Verzögerung blieben die Karten kurz unsichtbar. */
+   mit `both` + Verzögerung blieben die Karten kurz unsichtbar. Die
+   `is-fresh`-Zeile braucht ihre eigene Spezifität (0,2,1), sonst gewänne
+   die Choreografie-Regel oben gegen den `:where()`-Reset. */
 :where(html.a11y-reduce-motion) .pgv-steps-shelf > li,
+:where(html.a11y-reduce-motion) .pgv-steps-shelf.is-fresh > li,
 :where(html.a11y-reduce-motion) .pgv-bescheide-shelf > li {
   animation: none;
 }
@@ -1370,6 +1380,18 @@
   from {
     opacity: 0;
     transform: translateX(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* translateY statt translateX: richtungsneutral (AR/RTL) — der Stagger
+   selbst läuft ohnehin in Leserichtung, weil `--pgv-i` die Reihenfolge trägt. */
+@keyframes pgvStepReveal {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
   }
   to {
     opacity: 1;

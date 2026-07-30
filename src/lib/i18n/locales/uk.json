@@ -1498,6 +1498,8 @@
   },
   "kinderzuschlagRadar": {
     "title": "Вам належить дитяча надбавка (Kinderzuschlag)",
+    "collapsed_title": "Виявлено можливе право на дитячу надбавку (Kinderzuschlag)",
+    "collapse": "Згорнути сповіщення",
     "lead": "Вам належить {range} дитячої надбавки (Kinderzuschlag), яку Ви зараз не отримуєте.",
     "betrag_range": "орієнтовно бл. {min} – {max} € / місяць",
     "warum_title": "Чому ми це припускаємо:",

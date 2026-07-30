@@ -275,7 +275,7 @@ function ensureBooted(): void {
  * (`resolvePath`, src/components/lebenslagen) versteht ausschließlich numerische
  * Indizes, keinen „newest child"-Selektor. `[0]` MUSS deshalb das JÜNGSTE Kind
  * sein: das neu geborene Kind, für das die Erstauszahlung angestoßen wird
- * (Familie Schmidt → Mia, *2026-06-18), NICHT das ältere Geschwisterkind
+ * (Familie Schmidt → Mia, *2026-07-16), NICHT das ältere Geschwisterkind
  * (Felix, *2022-01-15), dessen bereits laufendes Kindergeld nur den bekannten
  * IBAN-Anker liefert (Stufe-1 = reine Konto-Bestätigung, kein Lückenschluss).
  *

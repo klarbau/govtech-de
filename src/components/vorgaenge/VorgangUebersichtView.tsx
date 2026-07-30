@@ -52,6 +52,7 @@ import {
 } from '@/components/vorgaenge/VorgangSchrittAuthDialog';
 import { api } from '@/lib/mock-backend';
 import { cn } from '@/lib/utils';
+import { clearVorgangFresh, isVorgangFresh } from '@/lib/vorgang-fresh';
 import type {
   Adresse,
   AutopilotStep,
@@ -243,6 +244,15 @@ export function VorgangUebersichtView({
     : nextStep
       ? (nextStep.agent_label ?? nextStep.aktion)
       : tu('phase_prepare');
+
+  // Anlege-Moment: die Erstellungs-Flows markieren den frischen Vorgang in
+  // sessionStorage — genau der erste Besuch danach spielt die Karten-
+  // Choreografie des Schritte-Regals (CSS `is-fresh`). Lesen im Initializer,
+  // Abräumen im Effect: so übersteht der Marker den StrictMode-Doppel-Render.
+  const [freshReveal] = React.useState(() => isVorgangFresh(id));
+  React.useEffect(() => {
+    if (freshReveal) clearVorgangFresh(id);
+  }, [freshReveal, id]);
 
   // Erledigt-Moment: eine stabile aria-live-Region + ein doneCount-Vergleich,
   // der Ansage und Fokus steuert. `pendingFocusRef` merkt einen fälligen
@@ -546,7 +556,10 @@ export function VorgangUebersichtView({
                 ref={stepsRef}
                 tabIndex={0}
                 aria-labelledby="pgv-steps-title"
-                className="pgv-steps m-shelf pgv-steps-shelf rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                className={cn(
+                  'pgv-steps m-shelf pgv-steps-shelf rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
+                  freshReveal && 'is-fresh',
+                )}
               >
                 {steps.map((step, index) => (
                   <StepRow

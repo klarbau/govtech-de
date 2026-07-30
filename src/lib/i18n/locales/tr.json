@@ -1498,6 +1498,8 @@
   },
   "kinderzuschlagRadar": {
     "title": "Çocuk ek yardımı (Kinderzuschlag) hakkınız var",
+    "collapsed_title": "Olası çocuk ek yardımı (Kinderzuschlag) hakkı tespit edildi",
+    "collapse": "Bildirimi daralt",
     "lead": "Şu anda almadığınız {range} tutarında çocuk ek yardımı (Kinderzuschlag) hakkınız var.",
     "betrag_range": "tahmini yaklaşık {min} – {max} € / ay",
     "warum_title": "Bunu neden tahmin ediyoruz:",
