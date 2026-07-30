@@ -4,7 +4,7 @@ import * as React from 'react';
 import { notFound, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { ArrowLeft, Fingerprint, Info, Lock, UploadCloud } from 'lucide-react';
+import { ArrowLeft, FileText, Fingerprint, Info, ShieldCheck, UploadCloud } from 'lucide-react';
 
 import { EidConfirmDialog } from '@/components/umzug/EidConfirmDialog';
 import { MobileStickyCta } from '@/components/shared/MobileStickyCta';
@@ -15,6 +15,7 @@ import type {
 } from '@/lib/mock-backend/lebenslagen/types';
 import type { Behoerde, Persona } from '@/types';
 import { formatPrefillValue, isGenuineNotFound, loadWithRetry, resolvePath } from './lebenslagen-shared';
+import { LebenslageBadge } from './lebenslage-icon';
 
 interface AntragFormProps {
   slug: string;
@@ -63,16 +64,23 @@ export function AntragForm({ slug }: AntragFormProps) {
     };
   }, [slug, reloadKey]);
 
-  if (state.kind === 'loading') return <FormSkeleton />;
   if (state.kind === 'not-found') return notFound();
-  if (state.kind === 'error') return <FormLoadError onRetry={() => setReloadKey((k) => k + 1)} />;
 
+  // `.ak` ist der Papier-Scope (akte-paper.css) und trägt alle Zustände.
   return (
-    <AntragFormReady
-      config={state.config}
-      persona={state.persona}
-      behoerden={state.behoerden}
-    />
+    <div className="ak">
+      {state.kind === 'loading' ? (
+        <FormSkeleton />
+      ) : state.kind === 'error' ? (
+        <FormLoadError onRetry={() => setReloadKey((k) => k + 1)} />
+      ) : (
+        <AntragFormReady
+          config={state.config}
+          persona={state.persona}
+          behoerden={state.behoerden}
+        />
+      )}
+    </div>
   );
 }
 
@@ -100,7 +108,7 @@ function FormSkeleton() {
     <div role="status" aria-busy="true">
       <span className="sr-only">{tCommon('loading')}</span>
       <div className="gt-page-head">
-        <h1>…</h1>
+        <h1 className="ak-h1">…</h1>
       </div>
       <div className="gt-card" style={{ height: 320 }} />
     </div>
@@ -205,7 +213,11 @@ function AntragFormReady({
 
     return (async () => {
       try {
-        const { vorgangId } = await api.starteLebenslage(config.slug, formValues, grantedConsentIds);
+        // §7: Dieser Absendeweg lief durch den eID-Dialog — die Identifikation
+        // trägt die Primär-Submission, sie verlangt kein zweites Gate.
+        const { vorgangId } = await api.starteLebenslage(config.slug, formValues, grantedConsentIds, {
+          eidAuthorizedAt: new Date().toISOString(),
+        });
         router.push(`/vorgaenge/${encodeURIComponent(vorgangId)}`);
       } catch (e) {
         setError(e instanceof Error ? e.message : td('submit_error'));
@@ -217,13 +229,18 @@ function AntragFormReady({
 
   return (
     <div>
-      <div className="gt-page-head">
-        <Link href={`/lebenslagen/${config.slug}`} className="ll-back-link">
-          <ArrowLeft aria-hidden="true" />
-          {td('back_to_detail')}
-        </Link>
-        <h1>{td('antrag_title', { leistung: t(`lebenslagen.${config.slug}.title`) })}</h1>
-        <div className="sub">{td('antrag_lead')}</div>
+      <Link href={`/lebenslagen/${config.slug}`} className="ll-back-link">
+        <ArrowLeft aria-hidden="true" />
+        {td('back_to_detail')}
+      </Link>
+      <div className="gt-page-head ak-head">
+        <LebenslageBadge icon={config.icon} />
+        <div className="ak-head-text">
+          <h1 className="ak-h1">
+            {td('antrag_title', { leistung: t(`lebenslagen.${config.slug}.title`) })}
+          </h1>
+          <div className="sub ak-sub">{td('antrag_lead')}</div>
+        </div>
       </div>
 
       {error ? (
@@ -234,7 +251,6 @@ function AntragFormReady({
 
       <form
         className="lk-layout"
-        style={{ marginTop: 8 }}
         noValidate
         onSubmit={(e) => {
           e.preventDefault();
@@ -254,7 +270,8 @@ function AntragFormReady({
         <div className="ll-main">
           <section className="gt-card" aria-labelledby="ll-form-title">
             <div className="gt-card-head">
-              <h2 id="ll-form-title" className="gt-card-title">
+              <h2 id="ll-form-title" className="gt-card-title ak-sec-title">
+                <FileText className="ak-sec-icon" aria-hidden="true" />
                 {td('antrag_fields_title')}
               </h2>
             </div>
@@ -356,7 +373,8 @@ function AntragFormReady({
           {consentSteps.length > 0 ? (
             <section className="gt-card" aria-labelledby="ll-consent-title">
               <div className="gt-card-head">
-                <h2 id="ll-consent-title" className="gt-card-title">
+                <h2 id="ll-consent-title" className="gt-card-title ak-sec-title">
+                  <ShieldCheck className="ak-sec-icon" aria-hidden="true" />
                   {td('consent_title')}
                 </h2>
               </div>
@@ -403,7 +421,7 @@ function AntragFormReady({
 
           <div className="ll-cta-row">
             <MobileStickyCta>
-              <button type="submit" className="btn btn-primary btn-lg lg-iridescent">
+              <button type="submit" className="btn btn-primary btn-lg ak-submit">
                 <Fingerprint aria-hidden="true" />
                 {td('cta_eid_submit')}
               </button>
@@ -411,10 +429,12 @@ function AntragFormReady({
           </div>
         </div>
 
+        {/* Rail = EINE durchgehende berandete Karte (wie auf der Leistungsseite). */}
         <aside className="lk-rail" aria-label={td('datenminimierung_title')}>
-          <section className="gt-card ll-dm-panel" tabIndex={0} aria-labelledby="ll-dm-title">
+          <div className="ak-rail-card">
+          <section className="ak-rail-block ll-dm-panel" tabIndex={0} aria-labelledby="ll-dm-title">
             <div>
-              <h2 id="ll-dm-title" className="ll-dm-title">
+              <h2 id="ll-dm-title" className="ak-rail-h">
                 {td('datenminimierung_title')}
               </h2>
               <p className="ll-dm-sub">{td('datenminimierung_sub')}</p>
@@ -441,15 +461,18 @@ function AntragFormReady({
             </ul>
           </section>
 
-          {/* Datenschutz-Zeile — statt Karte: Kurzfassung + Textlink (wie /lebenslagen/[slug]). */}
-          <div className="ll-datenschutz">
-            <p className="ll-datenschutz-body">
-              <Lock className="ll-datenschutz-icon" aria-hidden="true" />
-              {td('datenschutz_body')}
-            </p>
-            <Link href="/datenschutz" className="ll-datenschutz-link">
-              {td('datenschutz_link')}
-            </Link>
+          <section className="ak-rail-block ak-secure" aria-labelledby="ll-sicher-title">
+            <ShieldCheck className="ak-secure-icon" aria-hidden="true" />
+            <div className="ak-secure-body">
+              <h2 id="ll-sicher-title" className="ak-rail-h ak-rail-h-solo">
+                {td('daten_sicher_title')}
+              </h2>
+              <p className="ak-secure-text">{td('datenschutz_body')}</p>
+              <Link href="/datenschutz" className="ll-datenschutz-link">
+                {td('datenschutz_link')}
+              </Link>
+            </div>
+          </section>
           </div>
         </aside>
       </form>

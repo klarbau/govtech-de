@@ -4,8 +4,8 @@
  *
  * Geprüft wird, was der Screen behauptet:
  *   - `angabenCount` == tatsächlich gerenderte Wertzeilen (Band 1 ohne die
- *     Zeile „Führende Quelle" + alle Datenblatt-Zeilen) — keine Checkliste,
- *     kein Sollwert, keine Prozentzahl.
+ *     selbst erklärte Zeile „Sprachen" + alle Datenblatt-Zeilen) — keine
+ *     Checkliste, kein Sollwert, keine Prozentzahl.
  *   - Keine Zeile ohne Wert, keine leere Sektion.
  *   - Persona-Degradation (§ 6): Anna/Mehmet ohne Personalausweis-Zeile und mit
  *     Sektionstitel „Dokumente & Aufenthalt"; Schmidt ohne Aufenthaltstitel-
@@ -14,6 +14,7 @@
 import { beforeAll, beforeEach, describe, expect, test } from 'vitest';
 
 import {
+  alterInJahren,
   buildDatenblattModel,
   findMeldebehoerde,
   type DatenblattModel,
@@ -76,12 +77,15 @@ beforeAll(async () => {
 const TEXTE: DatenblattTexte = {
   familienstand: 'ledig',
   staatsangehoerigkeit: 'Russisch',
-  fuehrendeQuelle: 'Bürgeramt (Meldebehörde)',
+  sprachen: 'Russisch, Deutsch, Englisch',
   gesetzlicheRente: 'Gesetzliche Rentenversicherung',
   kind: (name, datum) => `${name} · geb. ${datum}`,
 };
 
-async function buildFor(personaId: string): Promise<DatenblattModel> {
+/** Identity rows the „{N} Angaben"-Subline must not count (Spec § 7). */
+const NICHT_GEZAEHLT = ['identitaet.sprachen'];
+
+async function inputFor(personaId: string) {
   reseedForActivePersona(personaId);
   const persona = await api.getProfile();
   const [stammdaten, log, behoerden] = await Promise.all([
@@ -90,13 +94,11 @@ async function buildFor(personaId: string): Promise<DatenblattModel> {
     api.getBehoerden(),
   ]);
   const behoerdenById = Object.fromEntries(behoerden.map((b) => [b.id, b]));
-  return buildDatenblattModel({
-    persona,
-    stammdaten,
-    log,
-    behoerdenById,
-    texte: TEXTE,
-  });
+  return { persona, stammdaten, log, behoerdenById, texte: TEXTE };
+}
+
+async function buildFor(personaId: string): Promise<DatenblattModel> {
+  return buildDatenblattModel(await inputFor(personaId));
 }
 
 function rowIds(model: DatenblattModel): string[] {
@@ -109,15 +111,23 @@ describe('buildDatenblattModel — Invarianten über alle Personas', () => {
   for (const personaId of PERSONAS) {
     test(`${personaId}: angabenCount == gerenderte Wertzeilen`, async () => {
       const model = await buildFor(personaId);
-      const identitaetOhneQuelle = model.identitaet.filter(
-        (r) => r.id !== 'identitaet.quelle',
+      const gezaehlt = model.identitaet.filter(
+        (r) => !NICHT_GEZAEHLT.includes(r.id),
       ).length;
       const datenblattZeilen = model.sektionen.reduce(
         (sum, s) => sum + s.rows.length,
         0,
       );
-      expect(model.identitaet.length - 1).toBe(identitaetOhneQuelle);
-      expect(model.angabenCount).toBe(identitaetOhneQuelle + datenblattZeilen);
+      /* Die Invariante, die das a11y-Subline-Gate spiegelt: alle drei Personas
+         führen „Sprachen", also genau EINE ungezählte Zeile (Spec § 7; die
+         Provenienz-Zeile führt das Modell seit dem Review 2026-07-29 nicht
+         mehr — sie lebt nur im Porträt-Fuß). Erst die Existenz prüfen, dann die
+         −1 — sonst würde eine verschwundene Zeile als grünes Gate durchgehen. */
+      for (const id of NICHT_GEZAEHLT) {
+        expect(model.identitaet.map((r) => r.id)).toContain(id);
+      }
+      expect(model.identitaet.length - 1).toBe(gezaehlt);
+      expect(model.angabenCount).toBe(gezaehlt + datenblattZeilen);
     });
 
     test(`${personaId}: keine Zeile ohne Wert, keine leere Sektion`, async () => {
@@ -134,15 +144,117 @@ describe('buildDatenblattModel — Invarianten über alle Personas', () => {
       }
     });
 
-    test(`${personaId}: Band 1 führt Geburtsdatum, Staatsangehörigkeit, Familienstand und Quelle`, async () => {
+    test(`${personaId}: die Fakten-Leiste führt fünf Zeilen in fester Reihenfolge`, async () => {
       const model = await buildFor(personaId);
       expect(model.identitaet.map((r) => r.id)).toEqual([
         'identitaet.geburtsdatum',
+        'identitaet.geburtsort',
         'identitaet.staatsangehoerigkeit',
         'identitaet.familienstand',
-        'identitaet.quelle',
+        'identitaet.sprachen',
       ]);
       expect(model.identitaet[0].value).toMatch(/^\d{2}\.\d{2}\.\d{4}$/);
+    });
+  }
+});
+
+describe('Geburtsort und Sprachen (Spec § 7)', () => {
+  test('Geburtsort ist eine gezählte Registerangabe (§ 3 Abs. 1 Nr. 6 BMG)', async () => {
+    const input = await inputFor('anna-petrov');
+    expect(input.stammdaten.identitaet.geburtsort).toBe('Sofia, Bulgarien');
+
+    const mit = buildDatenblattModel(input);
+    expect(
+      mit.identitaet.find((r) => r.id === 'identitaet.geburtsort')?.value,
+    ).toBe('Sofia, Bulgarien');
+
+    const ohne = buildDatenblattModel({
+      ...input,
+      stammdaten: {
+        ...input.stammdaten,
+        identitaet: { ...input.stammdaten.identitaet, geburtsort: undefined },
+      },
+    });
+    expect(
+      ohne.identitaet.some((r) => r.id === 'identitaet.geburtsort'),
+    ).toBe(false);
+    expect(ohne.angabenCount).toBe(mit.angabenCount - 1);
+  });
+
+  test('Sprachen tragen die Selbstauskunfts-Quelle und zählen nicht mit', async () => {
+    const input = await inputFor('anna-petrov');
+    const mit = buildDatenblattModel(input);
+    const sprachen = mit.identitaet.find((r) => r.id === 'identitaet.sprachen');
+    expect(sprachen?.value).toBe(TEXTE.sprachen);
+    expect(sprachen?.quelle).toEqual({ key: 'quelle.selbstauskunft' });
+
+    const ohne = buildDatenblattModel({
+      ...input,
+      texte: { ...TEXTE, sprachen: '' },
+    });
+    expect(ohne.identitaet.some((r) => r.id === 'identitaet.sprachen')).toBe(
+      false,
+    );
+    expect(ohne.angabenCount).toBe(mit.angabenCount);
+  });
+});
+
+/* Die EINZIGE abgeleitete Angabe des Screens (Spec `stammdaten-akte-v2.md`
+   § 7.1): reine Kalenderrechnung, keine Registerbehauptung — und sie darf die
+   „{N} Angaben"-Zusage nicht verschieben.
+
+   Die Erwartungen sind zeitzonenunabhängig: das Geburtsdatum zerlegt das Modell
+   stringseitig, und die `heute`-Argumente sind Ortszeit-Literale (ohne `Z`) —
+   die Suite braucht deshalb keinen `TZ`-Pin. */
+describe('alterInJahren (Spec akte-v2 § 7.1)', () => {
+  test('am Geburtstag ist das Jahr voll, einen Tag davor noch nicht', () => {
+    expect(alterInJahren('1997-03-22', new Date('2026-03-22T09:00:00'))).toBe(29);
+    expect(alterInJahren('1997-03-22', new Date('2026-03-21T09:00:00'))).toBe(28);
+    expect(alterInJahren('1997-03-22', new Date('2026-03-23T09:00:00'))).toBe(29);
+  });
+
+  test('Monatsgrenze: der Vormonat zählt nicht mit', () => {
+    expect(alterInJahren('1997-03-22', new Date('2026-02-28T09:00:00'))).toBe(28);
+    expect(alterInJahren('1997-03-22', new Date('2026-04-01T09:00:00'))).toBe(29);
+  });
+
+  test('29.02.: im Nicht-Schaltjahr fällt der Geburtstag auf den 1. März', () => {
+    expect(alterInJahren('2000-02-29', new Date('2025-02-28T09:00:00'))).toBe(24);
+    expect(alterInJahren('2000-02-29', new Date('2025-03-01T09:00:00'))).toBe(25);
+    expect(alterInJahren('2000-02-29', new Date('2024-02-29T09:00:00'))).toBe(24);
+  });
+});
+
+describe('Geburtsdatum trägt die Jahre-Fußnote', () => {
+  for (const personaId of PERSONAS) {
+    test(`${personaId}: Fußnote gesetzt, angabenCount unverändert`, async () => {
+      const input = await inputFor(personaId);
+      const model = buildDatenblattModel(input);
+      const geburtsdatum = model.identitaet.find(
+        (r) => r.id === 'identitaet.geburtsdatum',
+      );
+      expect(geburtsdatum?.quelle?.key).toBe('value.alter');
+      /* Der ICU-Plural-Parameter ist eine echte Zahl (kein String, den der
+         Formatter zurückrechnen muss), nie negativ — ein Tippfehler im
+         Datumsfeld würde hier auffallen. */
+      const jahre = geburtsdatum?.quelle?.params?.jahre;
+      expect(typeof jahre).toBe('number');
+      expect(Number.isInteger(jahre)).toBe(true);
+      expect(jahre).toBeGreaterThan(0);
+      expect(jahre).toBe(
+        alterInJahren(input.stammdaten.identitaet.geburtsdatum),
+      );
+
+      /* Eine Fußnote ist keine Angabe: die Zählung bleibt exakt die Summe der
+         gerenderten Wertzeilen (Spec § 7.3). */
+      const gezaehlt = model.identitaet.filter(
+        (r) => !NICHT_GEZAEHLT.includes(r.id),
+      ).length;
+      const datenblattZeilen = model.sektionen.reduce(
+        (sum, s) => sum + s.rows.length,
+        0,
+      );
+      expect(model.angabenCount).toBe(gezaehlt + datenblattZeilen);
     });
   }
 });

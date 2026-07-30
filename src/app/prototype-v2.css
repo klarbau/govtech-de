@@ -6235,6 +6235,15 @@ a.vlf-rail-link { background: var(--green-50); border-color: var(--green-100); }
     display: flex;
     flex-wrap: nowrap;
     gap: 12px;
+    /* Enthaltender Block fuer absolut positionierte Nachfahren der Slides.
+       Ohne das haengen sie (z. B. Tailwinds `.sr-only`, position:absolute) am
+       naechsten positionierten Vorfahren AUSSERHALB des Scrollers — ihr
+       statischer Ort liegt aber tief in der Regal-Laufweite. Ihr Kasten zaehlt
+       dann zum Scroll-Overflow des BODY statt des Regals und zieht die ganze
+       SEITE waagerecht auf (a11y-Report vorgang-uebersicht 2026-07-28, R1:
+       scrollX 1049 @390 auf /vorgaenge/vg-anna-umzug-2026-completed).
+       Mit `relative` bleibt ihr Overflow im Regal, wo er hingehoert. */
+    position: relative;
     margin-inline: calc(-1 * var(--shelf-bleed, 22px));
     padding-inline: var(--shelf-bleed, 22px);
     overflow-x: auto;

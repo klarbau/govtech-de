@@ -1806,7 +1806,6 @@
     "detail": {
       "next_step_title": "Ваш наступний крок",
       "next_step_basis_label": "Правова підстава",
-      "next_step_cta": "Виконати крок",
       "next_step_cta_eid": "Підтвердити з eID",
       "next_step_cta_consent": "Дозволити передавання",
       "next_step_cta_termin": "Записатися на прийом",
@@ -1825,13 +1824,9 @@
       "step_done_live_next": "Крок виконано. Наступний крок: {aktion}",
       "step_done_live_all": "Крок виконано. Зараз від Вас більше нічого не потрібно.",
       "next_step_brief_cta": "Відкрити пов’язаний лист",
-      "details_title": "Подробиці",
-      "summary_status_label": "Статус",
       "summary_angelegt_label": "Створено",
-      "summary_stichtag_label": "Дата набрання чинності",
       "summary_behoerden_label": "Залучені органи",
       "summary_frist_label": "Найближчий строк",
-      "summary_frist_template": "{datum}",
       "datenschutz_sub": "Що обробляється за цією справою — і на якій правовій підставі.",
       "termine_title": "Записи за цією справою ({count})",
       "no_next_step": "Зараз від Вас нічого не потрібно. Залучені органи опрацьовують справу.",
@@ -1846,20 +1841,64 @@
       "fertigstellung_label_after_action": "Завершення після вашого кроку",
       "fertigstellung_label_in_review": "Відомство перевіряє — зазвичай",
       "fertigstellung_label_done": "Завершено",
-      "timeline_title": "Кроки у справі ({count})",
       "steps_overview_title": "Ваша справа: огляд",
-      "steps_overview_sub": "Ми координуємо Ваш запит і спрямовуємо його до відповідальних органів.",
-      "uebermittelt_label": "Передано",
-      "erledigt_label": "Виконано",
-      "termin_vereinbart_label": "Прийом призначено на",
-      "details_show": "Показати деталі",
-      "details_hide": "Сховати деталі",
-      "berechtigungen_title": "Правова підстава та дозволи",
-      "berechtigungen_basis_label": "Правова підстава",
-      "berechtigungen_datenweitergabe_label": "Передача даних",
-      "berechtigungen_behoerden": "До {count} органів",
-      "berechtigungen_einwilligungen_label": "Ваші згоди",
-      "berechtigungen_einwilligungen_value": "Лише відповідальним органам, відкликати можна будь-коли."
+      "steps_overview_sub": "Ми координуємо Ваш запит і спрямовуємо його до відповідальних органів."
+    },
+    "uebersicht": {
+      "overview_title": "Поточний стан",
+      "metric_progress_label": "Поступ",
+      "metric_progress_value": "{pct} %",
+      "metric_time_label": "Заощаджено часу (бл.)",
+      "metric_time_value": "бл. {minuten} хв",
+      "metric_phase_label": "Поточний етап",
+      "phase_closed": "Завершено",
+      "phase_prepare": "Готується",
+      "pill_action": "Потрібна дія",
+      "shelf_prev": "Показати попередні кроки",
+      "shelf_next": "Показати наступні кроки",
+      "shelf_prev_eintraege": "Показати попередні записи",
+      "shelf_next_eintraege": "Показати наступні записи",
+      "protokoll_show_all": "{count, plural, one {Показати всі # запис} few {Показати всі # записи} many {Показати всі # записів} other {Показати всі # запису}}",
+      "protokoll_show_less": "Показати менше",
+      "steps_foot": "Кожне передавання даних протоколюється та прив’язане до зазначеної правової підстави.",
+      "gate_auto": "Автоматично",
+      "gate_eid": "З eID",
+      "gate_consent": "За Вашою згодою",
+      "gate_termin": "За записом",
+      "row_daten": "Передано: {kategorien}",
+      "status_sr": "Статус",
+      "status_time": "{zeit}",
+      "status_sub_eid": "Потрібне Ваше підтвердження",
+      "next_closed_title": "Цю справу завершено.",
+      "next_done_sub": "Ми повідомимо Вас, щойно з’являться новини.",
+      "next_sub_eid": "Будь ласка, підтвердьте цей крок за допомогою Вашого eID.",
+      "next_sub_consent": "Будь ласка, дозвольте передавання даних.",
+      "next_sub_termin": "Ми підготуємо заяву та запишемо Вас на прийом — Ви надаєте дозвіл.",
+      "next_running_sub": "{behoerde} · в обробці",
+      "sticky_running": "В обробці · {behoerde}",
+      "next_waiting_title": "Справу готують",
+      "next_waiting_sub": "Залучені органи опрацьовують справу.",
+      "kontrolle_title": "Ваш контроль",
+      "kontrolle_freigaben_title": "Ваші дозволи",
+      "kontrolle_freigaben_value": "Надано {given} з {total}",
+      "kontrolle_freigaben_sub": "Згоди можна відкликати будь-коли",
+      "kontrolle_datenschutz_title": "Повідомлення про захист даних",
+      "kontrolle_datenschutz_value": "Ваші дані використовуються виключно для ведення цієї справи.",
+      "kontrolle_stellen_value": "Залучено органів: {count}",
+      "erledigt_title": "Що вже зроблено?",
+      "erledigt_sr_done": "Виконано",
+      "erledigt_sr_open": "Не виконано",
+      "datenschutz_title": "Ваші дані — Ваш контроль",
+      "result_title": "Загальний результат",
+      "result_status": "Завершено",
+      "result_body": "Усі залучені органи виконали свої завдання щодо цієї справи.",
+      "result_bescheid_cta": "Відкрити рішення (Bescheid)",
+      "result_datum_label": "Завершено",
+      "result_stellen_label": "Залучені органи",
+      "result_stellen_value": "Відомств / установ: {count}",
+      "result_zeit_sub": "порівняно з класичним шляхом",
+      "bescheide_title": "Рішення відомств (Bescheide) та підтвердження",
+      "protokoll_title": "Журнал активності"
     }
   },
   "assistent": {
@@ -3516,9 +3555,6 @@
       "kontakt_verifiziert": "Контакт підтверджено"
     },
     "datenblatt": {
-      "subline": "{angaben, plural, one {# запис} few {# записи} many {# записів} other {# записи}} з {register, plural, one {# реєстру} few {# реєстрів} many {# реєстрів} other {# реєстрів}}.",
-      "subline_update": "Останнє оновлення: {datum}, {zeit} — {behoerde}.",
-      "subline_update_ohne_absender": "Останнє оновлення: {datum}, {zeit}.",
       "cta_korrigieren": "Виправити дані",
       "title": "Ваші дані",
       "anschrift_link": "Змінити адресу",
@@ -3528,12 +3564,11 @@
         "hinweis": "У цій демоверсії основні дані доступні лише для читання — це єдине джерело істини: зміни Ви вносите не тут, а в компетентному відомстві; оновлені дані потім автоматично повертаються до Вашого профілю."
       },
       "identitaet": {
-        "region_label": "Підтверджена особа",
-        "status": "Особу підтверджено · рівень довіри eIDAS: високий",
         "geburtsdatum": "Дата народження",
+        "geburtsort": "Місце народження",
         "staatsangehoerigkeit": "Громадянство",
         "familienstand": "Сімейний стан",
-        "quelle": "Провідне джерело",
+        "sprachen": "Мови",
         "quelle_fallback": "Бюро у справах громадян (Bürgeramt)"
       },
       "familienstand": {
@@ -3578,7 +3613,8 @@
         "gueltig_bis": "дійсний до {datum}",
         "norm_gueltig_bis": "{norm} · дійсний до {datum}",
         "gesetzliche_rente": "Державне пенсійне страхування",
-        "kind_geboren": "нар. {datum}"
+        "kind_geboren": "нар. {datum}",
+        "alter": "{jahre, plural, one {# рік} few {# роки} many {# років} other {# року}}"
       },
       "quelle": {
         "bundid": "Обліковий запис BundID",
@@ -3586,13 +3622,11 @@
         "melderegister_ohne_datum": "Реєстр мешканців (Melderegister)",
         "bzst": "Федеральне центральне податкове відомство (Bundeszentralamt für Steuern)",
         "drv": "Німецьке пенсійне страхування (Deutsche Rentenversicherung)",
-        "traeger": "{traeger}"
+        "traeger": "{traeger}",
+        "selbstauskunft": "Зазначено Вами — жоден реєстр не веде цей запис."
       },
       "wallet": {
-        "title": "Підтвердження та Wallet",
-        "line": "{count, plural, one {# підтвердження} few {# підтвердження} many {# підтверджень} other {# підтвердження}} у Вашому EUDI-Wallet · довірча служба: BVA – Bundesverwaltungsamt · наступна перевірка {datum}",
-        "empty": "У Вашому EUDI-Wallet поки немає підтверджень.",
-        "link": "Переглянути підтвердження"
+        "empty": "У Вашому EUDI-Wallet поки немає підтверджень."
       },
       "protokoll": {
         "title": "Журнал змін",
@@ -3605,8 +3639,91 @@
         "show_all": "Показати повний журнал"
       },
       "datenhoheit": {
-        "text": "Ваші основні дані передаються відомствам і службам лише за Вашою згодою — Ви вирішуєте, хто які відомості може бачити.",
         "link": "Керування даними"
+      },
+      "sprache": {
+        "de": "Німецька",
+        "en": "Англійська",
+        "ru": "Російська",
+        "uk": "Українська",
+        "ar": "Арабська",
+        "tr": "Турецька"
+      }
+    },
+    "akte": {
+      "portraet": {
+        "legende": "[MOCK] Синтетичне зображення — не фото на паспорт і не реальна людина.",
+        "aktualisiert_label": "Останнє оновлення",
+        "aktualisiert_wert": "{datum}, {zeit}",
+        "quelle_label": "Провідне джерело"
+      },
+      "fakten": {
+        "region_label": "Основні відомості"
+      },
+      "tabs": {
+        "aria": "Розділи Ваших основних даних",
+        "ueberblick": "Огляд",
+        "persoenlich": "Особисті дані",
+        "dokumente": "Документи",
+        "verlauf": "Історія"
+      },
+      "status": {
+        "title": "Статус і документ, що посвідчує особу",
+        "aufenthalt_label": "Посвідка на проживання (Aufenthaltstitel)",
+        "gueltig_bis_label": "Дійсний до",
+        "behoerde_label": "Відомство, що видало",
+        "az_label": "Номер справи (Aktenzeichen)",
+        "az_kopiert": "Номер справи скопійовано",
+        "bezeichnung_18g": "Блакитна карта ЄС",
+        "bezeichnung_21": "Посвідка на проживання для самостійної діяльності",
+        "quelle_aufenthalt": "Веде відомство у справах іноземців (Ausländerbehörde, § 71 ч. 1 AufenthG); дані зберігаються в Центральному реєстрі іноземців (Ausländerzentralregister) при Федеральному відомстві у справах міграції та біженців (Bundesamt für Migration und Flüchtlinge, § 1 AZRG). Ця демоверсія не звертається до реєстрів.",
+        "ausweis_label": "Документ, що посвідчує особу",
+        "ausweis_personalausweis": "Посвідчення особи (Personalausweis)",
+        "ausweis_reisepass": "Закордонний паспорт",
+        "ausweis_nummer_label": "Номер документа",
+        "verlaengerung_link": "Підготувати продовження",
+        "leer": "У Вашому сховищі документів зараз немає документа, що посвідчує особу."
+      },
+      "vorgaenge": {
+        "title": "Поточні справи",
+        "alle": "Усі справи",
+        "status_genehmigt": "Схвалено",
+        "status_abgelehnt": "Відхилено",
+        "leer": "Наразі немає активних справ.",
+        "punkt_laeuft": "виконується",
+        "punkt_abgeschlossen": "завершено"
+      },
+      "dokumente": {
+        "title": "Документи та підтвердження",
+        "eid_titel": "Ваше електронне посвідчення особи",
+        "alle": "Усі у сховищі документів",
+        "ohne_ablauf": "без строку дії",
+        "leer": "У Вашому сховищі поки немає документів.",
+        "kachel_vorzeigen": "Предʼявити",
+        "kachel_details": "Подробиці",
+        "wallet_titel": "EUDI-Wallet",
+        "wallet_sub": "{count, plural, one {# підтвердження} few {# підтвердження} many {# підтверджень} other {# підтвердження}} · наступна перевірка {datum}"
+      },
+      "aktionen": {
+        "title": "Швидкі дії",
+        "vorgang": "Розпочати справу",
+        "nachweis": "Предʼявити документ",
+        "nachweise_ansehen": "Переглянути підтвердження",
+        "termine": "Переглянути прийоми",
+        "adresse": "Змінити адресу"
+      },
+      "identitaet": {
+        "bestaetigt": "Особу підтверджено",
+        "service": "Рівень довіри eIDAS: високий · {angaben, plural, one {# запис} few {# записи} many {# записів} other {# записи}} з {register, plural, one {# реєстру} few {# реєстрів} many {# реєстрів} other {# реєстрів}}"
+      },
+      "verlauf": {
+        "title": "Історія",
+        "alle": "Уся активність",
+        "row": "{datenart} → {empfaenger}"
+      },
+      "datenhoheit": {
+        "title": "Захист даних і контроль над ними",
+        "text_kurz": "Про передавання даних вирішуєте Ви — крім передавань, передбачених законом (§ 36 BMG)."
       }
     },
     "once_only": {

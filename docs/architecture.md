@@ -379,6 +379,22 @@ New `api` methods (both `withLatency` + `ensureBooted`): `dismissTerminBundling(
 
 Behavior change — reminder resolution: on a successful `starteVorgangSchritt` (`starteVorgangSchrittImpl` Stufe 4), every still-open reminder with the same `vorgang_id` and `frist_typ === 'nachweis'` is set `erledigt: true` (direct `write`, no throw if none, no event — the Termine view reconciles via `getReminders()`). The proof step *is* the deadline fulfilment. Generic; in the current seed only Anna-Kindergeld + Markus-Elterngeld qualify.
 
+### Lebenslage-Akte — Gesamtplan-Read-Model + Formular-eID-Carry (2026-07-28)
+
+Spec `docs/specs/lebenslage-akte.md` §§ 6–8; Domain `docs/domain/lebenslage-akte-sequenz.md`.
+
+**Execution order (behavioural, no schema change).** `orderCascadeSteps` (`lebenslagen/engine.ts`) no longer re-ranks by `block` — it returns the `visibleIf`-filtered **config order** verbatim. The old A→D→B sort produced legally impossible sequences in all eight configs (Melderegister before Beurkundung, Kindergeld-Bescheid before the IBAN confirmation, Bescheid before Antrag). `block` stays a pure classification (chips, grouping, Datenminimierungs-Panel). Both `BLOCK_RANK` constants are gone (engine + `components/lebenslagen/lebenslagen-shared.ts`); `InlineCascade` renders in insertion order. Umzug is unaffected — `buildUmzugSaga` already emits A…→D…→B… (regression-guarded by `tests/unit/lebenslagen-order.test.ts` T10).
+
+**New cascade gate `'termin'`.** `CascadeStepConfig.gate` widens to `'auto' | 'eid' | 'consent' | 'termin'`. A `termin` step maps onto the existing `AutopilotStep.requires_termin`, is written `self_assigned` (started+completed), mints nothing and does not block `abgeschlossen`. Only user: `reisepass` #3 `buergeramt-vorsprache` — an eID tap cannot stand in for personal appearance with fingerprint capture.
+
+**Formular-eID carries the primary submission.** `api.starteLebenslage(slug, formValues, consents, options?)` gains an optional 4th argument `{ eidAuthorizedAt?: string }` (ISO). Only `AntragForm` (the eID-dialog path) passes it. The engine then pre-authorises the **`isPrimarySubmission` + `gate:'eid'`** step — position-independent (reisepass: position 2) — so it runs without a second gate and carries `eid_confirmed_at = eidAuthorizedAt`. All other gates stay separate taps (no blanket authorisation). Without the option nothing changes (kindergeld's antragslos IBAN gate still pauses). Persisted as non-PII `vorgang.context.eid_authorized_at`.
+
+**New config field `LebenslageConfig.titel_de`** (DE display name; the mock backend has no i18n) — set on all 8 cascade configs; `starteLebenslageImpl` mints `titel: config.titel_de ?? "Lebenslage: {slug}"`.
+
+**New read API** `getVorgangPlan(vorgangId): Promise<VorgangPlan | null>` (`withLatency`, no write, no persistence mutation). Returns `null` for anything that is not a generic Lebenslagen cascade (missing `context.slug`, seed/legacy Vorgänge, Umzug saga) → callers fall back to today's dossier. Derivation is deterministic: config order × materialised `AutopilotStep`s. New types in `src/types/vorgang-plan.ts` (re-exported from `src/types/index.ts`): `VorgangPlan`, `VorgangPlanRow`, `PlanZustand` (`geplant | laeuft | wartet_eid | wartet_consent | nicht_beauftragt | persoenlich | erledigt | fehlgeschlagen`). Honesty invariants: `erledigt` counts only `confirmed`; `gesamt` excludes de-selected consent rows (`nicht_beauftragt`), which are never rendered as "pending".
+
+No new persistence keys; `SEED_CONTENT_VERSION` unchanged (configs, not seeds).
+
 ## Update protocol
 
 When any of the following change, this file must be updated by the responsible agent in the same review pass:

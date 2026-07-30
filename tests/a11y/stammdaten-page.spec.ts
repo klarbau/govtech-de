@@ -2,12 +2,11 @@
  * Stammdaten a11y — full-page axe (Spec § 12.3).
  * 0 critical, 0 serious violations × 2 viewports.
  *
- * Anchors updated 2026-07-24 for the „Datenblatt" redesign
- * (`stammdaten-datenblatt.md` § 10), re-described 2026-07-25 for the band
- * composition (`stammdaten-blatt-dense.md` § 2): the page is three full-width
- * bands — identity, the data sheet (`sd-datenblatt`) and the change log as the
- * foot band (`sd-protokoll`), which is still the last module to render. Waiting
- * for both keeps the scan on the fully hydrated page, not a mid-mount snapshot.
+ * Anchors updated 2026-07-28 for the register composition
+ * (`stammdaten-akte.md` § 13.3): the page is an identity hero
+ * (`sd-akte-hero`), four registers and a rail. Only the active panel is
+ * mounted, so the scan waits for the hero AND the default panel — the data
+ * sheet and the change log now live behind their tabs.
  */
 import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
@@ -52,12 +51,12 @@ async function setupPersona(page: Page, personaId: string) {
 async function warm(page: Page) {
   await page.goto('/stammdaten', { waitUntil: 'networkidle' });
   await page
-    .locator('[data-testid="sd-datenblatt"]')
+    .locator('[data-testid="sd-akte-hero"]')
     .waitFor({ state: 'visible', timeout: 15_000 });
-  // The foot band's „Änderungsprotokoll" is the last module to render; wait for
-  // it so the axe pass covers the whole page, not a mid-mount snapshot.
+  // The default register renders after the hero; wait for it so the axe pass
+  // covers the hydrated page, not a mid-mount snapshot.
   await page
-    .locator('[data-testid="sd-protokoll"]')
+    .locator('[data-testid="sd-panel-ueberblick"]')
     .waitFor({ state: 'visible', timeout: 15_000 });
 }
 

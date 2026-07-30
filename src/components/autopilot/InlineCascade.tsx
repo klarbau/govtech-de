@@ -26,7 +26,6 @@ import {
 } from '@/components/autopilot/TerminVorschlagRow';
 import { MeldebestaetigungInlineBeat } from '@/components/once-only/MeldebestaetigungInlineBeat';
 import { BehoerdenBadge } from '@/components/shared/BehoerdenBadge';
-import { BLOCK_RANK } from '@/components/lebenslagen/lebenslagen-shared';
 import { submitViaFitConnect } from '@/app/actions/fit-connect';
 import { api, MockBackendError } from '@/lib/mock-backend';
 import { cn } from '@/lib/utils';
@@ -62,10 +61,11 @@ interface InlineCascadeProps {
   className?: string;
 }
 
-/* Row ordering A→D→B (block C dropped) comes from the SHARED `BLOCK_RANK`
- * (`@/components/lebenslagen/lebenslagen-shared`), so Umzug and the lebenslage
- * cascade never drift on ordering (Spec § 5.6 / F7). All non-C rows are shown
- * (no slice cap) so the eID-gated Block-D rows completion depends on stay
+/* Row ordering = INSERTION order of the materialised steps, i.e. exactly the
+ * order the backend executed them in (Umzug saga / lebenslage cascade config
+ * order). No client-side re-ranking by block — execution and display must never
+ * drift (Domain `lebenslage-akte-sequenz.md` Q2). Block C is dropped. All other
+ * rows are shown (no slice cap) so the eID-gated rows completion depends on stay
  * visible; run/page.tsx keeps its own `.slice(0,5)`, the inline hero does not. */
 
 /**
@@ -562,18 +562,14 @@ export function InlineCascade({
   }, [receipt, reduceMotion]);
 
   /* Cascade-node derivation — DUPLICATED from run/page.tsx (C2): block !== 'C',
-   * sort A→D→B, and show ALL non-C steps (no slice cap) so the ABH eID step that
-   * completion depends on is visible (P3). Do NOT refactor run/page.tsx to share
-   * this — run/page.tsx keeps its own .slice(0,5); the inline hero does not slice. */
+   * and show ALL non-C steps (no slice cap) so the ABH eID step that completion
+   * depends on is visible (P3). Do NOT refactor run/page.tsx to share this —
+   * run/page.tsx keeps its own .slice(0,5); the inline hero does not slice. */
   const cascadeNodes: CascadeNode[] = useMemo(() => {
     if (!vorgang) return [];
     return vorgang.schritte
       .map((step, insertionIndex) => ({ step, insertionIndex }))
       .filter(({ step }) => step.block !== 'C')
-      .sort((a, b) => {
-        const rank = BLOCK_RANK[a.step.block] - BLOCK_RANK[b.step.block];
-        return rank !== 0 ? rank : a.insertionIndex - b.insertionIndex;
-      })
       .map(({ step }) => ({
         stepId: step.id,
         behoerdeId: step.behoerde_id,

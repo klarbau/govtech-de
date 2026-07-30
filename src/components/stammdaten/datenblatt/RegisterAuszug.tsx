@@ -23,6 +23,17 @@ const STATUS_KEY: Record<RegisterNodeStatus, string> = {
 };
 
 /**
+ * „in Anbindung" is the one status that is not yet true today — it reads amber
+ * (a token that flips in dark) instead of the quiet grey of the other two. The
+ * dot stays as the redundant carrier; the word stays visible text.
+ */
+const STATUS_TEXT: Record<RegisterNodeStatus, string> = {
+  synchronisiert: 'text-text-secondary',
+  angebunden: 'text-text-secondary',
+  in_anbindung: 'font-medium text-warning',
+};
+
+/**
  * „Register, die Ihre Daten führen" (Spec § 4.4a) — the third zone of the
  * identity band (`stammdaten-blatt-dense.md` § 3.2). Boxless: a
  * headline, the node-grounded register count, then six quiet hairline rows
@@ -61,7 +72,9 @@ export function RegisterAuszug({ nodes, count }: RegisterAuszugProps) {
                   1.4.10, a11y report 2026-07-24 A1). */}
               <span className="min-w-0 break-words">{t(node.labelKey)}</span>
             </span>
-            <span className="pt-px text-end text-xs leading-5 text-text-secondary">
+            <span
+              className={`pt-px text-end text-xs leading-5 ${STATUS_TEXT[node.status]}`}
+            >
               {t(STATUS_KEY[node.status])}
             </span>
           </li>

@@ -1806,7 +1806,6 @@
     "detail": {
       "next_step_title": "Your next step",
       "next_step_basis_label": "Legal basis",
-      "next_step_cta": "Complete step",
       "next_step_cta_eid": "Confirm with eID",
       "next_step_cta_consent": "Approve transmission",
       "next_step_cta_termin": "Book appointment",
@@ -1825,13 +1824,9 @@
       "step_done_live_next": "Step completed. Next step: {aktion}",
       "step_done_live_all": "Step completed. Nothing further is required from you right now.",
       "next_step_brief_cta": "Open the related letter",
-      "details_title": "Details",
-      "summary_status_label": "Status",
       "summary_angelegt_label": "Created",
-      "summary_stichtag_label": "Effective date",
       "summary_behoerden_label": "Involved authorities",
       "summary_frist_label": "Next deadline",
-      "summary_frist_template": "{datum}",
       "datenschutz_sub": "What is processed for this case — and on what legal basis.",
       "termine_title": "Appointments for this case ({count})",
       "no_next_step": "Nothing is required from you right now. The involved authorities are working through the case.",
@@ -1846,20 +1841,64 @@
       "fertigstellung_label_after_action": "Completion after your step",
       "fertigstellung_label_in_review": "Authority reviewing — typically",
       "fertigstellung_label_done": "Completed on",
-      "timeline_title": "Steps in this case ({count})",
       "steps_overview_title": "Your case at a glance",
-      "steps_overview_sub": "We coordinate your request and forward it to the responsible authorities.",
-      "uebermittelt_label": "Transmitted on",
-      "erledigt_label": "Done on",
-      "termin_vereinbart_label": "Appointment booked on",
-      "details_show": "View details",
-      "details_hide": "Hide details",
-      "berechtigungen_title": "Legal basis & permissions",
-      "berechtigungen_basis_label": "Legal basis",
-      "berechtigungen_datenweitergabe_label": "Data sharing",
-      "berechtigungen_behoerden": "To {count} authorities",
-      "berechtigungen_einwilligungen_label": "Your consents",
-      "berechtigungen_einwilligungen_value": "Only to responsible authorities, revocable at any time."
+      "steps_overview_sub": "We coordinate your request and forward it to the responsible authorities."
+    },
+    "uebersicht": {
+      "overview_title": "Current status",
+      "metric_progress_label": "Progress",
+      "metric_progress_value": "{pct} %",
+      "metric_time_label": "Time saved (approx.)",
+      "metric_time_value": "approx. {minuten} min",
+      "metric_phase_label": "Current phase",
+      "phase_closed": "Completed",
+      "phase_prepare": "Being prepared",
+      "pill_action": "Action required",
+      "shelf_prev": "Show previous steps",
+      "shelf_next": "Show more steps",
+      "shelf_prev_eintraege": "Show previous entries",
+      "shelf_next_eintraege": "Show more entries",
+      "protokoll_show_all": "Show all {count} entries",
+      "protokoll_show_less": "Show less",
+      "steps_foot": "Every transmission is logged and bound to the legal basis stated.",
+      "gate_auto": "Automatic",
+      "gate_eid": "With eID",
+      "gate_consent": "With consent",
+      "gate_termin": "By appointment",
+      "row_daten": "Transmitted: {kategorien}",
+      "status_sr": "Status",
+      "status_time": "{zeit}",
+      "status_sub_eid": "Your confirmation required",
+      "next_closed_title": "This case is completed.",
+      "next_done_sub": "We will let you know as soon as there is news.",
+      "next_sub_eid": "Please confirm this step with your eID.",
+      "next_sub_consent": "Please approve the transmission.",
+      "next_sub_termin": "We prepare the application and book the appointment — you approve it.",
+      "next_running_sub": "{behoerde} · being processed",
+      "sticky_running": "Being processed · {behoerde}",
+      "next_waiting_title": "The case is being prepared",
+      "next_waiting_sub": "The involved authorities are working through the case.",
+      "kontrolle_title": "Your control",
+      "kontrolle_freigaben_title": "Your approvals",
+      "kontrolle_freigaben_value": "{given} of {total} granted",
+      "kontrolle_freigaben_sub": "Consents can be withdrawn at any time",
+      "kontrolle_datenschutz_title": "Data protection notice",
+      "kontrolle_datenschutz_value": "Your data is used solely to process this case.",
+      "kontrolle_stellen_value": "{count} authorities involved",
+      "erledigt_title": "What has already been done?",
+      "erledigt_sr_done": "Done",
+      "erledigt_sr_open": "Open",
+      "datenschutz_title": "Your data, your control",
+      "result_title": "Overall result",
+      "result_status": "Completed",
+      "result_body": "All involved authorities have completed their tasks for this case.",
+      "result_bescheid_cta": "View official notice (Bescheid)",
+      "result_datum_label": "Completed on",
+      "result_stellen_label": "Involved authorities",
+      "result_stellen_value": "{count} authorities / institutions",
+      "result_zeit_sub": "compared with the traditional route",
+      "bescheide_title": "Official notices (Bescheide) & proofs",
+      "protokoll_title": "Activity log"
     }
   },
   "assistent": {
@@ -3516,9 +3555,6 @@
       "kontakt_verifiziert": "Contact verified"
     },
     "datenblatt": {
-      "subline": "{angaben, plural, =1 {1 detail} other {# details}}, maintained by {register, plural, =1 {1 register} other {# registers}}.",
-      "subline_update": "Last updated on {datum} at {zeit} by {behoerde}.",
-      "subline_update_ohne_absender": "Last updated on {datum} at {zeit}.",
       "cta_korrigieren": "Correct data",
       "title": "Your details",
       "anschrift_link": "Change address",
@@ -3528,12 +3564,11 @@
         "hinweis": "In this demo, master data is a read-only single source of truth: you do not make changes here but at the responsible authority – the updated data then flows back into your profile automatically."
       },
       "identitaet": {
-        "region_label": "Verified identity",
-        "status": "Identity confirmed · eIDAS level of assurance: high",
         "geburtsdatum": "Date of birth",
+        "geburtsort": "Place of birth",
         "staatsangehoerigkeit": "Nationality",
         "familienstand": "Marital status",
-        "quelle": "Authoritative source",
+        "sprachen": "Languages",
         "quelle_fallback": "Citizens' office (Bürgeramt)"
       },
       "familienstand": {
@@ -3578,7 +3613,8 @@
         "gueltig_bis": "valid until {datum}",
         "norm_gueltig_bis": "{norm} · valid until {datum}",
         "gesetzliche_rente": "Statutory pension insurance",
-        "kind_geboren": "born {datum}"
+        "kind_geboren": "born {datum}",
+        "alter": "{jahre, plural, =1 {1 year} other {# years}}"
       },
       "quelle": {
         "bundid": "BundID account",
@@ -3586,13 +3622,11 @@
         "melderegister_ohne_datum": "Population register (Melderegister)",
         "bzst": "Federal Central Tax Office (Bundeszentralamt für Steuern)",
         "drv": "German Pension Insurance (Deutsche Rentenversicherung)",
-        "traeger": "{traeger}"
+        "traeger": "{traeger}",
+        "selbstauskunft": "Self-declared — no register holds this detail."
       },
       "wallet": {
-        "title": "Proofs & wallet",
-        "line": "{count, plural, =1 {1 proof} other {# proofs}} in your EUDI Wallet · trust service: BVA – Bundesverwaltungsamt · next review on {datum}",
-        "empty": "No proofs in your EUDI Wallet yet.",
-        "link": "View proofs"
+        "empty": "No proofs in your EUDI Wallet yet."
       },
       "protokoll": {
         "title": "Change log",
@@ -3605,8 +3639,91 @@
         "show_all": "Show full log"
       },
       "datenhoheit": {
-        "text": "Your master data is shared with authorities and services only with your consent — you decide who may see which detail.",
         "link": "Manage data use"
+      },
+      "sprache": {
+        "de": "German",
+        "en": "English",
+        "ru": "Russian",
+        "uk": "Ukrainian",
+        "ar": "Arabic",
+        "tr": "Turkish"
+      }
+    },
+    "akte": {
+      "portraet": {
+        "legende": "[MOCK] Synthetic portrait — not a passport photo, not a real person.",
+        "aktualisiert_label": "Last updated",
+        "aktualisiert_wert": "{datum}, {zeit}",
+        "quelle_label": "Authoritative source"
+      },
+      "fakten": {
+        "region_label": "Basic details"
+      },
+      "tabs": {
+        "aria": "Sections of your master data",
+        "ueberblick": "Overview",
+        "persoenlich": "Personal data",
+        "dokumente": "Documents",
+        "verlauf": "History"
+      },
+      "status": {
+        "title": "Status & ID document",
+        "aufenthalt_label": "Residence permit (Aufenthaltstitel)",
+        "gueltig_bis_label": "Valid until",
+        "behoerde_label": "Issuing authority",
+        "az_label": "Reference number (Aktenzeichen)",
+        "az_kopiert": "Reference number copied",
+        "bezeichnung_18g": "EU Blue Card",
+        "bezeichnung_21": "Residence permit for self-employment",
+        "quelle_aufenthalt": "Maintained by the immigration authority (Ausländerbehörde, § 71 (1) AufenthG); stored in the Central Register of Foreigners (Ausländerzentralregister) at the Federal Office for Migration and Refugees (Bundesamt für Migration und Flüchtlinge, § 1 AZRG). This demo does not query any register.",
+        "ausweis_label": "ID document",
+        "ausweis_personalausweis": "ID card (Personalausweis)",
+        "ausweis_reisepass": "Passport",
+        "ausweis_nummer_label": "Document number",
+        "verlaengerung_link": "Prepare renewal",
+        "leer": "There is currently no ID document in your document vault."
+      },
+      "vorgaenge": {
+        "title": "Current cases",
+        "alle": "All cases",
+        "status_genehmigt": "Approved",
+        "status_abgelehnt": "Rejected",
+        "leer": "No case is currently running.",
+        "punkt_laeuft": "running",
+        "punkt_abgeschlossen": "completed"
+      },
+      "dokumente": {
+        "title": "Documents & proofs",
+        "eid_titel": "Your online ID",
+        "alle": "All in the document vault",
+        "ohne_ablauf": "no expiry date",
+        "leer": "No documents in your vault yet.",
+        "kachel_vorzeigen": "Present",
+        "kachel_details": "Details",
+        "wallet_titel": "EUDI Wallet",
+        "wallet_sub": "{count, plural, =1 {1 proof} other {# proofs}} · next review on {datum}"
+      },
+      "aktionen": {
+        "title": "Quick actions",
+        "vorgang": "Start a case",
+        "nachweis": "Present a credential",
+        "nachweise_ansehen": "View proofs",
+        "termine": "View appointments",
+        "adresse": "Change address"
+      },
+      "identitaet": {
+        "bestaetigt": "Identity confirmed",
+        "service": "eIDAS level of assurance: high · {angaben, plural, =1 {1 detail} other {# details}}, maintained by {register, plural, =1 {1 register} other {# registers}}"
+      },
+      "verlauf": {
+        "title": "History",
+        "alle": "All activity",
+        "row": "{datenart} → {empfaenger}"
+      },
+      "datenhoheit": {
+        "title": "Data protection & data control",
+        "text_kurz": "You decide about every release — except for transmissions required by law (§ 36 BMG)."
       }
     },
     "once_only": {

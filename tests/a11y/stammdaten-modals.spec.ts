@@ -8,6 +8,10 @@
  * equivalent any more. The page now has exactly ONE dialog: the „Daten
  * korrigieren" explainer behind the single header button.
  *
+ * Extended 2026-07-28 (`stammdaten-akte.md` § 13.4): the rail's „Nachweis
+ * vorzeigen" row opens the shared `PresentCredentialDialog` — a second dialog
+ * on this page, held to the same focus contract (WCAG 2.4.3).
+ *
  * Intention preserved: any dialog on this page is axe-clean on
  * `[role="dialog"]` × 2 viewports, and it traps + restores focus.
  */
@@ -120,5 +124,35 @@ test.describe('Stammdaten a11y — „Daten korrigieren"-Dialog', () => {
       (document.activeElement?.textContent ?? '').trim(),
     );
     expect(restored.length, 'focus restored to a real control').toBeGreaterThan(0);
+  });
+});
+
+test.describe('Stammdaten a11y — Present-Dialog aus der Rail', () => {
+  test('öffnen → Esc → Fokus kehrt auf die auslösende Rail-Zeile zurück', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await setupPersona(page, 'anna-petrov');
+    await page.goto('/stammdaten', { waitUntil: 'networkidle' });
+    await page
+      .locator('[data-testid="sd-aktionen"]')
+      .waitFor({ state: 'visible', timeout: 15_000 });
+
+    const trigger = page.locator('[data-testid="sd-aktionen"] button').first();
+    const label = (await trigger.innerText()).trim();
+    await trigger.focus();
+    await trigger.click();
+
+    const dialog = page.locator('[role="dialog"]');
+    await dialog.waitFor({ state: 'visible' });
+    await expectAxeClean(page, '[role="dialog"]');
+
+    await page.keyboard.press('Escape');
+    await dialog.waitFor({ state: 'hidden' });
+    await page.waitForTimeout(200);
+    const restored = await page.evaluate(() =>
+      (document.activeElement?.textContent ?? '').trim(),
+    );
+    expect(restored, 'focus restored to the rail row').toBe(label);
   });
 });

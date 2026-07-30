@@ -55,7 +55,14 @@ export interface CascadeStepConfig {
   behoerdeId: BehoerdeId;
   /** A = auto/register, B = consent (private), D = eID-gated forward (Umzug parity). */
   block: BlockTyp;
-  gate: 'auto' | 'eid' | 'consent';
+  /**
+   * `'termin'` = physisch bürgergebundener Schritt (persönliches Erscheinen,
+   * z. B. Fingerabdruckabnahme). Eine eID-Bestätigung kann ihn nicht abbilden
+   * (Domain `lebenslage-akte-sequenz.md` Q3, Nebenbefund) → die Engine setzt ihn
+   * `self_assigned` + `requires_termin`, mintet nichts und blockiert den
+   * Abschluss nicht.
+   */
+  gate: 'auto' | 'eid' | 'consent' | 'termin';
   /** Klartext-Aktion (DE data, not an i18n key) → AutopilotStep.aktion. */
   aktion: string;
   /** Kurzer DE-Schritttitel für den Detail-Stepper (DE-Daten, kein i18n-Key,
@@ -135,6 +142,12 @@ export interface TerminTemplate {
 
 export interface LebenslageConfig {
   slug: string; // url + i18n namespace
+  /**
+   * DE-Anzeigename für den geminteten Vorgang-Titel (das Mock-Backend hat kein
+   * i18n). Muster wie Umzug („Umzug nach Berlin-Wedding"). Ohne ihn fiele der
+   * Mint auf `Lebenslage: {slug}` zurück.
+   */
+  titel_de?: string;
   vorgangTyp: VorgangTyp;
   icon: string; // lucide icon name (frontend maps)
   kategorie: 'familie' | 'wohnen' | 'arbeit' | 'migration' | 'steuern' | 'mehr';

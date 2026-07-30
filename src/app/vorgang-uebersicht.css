@@ -1,0 +1,1398 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Vorgang-Übersicht — Flächen der Akte `/vorgaenge/[id]`
+   ---------------------------------------------------------------------------
+   Port des Referenz-Designs „Vorgang-Übersicht" (Überblick-Karte, Schritte-
+   Zeitstrahl, Nächster-Schritt-Karte, „Ihre Kontrolle"-Schiene, Gesamtergebnis-
+   Band). Klassen-Präfix `pgv-` durchgehend: die Datei lädt app-weit, nichts
+   hier darf außerhalb von /vorgaenge/[id] greifen.
+
+   Farben ausschließlich über die Repo-Tokens (globals.css). Der Dark-Mode
+   ergibt sich daraus automatisch — deshalb steht hier KEIN eigener .dark-Block
+   für Flächen. Zwei Ausnahmen sind bewusst fixiert: Flächen, die einen weißen
+   Glyph tragen (Knoten, Haken), nehmen die nicht-flippenden Ramp-Tokens, damit
+   Weiß in beiden Themes AA-sicher bleibt.
+
+   Bewegung: ease-out, kein Bounce; der globale reduced-motion-Block in
+   globals.css deckt sowohl die OS-Einstellung als auch den manuellen
+   Bedienhilfen-Schalter ab, der Block am Dateiende ist die Redundanz dazu.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.pgv {
+  /* Text/Linien — flippen mit dem Theme. */
+  --pgv-brand: var(--color-primary);
+  --pgv-amber: var(--color-warning);
+  --pgv-danger: var(--color-danger);
+  --pgv-ink: var(--color-text-primary);
+  --pgv-text: var(--color-text-secondary);
+  --pgv-muted: var(--color-text-muted);
+  --pgv-border: var(--color-border);
+  --pgv-hair: var(--color-border);
+  --pgv-tint: var(--color-accent-soft);
+  --pgv-tile: var(--icon-tile);
+  --pgv-surface: var(--color-surface);
+
+  /* Füllungen mit weißem Glyph — bewusst NICHT theme-flippend. */
+  --pgv-brand-fill: var(--brand-fill);
+  --pgv-amber-fill: #b45309;
+
+  color: var(--pgv-ink);
+}
+
+/* ── Grundraster: Hauptspalte + Schiene ───────────────────────────────────── */
+/* Die Schiene ist schmaler als im Referenz-Entwurf (384px): der App-Shell nimmt
+   252px Sidebar + 80px Innenabstand, sonst bliebe der Zeitstrahl-Spalte bei
+   1440px nur ~690px — zu wenig für Behörde + Aktion nebeneinander. Ab 1600px
+   trägt die Seite die Referenzbreite. */
+.pgv-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 344px;
+  gap: 26px;
+  align-items: start;
+}
+
+@media (min-width: 1600px) {
+  .pgv-grid {
+    grid-template-columns: minmax(0, 1fr) 384px;
+  }
+}
+.pgv-main {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  min-width: 0;
+}
+.pgv-rail-col {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+}
+
+@media (max-width: 1279px) {
+  .pgv-grid {
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 20px;
+  }
+}
+
+.pgv-card {
+  background: var(--pgv-surface);
+  border: 1px solid var(--pgv-border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-1);
+}
+.pgv-card-pad {
+  padding: 20px 24px;
+}
+.pgv-tint {
+  background: var(--pgv-tint);
+  border: 1px solid var(--pgv-border);
+  border-radius: 14px;
+}
+
+/* ── Kopf: Titel links, Überblick-Karte rechts ────────────────────────────── */
+/* Titel neben der Überblick-Karte erst, wenn die Hauptspalte beides trägt —
+   darunter steht der Titel über der Karte (die Kennzahlen brauchen die Breite). */
+.pgv-head-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+@media (min-width: 1600px) {
+  .pgv-head-row {
+    grid-template-columns: 344px minmax(0, 1fr);
+    gap: 24px;
+  }
+}
+.pgv-title-col {
+  padding-top: 4px;
+  min-width: 0;
+}
+.pgv-h1 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--pgv-ink);
+}
+.pgv-h1-sub {
+  margin: 12px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--pgv-muted);
+  max-width: 44ch;
+}
+
+.pgv-ov-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 12px;
+  flex-wrap: wrap;
+}
+.pgv-ov-label {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  min-width: 0;
+}
+.pgv-ov-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--pgv-ink);
+}
+.pgv-ov-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 26px;
+  margin-top: 18px;
+}
+.pgv-ov-metrics > * {
+  flex: 1 1 180px;
+  min-width: 0;
+}
+.pgv-ov-foot {
+  margin: 16px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--pgv-hair);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--pgv-muted);
+}
+
+.pgv-aktz {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--pgv-muted);
+}
+.pgv-aktz-value {
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, monospace);
+  font-weight: 600;
+  color: var(--pgv-text);
+}
+.pgv-copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: var(--pgv-muted);
+  cursor: pointer;
+}
+.pgv-copy:hover {
+  background: var(--color-surface-muted);
+  color: var(--pgv-ink);
+}
+.pgv-copy.is-copied {
+  color: var(--pgv-brand);
+}
+
+.pgv-metric {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.pgv-metric-icon {
+  display: flex;
+  flex: 0 0 auto;
+  color: var(--pgv-muted);
+}
+.pgv-metric-value {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--pgv-ink);
+  font-variant-numeric: tabular-nums;
+}
+.pgv-metric-value.is-small {
+  font-size: 15px;
+}
+.pgv-metric-label {
+  margin-top: 2px;
+  font-size: 12.5px;
+  color: var(--pgv-muted);
+}
+
+.pgv-progress-track {
+  height: 8px;
+  margin-top: 12px;
+  border-radius: 9999px;
+  background: var(--color-surface-muted);
+  overflow: hidden;
+}
+.pgv-progress-fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--pgv-brand);
+  transition: width 0.55s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.pgv-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  background: var(--color-accent-soft);
+  color: var(--pgv-brand);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.pgv-pill.is-action {
+  background: var(--color-warning-soft);
+  color: var(--pgv-amber);
+}
+.pgv-pill.is-error {
+  background: var(--color-danger-soft);
+  color: var(--pgv-danger);
+}
+
+/* ── Schritte-Regal ───────────────────────────────────────────────────────── */
+.pgv-steps-title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--pgv-ink);
+}
+.pgv-steps-sub {
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--pgv-muted);
+}
+.pgv-steps-count {
+  flex: 0 0 auto;
+  font-size: 13px;
+  color: var(--pgv-muted);
+  font-variant-numeric: tabular-nums;
+}
+/* Zähler und Blätter-Tasten als ein rechtsbündiges Bündel — bricht bei engem
+   Kopf (768–1100) als Ganzes in die zweite Zeile. */
+.pgv-steps-headright {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 10px;
+  /* Hält das Bündel auch dann rechts, wenn es in die zweite Kopfzeile bricht. */
+  margin-inline-start: auto;
+}
+.pgv-steps-pager {
+  display: none;
+  gap: 6px;
+}
+.pgv-pager-btn {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--pgv-border);
+  border-radius: 50%;
+  background: var(--pgv-surface);
+  color: var(--pgv-muted);
+  cursor: pointer;
+  transition: background-color 0.15s ease-out, color 0.15s ease-out;
+}
+@media (hover: hover) and (pointer: fine) {
+  .pgv-pager-btn:not(:disabled):hover {
+    background: var(--color-surface-muted);
+    color: var(--pgv-ink);
+  }
+}
+.pgv-pager-btn:focus-visible {
+  outline: 2px solid var(--pgv-brand);
+  outline-offset: 2px;
+}
+.pgv-pager-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+/* AR/RTL: die Scroll-Mathematik invertiert bereits die Richtung — die
+   Chevron-Glyphen müssen mitspiegeln, sonst zeigt „zurück" vom Anfang weg. */
+[dir='rtl'] .pgv-pager-btn svg {
+  transform: scaleX(-1);
+}
+
+.pgv-steps {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+}
+/* Ab 768 trägt das Regal seine Mechanik selbst: `.m-shelf` (prototype-v2.css)
+   wirkt nur ≤767. `proximity` statt `mandatory` — mit Maus/Trackpad fühlt sich
+   ein hartes Einrasten übergriffig an. Kein Negativ-Bleed: die Karten enden an
+   der Innenkante der Sektion, die angeschnittene Nachbarkarte ist die
+   Scroll-Affordanz. */
+@media (min-width: 768px) {
+  .pgv-steps-shelf {
+    /* Der Boden ist nicht kosmetisch: zwischen 1024 und 1279 steht die Schiene
+       neben der Hauptspalte, die dann nur 302–528px misst — 44 % davon wären
+       133px und der Kartentext bräche in einzelne Silben. */
+    --shelf-slide: clamp(240px, 44%, 330px);
+    position: relative;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 14px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    /* Luft für :focus-visible-Ringe, die der overflow-Clip sonst kappt
+       (WCAG 2.4.7) — der Negativ-Margin nimmt den Versatz zurück. */
+    padding-block: 6px;
+    margin-block: 6px -6px;
+  }
+  .pgv-steps-shelf > li {
+    flex: 0 0 var(--shelf-slide);
+    scroll-snap-align: start;
+    min-width: 0;
+  }
+  .pgv-steps-pager {
+    display: inline-flex;
+  }
+}
+
+/* Eintritt der Karten von links nach rechts, einmal beim Mount. Der Index
+   kommt als `--pgv-i` aus dem TSX; ab der neunten Karte staut sich die
+   Verzögerung nicht weiter auf. */
+@media (prefers-reduced-motion: no-preference) {
+  .pgv-steps-shelf > li,
+  .pgv-bescheide-shelf > li {
+    animation: pgvShelfIn 0.38s cubic-bezier(0.65, 0, 0.35, 1) both;
+    animation-delay: calc(min(var(--pgv-i, 0), 8) * 45ms);
+  }
+}
+/* Der manuelle Bedienhilfen-Schalter setzt global nur die Dauer auf 0.01ms —
+   mit `both` + Verzögerung blieben die Karten kurz unsichtbar. */
+:where(html.a11y-reduce-motion) .pgv-steps-shelf > li,
+:where(html.a11y-reduce-motion) .pgv-bescheide-shelf > li {
+  animation: none;
+}
+/* Ein Schritt = EINE Karte im Regal, nicht eine Zeile im Zeitstrahl: Behörde
+   trägt die Kopfzeile mit dem Statusknoten, darunter Aktion/Rechtsgrundlage/
+   Übermittlung, dann Freigabe-Chip und Status als eigene Zeilen. `--pgv-lead`
+   ist die Höhe der Kopfzeile — daran fluchten Knoten, Chip und Status.
+   Feste erste Spur: der Freigabe-Chip darf die Spalte des Behördennamens nicht
+   aufziehen, sonst bricht der Name in vier Zeilen. */
+.pgv-row {
+  --pgv-lead: 20px;
+  position: relative;
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: start;
+  column-gap: 10px;
+  row-gap: 7px;
+  padding: 14px;
+  background: var(--pgv-surface);
+  border: 1px solid var(--pgv-border);
+  border-radius: 12px;
+}
+
+.pgv-railcell {
+  position: relative;
+  grid-column: 1;
+  grid-row: 1;
+  width: 24px;
+  height: 24px;
+  align-self: center;
+}
+
+.pgv-node {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  width: 24px;
+  height: 24px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+}
+.pgv-node-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 0 0 4px var(--pgv-surface);
+}
+.pgv-row[data-phase='pending'] .pgv-node-dot {
+  background: var(--pgv-surface);
+  border: 2px solid var(--color-border-strong);
+}
+.pgv-row[data-phase='active'] .pgv-node-dot {
+  background: var(--pgv-surface);
+  box-shadow: 0 0 0 4px var(--pgv-surface), 0 0 0 5px var(--color-border-strong);
+}
+.pgv-row[data-phase='eid'] .pgv-node-dot {
+  background: var(--pgv-amber-fill);
+}
+.pgv-row[data-phase='done'] .pgv-node-dot {
+  background: var(--pgv-brand-fill);
+}
+.pgv-row[data-phase='failed'] .pgv-node-dot {
+  background: var(--pgv-danger);
+}
+
+.pgv-halo {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+.pgv-row[data-phase='active'] .pgv-halo {
+  animation: pgvHalo 1.6s ease-out infinite;
+}
+.pgv-row[data-phase='eid'] .pgv-halo {
+  animation: pgvHaloAmber 1.6s ease-out infinite;
+}
+.pgv-row[data-phase='done'] .pgv-halo {
+  animation: pgvConfirmPulse 0.55s ease-out;
+}
+.pgv-spin {
+  animation: pgvSpin 0.85s linear infinite;
+}
+.pgv-check-path {
+  stroke-dasharray: 30;
+  stroke-dashoffset: 30;
+}
+.pgv-row[data-phase='done'] .pgv-check-path {
+  animation: pgvCheckDraw 0.42s cubic-bezier(0.65, 0, 0.35, 1) 0.04s forwards;
+}
+
+.pgv-tile {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--pgv-tile);
+  color: var(--pgv-text);
+  display: grid;
+  place-items: center;
+  justify-self: center;
+  flex: 0 0 auto;
+}
+.pgv-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border: 1px solid var(--pgv-border);
+  border-radius: 9999px;
+  background: var(--color-surface-muted);
+  color: var(--pgv-text);
+  font-size: 12.5px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.pgv-row .pgv-badge {
+  padding: 4px 10px;
+  line-height: 1.25;
+}
+.pgv-row-index {
+  flex: 0 0 auto;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--pgv-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.pgv-row-behoerde {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: var(--pgv-lead);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: var(--pgv-lead);
+  color: var(--pgv-ink);
+  overflow-wrap: break-word;
+}
+.pgv-row-aktion-cell {
+  grid-column: 2;
+  grid-row: 2;
+}
+.pgv-row-aktion {
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--pgv-text);
+  overflow-wrap: break-word;
+}
+.pgv-row-sub {
+  margin-top: 1px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--pgv-muted);
+  overflow-wrap: break-word;
+}
+.pgv-row-basis {
+  margin-top: 1px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--pgv-muted);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: break-word;
+}
+
+/* Chip und Status stehen unter dem Textblock auf derselben Kante wie er —
+   nebeneinander drückten sie die Textspur in der schmalen Karte unter ihre
+   min-content-Breite und der Titel liefe über den Chip (WCAG 1.4.4 / F69). */
+.pgv-row-badge {
+  grid-column: 2;
+  grid-row: 3;
+  justify-self: start;
+  display: flex;
+  align-items: center;
+  min-height: var(--pgv-lead);
+}
+.pgv-row-status {
+  grid-column: 2;
+  grid-row: 4;
+}
+.pgv-status {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: var(--pgv-lead);
+  font-size: 13px;
+  font-weight: 600;
+}
+.pgv-status.is-done,
+.pgv-status.is-active {
+  color: var(--pgv-brand);
+}
+.pgv-status.is-eid {
+  color: var(--pgv-amber);
+}
+.pgv-status.is-pending {
+  color: var(--pgv-muted);
+}
+.pgv-status.is-failed {
+  color: var(--pgv-danger);
+}
+.pgv-status-time {
+  margin-top: 2px;
+  font-size: 12.5px;
+  color: var(--pgv-muted);
+  font-variant-numeric: tabular-nums;
+}
+.pgv-shimmer {
+  width: 92px;
+  height: 9px;
+  margin-top: 6px;
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-muted) 0%,
+    var(--color-border-strong) 50%,
+    var(--color-surface-muted) 100%
+  );
+  background-size: 300px 100%;
+  animation: pgvShimmer 1.15s linear infinite;
+}
+
+.pgv-steps-foot {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 14px;
+  border-top: 1px solid var(--pgv-hair);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--pgv-muted);
+}
+
+/* ── Begleit-Leiste (≥768) ────────────────────────────────────────────────────
+   Der Zustand des Vorgangs läuft beim Scrollen mit. KEIN `position: fixed`: die
+   Leiste ist das letzte Kind von `.pgv` und klebt per `sticky` 16px über der
+   Viewport-Unterkante, bis sie am Seitenende in ihren eigenen Flussplatz
+   einrastet — dadurch verdeckt sie nie dauerhaft Inhalt, und der Sidebar-Versatz
+   ergibt sich aus dem Fluss. Geprüft: `.pgv` → main.app-content → .app-shell →
+   body → html tragen alle `overflow: visible` und keinen Transform-/Filter-/
+   Contain-Kontext, das Dokument selbst scrollt — sticky greift.
+   ≤767 übernimmt die gepinnte `.pgv-msticky`; hier `display: none`, damit immer
+   genau EIN `[data-vd-cta]` sichtbar ist. */
+.pgv-dock {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .pgv-dock {
+    position: sticky;
+    bottom: 16px;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    /* Immer auf Inhaltsbreite beschnitten und mittig — keine leere
+       Vollbreiten-Fläche in irgendeinem Zustand. Die Größen-Choreo beim
+       Zustandswechsel (Action-Pille → schmalere Done-Pille) fährt framer-motion
+       per FLIP in `BegleitDock` (`motion.section layout`) — CSS-Transitions
+       können inhaltsgetriebene fit-content-Änderungen nicht animieren. */
+    width: fit-content;
+    max-width: 100%;
+    margin-top: 18px;
+    margin-inline: auto;
+    padding: 12px 18px;
+    border: 1px solid var(--pgv-border);
+    border-radius: 14px;
+    background: var(--pgv-surface);
+    box-shadow: 0 14px 34px -22px rgba(15, 61, 46, 0.4);
+    transition:
+      background 0.35s ease-out,
+      border-color 0.35s ease-out,
+      box-shadow 0.35s ease-out;
+  }
+  .pgv-dock-glyph {
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--color-surface-muted);
+    color: var(--pgv-text);
+  }
+  .pgv-dock[data-state='done'] .pgv-dock-glyph {
+    background: var(--pgv-brand-fill);
+    color: #fff;
+  }
+  /* Bürger-am-Zug: Warn-Tint statt Karten-Weiß — die Leiste mit dem Tap darf
+     nicht in den gleichfarbigen Karten dahinter aufgehen. */
+  .pgv-dock[data-state='action'] {
+    background: var(--color-warning-soft);
+    border-color: var(--color-border-strong);
+    box-shadow: 0 12px 30px -16px rgba(120, 63, 4, 0.45);
+  }
+  /* Abschluss-Zustand: Erfolgs-Tint statt Karten-Weiß, sonst verschwimmt die
+     schwebende Pille über den gleichfarbigen Karten darunter. */
+  .pgv-dock[data-state='done'] {
+    padding-right: 22px;
+    background: var(--color-success-soft);
+    border-color: var(--color-border-strong);
+    box-shadow: 0 12px 30px -16px rgba(15, 61, 46, 0.5);
+  }
+  .pgv-dock[data-state='action'] .pgv-dock-glyph {
+    background: var(--pgv-amber-fill);
+    color: #fff;
+  }
+  /* Kein Grow: der Tap sitzt direkt neben dem Text, nicht an einer fernen
+     Kante. */
+  .pgv-dock-text {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+  .pgv-dock-aktion {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--pgv-ink);
+    overflow-wrap: anywhere;
+  }
+  .pgv-dock-sub {
+    margin: 2px 0 0;
+    font-size: 12.5px;
+    line-height: 1.4;
+    color: var(--pgv-muted);
+    overflow-wrap: anywhere;
+  }
+
+  /* Frost nur unter Liquid Glass; ohne `data-lg` (Kill-Switch) bleibt die
+     token-solide Fläche oben stehen. Rezept wie die Bottom-Tab-Bar: dauerhafte
+     Chrome-Fläche, deshalb im Blur-Budget — der Inhalt der Leiste bleibt
+     blur-frei. */
+  html[data-lg] .pgv-dock {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.88));
+    -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+    backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+    border-color: var(--lg-hairline);
+  }
+  html[data-lg].dark .pgv-dock {
+    background: linear-gradient(180deg, rgba(24, 36, 30, 0.82), rgba(15, 24, 20, 0.9));
+  }
+  /* Action-Leiste auch unter Glas warngelb getönt — der weiße Frost ging sonst
+     optisch in den Glas-Karten dahinter auf. Beide Verläufe halten dieselbe
+     Form (180deg, 2 Stops), damit Chromium den Zustandswechsel interpoliert. */
+  html[data-lg] .pgv-dock[data-state='action'] {
+    background: linear-gradient(180deg, rgba(254, 243, 218, 0.88), rgba(251, 234, 196, 0.94));
+    border-color: rgba(180, 83, 9, 0.28);
+  }
+  html[data-lg].dark .pgv-dock[data-state='action'] {
+    background: linear-gradient(180deg, rgba(58, 44, 14, 0.88), rgba(46, 34, 10, 0.94));
+    border-color: rgba(227, 179, 65, 0.32);
+  }
+  /* Done-Pille auch unter Glas grün getönt — der weiße Frost der Leiste ging
+     sonst optisch in den Glas-Karten dahinter auf. */
+  html[data-lg] .pgv-dock[data-state='done'] {
+    background: linear-gradient(180deg, rgba(231, 246, 236, 0.86), rgba(222, 242, 231, 0.94));
+    border-color: rgba(19, 112, 52, 0.28);
+  }
+  html[data-lg].dark .pgv-dock[data-state='done'] {
+    background: linear-gradient(180deg, rgba(23, 58, 37, 0.88), rgba(15, 42, 26, 0.94));
+    border-color: rgba(92, 201, 138, 0.3);
+  }
+}
+
+/* ── „Ihre Kontrolle" ─────────────────────────────────────────────────────── */
+.pgv-rail-title {
+  margin: 6px 2px 0;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--pgv-ink);
+}
+.pgv-krows {
+  padding: 4px 18px;
+}
+.pgv-krow {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  padding: 15px 0;
+  border-top: 1px solid var(--pgv-hair);
+}
+.pgv-krow:first-child {
+  border-top: none;
+}
+.pgv-krow .pgv-tile {
+  width: 38px;
+  height: 38px;
+}
+.pgv-krow-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--pgv-ink);
+}
+.pgv-krow-value {
+  margin-top: 2px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--pgv-text);
+}
+.pgv-krow-sub {
+  margin-top: 1px;
+  font-size: 13px;
+  color: var(--pgv-muted);
+}
+
+.pgv-check-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pgv-check-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+  color: var(--pgv-muted);
+}
+.pgv-check-item.is-done {
+  color: var(--pgv-text);
+}
+.pgv-check-mark {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  border: 2px solid var(--color-border-strong);
+  border-radius: 50%;
+  background: transparent;
+}
+.pgv-check-item.is-done .pgv-check-mark {
+  border-color: transparent;
+  background: var(--pgv-brand-fill);
+  color: #fff;
+}
+
+.pgv-card-title {
+  margin: 0 0 11px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--pgv-ink);
+}
+
+/* ── Gesamtergebnis ───────────────────────────────────────────────────────── */
+.pgv-result {
+  padding: 22px 24px;
+}
+.pgv-result-kicker {
+  margin: 0 0 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--pgv-text);
+}
+.pgv-result-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 26px;
+  align-items: start;
+}
+.pgv-result-grid > * {
+  flex: 1 1 190px;
+  min-width: 0;
+}
+.pgv-result-grid > :first-child {
+  flex: 1.4 1 240px;
+}
+.pgv-result-lead {
+  display: flex;
+  gap: 12px;
+}
+.pgv-result-mark {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin-top: 2px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--pgv-brand-fill);
+  color: #fff;
+}
+.pgv-result-status {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--pgv-ink);
+}
+.pgv-result-body {
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--pgv-text);
+  max-width: 34ch;
+}
+.pgv-result-stat-label {
+  font-size: 12.5px;
+  color: var(--pgv-muted);
+}
+.pgv-result-stat-value {
+  margin-top: 3px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--pgv-ink);
+  font-variant-numeric: tabular-nums;
+}
+.pgv-result-stat-sub {
+  margin-top: 2px;
+  font-size: 12.5px;
+  color: var(--pgv-muted);
+}
+
+/* ── Bescheide & Nachweise / Aktivitätsprotokoll ──────────────────────────── */
+.pgv-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.pgv-list > li + li {
+  border-top: 1px solid var(--pgv-hair);
+}
+.pgv-list-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  color: inherit;
+  text-decoration: none;
+}
+.pgv-list-link:hover .pgv-list-title {
+  text-decoration: underline;
+}
+/* `anywhere` statt `break-word`: Aktenzeichen wie „[MOCK] BA-MITTE/EWA-2026-05-
+   0298844" sind ein einziges Wort und drückten die Karte bei 320px über den
+   Viewport (WCAG 1.4.10). `anywhere` wirkt auch auf die min-content-Breite. */
+.pgv-list-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--pgv-ink);
+  overflow-wrap: anywhere;
+}
+.pgv-list-meta {
+  margin-top: 2px;
+  font-size: 13px;
+  color: var(--pgv-muted);
+  overflow-wrap: anywhere;
+}
+/* Signal-Zeile der Brief-Reihen: Frist-Chip + Authentizitäts-Badge (dieselben
+   Bausteine wie auf der LetterCard), umbruchfähig für schmale Karten. */
+.pgv-list-signals {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin-top: 6px;
+}
+.pgv-list-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 11px 0;
+}
+.pgv-list-time {
+  flex: 0 0 auto;
+  min-width: 106px;
+  font-size: 13px;
+  color: var(--pgv-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Protokoll-Eintrag: EINE Zeile — Zeitstempel, Behörde, Vollzug. Der Umbruch
+   ist erlaubt (schmale Hauptspalte 1024–1279); abgeschnitten wird nichts. */
+.pgv-log-text {
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--pgv-muted);
+  overflow-wrap: anywhere;
+}
+.pgv-log-behoerde {
+  font-weight: 600;
+  color: var(--pgv-ink);
+}
+.pgv-log-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  color: var(--pgv-brand);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+@media (hover: hover) and (pointer: fine) {
+  .pgv-log-toggle:hover {
+    text-decoration: underline;
+  }
+}
+.pgv-log-toggle:focus-visible {
+  outline: 2px solid var(--pgv-brand);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+/* Ab 768 rückt die Zeile enger zusammen; am Telefon bleibt die gestapelte
+   Variante des Regal-Wellen-Blocks unangetastet. */
+@media (min-width: 768px) {
+  .pgv-protokoll .pgv-list-row {
+    gap: 10px;
+    padding-block: 7px;
+  }
+}
+
+/* Bescheide & Nachweise sprechen dieselbe Sprache wie das Schritte-Regal: die
+   Zeilen sind Karten, das Regal wischt bzw. blättert waagerecht. Steht NACH
+   `.pgv-list > li + li` — gleiche Spezifität, spätere Regel gewinnt: die
+   Haarlinie der reinen Textliste (Protokoll) gilt hier nicht. */
+.pgv-bescheide-shelf > li,
+.pgv-bescheide-shelf > li + li {
+  border: 1px solid var(--pgv-border);
+  border-radius: 12px;
+  background: var(--pgv-surface);
+}
+.pgv-bescheide-shelf .pgv-list-link {
+  align-items: flex-start;
+  padding: 12px 14px;
+}
+
+@media (min-width: 768px) {
+  .pgv-bescheide-shelf {
+    /* Schmaler als die Schritte-Karten: hier tragen die Karten Betreff, Absender
+       und Signale statt vier Textblöcke. Boden wie dort — zwischen 1024 und 1279
+       misst die Hauptspalte nur 302–528px. */
+    --shelf-slide: clamp(230px, 36%, 300px);
+    position: relative;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 14px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    padding-block: 6px;
+    margin-block: 8px -6px;
+  }
+  .pgv-bescheide-shelf > li {
+    flex: 0 0 var(--shelf-slide);
+    scroll-snap-align: start;
+    min-width: 0;
+  }
+}
+
+/* ── ≤1023: eine Spalte, die Bürger-Aktion direkt unter den Kopf ──────────── */
+@media (max-width: 1023px) {
+  .pgv-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    /* `start` (Basisregel, gegen mitwachsende Rasterspalten ab 1024) heißt in der
+       Spalten-Flexbox: jede Karte bekommt fit-content-Breite. Eine Karte mit
+       waagerechtem Regal zieht sich damit auf ihre Inhaltsbreite und schiebt die
+       Seite über den Viewport (WCAG 1.4.10). Hier gilt: volle Spaltenbreite. */
+    align-items: stretch;
+  }
+  .pgv-main,
+  .pgv-rail-col {
+    display: contents;
+  }
+  /* `min-width: 0` gegen die auto-Mindestbreite von Flex-Items: ohne sie
+     schiebt ein langes Aktenzeichen die ganze Karte über den Viewport. */
+  .pgv-main > *,
+  .pgv-rail-col > * {
+    order: 4;
+    min-width: 0;
+  }
+  .pgv-head-row {
+    order: 1;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  .pgv-kontrolle {
+    order: 8;
+  }
+  .pgv-rail-foot {
+    order: 9;
+  }
+  .pgv-title-col {
+    padding-top: 0;
+  }
+}
+
+/* ── Telefon-Verstka (≤767) ───────────────────────────────────────────────────
+   Kein „Polotno": was aus Karten besteht, wischt waagerecht (`.m-shelf`,
+   prototype-v2.css — Schritte, Bescheide, Termine); was aus Textzeilen besteht,
+   kollabiert (`.pgv-mdisc`); die wichtigste Handlung sitzt fixiert über der
+   Bottom-Tab-Bar (`.pgv-msticky`). Regel der Regal-Wellen: ein Regal trägt
+   KARTEN, nie nackte Textzeilen. */
+
+/* Ab 768px sind die Telefon-Bausteine layoutneutral bzw. unsichtbar. */
+.pgv-msticky {
+  display: none;
+}
+.pgv-mdisc {
+  display: contents;
+}
+.pgv-mdisc-head {
+  display: none;
+}
+.pgv-mdisc-body {
+  display: contents;
+}
+
+@media (max-width: 767px) {
+  /* Der Einspalten-Stapel erbt `align-items: start` aus dem Desktop-Raster —
+     als Flex-Spalte hieße das fit-content-Breite, und ein Regal (max-content =
+     Summe aller Karten) hätte die ganze Seite über den Viewport gezogen. */
+  .pgv-grid {
+    align-items: stretch;
+  }
+  .pgv-h1 {
+    font-size: 23px;
+  }
+  .pgv-h1-sub,
+  .pgv-steps-sub {
+    font-size: 13.5px;
+  }
+  .pgv-card-pad {
+    padding: 16px 16px;
+  }
+  .pgv-krows {
+    padding: 2px 14px;
+  }
+  .pgv-result {
+    padding: 18px 16px;
+  }
+  .pgv-metric-value {
+    font-size: 18px;
+  }
+  .pgv-list-row {
+    flex-direction: column;
+    gap: 2px;
+  }
+  /* Tap-Target-Vertrag der Mobile-Comfort-Welle. */
+  .pgv-log-toggle {
+    min-height: 44px;
+  }
+
+  /* — Kennzahlen: zwei numerische Zellen nebeneinander, Phase als volle Zeile
+       (statt drei gestapelter Blöcke). Ohne Zeitersparnis-Kennzahl wächst
+       „Fortschritt" auf die volle Breite — kein halb leerer Streifen. — */
+  .pgv-ov-metrics {
+    gap: 0;
+    margin-top: 14px;
+    border-top: 1px solid var(--pgv-hair);
+  }
+  .pgv-ov-metrics > * {
+    flex: 1 1 40%;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--pgv-hair);
+  }
+  .pgv-ov-metrics > *:nth-child(2):not(:last-child) {
+    padding-inline-start: 14px;
+    border-inline-start: 1px solid var(--pgv-hair);
+  }
+  .pgv-ov-metrics > *:last-child {
+    flex-basis: 100%;
+  }
+  .pgv-progress-track {
+    margin-top: 10px;
+  }
+  .pgv-ov-foot {
+    margin-top: 10px;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  /* — Schritte-Regal: die Karten-Darstellung gilt überall, hier nur die engeren
+       Maße. `margin`/`padding` müssen neu gesetzt werden: die Kurzformen von
+       `.pgv-steps` stehen in DIESER Datei später als `.m-shelf`. — */
+  .pgv-steps-shelf {
+    --shelf-slide: min(84%, 300px);
+    --shelf-bleed: 16px;
+    margin-top: 12px;
+    margin-inline: calc(-1 * var(--shelf-bleed));
+    padding-inline: var(--shelf-bleed);
+  }
+  .pgv-shimmer {
+    width: 64px;
+  }
+
+  /* — Bescheide & Nachweise: die Karten-Darstellung gilt überall, hier nur die
+       engeren Maße. — */
+  .pgv-bescheide-shelf {
+    --shelf-slide: min(84%, 300px);
+    --shelf-bleed: 16px;
+    margin-top: 10px;
+    margin-inline: calc(-1 * var(--shelf-bleed));
+    padding-inline: var(--shelf-bleed);
+  }
+
+  /* — Termine: TerminCards sind schon Karten. — */
+  .pgv-termine-shelf {
+    --shelf-slide: min(86%, 320px);
+    --shelf-bleed: 16px;
+    margin-top: 12px;
+  }
+
+  /* — Textzeilen-Blöcke kollabieren; das Protokoll rutscht hinter die Termine,
+       damit der Handlungs-Teil der Akte vorn steht. — */
+  .pgv-protokoll {
+    order: 6;
+  }
+  .pgv-hide-phone {
+    display: none;
+  }
+  .pgv-mdisc {
+    display: block;
+  }
+  .pgv-mdisc-head {
+    display: block;
+    margin: 0;
+  }
+  .pgv-mdisc-btn {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--pgv-ink);
+    font-size: 15px;
+    font-weight: 600;
+    text-align: start;
+    cursor: pointer;
+  }
+  .pgv-mdisc-btn:focus-visible {
+    outline: 2px solid var(--pgv-brand);
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+  .pgv-mdisc-chev {
+    flex: 0 0 auto;
+    color: var(--pgv-muted);
+    transition: transform 0.18s ease;
+  }
+  .pgv-mdisc[data-open='true'] .pgv-mdisc-chev {
+    transform: rotate(180deg);
+  }
+  .pgv-mdisc-body {
+    display: block;
+  }
+  .pgv-mdisc[data-open='false'] > .pgv-mdisc-body {
+    display: none;
+  }
+  .pgv-kontrolle {
+    padding-top: 2px;
+    border-top: 1px solid var(--pgv-hair);
+  }
+
+  /* — Gepinnte Aktionszone über der Bottom-Tab-Bar (Vertrag: mobile-nav.css,
+       `--mobile-tabbar-h` + safe-area). Bewusst solid und blur-frei: überlebt
+       den Kill-Switch NEXT_PUBLIC_LG=0 unverändert. Eigener Block statt
+       `.mobile-sticky-cta`, weil diese Zone eine Kontextzeile trägt und ihre
+       Freiraum-Regel sonst von der später geladenen mobile-nav.css geschlagen
+       würde. — */
+  .pgv-msticky {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--mobile-tabbar-h) + env(safe-area-inset-bottom));
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 16px;
+    background: var(--pgv-surface);
+    border-top: 1px solid var(--pgv-border);
+  }
+  .pgv-msticky > .btn,
+  .pgv-msticky > button {
+    width: 100%;
+    min-height: 48px;
+    justify-content: center;
+  }
+  .pgv-msticky-context {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--pgv-ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pgv-msticky-status {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin: 0;
+    min-height: 24px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--pgv-text);
+  }
+  .pgv-msticky-status > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Der Inline-CTA wäre neben der gepinnten Zone ein zweiter, identischer
+     Auslöser — er tritt ab. (Die Begleit-Leiste ist hier ohnehin ausgeblendet.) */
+  .pgv[data-msticky='bescheid'] .pgv-result-cta {
+    display: none;
+  }
+
+  /* Freiraum: nichts endet unter der gepinnten Zone. Die Aktions-Variante ist
+     um die Kontextzeile höher als die beiden einzeiligen. */
+  .app-content:has(.pgv-msticky) {
+    padding-bottom: calc(var(--mobile-tabbar-h) + env(safe-area-inset-bottom) + 78px);
+  }
+  .app-content:has(.pgv-msticky[data-kind='action']) {
+    padding-bottom: calc(var(--mobile-tabbar-h) + env(safe-area-inset-bottom) + 112px);
+  }
+}
+
+@keyframes pgvSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes pgvCheckDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes pgvHalo {
+  0% {
+    box-shadow: 0 0 0 0 rgba(15, 61, 46, 0.42);
+  }
+  70% {
+    box-shadow: 0 0 0 9px rgba(15, 61, 46, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(15, 61, 46, 0);
+  }
+}
+@keyframes pgvHaloAmber {
+  0% {
+    box-shadow: 0 0 0 0 rgba(180, 99, 9, 0.42);
+  }
+  70% {
+    box-shadow: 0 0 0 9px rgba(180, 99, 9, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(180, 99, 9, 0);
+  }
+}
+@keyframes pgvConfirmPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(15, 61, 46, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 0 13px rgba(15, 61, 46, 0);
+  }
+}
+@keyframes pgvShimmer {
+  0% {
+    background-position: -140px 0;
+  }
+  100% {
+    background-position: 170px 0;
+  }
+}
+@keyframes pgvShelfIn {
+  from {
+    opacity: 0;
+    transform: translateX(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* `!important` wie im globalen Block (globals.css): ohne das verlieren diese
+   Selektoren (0,1,0) gegen die Zustands-Selektoren oben
+   (`.pgv-row[data-phase='eid'] .pgv-halo` = 0,3,0) und der Reset wäre wirkungslos. */
+@media (prefers-reduced-motion: reduce) {
+  .pgv-spin,
+  .pgv-halo,
+  .pgv-shimmer,
+  .pgv-check-path {
+    animation: none !important;
+  }
+  .pgv-check-path {
+    stroke-dashoffset: 0 !important;
+  }
+  .pgv-progress-fill,
+  .pgv-mdisc-chev,
+  .pgv-dock {
+    transition: none !important;
+  }
+}

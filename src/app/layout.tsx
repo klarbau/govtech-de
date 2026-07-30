@@ -10,6 +10,12 @@ import { cn } from '@/lib/utils';
 
 import './globals.css';
 import './prototype-v2.css';
+// Structural rules of the Stammdaten composition. After prototype-v2.css so the
+// sheet's ≥1280 two-column rule can be held back to ≥1536 (source-order tie).
+import './stammdaten-akte.css';
+// Flächen der Vorgangs-Akte `/vorgaenge/[id]` (Präfix `pgv-`, app-weit inert,
+// weil nur diese Route die Klassen trägt).
+import './vorgang-uebersicht.css';
 // App-wide Liquid-Glass layer (inert unless <html data-lg> — see
 // LiquidGlassChrome). Core shell + generic primitives first, then the
 // screen-scoped Posteingang specifics. Imported last so they win on order as
@@ -28,6 +34,10 @@ import './steuer-liquid-glass.css';
 import './datenschutz-liquid-glass.css';
 import './lebenslagen-liquid-glass.css';
 import './onboarding-landing-liquid-glass.css';
+// Papier-Idiom der Lebenslage-Familie (<PaperScreen> setzt `data-lg-paper`).
+// MUSS als letztes geladen werden: bei Spezifitäts-Gleichstand mit den
+// `html[data-lg][data-lg-screen='…']`-Regeln gewinnt so das Papier.
+import './akte-paper.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 const interTight = Inter_Tight({ subsets: ['latin'], variable: '--font-display' });

@@ -16,6 +16,7 @@ import type { LebenslageConfig } from '../types';
 
 export const kindergeldConfig: LebenslageConfig = {
   slug: 'kindergeld',
+  titel_de: 'Kindergeld',
   vorgangTyp: 'kindergeld',
   icon: 'piggy-bank',
   kategorie: 'familie',

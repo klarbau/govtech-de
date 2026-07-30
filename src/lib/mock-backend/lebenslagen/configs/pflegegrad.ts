@@ -15,6 +15,7 @@ import type { LebenslageConfig } from '../types';
 
 export const pflegegradConfig: LebenslageConfig = {
   slug: 'pflegegrad',
+  titel_de: 'Pflegegrad beantragen',
   vorgangTyp: 'pflegegrad',
   icon: 'heart-handshake',
   kategorie: 'mehr',

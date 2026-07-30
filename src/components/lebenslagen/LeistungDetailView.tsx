@@ -7,11 +7,17 @@ import { useTranslations } from 'next-intl';
 import {
   ArrowRight,
   Bookmark,
+  Building2,
   Check,
+  CheckCircle2,
   ChevronDown,
   ChevronRight,
+  Clock,
+  ExternalLink,
+  FileText,
   Info,
-  Lock,
+  Scale,
+  ShieldCheck,
   UploadCloud,
 } from 'lucide-react';
 
@@ -21,6 +27,13 @@ import type { Behoerde, Persona } from '@/types';
 import { formatDateDe } from '@/lib/utils';
 import { MobileStickyCta } from '@/components/shared/MobileStickyCta';
 import { isGenuineNotFound, loadWithRetry } from './lebenslagen-shared';
+import { LebenslageBadge } from './lebenslage-icon';
+import { FortschrittRing } from './FortschrittRing';
+import {
+  SchrittKette,
+  type SchrittKetteRow,
+  type SchrittKetteZustand,
+} from './SchrittKette';
 
 interface LeistungDetailViewProps {
   slug: string;
@@ -37,6 +50,13 @@ type LoadState =
       /** Nur geladen, wenn `config.frist_rescue` gesetzt ist (Anker-Auflösung). */
       persona: Persona | null;
     };
+
+/** Schritt-Zustand → Status-Pille der Rail-Überblicksliste. */
+const STATUS_PILL: Record<SchrittKetteZustand, { cls: string; key: string }> = {
+  erledigt: { cls: 'is-done', key: 'erledigt' },
+  aktuell: { cls: 'is-next', key: 'naechster' },
+  offen: { cls: 'is-open', key: 'offen' },
+};
 
 /** config.kategorie → Lebensphasen-Label (Breadcrumb). */
 const PHASE_LABEL_KEY: Record<LebenslageConfig['kategorie'], string> = {
@@ -91,12 +111,20 @@ export function LeistungDetailView({ slug }: LeistungDetailViewProps) {
     };
   }, [slug, reloadKey]);
 
-  if (state.kind === 'loading') return <DetailSkeleton />;
   if (state.kind === 'not-found') return notFound();
-  if (state.kind === 'error') return <DetailLoadError onRetry={() => setReloadKey((k) => k + 1)} />;
 
+  // `.ak` ist der Papier-Scope (akte-paper.css) — er trägt alle Zustände, damit
+  // Skeleton und Fehlerfall dieselbe Fläche haben wie die fertige Seite.
   return (
-    <DetailReady config={state.config} behoerden={state.behoerden} persona={state.persona} />
+    <div className="ak">
+      {state.kind === 'loading' ? (
+        <DetailSkeleton />
+      ) : state.kind === 'error' ? (
+        <DetailLoadError onRetry={() => setReloadKey((k) => k + 1)} />
+      ) : (
+        <DetailReady config={state.config} behoerden={state.behoerden} persona={state.persona} />
+      )}
+    </div>
   );
 }
 
@@ -145,16 +173,16 @@ function DetailSkeleton() {
     <div role="status" aria-busy="true">
       <span className="sr-only">{tCommon('loading')}</span>
       <div className="gt-page-head">
-        <h1>…</h1>
+        <h1 className="ak-h1">…</h1>
       </div>
-      <div className="ll-stepper" style={{ height: 64 }} aria-hidden="true" />
-      <div className="lk-layout" style={{ marginTop: 20 }}>
+      <div className="ak-kette" style={{ height: 56 }} aria-hidden="true" />
+      <div className="lk-layout">
         <div className="ll-main">
-          <div style={{ height: 120 }} aria-hidden="true" />
-          <div style={{ height: 180 }} aria-hidden="true" />
+          <div className="ll-sec" style={{ height: 120 }} aria-hidden="true" />
+          <div className="ll-sec" style={{ height: 180 }} aria-hidden="true" />
         </div>
         <aside className="lk-rail" aria-hidden="true">
-          <div className="gt-card ll-next" style={{ height: 180 }} />
+          <div className="ak-rail-card" style={{ height: 320 }} />
         </aside>
       </div>
     </div>
@@ -238,7 +266,27 @@ function DetailReady({
     (f) => f.prefill.path && !f.prefill.user_decision,
   );
 
+  const ketteRows: SchrittKetteRow[] = config.cascade.map((step, idx) => ({
+    position: idx + 1,
+    label: step.kurzlabel ?? step.aktion,
+    stelle: step.behoerdeKurz,
+    zustand: idx === 0 ? 'aktuell' : 'offen',
+  }));
+
+  const ersterSchritt = ketteRows[0] ?? null;
+
   const istAntragslos = config.mode === 'antragslos';
+  /**
+   * Die Mini-Karte trägt nur eine 1–2-zeilige Notiz. Der antragslose Hinweis ist
+   * ein mehrzeiliger Ehrlichkeits-Absatz ([ZUKUNFT]-Phasing) — er steht darum
+   * unter der Karte statt in ihr.
+   */
+  const miniNote = istAntragslos ? null : td('naechster_schritt_body');
+  const absatzNote = istAntragslos
+    ? config.antragslos_note_key
+      ? t(config.antragslos_note_key)
+      : td('antragslos.kein_antrag_body')
+    : null;
   const antragHref = `/lebenslagen/${config.slug}/antrag`;
   const phaseLabel = td(`phase.${PHASE_LABEL_KEY[config.kategorie]}`);
   const dauer = config.dauer_geschaetzt_key ? t(config.dauer_geschaetzt_key) : null;
@@ -261,53 +309,43 @@ function DetailReady({
       <nav className="ll-breadcrumb" aria-label={td('breadcrumb_label')}>
         <Link href="/lebenslagen">{td('breadcrumb_root')}</Link>
         <ChevronRight aria-hidden="true" />
-        <span className="ll-breadcrumb-current">{phaseLabel}</span>
+        <span>{phaseLabel}</span>
+        <ChevronRight aria-hidden="true" />
+        <span className="ll-breadcrumb-current">
+          {t(`lebenslagen.${config.slug}.title`)}
+        </span>
       </nav>
 
-      <div className="gt-page-head">
-        <h1>{t(`lebenslagen.${config.slug}.title`)}</h1>
-        <div className="sub">{t(`lebenslagen.${config.slug}.lead`)}</div>
-        {metaSegments.length > 0 ? (
-          <p className="ll-meta">
-            {metaSegments.map((seg, idx) => (
-              <React.Fragment key={seg}>
-                {idx > 0 ? (
-                  <span className="ll-meta-sep" aria-hidden="true">
-                    ·
-                  </span>
-                ) : null}
-                <span>{seg}</span>
-              </React.Fragment>
-            ))}
-          </p>
-        ) : null}
+      <div className="gt-page-head ak-head">
+        <LebenslageBadge icon={config.icon} />
+        <div className="ak-head-text">
+          <h1 className="ak-h1">{t(`lebenslagen.${config.slug}.title`)}</h1>
+          <div className="sub ak-sub">{t(`lebenslagen.${config.slug}.lead`)}</div>
+          {metaSegments.length > 0 ? (
+            <p className="ll-meta ak-micro">
+              {metaSegments.map((seg, idx) => (
+                <React.Fragment key={seg}>
+                  {idx > 0 ? (
+                    <span className="ll-meta-sep" aria-hidden="true">
+                      ·
+                    </span>
+                  ) : null}
+                  <span>{seg}</span>
+                </React.Fragment>
+              ))}
+            </p>
+          ) : null}
+        </div>
       </div>
 
-      {/* Zukunft-Hinweis (Kopf) — Ehrlichkeits-Markierung IMMER sichtbar (Badge +
-          erster Satz); der erklärende Rest (inkl. antragslos-Note für hybride
-          Slugs) kollabiert hinter <details>, damit der Kopf keine Textwand ist. */}
-      {config.zukunft ? (
-        <div className="ll-note" role="note">
-          <p className="ll-note-body">
-            <strong className="ll-note-badge">{td('zukunft_banner_badge')}</strong>{' '}
-            {td('zukunft_banner_lead')}
-          </p>
-          <details className="ll-disclosure ll-note-disclosure">
-            <summary className="ll-disclosure-summary">
-              <span>{td('zukunft_disclosure_summary')}</span>
-              <ChevronDown className="ll-disclosure-chevron" aria-hidden="true" />
-            </summary>
-            <div className="ll-disclosure-body">
-              <p className="ll-note-body">{td('zukunft_banner_rest')}</p>
-              {config.antragslos_note_key && !istAntragslos ? (
-                <p className="ll-note-body ll-note-body-extra">
-                  {t(config.antragslos_note_key)}
-                </p>
-              ) : null}
-            </div>
-          </details>
-        </div>
-      ) : null}
+      {/* Schritt-Kette — Config-Reihenfolge, direkt unter dem Kopf (Mockup-
+          Anatomie); auf der Leistungsseite ist noch nichts vollzogen: alle
+          Schritte offen, der erste ist der aktuelle. */}
+      <SchrittKette rows={ketteRows} ariaLabel={td('stepper_label')} />
+
+      {/* Zukunft-Banner entfernt (User-Entscheid 2026-07-28): das [ZUKUNFT]-
+          Phasing bleibt auf Schritt-Ebene (Kaskaden-Rechtsgrundlagen) und in
+          den Kaskaden-Texten erhalten — nur der Seiten-Banner ist weg. */}
 
       {/* Fristen-Rescue (wow-#12) — ehrlicher „ohne Antrag verfällt Geld"-Beat;
           Datum aus Persona-Seed, €-Wert „geschätzt ca.". */}
@@ -321,35 +359,12 @@ function DetailReady({
         </div>
       ) : null}
 
-      {/* Stepper — config.cascade order (die eine Glas-Fläche der Route). */}
-      {config.cascade.length > 0 ? (
-        <div className="ll-stepper" role="group" aria-label={td('stepper_label')} tabIndex={0}>
-          <ol className="ll-stepper-track">
-            {config.cascade.map((step, idx) => (
-              <li key={step.id} className={`ll-step${idx === 0 ? ' is-current' : ''}`}>
-                <span className="ll-step-num" aria-hidden="true">
-                  {idx + 1}
-                </span>
-                <span className="ll-step-body">
-                  <span className="ll-step-label">{step.kurzlabel ?? step.aktion}</span>
-                  {step.behoerdeKurz ? (
-                    <span className="ll-step-sub">{step.behoerdeKurz}</span>
-                  ) : null}
-                </span>
-                {idx < config.cascade.length - 1 ? (
-                  <ChevronRight className="ll-step-sep" aria-hidden="true" />
-                ) : null}
-              </li>
-            ))}
-          </ol>
-        </div>
-      ) : null}
-
-      <div className="lk-layout" style={{ marginTop: 20 }}>
+      <div className="lk-layout">
         <div className="ll-main">
           {/* Zuständige Stellen — löst die Intro-Karte ab (ohne Lead-Doppelung). */}
           <section className="ll-sec" aria-labelledby="ll-stellen-title">
-            <h2 id="ll-stellen-title" className="ll-h2">
+            <h2 id="ll-stellen-title" className="ll-h2 ak-sec-title">
+              <Building2 className="ak-sec-icon" aria-hidden="true" />
               {td('section.zustaendige_stellen')}
             </h2>
             <div className="ll-stellen">
@@ -390,7 +405,8 @@ function DetailReady({
           {/* Voraussetzungen — schlichte Liste mit hängenden Markern. */}
           {config.voraussetzungen_keys.length > 0 ? (
             <section className="ll-sec" aria-labelledby="ll-vor-title">
-              <h2 id="ll-vor-title" className="ll-h2">
+              <h2 id="ll-vor-title" className="ll-h2 ak-sec-title">
+                <CheckCircle2 className="ak-sec-icon" aria-hidden="true" />
                 {td('section.voraussetzungen')}
               </h2>
               <ul className="ll-reqlist">
@@ -405,7 +421,8 @@ function DetailReady({
           {docCount > 0 ? (
             <section className="ll-sec" aria-labelledby="ll-dok-title">
               <div className="ll-sec-head">
-                <h2 id="ll-dok-title" className="ll-h2">
+                <h2 id="ll-dok-title" className="ll-h2 ak-sec-title">
+                  <FileText className="ak-sec-icon" aria-hidden="true" />
                   {td('section.dokumente')}
                 </h2>
                 <span className="ll-mock-rail">{td('mock_marker')}</span>
@@ -417,25 +434,37 @@ function DetailReady({
                     <li key={key}>
                       <span className="ll-dok-name">{t(key)}</span>
                       {ausstehend ? (
-                        <span className="badge amber ll-dok-status">
+                        <span className="ak-pill is-next ll-dok-status">
                           {td('nachweis_ausstehend')}
                         </span>
                       ) : (
-                        <span className="badge green ll-dok-status">
+                        <span className="ak-pill is-done ll-dok-status">
                           <Check aria-hidden="true" />
                           {td('nachweis_hochgeladen')}
                         </span>
                       )}
-                      <button type="button" className="btn btn-secondary btn-sm ll-dok-action">
-                        {ausstehend ? td('nachweis_hochladen') : td('nachweis_anzeigen')}
-                      </button>
+                      {ausstehend ? (
+                        <button type="button" className="btn btn-secondary btn-sm ll-dok-action">
+                          {td('nachweis_hochladen')}
+                        </button>
+                      ) : (
+                        <button type="button" className="ak-link-action ll-dok-action">
+                          {td('nachweis_anzeigen')}
+                          <ExternalLink aria-hidden="true" />
+                        </button>
+                      )}
                     </li>
                   );
                 })}
               </ul>
               <button type="button" className="ll-dropzone ll-dok-dropzone">
-                <UploadCloud aria-hidden="true" />
-                <span>{td('nachweis_dropzone')}</span>
+                <span className="ak-dz-ic" aria-hidden="true">
+                  <UploadCloud />
+                </span>
+                <span className="ak-dz-text">
+                  <span>{td('nachweis_dropzone')}</span>
+                  <span className="ak-dz-hint">{td('nachweis_dropzone_hint')}</span>
+                </span>
               </button>
             </section>
           ) : null}
@@ -453,7 +482,8 @@ function DetailReady({
               <ul className="ll-oo-grid">
                 {autoFields.map((field) => (
                   <li key={field.key}>
-                    {t(`lebenslagen.${config.slug}.fields.${field.key}.label`)}
+                    <Check className="ak-oo-check" aria-hidden="true" />
+                    <span>{t(`lebenslagen.${config.slug}.fields.${field.key}.label`)}</span>
                   </li>
                 ))}
               </ul>
@@ -466,7 +496,8 @@ function DetailReady({
             <section className="ll-sec" aria-labelledby="ll-recht-title">
               <details className="ll-disclosure">
                 <summary className="ll-disclosure-summary">
-                  <h2 id="ll-recht-title" className="ll-h2 ll-disclosure-h2">
+                  <h2 id="ll-recht-title" className="ll-h2 ll-disclosure-h2 ak-sec-title">
+                    <Scale className="ak-sec-icon" aria-hidden="true" />
                     {td('section.rechtsgrundlagen')}
                   </h2>
                   <ChevronDown className="ll-disclosure-chevron" aria-hidden="true" />
@@ -486,7 +517,8 @@ function DetailReady({
           {/* Fristen & Gebühren — bleibt AUSGEKLAPPT (kurz, trägt die rechtlich
               wichtige Frist). */}
           <section className="ll-sec" aria-labelledby="ll-fg-title">
-            <h2 id="ll-fg-title" className="ll-h2">
+            <h2 id="ll-fg-title" className="ll-h2 ak-sec-title">
+              <Clock className="ak-sec-icon" aria-hidden="true" />
               {td('section.fristen_gebuehren')}
             </h2>
             <dl className="ll-fg-list">
@@ -518,61 +550,134 @@ function DetailReady({
           </section>
         </div>
 
-        <aside className="lk-rail" aria-label={td('rail_label')}>
-          {/* Nächster Schritt (CTA-Panel) — das EINE Panel der Seite; trägt die
-              eine Frost-Fläche der Familie (via lebenslagen-liquid-glass.css). */}
-          <section className="gt-card ll-next" aria-labelledby="ll-next-title">
-            <h2 id="ll-next-title" className="gt-card-title ll-next-title">
-              {istAntragslos ? td('antragslos.kein_antrag_title') : td('naechster_schritt')}
-            </h2>
-            <p className="ll-next-body">
-              {istAntragslos
-                ? config.antragslos_note_key
-                  ? t(config.antragslos_note_key)
-                  : td('antragslos.kein_antrag_body')
-                : td('naechster_schritt_body')}
-            </p>
-            <div className="ll-next-actions">
-              <MobileStickyCta>
-                {istAntragslos ? (
-                  <button
-                    type="button"
-                    className="btn btn-primary ll-next-primary"
-                    onClick={startCascade}
-                    disabled={isStarting}
-                  >
-                    <ArrowRight aria-hidden="true" />
-                    {td('cta_cascade_start')}
-                  </button>
-                ) : (
-                  <Link href={antragHref} className="btn btn-primary ll-next-primary">
-                    {td('cta_beantragen')}
-                    <ArrowRight aria-hidden="true" />
-                  </Link>
-                )}
-              </MobileStickyCta>
-              <button type="button" className="btn btn-secondary ll-next-save">
-                <Bookmark aria-hidden="true" />
-                {td('vorgang_speichern')}
-              </button>
-            </div>
-            {startError ? (
-              <p className="ll-next-foot" role="alert">
-                {td('load_error')}
-              </p>
+        {/* Rail = EINE durchgehende berandete Karte; innen per Hairline
+            gegliedert. Der Fortschritts-Ring (<FortschrittRing>) gehört der
+            Akte — vor der Erstellung ist nichts vollzogen. */}
+        <aside className="lk-rail" aria-label={td('rail_vorgang_label')}>
+          <div className="ak-rail-card">
+            {ketteRows.length > 0 ? (
+              <section className="ak-rail-block" aria-labelledby="ll-fortschritt-title">
+                <h2 id="ll-fortschritt-title" className="ak-rail-h ak-rail-h-solo">
+                  {td('rail_fortschritt_title')}
+                </h2>
+                <FortschrittRing
+                  erledigt={0}
+                  gesamt={ketteRows.length}
+                  zaehler={`0/${ketteRows.length}`}
+                  sub={td('ring_sub')}
+                  lead={td('fortschritt_pre_lead')}
+                  hinweis={td('fortschritt_pre_hint')}
+                />
+              </section>
             ) : null}
-            <p className="ll-next-foot">{td('vorgang_fortsetzen')}</p>
-          </section>
 
-          {/* Datenschutz-Zeile — statt Karte: Kurzfassung + Textlink. */}
-          <div className="ll-datenschutz">
-            <p className="ll-datenschutz-body">
-              <Lock className="ll-datenschutz-icon" aria-hidden="true" />
-              {td('datenschutz_body')}
-            </p>
-            <Link href="/datenschutz" className="ll-datenschutz-link">
-              {td('datenschutz_link')}
-            </Link>
+            <section className="ak-rail-block" aria-labelledby="ll-next-title">
+              <div className="ak-rail-head">
+                <h2 id="ll-next-title" className="ak-rail-h">
+                  {istAntragslos ? td('antragslos.kein_antrag_title') : td('naechster_schritt')}
+                </h2>
+                <span className="ak-pill is-empfohlen">{td('rail_empfohlen')}</span>
+              </div>
+
+              {ersterSchritt ? (
+                <div className="ak-mini">
+                  <span className="ak-mini-num" aria-hidden="true">
+                    {ersterSchritt.position}
+                  </span>
+                  <div className="ak-mini-body">
+                    <p className="ak-mini-title">{ersterSchritt.label}</p>
+                    {ersterSchritt.stelle ? (
+                      <p className="ak-mini-stelle">{ersterSchritt.stelle}</p>
+                    ) : null}
+                    {miniNote ? <p className="ak-mini-note">{miniNote}</p> : null}
+                  </div>
+                  <ChevronRight className="ak-mini-chev" aria-hidden="true" />
+                </div>
+              ) : null}
+              {absatzNote ? <p className="ll-next-body ak-rail-note">{absatzNote}</p> : null}
+
+              <div className="ll-next-actions ak-rail-actions">
+                <MobileStickyCta>
+                  {istAntragslos ? (
+                    <button
+                      type="button"
+                      className="btn btn-primary ll-next-primary"
+                      onClick={startCascade}
+                      disabled={isStarting}
+                    >
+                      <ArrowRight aria-hidden="true" />
+                      {td('cta_cascade_start')}
+                    </button>
+                  ) : (
+                    <Link href={antragHref} className="btn btn-primary ll-next-primary">
+                      {td('cta_beantragen')}
+                      <ArrowRight aria-hidden="true" />
+                    </Link>
+                  )}
+                </MobileStickyCta>
+                <button type="button" className="btn btn-secondary ll-next-save">
+                  <Bookmark aria-hidden="true" />
+                  {td('vorgang_speichern')}
+                </button>
+              </div>
+              {startError ? (
+                <p className="ll-next-foot" role="alert">
+                  {td('load_error')}
+                </p>
+              ) : null}
+              <p className="ll-next-foot">{td('vorgang_fortsetzen')}</p>
+            </section>
+
+            {ketteRows.length > 0 ? (
+              <section className="ak-rail-block" aria-labelledby="ll-ueberblick-title">
+                <h2 id="ll-ueberblick-title" className="ak-rail-h ak-rail-h-solo">
+                  {td('rail_ueberblick_title')}
+                </h2>
+                <ol className="ak-ueberblick">
+                  {ketteRows.map((row) => {
+                    const status = STATUS_PILL[row.zustand];
+                    return (
+                      <li key={row.position} className={`ak-ub-row is-${row.zustand}`}>
+                        <span className="ak-ub-num" aria-hidden="true">
+                          {row.zustand === 'erledigt' ? <Check /> : row.position}
+                        </span>
+                        <span className="ak-ub-body">
+                          <span className="ak-ub-title">{row.label}</span>
+                          {row.stelle ? (
+                            <span className="ak-ub-stelle">{row.stelle}</span>
+                          ) : null}
+                        </span>
+                        {/* Mockup-Anatomie: Pille nur für Erledigt/Nächster
+                            Schritt — offene Zeilen bleiben ruhig (sr-only). */}
+                        {row.zustand === 'offen' ? (
+                          <span className="sr-only">
+                            {td(`schritt_status.${status.key}`)}
+                          </span>
+                        ) : (
+                          <span className={`ak-pill ${status.cls} ak-ub-pill`}>
+                            {td(`schritt_status.${status.key}`)}
+                          </span>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ol>
+              </section>
+            ) : null}
+
+            <section className="ak-rail-block ak-secure" aria-labelledby="ll-sicher-title">
+              <ShieldCheck className="ak-secure-icon" aria-hidden="true" />
+              <div className="ak-secure-body">
+                <h2 id="ll-sicher-title" className="ak-rail-h ak-rail-h-solo">
+                  {td('daten_sicher_title')}
+                </h2>
+                <p className="ak-secure-text">{td('datenschutz_body')}</p>
+                <Link href="/datenschutz" className="ll-datenschutz-link">
+                  {td('datenschutz_link')}
+                  <ExternalLink aria-hidden="true" />
+                </Link>
+              </div>
+            </section>
           </div>
         </aside>
       </div>

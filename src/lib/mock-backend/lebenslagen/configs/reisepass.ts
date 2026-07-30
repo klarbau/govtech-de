@@ -3,8 +3,8 @@
  *
  * mode: termin · zukunft: false.
  * Realismus (verdict-CORRECTED §3.4/§8): KEIN Online-Antrag — persönliche
- * Vorsprache ist für den GESAMTEN Antrag Pflicht (§ 5 Abs. 9 PAuswG); eID ist
- * das Ergebnis, kein Antragskanal. mode MUSS `termin` bleiben. Nie „Pass wurde
+ * Vorsprache mit Biometrie ist Pflicht; eID ist das Ergebnis, kein Antragskanal.
+ * mode MUSS `termin` bleiben. Nie „Pass wurde
  * beantragt/eingereicht" → nur „vorbereitet + Termin vorgemerkt". Personalausweis
  * 46 € / 27,60 € (NEU seit 07.02.2026), KEIN Perso-Express. Lichtbild digital seit
  * 01.05.2025, nicht aus Register. Statusmonitor = [ZUKUNFT]. Biometrisches
@@ -14,6 +14,7 @@ import type { LebenslageConfig } from '../types';
 
 export const reisepassConfig: LebenslageConfig = {
   slug: 'reisepass',
+  titel_de: 'Reisepass beantragen',
   vorgangTyp: 'reisepass',
   icon: 'book-marked',
   kategorie: 'mehr',
@@ -99,7 +100,6 @@ export const reisepassConfig: LebenslageConfig = {
   ],
   rechtsgrundlagen: [
     { norm: '§ 6 PassG / § 9 PAuswG', bedeutung_key: 'lebenslagen.reisepass.rechtsgrundlagen.passg.bedeutung' },
-    { norm: '§ 5 Abs. 9 PAuswG', bedeutung_key: 'lebenslagen.reisepass.rechtsgrundlagen.vorsprache.bedeutung' },
     { norm: 'VO (EU) 2019/1157', bedeutung_key: 'lebenslagen.reisepass.rechtsgrundlagen.eu.bedeutung' },
     { norm: '§ 3 Abs. 1 BMG', bedeutung_key: 'lebenslagen.reisepass.rechtsgrundlagen.bmg.bedeutung' },
   ],
@@ -158,13 +158,17 @@ export const reisepassConfig: LebenslageConfig = {
       id: 'buergeramt-vorsprache',
       behoerdeId: 'buergeramt-berlin-mitte',
       block: 'D',
-      gate: 'eid',
+      // Domain (lebenslage-akte-sequenz.md Q3, Nebenbefund): eine eID-Bestätigung
+      // kann persönliches Erscheinen mit Fingerabdruckabnahme nicht abbilden —
+      // das ist ein Termin-/Übergabe-Zustand, keine Autorisierung.
+      gate: 'termin',
       aktion:
         'Vor-Ort-Vorsprache (Biometrie/Fingerabdrücke) — vom System nur vorbereitet, NICHT ersetzbar',
       kurzlabel: 'Vor-Ort-Vorsprache',
       behoerdeKurz: 'Bürgeramt',
-      agentLabel: 'Die Biometrie-Vorsprache nehmen Sie persönlich wahr — wir bereiten alles vor',
-      rechtsgrundlage: '§ 5 Abs. 9 PAuswG · VO (EU) 2019/1157',
+      agentLabel:
+        'Diesen Schritt können nur Sie erledigen: Fingerabdrücke und Unterschrift werden persönlich aufgenommen',
+      rechtsgrundlage: '§ 6 PassG / § 9 PAuswG · VO (EU) 2019/1157',
       datenkategorien: ['Identität'],
       latencyMs: 1000,
       mints: {},

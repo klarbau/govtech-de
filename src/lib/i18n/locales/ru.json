@@ -1806,7 +1806,6 @@
     "detail": {
       "next_step_title": "Ваш следующий шаг",
       "next_step_basis_label": "Правовое основание",
-      "next_step_cta": "Выполнить шаг",
       "next_step_cta_eid": "Подтвердить с eID",
       "next_step_cta_consent": "Разрешить передачу",
       "next_step_cta_termin": "Записаться на приём",
@@ -1825,13 +1824,9 @@
       "step_done_live_next": "Шаг выполнен. Следующий шаг: {aktion}",
       "step_done_live_all": "Шаг выполнен. Сейчас от Вас больше ничего не требуется.",
       "next_step_brief_cta": "Открыть связанное письмо",
-      "details_title": "Подробности",
-      "summary_status_label": "Статус",
       "summary_angelegt_label": "Создано",
-      "summary_stichtag_label": "Дата вступления в силу",
       "summary_behoerden_label": "Задействованные органы",
       "summary_frist_label": "Ближайший срок",
-      "summary_frist_template": "{datum}",
       "datenschutz_sub": "Что обрабатывается по этому делу — и на каком правовом основании.",
       "termine_title": "Записи по этому делу ({count})",
       "no_next_step": "Сейчас от Вас ничего не требуется. Задействованные органы ведут дело.",
@@ -1846,20 +1841,64 @@
       "fertigstellung_label_after_action": "Завершение после вашего шага",
       "fertigstellung_label_in_review": "Ведомство проверяет — обычно",
       "fertigstellung_label_done": "Завершено",
-      "timeline_title": "Шаги по делу ({count})",
       "steps_overview_title": "Ваше дело: обзор",
-      "steps_overview_sub": "Мы координируем Ваш запрос и направляем его в ответственные органы.",
-      "uebermittelt_label": "Передано",
-      "erledigt_label": "Выполнено",
-      "termin_vereinbart_label": "Приём назначен на",
-      "details_show": "Показать детали",
-      "details_hide": "Скрыть детали",
-      "berechtigungen_title": "Правовое основание и разрешения",
-      "berechtigungen_basis_label": "Правовое основание",
-      "berechtigungen_datenweitergabe_label": "Передача данных",
-      "berechtigungen_behoerden": "В {count} органов",
-      "berechtigungen_einwilligungen_label": "Ваши согласия",
-      "berechtigungen_einwilligungen_value": "Только ответственным органам, отзыв в любое время."
+      "steps_overview_sub": "Мы координируем Ваш запрос и направляем его в ответственные органы."
+    },
+    "uebersicht": {
+      "overview_title": "Текущее состояние",
+      "metric_progress_label": "Прогресс",
+      "metric_progress_value": "{pct} %",
+      "metric_time_label": "Сэкономлено времени (ок.)",
+      "metric_time_value": "ок. {minuten} мин",
+      "metric_phase_label": "Текущий этап",
+      "phase_closed": "Завершено",
+      "phase_prepare": "Готовится",
+      "pill_action": "Требуется действие",
+      "shelf_prev": "Показать предыдущие шаги",
+      "shelf_next": "Показать следующие шаги",
+      "shelf_prev_eintraege": "Показать предыдущие записи",
+      "shelf_next_eintraege": "Показать следующие записи",
+      "protokoll_show_all": "{count, plural, one {Показать все # запись} few {Показать все # записи} many {Показать все # записей} other {Показать все # записи}}",
+      "protokoll_show_less": "Показать меньше",
+      "steps_foot": "Каждая передача данных протоколируется и привязана к указанному правовому основанию.",
+      "gate_auto": "Автоматически",
+      "gate_eid": "С eID",
+      "gate_consent": "С Вашего согласия",
+      "gate_termin": "По записи",
+      "row_daten": "Передано: {kategorien}",
+      "status_sr": "Статус",
+      "status_time": "{zeit}",
+      "status_sub_eid": "Требуется Ваше подтверждение",
+      "next_closed_title": "Это дело завершено.",
+      "next_done_sub": "Мы сообщим Вам, как только появятся новости.",
+      "next_sub_eid": "Пожалуйста, подтвердите этот шаг с помощью Вашего eID.",
+      "next_sub_consent": "Пожалуйста, разрешите передачу данных.",
+      "next_sub_termin": "Мы подготовим заявление и запишем Вас на приём — Вы даёте разрешение.",
+      "next_running_sub": "{behoerde} · в обработке",
+      "sticky_running": "В обработке · {behoerde}",
+      "next_waiting_title": "Дело готовится",
+      "next_waiting_sub": "Задействованные органы ведут дело.",
+      "kontrolle_title": "Ваш контроль",
+      "kontrolle_freigaben_title": "Ваши разрешения",
+      "kontrolle_freigaben_value": "Предоставлено {given} из {total}",
+      "kontrolle_freigaben_sub": "Согласия можно отозвать в любое время",
+      "kontrolle_datenschutz_title": "Уведомление о защите данных",
+      "kontrolle_datenschutz_value": "Ваши данные используются исключительно для ведения этого дела.",
+      "kontrolle_stellen_value": "Задействовано органов: {count}",
+      "erledigt_title": "Что уже сделано?",
+      "erledigt_sr_done": "Выполнено",
+      "erledigt_sr_open": "Не выполнено",
+      "datenschutz_title": "Ваши данные — Ваш контроль",
+      "result_title": "Общий результат",
+      "result_status": "Завершено",
+      "result_body": "Все задействованные органы выполнили свои задачи по этому делу.",
+      "result_bescheid_cta": "Открыть решение (Bescheid)",
+      "result_datum_label": "Завершено",
+      "result_stellen_label": "Задействованные органы",
+      "result_stellen_value": "Ведомств / организаций: {count}",
+      "result_zeit_sub": "по сравнению с классическим путём",
+      "bescheide_title": "Решения ведомств (Bescheide) и подтверждения",
+      "protokoll_title": "Журнал активности"
     }
   },
   "assistent": {
@@ -3516,9 +3555,6 @@
       "kontakt_verifiziert": "Контакт подтверждён"
     },
     "datenblatt": {
-      "subline": "{angaben, plural, one {# запись} few {# записи} many {# записей} other {# записи}} из {register, plural, one {# реестра} few {# реестров} many {# реестров} other {# реестров}}.",
-      "subline_update": "Последнее обновление: {datum}, {zeit} — {behoerde}.",
-      "subline_update_ohne_absender": "Последнее обновление: {datum}, {zeit}.",
       "cta_korrigieren": "Исправить данные",
       "title": "Ваши данные",
       "anschrift_link": "Изменить адрес",
@@ -3528,12 +3564,11 @@
         "hinweis": "В этой демоверсии основные данные доступны только для чтения — это единый источник истины: изменения Вы вносите не здесь, а в компетентном ведомстве; обновлённые данные затем автоматически возвращаются в Ваш профиль."
       },
       "identitaet": {
-        "region_label": "Подтверждённая личность",
-        "status": "Личность подтверждена · уровень доверия eIDAS: высокий",
         "geburtsdatum": "Дата рождения",
+        "geburtsort": "Место рождения",
         "staatsangehoerigkeit": "Гражданство",
         "familienstand": "Семейное положение",
-        "quelle": "Ведущий источник",
+        "sprachen": "Языки",
         "quelle_fallback": "Бюро по делам граждан (Bürgeramt)"
       },
       "familienstand": {
@@ -3578,7 +3613,8 @@
         "gueltig_bis": "действителен до {datum}",
         "norm_gueltig_bis": "{norm} · действителен до {datum}",
         "gesetzliche_rente": "Государственное пенсионное страхование",
-        "kind_geboren": "род. {datum}"
+        "kind_geboren": "род. {datum}",
+        "alter": "{jahre, plural, one {# год} few {# года} many {# лет} other {# года}}"
       },
       "quelle": {
         "bundid": "Аккаунт BundID",
@@ -3586,13 +3622,11 @@
         "melderegister_ohne_datum": "Реестр жителей (Melderegister)",
         "bzst": "Федеральное центральное налоговое ведомство (Bundeszentralamt für Steuern)",
         "drv": "Немецкое пенсионное страхование (Deutsche Rentenversicherung)",
-        "traeger": "{traeger}"
+        "traeger": "{traeger}",
+        "selbstauskunft": "Указано Вами — ни один реестр не ведёт эту запись."
       },
       "wallet": {
-        "title": "Подтверждения и Wallet",
-        "line": "{count, plural, one {# подтверждение} few {# подтверждения} many {# подтверждений} other {# подтверждения}} в Вашем EUDI-Wallet · доверенный сервис: BVA – Bundesverwaltungsamt · следующая проверка {datum}",
-        "empty": "В Вашем EUDI-Wallet пока нет подтверждений.",
-        "link": "Посмотреть подтверждения"
+        "empty": "В Вашем EUDI-Wallet пока нет подтверждений."
       },
       "protokoll": {
         "title": "Журнал изменений",
@@ -3605,8 +3639,91 @@
         "show_all": "Показать полный журнал"
       },
       "datenhoheit": {
-        "text": "Ваши основные данные передаются ведомствам и сервисам только с Вашего согласия — Вы решаете, кто какие сведения может видеть.",
         "link": "Управление данными"
+      },
+      "sprache": {
+        "de": "Немецкий",
+        "en": "Английский",
+        "ru": "Русский",
+        "uk": "Украинский",
+        "ar": "Арабский",
+        "tr": "Турецкий"
+      }
+    },
+    "akte": {
+      "portraet": {
+        "legende": "[MOCK] Синтетическое изображение — не фото на паспорт и не реальный человек.",
+        "aktualisiert_label": "Последнее обновление",
+        "aktualisiert_wert": "{datum}, {zeit}",
+        "quelle_label": "Ведущий источник"
+      },
+      "fakten": {
+        "region_label": "Основные сведения"
+      },
+      "tabs": {
+        "aria": "Разделы Ваших основных данных",
+        "ueberblick": "Обзор",
+        "persoenlich": "Личные данные",
+        "dokumente": "Документы",
+        "verlauf": "История"
+      },
+      "status": {
+        "title": "Статус и удостоверение личности",
+        "aufenthalt_label": "Вид на жительство (Aufenthaltstitel)",
+        "gueltig_bis_label": "Действителен до",
+        "behoerde_label": "Выдавшее ведомство",
+        "az_label": "Номер дела (Aktenzeichen)",
+        "az_kopiert": "Номер дела скопирован",
+        "bezeichnung_18g": "Голубая карта ЕС",
+        "bezeichnung_21": "Вид на жительство для самостоятельной деятельности",
+        "quelle_aufenthalt": "Ведёт ведомство по делам иностранцев (Ausländerbehörde, § 71 абз. 1 AufenthG); данные хранятся в Центральном реестре иностранцев (Ausländerzentralregister) при Федеральном ведомстве по вопросам миграции и беженцев (Bundesamt für Migration und Flüchtlinge, § 1 AZRG). Эта демоверсия не обращается к реестрам.",
+        "ausweis_label": "Документ, удостоверяющий личность",
+        "ausweis_personalausweis": "Удостоверение личности (Personalausweis)",
+        "ausweis_reisepass": "Загранпаспорт",
+        "ausweis_nummer_label": "Номер документа",
+        "verlaengerung_link": "Подготовить продление",
+        "leer": "В Вашем хранилище документов сейчас нет удостоверения личности."
+      },
+      "vorgaenge": {
+        "title": "Текущие дела",
+        "alle": "Все дела",
+        "status_genehmigt": "Одобрено",
+        "status_abgelehnt": "Отклонено",
+        "leer": "Сейчас нет активных дел.",
+        "punkt_laeuft": "выполняется",
+        "punkt_abgeschlossen": "завершено"
+      },
+      "dokumente": {
+        "title": "Документы и подтверждения",
+        "eid_titel": "Ваше электронное удостоверение личности",
+        "alle": "Все в хранилище документов",
+        "ohne_ablauf": "без срока действия",
+        "leer": "В Вашем хранилище пока нет документов.",
+        "kachel_vorzeigen": "Предъявить",
+        "kachel_details": "Подробности",
+        "wallet_titel": "EUDI-Wallet",
+        "wallet_sub": "{count, plural, one {# подтверждение} few {# подтверждения} many {# подтверждений} other {# подтверждения}} · следующая проверка {datum}"
+      },
+      "aktionen": {
+        "title": "Быстрые действия",
+        "vorgang": "Начать дело",
+        "nachweis": "Предъявить документ",
+        "nachweise_ansehen": "Посмотреть подтверждения",
+        "termine": "Посмотреть приёмы",
+        "adresse": "Изменить адрес"
+      },
+      "identitaet": {
+        "bestaetigt": "Личность подтверждена",
+        "service": "Уровень доверия eIDAS: высокий · {angaben, plural, one {# запись} few {# записи} many {# записей} other {# записи}} из {register, plural, one {# реестра} few {# реестров} many {# реестров} other {# реестров}}"
+      },
+      "verlauf": {
+        "title": "История",
+        "alle": "Вся активность",
+        "row": "{datenart} → {empfaenger}"
+      },
+      "datenhoheit": {
+        "title": "Защита данных и контроль над ними",
+        "text_kurz": "О передаче данных решаете Вы — кроме передач, предписанных законом (§ 36 BMG)."
       }
     },
     "once_only": {

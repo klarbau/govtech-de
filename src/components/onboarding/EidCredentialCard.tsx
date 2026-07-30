@@ -139,7 +139,7 @@ function EagleWatermark({ className }: { className?: string }) {
  * arcs at ~5% white, the way real credentials carry fine-line print under the
  * data. Stretches with the card (`preserveAspectRatio="none"`). Decorative.
  */
-function GuillocheGround({ className }: { className?: string }) {
+export function GuillocheGround({ className }: { className?: string }) {
   return (
     <svg
       aria-hidden="true"
@@ -172,7 +172,7 @@ function GuillocheGround({ className }: { className?: string }) {
  * document at a glance. Decorative → `aria-hidden`: the identity is stated as
  * text right next to it.
  */
-function PortraitField({ className }: { className?: string }) {
+export function PortraitField({ className }: { className?: string }) {
   const uid = useId().replace(/:/g, '');
 
   return (

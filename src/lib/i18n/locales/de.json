@@ -310,6 +310,7 @@
       "nachweis_anzeigen": "Anzeigen",
       "nachweis_hochladen": "Hochladen",
       "nachweis_dropzone": "Weitere Nachweise hierher ziehen oder Dateien auswählen",
+      "nachweis_dropzone_hint": "PDF, JPG oder PNG – max. 10 MB pro Datei",
       "once_only_qualifier": "(Once-Only)",
       "once_only_intro": "Folgende Daten werden – sofern bereits vorhanden – von Behörden sicher abgerufen und vorausgefüllt.",
       "datensparsam": "Datensparsam & sicher",
@@ -320,6 +321,19 @@
       "naechster_schritt_body": "Sie haben bereits Nachweise hochgeladen und die Voraussetzungen geprüft.",
       "vorgang_speichern": "Vorgang speichern",
       "vorgang_fortsetzen": "Sie können den Vorgang jederzeit fortsetzen.",
+      "rail_vorgang_label": "Ihr Vorgang — nächster Schritt und Überblick",
+      "rail_fortschritt_title": "Ihr Fortschritt",
+      "ring_sub": "erledigt",
+      "fortschritt_pre_lead": "Noch nicht gestartet.",
+      "fortschritt_pre_hint": "Noch keine Schritte abgeschlossen. Sie können jederzeit beginnen.",
+      "rail_empfohlen": "Empfohlen",
+      "rail_ueberblick_title": "Ihr Vorgang im Überblick",
+      "daten_sicher_title": "Ihre Daten sind sicher",
+      "schritt_status": {
+        "offen": "Offen",
+        "naechster": "Nächster Schritt",
+        "erledigt": "Erledigt"
+      },
       "kategorie": {
         "bund": "Bund",
         "land": "Land",
@@ -1809,7 +1823,6 @@
     "detail": {
       "next_step_title": "Ihr nächster Schritt",
       "next_step_basis_label": "Rechtsgrundlage",
-      "next_step_cta": "Schritt erledigen",
       "next_step_cta_eid": "Mit eID bestätigen",
       "next_step_cta_consent": "Übermittlung freigeben",
       "next_step_cta_termin": "Termin vereinbaren",
@@ -1828,13 +1841,9 @@
       "step_done_live_next": "Schritt erledigt. Nächster Schritt: {aktion}",
       "step_done_live_all": "Schritt erledigt. Aktuell ist von Ihnen nichts weiter zu tun.",
       "next_step_brief_cta": "Zugehörigen Brief öffnen",
-      "details_title": "Details",
-      "summary_status_label": "Status",
       "summary_angelegt_label": "Angelegt",
-      "summary_stichtag_label": "Stichtag",
       "summary_behoerden_label": "Beteiligte Stellen",
       "summary_frist_label": "Nächste Frist",
-      "summary_frist_template": "{datum}",
       "datenschutz_sub": "Was wird zu diesem Vorgang verarbeitet — und auf welcher Grundlage.",
       "termine_title": "Termine zu diesem Vorgang ({count})",
       "no_next_step": "Aktuell ist von Ihnen nichts zu tun. Die beteiligten Stellen arbeiten den Vorgang ab.",
@@ -1849,20 +1858,64 @@
       "fertigstellung_label_after_action": "Fertigstellung nach Ihrem Schritt",
       "fertigstellung_label_in_review": "Behörde prüft — in der Regel",
       "fertigstellung_label_done": "Abgeschlossen am",
-      "timeline_title": "Schritte im Vorgang ({count})",
       "steps_overview_title": "Ihr Vorgang im Überblick",
-      "steps_overview_sub": "Wir koordinieren Ihre Anfrage und leiten sie an die zuständigen Stellen weiter.",
-      "uebermittelt_label": "Übermittelt am",
-      "erledigt_label": "Erledigt am",
-      "termin_vereinbart_label": "Termin vereinbart am",
-      "details_show": "Details ansehen",
-      "details_hide": "Details ausblenden",
-      "berechtigungen_title": "Rechtsgrundlage & Berechtigungen",
-      "berechtigungen_basis_label": "Rechtsgrundlage",
-      "berechtigungen_datenweitergabe_label": "Datenweitergabe",
-      "berechtigungen_behoerden": "An {count} Behörden",
-      "berechtigungen_einwilligungen_label": "Ihre Einwilligungen",
-      "berechtigungen_einwilligungen_value": "Nur an zuständige Stellen, jederzeit widerrufbar."
+      "steps_overview_sub": "Wir koordinieren Ihre Anfrage und leiten sie an die zuständigen Stellen weiter."
+    },
+    "uebersicht": {
+      "overview_title": "Aktueller Stand",
+      "metric_progress_label": "Fortschritt",
+      "metric_progress_value": "{pct} %",
+      "metric_time_label": "Zeit gespart (ca.)",
+      "metric_time_value": "ca. {minuten} Min",
+      "metric_phase_label": "Aktuelle Phase",
+      "phase_closed": "Abgeschlossen",
+      "phase_prepare": "Wird vorbereitet",
+      "pill_action": "Aktion erforderlich",
+      "shelf_prev": "Vorherige Schritte anzeigen",
+      "shelf_next": "Weitere Schritte anzeigen",
+      "shelf_prev_eintraege": "Vorherige Einträge anzeigen",
+      "shelf_next_eintraege": "Weitere Einträge anzeigen",
+      "protokoll_show_all": "Alle {count} Einträge anzeigen",
+      "protokoll_show_less": "Weniger anzeigen",
+      "steps_foot": "Jede Übermittlung ist protokolliert und an die genannte Rechtsgrundlage gebunden.",
+      "gate_auto": "Automatisch",
+      "gate_eid": "Mit eID",
+      "gate_consent": "Mit Einwilligung",
+      "gate_termin": "Mit Termin",
+      "row_daten": "Übermittelt: {kategorien}",
+      "status_sr": "Status",
+      "status_time": "{zeit} Uhr",
+      "status_sub_eid": "Ihre Bestätigung nötig",
+      "next_closed_title": "Dieser Vorgang ist abgeschlossen.",
+      "next_done_sub": "Wir informieren Sie, sobald es Neuigkeiten gibt.",
+      "next_sub_eid": "Bitte bestätigen Sie diesen Schritt mit Ihrer eID.",
+      "next_sub_consent": "Bitte geben Sie die Übermittlung frei.",
+      "next_sub_termin": "Wir bereiten den Antrag vor und vereinbaren den Termin — Sie geben ihn frei.",
+      "next_running_sub": "{behoerde} · wird bearbeitet",
+      "sticky_running": "Wird bearbeitet · {behoerde}",
+      "next_waiting_title": "Der Vorgang wird vorbereitet",
+      "next_waiting_sub": "Die beteiligten Stellen arbeiten den Vorgang ab.",
+      "kontrolle_title": "Ihre Kontrolle",
+      "kontrolle_freigaben_title": "Ihre Freigaben",
+      "kontrolle_freigaben_value": "{given} von {total} erteilt",
+      "kontrolle_freigaben_sub": "Einwilligungen jederzeit widerrufbar",
+      "kontrolle_datenschutz_title": "Datenschutz-Hinweis",
+      "kontrolle_datenschutz_value": "Ihre Daten werden ausschließlich zur Bearbeitung dieses Vorgangs verwendet.",
+      "kontrolle_stellen_value": "{count} Stellen beteiligt",
+      "erledigt_title": "Was wurde bereits erledigt?",
+      "erledigt_sr_done": "Erledigt",
+      "erledigt_sr_open": "Offen",
+      "datenschutz_title": "Ihre Daten, Ihre Kontrolle",
+      "result_title": "Gesamtergebnis",
+      "result_status": "Abgeschlossen",
+      "result_body": "Alle beteiligten Stellen haben ihre Aufgaben zu diesem Vorgang erledigt.",
+      "result_bescheid_cta": "Bescheid ansehen",
+      "result_datum_label": "Abgeschlossen am",
+      "result_stellen_label": "Beteiligte Stellen",
+      "result_stellen_value": "{count} Behörden / Institutionen",
+      "result_zeit_sub": "gegenüber dem klassischen Weg",
+      "bescheide_title": "Bescheide & Nachweise",
+      "protokoll_title": "Aktivitätsprotokoll"
     }
   },
   "assistent": {
@@ -3746,9 +3799,6 @@
       "kontakt_verifiziert": "Kontakt verifiziert"
     },
     "datenblatt": {
-      "subline": "{angaben, plural, =1 {1 Angabe} other {# Angaben}}, geführt von {register, plural, =1 {1 Register} other {# Registern}}.",
-      "subline_update": "Zuletzt aktualisiert am {datum} um {zeit} durch {behoerde}.",
-      "subline_update_ohne_absender": "Zuletzt aktualisiert am {datum} um {zeit}.",
       "cta_korrigieren": "Daten korrigieren",
       "title": "Ihre Angaben",
       "anschrift_link": "Adresse ändern",
@@ -3758,12 +3808,11 @@
         "hinweis": "In dieser Demo sind Stammdaten ein read-only Single-Source-of-Truth: Änderungen nehmen Sie nicht hier vor, sondern bei der zuständigen Behörde – die aktualisierten Daten fließen anschließend automatisch in Ihr Profil zurück."
       },
       "identitaet": {
-        "region_label": "Verifizierte Identität",
-        "status": "Identität bestätigt · eIDAS-Vertrauensniveau hoch",
         "geburtsdatum": "Geburtsdatum",
+        "geburtsort": "Geburtsort",
         "staatsangehoerigkeit": "Staatsangehörigkeit",
         "familienstand": "Familienstand",
-        "quelle": "Führende Quelle",
+        "sprachen": "Sprachen",
         "quelle_fallback": "Bürgeramt (Meldebehörde)"
       },
       "familienstand": {
@@ -3808,7 +3857,8 @@
         "gueltig_bis": "gültig bis {datum}",
         "norm_gueltig_bis": "{norm} · gültig bis {datum}",
         "gesetzliche_rente": "Gesetzliche Rentenversicherung",
-        "kind_geboren": "geb. {datum}"
+        "kind_geboren": "geb. {datum}",
+        "alter": "{jahre, plural, =1 {1 Jahr} other {# Jahre}}"
       },
       "quelle": {
         "bundid": "BundID-Konto",
@@ -3816,13 +3866,11 @@
         "melderegister_ohne_datum": "Melderegister",
         "bzst": "Bundeszentralamt für Steuern",
         "drv": "Deutsche Rentenversicherung",
-        "traeger": "{traeger}"
+        "traeger": "{traeger}",
+        "selbstauskunft": "Selbstauskunft — kein Register führt diese Angabe."
       },
       "wallet": {
-        "title": "Nachweise & Wallet",
-        "line": "{count, plural, =1 {1 Nachweis} other {# Nachweise}} in Ihrer EUDI-Wallet · Vertrauensdienst: BVA – Bundesverwaltungsamt · nächste Überprüfung am {datum}",
-        "empty": "Noch keine Nachweise in Ihrer EUDI-Wallet.",
-        "link": "Nachweise ansehen"
+        "empty": "Noch keine Nachweise in Ihrer EUDI-Wallet."
       },
       "protokoll": {
         "title": "Änderungsprotokoll",
@@ -3835,8 +3883,91 @@
         "show_all": "Vollständiges Protokoll anzeigen"
       },
       "datenhoheit": {
-        "text": "Ihre Stammdaten werden nur mit Ihrer Zustimmung an Behörden und Dienste weitergegeben — Sie entscheiden, wer welche Angabe einsehen darf.",
         "link": "Datennutzung verwalten"
+      },
+      "sprache": {
+        "de": "Deutsch",
+        "en": "Englisch",
+        "ru": "Russisch",
+        "uk": "Ukrainisch",
+        "ar": "Arabisch",
+        "tr": "Türkisch"
+      }
+    },
+    "akte": {
+      "portraet": {
+        "legende": "[MOCK] Synthetisches Lichtbild — kein Passbild, keine reale Person.",
+        "aktualisiert_label": "Zuletzt aktualisiert",
+        "aktualisiert_wert": "{datum}, {zeit}",
+        "quelle_label": "Führende Quelle"
+      },
+      "fakten": {
+        "region_label": "Grunddaten"
+      },
+      "tabs": {
+        "aria": "Bereiche Ihrer Stammdaten",
+        "ueberblick": "Überblick",
+        "persoenlich": "Persönliche Daten",
+        "dokumente": "Dokumente",
+        "verlauf": "Verlauf"
+      },
+      "status": {
+        "title": "Status & Ausweisdokument",
+        "aufenthalt_label": "Aufenthaltstitel",
+        "gueltig_bis_label": "Gültig bis",
+        "behoerde_label": "Ausstellende Behörde",
+        "az_label": "Aktenzeichen",
+        "az_kopiert": "Aktenzeichen kopiert",
+        "bezeichnung_18g": "Blaue Karte EU",
+        "bezeichnung_21": "Aufenthaltserlaubnis zur selbständigen Tätigkeit",
+        "quelle_aufenthalt": "Geführt von der Ausländerbehörde (§ 71 Abs. 1 AufenthG); gespeichert im Ausländerzentralregister beim Bundesamt für Migration und Flüchtlinge (§ 1 AZRG). Diese Demo ruft kein Register ab.",
+        "ausweis_label": "Ausweisdokument",
+        "ausweis_personalausweis": "Personalausweis",
+        "ausweis_reisepass": "Reisepass",
+        "ausweis_nummer_label": "Dokumentennummer",
+        "verlaengerung_link": "Verlängerung vorbereiten",
+        "leer": "In Ihrem Dokumententresor liegt zurzeit kein Ausweisdokument."
+      },
+      "vorgaenge": {
+        "title": "Aktuelle Vorgänge",
+        "alle": "Alle Vorgänge",
+        "status_genehmigt": "Genehmigt",
+        "status_abgelehnt": "Abgelehnt",
+        "leer": "Zurzeit läuft kein Vorgang.",
+        "punkt_laeuft": "läuft",
+        "punkt_abgeschlossen": "abgeschlossen"
+      },
+      "dokumente": {
+        "title": "Dokumente & Nachweise",
+        "eid_titel": "Ihr Online-Ausweis",
+        "alle": "Alle im Dokumententresor",
+        "ohne_ablauf": "ohne Ablaufdatum",
+        "leer": "Noch keine Dokumente in Ihrem Tresor.",
+        "kachel_vorzeigen": "Vorzeigen",
+        "kachel_details": "Details",
+        "wallet_titel": "EUDI-Wallet",
+        "wallet_sub": "{count, plural, =1 {1 Nachweis} other {# Nachweise}} · nächste Überprüfung {datum}"
+      },
+      "aktionen": {
+        "title": "Schnellaktionen",
+        "vorgang": "Vorgang starten",
+        "nachweis": "Nachweis vorzeigen",
+        "nachweise_ansehen": "Nachweise ansehen",
+        "termine": "Termine ansehen",
+        "adresse": "Adresse ändern"
+      },
+      "identitaet": {
+        "bestaetigt": "Identität bestätigt",
+        "service": "eIDAS-Vertrauensniveau: hoch · {angaben, plural, =1 {1 Angabe} other {# Angaben}}, geführt von {register, plural, =1 {1 Register} other {# Registern}}"
+      },
+      "verlauf": {
+        "title": "Verlauf",
+        "alle": "Alle Aktivitäten",
+        "row": "{datenart} → {empfaenger}"
+      },
+      "datenhoheit": {
+        "title": "Datenschutz & Datenhoheit",
+        "text_kurz": "Über Freigaben entscheiden Sie — außer bei gesetzlichen Übermittlungen (§ 36 BMG)."
       }
     },
     "once_only": {

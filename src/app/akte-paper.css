@@ -1,0 +1,1159 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   akte-paper.css — Visuelle Sprache „Amtliches Portal-Dokument"
+   ---------------------------------------------------------------------------
+   Papier statt Glas: die Content-Fläche der Lebenslage-Familie
+   (/lebenslagen/[slug], /lebenslagen/[slug]/antrag und — Phase 2 — die
+   Lebenslage-Akte auf /vorgaenge/[id]) liest wie ein gedruckter
+   Registerauszug. Die Liquid-Glass-Shell (TopNav, SideNav, Ambient-Feld
+   dahinter) bleibt unverändert; nur die Inhaltsspalte wird Papier.
+
+   Gate: <PaperScreen> setzt `data-lg-paper` auf <html>, solange ein Screen
+   dieser Familie gemountet ist. JEDE Regel beginnt darum mit
+   `html[data-lg-paper]` bzw. `html[data-lg-paper].dark`. Spezifität (0,3,1)
+   schlägt die App-weiten Core-Regeln (0,2,1); bei Gleichstand gewinnt dieser
+   Import, weil er in layout.tsx als LETZTER geladen wird. Nicht an
+   `NEXT_PUBLIC_LG` gekoppelt — der Papier-Look steht auch ohne Liquid Glass.
+
+   Container-Idiom: die dünne 1px-Border-Karte. Bewusste, im Spec begründete
+   Abweichung von der Box-Eskalation der ai-design-tells (§2.1): der Nutzer hat
+   die boxlose Ausprägung verworfen und die berandete Formular-Sprache
+   freigegeben; ein Behördendokument lebt vom sichtbaren Feldrahmen. Weiterhin
+   verboten: Icon-Kreis an der H1, Donut, Stat-Boxen, backdrop-filter,
+   irisierende CTA, neue Farbtöne.
+
+   Farben ausschließlich über die bestehenden Tokens, damit Dark-Mode,
+   Hochkontrast und die Bedienhilfen mitlaufen.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Scope-Tokens ─────────────────────────────────────────────────────────── */
+
+html[data-lg-paper] {
+  --ak-plane: var(--surface);
+  --ak-card: var(--surface);
+  --ak-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+  --ak-radius: 12px;
+}
+html[data-lg-paper].dark {
+  --ak-plane: var(--bg);
+  --ak-shadow: none;
+}
+
+/* ── Die Papierfläche ─────────────────────────────────────────────────────────
+   Deckt das Ambient-Feld innerhalb der Inhaltsspalte ab (kein Frost, kein
+   Verlauf). `min-height` verhindert, dass das Blatt auf kurzen Seiten mitten im
+   Viewport abreißt — .app-shell richtet seine Kinder an `flex-start` aus. */
+/* KEIN Papier-Plane mehr (User-Entscheid, Iteration 3): der Screen liegt wie
+   jeder andere auf dem App-Ambient; .app-content behält Kappe + Zentrierung
+   der übrigen Screens. Die verfeinerten Elemente (Kette, Zeilen, Ring, Rail)
+   werden normale Karten-Flächen. */
+
+/* ── Kopf: Breadcrumb, Signet, H1, Subline, Meta ───────────────────────────── */
+
+html[data-lg-paper] .ak .ll-breadcrumb {
+  margin-bottom: 14px;
+  font-size: 11px;
+}
+html[data-lg-paper] .ak .gt-page-head {
+  margin-bottom: 16px;
+}
+/* Signet + Text nebeneinander. Der gefüllte Kreis am H1 ist hier ausdrücklich
+   gewollt (Nutzer-Entscheid, überschreibt ai-design-tells §1): er markiert die
+   Lebenslage als Aktendeckel, nicht als dekorative Kachel über einer Überschrift. */
+html[data-lg-paper] .ak .ak-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+}
+html[data-lg-paper] .ak .ak-head-text {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+html[data-lg-paper] .ak .ak-head-badge {
+  width: 64px;
+  height: 64px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--brand-fill);
+  color: #fff;
+}
+html[data-lg-paper] .ak .ak-head-badge svg {
+  width: 30px;
+  height: 30px;
+  stroke-width: 1.6;
+}
+html[data-lg-paper] .ak .ak-h1 {
+  margin: 0;
+  font-size: clamp(32px, 2.9vw, 42px);
+  font-weight: 800;
+  letter-spacing: -0.028em;
+  line-height: 1.06;
+  color: var(--ink);
+}
+html[data-lg-paper] .ak .ak-sub {
+  margin: 7px 0 0;
+  max-width: 68ch;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--ink-3);
+  text-wrap: pretty;
+}
+html[data-lg-paper] .ak .ak-micro {
+  margin: 7px 0 0;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--ink-3);
+}
+html[data-lg-paper] .ak .ll-back-link {
+  margin-bottom: 6px;
+  font-size: 12.5px;
+}
+
+/* Ehrlichkeits-Notizen (ZUKUNFT, Fristen-Rescue): Kantenstreifen bleibt, aber
+   dichter gesetzt — der Kopf soll keine Textwand tragen. */
+html[data-lg-paper] .ak .ll-note {
+  margin-top: 14px;
+  padding-left: 12px;
+  max-width: 104ch;
+}
+html[data-lg-paper] .ak .ll-note-body {
+  font-size: 12px;
+  line-height: 1.5;
+}
+html[data-lg-paper] .ak .ll-note-title {
+  font-size: 12.5px;
+}
+
+/* ── Schritt-Kette ───────────────────────────────────────────────────────────
+   Eine kompakte berandete Leiste über die volle Breite. Horizontal scrollbar
+   statt umbrechend, damit die Sequenz als EINE Zeile liest. */
+html[data-lg-paper] .ak .ak-kette {
+  margin: 18px 0 0;
+  padding: 9px 14px;
+  /* Die Leiste schließt dynamisch hinter dem letzten Schritt (User-Befund):
+     fit-content statt voller Breite; max-width hält den Scroll-Fallback. */
+  width: fit-content;
+  max-width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--ak-radius);
+  background: var(--ak-card);
+  box-shadow: var(--ak-shadow);
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+html[data-lg-paper] .ak .ak-kette:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+html[data-lg-paper] .ak .ak-kette-track {
+  display: flex;
+  align-items: center;
+  /* Auf breiten Screens füllt die Sequenz die Leiste gleichmäßig (Mockup) —
+     wird der Platz knapp, kollabiert space-between auf natürliche Breite und
+     die Leiste scrollt wie gehabt. */
+  justify-content: space-between;
+  min-width: max-content;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+html[data-lg-paper] .ak .ak-knoten {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex: none;
+}
+html[data-lg-paper] .ak .ak-knoten-num {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--ink-3);
+  font-size: 10.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+html[data-lg-paper] .ak .ak-knoten-num svg {
+  width: 13px;
+  height: 13px;
+}
+/* Erledigt UND aktuell sind dunkelgrün gefüllt (weiße Ziffer bzw. Häkchen);
+   offene Knoten bleiben ein grauer Ring. Farbe ist nie alleiniger Träger —
+   `statusLabel` liefert den Klartext für Screenreader. */
+html[data-lg-paper] .ak .ak-knoten.is-erledigt .ak-knoten-num,
+html[data-lg-paper] .ak .ak-knoten.is-aktuell .ak-knoten-num {
+  background: var(--brand-fill);
+  border-color: var(--brand-fill);
+  color: #fff;
+}
+html[data-lg-paper] .ak .ak-knoten-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+html[data-lg-paper] .ak .ak-knoten-label {
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+html[data-lg-paper] .ak .ak-knoten.is-aktuell .ak-knoten-label,
+html[data-lg-paper] .ak .ak-knoten.is-erledigt .ak-knoten-label {
+  color: var(--ink);
+}
+html[data-lg-paper] .ak .ak-knoten-stelle {
+  font-size: 10px;
+  line-height: 1.3;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+html[data-lg-paper] .ak .ak-knoten-sep {
+  width: 12px;
+  height: 12px;
+  flex: none;
+  margin: 0 6px;
+  color: var(--ink-4);
+}
+
+/* Wird der Content-Streifen schmal (vollhohe Rail rechts), bricht die Kette in
+   zwei ruhige Reihen um, statt den letzten Schritt in den Scroll zu schieben. */
+@media (max-width: 1650px) {
+  html[data-lg-paper] .ak .ak-kette-track {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    min-width: 0;
+    row-gap: 10px;
+    column-gap: 16px;
+  }
+  html[data-lg-paper] .ak .ak-knoten {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+  html[data-lg-paper] .ak .ak-knoten-sep {
+    display: none;
+  }
+}
+
+/* ── Layout + Dichte ─────────────────────────────────────────────────────── */
+
+html[data-lg-paper] .ak .lk-layout {
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 20px;
+  margin-top: 16px;
+}
+html[data-lg-paper] .ak .ll-main > * + * {
+  margin-top: 16px;
+}
+
+/* Unterhalb der Rail-Breite: eine Spalte, und die Kette bricht um statt zu
+   scrollen. Beides braucht eine eigene Regel — die Basis-Media-Query auf
+   `.lk-layout` (0,1,0) verliert gegen die Papier-Spezifität (0,3,1), und ein
+   horizontal scrollender Track ragt mit seinen Knoten geometrisch über den
+   Viewport hinaus (WCAG 1.4.10 / Reflow-Gate misst je Element). */
+@media (max-width: 1100px) {
+  html[data-lg-paper] .ak .lk-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* Einspaltig gestapelt: sticky wäre hier eine Falle (Rail unter dem Inhalt,
+     Innen-Scroll unerreichbar) — normale Fließreihenfolge. */
+  html[data-lg-paper] .ak .lk-rail {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+  html[data-lg-paper] .ak .ak-kette-track {
+    flex-wrap: wrap;
+    min-width: 0;
+    row-gap: 10px;
+    column-gap: 16px;
+  }
+  html[data-lg-paper] .ak .ak-knoten {
+    flex: 1 1 140px;
+    min-width: 0;
+  }
+  html[data-lg-paper] .ak .ak-knoten-label,
+  html[data-lg-paper] .ak .ak-knoten-stelle {
+    white-space: normal;
+  }
+  html[data-lg-paper] .ak .ak-knoten-sep {
+    display: none;
+  }
+}
+
+/* ── Hauptspalte: EINE Karten-Fläche mit Haarlinien-Sektionen ────────────────
+   Wie die übrigen Screens (Datenblatt-Muster): die Hauptspalte ist eine
+   normale Karte auf dem Ambient; innen gliedern Haarlinien die Sektionen mit
+   Icon-Steg. Einzige Zusatzfläche darin: das getönte Once-Only-Panel. */
+html[data-lg-paper] .ak .ll-main {
+  padding: 20px 24px;
+  border: 1px solid var(--border);
+  border-radius: var(--ak-radius);
+  background: var(--ak-card);
+  box-shadow: var(--ak-shadow);
+}
+html[data-lg-paper] .ak .ll-sec,
+html[data-lg-paper] .ak .ll-main .gt-card {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+html[data-lg-paper] .ak .gt-card:hover {
+  box-shadow: none;
+}
+html[data-lg-paper] .ak .ll-main > * + * {
+  margin-top: 26px;
+}
+html[data-lg-paper] .ak .ll-sec + .ll-sec,
+html[data-lg-paper] .ak .gt-card + .gt-card {
+  padding-top: 26px;
+  border-top: 1px solid var(--border);
+}
+
+/* Titel: klein, kräftig, eng. Das Icon hängt in einem 34px-Wandsteg LINKS der
+   Textspalte (Mockup-Skelett): die Sektion trägt den Steg als padding-left,
+   das Icon sitzt absolut am linken Blattrand — Titel UND Inhalt fluchten auf
+   EINER Textkante, die Haarlinien laufen über die volle Breite. */
+html[data-lg-paper] .ak .ll-main .ll-sec {
+  padding-left: 34px;
+}
+html[data-lg-paper] .ak .ll-h2,
+html[data-lg-paper] .ak .gt-card-title {
+  margin: 0 0 10px;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: -0.002em;
+  color: var(--ink);
+}
+html[data-lg-paper] .ak .ak-sec-title {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+html[data-lg-paper] .ak .ak-sec-icon {
+  position: absolute;
+  left: -34px;
+  top: -1px;
+  width: 17px;
+  height: 17px;
+  flex: none;
+  color: var(--ink-2);
+  stroke-width: 1.7;
+}
+html[data-lg-paper] .ak .gt-card-head {
+  margin-bottom: 12px;
+}
+/* Kopfzeile mit [MOCK]-Marker: der Wrapper trägt den Abstand zur ersten
+   Inhaltszeile — sonst klebt der Titel an Zeile 1 (User-Befund). */
+html[data-lg-paper] .ak .ll-sec-head {
+  margin-bottom: 10px;
+}
+html[data-lg-paper] .ak .gt-card-head .gt-card-title,
+html[data-lg-paper] .ak .ll-sec-head .ll-h2 {
+  margin-bottom: 0;
+}
+
+/* ── Zeilen innerhalb einer Karte ────────────────────────────────────────── */
+
+html[data-lg-paper] .ak .ll-stellen-name {
+  font-size: 12.5px;
+  font-weight: 700;
+}
+html[data-lg-paper] .ak .ll-stellen-addr {
+  font-size: 11.5px;
+}
+html[data-lg-paper] .ak .ll-stellen-disclosure {
+  margin-top: 10px;
+  padding-top: 4px;
+  border-top: 1px solid var(--border);
+}
+html[data-lg-paper] .ak .ll-stellen-list li {
+  padding: 8px 0;
+  font-size: 12px;
+}
+html[data-lg-paper] .ak .ll-reqlist {
+  gap: 0;
+}
+html[data-lg-paper] .ak .ll-reqlist li {
+  padding: 5px 0 5px 16px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  border-top: 0;
+}
+html[data-lg-paper] .ak .ll-reqlist li:first-child {
+  padding-top: 0;
+}
+html[data-lg-paper] .ak .ll-reqlist li::before {
+  top: 13px;
+}
+html[data-lg-paper] .ak .ll-reqlist li:first-child::before {
+  top: 6px;
+}
+html[data-lg-paper] .ak .ll-doklist li {
+  padding: 8px 0;
+  gap: 10px;
+}
+html[data-lg-paper] .ak .ll-doklist li:first-child {
+  padding-top: 0;
+}
+html[data-lg-paper] .ak .ll-dok-name {
+  font-size: 11.5px;
+  font-weight: 600;
+}
+html[data-lg-paper] .ak .ll-disclosure-summary {
+  min-height: 34px;
+  font-size: 12px;
+}
+
+/* Leise Zeilen-Aktion („Anzeigen ↗"): Textlink statt Rahmen-Button — die
+   berandete Kleinform bleibt der EINEN nötigen Handlung („Hochladen"). */
+html[data-lg-paper] .ak .ak-link-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+}
+html[data-lg-paper] .ak .ak-link-action svg {
+  width: 12px;
+  height: 12px;
+  color: var(--ink-3);
+}
+@media (hover: hover) and (pointer: fine) {
+  html[data-lg-paper] .ak .ak-link-action:hover {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+}
+html[data-lg-paper] .ak .ll-recht-row {
+  padding-bottom: 10px;
+}
+html[data-lg-paper] .ak .ll-recht-list {
+  gap: 10px;
+}
+html[data-lg-paper] .ak .ll-fg-list {
+  gap: 10px;
+}
+html[data-lg-paper] .ak .ll-fg-row {
+  padding-bottom: 10px;
+}
+html[data-lg-paper] .ak .ll-fg-row dt {
+  font-size: 11px;
+}
+html[data-lg-paper] .ak .ll-fg-row dd,
+html[data-lg-paper] .ak .ll-recht-bedeutung {
+  font-size: 12.5px;
+}
+html[data-lg-paper] .ak .ll-fg-betrag {
+  font-size: 13.5px;
+}
+
+/* Once-Only-Panel: die EINE gefüllte Fläche der Hauptspalte. Häkchen-Liste in
+   zwei Spalten, keine Zeilen-Haarlinien — der Check trägt den Rhythmus. */
+html[data-lg-paper] .ak .ll-oo-panel {
+  margin-left: 34px;
+  padding: 16px 18px;
+  border: 0;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--ink) 4%, transparent);
+  box-shadow: none;
+}
+html[data-lg-paper] .ak .ll-oo-title {
+  margin-bottom: 4px;
+  font-size: 12.5px;
+}
+html[data-lg-paper] .ak .ll-oo-qualifier {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--ink-3);
+}
+html[data-lg-paper] .ak .ll-oo-intro,
+html[data-lg-paper] .ak .ll-oo-datensparsam {
+  font-size: 11px;
+}
+html[data-lg-paper] .ak .ll-oo-grid {
+  margin-top: 10px;
+  gap: 2px 24px;
+}
+html[data-lg-paper] .ak .ll-oo-grid li,
+html[data-lg-paper] .ak .ll-oo-grid li:first-child,
+html[data-lg-paper] .ak .ll-oo-grid li:nth-child(2) {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 4px 0;
+  border-top: 0;
+  font-size: 11.5px;
+}
+html[data-lg-paper] .ak .ak-oo-check {
+  width: 12px;
+  height: 12px;
+  flex: none;
+  margin-top: 3px;
+  color: var(--color-primary);
+  stroke-width: 2.6;
+}
+
+/* ── Status-Pillen ───────────────────────────────────────────────────────────
+   Statische Tints (in beiden Themes identisch, wie `.badge.green` im
+   Design-System — die dunkle Schrift auf hellem Tint klärt AA in Light UND
+   Dark). Farbe ist nie alleiniger Träger: der Klartext steht in der Pille. */
+html[data-lg-paper] .ak .ak-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  background: var(--surface-muted);
+  color: var(--ink-2);
+}
+html[data-lg-paper] .ak .ak-pill svg {
+  width: 11px;
+  height: 11px;
+}
+html[data-lg-paper] .ak .ak-pill.is-done,
+html[data-lg-paper] .ak .ak-pill.is-empfohlen {
+  background: var(--green-50);
+  color: var(--green-700);
+}
+html[data-lg-paper] .ak .ak-pill.is-next {
+  background: var(--amber-50);
+  color: var(--amber-700);
+}
+html[data-lg-paper] .ak .ak-pill.is-open {
+  background: var(--surface-muted);
+  color: var(--ink-3);
+}
+html[data-lg-paper] .ak .ak-pill.is-off {
+  background: transparent;
+  border: 1px dashed var(--border-strong);
+  color: var(--ink-3);
+}
+html[data-lg-paper] .ak .ak-pill.is-fail {
+  background: var(--red-50);
+  color: var(--red-600);
+}
+
+/* ── Formular-Bausteine ──────────────────────────────────────────────────── */
+
+html[data-lg-paper] .ak .ll-fields {
+  gap: 14px;
+}
+html[data-lg-paper] .ak .ll-field-row {
+  gap: 5px;
+}
+html[data-lg-paper] .ak .ll-field-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+html[data-lg-paper] .ak .input {
+  height: 38px;
+  border-radius: 8px;
+  background: var(--surface);
+  font-size: 13.5px;
+}
+html[data-lg-paper] .ak .ll-prefill-chip {
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--ink-3);
+  font-size: 11px;
+  font-weight: 500;
+}
+html[data-lg-paper] .ak .ll-consent-lead {
+  margin-bottom: 10px;
+  font-size: 12.5px;
+}
+html[data-lg-paper] .ak .ll-consent-list {
+  gap: 0;
+}
+html[data-lg-paper] .ak .ll-consent-item + .ll-consent-item {
+  border-top: 1px solid var(--border);
+}
+html[data-lg-paper] .ak .ll-consent-item {
+  padding: 10px 0;
+}
+html[data-lg-paper] .ak .ll-consent-item:first-child {
+  padding-top: 0;
+}
+html[data-lg-paper] .ak .ll-consent-item:last-child {
+  padding-bottom: 0;
+}
+html[data-lg-paper] .ak .ll-consent-aktion {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Gestrichelte Dropzone — flach, linksbündig, Icon im Ringkreis (Mockup). */
+html[data-lg-paper] .ak .ll-dropzone {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 11px 14px;
+  border: 1px dashed var(--border-strong);
+  border-radius: 10px;
+  background: transparent;
+  box-shadow: none;
+  font-size: 11.5px;
+  font-weight: 500;
+  text-align: start;
+}
+html[data-lg-paper] .ak .ll-dok-dropzone {
+  margin-top: 12px;
+}
+html[data-lg-paper] .ak .ak-dz-ic {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--border-strong);
+  color: var(--ink-3);
+}
+html[data-lg-paper] .ak .ll-dropzone svg {
+  width: 15px;
+  height: 15px;
+}
+html[data-lg-paper] .ak .ak-dz-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  text-align: start;
+}
+html[data-lg-paper] .ak .ak-dz-hint {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--ink-3);
+}
+
+/* Gebühr-Zeile im Formular: Haarlinien-Zeile wie die übrigen Sektionen, keine
+   eigene Box — die einzige berandete Fläche des Formulars bleibt die Rail. */
+html[data-lg-paper] .ak .ll-geb-line {
+  padding: 22px 0 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+  background: transparent;
+}
+html[data-lg-paper] .ak .ll-geb-label {
+  font-size: 13.5px;
+  font-weight: 700;
+}
+html[data-lg-paper] .ak .ll-geb-betrag {
+  font-size: 13.5px;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────────────
+   Papier kennt keine schwebende CTA: der Waldgrün-Primary wird flach, der
+   Sekundär-Button eine ruhige berandete Fläche. */
+html[data-lg-paper] .ak .btn {
+  height: 36px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+html[data-lg-paper] .ak .btn-lg {
+  height: 40px;
+  font-size: 13px;
+}
+html[data-lg-paper] .ak .btn-sm {
+  height: 26px;
+  padding: 0 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+html[data-lg-paper] .ak .btn-primary {
+  border-color: var(--brand-fill);
+  box-shadow: none;
+}
+html[data-lg-paper] .ak .btn-primary:hover {
+  box-shadow: none;
+}
+/* Absende-CTA des Formulars: mehr Fläche als ein normaler Button, aber kein
+   irisierender Verlauf — Papier kennt keinen schillernden Commit-Moment. */
+html[data-lg-paper] .ak .ak-submit {
+  padding: 0 22px;
+}
+
+/* ── Rechte Rail = EINE durchgehende berandete Karte ─────────────────────────
+   Gegenstück zur boxlosen Hauptspalte: der Rahmen umschließt den ganzen
+   Handlungsbereich (Fortschritt → nächster Schritt → Überblick → Datenschutz),
+   innen gliedern Haarlinien. Nicht mehrere gleich aussehende Kärtchen. */
+html[data-lg-paper] .ak .lk-rail {
+  gap: 12px;
+}
+/* Rail: normale Karte neben der Hauptkarte (wie andere Screens), klebt beim
+   Scrollen; auf kurzen Viewports scrollt sie innen weiter. */
+@media (min-width: 1101px) {
+  html[data-lg-paper] .ak .lk-layout {
+    grid-template-columns: minmax(0, 1fr) 332px;
+    gap: 20px;
+  }
+  html[data-lg-paper] .ak .lk-rail {
+    position: sticky;
+    top: 84px;
+    align-self: start;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+}
+html[data-lg-paper] .ak .ak-rail-card {
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--ak-radius);
+  background: var(--ak-card);
+  box-shadow: var(--ak-shadow);
+}
+html[data-lg-paper] .ak .ak-rail-block + .ak-rail-block {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+/* „Empfohlen" sitzt DICHT am Titel (Mockup), nicht am rechten Rand. */
+html[data-lg-paper] .ak .ak-rail-head {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+html[data-lg-paper] .ak .ak-rail-h {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: -0.002em;
+  color: var(--ink);
+}
+html[data-lg-paper] .ak .ak-rail-h-solo {
+  margin-bottom: 10px;
+}
+
+/* Fortschritts-Ring — Baustein der Akte (Phase 2). Auf der Leistungsseite
+   bewusst nicht gemountet: vor der Erstellung ist nichts vollzogen. */
+html[data-lg-paper] .ak .ak-ring {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+html[data-lg-paper] .ak .ak-ring-visual {
+  position: relative;
+  width: 78px;
+  height: 78px;
+  flex: none;
+}
+html[data-lg-paper] .ak .ak-ring-svg {
+  width: 78px;
+  height: 78px;
+  display: block;
+}
+html[data-lg-paper] .ak .ak-ring-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+html[data-lg-paper] .ak .ak-ring-sub {
+  font-size: 9px;
+  line-height: 1.2;
+  color: var(--ink-3);
+}
+html[data-lg-paper] .ak .ak-ring-track {
+  fill: none;
+  stroke: var(--border-strong);
+  stroke-width: 3;
+}
+html[data-lg-paper] .ak .ak-ring-arc {
+  fill: none;
+  stroke: var(--brand-fill);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+html[data-lg-paper] .ak .ak-ring-text {
+  min-width: 0;
+}
+html[data-lg-paper] .ak .ak-ring-zaehler {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+html[data-lg-paper] .ak .ak-ring-lead {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--ink);
+}
+html[data-lg-paper] .ak .ak-ring-hint {
+  margin: 3px 0 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--ink-3);
+}
+
+/* Nächster Schritt: kleine berandete Mini-Karte, darunter die Aktionen. */
+html[data-lg-paper] .ak .ak-mini {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+html[data-lg-paper] .ak .ak-mini-chev {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  margin-left: auto;
+  align-self: center;
+  color: var(--ink-4);
+}
+html[data-lg-paper] .ak .ak-mini-num {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--brand-fill);
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+html[data-lg-paper] .ak .ak-mini-body {
+  min-width: 0;
+}
+html[data-lg-paper] .ak .ak-mini-title {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--ink);
+}
+html[data-lg-paper] .ak .ak-mini-stelle {
+  margin: 1px 0 0;
+  font-size: 11px;
+  color: var(--ink-3);
+}
+html[data-lg-paper] .ak .ak-mini-note {
+  margin: 6px 0 0;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--ink-3);
+}
+html[data-lg-paper] .ak .ll-next-body {
+  margin-bottom: 12px;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+html[data-lg-paper] .ak .ak-rail-note {
+  margin: 10px 0 0;
+  color: var(--ink-3);
+}
+html[data-lg-paper] .ak .ll-next-actions {
+  gap: 8px;
+}
+html[data-lg-paper] .ak .ak-rail-actions {
+  margin-top: 12px;
+}
+html[data-lg-paper] .ak .ll-next-foot {
+  margin-top: 10px;
+  font-size: 11px;
+}
+
+/* Ihr Vorgang im Überblick — vertikale Liste ALLER Schritte; eine dünne
+   Verbindungslinie läuft durch die Kreis-Spalte (Mockup), die Kreise decken sie
+   mit der Kartenfläche ab. Erledigt = gefüllt mit Häkchen, aktuell = gefüllt
+   mit Ziffer, offen = grauer Ring ohne Pille. */
+html[data-lg-paper] .ak .ak-ueberblick {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+html[data-lg-paper] .ak .ak-ueberblick::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 12px;
+  bottom: 12px;
+  width: 1px;
+  background: var(--border);
+}
+html[data-lg-paper] .ak .ak-ub-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 5px 0;
+}
+html[data-lg-paper] .ak .ak-ub-num {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--border-strong);
+  background: var(--ak-card);
+  color: var(--ink-3);
+  font-size: 10px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+html[data-lg-paper] .ak .ak-ub-num svg {
+  width: 11px;
+  height: 11px;
+}
+html[data-lg-paper] .ak .ak-ub-row.is-erledigt .ak-ub-num,
+html[data-lg-paper] .ak .ak-ub-row.is-aktuell .ak-ub-num {
+  background: var(--brand-fill);
+  border-color: var(--brand-fill);
+  color: #fff;
+}
+html[data-lg-paper] .ak .ak-ub-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+html[data-lg-paper] .ak .ak-ub-title {
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--ink-2);
+}
+html[data-lg-paper] .ak .ak-ub-row.is-aktuell .ak-ub-title,
+html[data-lg-paper] .ak .ak-ub-row.is-erledigt .ak-ub-title {
+  color: var(--ink);
+}
+html[data-lg-paper] .ak .ak-ub-stelle {
+  font-size: 10px;
+  line-height: 1.3;
+  color: var(--ink-3);
+}
+html[data-lg-paper] .ak .ak-ub-pill {
+  font-size: 10px;
+  padding: 1px 6px;
+}
+
+/* Ihre Daten sind sicher — Schild + Satz + Textlink. */
+html[data-lg-paper] .ak .ak-secure {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+}
+html[data-lg-paper] .ak .ak-secure-icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  margin-top: 1px;
+  color: var(--ink-4);
+}
+html[data-lg-paper] .ak .ak-secure-body {
+  min-width: 0;
+}
+html[data-lg-paper] .ak .ak-secure-text {
+  margin: 4px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--ink-3);
+}
+/* Links auf dem Papier: dunkel, unterstrichen, mit Extern-Glyph (Mockup). */
+html[data-lg-paper] .ak .ll-datenschutz-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 7px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+html[data-lg-paper] .ak .ll-datenschutz-link svg {
+  width: 11px;
+  height: 11px;
+  color: var(--ink-3);
+}
+html[data-lg-paper] .ak .ll-datenschutz {
+  margin-top: 12px;
+  padding-top: 12px;
+}
+html[data-lg-paper] .ak .ll-datenschutz-body {
+  font-size: 12px;
+}
+/* Ohne Innen-Scroll: auf dem Papier steht die Empfängerliste vollständig — die
+   abgeschnittene letzte Zeile des Glas-Panels las wie ein Layoutfehler. */
+html[data-lg-paper] .ak .ll-dm-panel {
+  gap: 10px;
+  max-height: none;
+}
+html[data-lg-paper] .ak .ll-dm-title {
+  font-size: 15px;
+  font-weight: 700;
+}
+html[data-lg-paper] .ak .ll-dm-recipient {
+  padding: 10px 0;
+  border-radius: 0;
+  border-top: 0;
+  border-inline: 0;
+  background: transparent;
+  box-shadow: none;
+}
+html[data-lg-paper] .ak .ll-dm-recipient-name {
+  font-size: 12.5px;
+}
+html[data-lg-paper] .ak .ll-dm-kat {
+  padding: 1px 7px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--ink-3);
+  font-size: 10.5px;
+}
+
+/* ── Telefon (≤767px) ────────────────────────────────────────────────────────
+   Dichte bleibt; nur Innenabstände und Kopfgrößen ziehen an. Die Kette bleibt
+   eine horizontal scrollbare Zeile (Regal-Idiom des Repos). */
+@media (max-width: 767px) {
+  html[data-lg-paper] .app-content {
+    min-height: 0;
+  }
+  html[data-lg-paper] .ak .ak-head {
+    gap: 12px;
+  }
+  html[data-lg-paper] .ak .ak-head-badge {
+    width: 46px;
+    height: 46px;
+  }
+  html[data-lg-paper] .ak .ak-head-badge svg {
+    width: 22px;
+    height: 22px;
+  }
+  html[data-lg-paper] .ak .ak-h1 {
+    font-size: 24px;
+    letter-spacing: -0.018em;
+  }
+  html[data-lg-paper] .ak .ak-sub {
+    font-size: 13px;
+  }
+  html[data-lg-paper] .ak .ll-main > * + * {
+    margin-top: 20px;
+  }
+  html[data-lg-paper] .ak .ll-sec + .ll-sec,
+  html[data-lg-paper] .ak .gt-card + .gt-card {
+    padding-top: 20px;
+  }
+  html[data-lg-paper] .ak .ll-oo-panel {
+    padding: 16px;
+  }
+  html[data-lg-paper] .ak .ll-h2,
+  html[data-lg-paper] .ak .gt-card-title {
+    font-size: 13.5px;
+  }
+  html[data-lg-paper] .ak .ak-rail-card {
+    padding: 14px;
+  }
+  html[data-lg-paper] .ak .lk-layout {
+    gap: 12px;
+    margin-top: 12px;
+  }
+  html[data-lg-paper] .ak .ll-doklist li {
+    flex-wrap: wrap;
+  }
+  html[data-lg-paper] .ak .ll-dok-name {
+    flex: 1 1 100%;
+  }
+
+  /* Der 34px-Icon-Steg ist Desktop-Luxus: auf dem Telefon rückt das Icon
+     zurück in die Titelzeile, damit die Textspalte die volle Breite behält. */
+  html[data-lg-paper] .ak .ll-main .ll-sec {
+    padding-left: 0;
+  }
+  html[data-lg-paper] .ak .ak-sec-icon {
+    position: static;
+    width: 15px;
+    height: 15px;
+  }
+  html[data-lg-paper] .ak .ll-oo-panel {
+    margin-left: 0;
+  }
+
+  /* Typo-Untergrenzen des Repos (globals.css §8.2 der Mobile-Comfort-Welle):
+     Fließtext ≥13px, echtes Mikro-Meta ≥12px. Die dichte Desktop-Skala
+     (12–12,5px) gilt darum nur ab 768px. */
+  html[data-lg-paper] .ak .ll-reqlist li,
+  html[data-lg-paper] .ak .ll-dok-name,
+  html[data-lg-paper] .ak .ll-oo-grid li,
+  html[data-lg-paper] .ak .ll-fg-row dd,
+  html[data-lg-paper] .ak .ll-recht-bedeutung,
+  html[data-lg-paper] .ak .ll-stellen-addr,
+  html[data-lg-paper] .ak .ak-knoten-label,
+  html[data-lg-paper] .ak .ak-mini-title,
+  html[data-lg-paper] .ak .ak-mini-note,
+  html[data-lg-paper] .ak .ak-secure-text,
+  html[data-lg-paper] .ak .ak-ub-title {
+    font-size: 13px;
+  }
+  html[data-lg-paper] .ak .ak-micro,
+  html[data-lg-paper] .ak .ak-knoten-stelle,
+  html[data-lg-paper] .ak .ak-mini-stelle,
+  html[data-lg-paper] .ak .ak-ub-stelle,
+  html[data-lg-paper] .ak .ak-dz-hint,
+  html[data-lg-paper] .ak .ll-next-foot,
+  html[data-lg-paper] .ak .ak-pill,
+  html[data-lg-paper] .ak .ak-ub-pill,
+  html[data-lg-paper] .ak .ll-dm-kat {
+    font-size: 12px;
+  }
+  html[data-lg-paper] .ak .ak-link-action,
+  html[data-lg-paper] .ak .ll-dropzone,
+  html[data-lg-paper] .ak .ll-stellen-list li,
+  html[data-lg-paper] .ak .ll-datenschutz-link,
+  html[data-lg-paper] .ak .ak-ring-lead,
+  html[data-lg-paper] .ak .ll-disclosure-summary {
+    font-size: 13px;
+  }
+  /* Tap-Targets ≥44px (Mobile-Comfort-Vertrag) für die verschlankten Formen. */
+  html[data-lg-paper] .ak .btn-sm,
+  html[data-lg-paper] .ak .ak-link-action {
+    min-height: 44px;
+  }
+}

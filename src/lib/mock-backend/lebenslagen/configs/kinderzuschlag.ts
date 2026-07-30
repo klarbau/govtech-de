@@ -16,6 +16,7 @@ import type { LebenslageConfig } from '../types';
 
 export const kinderzuschlagConfig: LebenslageConfig = {
   slug: 'kinderzuschlag',
+  titel_de: 'Kinderzuschlag beantragen',
   vorgangTyp: 'kinderzuschlag',
   icon: 'baby',
   kategorie: 'familie',

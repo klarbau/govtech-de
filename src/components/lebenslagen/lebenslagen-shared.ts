@@ -1,8 +1,3 @@
-import type { BlockTyp } from '@/types';
-
-/** Block-Rang für die Kaskaden-Reihenfolge A → D → B (C wird gefiltert). */
-export const BLOCK_RANK: Record<BlockTyp, number> = { A: 0, D: 1, B: 2, C: 99 };
-
 /**
  * Genuiner „nicht gefunden"-Fehler (nicht wiederholbar, z. B. `VORGANG_NOT_FOUND`)
  * vs. transienter Latenzfehler. Das Mock-Backend wirft via `withLatency` mit 5%

@@ -18,7 +18,9 @@
  *  - mintet pro erfolgreichem Hop Letter / Document (`[MOCK]`-Watermark) / Termin
  *    (`status:'vorgeschlagen'`, nie 'gebucht').
  *
- * Gate-State-Machine (Run-Reihenfolge A → D → B, ganzer Cascade, KEIN Slice):
+ * Gate-State-Machine (Run-Reihenfolge = CONFIG-Reihenfolge, ganzer Cascade, KEIN
+ * Slice — jeder Schritt ist Tatbestandsvoraussetzung des nächsten, Domain
+ * `lebenslage-akte-sequenz.md` Q2):
  *  - gate 'auto'    → nach `latencyMs`: in_progress → Hop-Arbeit → confirmed.
  *  - gate 'consent' → nur falls Einwilligung erteilt (form-time, in `consents`):
  *                     läuft wie 'auto' (agent_label „mit Einwilligung"); sonst
@@ -26,6 +28,12 @@
  *                     den Abschluss NICHT) und mintet nichts.
  *  - gate 'eid'     → status `pending_eid_confirmation` und PAUSE; die Kaskade
  *                     wird erst durch `bestaetigeLebenslageSchritt` fortgesetzt.
+ *                     AUSNAHME: trägt die Submission bereits eine Formular-eID
+ *                     (`options.formEidAt`), läuft der `isPrimarySubmission`-
+ *                     Schritt ohne zweites Gate durch (Domain Q3) — mit dem
+ *                     Formular-Timestamp als `eid_confirmed_at`.
+ *  - gate 'termin'  → physisch bürgergebunden: `self_assigned` +
+ *                     `requires_termin`, mintet nichts, blockt nicht.
  *
  * Mehrere eID-Schritte je Config sind erlaubt (geburt 1/4/5, aufenthalt 1/7) —
  * die Kaskade pausiert an JEDEM in Reihenfolge.
@@ -78,38 +86,34 @@ interface CascadeRun {
   config: LebenslageConfig;
   persona: Persona;
   ports: LebenslageCascadePorts;
-  /** Run-geordnete Schritt-Configs (A → D → B → C), persona-gefiltert. */
+  /** Schritt-Configs in CONFIG-Reihenfolge, persona-gefiltert. */
   steps: CascadeStepConfig[];
   /** Erteilte Einwilligungen je Cascade-Step-`id` (form-time). */
   consents: Set<string>;
   /** Bereits aufgelöste Step-`id`s (idempotenz + Doppel-Confirm-Guard). */
   resolved: Set<string>;
+  /** ISO-Timestamp der Formular-eID, falls die Submission darüber lief (§7). */
+  formEidAt?: string;
+  /** Cascade-Step-`id`, die von dieser Formular-eID getragen wird (§7). */
+  preAuthorizedStepId?: string;
 }
 
 /** vorgangId → laufender Kontext. Modul-lokal (eine Engine-Instanz/Prozess). */
 const RUNS = new Map<string, CascadeRun>();
 
-/** Block-Rang für die Run-Reihenfolge (Umzug-Parität: A → D → B, C zuletzt). */
-const BLOCK_RANK: Record<string, number> = { A: 0, D: 1, B: 2, C: 3 };
-
 /**
- * Run-geordnete, persona-gefilterte Schritt-Configs. Stabil sortiert nach
- * Block-Rang (A → D → B → C); innerhalb eines Rangs bleibt die Authoring-
- * Reihenfolge des Config-`cascade`-Arrays erhalten. KEIN Slice-Cap.
+ * Persona-gefilterte Schritt-Configs in STRIKTER Config-Reihenfolge. KEIN
+ * Umsortieren: jeder Schritt ist Tatbestandsvoraussetzung des nächsten
+ * (Beurkundung vor Melderegister vor Steuer-ID vor Festsetzung — Domain
+ * `lebenslage-akte-sequenz.md` Q2, MUSS). `block` bleibt reine Klassifikation
+ * (Chips, Gruppierung, Datenminimierungs-Panel) und darf die Ausführung nicht
+ * mehr umsortieren. KEIN Slice-Cap.
  */
 export function orderCascadeSteps(
   config: LebenslageConfig,
   persona: Persona,
 ): CascadeStepConfig[] {
-  return config.cascade
-    .filter((s) => !s.visibleIf || s.visibleIf(persona))
-    .map((step, idx) => ({ step, idx }))
-    .sort((a, b) => {
-      const ra = BLOCK_RANK[a.step.block] ?? 9;
-      const rb = BLOCK_RANK[b.step.block] ?? 9;
-      return ra !== rb ? ra - rb : a.idx - b.idx;
-    })
-    .map((x) => x.step);
+  return config.cascade.filter((s) => !s.visibleIf || s.visibleIf(persona));
 }
 
 /** Stabile AutopilotStep-ID aus Vorgang + Config-Step (§5.4). */
@@ -183,6 +187,7 @@ export function toAutopilotStep(
     datenkategorien: stepCfg.datenkategorien,
     requires_eid: stepCfg.gate === 'eid',
     requires_consent: stepCfg.gate === 'consent',
+    requires_termin: stepCfg.gate === 'termin',
     status: 'pending',
     ...(stepCfg.zukunft ? { zukunft: true } : {}),
     ...(eidPreview ? { eid_preview: eidPreview } : {}),
@@ -337,8 +342,10 @@ async function performStepWork(
     started_at: startedAt,
     completed_at: new Date().toISOString(),
     letter_id: letterId,
+    // Bereits gesetzter Stempel gewinnt: bei einer per Formular-eID getragenen
+    // Primär-Submission ist das der Timestamp des Formular-Dialogs (§7).
     ...(stepCfg.gate === 'eid'
-      ? { eid_confirmed_at: new Date().toISOString() }
+      ? { eid_confirmed_at: base.eid_confirmed_at ?? new Date().toISOString() }
       : {}),
     ...(stepCfg.gate === 'consent'
       ? { consent_given_at: startedAt }
@@ -352,7 +359,9 @@ async function performStepWork(
  * Treibt die Kaskade ab dem ersten noch nicht aufgelösten Schritt:
  *  - 'auto'    → wartet `latencyMs`, dann `performStepWork`.
  *  - 'consent' → falls erteilt: wie 'auto'; sonst `self_assigned` (skip).
- *  - 'eid'     → setzt `pending_eid_confirmation` und PAUSIERT (return).
+ *  - 'termin'  → `self_assigned` + `requires_termin` (nur persönlich möglich).
+ *  - 'eid'     → setzt `pending_eid_confirmation` und PAUSIERT (return); der
+ *                per Formular-eID vorautorisierte Schritt läuft wie 'auto'.
  * Wenn alle Schritte aufgelöst sind → `changeVorgangStatus('abgeschlossen')`.
  */
 async function drive(vorgangId: string): Promise<void> {
@@ -363,7 +372,22 @@ async function drive(vorgangId: string): Promise<void> {
     if (run.resolved.has(stepCfg.id)) continue;
     const base = toAutopilotStep(vorgangId, stepCfg, run.persona);
 
-    if (stepCfg.gate === 'eid') {
+    if (stepCfg.gate === 'termin') {
+      // Physisch bürgergebunden (persönliches Erscheinen): das System vollzieht
+      // ihn NICHT und mintet nichts — er blockiert den Abschluss aber auch
+      // nicht (Domain Q3, Nebenbefund).
+      const now = new Date().toISOString();
+      run.ports.upsertStep(vorgangId, {
+        ...base,
+        status: 'self_assigned',
+        started_at: now,
+        completed_at: now,
+      });
+      run.resolved.add(stepCfg.id);
+      continue;
+    }
+
+    if (stepCfg.gate === 'eid' && stepCfg.id !== run.preAuthorizedStepId) {
       // PAUSE: pending_eid_confirmation; resume via bestaetigeLebenslageSchritt.
       run.ports.upsertStep(vorgangId, {
         ...base,
@@ -371,6 +395,12 @@ async function drive(vorgangId: string): Promise<void> {
         started_at: new Date().toISOString(),
       });
       return;
+    }
+
+    if (stepCfg.gate === 'eid') {
+      // Von der Formular-eID getragen (§7): kein zweites Gate — aber die
+      // Autorisierung bleibt mit ihrem echten Timestamp sichtbar.
+      base.eid_confirmed_at = run.formEidAt;
     }
 
     if (stepCfg.gate === 'consent' && !run.consents.has(stepCfg.id)) {
@@ -423,14 +453,25 @@ export async function runLebenslageCascade(
   persona: Persona,
   ports: LebenslageCascadePorts,
   consents: string[] = [],
+  options?: { formEidAt?: string },
 ): Promise<void> {
+  const steps = orderCascadeSteps(config, persona);
+  // §7: Ein Identifikationsakt deckt GENAU EINE Erklärung gegenüber GENAU EINER
+  // Stelle. Lief die Submission über den Formularpfad mit eID-Dialog, trägt die
+  // Autorisierung den `isPrimarySubmission`-Schritt — positionsunabhängig
+  // (reisepass: Position 2). Alle anderen Gates bleiben eigene Taps.
+  const preAuthorizedStepId = options?.formEidAt
+    ? steps.find((s) => s.isPrimarySubmission && s.gate === 'eid')?.id
+    : undefined;
   const run: CascadeRun = {
     config,
     persona,
     ports,
-    steps: orderCascadeSteps(config, persona),
+    steps,
     consents: new Set(consents),
     resolved: new Set<string>(),
+    formEidAt: options?.formEidAt,
+    preAuthorizedStepId,
   };
   RUNS.set(vorgang.id, run);
   await drive(vorgang.id);

@@ -14,6 +14,7 @@ import type { LebenslageConfig } from '../types';
 
 export const bafoegConfig: LebenslageConfig = {
   slug: 'bafoeg',
+  titel_de: 'BAföG-Antrag',
   vorgangTyp: 'bafoeg',
   icon: 'graduation-cap',
   kategorie: 'arbeit',

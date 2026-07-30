@@ -1,0 +1,277 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Stammdaten — Hero, Karten, Rail (Spec `stammdaten-akte-v2.md` § 8)
+   ---------------------------------------------------------------------------
+   Structural rules only: the two-column shell, the white card, the facts row,
+   the document-tile grid, and the scrollable register bar on phones. No colours
+   beyond the fixed dark plane token and the card surface, no Liquid-Glass gate
+   — the screen keeps 0 backdrop-filter in `main`, and both dark planes
+   (portrait, quick actions) are solid in light AND dark, exactly like the eID
+   credential. With NEXT_PUBLIC_LG=0 this screen is therefore unchanged.
+
+   Class prefix `sd-` throughout: this file loads app-wide, so nothing here may
+   match outside /stammdaten.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* The fixed Waldgrün plane of the eID credential. Deliberately NOT one of the
+   --green-* tokens: those do not flip in dark mode, and this surface must not
+   either — white on #0F3D2E is ~12.6:1 in both themes. Declared exactly once,
+   on the screen root: the portrait plate, its foot and the quick-action panel
+   must read the SAME ink, and the lighter mockup green would have been a second
+   hue for no gain. */
+.sd-screen {
+  --sd-ink: #0f3d2e;
+}
+
+/* The one white surface of this screen. A class, not a six-fold utility chain:
+   it repeats on six blocks, and `--surface` flips in dark AND high-contrast
+   where a hard #fff could not.
+
+   `-flaeche`, NOT `-card`: `.sd-card` is already taken by the old Steuer-
+   dashboard namespace of the FROZEN prototype-v2.css (:1423, unlayered, with
+   `padding: 20px 22px`). Unlayered beats Tailwind's `@layer utilities`
+   regardless of specificity, so every padding utility of these six blocks was a
+   dead declaration (code-review 2026-07-29, B-1 — same failure class as the
+   documented `.gap-8` ticket). Deliberately carries NO padding itself: the
+   rhythm difference main column ↔ rail lives in the components. */
+.sd-flaeche {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: 0 1px 2px rgb(20 30 25 / 4%);
+}
+
+.dark .sd-flaeche {
+  box-shadow: none;
+}
+
+/* ── Shell ────────────────────────────────────────────────────────────────
+   ≤1279 one column: the two grouping DIVs go transparent so their children
+   become flex items of `.sd-cols`. Deliberately WITHOUT `order`: the mockup
+   pulled the quick actions in front of the registers, but that made the tab
+   sequence jump backwards and forwards across the fold (a11y-Report
+   2026-07-29, F-1 / WCAG 2.4.3). The spec's escape hatch (§ 9) applies — the
+   stack now follows the DOM: Hero → Register → Schnellaktionen → rest of the
+   rail. No `order` may return here. */
+.sd-cols {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.sd-main,
+.sd-rail {
+  display: contents;
+}
+
+.sd-rail-rest {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ≥1280 the rail is ONE box in its own flow beside the main column — no grid
+   row coupling, so no dead zone opens under the quick actions. No `sticky`
+   either: the rail is now taller than the viewport and would freeze. */
+@media (min-width: 1280px) {
+  .sd-cols {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    column-gap: 32px;
+    align-items: start;
+  }
+  .sd-main {
+    display: block;
+  }
+  .sd-rail {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .sd-tabsblock {
+    margin-top: 28px;
+  }
+}
+
+/* The hero: portrait plate, identity text beside it from 768px on. Stacking
+   below that is the phone layout — left-aligned, never centred. */
+.sd-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  row-gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .sd-hero {
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 28px;
+    row-gap: 0;
+  }
+}
+
+/* Five facts, as many per row as fit. The 128px floor is measured, not chosen:
+   the widest label („Staatsangehörigkeit", 11.5px) sets ~110px, so 128 is the
+   narrowest cell that still holds every label in one line — and it is what puts
+   three facts per row at 1440 (identity column 442px) and two at 1280 (306px)
+   instead of the tall two- resp. one-column ribbon a 140px floor produced. */
+.sd-fakten-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+}
+
+/* The arrow moves only where it navigates, only on real pointers, and never
+   under reduced motion. In RTL the glyph itself is mirrored (`rtl:-scale-x-100`
+   on every `.sd-row-arrow` — a11y-Report 2026-07-28, Befund A4). Tailwind v4
+   writes that to the individual `scale` property, which is applied AFTER
+   `transform`, so the +4px below already paints as -4px there; a separate
+   `[dir='rtl']` translate would slide the arrow back toward the text. */
+@media (hover: hover) and (pointer: fine) {
+  .sd-row-arrow {
+    transition: transform 180ms ease-out;
+  }
+  .sd-row:hover .sd-row-arrow {
+    transform: translateX(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sd-row-arrow {
+    transition: none;
+  }
+  .sd-row:hover .sd-row-arrow {
+    transform: none;
+  }
+}
+
+/* Der manuelle Bedienhilfen-Schalter sieht die Medienabfrage nicht: der globale
+   Reset (globals.css) nullt für ihn nur die Dauern, die transform-Deklaration
+   blieb — der Pfeil sprang dadurch ohne Übergang um 4px (a11y-Report
+   2026-07-28, Befund A3). Bewusst ohne `:where()`, damit die Regel die
+   Hover-Selektoren dieser Datei unabhängig von der Quellreihenfolge schlägt. */
+html.a11y-reduce-motion .sd-row-arrow {
+  transition: none;
+}
+html.a11y-reduce-motion .sd-row:hover .sd-row-arrow {
+  transform: none;
+}
+
+/* Dokument-Kacheln: ab 768 ein auto-fit-Raster, damit zwei Kacheln (Markus) die
+   Reihe füllen statt ein Drittel leer zu lassen. ≤767 trägt `.m-shelf`
+   (prototype-v2.css, LÄDT FRÜHER) die Mechanik — hier steht dort deshalb kein
+   `display`, nur die Regal-Maße. */
+@media (min-width: 768px) {
+  .sd-dok-tiles {
+    display: grid;
+    /* 170px, nicht 200: bei 200 fällt die Reihe @1280 (Kartenbreite ~547px)
+       auf zwei Spalten und die Wallet-Kachel steht allein mit einem Loch
+       daneben. auto-fit kollabiert die leere Spur, sodass Markus' zwei Kacheln
+       die Reihe trotzdem füllen. */
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 12px;
+  }
+}
+
+/* ≤767: the register bar scrolls instead of wrapping or clipping (WCAG 1.4.10
+   allows a scroll region, not a cut). Bleed matches the .app-content padding so
+   the negative margin never pushes past the viewport. */
+@media (max-width: 767px) {
+  .sd-tabs-scroll {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: 20px;
+    margin-inline: -20px;
+    padding-inline: 20px;
+    /* `overflow-x: auto` forces `overflow-y: auto` too, which swallowed the
+       tabs' 2px focus ring at its 2px offset (measured: ring 4px outside a
+       44px-tall clip box). Same compensation as `.m-shelf`; the hairline lives
+       on `.sd-tabs-rail`, so the active tab's underline stays on the rail. */
+    padding-block: 6px;
+    margin-block: -6px;
+  }
+  .sd-tabs-scroll > * {
+    scroll-snap-align: start;
+  }
+  .sd-fakten-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  /* Bleed = das Innenpadding der Karte (px-5), damit die Kacheln bis an deren
+     Kante laufen und der Nachbar-Peek eine Kartenkante zeigt. */
+  .sd-dok-tiles {
+    --shelf-slide: min(78%, 280px);
+    --shelf-bleed: 20px;
+  }
+}
+
+@media (max-width: 380px) {
+  .sd-tabs-scroll {
+    scroll-padding-inline: 14px;
+    margin-inline: -14px;
+    padding-inline: 14px;
+  }
+}
+
+/* The data sheet stays single-column until 1536px (Spec § 4.10 / § 16.4): with
+   the 320px rail beside it, two columns at 1280 would be ~280px wide and break
+   e-mail addresses and Aktenzeichen at the wrong place — the very failure class
+   ZWEI_PRO_ZEILE / ZIFFERN_SEKTIONEN already guard against. `display: contents`
+   reproduces the 768–1279 rendering exactly (prototype-v2.css #11 sets the grid
+   from 1280 up; this file loads later and wins the tie in that range). */
+@media (min-width: 1280px) and (max-width: 1535px) {
+  .sd-blatt-shelf {
+    display: contents;
+  }
+  .sd-blatt-col:first-child {
+    padding-inline-end: 0;
+  }
+  .sd-blatt-col:last-child {
+    padding-inline-start: 0;
+  }
+}
+
+/* ═══ Weite Viewports ══════════════════════════════════════════════════════
+   Jenseits von ~1536 ist die Hauptspalte 870px (1536) bis 1250px (2000) breit —
+   breiter, als eine einspaltige Zeile trägt. Zwei Blöcke ließen dort rechts eine
+   zusammenhängende Leerfläche stehen (gemessen @2000: 620×290 neben der
+   alleinstehenden Quelle-Zeile, 480×340 neben dem Status-Block). Beide werden
+   nicht gedeckelt, sondern gefüllt: mehr Spalten, gleiche Inhalte. Die zwei
+   Schwellen sind verschieden, weil die Blöcke verschieden viel Platz brauchen. */
+@media (min-width: 1536px) {
+  /* Die Fünf-Spalten-Proportionen des Mockups (Spec § 4.4). Sie gelten erst ab
+     1536, nicht schon ab 1280: das Mockup rechnet mit einer 632px breiten
+     Identitätsspalte, in dieser App ist sie neben Sidebar, Platte und Rail bei
+     1280 nur ~350px breit — fünf Spalten wären dort ~56px schmal und rissen
+     jedes Label in Silben. Ab 1536 trägt sie ~600px, also die Maße, für die die
+     Proportionen gezeichnet wurden; darunter bleibt das auto-fit-Raster. */
+  .sd-fakten-grid {
+    grid-template-columns: 0.85fr 1.1fr 1.05fr 0.8fr 1.5fr;
+  }
+}
+
+/* Status & Ausweisdokument zweispaltig: Titel/Gültigkeit oben, Behörde/
+   Aktenzeichen darunter. Label-links/Wert-rechts bleibt je Zelle erhalten, die
+   Haarlinien bleiben der Zeilenrhythmus — nur eben zwei Zeilen statt vier.
+   Die zweite Zelle der ersten Reihe ist optisch auch eine erste Zeile und darf
+   ihre obere Haarlinie nicht tragen.
+
+   Erst ab 1700, nicht ab 1536: darunter bleibt pro Zelle ein Wertfeld von
+   ~220px, in dem „[MOCK] ABH-B-2024/IV-A-1782" mitten in der Nummer umbricht —
+   genau die Fehlerklasse, wegen der schon das Blatt seine zweite Spalte erst
+   ab 1536 aufmacht. Ab 1700 trägt das Wertfeld ~280px und die Kennung steht in
+   einer Zeile; die Leerfläche, um die es hier geht, entsteht ohnehin erst
+   jenseits von ~1600 (gemessen @1536: 590×150, @2000: 480×340). */
+@media (min-width: 1700px) {
+  .sd-status-dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 56px;
+    align-items: start;
+    /* Der Lesemaß-Deckel (`max-w-3xl`) gilt für die einspaltige Form; zwei
+       Spalten sollen die Hauptspalte tragen. */
+    max-width: none;
+  }
+  .sd-status-dl > :nth-child(2) {
+    border-top-width: 0;
+    padding-top: 0;
+  }
+}

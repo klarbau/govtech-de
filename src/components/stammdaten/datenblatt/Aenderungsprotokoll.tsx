@@ -15,33 +15,52 @@ interface AenderungsprotokollProps {
   limit?: number;
 }
 
+export interface ProtokollZeile {
+  id: string;
+  /** `dd.MM.yyyy` */
+  datum: string;
+  /** `HH:mm` — the caller wraps it with `stammdaten.format.uhrzeit`. */
+  zeit: string;
+  titel: string;
+  rechtsgrundlage: string;
+  /**
+   * The building blocks the wording was made of, so a caller that needs a
+   * shorter form (the rail digest, § 4.7d) re-phrases instead of re-deriving:
+   * section title, else the resolved `zweck`. Absent when neither resolves.
+   */
+  datenart?: string;
+  /** Resolved recipient — authority name or the citizen themself. */
+  empfaenger?: string;
+}
+
 /**
- * Band 3 — „Änderungsprotokoll" (Spec § 4.4c, full width since
- * `stammdaten-blatt-dense.md` § 3.4). Date on the left in a narrow
- * `tabular-nums` column, the transmission and its `rechtsgrundlage` on the
- * right; hairlines instead of avatars or icon circles.
+ * The row derivation of the change log, shared by the full register and the
+ * rail's three-line digest (Spec `stammdaten-akte-v2.md` § 4.7d) — one place
+ * decides how a transmission is worded.
  *
  * Rows whose two ends are both authorities read `{Sektion} · {Absender} →
  * {Empfänger}`. Seed entries that have only one end (a citizen-triggered app
  * activity) fall back to their `zweck` text — inventing an authority for the
  * missing end would be a false claim.
  */
-export function Aenderungsprotokoll({
-  entries,
-  behoerdenById,
-  personaId,
-  limit = 5,
-}: AenderungsprotokollProps) {
+export function useProtokollZeilen(
+  entries: UebermittlungsLogEntry[],
+  behoerdenById: Record<string, Behoerde>,
+  personaId: string,
+  limit: number,
+): ProtokollZeile[] {
   const t = useTranslations('stammdaten.datenblatt');
   const tRoot = useTranslations();
-  const tFmt = useTranslations('stammdaten.format');
 
-  const rows = entries.slice(0, limit).map((entry) => {
+  return entries.slice(0, limit).map((entry) => {
     const sektionKey = entry.sektion
       ? `stammdaten.sektion.${entry.sektion}.title`
       : undefined;
     const sektion =
       sektionKey && tRoot.has(sektionKey) ? tRoot(sektionKey) : undefined;
+    const zweck = tRoot.has(entry.zweck_i18n_key)
+      ? tRoot(entry.zweck_i18n_key)
+      : undefined;
 
     const absender = entry.absender_behoerde_id
       ? behoerdenById[entry.absender_behoerde_id]?.name_de
@@ -59,11 +78,13 @@ export function Aenderungsprotokoll({
         ? t('protokoll.row_mit_sektion', { sektion, absender, empfaenger })
         : t('protokoll.row', { absender, empfaenger });
     } else {
-      const zweck = tRoot.has(entry.zweck_i18n_key)
-        ? tRoot(entry.zweck_i18n_key)
-        : (absender ?? empfaenger ?? '');
-      titel = sektion ? t('protokoll.row_zweck', { sektion, zweck }) : zweck;
+      const text = zweck ?? absender ?? empfaenger ?? '';
+      titel = sektion
+        ? t('protokoll.row_zweck', { sektion, zweck: text })
+        : text;
     }
+
+    const datenart = sektion ?? zweck;
 
     return {
       id: entry.id,
@@ -71,8 +92,31 @@ export function Aenderungsprotokoll({
       zeit: formatTimeDe(entry.timestamp),
       titel,
       rechtsgrundlage: entry.rechtsgrundlage,
+      ...(datenart ? { datenart } : {}),
+      ...(empfaenger ? { empfaenger } : {}),
     };
   });
+}
+
+/**
+ * Band 3 — „Änderungsprotokoll" (Spec § 4.4c, full width since
+ * `stammdaten-blatt-dense.md` § 3.4). Date on the left in a narrow
+ * `tabular-nums` column, the transmission and its `rechtsgrundlage` on the
+ * right; hairlines instead of avatars or icon circles.
+ *
+ * The row wording itself lives in `useProtokollZeilen` — the rail digest
+ * (Spec `stammdaten-akte-v2.md` § 4.7d) renders the same three rows.
+ */
+export function Aenderungsprotokoll({
+  entries,
+  behoerdenById,
+  personaId,
+  limit = 5,
+}: AenderungsprotokollProps) {
+  const t = useTranslations('stammdaten.datenblatt');
+  const tFmt = useTranslations('stammdaten.format');
+
+  const rows = useProtokollZeilen(entries, behoerdenById, personaId, limit);
 
   return (
     <section

@@ -57,11 +57,22 @@ export function VorgangSchrittAuthDialog({
   eidPreview,
 }: VorgangSchrittAuthDialogProps) {
   const tv = useTranslations('vorgang.detail');
-  const reduce = useReducedMotion();
+  const prefersReduce = useReducedMotion();
+  // Der In-App-Schalter „Bewegung reduzieren" (Bedienhilfen §6.3) setzt nur eine
+  // Klasse — `useReducedMotion()` sieht ausschließlich die Media-Query. Beim
+  // Öffnen lesen (nicht im Render: SSR kennt kein `document`); während der
+  // Dialog den Fokus hält, ist der Schalter ohnehin nicht erreichbar.
+  const [togglesReduce, setTogglesReduce] = React.useState(false);
+  const reduce = prefersReduce || togglesReduce;
   const [pulsing, setPulsing] = React.useState(false);
 
   React.useEffect(() => {
     if (!open) setPulsing(false);
+    else {
+      setTogglesReduce(
+        document.documentElement.classList.contains('a11y-reduce-motion'),
+      );
+    }
   }, [open]);
 
   const Icon = MODE_ICON[mode];

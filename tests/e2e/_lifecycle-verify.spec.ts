@@ -56,14 +56,14 @@ test.describe('Vorgang lifecycle — Akte statt Video', () => {
     await page.goto('/vorgaenge/vg-anna-umzug-2026-completed', {
       waitUntil: 'domcontentloaded',
     });
-    await waitForOrRetry(page, () => page.locator('.vd-timeline'), 20000);
+    await waitForOrRetry(page, () => page.locator('.pgv-steps'), 20000);
     await settle(page, 1200);
     // no replay affordances anywhere (the run-page demo player is gone)
     await expect(page.locator('.vab-demo-btn')).toHaveCount(0);
     await expect(page.getByRole('button', { name: /abspielen/i })).toHaveCount(0);
     await expect(page.getByText('Live-Demo')).toHaveCount(0);
-    // static done state: the completed value receipt + the abgeschlossen badge
-    await expect(page.locator('.vr-card')).toBeVisible();
+    // static done state: the Gesamtergebnis block + the abgeschlossen badge
+    await expect(page.locator('.pgv-result')).toBeVisible();
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     await page.screenshot({ path: `${SHOTS}/02-completed-record.png`, fullPage: false });
   });
@@ -105,7 +105,7 @@ test.describe('Vorgang lifecycle — Akte statt Video', () => {
     //    (no reveal pacer, no staging marker anymore).
     await page.waitForURL('**/vorgaenge/vorgang-**', { timeout: 20000 });
     const akteUrl = page.url();
-    await waitForOrRetry(page, () => page.locator('.vd-timeline .vd-step'), 30000);
+    await waitForOrRetry(page, () => page.locator('.pgv-steps .pgv-row'), 30000);
     await settle(page, 1200);
     await page.screenshot({ path: `${SHOTS}/03c-cascade-live.png` });
 
@@ -117,9 +117,9 @@ test.describe('Vorgang lifecycle — Akte statt Video', () => {
     // -- reload mid-run: the Akte re-fetches the authoritative snapshot →
     //    confirmed Block-A steps are already `is-done`, no re-animation.
     await page.reload({ waitUntil: 'domcontentloaded' });
-    await waitForOrRetry(page, () => page.locator('.vd-timeline .vd-step'), 30000);
+    await waitForOrRetry(page, () => page.locator('.pgv-steps .pgv-row'), 30000);
     await settle(page, 500);
-    const doneEarly = await page.locator('.vd-step.is-done').count();
+    const doneEarly = await page.locator('.pgv-steps .pgv-row.is-done').count();
     await page.screenshot({ path: `${SHOTS}/03e-after-reload-snapshot.png` });
     expect(doneEarly, 'confirmed steps visible immediately after reload').toBeGreaterThan(0);
 
@@ -140,8 +140,8 @@ test.describe('Vorgang lifecycle — Akte statt Video', () => {
       await settle(page, 2500);
     }
 
-    // -- completed record: the value receipt renders, no replay affordances.
-    await waitForOrRetry(page, () => page.locator('.vr-card'), 60000);
+    // -- completed record: the Gesamtergebnis renders, no replay affordances.
+    await waitForOrRetry(page, () => page.locator('.pgv-result'), 60000);
     await settle(page, 1000);
     await expect(page.locator('.vab-demo-btn')).toHaveCount(0);
     await expect(page.getByRole('button', { name: /abspielen/i })).toHaveCount(0);
@@ -149,7 +149,7 @@ test.describe('Vorgang lifecycle — Akte statt Video', () => {
 
     // -- revisit the same Akte URL later: still the static record.
     await page.goto(akteUrl, { waitUntil: 'domcontentloaded' });
-    await waitForOrRetry(page, () => page.locator('.vr-card'), 20000);
+    await waitForOrRetry(page, () => page.locator('.pgv-result'), 20000);
     await expect(page.getByRole('button', { name: /abspielen/i })).toHaveCount(0);
   });
 
@@ -194,7 +194,7 @@ test.describe('Vorgang lifecycle — Akte statt Video', () => {
       waitUntil: 'domcontentloaded',
     });
     await page.waitForURL('**/vorgaenge/vg-anna-umzug-2026-completed', { timeout: 15000 });
-    await waitForOrRetry(page, () => page.locator('.vd-timeline'), 20000);
+    await waitForOrRetry(page, () => page.locator('.pgv-steps'), 20000);
     await expect(page.getByRole('button', { name: /abspielen/i })).toHaveCount(0);
   });
 
@@ -207,7 +207,7 @@ test.describe('Vorgang lifecycle — Akte statt Video', () => {
     await settle(page, 1500);
     // stays on the Akte (no redirect back to a cascade route); the dossier renders
     expect(page.url()).toBe(akteUrl);
-    await waitForOrRetry(page, () => page.locator('.vd-timeline'), 20000);
+    await waitForOrRetry(page, () => page.locator('.pgv-steps'), 20000);
   });
 
   test('8) Stub-Vorgang ohne Dossier bleibt auf der Detailseite', async ({ page }) => {
@@ -268,9 +268,9 @@ test.describe('Vorgang lifecycle — Akte statt Video', () => {
       20000,
     );
 
-    // (1) Ruhezustand: Banner zeigt den ersten Bürger-Schritt (Elterngeld,
-    //     needs_eid), CTA „Mit eID bestätigen" (kein Selbst-Abhaken mehr).
-    await expect(page.locator('.vd-next .vd-next-aktion')).toHaveText(
+    // (1) Ruhezustand: die Begleit-Leiste zeigt den ersten Bürger-Schritt
+    //     (Elterngeld, needs_eid), CTA „Mit eID bestätigen" (kein Selbst-Abhaken).
+    await expect(page.locator('.pgv-dock .pgv-dock-aktion')).toHaveText(
       'Elterngeld für Mia beantragen',
       { timeout: 15000 },
     );
@@ -292,10 +292,10 @@ test.describe('Vorgang lifecycle — Akte statt Video', () => {
       page.getByRole('heading', { name: 'Ihr Vorgang im Überblick' }),
     ).toBeVisible();
 
-    // (4) Live-Vollzug: Banner rückt nach confirmed auf den nächsten Bürger-
+    // (4) Live-Vollzug: die Leiste rückt nach confirmed auf den nächsten Bürger-
     //     Schritt „Familienversicherung Mia anmelden" (CTA jetzt „Übermittlung
     //     freigeben"), Zähler springt auf „2 von 3".
-    await expect(page.locator('.vd-next .vd-next-aktion')).toHaveText(
+    await expect(page.locator('.pgv-dock .pgv-dock-aktion')).toHaveText(
       'Familienversicherung Mia anmelden',
       { timeout: 25000 },
     );
@@ -328,10 +328,10 @@ test.describe('Vorgang lifecycle — Akte statt Video', () => {
       { timeout: 15000 },
     );
 
-    // (6) Brief-Mint: die Eingangsbestätigung der Elterngeldstelle landet im
-    //     Posteingang zu diesem Vorgang.
+    // (6) Brief-Mint: die Eingangsbestätigung der Elterngeldstelle landet in
+    //     „Bescheide & Nachweise" (die Brief-/Nachweis-Karte der Akte).
     const posteingang = page.getByRole('region', {
-      name: /Posteingang zu diesem Vorgang/,
+      name: /Bescheide & Nachweise/,
     });
     await expect(posteingang).toBeVisible({ timeout: 25000 });
     await expect(posteingang.getByText(/Elterngeldstelle/).first()).toBeVisible({
@@ -339,18 +339,19 @@ test.describe('Vorgang lifecycle — Akte statt Video', () => {
     });
 
     // (7) Zweiter Schritt der Kette (Einwilligung) → Done; der Fokus landet auf
-    //     der Done-Section (tabIndex=-1), nicht auf <body> (WCAG 2.4.3).
+    //     der Begleit-Leiste im Fertig-Zustand (tabIndex=-1), nicht auf <body>
+    //     (WCAG 2.4.3).
     await page.getByRole('button', { name: 'Übermittlung freigeben' }).click();
     const dialog2 = page.getByRole('alertdialog').or(page.getByRole('dialog'));
     await expect(dialog2).toBeVisible({ timeout: 10000 });
     await dialog2.getByRole('button', { name: 'Übermittlung freigeben' }).click();
-    await expect(page.locator('.vd-next.is-done')).toBeVisible({ timeout: 25000 });
+    await expect(page.locator('.pgv-dock.is-done')).toBeVisible({ timeout: 25000 });
     await page.waitForFunction(
       () => {
         const el = document.activeElement;
         return (
           el instanceof HTMLElement &&
-          el.classList.contains('vd-next') &&
+          el.classList.contains('pgv-dock') &&
           el.classList.contains('is-done')
         );
       },

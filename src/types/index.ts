@@ -82,6 +82,12 @@ export type {
   VorgangStatus,
   VorgangTyp,
 } from './vorgang';
+// Lebenslage-Akte — Gesamtplan-Read-Model (Spec lebenslage-akte.md § 8.1).
+export type {
+  PlanZustand,
+  VorgangPlan,
+  VorgangPlanRow,
+} from './vorgang-plan';
 export type {
   UmzugInput,
   UmzugPreview,

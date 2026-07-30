@@ -1806,7 +1806,6 @@
     "detail": {
       "next_step_title": "خطوتك التالية",
       "next_step_basis_label": "الأساس القانوني",
-      "next_step_cta": "إتمام الخطوة",
       "next_step_cta_eid": "التأكيد باستخدام eID",
       "next_step_cta_consent": "السماح بالإرسال",
       "next_step_cta_termin": "حجز موعد",
@@ -1825,13 +1824,9 @@
       "step_done_live_next": "اكتملت الخطوة. الخطوة التالية: {aktion}",
       "step_done_live_all": "اكتملت الخطوة. لا يُطلب منك شيء آخر حاليًا.",
       "next_step_brief_cta": "فتح الخطاب المرتبط",
-      "details_title": "التفاصيل",
-      "summary_status_label": "الحالة",
       "summary_angelegt_label": "تاريخ الإنشاء",
-      "summary_stichtag_label": "تاريخ السريان",
       "summary_behoerden_label": "الجهات المعنية",
       "summary_frist_label": "الموعد النهائي التالي",
-      "summary_frist_template": "{datum}",
       "datenschutz_sub": "ما الذي تتم معالجته بشأن هذه المعاملة — وعلى أي أساس قانوني.",
       "termine_title": "المواعيد المتعلقة بهذه المعاملة ({count})",
       "no_next_step": "لا يُطلب منك شيء في الوقت الحالي. الجهات المعنية تعمل على إنجاز المعاملة.",
@@ -1846,20 +1841,64 @@
       "fertigstellung_label_after_action": "الإنجاز بعد خطوتك",
       "fertigstellung_label_in_review": "الجهة المختصة تُراجع — عادةً",
       "fertigstellung_label_done": "اكتمل في",
-      "timeline_title": "خطوات هذه المعاملة ({count})",
       "steps_overview_title": "معاملتك في لمحة",
-      "steps_overview_sub": "ننسّق طلبك ونحيله إلى الجهات المختصة.",
-      "uebermittelt_label": "أُرسلت في",
-      "erledigt_label": "أُنجزت في",
-      "termin_vereinbart_label": "تم حجز الموعد في",
-      "details_show": "عرض التفاصيل",
-      "details_hide": "إخفاء التفاصيل",
-      "berechtigungen_title": "الأساس القانوني والصلاحيات",
-      "berechtigungen_basis_label": "الأساس القانوني",
-      "berechtigungen_datenweitergabe_label": "مشاركة البيانات",
-      "berechtigungen_behoerden": "إلى {count} جهات",
-      "berechtigungen_einwilligungen_label": "موافقاتك",
-      "berechtigungen_einwilligungen_value": "إلى الجهات المختصة فقط، ويمكن سحبها في أي وقت."
+      "steps_overview_sub": "ننسّق طلبك ونحيله إلى الجهات المختصة."
+    },
+    "uebersicht": {
+      "overview_title": "الحالة الحالية",
+      "metric_progress_label": "التقدّم",
+      "metric_progress_value": "{pct} %",
+      "metric_time_label": "الوقت الموفَّر (تقريباً)",
+      "metric_time_value": "{minuten} دقيقة تقريباً",
+      "metric_phase_label": "المرحلة الحالية",
+      "phase_closed": "مكتملة",
+      "phase_prepare": "قيد التحضير",
+      "pill_action": "إجراء مطلوب",
+      "shelf_prev": "عرض الخطوات السابقة",
+      "shelf_next": "عرض الخطوات التالية",
+      "shelf_prev_eintraege": "عرض العناصر السابقة",
+      "shelf_next_eintraege": "عرض العناصر التالية",
+      "protokoll_show_all": "{count, plural, zero {عرض جميع العناصر} one {عرض العنصر} two {عرض العنصرين} few {عرض جميع العناصر الـ #} many {عرض جميع العناصر الـ #} other {عرض جميع العناصر الـ #}}",
+      "protokoll_show_less": "عرض أقل",
+      "steps_foot": "كل عملية إرسال مُسجَّلة في السجل ومرتبطة بالأساس القانوني المذكور.",
+      "gate_auto": "تلقائياً",
+      "gate_eid": "باستخدام eID",
+      "gate_consent": "بموافقتك",
+      "gate_termin": "بموعد",
+      "row_daten": "المُرسَل: {kategorien}",
+      "status_sr": "الحالة",
+      "status_time": "{zeit}",
+      "status_sub_eid": "مطلوب تأكيدك",
+      "next_closed_title": "اكتملت هذه المعاملة.",
+      "next_done_sub": "سنُعلمك فور توفّر أي جديد.",
+      "next_sub_eid": "يُرجى تأكيد هذه الخطوة باستخدام eID الخاص بك.",
+      "next_sub_consent": "يُرجى السماح بالإرسال.",
+      "next_sub_termin": "نُعِدّ الطلب ونحجز الموعد — وأنت تمنح الموافقة.",
+      "next_running_sub": "{behoerde} · قيد المعالجة",
+      "sticky_running": "قيد المعالجة · {behoerde}",
+      "next_waiting_title": "يجري تحضير المعاملة",
+      "next_waiting_sub": "الجهات المعنية تعمل على إنجاز المعاملة.",
+      "kontrolle_title": "تحكّمك",
+      "kontrolle_freigaben_title": "أذوناتك",
+      "kontrolle_freigaben_value": "تم منح {given} من {total}",
+      "kontrolle_freigaben_sub": "يمكن سحب الموافقات في أي وقت",
+      "kontrolle_datenschutz_title": "إشعار حماية البيانات",
+      "kontrolle_datenschutz_value": "تُستخدم بياناتك حصراً لمعالجة هذه المعاملة.",
+      "kontrolle_stellen_value": "عدد الجهات المشاركة: {count}",
+      "erledigt_title": "ما الذي أُنجز حتى الآن؟",
+      "erledigt_sr_done": "منجَز",
+      "erledigt_sr_open": "غير منجَز",
+      "datenschutz_title": "بياناتك، وأنت المتحكّم بها",
+      "result_title": "النتيجة الإجمالية",
+      "result_status": "مكتملة",
+      "result_body": "أنجزت جميع الجهات المعنية مهامها في هذه المعاملة.",
+      "result_bescheid_cta": "عرض القرار (Bescheid)",
+      "result_datum_label": "اكتمل في",
+      "result_stellen_label": "الجهات المعنية",
+      "result_stellen_value": "عدد الجهات / المؤسسات: {count}",
+      "result_zeit_sub": "مقارنةً بالمسار التقليدي",
+      "bescheide_title": "قرارات الجهات الرسمية (Bescheide) والإثباتات",
+      "protokoll_title": "سجل النشاط"
     }
   },
   "assistent": {
@@ -3516,9 +3555,6 @@
       "kontakt_verifiziert": "تم توثيق بيانات الاتصال"
     },
     "datenblatt": {
-      "subline": "{angaben, plural, zero {# بيانات} one {بيان واحد} two {بيانان} few {# بيانات} many {# بياناً} other {# بيان}} من {register, plural, zero {# سجلات} one {سجل واحد} two {سجلين} few {# سجلات} many {# سجلاً} other {# سجل}}.",
-      "subline_update": "آخر تحديث: {datum}، {zeit} — {behoerde}.",
-      "subline_update_ohne_absender": "آخر تحديث: {datum}، {zeit}.",
       "cta_korrigieren": "تصحيح البيانات",
       "title": "بياناتك",
       "anschrift_link": "تغيير العنوان",
@@ -3528,12 +3564,11 @@
         "hinweis": "في هذا العرض التوضيحي تُعرض البيانات الأساسية للقراءة فقط كمصدر وحيد موثوق: لا تُجري التعديلات هنا، بل لدى الجهة المختصة — ثم تعود البيانات المحدَّثة تلقائياً إلى ملفك الشخصي."
       },
       "identitaet": {
-        "region_label": "هوية موثّقة",
-        "status": "تم تأكيد الهوية · مستوى الثقة eIDAS: عالٍ",
         "geburtsdatum": "تاريخ الميلاد",
+        "geburtsort": "مكان الميلاد",
         "staatsangehoerigkeit": "الجنسية",
         "familienstand": "الحالة الاجتماعية",
-        "quelle": "المصدر الرسمي",
+        "sprachen": "اللغات",
         "quelle_fallback": "مكتب المواطنين (Bürgeramt)"
       },
       "familienstand": {
@@ -3578,7 +3613,8 @@
         "gueltig_bis": "صالح حتى {datum}",
         "norm_gueltig_bis": "{norm} · صالح حتى {datum}",
         "gesetzliche_rente": "التأمين القانوني للمعاشات",
-        "kind_geboren": "مواليد {datum}"
+        "kind_geboren": "مواليد {datum}",
+        "alter": "{jahre, plural, zero {# سنوات} one {سنة واحدة} two {سنتان} few {# سنوات} many {# سنةً} other {# سنة}}"
       },
       "quelle": {
         "bundid": "حساب BundID",
@@ -3586,13 +3622,11 @@
         "melderegister_ohne_datum": "سجل السكان (Melderegister)",
         "bzst": "المكتب الاتحادي المركزي للضرائب (Bundeszentralamt für Steuern)",
         "drv": "التأمين الألماني للمعاشات (Deutsche Rentenversicherung)",
-        "traeger": "{traeger}"
+        "traeger": "{traeger}",
+        "selbstauskunft": "بيان ذاتي — لا يوجد سجل يحتفظ بهذه المعلومة."
       },
       "wallet": {
-        "title": "الإثباتات والمحفظة (Wallet)",
-        "line": "{count, plural, zero {# إثباتات} one {إثبات واحد} two {إثباتان} few {# إثباتات} many {# إثباتاً} other {# إثبات}} في محفظة EUDI الخاصة بك · خدمة الثقة: BVA – Bundesverwaltungsamt · المراجعة التالية في {datum}",
-        "empty": "لا توجد إثباتات في محفظة EUDI الخاصة بك بعد.",
-        "link": "عرض الإثباتات"
+        "empty": "لا توجد إثباتات في محفظة EUDI الخاصة بك بعد."
       },
       "protokoll": {
         "title": "سجل التغييرات",
@@ -3605,8 +3639,91 @@
         "show_all": "عرض السجل الكامل"
       },
       "datenhoheit": {
-        "text": "لا تُشارَك بياناتك الأساسية مع الجهات الحكومية والخدمات إلا بموافقتك — أنت تقرّر من يمكنه الاطلاع على كل بيان.",
         "link": "إدارة استخدام البيانات"
+      },
+      "sprache": {
+        "de": "الألمانية",
+        "en": "الإنجليزية",
+        "ru": "الروسية",
+        "uk": "الأوكرانية",
+        "ar": "العربية",
+        "tr": "التركية"
+      }
+    },
+    "akte": {
+      "portraet": {
+        "legende": "[MOCK] صورة اصطناعية — ليست صورة جواز سفر ولا صورة شخص حقيقي.",
+        "aktualisiert_label": "آخر تحديث",
+        "aktualisiert_wert": "{datum}، {zeit}",
+        "quelle_label": "المصدر الرسمي"
+      },
+      "fakten": {
+        "region_label": "المعلومات الأساسية"
+      },
+      "tabs": {
+        "aria": "أقسام بياناتك الأساسية",
+        "ueberblick": "نظرة عامة",
+        "persoenlich": "البيانات الشخصية",
+        "dokumente": "الوثائق",
+        "verlauf": "السجل"
+      },
+      "status": {
+        "title": "الوضع القانوني ووثيقة الهوية",
+        "aufenthalt_label": "تصريح الإقامة (Aufenthaltstitel)",
+        "gueltig_bis_label": "صالح حتى",
+        "behoerde_label": "الجهة المُصدِرة",
+        "az_label": "الرقم المرجعي (Aktenzeichen)",
+        "az_kopiert": "تم نسخ الرقم المرجعي",
+        "bezeichnung_18g": "البطاقة الزرقاء الأوروبية",
+        "bezeichnung_21": "تصريح إقامة لممارسة عمل حر",
+        "quelle_aufenthalt": "تحتفظ به سلطة شؤون الأجانب (Ausländerbehörde, § 71 Abs. 1 AufenthG)؛ ويُخزَّن في السجل المركزي للأجانب (Ausländerzentralregister) لدى المكتب الاتحادي للهجرة واللاجئين (Bundesamt für Migration und Flüchtlinge, § 1 AZRG). هذا العرض التوضيحي لا يستعلم من أي سجل.",
+        "ausweis_label": "وثيقة الهوية",
+        "ausweis_personalausweis": "بطاقة الهوية (Personalausweis)",
+        "ausweis_reisepass": "جواز السفر",
+        "ausweis_nummer_label": "رقم الوثيقة",
+        "verlaengerung_link": "تحضير التمديد",
+        "leer": "لا توجد حالياً وثيقة هوية في خزنة مستنداتك."
+      },
+      "vorgaenge": {
+        "title": "المعاملات الحالية",
+        "alle": "كل المعاملات",
+        "status_genehmigt": "موافَق عليها",
+        "status_abgelehnt": "مرفوضة",
+        "leer": "لا توجد معاملة جارية حالياً.",
+        "punkt_laeuft": "قيد التنفيذ",
+        "punkt_abgeschlossen": "مكتملة"
+      },
+      "dokumente": {
+        "title": "الوثائق والإثباتات",
+        "eid_titel": "هويتك الإلكترونية",
+        "alle": "كل ما في خزنة المستندات",
+        "ohne_ablauf": "بلا تاريخ انتهاء",
+        "leer": "لا توجد مستندات في خزنتك بعد.",
+        "kachel_vorzeigen": "إبراز",
+        "kachel_details": "التفاصيل",
+        "wallet_titel": "محفظة EUDI",
+        "wallet_sub": "{count, plural, zero {# إثباتات} one {إثبات واحد} two {إثباتان} few {# إثباتات} many {# إثباتاً} other {# إثبات}} · المراجعة التالية في {datum}"
+      },
+      "aktionen": {
+        "title": "إجراءات سريعة",
+        "vorgang": "بدء معاملة",
+        "nachweis": "إبراز مستند إثبات",
+        "nachweise_ansehen": "عرض الإثباتات",
+        "termine": "عرض المواعيد",
+        "adresse": "تغيير العنوان"
+      },
+      "identitaet": {
+        "bestaetigt": "تم تأكيد الهوية",
+        "service": "مستوى الثقة eIDAS: عالٍ · {angaben, plural, zero {# بيانات} one {بيان واحد} two {بيانان} few {# بيانات} many {# بياناً} other {# بيان}} من {register, plural, zero {# سجلات} one {سجل واحد} two {سجلين} few {# سجلات} many {# سجلاً} other {# سجل}}"
+      },
+      "verlauf": {
+        "title": "السجل",
+        "alle": "كل الأنشطة",
+        "row": "{datenart} ← {empfaenger}"
+      },
+      "datenhoheit": {
+        "title": "حماية البيانات والتحكم فيها",
+        "text_kurz": "أنت من يقرّر المشاركة — إلا في عمليات الإرسال التي يوجبها القانون (Bundesmeldegesetz, § 36 BMG)."
       }
     },
     "once_only": {

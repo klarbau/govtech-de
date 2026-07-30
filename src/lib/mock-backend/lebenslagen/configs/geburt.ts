@@ -11,6 +11,7 @@ import type { LebenslageConfig } from '../types';
 
 export const geburtConfig: LebenslageConfig = {
   slug: 'geburt',
+  titel_de: 'Geburt eines Kindes',
   vorgangTyp: 'kindergeburt',
   icon: 'baby',
   kategorie: 'familie',
@@ -148,12 +149,15 @@ export const geburtConfig: LebenslageConfig = {
       behoerdeId: 'standesamt-berlin-mitte',
       block: 'D',
       gate: 'eid',
+      // Domain-MUSS (lebenslage-akte-sequenz.md Q1): die Beurkundung ist
+      // Hoheitsakt des Standesamts (§ 21 PStG) — das System darf sich NIE als
+      // Urkundsperson darstellen. Es übermittelt die Anzeige, mehr nicht.
       aktion:
-        'Geburt beurkunden + Geburtsurkunde ausstellen (auf Geburtsanzeige + bestätigte Namensbestimmung)',
+        'Geburtsanzeige mit Namensbestimmung an das Standesamt übermitteln — Beurkundung und Geburtsurkunde durch das Standesamt',
       kurzlabel: 'Geburt beurkunden',
       behoerdeKurz: 'Standesamt',
       agentLabel:
-        'Wir beurkunden die Geburt beim Standesamt und stellen die Geburtsurkunde aus',
+        'Wir übermitteln die Geburtsanzeige mit Ihrer Namensbestimmung — beurkundet wird beim Standesamt',
       rechtsgrundlage: '§ 18, § 20, § 21 PStG',
       datenkategorien: ['Identität', 'Anschrift', 'Familienstand'],
       aktenzeichen: '[MOCK] G 247/2026',
@@ -172,19 +176,25 @@ export const geburtConfig: LebenslageConfig = {
       behoerdeId: 'buergeramt-berlin-mitte',
       block: 'A',
       gate: 'auto',
-      aktion: 'Kind ins Melderegister eintragen + Geburtsdaten an BZSt übermitteln',
-      kurzlabel: 'Kind anmelden',
+      // Domain-MUSS (Q1): § 17 Abs. 3 BMG erlässt die Anmeldung im Normalfall —
+      // die Meldebehörde trägt VON AMTS WEGEN ein (§ 2 Abs. 1 BMG) auf die
+      // Standesamts-Mitteilung hin (§ 57 Abs. 1 Nr. 3 PStV). „Kind anmelden"
+      // erfindet eine Bürgerpflicht und ist verboten.
+      aktion:
+        'Kind wird von Amts wegen im Melderegister geführt; Geburtsdaten gehen an das BZSt',
+      kurzlabel: 'Melderegister-Eintrag',
       behoerdeKurz: 'Einwohnermeldeamt',
-      agentLabel: 'Wir tragen das Kind ins Melderegister ein und melden die Geburt dem BZSt',
-      rechtsgrundlage: '§ 17 BMG i.V.m. § 139b AO',
+      agentLabel:
+        'Die Meldebehörde trägt das Kind von Amts wegen ein und meldet die Geburt dem BZSt',
+      rechtsgrundlage: '§ 57 Abs. 1 Nr. 3 PStV · § 2 Abs. 1 BMG · § 139b Abs. 7 AO',
       datenkategorien: ['Identität', 'Anschrift'],
       latencyMs: 900,
       mints: {
         letter: {
           absender: 'Bezirksamt Mitte von Berlin — Bürgeramt',
-          betreffTemplate: 'Anmeldung Ihres Kindes im Melderegister — Az. {az}',
+          betreffTemplate: 'Eintragung Ihres Kindes im Melderegister — Az. {az}',
           floskel:
-            'Sehr geehrte/r Herr/Frau {name},\n\nin oben genannter Angelegenheit haben wir Ihr Kind zum {datum} im Melderegister eingetragen. Die Geburtsdaten wurden gemäß § 17 BMG i.V.m. § 139b AO an das Bundeszentralamt für Steuern übermittelt.\n\n[MOCK – Verwaltungsdemo, keine echten Daten]',
+            'Sehr geehrte/r Herr/Frau {name},\n\nin oben genannter Angelegenheit wurde Ihr Kind zum {datum} von Amts wegen im Melderegister eingetragen (§ 57 Abs. 1 Nr. 3 PStV, § 2 Abs. 1 BMG). Eine Anmeldung durch Sie ist nicht erforderlich (§ 17 Abs. 3 BMG). Die Geburtsdaten wurden nach § 139b Abs. 7 AO an das Bundeszentralamt für Steuern übermittelt.\n\n[MOCK – Verwaltungsdemo, keine echten Daten]',
           abschluss: 'Mit freundlichen Grüßen, Bürgeramt Mitte, Az. {az}',
           archetype: 'bescheid',
         },

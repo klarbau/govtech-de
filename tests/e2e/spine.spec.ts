@@ -259,30 +259,30 @@ test.describe('SPINE — assistant → autopilot → posteingang (demo-shipped g
     await page.waitForURL('**/vorgaenge/vorgang-**');
 
     // The link now points at the canonical Akte `/vorgaenge/[id]`
-    // (`VorgangDetail`), which renders the vertical step timeline `.vd-timeline`
-    // → one `.vd-step` per step (block-C filtered for the Umzug). The Akte
+    // (`VorgangDetail`), which renders the vertical step timeline `.pgv-steps`
+    // → one `.pgv-row` per step (block-C filtered for the Umzug). The Akte
     // hydrates `getVorgang(id)` from localStorage — already holding the cascade
     // steps persisted by the in-process autopilot — and reconciles live from the
     // event stream. A reload clears a dev cold-compile without losing state.
-    const timelineSteps = page.locator('.vd-timeline .vd-step');
+    const timelineSteps = page.locator('.pgv-steps .pgv-row');
     try {
-      await expect(timelineSteps.first().locator('.vd-step-aktion')).toBeVisible({
+      await expect(timelineSteps.first().locator('.pgv-row-aktion')).toBeVisible({
         timeout: 20_000,
       });
     } catch {
       await page.reload({ waitUntil: 'domcontentloaded' });
-      await expect(timelineSteps.first().locator('.vd-step-aktion')).toBeVisible({
+      await expect(timelineSteps.first().locator('.pgv-row-aktion')).toBeVisible({
         timeout: 20_000,
       });
     }
 
-    // The five Block-A Behörden steps progress to done (`.vd-step.is-done` — the
+    // The five Block-A Behörden steps progress to done (`.pgv-row.is-done` — the
     // green check node). Reliable mode guarantees no random failure, so all five
     // resolve. (Block-A gained the § 33 BMG MB↔MB-Rückmeldung row in
     // feat/fit-connect-cascade-realism, taking the auto-confirmed count 4 → 5.)
     // The Block-D rows gate on eID (confirmed inline, not on the Akte) so they
     // stay pending here → exactly 5 done steps in the timeline.
-    await expect(page.locator('.vd-timeline .vd-step.is-done')).toHaveCount(5, {
+    await expect(page.locator('.pgv-steps .pgv-row.is-done')).toHaveCount(5, {
       timeout: 30_000,
     });
 

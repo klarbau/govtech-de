@@ -90,8 +90,11 @@ import type {
   UebermittlungsLogEntry,
   UmzugInput,
   UmzugPreview,
+  PlanZustand,
   Vorgang,
   VorgangFilter,
+  VorgangPlan,
+  VorgangPlanRow,
   VorgangsKategorie,
   WalletAttestation,
   WalletAttestationPreview,
@@ -126,13 +129,17 @@ import {
 } from './lebenslagen';
 import { bridgeTargetForArchetype } from './brief-bridge';
 import type {
+  CascadeStepConfig,
   LebenslageCatalogEntry,
   LebenslageConfig,
 } from './lebenslagen/types';
 import {
   confirmEidStep,
   hasLebenslageRun,
+  orderCascadeSteps,
   runLebenslageCascade,
+  stepIdFor,
+  toAutopilotStep,
   type LebenslageCascadePorts,
 } from './lebenslagen/engine';
 import type { EngineHooks } from './orchestration';
@@ -1165,12 +1172,29 @@ export interface MockBackendApi {
    * = erteilte Cascade-Step-IDs (form-time). Gibt sofort `{ vorgangId }` zurück
    * (Kaskade läuft asynchron wie Umzug). `mode:'antragslos'` (kindergeld) wird
    * mit leerem `formValues` aufgerufen — gleicher Pfad, der eID-Schritt pausiert.
+   *
+   * `options.eidAuthorizedAt` (ISO-Timestamp) setzt NUR der Formularpfad
+   * (`AntragForm` → eID-Dialog): dann trägt diese eine Identifikation den
+   * `isPrimarySubmission`-Schritt, und er läuft ohne zweites Gate durch
+   * (Domain Q3 — ein Identifikationsakt deckt genau eine Erklärung gegenüber
+   * genau einer Stelle). Alle anderen Gates bleiben eigene Taps; ohne die Option
+   * verhält sich der Aufruf exakt wie bisher (kindergeld/antragslos, Assistent).
    */
   starteLebenslage(
     slug: string,
     formValues: Record<string, unknown>,
     consents: string[],
+    options?: { eidAuthorizedAt?: string },
   ): Promise<{ vorgangId: string }>;
+  /**
+   * Gesamtplan einer Lebenslage-Akte (Spec `lebenslage-akte.md` §8.4): alle
+   * `visibleIf`-sichtbaren Schritte in Config-Reihenfolge mit ihrem echten
+   * Zustand (geplant / wartet / nicht beauftragt / persönlich / erledigt /
+   * fehlgeschlagen). Reine Ableitung, kein Schreibvorgang. `null`, wenn der
+   * Vorgang keine generische Lebenslagen-Kaskade ist (Seed-/Alt-Vorgänge,
+   * Umzug-Saga) — der Aufrufer rendert dann das bestehende Dossier.
+   */
+  getVorgangPlan(vorgangId: string): Promise<VorgangPlan | null>;
   /**
    * Gibt einen eID-Gate-Schritt einer Lebenslagen-Kaskade frei (Parität zu
    * `bestaetigeAutopilotSchritt`): mintet Letter/Document/Termin des Hops und
@@ -1961,6 +1985,7 @@ async function starteLebenslageImpl(
   slug: string,
   _formValues: Record<string, unknown>,
   consents: string[],
+  options?: { eidAuthorizedAt?: string },
 ): Promise<{ vorgangId: string }> {
   ensureBooted();
   const config = getLebenslageConfigRegistry(slug);
@@ -1996,7 +2021,9 @@ async function starteLebenslageImpl(
   const vorgang: Vorgang = {
     id: vorgangId,
     typ: config.vorgangTyp,
-    titel: `Lebenslage: ${slug}`,
+    // DE-Mint aus der Config („Geburt eines Kindes"); der Fallback bleibt für
+    // Configs ohne `titel_de` (Umzug-Stub) stehen.
+    titel: config.titel_de ?? `Lebenslage: ${slug}`,
     status: 'in_pruefung',
     beteiligte_behoerden_ids: beteiligte,
     schritte: [],
@@ -2004,8 +2031,17 @@ async function starteLebenslageImpl(
     angelegt_am: angelegtAm,
     persona_id: persona.id,
     // Minimaler, nicht-PII Run-Kontext: Slug (für ValueReceipt-Mapping) +
-    // erteilte Consents + Mode. KEINE Formularwerte (mögliche PII) persistieren.
-    context: { slug, consents, mode: config.mode },
+    // erteilte Consents + Mode (+ ggf. der Formular-eID-Timestamp, §7 — er
+    // überlebt Reload/Abschluss, damit die Akte „Von Ihnen mit eID freigegeben
+    // am …" auch später noch zeigen kann). KEINE Formularwerte (mögliche PII).
+    context: {
+      slug,
+      consents,
+      mode: config.mode,
+      ...(options?.eidAuthorizedAt
+        ? { eid_authorized_at: options.eidAuthorizedAt }
+        : {}),
+    },
   };
   const vorgaenge = loadVorgaenge();
   vorgaenge.push(vorgang);
@@ -2023,13 +2059,13 @@ async function starteLebenslageImpl(
   // eID-Gate.
   const ctxSnapshot = captureContext();
   void runWithCapturedContext(ctxSnapshot, () =>
-    runLebenslageCascade(config, vorgang, persona, lebenslagePorts, consents).catch(
-      (err) => {
-        if (typeof console !== 'undefined') {
-          console.error('[mock-backend] lebenslage cascade crashed', err);
-        }
-      },
-    ),
+    runLebenslageCascade(config, vorgang, persona, lebenslagePorts, consents, {
+      formEidAt: options?.eidAuthorizedAt,
+    }).catch((err) => {
+      if (typeof console !== 'undefined') {
+        console.error('[mock-backend] lebenslage cascade crashed', err);
+      }
+    }),
   );
 
   return { vorgangId };
@@ -2066,6 +2102,117 @@ async function bestaetigeLebenslageSchrittImpl(
       );
     }
   });
+}
+
+/**
+ * Gesamtplan einer Lebenslage-Akte (Spec `lebenslage-akte.md` §8.4).
+ *
+ * REINE Ableitung: Config-Reihenfolge (`visibleIf`-gefiltert auf die aktive
+ * Persona) × materialisierte `AutopilotStep`s. Keine Erfindung, keine
+ * Persistenz-Mutation. `null` für alles, was keine generische Lebenslagen-
+ * Kaskade ist (Seed-/Alt-Vorgänge, Umzug-Saga) — der Aufrufer fällt dann auf
+ * die bestehende Dossier-Darstellung zurück.
+ */
+function getVorgangPlanImpl(vorgangId: string): VorgangPlan | null {
+  ensureBooted();
+  const vorgang = loadVorgaenge().find((v) => v.id === vorgangId);
+  if (!vorgang) return null;
+  const context = (vorgang.context ?? {}) as {
+    slug?: unknown;
+    consents?: unknown;
+    eid_authorized_at?: unknown;
+  };
+  const slug = typeof context.slug === 'string' ? context.slug : undefined;
+  if (!slug) return null;
+  const config = getLebenslageConfigRegistry(slug);
+  if (!config || config.engine !== 'lebenslage-cascade') return null;
+
+  const eidAuthorizedAt =
+    typeof context.eid_authorized_at === 'string'
+      ? context.eid_authorized_at
+      : undefined;
+  const grantedConsents = new Set(
+    Array.isArray(context.consents)
+      ? context.consents.filter((c): c is string => typeof c === 'string')
+      : [],
+  );
+  const persona = loadProfile();
+  const stepById = new Map(vorgang.schritte.map((s) => [s.id, s]));
+
+  const rows: VorgangPlanRow[] = orderCascadeSteps(config, persona).map(
+    (cfg, idx) => {
+      const stepId = stepIdFor(vorgang.id, cfg);
+      const step = stepById.get(stepId);
+      return {
+        step_id: stepId,
+        config_id: cfg.id,
+        position: idx + 1,
+        behoerde_id: cfg.behoerdeId,
+        kurzlabel: cfg.kurzlabel ?? cfg.aktion,
+        behoerde_kurz: cfg.behoerdeKurz,
+        agent_label: cfg.agentLabel,
+        aktion: cfg.aktion,
+        rechtsgrundlage: cfg.rechtsgrundlage,
+        datenkategorien: cfg.datenkategorien,
+        block: cfg.block,
+        gate: cfg.gate,
+        zukunft: cfg.zukunft === true,
+        aktenzeichen: cfg.aktenzeichen,
+        zustand: planZustandFor(cfg, step, grantedConsents),
+        completed_at: step?.completed_at,
+        eid_confirmed_at: step?.eid_confirmed_at,
+        consent_given_at: step?.consent_given_at,
+        letter_id: step?.letter_id,
+        eid_preview:
+          step?.eid_preview ??
+          toAutopilotStep(vorgang.id, cfg, persona).eid_preview,
+        pre_authorized: Boolean(cfg.isPrimarySubmission && eidAuthorizedAt),
+      };
+    },
+  );
+
+  return {
+    slug,
+    titel_de: config.titel_de ?? vorgang.titel,
+    mode: config.mode,
+    zukunft: config.zukunft,
+    rows,
+    erledigt: rows.filter((r) => r.zustand === 'erledigt').length,
+    gesamt: rows.filter((r) => r.zustand !== 'nicht_beauftragt').length,
+    eid_authorized_at: eidAuthorizedAt,
+  };
+}
+
+/** Zustandsmapping der Planzeile (Spec §8.4, Tabelle). */
+function planZustandFor(
+  cfg: CascadeStepConfig,
+  step: AutopilotStep | undefined,
+  grantedConsents: Set<string>,
+): PlanZustand {
+  if (!step) {
+    // Abgewählte Einwilligung: der Schritt läuft nie — nie als „ausstehend"
+    // darstellen (Domain Q4).
+    return cfg.gate === 'consent' && !grantedConsents.has(cfg.id)
+      ? 'nicht_beauftragt'
+      : 'geplant';
+  }
+  switch (step.status) {
+    case 'in_progress':
+      return 'laeuft';
+    case 'pending_eid_confirmation':
+    case 'needs_eid':
+      return 'wartet_eid';
+    case 'self_assigned':
+      if (cfg.gate === 'consent') return 'nicht_beauftragt';
+      if (cfg.gate === 'termin') return 'persoenlich';
+      return 'geplant';
+    case 'confirmed':
+      return 'erledigt';
+    case 'failed':
+      return 'fehlgeschlagen';
+    default:
+      return 'geplant';
+  }
 }
 
 // ----------------------------------------------------------------------------
@@ -2853,10 +3000,17 @@ export const api: MockBackendApi & {
     slug: string,
     formValues: Record<string, unknown>,
     consents: string[],
-  ) => withLatency(() => starteLebenslageImpl(slug, formValues, consents)),
+    options?: { eidAuthorizedAt?: string },
+  ) =>
+    withLatency(() =>
+      starteLebenslageImpl(slug, formValues, consents, options),
+    ),
 
   bestaetigeLebenslageSchritt: (vorgangId: string, stepId: string) =>
     withLatency(() => bestaetigeLebenslageSchrittImpl(vorgangId, stepId)),
+
+  getVorgangPlan: (vorgangId: string) =>
+    withLatency<VorgangPlan | null>(() => getVorgangPlanImpl(vorgangId)),
 
   // ---------- Posteingang-Capability — Read ----------
   extrahiereAktion: (letterId: string) => {

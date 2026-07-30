@@ -15,6 +15,7 @@ import type { LebenslageConfig } from '../types';
 
 export const wohngeldConfig: LebenslageConfig = {
   slug: 'wohngeld',
+  titel_de: 'Wohngeld beantragen',
   vorgangTyp: 'wohngeld',
   icon: 'home',
   kategorie: 'wohnen',

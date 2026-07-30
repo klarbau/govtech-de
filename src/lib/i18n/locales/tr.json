@@ -1806,7 +1806,6 @@
     "detail": {
       "next_step_title": "Bir sonraki adımınız",
       "next_step_basis_label": "Yasal dayanak",
-      "next_step_cta": "Adımı tamamla",
       "next_step_cta_eid": "eID ile onayla",
       "next_step_cta_consent": "İletimi onayla",
       "next_step_cta_termin": "Randevu al",
@@ -1825,13 +1824,9 @@
       "step_done_live_next": "Adım tamamlandı. Sonraki adım: {aktion}",
       "step_done_live_all": "Adım tamamlandı. Şu anda sizden başka bir şey istenmiyor.",
       "next_step_brief_cta": "İlgili yazıyı aç",
-      "details_title": "Ayrıntılar",
-      "summary_status_label": "Durum",
       "summary_angelegt_label": "Oluşturuldu",
-      "summary_stichtag_label": "Yürürlük tarihi",
       "summary_behoerden_label": "İlgili makamlar",
       "summary_frist_label": "Sonraki süre sonu",
-      "summary_frist_template": "{datum}",
       "datenschutz_sub": "Bu işlem için neyin işlendiği — ve hangi yasal dayanağa göre.",
       "termine_title": "Bu işleme ait randevular ({count})",
       "no_next_step": "Şu anda sizden bir şey istenmiyor. İlgili makamlar işlemi yürütüyor.",
@@ -1846,20 +1841,64 @@
       "fertigstellung_label_after_action": "Adımınızdan sonra tamamlanma",
       "fertigstellung_label_in_review": "Makam inceliyor — genellikle",
       "fertigstellung_label_done": "Tamamlanma tarihi",
-      "timeline_title": "Bu işlemdeki adımlar ({count})",
       "steps_overview_title": "İşleminize genel bakış",
-      "steps_overview_sub": "Talebinizi koordine eder ve ilgili makamlara iletiriz.",
-      "uebermittelt_label": "İletilme tarihi",
-      "erledigt_label": "Bitirilme tarihi",
-      "termin_vereinbart_label": "Randevu alınma tarihi",
-      "details_show": "Ayrıntıları görüntüle",
-      "details_hide": "Ayrıntıları gizle",
-      "berechtigungen_title": "Yasal dayanak ve yetkiler",
-      "berechtigungen_basis_label": "Yasal dayanak",
-      "berechtigungen_datenweitergabe_label": "Veri paylaşımı",
-      "berechtigungen_behoerden": "{count} makama",
-      "berechtigungen_einwilligungen_label": "Onaylarınız",
-      "berechtigungen_einwilligungen_value": "Yalnızca ilgili makamlara, dilediğiniz zaman geri alınabilir."
+      "steps_overview_sub": "Talebinizi koordine eder ve ilgili makamlara iletiriz."
+    },
+    "uebersicht": {
+      "overview_title": "Güncel durum",
+      "metric_progress_label": "İlerleme",
+      "metric_progress_value": "{pct} %",
+      "metric_time_label": "Kazanılan süre (yaklaşık)",
+      "metric_time_value": "yaklaşık {minuten} dk",
+      "metric_phase_label": "Güncel aşama",
+      "phase_closed": "Tamamlandı",
+      "phase_prepare": "Hazırlanıyor",
+      "pill_action": "İşlem gerekli",
+      "shelf_prev": "Önceki adımları göster",
+      "shelf_next": "Sonraki adımları göster",
+      "shelf_prev_eintraege": "Önceki kayıtları göster",
+      "shelf_next_eintraege": "Sonraki kayıtları göster",
+      "protokoll_show_all": "Tüm {count} kaydı göster",
+      "protokoll_show_less": "Daha az göster",
+      "steps_foot": "Her iletim günlüğe kaydedilir ve belirtilen yasal dayanağa bağlıdır.",
+      "gate_auto": "Otomatik",
+      "gate_eid": "eID ile",
+      "gate_consent": "Onayınızla",
+      "gate_termin": "Randevu ile",
+      "row_daten": "İletilen: {kategorien}",
+      "status_sr": "Durum",
+      "status_time": "{zeit}",
+      "status_sub_eid": "Onayınız gerekli",
+      "next_closed_title": "Bu işlem tamamlandı.",
+      "next_done_sub": "Yeni bir gelişme olur olmaz sizi bilgilendireceğiz.",
+      "next_sub_eid": "Lütfen bu adımı eID'nizle onaylayın.",
+      "next_sub_consent": "Lütfen iletime izin verin.",
+      "next_sub_termin": "Başvuruyu hazırlar ve randevuyu alırız — onayı siz verirsiniz.",
+      "next_running_sub": "{behoerde} · işleniyor",
+      "sticky_running": "İşleniyor · {behoerde}",
+      "next_waiting_title": "İşlem hazırlanıyor",
+      "next_waiting_sub": "İlgili makamlar işlemi yürütüyor.",
+      "kontrolle_title": "Kontrol sizde",
+      "kontrolle_freigaben_title": "İzinleriniz",
+      "kontrolle_freigaben_value": "{total} izinden {given} tanesi verildi",
+      "kontrolle_freigaben_sub": "Onaylar dilediğiniz zaman geri alınabilir",
+      "kontrolle_datenschutz_title": "Veri koruma bilgilendirmesi",
+      "kontrolle_datenschutz_value": "Verileriniz yalnızca bu işlemin yürütülmesi için kullanılır.",
+      "kontrolle_stellen_value": "{count} makam katılıyor",
+      "erledigt_title": "Şimdiye kadar neler yapıldı?",
+      "erledigt_sr_done": "Tamamlandı",
+      "erledigt_sr_open": "Tamamlanmadı",
+      "datenschutz_title": "Verileriniz, kontrol sizde",
+      "result_title": "Genel sonuç",
+      "result_status": "Tamamlandı",
+      "result_body": "İlgili tüm makamlar bu işleme ilişkin görevlerini tamamladı.",
+      "result_bescheid_cta": "Kararı görüntüle (Bescheid)",
+      "result_datum_label": "Tamamlanma tarihi",
+      "result_stellen_label": "İlgili makamlar",
+      "result_stellen_value": "{count} kurum / kuruluş",
+      "result_zeit_sub": "klasik yola kıyasla",
+      "bescheide_title": "Resmî kararlar (Bescheide) ve belgeler",
+      "protokoll_title": "Etkinlik günlüğü"
     }
   },
   "assistent": {
@@ -3516,9 +3555,6 @@
       "kontakt_verifiziert": "İletişim doğrulandı"
     },
     "datenblatt": {
-      "subline": "{angaben, plural, other {# bilgi}}, {register, plural, other {# sicilde}} tutuluyor.",
-      "subline_update": "Son güncelleme: {datum}, {zeit} — {behoerde}.",
-      "subline_update_ohne_absender": "Son güncelleme: {datum}, {zeit}.",
       "cta_korrigieren": "Verileri düzelt",
       "title": "Bilgileriniz",
       "anschrift_link": "Adresi değiştir",
@@ -3528,12 +3564,11 @@
         "hinweis": "Bu demoda ana veriler salt okunur tek doğru kaynaktır: değişiklikleri burada değil, yetkili makamda yaparsınız – güncellenen veriler ardından otomatik olarak profilinize geri akar."
       },
       "identitaet": {
-        "region_label": "Doğrulanmış kimlik",
-        "status": "Kimlik doğrulandı · eIDAS güven düzeyi: yüksek",
         "geburtsdatum": "Doğum tarihi",
+        "geburtsort": "Doğum yeri",
         "staatsangehoerigkeit": "Vatandaşlık",
         "familienstand": "Medeni durum",
-        "quelle": "Yetkili kaynak",
+        "sprachen": "Diller",
         "quelle_fallback": "Vatandaş ofisi (Bürgeramt)"
       },
       "familienstand": {
@@ -3578,7 +3613,8 @@
         "gueltig_bis": "{datum} tarihine kadar geçerli",
         "norm_gueltig_bis": "{norm} · {datum} tarihine kadar geçerli",
         "gesetzliche_rente": "Yasal emeklilik sigortası",
-        "kind_geboren": "doğ. {datum}"
+        "kind_geboren": "doğ. {datum}",
+        "alter": "{jahre, plural, other {# yıl}}"
       },
       "quelle": {
         "bundid": "BundID hesabı",
@@ -3586,13 +3622,11 @@
         "melderegister_ohne_datum": "Nüfus sicili (Melderegister)",
         "bzst": "Federal Merkezi Vergi Dairesi (Bundeszentralamt für Steuern)",
         "drv": "Alman Emeklilik Sigortası (Deutsche Rentenversicherung)",
-        "traeger": "{traeger}"
+        "traeger": "{traeger}",
+        "selbstauskunft": "Kendi beyanınız — bu bilgiyi hiçbir sicil tutmuyor."
       },
       "wallet": {
-        "title": "Kanıtlar ve Wallet",
-        "line": "EUDI Wallet'ınızda {count, plural, other {# kanıt}} · güven hizmeti: BVA – Bundesverwaltungsamt · sonraki kontrol: {datum}",
-        "empty": "EUDI Wallet'ınızda henüz kanıt yok.",
-        "link": "Kanıtları görüntüle"
+        "empty": "EUDI Wallet'ınızda henüz kanıt yok."
       },
       "protokoll": {
         "title": "Değişiklik günlüğü",
@@ -3605,8 +3639,91 @@
         "show_all": "Tüm günlüğü göster"
       },
       "datenhoheit": {
-        "text": "Ana verileriniz yalnızca onayınızla makamlara ve hizmetlere iletilir — hangi bilgiyi kimin görebileceğine siz karar verirsiniz.",
         "link": "Veri kullanımını yönet"
+      },
+      "sprache": {
+        "de": "Almanca",
+        "en": "İngilizce",
+        "ru": "Rusça",
+        "uk": "Ukraynaca",
+        "ar": "Arapça",
+        "tr": "Türkçe"
+      }
+    },
+    "akte": {
+      "portraet": {
+        "legende": "[MOCK] Sentetik portre — vesikalık fotoğraf değildir, gerçek bir kişi değildir.",
+        "aktualisiert_label": "Son güncelleme",
+        "aktualisiert_wert": "{datum}, {zeit}",
+        "quelle_label": "Yetkili kaynak"
+      },
+      "fakten": {
+        "region_label": "Temel bilgiler"
+      },
+      "tabs": {
+        "aria": "Ana verilerinizin bölümleri",
+        "ueberblick": "Genel bakış",
+        "persoenlich": "Kişisel veriler",
+        "dokumente": "Belgeler",
+        "verlauf": "Geçmiş"
+      },
+      "status": {
+        "title": "Statü ve kimlik belgesi",
+        "aufenthalt_label": "Oturum izni (Aufenthaltstitel)",
+        "gueltig_bis_label": "Son geçerlilik tarihi",
+        "behoerde_label": "Düzenleyen kurum",
+        "az_label": "Referans numarası (Aktenzeichen)",
+        "az_kopiert": "Referans numarası kopyalandı",
+        "bezeichnung_18g": "AB Mavi Kartı (Blaue Karte EU)",
+        "bezeichnung_21": "Serbest meslek faaliyeti için oturum izni",
+        "quelle_aufenthalt": "Yabancılar dairesi tarafından tutulur (Ausländerbehörde, § 71 fıkra 1 AufenthG); Federal Göç ve Mülteciler Dairesi'ndeki (Bundesamt für Migration und Flüchtlinge, § 1 AZRG) Yabancılar Merkezi Sicili'nde (Ausländerzentralregister) saklanır. Bu demo hiçbir sicilden sorgu yapmaz.",
+        "ausweis_label": "Kimlik belgesi",
+        "ausweis_personalausweis": "Kimlik kartı (Personalausweis)",
+        "ausweis_reisepass": "Pasaport",
+        "ausweis_nummer_label": "Belge numarası",
+        "verlaengerung_link": "Uzatmayı hazırla",
+        "leer": "Belge kasanızda şu anda kimlik belgesi yok."
+      },
+      "vorgaenge": {
+        "title": "Güncel işlemler",
+        "alle": "Tüm işlemler",
+        "status_genehmigt": "Onaylandı",
+        "status_abgelehnt": "Reddedildi",
+        "leer": "Şu anda süren bir işlem yok.",
+        "punkt_laeuft": "sürüyor",
+        "punkt_abgeschlossen": "tamamlandı"
+      },
+      "dokumente": {
+        "title": "Belgeler ve kanıtlar",
+        "eid_titel": "Çevrimiçi kimliğiniz",
+        "alle": "Belge kasasındaki her şey",
+        "ohne_ablauf": "bitiş tarihi yok",
+        "leer": "Kasanızda henüz belge yok.",
+        "kachel_vorzeigen": "Göster",
+        "kachel_details": "Ayrıntılar",
+        "wallet_titel": "EUDI Wallet",
+        "wallet_sub": "{count, plural, other {# kanıt}} · sonraki kontrol: {datum}"
+      },
+      "aktionen": {
+        "title": "Hızlı işlemler",
+        "vorgang": "İşlem başlat",
+        "nachweis": "Belge göster",
+        "nachweise_ansehen": "Kanıtları görüntüle",
+        "termine": "Randevuları görüntüle",
+        "adresse": "Adresi değiştir"
+      },
+      "identitaet": {
+        "bestaetigt": "Kimlik doğrulandı",
+        "service": "eIDAS güven düzeyi: yüksek · {angaben, plural, other {# bilgi}}, {register, plural, other {# sicilde}} tutuluyor"
+      },
+      "verlauf": {
+        "title": "Geçmiş",
+        "alle": "Tüm etkinlikler",
+        "row": "{datenart} → {empfaenger}"
+      },
+      "datenhoheit": {
+        "title": "Veri koruma ve veri kontrolü",
+        "text_kurz": "Paylaşımlara siz karar verirsiniz — kanunen zorunlu aktarımlar hariç (§ 36 BMG)."
       }
     },
     "once_only": {

@@ -21,7 +21,9 @@ import type {
 /** Micro-line under a value: an i18n key under `stammdaten.datenblatt` + params. */
 export interface DatenblattQuelle {
   key: string;
-  params?: Record<string, string>;
+  /** Numbers stay numbers — ICU `plural` should select on a number, not on a
+      string that the formatter happens to coerce back. */
+  params?: Record<string, string | number>;
 }
 
 export interface DatenblattRow {
@@ -45,7 +47,7 @@ export interface DatenblattSection {
 }
 
 export interface DatenblattModel {
-  /** Band 1 facts, incl. the trailing „Führende Quelle" row (not an Angabe). */
+  /** Identity facts, incl. „Sprachen" (self-declared, not an Angabe). */
   identitaet: DatenblattRow[];
   sektionen: DatenblattSection[];
   angabenCount: number;
@@ -56,7 +58,8 @@ export interface DatenblattModel {
 export interface DatenblattTexte {
   familienstand: string;
   staatsangehoerigkeit: string;
-  fuehrendeQuelle: string;
+  /** Already localized, comma-separated („Russisch, Deutsch, Englisch"). */
+  sprachen: string;
   gesetzlicheRente: string;
   /** `Lev Petrov · geb. 02.05.2020` */
   kind: (name: string, geburtsdatum: string) => string;
@@ -70,8 +73,14 @@ export interface DatenblattInput {
   texte: DatenblattTexte;
 }
 
-/** Row id of the leading-authority line — counted as provenance, not as Angabe. */
-const QUELLE_ROW_ID = 'identitaet.quelle';
+/**
+ * Identity rows that the „{N} Angaben"-Subline must NOT count: „Sprachen" is
+ * self-declared (no register keeps it — § 3 BMG does not list language).
+ * Everything else in the band is register-led, and Geburtsort explicitly so
+ * (§ 3 Abs. 1 Nr. 6 BMG). Provenance is not a row here at all: it lives in the
+ * portrait foot, fed directly by the view (`PortraitKarte quelleWert`).
+ */
+const NICHT_GEZAEHLT = new Set(['identitaet.sprachen']);
 
 function row(
   id: string,
@@ -123,6 +132,31 @@ export function findMeldebehoerde(
   );
 }
 
+/**
+ * Volle Lebensjahre — die einzige abgeleitete Angabe dieses Screens (Spec
+ * `stammdaten-akte-v2.md` § 7.1). Kalenderarithmetik, keine Registerbehauptung:
+ * ist der Geburtstag im laufenden Jahr noch nicht erreicht, zählt ein Jahr
+ * weniger. Der 29.02. fällt damit auf den 1.3. eines Nicht-Schaltjahres.
+ *
+ * Das Geburtsdatum wird stringseitig zerlegt statt über `new Date(iso)`: ein
+ * reines Datum parst JS als UTC-Mitternacht, die Vergleichsgetter unten sind
+ * aber lokal — westlich von UTC sprang der Geburtstag dadurch einen Tag zu früh
+ * (und die Tests hingen an der Zeitzone der Maschine; code-review 2026-07-29,
+ * Nit 2).
+ */
+export function alterInJahren(
+  geburtsdatumIso: string,
+  heute: Date = new Date(),
+): number {
+  const [jahr, monat, tag] = geburtsdatumIso.slice(0, 10).split('-').map(Number);
+  let jahre = heute.getFullYear() - jahr;
+  const monate = heute.getMonth() + 1 - monat;
+  if (monate < 0 || (monate === 0 && heute.getDate() < tag)) {
+    jahre -= 1;
+  }
+  return jahre;
+}
+
 export function buildDatenblattModel({
   persona,
   stammdaten,
@@ -135,6 +169,19 @@ export function buildDatenblattModel({
       'identitaet.geburtsdatum',
       'identitaet.geburtsdatum',
       formatDateDe(stammdaten.identitaet.geburtsdatum),
+      {
+        quelle: {
+          key: 'value.alter',
+          params: {
+            jahre: alterInJahren(stammdaten.identitaet.geburtsdatum),
+          },
+        },
+      },
+    ),
+    row(
+      'identitaet.geburtsort',
+      'identitaet.geburtsort',
+      stammdaten.identitaet.geburtsort,
     ),
     row(
       'identitaet.staatsangehoerigkeit',
@@ -142,7 +189,9 @@ export function buildDatenblattModel({
       texte.staatsangehoerigkeit,
     ),
     row('identitaet.familienstand', 'identitaet.familienstand', texte.familienstand),
-    row(QUELLE_ROW_ID, 'identitaet.quelle', texte.fuehrendeQuelle),
+    row('identitaet.sprachen', 'identitaet.sprachen', texte.sprachen, {
+      quelle: { key: 'quelle.selbstauskunft' },
+    }),
   ].filter((r): r is DatenblattRow => r !== null);
 
   const email =
@@ -297,7 +346,7 @@ export function buildDatenblattModel({
   ].filter((s): s is DatenblattSection => s !== null);
 
   const angabenCount =
-    identitaet.filter((r) => r.id !== QUELLE_ROW_ID).length +
+    identitaet.filter((r) => !NICHT_GEZAEHLT.has(r.id)).length +
     sektionen.reduce((sum, s) => sum + s.rows.length, 0);
 
   const neuester = log[0];

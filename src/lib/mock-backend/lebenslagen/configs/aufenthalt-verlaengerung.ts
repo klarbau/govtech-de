@@ -13,6 +13,7 @@ import type { LebenslageConfig } from '../types';
 
 export const aufenthaltVerlaengerungConfig: LebenslageConfig = {
   slug: 'aufenthalt-verlaengerung',
+  titel_de: 'Aufenthaltstitel verlängern',
   vorgangTyp: 'aufenthaltstitel-verlaengerung',
   icon: 'globe',
   kategorie: 'migration',

@@ -86,6 +86,7 @@ playwright.*.config.ts
 
 # One-off local probe/screenshot scripts + their image output
 tmp-*
+/scripts/_*-tmp.mjs
 .tmp-shots/
 .dark-shots/
 .ds-sync/
@@ -94,3 +95,6 @@ ds-bundle/
 
 # FIT-Connect local private keys (Protokoll-Modus)
 .secrets/
+
+# Third-party tooling clones — own repo/history, not part of govtech.
+/tools/
